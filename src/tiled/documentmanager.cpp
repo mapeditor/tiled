@@ -553,7 +553,7 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
 {
-    if (tileset.imageSource().isEmpty())
+    if (tileset.isCollection())
         return false;
     if (!tileset.imageLoaded())
         return false;

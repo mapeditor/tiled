@@ -516,7 +516,7 @@ void TilesetDock::currentChanged(const QModelIndex &index)
 void TilesetDock::updateActions()
 {
     bool external = false;
-    bool hasImageSource = false;
+    bool isCollection = false;
     bool hasSelection = false;
     TilesetView *view = nullptr;
     const int index = mTabBar->currentIndex();
@@ -531,7 +531,7 @@ void TilesetDock::updateActions()
 
             mViewStack->setCurrentIndex(index);
             external = tileset->isExternal();
-            hasImageSource = !tileset->imageSource().isEmpty();
+            isCollection = tileset->isCollection();
             hasSelection = view->selectionModel()->hasSelection();
         }
     }
@@ -545,8 +545,8 @@ void TilesetDock::updateActions()
     mPropertiesTileset->setEnabled(tilesetIsDisplayed);
     mDeleteTileset->setEnabled(tilesetIsDisplayed);
     mEditTerrain->setEnabled(tilesetIsDisplayed && !external);
-    mAddTiles->setEnabled(tilesetIsDisplayed && !hasImageSource && !external);
-    mRemoveTiles->setEnabled(tilesetIsDisplayed && !hasImageSource
+    mAddTiles->setEnabled(tilesetIsDisplayed && isCollection && !external);
+    mRemoveTiles->setEnabled(tilesetIsDisplayed && isCollection
                              && hasSelection && !external);
 }
 

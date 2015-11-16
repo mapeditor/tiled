@@ -268,7 +268,7 @@ Map *MapReaderPrivate::readMap()
         // Try to load the tileset images
         auto tilesets = mMap->tilesets();
         for (SharedTileset &tileset : tilesets) {
-            if (!tileset->imageSource().isEmpty() && tileset->fileName().isEmpty())
+            if (!tileset->isCollection() && tileset->fileName().isEmpty())
                 tileset->loadImage();
         }
 
@@ -305,16 +305,12 @@ SharedTileset MapReaderPrivate::readTileset()
     SharedTileset tileset;
 
     if (source.isEmpty()) { // Not an external tileset
-        const QString name =
-                atts.value(QLatin1String("name")).toString();
-        const int tileWidth =
-                atts.value(QLatin1String("tilewidth")).toInt();
-        const int tileHeight =
-                atts.value(QLatin1String("tileheight")).toInt();
-        const int tileSpacing =
-                atts.value(QLatin1String("spacing")).toInt();
-        const int margin =
-                atts.value(QLatin1String("margin")).toInt();
+        const QString name = atts.value(QLatin1String("name")).toString();
+        const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
+        const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+        const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
+        const int margin = atts.value(QLatin1String("margin")).toInt();
+        const int columns = atts.value(QLatin1String("columns")).toInt();
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -323,6 +319,8 @@ SharedTileset MapReaderPrivate::readTileset()
         } else {
             tileset = Tileset::create(name, tileWidth, tileHeight,
                                       tileSpacing, margin);
+
+            tileset->setColumnCount(columns);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {
@@ -969,7 +967,7 @@ Map *MapReader::readMap(const QString &fileName)
 SharedTileset MapReader::readTileset(QIODevice *device, const QString &path)
 {
     SharedTileset tileset = d->readTileset(device, path);
-    if (tileset && !tileset->imageSource().isEmpty())
+    if (tileset && !tileset->isCollection())
         tileset->loadImage();
 
     return tileset;

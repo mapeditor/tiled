@@ -252,7 +252,7 @@ SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets
             continue;
 
         // For an image collection tileset, check the image sources
-        if (imageSource().isEmpty())
+        if (isCollection())
             if (!sameTileImages(*this, *candidate))
                 continue;
 

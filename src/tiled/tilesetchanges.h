@@ -111,6 +111,24 @@ private:
     TilesetParameters mNewParameters;
 };
 
+class ChangeTilesetColumnCount : public QUndoCommand
+{
+public:
+    ChangeTilesetColumnCount(MapDocument *mapDocument,
+                             Tileset &tileset,
+                             int columnCount);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Tileset &mTileset;
+    int mColumnCount;
+};
+
 } // namespace Internal
 } // namespace Tiled
 

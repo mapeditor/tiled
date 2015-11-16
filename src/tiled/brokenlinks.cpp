@@ -86,7 +86,7 @@ void BrokenLinksModel::refresh()
     mBrokenLinks.clear();
 
     for (const SharedTileset &tileset : mMapDocument->map()->tilesets()) {
-        if (!tileset->imageSource().isEmpty() && !tileset->imageLoaded()) {
+        if (!tileset->isCollection() && !tileset->imageLoaded()) {
             BrokenLink link;
             link.type = TilesetImageSource;
             link.tileset = tileset.data();
@@ -206,7 +206,7 @@ void BrokenLinksModel::tilesetChanged(Tileset *tileset)
                                                     mBrokenLinks.end(),
                                                     matchesTileset);
 
-    if (!tileset->imageSource().isEmpty() && !tileset->imageLoaded()) {
+    if (!tileset->isCollection() && !tileset->imageLoaded()) {
         if (it != mBrokenLinks.end()) {
             int linkIndex = it - mBrokenLinks.begin();
             emit dataChanged(index(linkIndex, 0), index(linkIndex, 1));

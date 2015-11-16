@@ -539,8 +539,11 @@ void PropertyBrowser::addTilesetProperties()
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
 
+    QtVariantProperty *columnsProperty = createProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
+    columnsProperty->setAttribute(QLatin1String("minimum"), 1);
+
     // Next properties we should add only for non 'Collection of Images' tilesets
-    if (!tileset->imageSource().isEmpty()) {
+    if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
                 createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
 
@@ -897,6 +900,11 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
                                                     tileset,
                                                     val.toPoint()));
         break;
+    case ColumnCountProperty:
+        undoStack->push(new ChangeTilesetColumnCount(mMapDocument,
+                                                     *tileset,
+                                                     val.toInt()));
+        break;
     default:
         break;
     }
@@ -1089,11 +1097,13 @@ void PropertyBrowser::updateProperties()
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+        mIdToProperty[ColumnCountProperty]->setValue(tileset->columnCount());
 
         mIdToProperty[NameProperty]->setEnabled(!external);
         mIdToProperty[TileOffsetProperty]->setEnabled(!external);
+        mIdToProperty[ColumnCountProperty]->setEnabled(!external && tileset->isCollection());
 
-        if (!tileset->imageSource().isEmpty()) {
+        if (!tileset->isCollection()) {
             EmbeddedTileset embeddedTileset(mMapDocument, tileset);
 
             mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));

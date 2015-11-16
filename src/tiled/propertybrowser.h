@@ -133,6 +133,7 @@ private:
         MarginProperty,
         SpacingProperty,
         TileProbabilityProperty,
+        ColumnCountProperty,
         IdProperty,
         CustomProperty
     };

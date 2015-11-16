@@ -124,6 +124,7 @@ public:
     int tileCount() const;
 
     int columnCount() const;
+    void setColumnCount(int columnCount);
     int expectedColumnCount() const;
     void syncExpectedColumnCount();
 
@@ -143,6 +144,7 @@ public:
 
     const QString &imageSource() const;
     void setImageSource(const QString &imageSource);
+    bool isCollection() const;
 
     int columnCountForWidth(int width) const;
 
@@ -335,6 +337,15 @@ inline int Tileset::columnCount() const
 }
 
 /**
+ * Sets the column count to use when displaying this tileset. For tileset image
+ * based tilesets, this reflects the number of tile columns in the image.
+ */
+inline void Tileset::setColumnCount(int columnCount)
+{
+    mColumnCount = columnCount;
+}
+
+/**
  * Returns the number of tile columns expected to be in the tileset image. This
  * may differ from the actual amount of columns encountered when loading the
  * image, and can be used for automatically adjusting tile indexes.
@@ -395,6 +406,15 @@ inline bool Tileset::loadFromImage(const QString &fileName)
 inline const QString &Tileset::imageSource() const
 {
     return mImageReference.source;
+}
+
+/**
+ * Returns whether this tileset is a collection of images. In this case, the
+ * tileset itself has no image source.
+ */
+inline bool Tileset::isCollection() const
+{
+    return imageSource().isEmpty();
 }
 
 /**

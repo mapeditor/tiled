@@ -221,7 +221,7 @@ void TileDelegate::paint(QPainter *painter,
     QSize tileSize = tileImage.size();
     if (tileImage.isNull()) {
         Tileset *tileset = model->tileset();
-        if (tileset->imageSource().isEmpty()) {
+        if (tileset->isCollection()) {
             tileSize = QSize(32, 32);
         } else {
             int max = std::max(tileset->tileWidth(), tileset->tileWidth());
@@ -332,7 +332,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
         if (image.isNull()) {
             Tileset *tileset = m->tileset();
-            if (tileset->imageSource().isEmpty()) {
+            if (tileset->isCollection()) {
                 tileSize = QSize(32, 32);
             } else {
                 int max = std::max(tileset->tileWidth(), tileset->tileWidth());
@@ -407,7 +407,7 @@ int TilesetView::sizeHintForColumn(int column) const
     if (!model)
         return -1;
 #if QT_VERSION >= 0x050200
-    if (model->tileset()->imageSource().isEmpty())
+    if (model->tileset()->isCollection())
         return QTableView::sizeHintForColumn(column);
 #endif
 
@@ -422,7 +422,7 @@ int TilesetView::sizeHintForRow(int row) const
     if (!model)
         return -1;
 #if QT_VERSION >= 0x050200
-    if (model->tileset()->imageSource().isEmpty())
+    if (model->tileset()->isCollection())
         return QTableView::sizeHintForRow(row);
 #endif
 

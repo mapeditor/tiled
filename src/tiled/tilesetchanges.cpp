@@ -143,5 +143,24 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
     emit mMapDocument->tilesetChanged(&mTileset);
 }
 
+ChangeTilesetColumnCount::ChangeTilesetColumnCount(MapDocument *mapDocument,
+                                                   Tileset &tileset,
+                                                   int columnCount)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Columns"))
+    , mMapDocument(mapDocument)
+    , mTileset(tileset)
+    , mColumnCount(columnCount)
+{
+}
+
+void ChangeTilesetColumnCount::swap()
+{
+    int oldColumnCount = mTileset.columnCount();
+    mTileset.setColumnCount(mColumnCount);
+    mColumnCount = oldColumnCount;
+
+    emit mMapDocument->tilesetChanged(&mTileset);
+}
+
 } // namespace Internal
 } // namespace Tiled
