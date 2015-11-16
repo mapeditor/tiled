@@ -356,6 +356,7 @@ QtGuiApplication {
     }
 
     Group {
+        name: "OS X (icons)"
         condition: qbs.targetOS.contains("osx")
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
