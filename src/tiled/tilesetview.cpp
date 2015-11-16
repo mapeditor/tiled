@@ -659,13 +659,13 @@ void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
     if (TilesetModel *model = tilesetModel())
-        model->tilesetChanged();
+        model->resetModel();
 }
 
 void TilesetView::adjustScale()
 {
     if (TilesetModel *model = tilesetModel())
-        model->tilesetChanged();
+        model->resetModel();
 }
 
 void TilesetView::applyTerrain()

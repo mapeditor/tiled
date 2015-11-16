@@ -1,4 +1,4 @@
-/*
+﻿/*
  * tilesetmodel.cpp
  * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
@@ -35,6 +35,7 @@ TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
     QAbstractListModel(parent),
     mTileset(tileset)
 {
+    refreshTileIds();
 }
 
 int TilesetModel::rowCount(const QModelIndex &parent) const
@@ -42,13 +43,13 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    const int tiles = mTileset->nextTileId();
+    const int tileCount = mTileIds.size();
     const int columns = columnCount();
 
     int rows = 1;
     if (columns > 0) {
-        rows = tiles / columns;
-        if (tiles % columns > 0)
+        rows = tileCount / columns;
+        if (tileCount % columns > 0)
             ++rows;
     }
 
@@ -114,7 +115,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 
     for (const QModelIndex &index : indexes) {
         if (index.isValid())
-            stream << tileIndexAt(index);
+            stream << tileIdAt(index);
     }
 
     mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
@@ -126,14 +127,21 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    const int id = index.column() + index.row() * columnCount();
-    return mTileset->findTile(id);
+    const int tileIndex = index.column() + index.row() * columnCount();
+
+    if (tileIndex < mTileIds.size()) {
+        const int tileId = mTileIds.at(tileIndex);
+        return mTileset->findTile(tileId);
+    }
+
+    return nullptr;
 }
 
-int TilesetModel::tileIndexAt(const QModelIndex &index) const
+int TilesetModel::tileIdAt(const QModelIndex &index) const
 {
     Q_ASSERT(index.isValid());
-    return index.column() + index.row() * columnCount();
+    const int tileIndex = index.column() + index.row() * columnCount();
+    return mTileIds.at(tileIndex);
 }
 
 QModelIndex TilesetModel::tileIndex(const Tile *tile) const
@@ -141,9 +149,11 @@ QModelIndex TilesetModel::tileIndex(const Tile *tile) const
     Q_ASSERT(tile->tileset() == mTileset);
 
     const int columnCount = TilesetModel::columnCount();
-    const int id = tile->id();
-    const int row = id / columnCount;
-    const int column = id % columnCount;
+    const int tileIndex = mTileIds.indexOf(tile->id());
+    Q_ASSERT(tileIndex != -1);
+
+    const int row = tileIndex / columnCount;
+    const int column = tileIndex % columnCount;
 
     return index(row, column);
 }
@@ -154,11 +164,21 @@ void TilesetModel::setTileset(Tileset *tileset)
         return;
 
     beginResetModel();
+
     mTileset = tileset;
+    refreshTileIds();
+
     endResetModel();
 }
 
 void TilesetModel::tilesetChanged()
+{
+    beginResetModel();
+    refreshTileIds();
+    endResetModel();
+}
+
+void TilesetModel::resetModel()
 {
     beginResetModel();
     endResetModel();
@@ -201,4 +221,11 @@ void TilesetModel::tileChanged(Tile *tile)
 
     const QModelIndex i = tileIndex(tile);
     emit dataChanged(i, i);
+}
+
+void TilesetModel::refreshTileIds()
+{
+    mTileIds.clear();
+    for (Tile *tile : mTileset->tiles())
+        mTileIds.append(tile->id());
 }
