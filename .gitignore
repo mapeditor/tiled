@@ -12,6 +12,8 @@ ui_*.h
 *.qbs.user*
 qrc_*
 html
+.*.sw*
+tags
 
 # Build artifacts on Windows
 tiled.exe
