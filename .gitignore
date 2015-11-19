@@ -18,6 +18,7 @@ tiled.exe
 tmxrasterizer.exe
 tmxviewer.exe
 automappingconverter.exe
+tmxtojson.exe
 *.dll
 *.obj
 *.a
