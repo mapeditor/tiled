@@ -5,4 +5,5 @@ SUBDIRS = libtiled tiled plugins \
     tmxviewer \
     tmxrasterizer \
     automappingconverter \
-    terraingenerator
+    terraingenerator \
+    formatconvert
