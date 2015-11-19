@@ -1,7 +1,7 @@
 import qbs 1.0
 
 TiledQtGuiApplication {
-    name: "tmxtojson"
+    name: "formatconvert"
 
     consoleApplication: true
 

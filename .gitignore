@@ -20,7 +20,7 @@ tiled.exe
 tmxrasterizer.exe
 tmxviewer.exe
 automappingconverter.exe
-tmxtojson.exe
+formatconvert.exe
 *.dll
 *.obj
 *.a

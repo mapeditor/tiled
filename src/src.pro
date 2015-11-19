@@ -5,4 +5,4 @@ SUBDIRS = libtiled tiled plugins \
     tmxviewer \
     tmxrasterizer \
     automappingconverter \
-    tmxtojson
+    formatconvert

@@ -45,15 +45,15 @@ void writeMap(Tiled::Map *map, QString const &fileName) {
 
 int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
-  QGuiApplication::setApplicationName("tmxtojson");
+  QGuiApplication::setApplicationName("formatconvert");
   QGuiApplication::setApplicationVersion("0.1");
 
   QCommandLineParser parser;
-  parser.setApplicationDescription("Convert .tmx files to .json map files");
+  parser.setApplicationDescription("Convert Tiled map files to other formats. Formats are detected from the file extensions.");
   parser.addHelpOption();
   parser.addVersionOption();
-  parser.addPositionalArgument("source", QCoreApplication::translate("tmxtojson", ".tmx file to read"));
-  parser.addPositionalArgument("destination", QCoreApplication::translate("tmxtojson", ".json file to write"));
+  parser.addPositionalArgument("source", QCoreApplication::translate("formatconvert", "input file to read"));
+  parser.addPositionalArgument("destination", QCoreApplication::translate("formatconvert", "output file to write"));
 
   parser.process(app);
 

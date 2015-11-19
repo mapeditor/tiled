@@ -2,7 +2,7 @@ include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
 
 TEMPLATE = app
-TARGET = tmxtojson
+TARGET = formatconvert
 target.path = $${PREFIX}/bin
 INSTALLS += target
 CONFIG += console
