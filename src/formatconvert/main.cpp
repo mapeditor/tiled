@@ -75,6 +75,10 @@ int main(int argc, char *argv[]) {
 
   QStringList const args = parser.positionalArguments();
 
+  if (args.size() != 2) {
+    parser.showHelp(1);
+  }
+
   PluginManager::instance()->loadPlugins();
   foreach (LoadedPlugin plugin, PluginManager::instance()->plugins()) {
     qDebug() << "Loaded plugin " << plugin.fileName;
