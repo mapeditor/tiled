@@ -31,28 +31,42 @@ Map *readMap(QString const &fileName) {
   }
 }
 
-void writeMap(Map *map, QString const &fileName) {
+bool writeMap(Map *map, QString const &fileName) {
   MapFormat *format = findFormat<MapFormat>(fileName);
   if (format) {
     qDebug() << "Writing " << format->nameFilter();
-    format->write(map, fileName);
+    if (!format->write(map, fileName)) {
+      qFatal("%s", qPrintable(format->errorString()));
+      return false;
+    }
   } else {
     qDebug() << "Writing TMX format";
     MapWriter writer;
-    writer.writeMap(map, fileName);
+    if (!writer.writeMap(map, fileName)) {
+      qFatal("%s", qPrintable(writer.errorString()));
+      return false;
+    }
   }
+  return true;
 }
 
-void writeTileset(SharedTileset tileset, QString const &fileName) {
+bool writeTileset(SharedTileset tileset, QString const &fileName) {
   TilesetFormat *format = findFormat<TilesetFormat>(fileName);
   if (format) {
     qDebug() << "Writing " << format->nameFilter();
-    format->write(*tileset, fileName);
+    if (!format->write(*tileset, fileName)) {
+      qFatal("%s", qPrintable(format->errorString()));
+      return false;
+    }
   } else {
     qDebug() << "Writing TSX format";
     MapWriter writer;
-    writer.writeTileset(*tileset, fileName);
+    if (!writer.writeTileset(*tileset, fileName)) {
+      qFatal("%s", qPrintable(writer.errorString()));
+      return false;
+    }
   }
+  return true;
 }
 
 int main(int argc, char *argv[]) {
@@ -87,10 +101,12 @@ int main(int argc, char *argv[]) {
   if (parser.isSet(tilesetOption)) {
     SharedTileset tileset = readTileset(args.at(0));
     tileset->setFileName("");
-    writeTileset(tileset, args.at(1));
+    if (!writeTileset(tileset, args.at(1)))
+      return 2;
   } else {
     Map *map = readMap(args.at(0));
-    writeMap(map, args.at(1));
+    if (!writeMap(map, args.at(1)))
+      return 2;
   }
 
   return 0;
