@@ -523,16 +523,17 @@ void Tileset::deleteTile(int id)
 
 /**
  * Sets the \a image to be used for the tile with the given \a id.
+ *
+ * This function makes sure the tile width and tile height properties of the
+ * tileset reflect the maximum size. It is only expected to be used for
+ * image collection tilesets.
  */
-void Tileset::setTileImage(int id,
+void Tileset::setTileImage(Tile *tile,
                            const QPixmap &image,
                            const QString &source)
 {
-    // This operation is not supposed to be used on tilesets that are based
-    // on a single image
-    Q_ASSERT(mImageReference.source.isEmpty());
-
-    Tile *tile = findTile(id);
+    Q_ASSERT(isCollection());
+    Q_ASSERT(mTiles.value(tile->id()) == tile);
 
     const QSize previousImageSize = tile->image().size();
     const QSize newImageSize = image.size();

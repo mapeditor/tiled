@@ -42,7 +42,7 @@ ChangeTileImageSource::ChangeTileImageSource(MapDocument *mapDocument,
 
 void ChangeTileImageSource::apply(const QString &imageSource)
 {
-    mTile->tileset()->setTileImage(mTile->id(),
+    mTile->tileset()->setTileImage(mTile,
                                    QPixmap(imageSource),
                                    imageSource);
 

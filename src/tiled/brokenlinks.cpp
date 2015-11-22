@@ -198,24 +198,11 @@ void BrokenLinksModel::tileImageSourceChanged(Tile *tile)
 
 void BrokenLinksModel::tilesetChanged(Tileset *tileset)
 {
-    auto matchesTileset = [tileset](const BrokenLink &link) {
-        return link.type == TilesetImageSource && link.tileset == tileset;
-    };
+    Q_UNUSED(tileset)
 
-    QVector<BrokenLink>::iterator it = std::find_if(mBrokenLinks.begin(),
-                                                    mBrokenLinks.end(),
-                                                    matchesTileset);
-
-    if (!tileset->isCollection() && !tileset->imageLoaded()) {
-        if (it != mBrokenLinks.end()) {
-            int linkIndex = it - mBrokenLinks.begin();
-            emit dataChanged(index(linkIndex, 0), index(linkIndex, 1));
-        } else {
-            refresh(); // lazy way of adding an entry for this tileset
-        }
-    } else if (it != mBrokenLinks.end()) {
-        removeLink(it - mBrokenLinks.begin());
-    }
+    // This may mean either the tileset properties changed or tiles were
+    // added/removed from the tileset. Easiest to just refresh entirely.
+    refresh();
 }
 
 void BrokenLinksModel::tilesetReplaced(int index, Tileset *tileset)

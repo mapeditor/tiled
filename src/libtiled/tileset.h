@@ -167,7 +167,7 @@ public:
     int nextTileId() const;
     int takeNextTileId();
 
-    void setTileImage(int id,
+    void setTileImage(Tile *tile,
                       const QPixmap &image,
                       const QString &source = QString());
 

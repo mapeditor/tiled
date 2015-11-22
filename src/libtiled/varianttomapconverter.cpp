@@ -245,7 +245,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         imageVariant = tileVar[QLatin1String("image")];
         if (!imageVariant.isNull()) {
             QString imagePath = resolvePath(mMapDir, imageVariant);
-            tileset->setTileImage(tileId, QPixmap(imagePath), imagePath);
+            tileset->setTileImage(tile, QPixmap(imagePath), imagePath);
         }
         QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
         if (!objectGroupVariant.isEmpty())

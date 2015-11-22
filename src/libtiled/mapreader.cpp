@@ -412,7 +412,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                tileset.setTileImage(id, QPixmap::fromImage(image),
+                tileset.setTileImage(tile, QPixmap::fromImage(image),
                                      imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
