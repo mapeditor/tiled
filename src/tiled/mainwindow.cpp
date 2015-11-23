@@ -273,8 +273,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(mLayerComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(layerComboIndexChanged(int)));
+    connect(mLayerComboBox, SIGNAL(activated(int)),
+            this, SLOT(layerComboActivated(int)));
 
     statusBar()->addPermanentWidget(mLayerComboBox);
     statusBar()->addPermanentWidget(mZoomComboBox);
@@ -1455,7 +1455,7 @@ void MainWindow::onCollisionEditorClosed()
     mShowTileCollisionEditor->setChecked(false);
 }
 
-void MainWindow::layerComboIndexChanged(int index)
+void MainWindow::layerComboActivated(int index)
 {
     if (index == -1)
         return;

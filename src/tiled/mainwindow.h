@@ -177,7 +177,7 @@ private slots:
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
-    void layerComboIndexChanged(int index);
+    void layerComboActivated(int index);
 
 private:
     /**
