@@ -879,15 +879,15 @@ void MapDocument::onLayerAboutToBeRemoved(int index)
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
-    bool currentLayerRemoved = mCurrentLayerIndex == mMap->layerCount();
-    if (currentLayerRemoved)
+    bool currentLayerAffected = index <= mCurrentLayerIndex;
+    if (currentLayerAffected)
         mCurrentLayerIndex = mCurrentLayerIndex - 1;
 
     emit layerRemoved(index);
 
     // Emitted after the layerRemoved signal so that the MapScene has a chance
     // of synchronizing before adapting to the newly selected index
-    if (currentLayerRemoved)
+    if (currentLayerAffected)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
