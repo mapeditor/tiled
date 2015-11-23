@@ -98,24 +98,24 @@
 #include "macsupport.h"
 #endif
 
-#include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QIdentityProxyModel>
 #include <QLabel>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QRegExp>
 #include <QScrollBar>
 #include <QSessionManager>
+#include <QShortcut>
+#include <QSignalMapper>
 #include <QTextStream>
+#include <QToolButton>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
-#include <QImageReader>
-#include <QRegExp>
-#include <QSignalMapper>
-#include <QShortcut>
-#include <QToolButton>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -123,6 +123,9 @@ using namespace Tiled::Utils;
 
 namespace {
 
+/**
+ * A model that is always empty.
+ */
 class EmptyModel : public QAbstractListModel
 {
 public:
@@ -137,7 +140,36 @@ public:
     { return QVariant(); }
 };
 
+/**
+ * A proxy model that makes sure no items are checked or checkable.
+ *
+ * Used in the layer combo box, since the checkboxes can't be used in that
+ * context but are otherwise anyway rendered there on Windows.
+ */
+class UncheckableItemsModel : public QIdentityProxyModel
+{
+public:
+    UncheckableItemsModel(QObject *parent = nullptr)
+        : QIdentityProxyModel(parent)
+    {}
+
+    QVariant data(const QModelIndex &index, int role) const override
+    {
+        if (role == Qt::CheckStateRole)
+            return QVariant();
+
+        return QIdentityProxyModel::data(index, role);
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        Qt::ItemFlags rc = QIdentityProxyModel::flags(index);
+        return rc & ~Qt::ItemIsUserCheckable;
+    }
+};
+
 static EmptyModel emptyModel;
+static UncheckableItemsModel uncheckableLayerModel;
 
 } // anonymous namespace
 
@@ -1778,7 +1810,8 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
                     this, SLOT(updateZoomLabel()));
         }
 
-        mLayerComboBox->setModel(mapDocument->layerModel());
+        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
+        mLayerComboBox->setModel(&uncheckableLayerModel);
     } else {
         mLayerComboBox->setModel(&emptyModel);
     }
