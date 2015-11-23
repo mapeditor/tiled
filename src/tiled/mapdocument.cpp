@@ -61,15 +61,14 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapDocument::MapDocument(Map *map, const QString &fileName):
-    mFileName(fileName),
-    mMap(map),
-    mLayerModel(new LayerModel(this)),
-    mCurrentObject(map),
-    mRenderer(nullptr),
-    mMapObjectModel(new MapObjectModel(this)),
-    mTerrainModel(new TerrainModel(this, this)),
-    mUndoStack(new QUndoStack(this))
+MapDocument::MapDocument(Map *map, const QString &fileName)
+    : Document(fileName)
+    , mMap(map)
+    , mLayerModel(new LayerModel(this))
+    , mCurrentObject(map)
+    , mRenderer(nullptr)
+    , mMapObjectModel(new MapObjectModel(this))
+    , mTerrainModel(new TerrainModel(this, this))
 {
     createRenderer();
 
@@ -104,8 +103,6 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
 
     connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
             SLOT(onTerrainRemoved(Terrain*)));
-
-    connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
@@ -191,16 +188,6 @@ MapDocument *MapDocument::load(const QString &fileName,
     return mapDocument;
 }
 
-void MapDocument::setFileName(const QString &fileName)
-{
-    if (mFileName == fileName)
-        return;
-
-    QString oldFileName = mFileName;
-    mFileName = fileName;
-    emit fileNameChanged(fileName, oldFileName);
-}
-
 MapFormat *MapDocument::readerFormat() const
 {
     return mReaderFormat;
@@ -242,14 +229,6 @@ QString MapDocument::displayName() const
         displayName = tr("untitled.tmx");
 
     return displayName;
-}
-
-/**
- * Returns whether the map has unsaved changes.
- */
-bool MapDocument::isModified() const
-{
-    return !mUndoStack->isClean();
 }
 
 void MapDocument::setCurrentLayerIndex(int index)

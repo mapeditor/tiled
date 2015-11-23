@@ -23,16 +23,15 @@
 #ifndef MAPDOCUMENT_H
 #define MAPDOCUMENT_H
 
+#include "document.h"
 #include "layer.h"
 #include "tiled.h"
 #include "tileset.h"
 
 #include <QDateTime>
 #include <QList>
-#include <QObject>
 #include <QPointer>
 #include <QRegion>
-#include <QString>
 
 class QModelIndex;
 class QPoint;
@@ -61,11 +60,11 @@ class TileSelectionModel;
  * any editing operations will cause the appropriate signals to be emitted, in
  * order to allow the GUI to update accordingly.
  *
- * At the moment the map document provides the layer model, keeps track of the
- * the currently selected layer and provides an API for adding and removing
- * map objects. It also owns the QUndoStack.
+ * The map document provides the layer model, keeps track of the currently
+ * selected layer and provides an API for adding and removing map objects. It
+ * also owns the QUndoStack.
  */
-class MapDocument : public QObject
+class MapDocument : public Document
 {
     Q_OBJECT
 
@@ -108,8 +107,6 @@ public:
                              MapFormat *mapFormat = nullptr,
                              QString *error = nullptr);
 
-    QString fileName() const { return mFileName; }
-
     QString lastExportFileName() const;
     void setLastExportFileName(const QString &fileName);
 
@@ -123,8 +120,6 @@ public:
     void setExportFormat(MapFormat *format);
 
     QString displayName() const;
-
-    bool isModified() const;
 
     QDateTime lastSaved() const { return mLastSaved; }
 
@@ -216,12 +211,6 @@ public:
     void createRenderer();
 
     /**
-     * Returns the undo stack of this map document. Should be used to push any
-     * commands on that modify the map.
-     */
-    QUndoStack *undoStack() const { return mUndoStack; }
-
-    /**
      * Returns the selected area of tiles.
      */
     const QRegion &selectedArea() const { return mSelectedArea; }
@@ -279,10 +268,6 @@ public:
     void emitEditCurrentObject();
 
 signals:
-    void fileNameChanged(const QString &fileName,
-                         const QString &oldFileName);
-    void modifiedChanged();
-
     void saved();
 
     /**
@@ -390,10 +375,8 @@ private slots:
     void onTerrainRemoved(Terrain *terrain);
 
 private:
-    void setFileName(const QString &fileName);
     void deselectObjects(const QList<MapObject*> &objects);
 
-    QString mFileName;
     QString mLastExportFileName;
 
     /*
@@ -413,7 +396,6 @@ private:
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;
     TerrainModel *mTerrainModel;
-    QUndoStack *mUndoStack;
     QDateTime mLastSaved;
 };
 

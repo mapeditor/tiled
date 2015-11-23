@@ -126,6 +126,8 @@ QtGuiApplication {
         "createscalableobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
+        "document.cpp",
+        "document.h",
         "documentmanager.cpp",
         "documentmanager.h",
         "editpolygontool.cpp",

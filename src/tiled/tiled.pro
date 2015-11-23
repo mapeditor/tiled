@@ -87,6 +87,7 @@ SOURCES += aboutdialog.cpp \
     createrectangleobjecttool.cpp \
     createscalableobjecttool.cpp \
     createtileobjecttool.cpp \
+    document.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
     editterraindialog.cpp \
@@ -230,6 +231,7 @@ HEADERS += aboutdialog.h \
     createrectangleobjecttool.h \
     createscalableobjecttool.h \
     createtileobjecttool.h \
+    document.h \
     documentmanager.h \
     editpolygontool.h \
     editterraindialog.h \
