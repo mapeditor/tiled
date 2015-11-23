@@ -218,6 +218,9 @@ void BrokenLinksModel::removeLink(int index)
     beginRemoveRows(QModelIndex(), index, index);
     mBrokenLinks.remove(index);
     endRemoveRows();
+
+    if (!hasBrokenLinks())
+        emit hasBrokenLinksChanged(false);
 }
 
 
