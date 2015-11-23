@@ -38,19 +38,6 @@ class FileSystemWatcher;
 class TileAnimationDriver;
 
 /**
- * A tileset specification that uniquely identifies a certain tileset. Does not
- * take into account tile properties!
- */
-struct TilesetSpec
-{
-    QString imageSource;
-    int tileWidth;
-    int tileHeight;
-    int tileSpacing;
-    int margin;
-};
-
-/**
  * The tileset manager keeps track of all tilesets used by loaded maps. It also
  * watches the tileset images for changes and will attempt to reload them when
  * they change.
@@ -76,12 +63,6 @@ public:
      * @return a tileset matching the given file name, or 0 if none exists
      */
     SharedTileset findTileset(const QString &fileName) const;
-
-    /**
-     * Searches for a tileset matching the given specification.
-     * @return a tileset matching the given specification, or 0 if none exists
-     */
-    SharedTileset findTileset(const TilesetSpec &spec) const;
 
     /**
      * Adds a tileset reference. This will make sure the tileset is watched for

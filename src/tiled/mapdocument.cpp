@@ -722,7 +722,7 @@ void MapDocument::unifyTilesets(Map *map)
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of this map
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
@@ -743,11 +743,13 @@ void MapDocument::unifyTilesets(Map *map)
                                                          properties));
             }
         }
-        map->replaceTileset(tileset, replacement);
 
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
+
+        map->replaceTileset(tileset, replacement);
     }
+
     if (!undoCommands.isEmpty()) {
         mUndoStack->beginMacro(tr("Tileset Changes"));
         foreach (QUndoCommand *command, undoCommands)
@@ -769,7 +771,7 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
     const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         // tileset already added
         if (existingTilesets.contains(tileset))
             continue;
@@ -784,10 +786,10 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
         }
 
         // replacement tileset found, change given map
-        map->replaceTileset(tileset, replacement);
-
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
+
+        map->replaceTileset(tileset, replacement);
     }
 }
 

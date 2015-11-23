@@ -73,25 +73,11 @@ void TilesetManager::deleteInstance()
 
 SharedTileset TilesetManager::findTileset(const QString &fileName) const
 {
-    foreach (const SharedTileset &tileset, tilesets())
+    const QList<SharedTileset> &_tilesets = tilesets();
+
+    for (const SharedTileset &tileset : _tilesets)
         if (tileset->fileName() == fileName)
             return tileset;
-
-    return SharedTileset();
-}
-
-SharedTileset TilesetManager::findTileset(const TilesetSpec &spec) const
-{
-    foreach (const SharedTileset &tileset, tilesets()) {
-        if (tileset->imageSource() == spec.imageSource
-            && tileset->tileWidth() == spec.tileWidth
-            && tileset->tileHeight() == spec.tileHeight
-            && tileset->tileSpacing() == spec.tileSpacing
-            && tileset->margin() == spec.margin)
-        {
-            return tileset;
-        }
-    }
 
     return SharedTileset();
 }
@@ -121,13 +107,13 @@ void TilesetManager::removeReference(const SharedTileset &tileset)
 
 void TilesetManager::addReferences(const QVector<SharedTileset> &tilesets)
 {
-    foreach (const SharedTileset &tileset, tilesets)
+    for (const SharedTileset &tileset : tilesets)
         addReference(tileset);
 }
 
 void TilesetManager::removeReferences(const QVector<SharedTileset> &tilesets)
 {
-    foreach (const SharedTileset &tileset, tilesets)
+    for (const SharedTileset &tileset : tilesets)
         removeReference(tileset);
 }
 
@@ -204,12 +190,14 @@ void TilesetManager::fileChangedTimeout()
 
 void TilesetManager::advanceTileAnimations(int ms)
 {
+    const QList<SharedTileset> &_tilesets = tilesets();
+
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
-    foreach (const SharedTileset &tileset, tilesets()) {
+    for (const SharedTileset &tileset : _tilesets) {
         bool imageChanged = false;
 
-        foreach (Tile *tile, tileset->tiles())
+        for (Tile *tile : tileset->tiles())
             imageChanged |= tile->advanceAnimation(ms);
 
         if (imageChanged)
