@@ -32,13 +32,13 @@ namespace Tiled {
 
 class Object;
 class Tile;
+class TileAnimationDriver;
 class Tileset;
 
 namespace Internal {
 
 class FrameListModel;
 class MapDocument;
-class TileAnimationDriver;
 
 class TileAnimationEditor : public QWidget
 {

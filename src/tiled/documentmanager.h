@@ -31,12 +31,12 @@ class QUndoGroup;
 
 namespace Tiled {
 
+class FileSystemWatcher;
 class Tileset;
 
 namespace Internal {
 
 class AbstractTool;
-class FileSystemWatcher;
 class MapDocument;
 class MapScene;
 class MapView;

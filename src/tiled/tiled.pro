@@ -95,7 +95,6 @@ SOURCES += aboutdialog.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
     fileedit.cpp \
-    filesystemwatcher.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
@@ -154,7 +153,6 @@ SOURCES += aboutdialog.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
     thumbnailrenderer.cpp \
-    tileanimationdriver.cpp \
     tileanimationeditor.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
@@ -164,7 +162,6 @@ SOURCES += aboutdialog.cpp \
     tileselectiontool.cpp \
     tilesetchanges.cpp \
     tilesetdock.cpp \
-    tilesetmanager.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
     tilesetview.cpp \
@@ -239,7 +236,6 @@ HEADERS += aboutdialog.h \
     erasetiles.h \
     exportasimagedialog.h \
     fileedit.h \
-    filesystemwatcher.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
@@ -300,7 +296,6 @@ HEADERS += aboutdialog.h \
     terrainmodel.h \
     terrainview.h \
     thumbnailrenderer.h \
-    tileanimationdriver.h \
     tileanimationeditor.h \
     tilecollisioneditor.h \
     tiledapplication.h \
@@ -310,7 +305,6 @@ HEADERS += aboutdialog.h \
     tileselectiontool.h \
     tilesetchanges.h \
     tilesetdock.h \
-    tilesetmanager.h \
     tilesetmodel.h \
     tilesetparametersedit.h \
     tilesetview.h \

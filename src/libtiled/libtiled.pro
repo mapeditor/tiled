@@ -25,6 +25,7 @@ DEFINES += TILED_LIBRARY
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 
 SOURCES += compression.cpp \
+    filesystemwatcher.cpp \
     gidmapper.cpp \
     hexagonalrenderer.cpp \
     imagelayer.cpp \
@@ -44,11 +45,14 @@ SOURCES += compression.cpp \
     properties.cpp \
     staggeredrenderer.cpp \
     tile.cpp \
+    tileanimationdriver.cpp \
     tilelayer.cpp \
     tileset.cpp \
     tilesetformat.cpp \
+    tilesetmanager.cpp \
     varianttomapconverter.cpp
 HEADERS += compression.h \
+    filesystemwatcher.h \
     gidmapper.h \
     hexagonalrenderer.h \
     imagelayer.h \
@@ -72,11 +76,13 @@ HEADERS += compression.h \
     staggeredrenderer.h \
     terrain.h \
     tile.h \
+    tileanimationdriver.h \
     tiled.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
     tilesetformat.h \
+    tilesetmanager.h \
     varianttomapconverter.h
 
 contains(INSTALL_HEADERS, yes) {
