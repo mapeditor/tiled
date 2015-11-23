@@ -31,6 +31,7 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "zoomable.h"
 
@@ -201,6 +202,7 @@ DocumentManager::~DocumentManager()
 {
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
+    Q_ASSERT(mTilesetDocuments.isEmpty());
     delete mTabWidget;
 }
 
@@ -298,6 +300,9 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
     mDocuments.append(mapDocument);
     mUndoGroup->addStack(mapDocument->undoStack());
 
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+        addToTilesetDocument(tileset, mapDocument);
+
     if (!mapDocument->fileName().isEmpty())
         mFileSystemWatcher->addPath(mapDocument->fileName());
 
@@ -316,6 +321,9 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
             SLOT(fileNameChanged(QString,QString)));
     connect(mapDocument, SIGNAL(modifiedChanged()), SLOT(updateDocumentTab()));
     connect(mapDocument, SIGNAL(saved()), SLOT(documentSaved()));
+    connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
+    connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
+    connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
 
     connect(container, SIGNAL(reload()), SLOT(reloadRequested()));
 
@@ -344,6 +352,9 @@ void DocumentManager::closeDocumentAt(int index)
 
     if (!mapDocument->fileName().isEmpty())
         mFileSystemWatcher->removePath(mapDocument->fileName());
+
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+        removeFromTilesetDocument(tileset, mapDocument);
 
     delete mapDocument;
 }
@@ -501,6 +512,27 @@ void DocumentManager::documentTabMoved(int from, int to)
     mDocuments.move(from, to);
 }
 
+void DocumentManager::tilesetAdded(int index, Tileset *tileset)
+{
+    Q_UNUSED(index)
+    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    addToTilesetDocument(tileset->sharedPointer(), mapDocument);
+}
+
+void DocumentManager::tilesetRemoved(Tileset *tileset)
+{
+    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    removeFromTilesetDocument(tileset->sharedPointer(), mapDocument);
+}
+
+void DocumentManager::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
+{
+    Q_UNUSED(index)
+    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    addToTilesetDocument(tileset->sharedPointer(), mapDocument);
+    removeFromTilesetDocument(oldTileset->sharedPointer(), mapDocument);
+}
+
 void DocumentManager::fileChanged(const QString &fileName)
 {
     const int index = findDocument(fileName);
@@ -549,6 +581,45 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     MapDocument *document = mDocuments.at(index);
 
     view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
+}
+
+TilesetDocument *DocumentManager::findTilesetDocument(const SharedTileset &tileset)
+{
+    return mTilesetDocuments.value(tileset);
+}
+
+void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
+{
+    auto tilesetDocument = findTilesetDocument(tileset);
+
+    // Create TilesetDocument instance when it doesn't exist yet
+    if (!tilesetDocument) {
+        tilesetDocument = new TilesetDocument(tileset);
+        mTilesetDocuments.insert(tileset, tilesetDocument);
+    }
+
+    tilesetDocument->addMapDocument(mapDocument);
+}
+
+void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
+{
+    TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
+    Q_ASSERT(tilesetDocument);
+
+    tilesetDocument->removeMapDocument(mapDocument);
+
+    // Delete the TilesetDocument instance when its tileset is no longer reachable
+    //
+    // TODO: since the tileset document is also deleted here, the user will
+    // need to be prompted to save any changes to this tileset. This affects:
+    //  * Closing a map
+    //  * Removing a tileset from a map
+    //  * Replacing a tileset of a map
+    //
+    if (tilesetDocument->mapDocuments().isEmpty()) {
+        mTilesetDocuments.remove(tileset);
+        delete tilesetDocument;
+    }
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

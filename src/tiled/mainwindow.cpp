@@ -898,7 +898,7 @@ bool MainWindow::saveFileAs()
 
 void MainWindow::saveAll()
 {
-    foreach (MapDocument *mapDoc, mDocumentManager->documents()) {
+    for (MapDocument *mapDoc : mDocumentManager->documents()) {
         if (!mapDoc->isModified())
             continue;
 

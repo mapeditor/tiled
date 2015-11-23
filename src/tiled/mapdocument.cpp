@@ -626,7 +626,7 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     tilesetManager->addReference(tileset);
     tilesetManager->removeReference(oldTileset);
 
-    emit tilesetReplaced(index, tileset.data());
+    emit tilesetReplaced(index, tileset.data(), oldTileset.data());
 
     return oldTileset;
 }

@@ -343,7 +343,7 @@ signals:
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
-    void tilesetReplaced(int index, Tileset *tileset);
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
     void tilesetFileNameChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);

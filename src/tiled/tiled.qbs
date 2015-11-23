@@ -292,6 +292,8 @@ QtGuiApplication {
         "tilesetchanges.h",
         "tilesetdock.cpp",
         "tilesetdock.h",
+        "tilesetdocument.cpp",
+        "tilesetdocument.h",
         "tilesetmodel.cpp",
         "tilesetmodel.h",
         "tilesetparametersedit.cpp",

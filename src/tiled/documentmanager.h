@@ -22,6 +22,8 @@
 #ifndef DOCUMENT_MANAGER_H
 #define DOCUMENT_MANAGER_H
 
+#include "tileset.h"
+
 #include <QList>
 #include <QObject>
 #include <QPair>
@@ -32,7 +34,6 @@ class QUndoGroup;
 namespace Tiled {
 
 class FileSystemWatcher;
-class Tileset;
 
 namespace Internal {
 
@@ -41,6 +42,7 @@ class MapDocument;
 class MapScene;
 class MapView;
 class MovableTabWidget;
+class TilesetDocument;
 
 /**
  * This class controls the open documents.
@@ -149,7 +151,12 @@ public:
     /**
      * Returns all open map documents.
      */
-    QList<MapDocument*> documents() const { return mDocuments; }
+    const QList<MapDocument*> &documents() const { return mDocuments; }
+
+    /**
+     * Searches for a document for the given tileset.
+     */
+    TilesetDocument *findTilesetDocument(const SharedTileset &tileset);
 
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
@@ -193,6 +200,10 @@ private slots:
     void documentSaved();
     void documentTabMoved(int from, int to);
 
+    void tilesetAdded(int index, Tileset *tileset);
+    void tilesetRemoved(Tileset *tileset);
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
+
     void fileChanged(const QString &fileName);
 
     void reloadRequested();
@@ -207,6 +218,9 @@ private:
 
     bool askForAdjustment(const Tileset &tileset);
 
+    void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
+    void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
+
     QList<MapDocument*> mDocuments;
 
     MovableTabWidget *mTabWidget;
@@ -214,6 +228,8 @@ private:
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
     FileSystemWatcher *mFileSystemWatcher;
+
+    QMap<SharedTileset, TilesetDocument*> mTilesetDocuments;
 
     static DocumentManager *mInstance;
 };
