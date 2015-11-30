@@ -27,6 +27,9 @@
 class QUndoStack;
 
 namespace Tiled {
+
+class Object;
+
 namespace Internal {
 
 /**
@@ -48,10 +51,19 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
+    void setProperty(Object *object, const QString &name, const QString &value);
+    void setProperties(Object *object, const Properties &properties);
+    void removeProperty(Object *object, const QString &name);
+
 signals:
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void modifiedChanged();
+
+    void propertyAdded(Object *object, const QString &name);
+    void propertyRemoved(Object *object, const QString &name);
+    void propertyChanged(Object *object, const QString &name);
+    void propertiesChanged(Object *object);
 
 protected:
     void setFileName(const QString &fileName);

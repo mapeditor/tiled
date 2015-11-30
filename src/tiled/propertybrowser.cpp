@@ -161,18 +161,19 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(terrainChanged(Tileset*,int)));
 
         // For custom properties:
-        connect(mapDocument, SIGNAL(propertyAdded(Object*,QString)),
-                SLOT(propertyAdded(Object*,QString)));
-        connect(mapDocument, SIGNAL(propertyRemoved(Object*,QString)),
-                SLOT(propertyRemoved(Object*,QString)));
-        connect(mapDocument, SIGNAL(propertyChanged(Object*,QString)),
-                SLOT(propertyChanged(Object*,QString)));
-        connect(mapDocument, SIGNAL(propertiesChanged(Object*)),
-                SLOT(propertiesChanged(Object*)));
-        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-                SLOT(selectedObjectsChanged()));
-        connect(mapDocument, SIGNAL(selectedTilesChanged()),
-                SLOT(selectedTilesChanged()));
+        connect(mapDocument, &Document::propertyAdded,
+                this, &PropertyBrowser::propertyAdded);
+        connect(mapDocument, &Document::propertyRemoved,
+                this, &PropertyBrowser::propertyRemoved);
+        connect(mapDocument, &Document::propertyChanged,
+                this, &PropertyBrowser::propertyChanged);
+        connect(mapDocument, &Document::propertiesChanged,
+                this, &PropertyBrowser::propertiesChanged);
+
+        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+                this, &PropertyBrowser::selectedObjectsChanged);
+        connect(mapDocument, &MapDocument::selectedTilesChanged,
+                this, &PropertyBrowser::selectedTilesChanged);
     }
 }
 

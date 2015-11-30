@@ -20,6 +20,8 @@
 
 #include "document.h"
 
+#include "object.h"
+
 #include <QUndoStack>
 
 namespace Tiled {
@@ -51,6 +53,31 @@ void Document::setFileName(const QString &fileName)
 bool Document::isModified() const
 {
     return !mUndoStack->isClean();
+}
+
+void Document::setProperty(Object *object,
+                           const QString &name,
+                           const QString &value)
+{
+    const bool hadProperty = object->hasProperty(name);
+    object->setProperty(name, value);
+
+    if (hadProperty)
+        emit propertyChanged(object, name);
+    else
+        emit propertyAdded(object, name);
+}
+
+void Document::setProperties(Object *object, const Properties &properties)
+{
+    object->setProperties(properties);
+    emit propertiesChanged(object);
+}
+
+void Document::removeProperty(Object *object, const QString &name)
+{
+    object->removeProperty(name);
+    emit propertyRemoved(object, name);
 }
 
 } // namespace Internal

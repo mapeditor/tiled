@@ -20,18 +20,18 @@
 
 #include "changeproperties.h"
 
-#include "mapdocument.h"
+#include "document.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeProperties::ChangeProperties(MapDocument *mapDocument,
+ChangeProperties::ChangeProperties(Document *document,
                                    const QString &kind,
                                    Object *object,
                                    const Properties &newProperties)
-    : mMapDocument(mapDocument)
+    : mDocument(document)
     , mObject(object)
     , mNewProperties(newProperties)
 {
@@ -52,18 +52,18 @@ void ChangeProperties::undo()
 void ChangeProperties::swapProperties()
 {
     const Properties oldProperties = mObject->properties();
-    mMapDocument->setProperties(mObject, mNewProperties);
+    mDocument->setProperties(mObject, mNewProperties);
     mNewProperties = oldProperties;
 }
 
 
-SetProperty::SetProperty(MapDocument *mapDocument,
+SetProperty::SetProperty(Document *document,
                          const QList<Object*> &objects,
                          const QString &name,
                          const QString &value,
                          QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mObjects(objects)
     , mName(name)
     , mValue(value)
@@ -85,9 +85,9 @@ void SetProperty::undo()
 {
     for (int i = 0; i < mObjects.size(); ++i) {
         if (mProperties.at(i).existed)
-            mMapDocument->setProperty(mObjects.at(i), mName, mProperties.at(i).previousValue);
+            mDocument->setProperty(mObjects.at(i), mName, mProperties.at(i).previousValue);
         else
-            mMapDocument->removeProperty(mObjects.at(i), mName);
+            mDocument->removeProperty(mObjects.at(i), mName);
     }
 }
 
@@ -95,16 +95,16 @@ void SetProperty::redo()
 {
     const QList<Object*> &objects = mObjects;
     for (Object *obj : objects)
-        mMapDocument->setProperty(obj, mName, mValue);
+        mDocument->setProperty(obj, mName, mValue);
 }
 
 
-RemoveProperty::RemoveProperty(MapDocument *mapDocument,
+RemoveProperty::RemoveProperty(Document *document,
                                const QList<Object*> &objects,
                                const QString &name,
                                QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
+    , mDocument(document)
     , mObjects(objects)
     , mName(name)
 {
@@ -117,18 +117,18 @@ RemoveProperty::RemoveProperty(MapDocument *mapDocument,
 void RemoveProperty::undo()
 {
     for (int i = 0; i < mObjects.size(); ++i)
-        mMapDocument->setProperty(mObjects.at(i), mName, mPreviousValues.at(i));
+        mDocument->setProperty(mObjects.at(i), mName, mPreviousValues.at(i));
 }
 
 void RemoveProperty::redo()
 {
     const QList<Object*> &objects = mObjects;
     for (Object *obj : objects)
-        mMapDocument->removeProperty(obj, mName);
+        mDocument->removeProperty(obj, mName);
 }
 
 
-RenameProperty::RenameProperty(MapDocument *mapDocument,
+RenameProperty::RenameProperty(Document *document,
                                const QList<Object*> &objects,
                                const QString &oldName,
                                const QString &newName)
@@ -136,7 +136,7 @@ RenameProperty::RenameProperty(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Rename Property"));
 
     // Remove the old name from all objects
-    new RemoveProperty(mapDocument, objects, oldName, this);
+    new RemoveProperty(document, objects, oldName, this);
 
     // Different objects may have different values for the same property,
     // or may not have a value at all.
@@ -147,6 +147,6 @@ RenameProperty::RenameProperty(MapDocument *mapDocument,
         const QList<Object*> objects { object };
         const QString value = object->property(oldName);
 
-        new SetProperty(mapDocument, objects, newName, value, this);
+        new SetProperty(document, objects, newName, value, this);
     }
 }

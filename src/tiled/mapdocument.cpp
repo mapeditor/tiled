@@ -886,7 +886,7 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
             setCurrentObject(nullptr);
 
     int removedCount = 0;
-    foreach (MapObject *object, objects)
+    for (MapObject *object : objects)
         removedCount += mSelectedObjects.removeAll(object);
 
     if (removedCount > 0)
@@ -922,7 +922,7 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     mUndoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
 
     QList<MapObject*> clones;
-    foreach (const MapObject *mapObject, objects) {
+    for (const MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
         clones.append(clone);
         mUndoStack->push(new AddMapObject(this,
@@ -940,7 +940,7 @@ void MapDocument::removeObjects(const QList<MapObject *> &objects)
         return;
 
     mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
+    for (MapObject *mapObject : objects)
         mUndoStack->push(new RemoveMapObject(this, mapObject));
     mUndoStack->endMacro();
 }
@@ -954,7 +954,7 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    foreach (MapObject *mapObject, objects) {
+    for (MapObject *mapObject : objects) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
 
@@ -963,31 +963,6 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
                                                   objectGroup));
     }
     mUndoStack->endMacro();
-}
-
-void MapDocument::setProperty(Object *object,
-                              const QString &name,
-                              const QString &value)
-{
-    const bool hadProperty = object->hasProperty(name);
-    object->setProperty(name, value);
-
-    if (hadProperty)
-        emit propertyChanged(object, name);
-    else
-        emit propertyAdded(object, name);
-}
-
-void MapDocument::setProperties(Object *object, const Properties &properties)
-{
-    object->setProperties(properties);
-    emit propertiesChanged(object);
-}
-
-void MapDocument::removeProperty(Object *object, const QString &name)
-{
-    object->removeProperty(name);
-    emit propertyRemoved(object, name);
 }
 
 void MapDocument::createRenderer()

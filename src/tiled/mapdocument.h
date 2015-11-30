@@ -185,10 +185,6 @@ public:
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
 
-    void setProperty(Object *object, const QString &name, const QString &value);
-    void setProperties(Object *object, const Properties &properties);
-    void removeProperty(Object *object, const QString &name);
-
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.
@@ -354,11 +350,6 @@ signals:
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
-
-    void propertyAdded(Object *object, const QString &name);
-    void propertyRemoved(Object *object, const QString &name);
-    void propertyChanged(Object *object, const QString &name);
-    void propertiesChanged(Object *object);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
