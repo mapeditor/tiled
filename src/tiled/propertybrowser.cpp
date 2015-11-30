@@ -1160,7 +1160,7 @@ void PropertyBrowser::updateCustomProperties()
         while (it.hasNext()) {
             it.next();
             if (!mCombinedProperties.contains(it.key()))
-                mCombinedProperties.insert(it.key(), tr(""));
+                mCombinedProperties.insert(it.key(), QString());
         }
     }
 
@@ -1189,8 +1189,10 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
     QString propertyName = property->propertyName();
     QString propertyValue = property->valueText();
 
+    const auto &objects = mMapDocument->currentObjects();
+
     // If one of the objects doesn't have this property then gray out the name and value.
-    for (Object *obj : mMapDocument->currentObjects()) {
+    for (Object *obj : objects) {
         if (!obj->hasProperty(propertyName)) {
             property->setNameColor(Qt::gray);
             property->setValueColor(Qt::gray);
@@ -1199,7 +1201,7 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
     }
 
     // If one of the objects doesn't have the same property value then gray out the value.
-    for (Object *obj : mMapDocument->currentObjects()) {
+    for (Object *obj : objects) {
         if (obj == mObject)
             continue;
         if (obj->property(propertyName) != propertyValue) {

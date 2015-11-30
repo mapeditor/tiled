@@ -690,13 +690,13 @@ QList<Object*> MapDocument::currentObjects() const
     QList<Object*> objects;
     if (mCurrentObject) {
         if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            for (MapObject *mapObj : mSelectedObjects) {
+            const auto &selectedObjects = mSelectedObjects;
+            for (MapObject *mapObj : selectedObjects)
                 objects.append(mapObj);
-            }
         } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            for (Tile *tile : mSelectedTiles) {
+            const auto &selectedTiles = mSelectedTiles;
+            for (Tile *tile : selectedTiles)
                 objects.append(tile);
-            }
         } else {
             objects.append(mCurrentObject);
         }
