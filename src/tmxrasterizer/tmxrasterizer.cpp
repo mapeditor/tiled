@@ -38,8 +38,8 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 
-
 #include <QDebug>
+#include <QImageWriter>
 
 using namespace Tiled;
 
@@ -131,8 +131,7 @@ int TmxRasterizer::render(const QString &mapFileName,
     painter.translate(margins.left(), margins.top());
 
     // Perform a similar rendering than found in exportasimagedialog.cpp
-    foreach (Layer *layer, map->layers()) {
-
+    for (Layer *layer : map->layers()) {
         if (!shouldDrawLayer(layer)) 
             continue;
 
@@ -151,11 +150,16 @@ int TmxRasterizer::render(const QString &mapFileName,
         painter.translate(-layer->offset());
     }
 
-    // Save image
-    image.save(imageFileName);
-
     delete renderer;
     delete map;
+
+    // Save image
+    QImageWriter imageWriter(imageFileName);
+    if (!imageWriter.write(image)) {
+        qWarning().nospace() << "Error while writing " << imageFileName << ": "
+                             << qPrintable(imageWriter.errorString());
+        return 1;
+    }
 
     return 0;
 }
