@@ -75,7 +75,7 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
-    if (Layer *layer = currentTileLayer()) {
+    if (Layer *layer = currentLayer()) {
         offsetPos -= layer->offset();
         mBrushItem->setLayerOffset(layer->offset());
     }

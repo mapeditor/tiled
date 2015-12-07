@@ -90,7 +90,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tmxmapformat.h"
-#include "imagemovementtool.h"
+#include "layeroffsettool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
 
@@ -525,7 +525,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),

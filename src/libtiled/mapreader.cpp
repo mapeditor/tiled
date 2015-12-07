@@ -754,6 +754,11 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
     readLayerAttributes(*imageLayer, atts);
 
+    // Image layer pixel position moved from x/y to offsetx/offsety for
+    // consistency with other layers. This is here for backwards compatibility.
+    if (!atts.hasAttribute(QLatin1String("offsetx")))
+        imageLayer->setOffset(QPointF(x, y));
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("image"))
             readImageLayerImage(*imageLayer);

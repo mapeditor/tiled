@@ -1,6 +1,7 @@
 /*
-* imagemovementtool.h
+* layeroffsettool.h
 * Copyright 2014, Mattia Basaglia
+* Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 *
 * This file is part of Tiled.
 *
@@ -18,38 +19,44 @@
 * this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef IMAGEMOVEMENTTOOL_H
-#define IMAGEMOVEMENTTOOL_H
+#ifndef LAYEROFFSETTOOL_H
+#define LAYEROFFSETTOOL_H
 
-#include "abstractimagetool.h"
+#include "abstracttool.h"
 
 namespace Tiled {
 namespace Internal {
 
-class ImageMovementTool : public AbstractImageTool
+class LayerOffsetTool : public AbstractTool
 {
     Q_OBJECT
 
 public:
-    explicit ImageMovementTool(QObject *parent = nullptr);
+    explicit LayerOffsetTool(QObject *parent = nullptr);
 
-    void activate(MapScene *scene) override;
-    void deactivate(MapScene *scene) override;
+    void activate(MapScene *) override;
+    void deactivate(MapScene *) override;
     void mouseEntered() override;
+    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void modifiersChanged(Qt::KeyboardModifiers) override;
 
     void languageChanged() override;
 
+protected slots:
+    void updateEnabledState() override;
+
 private:
     bool mMousePressed;
+    bool mApplyingChange;
     QPointF mMouseStart;
-    QPoint mLayerStart;
+    QPointF mOldOffset;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // IMAGEMOVEMENTTOOL_HPP
+#endif // LAYEROFFSETTOOL_H

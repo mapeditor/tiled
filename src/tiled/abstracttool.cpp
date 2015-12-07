@@ -25,7 +25,8 @@
 
 #include <QKeyEvent>
 
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
 AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
                            const QKeySequence &shortcut, QObject *parent)
@@ -103,3 +104,11 @@ void AbstractTool::updateEnabledState()
 {
     setEnabled(mMapDocument != nullptr);
 }
+
+Layer *AbstractTool::currentLayer() const
+{
+    return mMapDocument ? mMapDocument->currentLayer() : nullptr;
+}
+
+} // namespace Internal
+} // namespace Tiled
