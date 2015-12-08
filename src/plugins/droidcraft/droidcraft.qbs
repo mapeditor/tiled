@@ -8,5 +8,6 @@ TiledPlugin {
         "droidcraftplugin.cpp",
         "droidcraftplugin.h",
         "droidcraft.qrc",
+        "plugin.json",
     ]
 }
