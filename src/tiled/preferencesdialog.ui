@@ -297,24 +297,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>Automapping</string>
-      </attribute>
-      <widget class="QCheckBox" name="autoMapWhileDrawing">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>391</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Use Automapping, when drawing into layers</string>
-       </property>
-      </widget>
-     </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
        <string>Plugins</string>
@@ -366,7 +348,6 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>importObjectTypesButton</tabstop>
   <tabstop>exportObjectTypesButton</tabstop>
-  <tabstop>autoMapWhileDrawing</tabstop>
   <tabstop>removeObjectTypeButton</tabstop>
   <tabstop>addObjectTypeButton</tabstop>
   <tabstop>objectTypesTable</tabstop>

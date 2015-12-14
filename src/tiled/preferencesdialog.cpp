@@ -175,8 +175,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             SLOT(applyObjectTypes()));
 
-    connect(mUi->autoMapWhileDrawing, &QCheckBox::toggled,
-            preferences, &Preferences::setAutomappingDrawing);
     connect(mUi->openLastFiles, &QCheckBox::toggled,
             preferences, &Preferences::setOpenLastFilesOnStartup);
 
@@ -321,7 +319,6 @@ void PreferencesDialog::fromPreferences()
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
-    mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
 
@@ -331,6 +328,5 @@ void PreferencesDialog::toPreferences()
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
     prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
 }

@@ -306,6 +306,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
     QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
     mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
@@ -428,10 +429,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
-    connect(mUi->actionMapProperties, SIGNAL(triggered()),
-            SLOT(editMapProperties()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
+    connect(mUi->actionAutoMapWhileDrawing, &QAction::toggled,
+            preferences, &Preferences::setAutomappingDrawing);
+    connect(mUi->actionMapProperties, SIGNAL(triggered()),
+            SLOT(editMapProperties()));
 
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
