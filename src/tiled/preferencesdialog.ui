@@ -315,6 +315,25 @@
        </property>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Plugins</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Enabled Plugins</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QListView" name="pluginList"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
@@ -337,7 +356,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
@@ -364,8 +382,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>313</x>
-     <y>373</y>
+     <x>322</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>

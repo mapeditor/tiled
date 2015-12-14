@@ -219,6 +219,8 @@ QtGuiApplication {
         "patreondialog.h",
         "patreondialog.ui",
         "pch.h",
+        "pluginlistmodel.cpp",
+        "pluginlistmodel.h",
         "preferences.cpp",
         "preferencesdialog.cpp",
         "preferencesdialog.h",

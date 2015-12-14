@@ -32,12 +32,23 @@
 
 namespace Tiled {
 
+Plugin::~Plugin()
+{
+    for (QObject *object : mAddedObjects)
+        PluginManager::removeObject(object);
+}
+
 /**
- * Convenience function that calls PluginManager::addObject.
+ * Convenience function that calls PluginManager::addObject and makes sure that
+ * the added object gets removed when the plugin is unloaded.
+ *
+ * If you remove an object added with this function, you need to use
+ * removeObject().
  */
 void Plugin::addObject(QObject *object)
 {
     PluginManager::addObject(object);
+    mAddedObjects.append(object);
 }
 
 /**
@@ -46,6 +57,7 @@ void Plugin::addObject(QObject *object)
 void Plugin::removeObject(QObject *object)
 {
     PluginManager::removeObject(object);
+    mAddedObjects.removeOne(object);
 }
 
 } // namespace Tiled

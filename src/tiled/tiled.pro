@@ -129,6 +129,7 @@ SOURCES += aboutdialog.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
     patreondialog.cpp \
+    pluginlistmodel.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
@@ -271,8 +272,9 @@ HEADERS += aboutdialog.h \
     offsetmapdialog.h \
     painttilelayer.h \
     patreondialog.h \
-    preferencesdialog.h \
+    pluginlistmodel.h \
     preferences.h \
+    preferencesdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
