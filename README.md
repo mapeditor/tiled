@@ -3,6 +3,8 @@ Tiled Map Editor - http://www.mapeditor.org/
 About Tiled
 -------------------------------------------------------------------------------
 
+[![Join the chat at https://gitter.im/bjorn/tiled](https://badges.gitter.im/bjorn/tiled.svg)](https://gitter.im/bjorn/tiled?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Tiled is a general purpose tile map editor. It is meant to be used for editing
 maps of any tile-based game, be it an RPG, a platformer or a Breakout clone.
 
