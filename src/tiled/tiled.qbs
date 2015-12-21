@@ -142,6 +142,8 @@ QtGuiApplication {
         "fileedit.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
+        "flexiblescrollbar.cpp",
+        "flexiblescrollbar.h",
         "flipmapobjects.cpp",
         "flipmapobjects.h",
         "geometry.cpp",

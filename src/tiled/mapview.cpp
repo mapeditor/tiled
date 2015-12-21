@@ -20,6 +20,7 @@
 
 #include "mapview.h"
 
+#include "flexiblescrollbar.h"
 #include "mapscene.h"
 #include "preferences.h"
 #include "zoomable.h"
@@ -71,6 +72,8 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     grabGesture(Qt::PinchGesture);
 
+    setVerticalScrollBar(new FlexibleScrollBar(Qt::Vertical, this));
+    setHorizontalScrollBar(new FlexibleScrollBar(Qt::Horizontal, this));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -174,6 +177,11 @@ void MapView::wheelEvent(QWheelEvent *event)
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
+        // This works around problems with automatic alignment of scenes that
+        // are smaller than the view, which seems to be impossible to disable.
+        static_cast<FlexibleScrollBar*>(horizontalScrollBar())->allowNextRangeChange();
+        static_cast<FlexibleScrollBar*>(verticalScrollBar())->allowNextRangeChange();
+
         mZoomable->handleWheelDelta(event->delta());
 
         adjustCenterFromMousePosition(mLastMousePos);
@@ -222,11 +230,16 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     if (mHandScrolling) {
-        QScrollBar *hBar = horizontalScrollBar();
-        QScrollBar *vBar = verticalScrollBar();
+        auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+        auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
         const QPoint d = event->globalPos() - mLastMousePos;
-        hBar->setValue(hBar->value() + (isRightToLeft() ? d.x() : -d.x()));
-        vBar->setValue(vBar->value() - d.y());
+
+        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
+        int verticalValue = vBar->value() - d.y();
+
+        // Panning can freely move the map without restriction on boundaries
+        hBar->forceSetValue(horizontalValue);
+        vBar->forceSetValue(verticalValue);
 
         mLastMousePos = event->globalPos();
         return;
