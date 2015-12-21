@@ -482,6 +482,7 @@ void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
             disabledPlugins.append(fileName);
             break;
         case PluginDefault:
+        case PluginStatic:
             break;
         }
     }

@@ -29,6 +29,8 @@
 
 #include <QUndoStack>
 
+#include <cmath>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
