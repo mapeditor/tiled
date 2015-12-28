@@ -65,6 +65,8 @@ public:
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
 
+    void forceCenterOn(const QPointF &pos);
+
 protected:
     bool event(QEvent *event) override;
 

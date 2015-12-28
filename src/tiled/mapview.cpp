@@ -139,6 +139,42 @@ void MapView::setHandScrolling(bool handScrolling)
     }
 }
 
+/**
+ * Centers the view on the given scene position, even when this requires
+ * extending the range of the scroll bars.
+ *
+ * This code is based on QGraphicsView::centerOn.
+ */
+void MapView::forceCenterOn(const QPointF &pos)
+{
+    // This is only to make it update QGraphicsViewPrivate::lastCenterPoint,
+    // just in case this is important.
+    centerOn(pos);
+
+    auto hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+    auto vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+    bool hScroll = hBar->minimum() != 0 || hBar->maximum() != 0;
+    bool vScroll = vBar->minimum() != 0 || vBar->maximum() != 0;
+
+    qreal width = viewport()->width();
+    qreal height = viewport()->height();
+    QPointF viewPoint = transform().map(pos);
+
+    if (hScroll) {
+        if (isRightToLeft()) {
+            qint64 horizontal = 0;
+            horizontal += hBar->minimum();
+            horizontal += hBar->maximum();
+            horizontal -= int(viewPoint.x() - width / 2.0);
+            hBar->forceSetValue(horizontal);
+        } else {
+            hBar->forceSetValue(int(viewPoint.x() - width / 2.0));
+        }
+    }
+    if (vScroll)
+        vBar->forceSetValue(int(viewPoint.y() - height / 2.0));
+}
+
 bool MapView::event(QEvent *e)
 {
     // Ignore space bar events since they're handled by the MainWindow

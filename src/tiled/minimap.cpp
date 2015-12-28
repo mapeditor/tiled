@@ -280,7 +280,7 @@ void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
     if (delta != 0)
         mapView->zoomable()->handleWheelDelta(delta);
 
-    mapView->centerOn(mapToScene(centerPos));
+    mapView->forceCenterOn(mapToScene(centerPos));
 }
 
 void MiniMap::redrawTimeout()
