@@ -60,7 +60,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [PHP TMX Viewer](https://github.com/sebbu2/php-tmx-viewer) by sebbu : render the map as an image (allow some modifications as well)
 
 ### Pike
-* [TMX parser](https://gitorious.org/tmx-parser): a simple loader for TMX maps (CSV format only).
+* [TMX parser](https://gitlab.com/tmx-parser/tmx-parser): a simple loader for TMX maps (CSV format only).
 
 ### Python
 * [pytmxlib](http://pytmxlib.readthedocs.org/en/latest/): library for programmatic manipulation of TMX maps
