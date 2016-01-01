@@ -133,7 +133,7 @@
         <source>Usage:
   %1 [options] [files...]</source>
         <translation>Използване:
-  %1 [опции] [файлове...]</translation>
+  %1 [опции] [файлове…]</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -288,7 +288,7 @@
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation>&amp;Разглеждане...</translation>
+        <translation>&amp;Разглеждане…</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -482,7 +482,7 @@
     <message>
         <location line="+15"/>
         <source>&amp;Open...</source>
-        <translation>&amp;Отваряне...</translation>
+        <translation>&amp;Отваряне…</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -517,7 +517,7 @@
     <message>
         <location line="+12"/>
         <source>&amp;Resize Map...</source>
-        <translation>П&amp;реоразмеряване на картата...</translation>
+        <translation>П&amp;реоразмеряване на картата…</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -547,17 +547,17 @@
     <message>
         <location line="+9"/>
         <source>Save &amp;As...</source>
-        <translation>Запазване &amp;като...</translation>
+        <translation>Запазване &amp;като…</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;New...</source>
-        <translation>&amp;Нова...</translation>
+        <translation>&amp;Нова…</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>New &amp;Tileset...</source>
-        <translation>Нов &amp;плочен набор...</translation>
+        <translation>Нов &amp;плочен набор…</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -617,7 +617,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>АвтоКартиране по време на рисуването</translation>
     </message>
     <message>
         <location line="-170"/>
@@ -627,7 +627,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation>&amp;Отместване на картата...</translation>
+        <translation>&amp;Отместване на картата…</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -637,7 +637,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>На&amp;стройки...</translation>
+        <translation>На&amp;стройки…</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -662,17 +662,17 @@
     <message>
         <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>&amp;Добавяне на външен плочен набор...</translation>
+        <translation>&amp;Добавяне на външен плочен набор…</translation>
     </message>
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation>Изнасяне като изо&amp;бражение...</translation>
+        <translation>Изнасяне като изо&amp;бражение…</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>E&amp;xport As...</source>
-        <translation>Изнасяне ка&amp;то...</translation>
+        <translation>Изнасяне ка&amp;то…</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -747,7 +747,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+531"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Всички файлове (*)</translation>
+        <translation>Всички файлове (*)</translation>
     </message>
 </context>
 <context>
@@ -831,7 +831,8 @@ Line %1, column %2</source>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при зареждането на вградено изображение за плочка:
+„%1“</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -868,7 +869,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-168"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешен (отрицателен) ид. на плочка: %1</translation>
     </message>
 </context>
 <context>
@@ -971,7 +972,7 @@ Line %1, column %2</source>
     <message>
         <location line="+51"/>
         <source>&amp;Browse...</source>
-        <translation>&amp;Разглеждане...</translation>
+        <translation>&amp;Разглеждане…</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1030,7 +1031,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране на плочен набор</translation>
     </message>
 </context>
 <context>
@@ -1300,22 +1301,22 @@ Line %1, column %2</source>
     <message>
         <location line="+33"/>
         <source>Import...</source>
-        <translation>Внасяне...</translation>
+        <translation>Внасяне…</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Export...</source>
-        <translation>Изнасяне...</translation>
+        <translation>Изнасяне…</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавки</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Включени добавки</translation>
     </message>
 </context>
 <context>
@@ -1414,7 +1415,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
 </context>
 <context>
@@ -1543,7 +1544,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -2025,7 +2026,7 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>Object &amp;Properties...</source>
-        <translation>&amp;Свойства на обекта...</translation>
+        <translation>&amp;Свойства на обекта…</translation>
     </message>
 </context>
 <context>
@@ -2136,32 +2137,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение с плочен набор</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset</source>
-        <translation type="unfinished">Плочен набор</translation>
+        <translation>Плочен набор</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение на плочка</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Име на файл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished">Местоположение</translation>
+        <translation>Местоположение</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
 </context>
 <context>
@@ -2169,42 +2170,42 @@ Line %1, column %2</source>
     <message>
         <location line="+66"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Някои от файловете не могат да бъдат открити</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more files referenced by the map could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Един или повече от файловете, използвани в картата, не могат да бъдат открити. Можете да помогнете с откриването им по-долу.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсене на файла…</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Locate File</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсене на файла</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при зареждането на изображението</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Всички файлове (*)</translation>
+        <translation>Всички файлове (*)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсене на външен плочен набор</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Грешка при прочитането на плочния набор</translation>
+        <translation>Грешка при прочитането на плочния набор</translation>
     </message>
 </context>
 <context>
@@ -2255,12 +2256,12 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Edit commands...</source>
-        <translation>Редактиране на командите...</translation>
+        <translation>Редактиране на командите…</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Edit Commands...</source>
-        <translation>Редактиране на командите...</translation>
+        <translation>Редактиране на командите…</translation>
     </message>
 </context>
 <context>
@@ -2488,12 +2489,12 @@ Line %1, column %2</source>
     <message>
         <location line="+250"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Колоните в плочния набор са променени</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation type="unfinished"></translation>
+        <translation>Броят на колоните с плочки в плочния набор „%1“ изглежда променен от %2 на %3. Желаете ли да нагласите връзките към плочките?</translation>
     </message>
 </context>
 <context>
@@ -2666,13 +2667,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+36"/>
         <location line="+94"/>
         <source>Offset Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Отместване на слоеве</translation>
     </message>
     <message>
         <location line="-92"/>
         <location line="+93"/>
         <source>M</source>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -2833,7 +2834,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-80"/>
         <source>Export As...</source>
-        <translation>Изнасяне като...</translation>
+        <translation>Изнасяне като…</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -2950,8 +2951,8 @@ Please select specific format.</source>
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Добавяне на плочния набор</numerusform>
-            <numerusform>Добавяне на %n почни набора</numerusform>
+            <numerusform>Добавяне на плочен набор</numerusform>
+            <numerusform>Добавяне на %n плочни набора</numerusform>
         </translation>
     </message>
 </context>
@@ -2976,7 +2977,7 @@ Please select specific format.</source>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Завъртане на обекта</numerusform>
+            <numerusform>Завъртане на обект</numerusform>
             <numerusform>Завъртане на %n обекта</numerusform>
         </translation>
     </message>
@@ -3181,7 +3182,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Layer &amp;Properties...</source>
-        <translation>Свойс&amp;тва на слоя</translation>
+        <translation>Свойс&amp;тва на слоя…</translation>
     </message>
 </context>
 <context>
@@ -3212,7 +3213,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+83"/>
         <source>Browse...</source>
-        <translation>Разглеждане...</translation>
+        <translation>Разглеждане…</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -3331,7 +3332,7 @@ Please select specific format.</source>
         <location line="+67"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Завъртане на обекта</numerusform>
+            <numerusform>Завъртане на обект</numerusform>
             <numerusform>Завъртане на %n обекта</numerusform>
         </translation>
     </message>
@@ -3339,7 +3340,7 @@ Please select specific format.</source>
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>Преоразмеряване на обекта</numerusform>
+            <numerusform>Преоразмеряване на обект</numerusform>
             <numerusform>Преоразмеряване на %n обекта</numerusform>
         </translation>
     </message>
@@ -3513,12 +3514,12 @@ Please select specific format.</source>
     <message>
         <location line="+438"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Колони</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Източник</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3528,7 +3529,7 @@ Please select specific format.</source>
     <message>
         <location line="+302"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Грешка при прочитането на плочния набор</translation>
+        <translation>Грешка при прочитането на плочния набор</translation>
     </message>
     <message>
         <location line="+111"/>
@@ -3722,7 +3723,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Име на файл</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3819,7 +3820,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+97"/>
         <source>Terrain &amp;Properties...</source>
-        <translation>&amp;Свойства на терена</translation>
+        <translation>&amp;Свойства на терена…</translation>
     </message>
 </context>
 <context>
@@ -3969,7 +3970,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>&amp;Изнасяне на плочния набор като...</translation>
+        <translation>&amp;Изнасяне на плочния набор като…</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4037,7 +4038,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране…</translation>
     </message>
 </context>
 <context>
@@ -4055,7 +4056,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Tile &amp;Properties...</source>
-        <translation>&amp;Свойства на плочката</translation>
+        <translation>&amp;Свойства на плочката…</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4275,12 +4276,12 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране на плочен набор</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Change Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на колоните</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -4464,17 +4465,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Нагласяне на плочните показалци</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Подмяна на изображението на плочките</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Замяна на плочния набор</translation>
     </message>
 </context>
 <context>
