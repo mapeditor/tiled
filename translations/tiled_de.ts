@@ -608,7 +608,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMap während des Malens aktiv</translation>
     </message>
     <message>
         <location line="-140"/>
@@ -743,7 +743,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+531"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Alle Dateien (*)</translation>
+        <translation>Alle Dateien (*)</translation>
     </message>
 </context>
 <context>
@@ -827,7 +827,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Lesen des eingebetteten Bildes für Kachel %1</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -864,7 +864,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-168"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige (negative) Kachel-ID %1</translation>
     </message>
 </context>
 <context>
@@ -1026,7 +1026,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -1306,12 +1306,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+13"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktivierte Plugins</translation>
     </message>
 </context>
 <context>
@@ -2132,32 +2132,32 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesetbild</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelbild</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished">Pfad</translation>
+        <translation>Pfad</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
 </context>
 <context>
@@ -2165,42 +2165,42 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+66"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Einige Dateien konnten nicht gefunden werden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more files referenced by the map could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine oder mehrere Dateien, die von der Karte referenziert werden, wurden nicht gefunden. Du kannst unten helfen sie zu lokalisieren.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei lokalisieren</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Locate File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei lokalisieren</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Laden des Bildes</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Alle Dateien (*)</translation>
+        <translation>Alle Dateien (*)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Externes Tileset lokalisieren</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Fehler beim Lesen des Tilesets</translation>
+        <translation>Fehler beim Lesen des Tilesets</translation>
     </message>
 </context>
 <context>
@@ -2484,12 +2484,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+250"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesetspalten geändert</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anzahl der Kachelspalten im Tileset &apos;%1&apos; scheint sich von %2 zu %3 geändert zu haben. Möchtest du die Kachelreferenzen aktualisieren?</translation>
     </message>
 </context>
 <context>
@@ -2662,13 +2662,13 @@ Soll sie ersetzt werden?</translation>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+36"/>
         <location line="+94"/>
         <source>Offset Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen verschieben</translation>
     </message>
     <message>
         <location line="-92"/>
         <location line="+93"/>
         <source>M</source>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -3509,12 +3509,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+438"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Spalten</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Quelle</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3524,7 +3524,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+302"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Fehler beim Lesen des Tilesets</translation>
+        <translation>Fehler beim Lesen des Tilesets</translation>
     </message>
     <message>
         <location line="+111"/>
@@ -3718,7 +3718,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4033,7 +4033,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeiten...</translation>
     </message>
 </context>
 <context>
@@ -4271,12 +4271,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset bearbeiten</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Change Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Spalten ändern</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -4460,17 +4460,17 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelindizes anpassen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelbild ändern</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset ersetzen</translation>
     </message>
 </context>
 <context>
