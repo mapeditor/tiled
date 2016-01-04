@@ -21,7 +21,7 @@ Have a look at the [changelog](tmx-changelog.md) when you're interested in what 
 * <b>tileheight:</b> The height of a tile.
 * <b>staggeraxis:</b> For staggered and hexagonal maps, determines which axis ("x" or "y") is staggered. (since 0.11)
 * <b>staggerindex:</b> For staggered and hexagonal maps, determines whether the "even" or "odd" indexes along the staggered axis are shifted. (since 0.11)
-* <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional)
+* <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional, may include alpha value since 0.15 in the form `#AARRGGBB`)
 * <b>nextobjectid:</b> Stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed. (since 0.11)
 
 The `tilewidth` and `tileheight` properties determine the general grid size of the map. The individual tiles may have different sizes. Larger tiles will extend at the top and right (anchored to the bottom left).
@@ -40,8 +40,9 @@ Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [o
 * <b>spacing:</b> The spacing in pixels between the tiles in this tileset (applies to the tileset image).
 * <b>margin:</b> The margin around the tiles in this tileset (applies to the tileset image).
 * <b>tilecount:</b> The number of tiles in this tileset (since 0.13)
+* <b>columns:</b> The number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset. (since 0.15)
 
-If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1 and it can be assumed that there are no gaps in the valid range of global tile IDs.
+If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1. Since Tiled 0.15, image collection tilesets do not necessarily number their tiles consecutively since gaps can occur when removing tiles.
 
 Can contain: [tileoffset](#tileoffset) (since 0.8), [properties](#properties) (since 0.8), [image](#image), [terraintypes](#terraintypes) (since 0.9), [tile](#tile)
 
