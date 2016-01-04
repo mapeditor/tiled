@@ -17,8 +17,9 @@ Below are described the changes/additions that were made to the [TMX format](tmx
 
 ## Tiled 0.11 ##
 
-* Added `hexagonal` to the supported values for the `orientation` attribute on the `map` element. This also adds `staggerindex` (`even` or `odd`) and `staggerdirection` (`rows` or `columns`) and `hexsidelength` (integer value) attributes to the `map` element, in order to support the many variations of staggered hexagonal. The `staggerindex` attribute is now also supported when using the `staggered` map orientation.
+* Added `hexagonal` to the supported values for the `orientation` attribute on the `map` element. This also adds `staggerindex` (`even` or `odd`) and `staggeraxis` (`x` or `y`) and `hexsidelength` (integer value) attributes to the `map` element, in order to support the many variations of staggered hexagonal. The new `staggerindex` and `staggeraxis` attributes are also supported when using the `staggered` map orientation.
 * Added an `id` attribute to the `object` element, which stores a map-unique ID of the object.
+* Added a `nextobjectid` attribute to the `map` element, which stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed.
 
 ## Tiled 0.10 ##
 

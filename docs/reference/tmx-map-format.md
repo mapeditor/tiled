@@ -13,13 +13,16 @@ Have a look at the [changelog](tmx-changelog.md) when you're interested in what 
 ## &lt;map> ##
 
 * <b>version:</b> The TMX format version, generally 1.0.
-* <b>orientation:</b> Map orientation. Tiled supports "orthogonal", "isometric" and "staggered" (since 0.9) at the moment.
+* <b>orientation:</b> Map orientation. Tiled supports "orthogonal", "isometric", "staggered" (since 0.9) and "hexagonal" (since 0.11).
+* <b>renderorder:</b> The order in which tiles on tile layers are rendered. Valid values are `right-down` (the default), `right-up`, `left-down` and `left-up`. In all cases, the map is drawn row-by-row. (since 0.10, but only supported for orthogonal maps at the moment)
 * <b>width:</b> The map width in tiles.
 * <b>height:</b> The map height in tiles.
 * <b>tilewidth:</b> The width of a tile.
 * <b>tileheight:</b> The height of a tile.
+* <b>staggeraxis:</b> For staggered and hexagonal maps, determines which axis ("x" or "y") is staggered. (since 0.11)
+* <b>staggerindex:</b> For staggered and hexagonal maps, determines whether the "even" or "odd" indexes along the staggered axis are shifted. (since 0.11)
 * <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional)
-* <b>renderorder:</b> The order in which tiles on tile layers are rendered. Valid values are `right-down` (the default), `right-up`, `left-down` and `left-up`. In all cases, the map is drawn row-by-row. (since 0.10, but only supported for orthogonal maps at the moment)
+* <b>nextobjectid:</b> Stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed. (since 0.11)
 
 The `tilewidth` and `tileheight` properties determine the general grid size of the map. The individual tiles may have different sizes. Larger tiles will extend at the top and right (anchored to the bottom left).
 
