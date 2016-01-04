@@ -587,7 +587,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMap Tijdens Het Bewerken</translation>
     </message>
     <message>
         <location line="-270"/>
@@ -747,7 +747,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+531"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Alle Bestanden (*)</translation>
+        <translation>Alle Bestanden (*)</translation>
     </message>
 </context>
 <context>
@@ -831,7 +831,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het lezen van de afbeelding van tile %1</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -868,7 +868,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-168"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige (negatieve) tile ID: %1</translation>
     </message>
 </context>
 <context>
@@ -1030,7 +1030,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Bewerken</translation>
     </message>
 </context>
 <context>
@@ -1310,12 +1310,12 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+13"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Actieve Plugins</translation>
     </message>
 </context>
 <context>
@@ -1556,7 +1556,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-350"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation>Familie</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2136,32 +2136,32 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset afbeelding</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile afbeelding</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsnaam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished">Locatie</translation>
+        <translation>Locatie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
 </context>
 <context>
@@ -2169,42 +2169,42 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+66"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Sommige betanden konden niet gevonden worden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more files referenced by the map could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een of meer bestanden waarnaar de map refereert konden niet gevonden worden. Je kunt hier aangeven waar ze zijn.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand Zoeken...</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Locate File</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand Zoeken</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout Bij Openen van Afbeelding</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Alle Bestanden (*)</translation>
+        <translation>Alle Bestanden (*)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe Tileset Zoeken</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Fout Bij Tileset Lezen</translation>
+        <translation>Fout Bij Tileset Lezen</translation>
     </message>
 </context>
 <context>
@@ -2488,12 +2488,12 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+250"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Kolommen Veranderd</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aantal kolommen in de tileset &apos;%1&apos; lijkt zich te hebben veranderd van %2 naar %3. Wil je de tile referenties hierop aanpassen?</translation>
     </message>
 </context>
 <context>
@@ -2666,13 +2666,13 @@ Moet het bestand vervangen worden?</translation>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+36"/>
         <location line="+94"/>
         <source>Offset Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen Verschuiven</translation>
     </message>
     <message>
         <location line="-92"/>
         <location line="+93"/>
         <source>M</source>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -3514,12 +3514,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+438"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolommen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3529,7 +3529,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+302"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">Fout Bij Tileset Lezen</translation>
+        <translation>Fout Bij Tileset Lezen</translation>
     </message>
     <message>
         <location line="+111"/>
@@ -3723,7 +3723,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4038,7 +4038,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewerken...</translation>
     </message>
 </context>
 <context>
@@ -4271,12 +4271,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Bewerken</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Change Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolommen Veranderen</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
@@ -4465,17 +4465,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Referenties Aanpassen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Afbeelding Veranderen</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Vervangen</translation>
     </message>
 </context>
 <context>

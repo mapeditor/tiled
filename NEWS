@@ -1,4 +1,4 @@
-0.15.0 (.. January 2016)
+0.15.0 (4 January 2016)
 * Allow loading maps with broken external references
 * Allow plugins to be enabled/disabled
 * Allow changing tileset image parameters
@@ -18,7 +18,7 @@
 * Fixed crash in tmxrasterizer and tmxviewer
 * Fixed tmxrasterizer not reporting write errors
 * Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
-* Updated Bulgarian, Russian and Spanish translations
+* Updated Bulgarian, Dutch, French, Russian and Spanish translations
 
 0.14.2 (12 October 2015)
 * Added Polish translation
