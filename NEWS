@@ -18,7 +18,7 @@
 * Fixed crash in tmxrasterizer and tmxviewer
 * Fixed tmxrasterizer not reporting write errors
 * Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
-* Updated Bulgarian, Dutch, French, Russian and Spanish translations
+* Updated Bulgarian, Dutch, French, Japanese, Russian and Spanish translations
 
 0.14.2 (12 October 2015)
 * Added Polish translation
