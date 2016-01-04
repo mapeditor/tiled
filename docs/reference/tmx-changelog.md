@@ -3,6 +3,11 @@
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 0.15 ##
+
+* The `offsetx` and `offsety` attributes are now also used for `imagelayer` elements, replacing the `x` and `y` attributes previously used. This change was made for consistency with the other layer types.
+* The tiles in an image collection tileset are no longer guaranteed to be consecutive, because removing tiles from the collection will no longer change the IDs of other tiles.
+
 ## Tiled 0.14 ##
 
 * Added optional `offsetx` and `offsety` attributes to the `layer` and `objectgroup` elements. These specify an offset in pixels that is to be applied when rendering the layer. The default values are 0.

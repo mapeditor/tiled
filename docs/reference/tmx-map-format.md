@@ -246,8 +246,10 @@ A `polyline` follows the same placement definition as a `polygon` object.
 ## &lt;imagelayer> ##
 
 * <b>name:</b> The name of the image layer.
-* <b>x:</b> The x position of the image layer in pixels.
-* <b>y:</b> The y position of the image layer in pixels.
+* <b>offsetx:</b> Rendering offset of the image layer in pixels. Defaults to 0. (since 0.15)
+* <b>offsety:</b> Rendering offset of the image layer in pixels. Defaults to 0. (since 0.15)
+* <i>x:</i> The x position of the image layer in pixels. (deprecated since 0.15)
+* <i>y:</i> The y position of the image layer in pixels. (deprecated since 0.15)
 * <i>width:</i> The width of the image layer in tiles. Meaningless.
 * <i>height:</i> The height of the image layer in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
