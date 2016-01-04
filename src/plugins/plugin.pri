@@ -27,7 +27,7 @@ macx {
 }
 
 # Set rpath so that the plugin will resolve libtiled correctly
-!win32:!macx:contains(RPATH, yes) {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../..
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
