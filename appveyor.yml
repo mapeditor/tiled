@@ -10,7 +10,7 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y nsis -version 2.49
+  - choco install -y nsis
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
 
 build_script:
