@@ -176,8 +176,9 @@
             <h3>Download</h3>
 
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <h4>Latest Release</h4>
+                <!--
                 <ul class="downloads">
                   <li>
                     <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.14.2/tiled-0.14.2-win32-setup.exe">
@@ -195,8 +196,11 @@
                     Tiled 0.14.2 source</a>
                   </li>
                 </ul>
+                -->
+                <iframe src="https://itch.io/embed/28768?linkback=true" width="552" height="167" frameborder="0" class="my-box" style="padding: 0px; border-radius: 0px; box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);"></iframe>
                 <div style="clear: both;"></div>
 
+                <!--
                 <h4>Repositories</h4>
                 <ul class="downloads">
                   <li>
@@ -211,14 +215,12 @@
                   </li>
                 </ul>
                 <div style="clear: both;"></div>
-              </div>
+                -->
 
-              <div class="col-md-6">
                 <h4>Daily Builds</h4>
-                <div class="well">
-                  Daily builds provide access to the latest fixes and features. These may also contain new bugs as well as unfinished features.<br/><br/>
-                  Mac OS X builds made possible by <a href="http://tilemapkit.com/">TilemapKit</a>.
-                </div>
+                <p>
+                  Daily builds provide access to the latest fixes and features. These may also contain new bugs as well as unfinished features.
+                </p>
                 <ul class="downloads">
                   <li>
                     <a class="btn btn-default btn-download" href="http://files.mapeditor.org/daily/?C=N;O=D">
@@ -242,6 +244,9 @@
                   </li>
                 </ul>
                 <div style="clear: both;"></div>
+                <p>
+                  Mac OS X builds made possible by <a href="http://tilemapkit.com/">TilemapKit</a>.
+                </p>
               </div>
             </div>
           </div>
@@ -252,6 +257,30 @@
         <div class="col-md-12">
           <div class="my-box">
             <a id="changes"></a><h3>Changes</h3>
+            <h4>0.15.0 <small>(4 January 2015)</small></h4>
+            <ul>
+              <li>Allow loading maps with broken external references</li>
+              <li>Allow plugins to be enabled/disabled</li>
+              <li>Allow changing tileset image parameters</li>
+              <li>Allow changing the images of tiles in a collection tileset</li>
+              <li>Allow changing external tileset references</li>
+              <li>Allow panning over the edges of the map</li>
+              <li>Added Terrain Generator tool</li>
+              <li>Added column count property to image collection tilesets</li>
+              <li>Added a combo box for changing the current layer to the status bar</li>
+              <li>Moved the AutoMapping while drawing toggle into the menu</li>
+              <li>Removing tiles from collection tilesets no longer changes tile IDs</li>
+              <li>Unified layer offset handling</li>
+              <li>Default tile layer data format changed to CSV</li>
+              <li>Deprecated pure XML and Gzip-compressed tile layer data formats</li>
+              <li>Fixed random tile picker for tiles with zero probability (by Henrik Heino)</li>
+              <li>Fixed saving of alpha value of the map background color</li>
+              <li>Fixed crash in tmxrasterizer and tmxviewer</li>
+              <li>Fixed tmxrasterizer not reporting write errors</li>
+              <li>Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)</li>
+              <li>Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations</li>
+            </ul>
+
             <h4>0.14.2 <small>(12 October 2015)</small></h4>
             <ul>
               <li>Fixed layer offsets missing in the Lua export</li>
