@@ -24,6 +24,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 
+#include <QDir>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -100,7 +101,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
 #ifdef Q_OS_MAC
-    , mFile(QLatin1String("tiledXXXXXX.command"))
+    , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
 {
     // Give an error if the command is empty or just whitespace
@@ -132,7 +133,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
             handleError(tr("Unable to create/open %1").arg(mFile.fileName()));
             return;
         }
-        mFile.write(mFinalCommand.toStdString().c_str());
+        mFile.write(mFinalCommand.toLocal8Bit());
         mFile.close();
 
         // Add execute permission to the file
