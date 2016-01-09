@@ -514,8 +514,8 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    createProperty(XProperty, QVariant::Int, tr("X"), groupProperty);
-    createProperty(YProperty, QVariant::Int, tr("Y"), groupProperty);
+    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -850,20 +850,6 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
                                                        imageSource));
         break;
     }
-    case XProperty: {
-        QPoint pos(val.toReal(), imageLayer->y());
-        undoStack->push(new ChangeImageLayerPosition(mMapDocument,
-                                                     imageLayer,
-                                                     pos));
-        break;
-    }
-    case YProperty: {
-        QPoint pos(imageLayer->x(), val.toReal());
-        undoStack->push(new ChangeImageLayerPosition(mMapDocument,
-                                                     imageLayer,
-                                                     pos));
-        break;
-    }
     default:
         break;
     }
@@ -1061,15 +1047,13 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
+        mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
+        mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
-            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             break;
         case Layer::ObjectGroupType: {
-            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
-            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             QColor color = objectGroup->color();
             if (!color.isValid())
@@ -1082,8 +1066,6 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
-            mIdToProperty[XProperty]->setValue(imageLayer->x());
-            mIdToProperty[YProperty]->setValue(imageLayer->y());
             break;
         }
         break;

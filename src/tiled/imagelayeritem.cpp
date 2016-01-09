@@ -39,6 +39,7 @@ ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument)
 
     syncWithImageLayer();
     setOpacity(mLayer->opacity());
+    setPos(mLayer->offset());
 }
 
 void ImageLayerItem::syncWithImageLayer()
