@@ -1,0 +1,14 @@
+---
+layout: post
+title: 'melonJS: Tiled based games in HTML5'
+date: '2011-07-22T23:26:00.001+02:00'
+author: Thorbjørn Lindeijer
+tags:
+- html5
+- melonjs
+modified_time: '2013-06-11T10:55:34.088+02:00'
+blogger_id: tag:blogger.com,1999:blog-1263769677734306791.post-650543756482840595
+blogger_orig_url: http://blog.mapeditor.org/2011/07/melonjs-tiled-based-games-in-html5.html
+---
+
+<p>Earlier this month I was made aware of the <a href="http://olivierbiot.wordpress.com/2011/07/07/melonjs-0-9-0-is-available/">first public release</a> of <a href="http://www.melonjs.org/">melonJS</a>. It is a lightweight HTML5 game engine, with very close integration with Tiled.</p><p>I'm a complete newbie regarding new-fangled HTML5 and its opportunities for games. JavaScript still reminds me of some horrible experiences back in 2000, when it was slow and incompatible. However, I know the world has changed since then and melonJS basically confirms my suspicions. For small games there is little reason left to compile them to native machine code, and I wonder how many will still know what it means in a few years. The rendering, input and also audio support in modern browsers will suffice for a wide range of games, and deployment couldn't be easier.</p><p>As it stands melonJS is not finished yet, and at first sight it seems to be only good for creating the specific kind of platform game that its <a href="http://www.melonjs.org/tutorial/">extensive tutorial</a> takes you through. At least, there is a certain amount of convenience API available that is meant to do just that. However, behind that API lies a promising and <a href="http://www.melonjs.org/docs/">well documented</a> game engine with resource management, sprite animation and direct support for Tiled's TMX map format. Including some cool features like support for custom map objects that are directly linked to JavaScript-defined classes and parallax image layers.</p><p>How did I get to know all this? After one evening of fiddling around with the engine with the help from the tutorial, I had laid the basics for an HTML5 version of <a href="http://themanaworld.org">The Mana World</a>, which I called <a href="http://manasource.org/tmwjs/">TMW.js</a>. It's lacking a few details, but I daresay it's possible to fill in the blanks!</p><p><i><b>Update 2013-05:</b> While there is no longer a live version of TMW.js, the code of this demo is still available at <a href="http://github.com/bjorn/mana.js">http://github.com/bjorn/mana.js</a>, including some experimental multiplayer functionality.</i></p>

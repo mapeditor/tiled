@@ -1,0 +1,14 @@
+---
+layout: post
+title: Tiled Qt 0.7.0 released
+date: '2011-07-24T01:19:00.001+02:00'
+author: Thorbjørn Lindeijer
+tags:
+- release
+- tmx
+modified_time: '2011-09-27T23:32:01.028+02:00'
+blogger_id: tag:blogger.com,1999:blog-1263769677734306791.post-5002748604283763999
+blogger_orig_url: http://blog.mapeditor.org/2011/07/tiled-qt-070-released.html
+---
+
+<p>Tiled currently seems to be on a biannual release schedule regarding its new feature releases, though this is entirely unintentional. The important part is that quite some nice features have been developed again!</p><p>It's now finally possible to select multiple objects and copy/paste them. A bunch of other productivity enhancements were also made like cropping to selection, shortcuts to change layer, improved hand scrolling with spacebar, toggling visibility of other layers, etc.</p><p>A new feature was added that required changing the map format a little as well. Tiled is now able to <a href="http://www.youtube.com/watch?v=FqMXI_yWMBs&hd=1">flip tiles horizontally and vertically</a> (using the 'x' and 'y' keys repectively). This information is stored in the highest two bits of the global tile IDs, so that tile layer data remains compatible if you don't use this feature.</p><p>The full list of changes:</p><ul><li>Added support for horizontal and vertical flipping of tiles (sponsored by Zipline Games)</li><li>Added copy/paste support for objects</li><li>Added merge layer down action</li><li>Added Show or Hide all Other Layers action (by Christophe Conceicao)</li><li>Added actions to select the previous/next layer</li><li>Added Crop to Selection action</li><li>Added a Lua export plugin (sponsored by Zipline Games)</li><li>Added Droidcraft plugin to read and export the map files (by seeseekey)</li><li>Added option to turn off grid in the tileset view (by Gregory Nickonov)</li><li>Added hand scrolling while holding the spacebar</li><li>Made the object context menu available in all object tools</li><li>Display tile coordinates also when using object tools</li><li>Various improvements to running external commands (by Jeff Bland)</li><li>Automapping stability and memory consumption improvements (by Stefan Beller)</li><li>Objects that fall outside of the map on resize are now removed (by Stefan Beller)</li><li>Fixed problems with watching tilesets multiple times</li><li>Fixed several issues related to restoring previously opened files (by Stefan Beller)</li><li>Updated Brazilian Portuguese, Chinese, German, Spanish, Japanese, Hebrew, Portuguese, Dutch and French translations (thanks to all translators!)</li></ul><p>Lastly I want to say, Tiled is shaped by your feedback and those who help improve it. If you have an itch or a suggestion, please do <a href="https://github.com/bjorn/tiled/issues">report an issue</a>. Or better yet, <a href="https://github.com/bjorn/tiled">fork Tiled on github</a> and work with us on the next release!</p>

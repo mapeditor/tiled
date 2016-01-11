@@ -1,0 +1,13 @@
+---
+layout: post
+title: Tiled Qt 0.5.0 released
+date: '2010-06-30T21:39:00.001+02:00'
+author: Thorbjørn Lindeijer
+tags:
+- release
+modified_time: '2011-09-27T23:35:37.853+02:00'
+blogger_id: tag:blogger.com,1999:blog-1263769677734306791.post-3591452666843783283
+blogger_orig_url: http://blog.mapeditor.org/2010/06/tiled-qt-050-released.html
+---
+
+<p>At long last I managed to finish another release, with the main aim to add the last glaring missing features compared to the old Java version. This included mostly tileset management, and support for input/output plugins.</p> <p>There have also been some new contributors. Andrew G. Crowell made the layer actions accessible via a right-click menu and in a small toolbar. Michael Woerister enhanced the object properties dialog with additional fields to change the position and size. Finally, Janis Kirsteins added a Latvian translation. Thanks! Also thanks to all the existing translators who have updated their translation to the new release! The full list of changes:</p> <ul><li>Added support for import and export plugins</li><li>Added support for external tilesets</li><li>Added undo for adding tilesets and ability to remove tilesets</li><li>Added error handling to the New Tileset dialog</li><li>Added ability to change tileset order by dragging them around</li><li>Added option to draw the tile grid when saving as image</li><li>Added a context menu and tool buttons to the layer dock</li><li>Added Latvian translation</li><li>Added an install target to the Makefile</li><li>Open local files when they are dropped onto Tiled</li><li>Allow changing position and size of objects in the Object Properties dialog</li><li>Fixed rendering issues with tiles wider than the tile width of the map</li><li>Fixed eraser and fill tool working on invisible layers</li><li>Fixed a crash when using some tools when no map is loaded</li><li>Fixed compile errors related to detecting static builds</li><li>Fixed the Save dialog not suggesting any particular file extension</li><li>Updated Japanese, Dutch, German, Brazilian Portuguese, French, Portuguese and Spanish translations</li></ul> <p>As needed to allow plugins, part of Tiled is now in a small shared library. In the future I intend to also move the map reader and renderer into this library so that it can be re-used by games implemented using Qt. I'm also adding a Java version of this library.</p>

@@ -1,0 +1,13 @@
+---
+layout: post
+title: Tiled Qt 0.6.1 released
+date: '2011-04-03T21:51:00.000+02:00'
+author: Thorbjørn Lindeijer
+tags:
+- release
+modified_time: '2011-09-27T23:33:29.817+02:00'
+blogger_id: tag:blogger.com,1999:blog-1263769677734306791.post-8641992732340403535
+blogger_orig_url: http://blog.mapeditor.org/2011/04/tiled-qt-061-released.html
+---
+
+<p>I'm happy to announce the immediate availability of the 0.6.1 bugfix release! Quite a few fixes have accumulated since the last release, so it was about time to get them out there.</p> <p>Of special note is that from this release on, there will be a Windows installer rather than a zip archive, thanks to Mohammad Mehdi Salem Naraghi. Since this is the first release with a Windows installer, there may still be issues. It should make installing Tiled on Windows quite a bit more pleasant.</p> <p>Many fixes were made to the automatic mapping feature by Stefan Beller. Petr Viktorin and Ben Longbons allowed Tiled to open multiple files at once. The full list of changes:</p> <ul><li>Added ability to open multiple files at once through the file dialog and command line</li><li>Added Ctrl+PageUp/PageDown shortcuts to switch documents</li><li>Added an example to show how automatic mapping works</li><li>Fixed bugs, crashes and leaks in the automatic mapping feature</li><li>Fixed starting point for circles to be the click position</li><li>Fixed a memory leak when using lines or circles</li><li>Fixed layer opacity to be taken into account when saving as image</li><li>Fixed endless loop when tile size is set to 0</li><li>Fixed crash when passing an empty string as command line parameter</li><li>Fixed problems with the tileset view after switching documents</li><li>Fixed tile objects to be removed when their tileset is removed</li></ul>
