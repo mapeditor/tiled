@@ -12,10 +12,12 @@
 
                         {% if asset.name contains 'dmg' %}
                         {% assign os = 'osx' %}
-                        {% elsif asset.name == 'win32' %}
+                        {% elsif asset.name contains 'win32' %}
                         {% assign os = 'windows-x86' %}
-                        {% elsif asset.name == 'win64' %}
+                        {% elsif asset.name contains 'win64' %}
                         {% assign os = 'windows-x64' %}
+                        {% else %}
+                        {% assign os = 'unknown' %}
                         {% endif %}
 
                         {% if os == 'osx' %}
