@@ -41,5 +41,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>SUFeedURL</key>
+	<string>https://www.mapeditor.org/appcast.xml</string>
 </dict>
 </plist>
