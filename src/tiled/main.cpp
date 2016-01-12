@@ -28,6 +28,7 @@
 #include "mapreader.h"
 #include "mapformat.h"
 #include "preferences.h"
+#include "sparkleautoupdater.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 
@@ -279,6 +280,12 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
+
+#ifdef TILED_SPARKLE
+    SparkleAutoUpdater updater;
+    if (updater.automaticallyChecksForUpdates())
+        updater.checkForUpdates();
+#endif
 
     MainWindow w;
     w.show();
