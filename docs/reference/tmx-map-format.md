@@ -224,7 +224,7 @@ While tile layers are very suitable for anything repetitive aligned to the tile 
 
 You generally use objects to add custom information to your tile map, such as spawn points, warps, exits, etc.
 
-When the object has a `gid` set, then it is represented by the image of the tile with that global ID. Currently that means `width` and `height` are ignored for such objects. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
+When the object has a `gid` set, then it is represented by the image of the tile with that global ID. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
 
 Can contain: [properties](#properties), [ellipse](#ellipse) (since 0.9), [polygon](#polygon), [polyline](#polyline), <i>image</i>
 
