@@ -29,7 +29,7 @@ macx {
         LIBS += -framework Sparkle -framework AppKit
         QMAKE_POST_LINK = \
             mkdir -p $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks && \
-            cp -r /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
+            cp -R /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
         APP_RESOURCES.path = Contents/Resources
         APP_RESOURCES.files = ../../dist/dsa_pub.pem
         QMAKE_BUNDLE_DATA += APP_RESOURCES
