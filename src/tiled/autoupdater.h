@@ -21,7 +21,7 @@
 #ifndef AUTOUPDATER_H
 #define AUTOUPDATER_H
 
-#include <QString>
+#include <QDateTime>
 
 class AutoUpdater
 {
@@ -34,7 +34,7 @@ public:
     virtual void setAutomaticallyChecksForUpdates(bool on) = 0;
     virtual bool automaticallyChecksForUpdates() = 0;
 
-    virtual QString lastUpdateCheckDate() = 0;
+    virtual QDateTime lastUpdateCheckDate() = 0;
 
     static AutoUpdater *instance() { return sInstance; }
 

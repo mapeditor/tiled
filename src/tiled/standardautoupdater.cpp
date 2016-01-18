@@ -44,7 +44,7 @@ bool StandardAutoUpdater::automaticallyChecksForUpdates()
     return Preferences::instance()->checkForUpdates();
 }
 
-QString StandardAutoUpdater::lastUpdateCheckDate()
+QDateTime StandardAutoUpdater::lastUpdateCheckDate()
 {
-    return QString(); // todo
+    return QDateTime(); // todo
 }

@@ -21,7 +21,7 @@ public:
     void setAutomaticallyChecksForUpdates(bool on) override;
     bool automaticallyChecksForUpdates() override;
 
-    QString lastUpdateCheckDate() override;
+    QDateTime lastUpdateCheckDate() override;
 
 private:
     class Private;

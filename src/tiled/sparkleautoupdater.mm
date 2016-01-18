@@ -66,9 +66,9 @@ bool SparkleAutoUpdater::automaticallyChecksForUpdates()
   return [d->updater automaticallyChecksForUpdates];
 }
 
-QString SparkleAutoUpdater::lastUpdateCheckDate()
+QDateTime SparkleAutoUpdater::lastUpdateCheckDate()
 {
     NSDate *date = [d->updater lastUpdateCheckDate];
-    NSString *datestring = date ? [NSString stringWithFormat:@"%@", date] : @"";
-    return QString::fromUtf8([datestring UTF8String]);
+    NSTimeInterval timeInterval = [date timeIntervalSince1970];
+    return QDateTime::fromMSecsSinceEpoch(timeInterval * 1000);
 }

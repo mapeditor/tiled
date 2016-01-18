@@ -333,9 +333,10 @@ void PreferencesDialog::fromPreferences()
     mUi->checkForUpdate->setEnabled(updater);
     if (updater) {
         bool autoUpdateEnabled = updater->automaticallyChecksForUpdates();
-        QString lastChecked = updater->lastUpdateCheckDate();
+        auto lastChecked = updater->lastUpdateCheckDate();
+        auto lastCheckedString = lastChecked.toString(Qt::DefaultLocaleLongDate);
         mUi->autoUpdateCheckBox->setChecked(autoUpdateEnabled);
-        mUi->lastAutoUpdateCheckLabel->setText(tr("Last checked: %1").arg(lastChecked));
+        mUi->lastAutoUpdateCheckLabel->setText(tr("Last checked: %1").arg(lastCheckedString));
     }
 }
 
