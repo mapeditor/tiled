@@ -16,11 +16,8 @@
 #include <Cocoa/Cocoa.h>
 #include <Sparkle/Sparkle.h>
 
-#define STRINGIFY(x) #x
-#define AS_STRING(x) STRINGIFY(x)
-
-#ifdef APPCAST_URL
-static const char appcastUrl[] = AS_STRING(APPCAST_URL);
+#ifdef TILED_SNAPSHOT
+static const char appcastUrl[] = "http://update.mapeditor.org/appcast-snapshots.xml";
 #else
 static const char appcastUrl[] = "http://update.mapeditor.org/appcast.xml";
 #endif
