@@ -14,12 +14,7 @@ QtGuiApplication {
     cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 
-    cpp.defines: {
-        var version = qbs.getEnv("BUILD_INFO_VERSION");
-        if (version != undefined)
-            return ["BUILD_INFO_VERSION=" + version]
-        return []
-    }
+    cpp.defines: ["TILED_VERSION=" + project.version]
 
     consoleApplication: false
 

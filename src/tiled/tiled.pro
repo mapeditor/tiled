@@ -16,6 +16,8 @@ QT += widgets
 
 contains(QT_CONFIG, opengl):!macx: QT += opengl
 
+DEFINES += TILED_VERSION=$${TILED_VERSION}
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 

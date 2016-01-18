@@ -16,10 +16,10 @@ install:
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
   - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
-  - if defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%VERSION%
+  - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%VERSION%
   - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %VERSION%... (from %COMMITNOW%)
   - if not defined APPVEYOR_REPO_TAG_NAME set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
-  - if not defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%COMMITNOW%
+  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%COMMITNOW%
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
   - qbs setup-toolchains --detect
   - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
