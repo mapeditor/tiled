@@ -8,6 +8,8 @@
 # Dependencies
 require 'tmpdir'
 
+signingIdentity = "Thorbjorn Lindeijer"
+
 # Get various directories
 baseDir = File.join File.dirname(__FILE__), '..'
 binDir = File.join baseDir, 'bin'
@@ -58,6 +60,10 @@ Dir.mktmpdir do |tempDir|
             `install_name_tool -change "#{qtdependency}" "@executable_path/../Frameworks/#{qtlib}.framework/Versions/5/#{qtlib}" "#{library}"`
             raise "install_name_tool error #{$?}" unless $? == 0
         end
+    end
+
+    if signingIdentity
+        `codesign --sign "#{signingIdentity}" --verbose --deep #{File.join tempDir, 'Tiled.app'}`
     end
 
     # Create dmg from the temp directory
