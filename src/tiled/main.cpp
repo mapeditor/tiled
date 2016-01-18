@@ -279,7 +279,7 @@ int main(int argc, char *argv[])
 
     QScopedPointer<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
-    updater = new SparkleAutoUpdater;
+    updater.reset(new SparkleAutoUpdater);
 #endif
     if (updater && updater->automaticallyChecksForUpdates())
         updater->checkForUpdates();
