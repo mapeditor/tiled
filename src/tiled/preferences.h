@@ -113,6 +113,9 @@ public:
 
     bool openLastFilesOnStartup() const;
 
+    bool checkForUpdates() const;
+    void setCheckForUpdates(bool on);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -155,6 +158,7 @@ signals:
     void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
+    void checkForUpdatesChanged();
 
 private:
     Preferences();
@@ -197,6 +201,7 @@ private:
     QDate mFirstRun;
     int mRunCount;
     bool mIsPatron;
+    bool mCheckForUpdates;
 
     static Preferences *mInstance;
 };
@@ -220,6 +225,11 @@ inline int Preferences::runCount() const
 inline bool Preferences::isPatron() const
 {
     return mIsPatron;
+}
+
+inline bool Preferences::checkForUpdates() const
+{
+    return mCheckForUpdates;
 }
 
 inline bool Preferences::openLastFilesOnStartup() const

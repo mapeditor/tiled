@@ -67,6 +67,7 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
+    autoupdater.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
@@ -165,6 +166,7 @@ SOURCES += aboutdialog.cpp \
     selectsametiletool.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
+    standardautoupdater.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -210,6 +212,7 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
+    autoupdater.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
@@ -312,6 +315,7 @@ HEADERS += aboutdialog.h \
     snaphelper.h \
     sparkleautoupdater.h \
     stampbrush.h \
+    standardautoupdater.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

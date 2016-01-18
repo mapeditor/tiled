@@ -21,6 +21,7 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
+#include "autoupdater.h"
 #include "languagemanager.h"
 #include "objecttypesmodel.h"
 #include "pluginlistmodel.h"
@@ -97,10 +98,11 @@ QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &,
 }
 
 
-PreferencesDialog::PreferencesDialog(QWidget *parent) :
-    QDialog(parent),
-    mUi(new Ui::PreferencesDialog),
-    mLanguages(LanguageManager::instance()->availableLanguages())
+PreferencesDialog::PreferencesDialog(QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::PreferencesDialog)
+    , mLanguages(LanguageManager::instance()->availableLanguages())
+    , mObjectTypesModel(new ObjectTypesModel(this))
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -122,7 +124,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mUi->languageCombo->model()->sort(0);
     mUi->languageCombo->insertItem(0, tr("System default"));
 
-    mObjectTypesModel = new ObjectTypesModel(this);
     mUi->objectTypesTable->setModel(mObjectTypesModel);
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
@@ -178,6 +179,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->openLastFiles, &QCheckBox::toggled,
             preferences, &Preferences::setOpenLastFilesOnStartup);
 
+    connect(mUi->autoUpdateCheckBox, &QPushButton::toggled,
+            this, &PreferencesDialog::autoUpdateToggled);
+    connect(mUi->checkForUpdate, &QPushButton::clicked,
+            this, &PreferencesDialog::checkForUpdates);
+
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
 }
@@ -194,7 +200,7 @@ void PreferencesDialog::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange: {
             mUi->retranslateUi(this);
-            mUi->languageCombo->setItemText(0, tr("System default"));
+            retranslateUi();
         }
         break;
     default:
@@ -320,6 +326,17 @@ void PreferencesDialog::fromPreferences()
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+
+    // Auto-updater settings
+    auto updater = AutoUpdater::instance();
+    mUi->autoUpdateCheckBox->setEnabled(updater);
+    mUi->checkForUpdate->setEnabled(updater);
+    if (updater) {
+        bool autoUpdateEnabled = updater->automaticallyChecksForUpdates();
+        QString lastChecked = updater->lastUpdateCheckDate();
+        mUi->autoUpdateCheckBox->setChecked(autoUpdateEnabled);
+        mUi->lastAutoUpdateCheckLabel->setText(tr("Last checked: %1").arg(lastChecked));
+    }
 }
 
 void PreferencesDialog::toPreferences()
@@ -329,4 +346,23 @@ void PreferencesDialog::toPreferences()
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
+}
+
+void PreferencesDialog::retranslateUi()
+{
+    mUi->languageCombo->setItemText(0, tr("System default"));
+}
+
+void PreferencesDialog::autoUpdateToggled(bool checked)
+{
+    if (auto updater = AutoUpdater::instance())
+        updater->setAutomaticallyChecksForUpdates(checked);
+}
+
+void PreferencesDialog::checkForUpdates()
+{
+    if (auto updater = AutoUpdater::instance()) {
+        updater->checkForUpdates();
+        // todo: do something with the last checked label
+    }
 }

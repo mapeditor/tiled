@@ -64,6 +64,11 @@ private:
     void fromPreferences();
     void toPreferences();
 
+    void retranslateUi();
+
+    void autoUpdateToggled(bool checked);
+    void checkForUpdates();
+
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
     ObjectTypesModel *mObjectTypesModel;

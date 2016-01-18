@@ -29,6 +29,7 @@
 #include "mapformat.h"
 #include "preferences.h"
 #include "sparkleautoupdater.h"
+#include "standardautoupdater.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 
@@ -276,11 +277,12 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    QScopedPointer<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
-    SparkleAutoUpdater updater;
-    if (updater.automaticallyChecksForUpdates())
-        updater.checkForUpdates();
+    updater = new SparkleAutoUpdater;
 #endif
+    if (updater && updater->automaticallyChecksForUpdates())
+        updater->checkForUpdates();
 
     MainWindow w;
     w.show();

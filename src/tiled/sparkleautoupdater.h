@@ -8,20 +8,20 @@
 #ifndef SPARKLEAUTOUPDATER_H
 #define SPARKLEAUTOUPDATER_H
 
-#include <QString>
+#include "autoupdater.h"
 
-class SparkleAutoUpdater
+class SparkleAutoUpdater : public AutoUpdater
 {
 public:
     SparkleAutoUpdater();
     ~SparkleAutoUpdater();
 
-    void checkForUpdates();
+    void checkForUpdates() override;
 
-    void setAutomaticallyChecksForUpdates(bool on);
-    bool automaticallyChecksForUpdates();
+    void setAutomaticallyChecksForUpdates(bool on) override;
+    bool automaticallyChecksForUpdates() override;
 
-    QString lastUpdateCheckDate();
+    QString lastUpdateCheckDate() override;
 
 private:
     class Private;
