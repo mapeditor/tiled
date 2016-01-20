@@ -49,6 +49,7 @@ TiledPlugin {
     }
 
     files: [
+        "plugin.json",
         "pythonplugin.cpp",
         "pythonplugin.h",
         "pythonbind.cpp",

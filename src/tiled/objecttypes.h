@@ -35,9 +35,9 @@ struct ObjectType
 {
     ObjectType() : color(Qt::gray) {}
 
-    ObjectType(const QString &name,
+    ObjectType(QString name,
                const QColor &color)
-        : name(name)
+        : name(std::move(name))
         , color(color)
     {}
 

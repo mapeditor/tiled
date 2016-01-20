@@ -297,23 +297,24 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>Automapping</string>
+       <string>Plugins</string>
       </attribute>
-      <widget class="QCheckBox" name="autoMapWhileDrawing">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>391</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Use Automapping, when drawing into layers</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Enabled Plugins</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QListView" name="pluginList"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -337,7 +338,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
@@ -348,7 +348,6 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>importObjectTypesButton</tabstop>
   <tabstop>exportObjectTypesButton</tabstop>
-  <tabstop>autoMapWhileDrawing</tabstop>
   <tabstop>removeObjectTypeButton</tabstop>
   <tabstop>addObjectTypeButton</tabstop>
   <tabstop>objectTypesTable</tabstop>
@@ -364,8 +363,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>313</x>
-     <y>373</y>
+     <x>322</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>

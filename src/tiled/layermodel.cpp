@@ -160,11 +160,19 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
  */
 int LayerModel::toLayerIndex(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        return mMap->layerCount() - index.row() - 1;
-    } else {
-        return -1;
-    }
+    if (index.isValid())
+        return toLayerIndex(index.row());
+
+    return -1;
+}
+
+/**
+ * Returns the layer index associated with a given row index.
+ * \sa layerIndexToRow
+ */
+int LayerModel::toLayerIndex(int index) const
+{
+    return mMap->layerCount() - index - 1;
 }
 
 /**

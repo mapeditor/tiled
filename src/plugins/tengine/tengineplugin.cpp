@@ -300,7 +300,8 @@ QString TenginePlugin::errorString() const
     return mError;
 }
 
-QString TenginePlugin::constructArgs(Tiled::Properties props, QList<QString> propOrder) const
+QString TenginePlugin::constructArgs(const Tiled::Properties &props,
+                                     const QList<QString> &propOrder) const
 {
     QString argString;
     // We work backwards so we don't have to include a bunch of nils
@@ -323,14 +324,16 @@ QString TenginePlugin::constructArgs(Tiled::Properties props, QList<QString> pro
 }
 
 // Finds unhandled properties and bundles them into a Lua table
-QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<QString> propOrder) const
+QString TenginePlugin::constructAdditionalTable(const Tiled::Properties &props,
+                                                const QList<QString> &propOrder) const
 {
     QString tableString;
     QMap<QString, QString> unhandledProps = QMap<QString, QString>(props);
+
     // Remove handled properties
-    for (int i = 0; i < propOrder.size(); i++) {
-        unhandledProps.remove(propOrder[i]);
-    }
+    for (const QString &prop : propOrder)
+        unhandledProps.remove(prop);
+
     // Construct the Lua string
     if (unhandledProps.size() > 0) {
         tableString = "{";
@@ -341,5 +344,6 @@ QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<Q
         }
         tableString = QString("%1}").arg(tableString);
     }
+
     return tableString;
 }

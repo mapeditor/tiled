@@ -31,45 +31,40 @@ namespace Internal {
 
 AddRemoveTiles::AddRemoveTiles(MapDocument *mapDocument,
                                Tileset *tileset,
-                               int index,
-                               int count,
-                               const QList<Tile *> &tiles)
+                               const QList<Tile *> &tiles,
+                               bool add)
     : mMapDocument(mapDocument)
     , mTileset(tileset)
-    , mIndex(index)
-    , mCount(count)
     , mTiles(tiles)
+    , mTilesAdded(!add)
 {
 }
 
 AddRemoveTiles::~AddRemoveTiles()
 {
-    qDeleteAll(mTiles);
+    if (!mTilesAdded)
+        qDeleteAll(mTiles);
 }
 
 void AddRemoveTiles::addTiles()
 {
-    mTileset->insertTiles(mIndex, mTiles);
-    mTiles.clear();
+    mTileset->addTiles(mTiles);
     mMapDocument->emitTilesetChanged(mTileset);
+    mTilesAdded = true;
 }
 
 void AddRemoveTiles::removeTiles()
 {
-    mTiles = mTileset->tiles().mid(mIndex, mCount);
-    mTileset->removeTiles(mIndex, mCount);
+    mTileset->removeTiles(mTiles);
     mMapDocument->emitTilesetChanged(mTileset);
+    mTilesAdded = false;
 }
 
 
 AddTiles::AddTiles(MapDocument *mapDocument,
                    Tileset *tileset,
                    const QList<Tile *> &tiles)
-    : AddRemoveTiles(mapDocument,
-                     tileset,
-                     tileset->tileCount(),
-                     tiles.count(),
-                     tiles)
+    : AddRemoveTiles(mapDocument, tileset, tiles, true)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tiles"));
 }
@@ -77,9 +72,8 @@ AddTiles::AddTiles(MapDocument *mapDocument,
 
 RemoveTiles::RemoveTiles(MapDocument *mapDocument,
                          Tileset *tileset,
-                         int index,
-                         int count)
-    : AddRemoveTiles(mapDocument, tileset, index, count)
+                         const QList<Tile *> &tiles)
+    : AddRemoveTiles(mapDocument, tileset, tiles, false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 }

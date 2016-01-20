@@ -47,8 +47,10 @@ public:
 
 private:
     QString mError;
-    QString constructArgs(Tiled::Properties props, QList<QString> propOrder) const;
-    QString constructAdditionalTable(Tiled::Properties props, QList<QString> propOrder) const;
+    QString constructArgs(const Tiled::Properties &props,
+                          const QList<QString> &propOrder) const;
+    QString constructAdditionalTable(const Tiled::Properties &props,
+                                     const QList<QString> &propOrder) const;
 };
 
 } // namespace Tengine

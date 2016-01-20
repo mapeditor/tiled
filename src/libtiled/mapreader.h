@@ -101,17 +101,12 @@ protected:
      * to be used when loading this file. \a mapPath contains the path to the
      * map or tileset that is currently being loaded.
      */
-    virtual QString resolveReference(const QString &reference,
-                                     const QString &mapPath);
-
-    /**
-     * Called when an external image is encountered while a tileset is loaded.
-     */
-    virtual QImage readExternalImage(const QString &source);
+    QString resolveReference(const QString &reference,
+                             const QString &mapPath);
 
     /**
      * Called when an external tileset is encountered while a map is loaded.
-     * The default implementation just calls readTileset() on a new MapReader.
+     * The default implementation just calls Tiled::readTileset().
      *
      * If an error occurred, the \a error parameter should be set to the error
      * message.

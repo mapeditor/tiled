@@ -52,8 +52,6 @@ public:
     Cell gidToCell(unsigned gid, bool &ok) const;
     unsigned cellToGid(const Cell &cell) const;
 
-    void setTilesetWidth(const Tileset *tileset, int width);
-
     QByteArray encodeLayerData(const TileLayer &tileLayer,
                                Map::LayerDataFormat format) const;
 
@@ -72,7 +70,6 @@ public:
 
 private:
     QMap<unsigned, Tileset*> mFirstGidToTileset;
-    QMap<const Tileset*, int> mTilesetColumnCounts;
 
     mutable unsigned mInvalidTile;
 };

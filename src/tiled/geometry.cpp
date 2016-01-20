@@ -169,11 +169,11 @@ static bool isCoherentTo(const QRect &rect, const QRegion &region)
 
 /**
  * Calculates all coherent regions occupied by the given \a region.
- * Returns a list of regions, where each region is coherent in itself.
+ * Returns an array of regions, where each region is coherent in itself.
  */
-QList<QRegion> coherentRegions(const QRegion &region)
+QVector<QRegion> coherentRegions(const QRegion &region)
 {
-    QList<QRegion> result;
+    QVector<QRegion> result;
     QVector<QRect> rects = region.rects();
 
     while (!rects.isEmpty()) {

@@ -9,5 +9,6 @@ TiledPlugin {
         "luaplugin.h",
         "luatablewriter.cpp",
         "luatablewriter.h",
+        "plugin.json",
     ]
 }

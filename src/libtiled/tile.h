@@ -42,6 +42,29 @@ class Terrain;
 class Tileset;
 
 /**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int id)
+{
+    id &= 0xFF;
+    return id << 24 | id << 16 | id << 8 | id;
+}
+
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int topLeft,
+                            int topRight,
+                            int bottomLeft,
+                            int bottomRight)
+{
+    return (topLeft & 0xFF) << 24 |
+           (topRight & 0xFF) << 16 |
+           (bottomLeft & 0xFF) << 8 |
+           (bottomRight & 0xFF);
+}
+
+/**
  * Returns the given \a terrain with the \a corner modified to \a terrainId.
  */
 inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
@@ -63,14 +86,8 @@ struct Frame
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image,
-         int id,
-         Tileset *tileset);
-
-    Tile(const QPixmap &image,
-         const QString &imageSource,
-         int id,
-         Tileset *tileset);
+    Tile(int id, Tileset *tileset);
+    Tile(const QPixmap &image, int id, Tileset *tileset);
 
     ~Tile();
 
@@ -113,6 +130,8 @@ public:
     bool isAnimated() const;
     int currentFrameIndex() const;
     bool advanceAnimation(int ms);
+
+    bool imageLoaded() const;
 
 private:
     int mId;
@@ -263,6 +282,14 @@ inline bool Tile::isAnimated() const
 inline int Tile::currentFrameIndex() const
 {
     return mCurrentFrameIndex;
+}
+
+/**
+ * Returns whether the image referenced by this tile was loaded.
+ */
+inline bool Tile::imageLoaded() const
+{
+    return !mImage.isNull();
 }
 
 } // namespace Tiled

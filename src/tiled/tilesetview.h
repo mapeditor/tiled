@@ -109,6 +109,8 @@ public:
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
 
+    QIcon imageMissingIcon() const;
+
 signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
@@ -146,6 +148,8 @@ private:
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;
+
+    const QIcon mImageMissingIcon;
 };
 
 inline bool TilesetView::markAnimatedTiles() const

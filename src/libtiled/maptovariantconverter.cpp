@@ -33,6 +33,15 @@
 
 using namespace Tiled;
 
+static QString colorToString(const QColor &color)
+{
+#if QT_VERSION >= 0x050200
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+#endif
+    return color.name();
+}
+
 QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 {
     mMapDir = mapDir;
@@ -61,15 +70,15 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())
-        mapVariant[QLatin1String("backgroundcolor")] = bgColor.name();
+        mapVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
 
     QVariantList tilesetVariants;
 
     unsigned firstGid = 1;
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         tilesetVariants << toVariant(tileset.data(), firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
     mapVariant[QLatin1String("tilesets")] = tilesetVariants;
 
@@ -123,6 +132,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     tilesetVariant[QLatin1String("spacing")] = tileset->tileSpacing();
     tilesetVariant[QLatin1String("margin")] = tileset->margin();
     tilesetVariant[QLatin1String("tilecount")] = tileset->tileCount();
+    tilesetVariant[QLatin1String("columns")] = tileset->columnCount();
     tilesetVariant[QLatin1String("properties")] = toVariant(tileset->properties());
 
     const QPoint offset = tileset->tileOffset();
@@ -152,11 +162,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     // animation for those tiles that have them.
     QVariantMap tilePropertiesVariant;
     QVariantMap tilesVariant;
-    for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
+    for (const Tile *tile  : tileset->tiles()) {
         const Properties properties = tile->properties();
         if (!properties.isEmpty())
-            tilePropertiesVariant[QString::number(i)] = toVariant(properties);
+            tilePropertiesVariant[QString::number(tile->id())] = toVariant(properties);
         QVariantMap tileVariant;
         if (tile->terrain() != 0xFFFFFFFF) {
             QVariantList terrainIds;
@@ -184,7 +193,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         }
 
         if (!tileVariant.empty())
-            tilesVariant[QString::number(i)] = tileVariant;
+            tilesVariant[QString::number(tile->id())] = tileVariant;
     }
     if (!tilePropertiesVariant.empty())
         tilesetVariant[QLatin1String("tileproperties")] = tilePropertiesVariant;

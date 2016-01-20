@@ -7,5 +7,6 @@ place to refer to for any details about using Tiled.*
 
 ## Contents
 
+* [Introduction](introduction.md)
 * [Using the Terrain Tool](using-the-terrain-tool.md)
 * [Using Commands](using-commands.md)

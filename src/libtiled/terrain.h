@@ -51,7 +51,7 @@ public:
         Object(TerrainType),
         mId(id),
         mTileset(tileset),
-        mName(name),
+        mName(std::move(name)),
         mImageTileId(imageTileId)
     {
     }
@@ -144,7 +144,7 @@ inline void Terrain::setImageTileId(int imageTileId)
  */
 inline Tile *Terrain::imageTile() const
 {
-    return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : nullptr;
+    return mTileset->findTile(mImageTileId);
 }
 
 /**

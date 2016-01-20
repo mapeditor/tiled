@@ -50,6 +50,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static QString colorToString(const QColor &color)
+{
+#if QT_VERSION >= 0x050200
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+#endif
+    return color.name();
+}
+
 namespace Tiled {
 namespace Internal {
 
@@ -190,7 +199,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     if (map.backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
-                         map.backgroundColor().name());
+                         colorToString(map.backgroundColor()));
     }
 
     w.writeAttribute(QLatin1String("nextobjectid"),
@@ -203,7 +212,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 
     for (const Layer *layer : map.layers()) {
@@ -266,6 +275,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
     w.writeAttribute(QLatin1String("tilecount"),
                      QString::number(tileset.tileCount()));
+    w.writeAttribute(QLatin1String("columns"),
+                     QString::number(tileset.columnCount()));
 
     const QPoint offset = tileset.tileOffset();
     if (!offset.isNull()) {
@@ -319,8 +330,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the properties for those tiles that have them
-    for (int i = 0; i < tileset.tileCount(); ++i) {
-        const Tile *tile = tileset.tileAt(i);
+    for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         unsigned terrain = tile->terrain();
         float probability = tile->probability();
@@ -328,7 +338,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
         if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != 1.f || imageSource.isEmpty() || objectGroup || tile->isAnimated()) {
             w.writeStartElement(QLatin1String("tile"));
-            w.writeAttribute(QLatin1String("id"), QString::number(i));
+            w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
             if (terrain != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
             if (probability != 1.f)

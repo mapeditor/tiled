@@ -23,6 +23,7 @@
 
 #include "languagemanager.h"
 #include "objecttypesmodel.h"
+#include "pluginlistmodel.h"
 #include "preferences.h"
 #include "utils.h"
 
@@ -30,6 +31,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPainter>
+#include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 
 #ifndef QT_NO_OPENGL
@@ -130,17 +132,29 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
     Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");
 
+    PluginListModel *pluginListModel = new PluginListModel(this);
+    QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
+    pluginProxyModel->setSortLocaleAware(true);
+    pluginProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    pluginProxyModel->setSourceModel(pluginListModel);
+    pluginProxyModel->sort(0);
+
+    mUi->pluginList->setModel(pluginProxyModel);
+
     fromPreferences();
+
+    auto *preferences = Preferences::instance();
 
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
-    connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    connect(mUi->openGL, &QCheckBox::toggled,
+            preferences, &Preferences::setUseOpenGL);
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
-            Preferences::instance(), SLOT(setGridColor(QColor)));
+            preferences, SLOT(setGridColor(QColor)));
     connect(mUi->gridFine, SIGNAL(valueChanged(int)),
-            Preferences::instance(), SLOT(setGridFine(int)));
+            preferences, SLOT(setGridFine(int)));
     connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
-            SLOT(objectLineWidthChanged(double)));
+            preferences, SLOT(setObjectLineWidth(qreal)));
 
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -161,9 +175,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             SLOT(applyObjectTypes()));
 
-    connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
-            SLOT(useAutomappingDrawingToggled(bool)));
-    connect(mUi->openLastFiles, SIGNAL(toggled(bool)), SLOT(openLastFilesToggled(bool)));
+    connect(mUi->openLastFiles, &QCheckBox::toggled,
+            preferences, &Preferences::setOpenLastFilesOnStartup);
+
+    connect(pluginListModel, &PluginListModel::setPluginEnabled,
+            preferences, &Preferences::setPluginEnabled);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -191,16 +207,6 @@ void PreferencesDialog::languageSelected(int index)
     const QString language = mUi->languageCombo->itemData(index).toString();
     Preferences *prefs = Preferences::instance();
     prefs->setLanguage(language);
-}
-
-void PreferencesDialog::objectLineWidthChanged(double lineWidth)
-{
-    Preferences::instance()->setObjectLineWidth(lineWidth);
-}
-
-void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
-{
-    Preferences::instance()->setUseOpenGL(useOpenGL);
 }
 
 void PreferencesDialog::addObjectType()
@@ -313,7 +319,6 @@ void PreferencesDialog::fromPreferences()
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
-    mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
 
@@ -323,16 +328,5 @@ void PreferencesDialog::toPreferences()
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
     prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
-}
-
-void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
-{
-    Preferences::instance()->setAutomappingDrawing(enabled);
-}
-
-void PreferencesDialog::openLastFilesToggled(bool enabled)
-{
-    Preferences::instance()->setOpenLastFilesOnStartup(enabled);
 }

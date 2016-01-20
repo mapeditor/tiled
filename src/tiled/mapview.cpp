@@ -20,6 +20,7 @@
 
 #include "mapview.h"
 
+#include "flexiblescrollbar.h"
 #include "mapscene.h"
 #include "preferences.h"
 #include "zoomable.h"
@@ -71,6 +72,8 @@ MapView::MapView(QWidget *parent, Mode mode)
 
     grabGesture(Qt::PinchGesture);
 
+    setVerticalScrollBar(new FlexibleScrollBar(Qt::Vertical, this));
+    setHorizontalScrollBar(new FlexibleScrollBar(Qt::Horizontal, this));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -136,6 +139,42 @@ void MapView::setHandScrolling(bool handScrolling)
     }
 }
 
+/**
+ * Centers the view on the given scene position, even when this requires
+ * extending the range of the scroll bars.
+ *
+ * This code is based on QGraphicsView::centerOn.
+ */
+void MapView::forceCenterOn(const QPointF &pos)
+{
+    // This is only to make it update QGraphicsViewPrivate::lastCenterPoint,
+    // just in case this is important.
+    centerOn(pos);
+
+    auto hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+    auto vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+    bool hScroll = hBar->minimum() != 0 || hBar->maximum() != 0;
+    bool vScroll = vBar->minimum() != 0 || vBar->maximum() != 0;
+
+    qreal width = viewport()->width();
+    qreal height = viewport()->height();
+    QPointF viewPoint = transform().map(pos);
+
+    if (hScroll) {
+        if (isRightToLeft()) {
+            qint64 horizontal = 0;
+            horizontal += hBar->minimum();
+            horizontal += hBar->maximum();
+            horizontal -= int(viewPoint.x() - width / 2.0);
+            hBar->forceSetValue(horizontal);
+        } else {
+            hBar->forceSetValue(int(viewPoint.x() - width / 2.0));
+        }
+    }
+    if (vScroll)
+        vBar->forceSetValue(int(viewPoint.y() - height / 2.0));
+}
+
 bool MapView::event(QEvent *e)
 {
     // Ignore space bar events since they're handled by the MainWindow
@@ -173,6 +212,11 @@ void MapView::wheelEvent(QWheelEvent *event)
     {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
+
+        // This works around problems with automatic alignment of scenes that
+        // are smaller than the view, which seems to be impossible to disable.
+        static_cast<FlexibleScrollBar*>(horizontalScrollBar())->allowNextRangeChange();
+        static_cast<FlexibleScrollBar*>(verticalScrollBar())->allowNextRangeChange();
 
         mZoomable->handleWheelDelta(event->delta());
 
@@ -222,11 +266,16 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     if (mHandScrolling) {
-        QScrollBar *hBar = horizontalScrollBar();
-        QScrollBar *vBar = verticalScrollBar();
+        auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+        auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
         const QPoint d = event->globalPos() - mLastMousePos;
-        hBar->setValue(hBar->value() + (isRightToLeft() ? d.x() : -d.x()));
-        vBar->setValue(vBar->value() - d.y());
+
+        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
+        int verticalValue = vBar->value() - d.y();
+
+        // Panning can freely move the map without restriction on boundaries
+        hBar->forceSetValue(horizontalValue);
+        vBar->forceSetValue(verticalValue);
 
         mLastMousePos = event->globalPos();
         return;

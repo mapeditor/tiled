@@ -248,12 +248,6 @@ void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static inline unsigned makeTerrain(int t)
-{
-    t &= 0xFF;
-    return t << 24 | t << 16 | t << 8 | t;
-}
-
 static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function

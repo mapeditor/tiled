@@ -142,8 +142,12 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged()));
-        connect(mMapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
-                this, SLOT(tilesetTileOffsetChanged(Tileset*)));
+        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
+                this, &MapScene::adaptToTilesetTileSizeChanges);
+        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+                this, &MapScene::adaptToTileSizeChanges);
+        connect(mMapDocument, &MapDocument::tilesetReplaced,
+                this, &MapScene::tilesetReplaced);
         connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
                 this, SLOT(objectsInserted(ObjectGroup*,int,int)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
@@ -460,10 +464,10 @@ void MapScene::imageLayerChanged(ImageLayer *imageLayer)
 }
 
 /**
- * When the tile offset of a tileset has changed, it can affect the bounding
- * rect of all tile layers and tile objects. It also requires a full repaint.
+ * This function should be called when any tiles in the given tileset may have
+ * changed their size or offset or image.
  */
-void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
+void MapScene::adaptToTilesetTileSizeChanges(Tileset *tileset)
 {
     update();
 
@@ -476,6 +480,27 @@ void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
         if (!cell.isEmpty() && cell.tile->tileset() == tileset)
             item->syncWithMapObject();
     }
+}
+
+void MapScene::adaptToTileSizeChanges(Tile *tile)
+{
+    update();
+
+    for (QGraphicsItem *item : mLayerItems)
+        if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
+            tli->syncWithTileLayer();
+
+    for (MapObjectItem *item : mObjectItems) {
+        const Cell &cell = item->mapObject()->cell();
+        if (cell.tile == tile)
+            item->syncWithMapObject();
+    }
+}
+
+void MapScene::tilesetReplaced(int index, Tileset *tileset)
+{
+    Q_UNUSED(index)
+    adaptToTilesetTileSizeChanges(tileset);
 }
 
 /**

@@ -101,8 +101,10 @@
     <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
     <addaction name="separator"/>
-    <addaction name="actionMapProperties"/>
     <addaction name="actionAutoMap"/>
+    <addaction name="actionAutoMapWhileDrawing"/>
+    <addaction name="separator"/>
+    <addaction name="actionMapProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -519,6 +521,14 @@
    </property>
    <property name="text">
     <string>For &amp;All Objects</string>
+   </property>
+  </action>
+  <action name="actionAutoMapWhileDrawing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AutoMap While Drawing</string>
    </property>
   </action>
  </widget>

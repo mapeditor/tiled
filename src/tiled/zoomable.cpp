@@ -29,36 +29,6 @@
 
 using namespace Tiled::Internal;
 
-static const qreal zoomFactors[] = {
-    0.015625,
-    0.03125,
-    0.0625,
-    0.125,
-    0.25,
-    0.33,
-    0.5,
-    0.75,
-    1.0,
-    1.5,
-    2.0,
-    3.0,
-    4.0,
-    5.5,
-    8.0,
-    11.0,
-    16.0,
-    23.0,
-    32.0,
-    45.0,
-    64.0,
-    90.0,
-    128.0,
-    180.0,
-    256.0
-};
-const int zoomFactorCount = sizeof(zoomFactors) / sizeof(zoomFactors[0]);
-
-
 static QString scaleToString(qreal scale)
 {
     return QString(QLatin1String("%1 %")).arg(int(scale * 100));
@@ -73,8 +43,33 @@ Zoomable::Zoomable(QObject *parent)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
     , mComboValidator(nullptr)
 {
-    for (int i = 0; i < zoomFactorCount; i++)
-        mZoomFactors << zoomFactors[i];
+    mZoomFactors = QVector<qreal> {
+        0.015625,
+        0.03125,
+        0.0625,
+        0.125,
+        0.25,
+        0.33,
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        4.0,
+        5.5,
+        8.0,
+        11.0,
+        16.0,
+        23.0,
+        32.0,
+        45.0,
+        64.0,
+        90.0,
+        128.0,
+        180.0,
+        256.0
+    };
 }
 
 void Zoomable::setScale(qreal scale)
@@ -148,7 +143,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 
 void Zoomable::zoomIn()
 {
-    foreach (qreal scale, mZoomFactors) {
+    for (qreal scale : mZoomFactors) {
         if (scale > mScale) {
             setScale(scale);
             break;
@@ -189,7 +184,7 @@ void Zoomable::connectToComboBox(QComboBox *comboBox)
 
     if (mComboBox) {
         mComboBox->clear();
-        foreach (qreal scale, mZoomFactors)
+        for (qreal scale : mZoomFactors)
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
         connect(mComboBox, SIGNAL(activated(int)),

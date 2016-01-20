@@ -90,7 +90,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tmxmapformat.h"
-#include "imagemovementtool.h"
+#include "layeroffsettool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
 
@@ -98,27 +98,81 @@
 #include "macsupport.h"
 #endif
 
-#include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QIdentityProxyModel>
+#include <QLabel>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QRegExp>
 #include <QScrollBar>
 #include <QSessionManager>
+#include <QShortcut>
+#include <QSignalMapper>
 #include <QTextStream>
+#include <QToolButton>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
-#include <QImageReader>
-#include <QRegExp>
-#include <QSignalMapper>
-#include <QShortcut>
-#include <QToolButton>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 using namespace Tiled::Utils;
+
+namespace {
+
+/**
+ * A model that is always empty.
+ */
+class EmptyModel : public QAbstractListModel
+{
+public:
+    EmptyModel(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {}
+
+    int rowCount(const QModelIndex &) const override
+    { return 0; }
+
+    QVariant data(const QModelIndex &, int) const override
+    { return QVariant(); }
+};
+
+/**
+ * A proxy model that makes sure no items are checked or checkable.
+ *
+ * Used in the layer combo box, since the checkboxes can't be used in that
+ * context but are otherwise anyway rendered there on Windows.
+ */
+class UncheckableItemsModel : public QIdentityProxyModel
+{
+public:
+    UncheckableItemsModel(QObject *parent = nullptr)
+        : QIdentityProxyModel(parent)
+    {}
+
+    QVariant data(const QModelIndex &index, int role) const override
+    {
+        if (role == Qt::CheckStateRole)
+            return QVariant();
+
+        return QIdentityProxyModel::data(index, role);
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        Qt::ItemFlags rc = QIdentityProxyModel::flags(index);
+        return rc & ~Qt::ItemIsUserCheckable;
+    }
+};
+
+static EmptyModel emptyModel;
+static UncheckableItemsModel uncheckableLayerModel;
+
+} // anonymous namespace
+
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
@@ -134,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mConsoleDock(new ConsoleDock(this))
     , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
-    , mCurrentLayerLabel(new QLabel)
+    , mLayerComboBox(new QComboBox)
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
@@ -217,6 +271,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mConsoleDock->setVisible(false);
     tileStampsDock->setVisible(false);
 
+    mLayerComboBox->setMinimumContentsLength(10);
+    mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    connect(mLayerComboBox, SIGNAL(activated(int)),
+            this, SLOT(layerComboActivated(int)));
+
+    statusBar()->addPermanentWidget(mLayerComboBox);
     statusBar()->addPermanentWidget(mZoomComboBox);
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -246,6 +306,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
     QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
     mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
@@ -368,10 +429,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
-    connect(mUi->actionMapProperties, SIGNAL(triggered()),
-            SLOT(editMapProperties()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
+    connect(mUi->actionAutoMapWhileDrawing, &QAction::toggled,
+            preferences, &Preferences::setAutomappingDrawing);
+    connect(mUi->actionMapProperties, SIGNAL(triggered()),
+            SLOT(editMapProperties()));
 
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
@@ -381,13 +444,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(newTilesets(QStringList)));
 
     // Add recent file actions to the recent files menu
-    for (int i = 0; i < MaxRecentFiles; ++i)
-    {
-         mRecentFiles[i] = new QAction(this);
+    for (auto &action : mRecentFiles) {
+         action = new QAction(this);
          mUi->menuRecentFiles->insertAction(mUi->actionClearRecentFiles,
-                                            mRecentFiles[i]);
-         mRecentFiles[i]->setVisible(false);
-         connect(mRecentFiles[i], SIGNAL(triggered()),
+                                            action);
+         action->setVisible(false);
+         connect(action, SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
@@ -466,7 +528,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
@@ -475,7 +537,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     statusBar()->addWidget(mStatusInfoLabel);
     connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
             this, SLOT(updateStatusInfoLabel(QString)));
-    statusBar()->addWidget(mCurrentLayerLabel);
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -666,6 +727,8 @@ bool MainWindow::openFile(const QString &fileName,
     }
 
     mDocumentManager->addDocument(mapDocument);
+    mDocumentManager->checkTilesetColumns(mapDocument);
+
     setRecentFile(fileName);
     return true;
 }
@@ -1221,9 +1284,9 @@ bool MainWindow::newTileset(const QString &path)
             ? QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath()
             : path;
 
-    NewTilesetDialog newTileset(startLocation, this);
-    newTileset.setTileWidth(map->tileWidth());
-    newTileset.setTileHeight(map->tileHeight());
+    NewTilesetDialog newTileset(this);
+    newTileset.setImagePath(startLocation);
+    newTileset.setTileSize(map->tileSize());
 
     if (SharedTileset tileset = newTileset.createTileset()) {
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
@@ -1281,7 +1344,7 @@ void MainWindow::addExternalTileset()
         return;
 
     prefs->setLastPath(Preferences::ExternalTileset,
-                       QFileInfo(fileNames.back()).path());
+                       QFileInfo(fileNames.last()).path());
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
@@ -1395,6 +1458,19 @@ void MainWindow::onCollisionEditorClosed()
     mShowTileCollisionEditor->setChecked(false);
 }
 
+void MainWindow::layerComboActivated(int index)
+{
+    if (index == -1)
+        return;
+    if (!mMapDocument)
+        return;
+
+    int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
+
+    if (layerIndex != mMapDocument->currentLayerIndex())
+        mMapDocument->setCurrentLayerIndex(layerIndex);
+}
+
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -1472,6 +1548,7 @@ void MainWindow::updateActions()
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
+    int layerComboIndex = -1;
 
     if (mMapDocument) {
         Layer *currentLayer = mMapDocument->currentLayer();
@@ -1480,6 +1557,10 @@ void MainWindow::updateActions()
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
+
+        int layerIndex = mMapDocument->currentLayerIndex();
+        if (layerIndex != -1)
+            layerComboIndex = mMapDocument->layerModel()->layerIndexToRow(layerIndex);
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
@@ -1509,9 +1590,7 @@ void MainWindow::updateActions()
 
     updateZoomLabel(); // for the zoom actions
 
-    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
-    mCurrentLayerLabel->setText(tr("Current layer: %1").arg(
-                                    layer ? layer->name() : tr("<none>")));
+    mLayerComboBox->setCurrentIndex(layerComboIndex);
 }
 
 void MainWindow::updateZoomLabel()
@@ -1733,7 +1812,14 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
             connect(mZoomable, SIGNAL(scaleChanged(qreal)),
                     this, SLOT(updateZoomLabel()));
         }
+
+        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
+        mLayerComboBox->setModel(&uncheckableLayerModel);
+    } else {
+        mLayerComboBox->setModel(&emptyModel);
     }
+
+    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();

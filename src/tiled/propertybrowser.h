@@ -125,13 +125,15 @@ private:
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
+        TilesetImageParametersProperty,
         FlippingProperty,
         DrawOrderProperty,
+        FileNameProperty,
         TileOffsetProperty,
-        SourceImageProperty,
         MarginProperty,
         SpacingProperty,
         TileProbabilityProperty,
+        ColumnCountProperty,
         IdProperty,
         CustomProperty
     };

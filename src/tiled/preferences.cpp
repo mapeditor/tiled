@@ -23,12 +23,12 @@
 #include "documentmanager.h"
 #include "languagemanager.h"
 #include "mapdocument.h"
+#include "pluginmanager.h"
 #include "tilesetmanager.h"
-
-#include <QStandardPaths>
 
 #include <QFileInfo>
 #include <QSettings>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -54,7 +54,7 @@ Preferences::Preferences()
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
     mLayerDataFormat = static_cast<Map::LayerDataFormat>
-            (intValue("LayerDataFormat", Map::Base64Zlib));
+            (intValue("LayerDataFormat", Map::CSV));
     mMapRenderOrder = static_cast<Map::RenderOrder>
             (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
@@ -64,7 +64,7 @@ Preferences::Preferences()
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
-    mShowGrid = boolValue("ShowGrid");
+    mShowGrid = boolValue("ShowGrid", true);
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
     mSnapToGrid = boolValue("SnapToGrid");
@@ -103,6 +103,16 @@ Preferences::Preferences()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
+
+    // Read the lists of enabled and disabled plugins
+    const QStringList disabledPlugins = mSettings->value(QLatin1String("Plugins/Disabled")).toStringList();
+    const QStringList enabledPlugins = mSettings->value(QLatin1String("Plugins/Enabled")).toStringList();
+
+    PluginManager *pluginManager = PluginManager::instance();
+    for (const QString &fileName : disabledPlugins)
+        pluginManager->setPluginState(fileName, PluginDisabled);
+    for (const QString &fileName : enabledPlugins)
+        pluginManager->setPluginState(fileName, PluginEnabled);
 
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
@@ -449,6 +459,36 @@ void Preferences::setOpenLastFilesOnStartup(bool open)
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
+}
+
+void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
+{
+    PluginManager::instance()->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
+
+    QStringList disabledPlugins;
+    QStringList enabledPlugins;
+
+    PluginManager *pluginManager = PluginManager::instance();
+    auto &states = pluginManager->pluginStates();
+
+    for (auto it = states.begin(), it_end = states.end(); it != it_end; ++it) {
+        const QString &fileName = it.key();
+        PluginState state = it.value();
+        switch (state) {
+        case PluginEnabled:
+            enabledPlugins.append(fileName);
+            break;
+        case PluginDisabled:
+            disabledPlugins.append(fileName);
+            break;
+        case PluginDefault:
+        case PluginStatic:
+            break;
+        }
+    }
+
+    mSettings->setValue(QLatin1String("Plugins/Disabled"), disabledPlugins);
+    mSettings->setValue(QLatin1String("Plugins/Enabled"), enabledPlugins);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const

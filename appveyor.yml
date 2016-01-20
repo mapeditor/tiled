@@ -59,3 +59,7 @@ deploy:
     on:
         branch: master
         appveyor_repo_tag: false
+
+notifications:
+  - provider: Webhook
+    url: https://webhooks.gitter.im/e/6e48d432e0e0dd1b2d22

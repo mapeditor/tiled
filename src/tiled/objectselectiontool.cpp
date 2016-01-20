@@ -340,10 +340,10 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mSelectionRectangle;
     delete mOriginIndicator;
 
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        delete mRotateHandles[i];
-    for (int i = 0; i < AnchorCount; ++i)
-        delete mResizeHandles[i];
+    for (RotateHandle *handle : mRotateHandles)
+        delete handle;
+    for (ResizeHandle *handle : mResizeHandles)
+        delete handle;
 }
 
 void ObjectSelectionTool::activate(MapScene *scene)
@@ -363,19 +363,19 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, SLOT(objectsRemoved(QList<MapObject*>)));
 
     scene->addItem(mOriginIndicator);
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->addItem(mRotateHandles[i]);
-    for (int i = 0; i < AnchorCount; ++i)
-        scene->addItem(mResizeHandles[i]);
+    for (RotateHandle *handle : mRotateHandles)
+        scene->addItem(handle);
+    for (ResizeHandle *handle : mResizeHandles)
+        scene->addItem(handle);
 }
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mOriginIndicator);
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->removeItem(mRotateHandles[i]);
-    for (int i = 0; i < AnchorCount; ++i)
-        scene->removeItem(mResizeHandles[i]);
+    for (RotateHandle *handle : mRotateHandles)
+        scene->removeItem(handle);
+    for (ResizeHandle *handle : mResizeHandles)
+        scene->removeItem(handle);
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
                this, SLOT(updateHandles()));
@@ -840,10 +840,10 @@ void ObjectSelectionTool::updateHandles()
         mResizeHandles[BottomRightAnchor]->setPos(bottomRight);
         mResizeHandles[BottomRightAnchor]->setResizingOrigin(topLeft);
 
-        for (int i = 0; i < CornerAnchorCount; ++i)
-            mRotateHandles[i]->setRotation(handleRotation);
-        for (int i = 0; i < AnchorCount; ++i)
-            mResizeHandles[i]->setRotation(handleRotation);
+        for (RotateHandle *handle : mRotateHandles)
+            handle->setRotation(handleRotation);
+        for (ResizeHandle *handle : mResizeHandles)
+            handle->setRotation(handleRotation);
     }
 
     updateHandleVisibility();
@@ -856,10 +856,10 @@ void ObjectSelectionTool::updateHandleVisibility()
     const bool showOrigin = hasSelection &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        mRotateHandles[i]->setVisible(showHandles && mMode == Rotate);
-    for (int i = 0; i < AnchorCount; ++i)
-        mResizeHandles[i]->setVisible(showHandles && mMode == Resize);
+    for (RotateHandle *handle : mRotateHandles)
+        handle->setVisible(showHandles && mMode == Rotate);
+    for (ResizeHandle *handle : mResizeHandles)
+        handle->setVisible(showHandles && mMode == Resize);
 
     mOriginIndicator->setVisible(showOrigin);
 }

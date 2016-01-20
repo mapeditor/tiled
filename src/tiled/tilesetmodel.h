@@ -89,7 +89,7 @@ public:
      */
     Tile *tileAt(const QModelIndex &index) const;
 
-    int tileIndexAt(const QModelIndex &index) const;
+    int tileIdAt(const QModelIndex &index) const;
 
     /**
      * Returns the index of the given \a tile. The tile is required to be from
@@ -108,9 +108,15 @@ public:
     void setTileset(Tileset *tileset);
 
     /**
-     * Performs a reset on the model.
+     * Refreshes the list of tile IDs. Should be called after tiles are added
+     * or removed from the tileset.
      */
     void tilesetChanged();
+
+    /**
+     * Performs a reset on the model.
+     */
+    void resetModel();
 
 public slots:
     /**
@@ -133,7 +139,10 @@ public slots:
     void tileChanged(Tile *tile);
 
 private:
+    void refreshTileIds();
+
     Tileset *mTileset;
+    QList<int> mTileIds;
 };
 
 } // namespace Internal

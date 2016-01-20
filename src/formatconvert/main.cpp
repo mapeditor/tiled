@@ -94,8 +94,8 @@ int main(int argc, char *argv[]) {
   }
 
   PluginManager::instance()->loadPlugins();
-  foreach (LoadedPlugin plugin, PluginManager::instance()->plugins()) {
-    qDebug() << "Loaded plugin " << plugin.fileName;
+  foreach (PluginFile plugin, PluginManager::instance()->plugins()) {
+    qDebug() << "Loaded plugin " << plugin.fileName();
   }
 
   if (parser.isSet(tilesetOption)) {

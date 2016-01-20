@@ -148,9 +148,11 @@ void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
 
-    const bool enabled = object != nullptr && !isExternal(object);
-    mPropertyBrowser->setEnabled(enabled);
-    mActionAddProperty->setEnabled(enabled);
+    const bool external = isExternal(object);
+    const bool isTileset = object && object->typeId() == Object::TilesetType;
+
+    mPropertyBrowser->setEnabled(object && (!external || isTileset));
+    mActionAddProperty->setEnabled(object && !external);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)

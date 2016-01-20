@@ -284,43 +284,39 @@ bool AutoMapper::setupRuleList()
     Q_ASSERT(mLayerInputRegions);
     Q_ASSERT(mLayerOutputRegions);
 
-    QList<QRegion> combinedRegions = coherentRegions(
-            mLayerInputRegions->region() +
-            mLayerOutputRegions->region());
+    QVector<QRegion> combinedRegions = coherentRegions(mLayerInputRegions->region() +
+                                                       mLayerOutputRegions->region());
 
     qSort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
-    QList<QRegion> rulesInput = coherentRegions(
-            mLayerInputRegions->region());
+    const QVector<QRegion> rulesInput = coherentRegions(mLayerInputRegions->region());
+    const QVector<QRegion> rulesOutput = coherentRegions(mLayerOutputRegions->region());
 
-    QList<QRegion> rulesOutput = coherentRegions(
-            mLayerOutputRegions->region());
+    mRulesInput.resize(combinedRegions.size());
+    mRulesOutput.resize(combinedRegions.size());
 
-    for (int i = 0; i < combinedRegions.size(); ++i) {
-        mRulesInput.append(QRegion());
-        mRulesOutput.append(QRegion());
-    }
-
-    foreach(QRegion reg, rulesInput)
+    for (const QRegion &reg : rulesInput) {
         for (int i = 0; i < combinedRegions.size(); ++i) {
             if (reg.intersects(combinedRegions[i])) {
                 mRulesInput[i] += reg;
                 break;
             }
         }
+    }
 
-    foreach(QRegion reg, rulesOutput)
+    for (const QRegion &reg : rulesOutput) {
         for (int i = 0; i < combinedRegions.size(); ++i) {
             if (reg.intersects(combinedRegions[i])) {
                 mRulesOutput[i] += reg;
                 break;
             }
         }
+    }
 
     Q_ASSERT(mRulesInput.size() == mRulesOutput.size());
     for (int i = 0; i < mRulesInput.size(); ++i) {
         const QRegion checkCoherent = mRulesInput.at(i).united(mRulesOutput.at(i));
-        Q_ASSERT(coherentRegions(checkCoherent).length() == 1);
+        Q_ASSERT(coherentRegions(checkCoherent).size() == 1);
     }
 
     return true;
@@ -378,8 +374,7 @@ bool AutoMapper::setupMissingLayers()
 bool AutoMapper::setupCorrectIndexes()
 {
     // make sure all indexes of the layer translationtables are correct.
-    for (int i = 0; i < mLayerList.size(); ++i) {
-        RuleOutput *translationTable = mLayerList.at(i);
+    for (RuleOutput *translationTable : mLayerList) {
         foreach (Layer *layerKey, translationTable->keys()) {
             QString name = layerKey->name();
             const int pos = name.indexOf(QLatin1Char('_')) + 1;
@@ -407,7 +402,7 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
-    foreach (const SharedTileset &tileset, src->tilesets()) {
+    for (const SharedTileset &tileset : src->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
@@ -421,17 +416,15 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-
-            undoStack->push(new ChangeProperties(mMapDocument,
-                                                 tr("Tile"),
-                                                 replacementTile,
-                                                 properties));
+        for (Tile *replacementTile : replacement->tiles()) {
+            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
+                Properties properties = replacementTile->properties();
+                properties.merge(originalTile->properties());
+                undoStack->push(new ChangeProperties(mMapDocument,
+                                                     tr("Tile"),
+                                                     replacementTile,
+                                                     properties));
+            }
         }
         src->replaceTileset(tileset, replacement);
 
@@ -447,7 +440,7 @@ void AutoMapper::autoMap(QRegion *where)
     // first resize the active area
     if (mAutoMappingRadius) {
         QRegion region;
-        foreach (const QRect &r, where->rects()) {
+        for (const QRect &r : where->rects()) {
             region += r.adjusted(- mAutoMappingRadius,
                                  - mAutoMappingRadius,
                                  + mAutoMappingRadius,
@@ -459,10 +452,9 @@ void AutoMapper::autoMap(QRegion *where)
     // delete all the relevant area, if the property "DeleteTiles" is set
     if (mDeleteTiles) {
         const QRegion setLayersRegion = getSetLayersRegion();
-        for (int i = 0; i < mLayerList.size(); ++i) {
-            RuleOutput *translationTable = mLayerList.at(i);
+        for (RuleOutput *translationTable : mLayerList) {
             foreach (Layer *layer, translationTable->keys()) {
-                const int index = mLayerList.at(i)->value(layer);
+                const int index = translationTable->value(layer);
                 Layer *dstLayer = mMapWork->layerAt(index);
                 const QRegion region = setLayersRegion.intersected(*where);
                 TileLayer *dstTileLayer = dstLayer->asTileLayer();

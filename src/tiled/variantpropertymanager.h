@@ -24,6 +24,8 @@
 
 #include <QtVariantPropertyManager>
 
+#include <QFileIconProvider>
+
 namespace Tiled {
 namespace Internal {
 
@@ -36,10 +38,7 @@ class VariantPropertyManager : public QtVariantPropertyManager
     Q_OBJECT
 
 public:
-    explicit VariantPropertyManager(QObject *parent = nullptr)
-        : QtVariantPropertyManager(parent)
-        , mSuggestionsAttribute(QLatin1String("suggestions"))
-    {}
+    explicit VariantPropertyManager(QObject *parent = nullptr);
 
     QVariant value(const QtProperty *property) const override;
     int valueType(int propertyType) const override;
@@ -51,6 +50,7 @@ public:
                             const QString &attribute) const override;
 
     static int filePathTypeId();
+    static int tilesetParametersTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -60,18 +60,21 @@ public slots:
 
 protected:
     QString valueText(const QtProperty *property) const override;
+    QIcon valueIcon(const QtProperty *property) const override;
     void initializeProperty(QtProperty *property) override;
     void uninitializeProperty(QtProperty *property) override;
 
 private:
     struct Data {
-        QString value;
+        QVariant value;
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;
     QMap<const QtProperty *, QStringList> mSuggestions;
 
     const QString mSuggestionsAttribute;
+    QIcon mImageMissingIcon;
+    QFileIconProvider mIconProvider;
 };
 
 } // namespace Internal

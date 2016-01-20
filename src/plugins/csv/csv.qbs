@@ -7,5 +7,6 @@ TiledPlugin {
         "csv_global.h",
         "csvplugin.cpp",
         "csvplugin.h",
+        "plugin.json",
     ]
 }

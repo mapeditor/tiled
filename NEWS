@@ -1,3 +1,25 @@
+0.15.0 (4 January 2016)
+* Allow loading maps with broken external references
+* Allow plugins to be enabled/disabled
+* Allow changing tileset image parameters
+* Allow changing the images of tiles in a collection tileset
+* Allow changing external tileset references
+* Allow panning over the edges of the map
+* Added Terrain Generator tool
+* Added column count property to image collection tilesets
+* Added a combo box for changing the current layer to the status bar
+* Moved the AutoMapping while drawing toggle into the menu
+* Removing tiles from collection tilesets no longer changes tile IDs
+* Unified layer offset handling
+* Default tile layer data format changed to CSV
+* Deprecated pure XML and Gzip-compressed tile layer data formats
+* Fixed random tile picker for tiles with zero probability (by Henrik Heino)
+* Fixed saving of alpha value of the map background color
+* Fixed crash in tmxrasterizer and tmxviewer
+* Fixed tmxrasterizer not reporting write errors
+* Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
+* Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations
+
 0.14.2 (12 October 2015)
 * Fixed layer offsets missing in the Lua export
 * Fixed JSON tileset format missing in 'Add External Tileset' action

@@ -302,7 +302,7 @@ private:
     /**
      * List of Regions in mMapRules to know where the input rules are
      */
-    QList<QRegion> mRulesInput;
+    QVector<QRegion> mRulesInput;
     
     /**
      * List of regions in mMapRules to know where the output of a 
@@ -311,7 +311,7 @@ private:
      * which has the input at mRulesInput[i], meaning that mRulesInput
      * and mRulesOutput must match with the indexes.
      */
-    QList<QRegion> mRulesOutput;
+    QVector<QRegion> mRulesOutput;
 
     /**
      * The inner set with layers to indexes is needed for translating

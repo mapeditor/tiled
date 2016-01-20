@@ -26,4 +26,9 @@ DynamicLibrary {
         }
         fileTagsFilter: "dynamiclibrary"
     }
+
+    FileTagger {
+        patterns: "plugin.json"
+        fileTags: ["qt_plugin_metadata"]
+    }
 }

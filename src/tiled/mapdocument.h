@@ -180,6 +180,7 @@ public:
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
+    SharedTileset replaceTileset(int index, const SharedTileset &tileset);
     void setTilesetFileName(Tileset *tileset, const QString &fileName);
     void setTilesetName(Tileset *tileset, const QString &name);
     void setTilesetTileOffset(Tileset *tileset, const QPoint &tileOffset);
@@ -289,7 +290,7 @@ signals:
      * selected region and the previously selected region.
      */
     void selectedAreaChanged(const QRegion &newSelection,
-                              const QRegion &oldSelection);
+                             const QRegion &oldSelection);
 
     /**
      * Emitted when the list of selected objects changes.
@@ -342,6 +343,7 @@ signals:
 
     void tileLayerDrawMarginsChanged(TileLayer *layer);
 
+    void tileImageSourceChanged(Tile *tile);
     void tileTerrainChanged(const QList<Tile*> &tiles);
     void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
@@ -356,6 +358,7 @@ signals:
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
+    void tilesetReplaced(int index, Tileset *tileset);
     void tilesetFileNameChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
@@ -413,6 +416,35 @@ private:
     QUndoStack *mUndoStack;
     QDateTime mLastSaved;
 };
+
+
+/**
+ * Class used to describe an embedded Tileset, changes to which are applied
+ * using undo commands on the undo stack of the associated MapDocument.
+ */
+class EmbeddedTileset
+{
+public:
+    EmbeddedTileset()
+        : mMapDocument(nullptr)
+        , mTileset(nullptr)
+    {}
+
+    EmbeddedTileset(MapDocument *mapDocument, Tileset *tileset)
+        : mMapDocument(mapDocument)
+        , mTileset(tileset)
+        , mImageSource(tileset->imageSource())
+    {}
+
+    MapDocument *mapDocument() const { return mMapDocument; }
+    Tileset *tileset() const { return mTileset; }
+
+private:
+    MapDocument *mMapDocument;
+    Tileset *mTileset;
+    QString mImageSource;    // affects display
+};
+
 
 inline QString MapDocument::lastExportFileName() const
 {
@@ -529,5 +561,7 @@ inline void MapDocument::emitEditCurrentObject()
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Internal::EmbeddedTileset)
 
 #endif // MAPDOCUMENT_H

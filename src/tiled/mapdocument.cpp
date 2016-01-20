@@ -615,6 +615,43 @@ void MapDocument::moveTileset(int from, int to)
     emit tilesetMoved(from, to);
 }
 
+/**
+ * Replaces the tileset at the given \a index with the new \a tileset. Replaces
+ * all tiles from the replaced tileset with tiles from the new tileset.
+ *
+ * @return The replaced tileset.
+ */
+SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tileset)
+{
+    SharedTileset oldTileset = mMap->tilesetAt(index);
+
+    mMap->replaceTileset(oldTileset, tileset);
+
+    // Try to keep the current object valid
+    if (mCurrentObject == oldTileset.data()) {
+        setCurrentObject(tileset.data());
+
+    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TileType) {
+        Tile *tile = static_cast<Tile*>(mCurrentObject);
+        if (tile->tileset() == oldTileset.data())
+            setCurrentObject(tileset->findTile(tile->id()));
+
+    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TerrainType) {
+        Terrain *terrain = static_cast<Terrain*>(mCurrentObject);
+        if (terrain->tileset() == oldTileset.data())
+            setCurrentObject(tileset->terrain(terrain->id()));
+    }
+
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReference(tileset);
+    tilesetManager->removeReference(oldTileset);
+
+    emit tilesetReplaced(index, tileset.data());
+
+    return oldTileset;
+}
+
 void MapDocument::setSelectedArea(const QRegion &selection)
 {
     if (mSelectedArea != selection) {
@@ -653,13 +690,13 @@ QList<Object*> MapDocument::currentObjects() const
     QList<Object*> objects;
     if (mCurrentObject) {
         if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            for (MapObject *mapObj : mSelectedObjects) {
+            const auto &selectedObjects = mSelectedObjects;
+            for (MapObject *mapObj : selectedObjects)
                 objects.append(mapObj);
-            }
         } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            for (Tile *tile : mSelectedTiles) {
+            const auto &selectedTiles = mSelectedTiles;
+            for (Tile *tile : selectedTiles)
                 objects.append(tile);
-            }
         } else {
             objects.append(mCurrentObject);
         }
@@ -685,7 +722,7 @@ void MapDocument::unifyTilesets(Map *map)
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of this map
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
@@ -696,22 +733,23 @@ void MapDocument::unifyTilesets(Map *map)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(this,
-                                                     tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
+        for (Tile *replacementTile : replacement->tiles()) {
+            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
+                Properties properties = replacementTile->properties();
+                properties.merge(originalTile->properties());
+                undoCommands.append(new ChangeProperties(this,
+                                                         tr("Tile"),
+                                                         replacementTile,
+                                                         properties));
+            }
         }
-        map->replaceTileset(tileset, replacement);
 
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
+
+        map->replaceTileset(tileset, replacement);
     }
+
     if (!undoCommands.isEmpty()) {
         mUndoStack->beginMacro(tr("Tileset Changes"));
         foreach (QUndoCommand *command, undoCommands)
@@ -733,7 +771,7 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
     const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         // tileset already added
         if (existingTilesets.contains(tileset))
             continue;
@@ -748,10 +786,10 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
         }
 
         // replacement tileset found, change given map
-        map->replaceTileset(tileset, replacement);
-
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
+
+        map->replaceTileset(tileset, replacement);
     }
 }
 
@@ -843,15 +881,15 @@ void MapDocument::onLayerAboutToBeRemoved(int index)
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
-    bool currentLayerRemoved = mCurrentLayerIndex == mMap->layerCount();
-    if (currentLayerRemoved)
+    bool currentLayerAffected = index <= mCurrentLayerIndex;
+    if (currentLayerAffected)
         mCurrentLayerIndex = mCurrentLayerIndex - 1;
 
     emit layerRemoved(index);
 
     // Emitted after the layerRemoved signal so that the MapScene has a chance
     // of synchronizing before adapting to the newly selected index
-    if (currentLayerRemoved)
+    if (currentLayerAffected)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 

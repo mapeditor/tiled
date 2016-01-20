@@ -91,7 +91,7 @@ QVariant FrameListModel::data(const QModelIndex &index, int role) const
         return mFrames.at(index.row()).duration;
     case Qt::DecorationRole: {
         int tileId = mFrames.at(index.row()).tileId;
-        if (Tile *tile = mTileset->tileAt(tileId))
+        if (Tile *tile = mTileset->findTile(tileId))
             return tile->image();
     }
     }
@@ -500,7 +500,8 @@ void TileAnimationEditor::advancePreviewAnimation(int ms)
     }
 
     if (previousTileId != frame.tileId) {
-        if (const Tile *tile = mTile->tileset()->tileAt(frame.tileId))
+        Tileset *tileset = mTile->tileset();
+        if (const Tile *tile = tileset->findTile(frame.tileId))
             mUi->preview->setPixmap(tile->image());
     }
 }
@@ -512,7 +513,8 @@ void TileAnimationEditor::resetPreview()
 
     if (mTile && mTile->isAnimated()) {
         const int tileId = mTile->frames().first().tileId;
-        if (const Tile *tile = mTile->tileset()->tileAt(tileId)) {
+        Tileset *tileset = mTile->tileset();
+        if (Tile *tile = tileset->findTile(tileId)) {
             mUi->preview->setPixmap(tile->image());
             return;
         }

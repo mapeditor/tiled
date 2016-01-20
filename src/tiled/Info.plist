@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Tiled</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Tiled 0.14.2, Copyright 2008-2015 Thorbjørn Lindeijer, GNU General Public License</string>
+	<string>Tiled 0.15.0, Copyright 2008-2015 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
 	<string>tiled-icon-mac</string>
 	<key>CFBundleIdentifier</key>
@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.14.2</string>
+	<string>0.15.0</string>
 	<key>CFBundleVersion</key>
-	<string>0.14.2</string>
+	<string>0.15.0</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
