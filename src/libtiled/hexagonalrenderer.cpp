@@ -404,12 +404,12 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
         y -= p.staggerEven ? p.tileHeight : p.sideOffsetY;
 
     // Start with the coordinates of a grid-aligned tile
-    QPoint referencePoint = QPoint(qFloor(x / (p.tileWidth + p.sideLengthX)),
-                                   qFloor(y / (p.tileHeight + p.sideLengthY)));
+    QPoint referencePoint = QPoint(qFloor(x / (p.columnWidth * 2)),
+                                   qFloor(y / (p.rowHeight * 2)));
 
     // Relative x and y position on the base square of the grid-aligned tile
-    const QVector2D rel(x - referencePoint.x() * (p.tileWidth + p.sideLengthX),
-                        y - referencePoint.y() * (p.tileHeight + p.sideLengthY));
+    const QVector2D rel(x - referencePoint.x() * (p.columnWidth * 2),
+                        y - referencePoint.y() * (p.rowHeight * 2));
 
     // Adjust the reference point to the correct tile coordinates
     int &staggerAxisIndex = p.staggerX ? referencePoint.rx() : referencePoint.ry();
