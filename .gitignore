@@ -10,12 +10,15 @@ Makefile*
 moc_*.cpp
 ui_*.h
 qrc_*
+.*.sw*
+tags
 
 # Build artifacts on Windows
 tiled.exe
 tmxrasterizer.exe
 tmxviewer.exe
 automappingconverter.exe
+formatconvert.exe
 *.dll
 *.obj
 *.a

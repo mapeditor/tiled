@@ -16,6 +16,7 @@ Project {
         "src/tiled",
         "src/tmxrasterizer",
         "src/tmxviewer",
+        "src/formatconvert",
         "translations",
         "util/java/libtiled-java",
         "util/java/tmxviewer-java"
