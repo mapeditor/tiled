@@ -51,6 +51,8 @@ private slots:
     void mapChanged();
     void layerChanged(int index);
     void syncOverlayItems(const QList<MapObject *> &objects);
+    void objectsAdded(const QList<MapObject*> &objects);
+    void objectsRemoved(const QList<MapObject*> &objects);
 
     void objectLabelVisibilityChanged();
 

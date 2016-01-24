@@ -112,6 +112,12 @@ static QRectF objectBounds(const MapObject *object,
 }
 
 
+static Preferences::ObjectLabelVisiblity objectLabelVisibility()
+{
+    return Preferences::instance()->objectLabelVisibility();
+}
+
+
 class MapObjectOutline : public QGraphicsItem
 {
 public:
@@ -283,10 +289,16 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncOverlayItems);
 
+    connect(mapDocument, &MapDocument::objectsAdded,
+            this, &ObjectSelectionItem::objectsAdded);
+
+    connect(mapDocument, &MapDocument::objectsRemoved,
+            this, &ObjectSelectionItem::objectsRemoved);
+
     connect(Preferences::instance(), &Preferences::objectLabelVisibilityChanged,
             this, &ObjectSelectionItem::objectLabelVisibilityChanged);
 
-    if (Preferences::instance()->objectLabelVisibility() == Preferences::AllObjectLabels)
+    if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
 }
 
@@ -309,7 +321,7 @@ void ObjectSelectionItem::layerChanged(int index)
 
     // If labels for all objects are visible, some labels may need to be added
     // removed based on layer visibility.
-    if (Preferences::instance()->objectLabelVisibility() == Preferences::AllObjectLabels)
+    if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
 
     // If an object layer changed, that means its offset may have changed,
@@ -328,6 +340,28 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
             labelItem->syncWithMapObject(renderer);
     }
+}
+
+void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
+{
+    MapRenderer *renderer = mMapDocument->renderer();
+
+    if (objectLabelVisibility() == Preferences::AllObjectLabels) {
+        for (MapObject *object : objects) {
+            Q_ASSERT(!mObjectLabels.contains(object));
+
+            MapObjectLabel *labelItem = new MapObjectLabel(object, this);
+            labelItem->syncWithMapObject(renderer);
+            mObjectLabels.insert(object, labelItem);
+        }
+    }
+}
+
+void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
+{
+    if (objectLabelVisibility() == Preferences::AllObjectLabels)
+        for (MapObject *object : objects)
+            delete mObjectLabels.take(object);
 }
 
 void ObjectSelectionItem::objectLabelVisibilityChanged()
@@ -353,7 +387,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         labelItems.insert(object, labelItem);
     };
 
-    switch (Preferences::instance()->objectLabelVisibility()) {
+    switch (objectLabelVisibility()) {
     case Preferences::AllObjectLabels:
         for (Layer *layer : mMapDocument->map()->layers()) {
             if (!layer->isVisible())
