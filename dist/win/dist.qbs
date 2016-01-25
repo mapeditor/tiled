@@ -1,7 +1,8 @@
 import qbs
 import qbs.FileInfo
+import qbs.File
 
-NSISSetup {
+WindowsInstallerPackage {
     builtByDefault: false
     condition: qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc")
 
@@ -18,21 +19,33 @@ NSISSetup {
             return 32;
     }
 
-    targetName: "tiled-" + project.version + "-win" + bits + "-setup"
+    targetName: "tiled-" + project.version + "-win" + bits
 
-    nsis.defines: [
-        "QT_DIR=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
-        "MINGW_DIR=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."),
-        "V=" + project.version,
-        "ARCH=" + bits,
-        "ROOT_DIR=" + project.sourceDirectory,
-        "BUILD_DIR=" + qbs.installRoot
+    wix.defines: {
+        var defs = [
+            "Version=" + project.version,
+            "InstallRoot=" + qbs.installRoot,
+            "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
+            "RootDir=" + project.sourceDirectory
+        ];
+
+        if (qbs.toolchain.contains("mingw")) {
+            defs.push("MingwDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."));
+        }
+
+        // A bit of a hack to exclude the Python plugin when it isn't built
+        if (File.exists("C:/Python27") &&
+                qbs.toolchain.contains("mingw") &&
+                !qbs.debugInformation) {
+            defs.push("Python");
+        }
+
+        return defs;
+    }
+
+    wix.extensions: [
+        "WixUIExtension"
     ]
 
-    files: {
-        if (qbs.toolchain.contains("mingw"))
-            return ["tiled-mingw.nsi"]
-        else
-            return ["tiled-vs2013.nsi"]
-    }
+    files: ["installer.wxs"]
 }

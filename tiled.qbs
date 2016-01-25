@@ -1,6 +1,8 @@
 import qbs 1.0
 
 Project {
+    name: "Tiled"
+
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.4.2"
 
