@@ -19,6 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "preferences.h"
 #include "resizedialog.h"
 #include "ui_resizedialog.h"
 
@@ -32,6 +33,12 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    connect(mUi->buttonBox, SIGNAL(accepted()),
+                            SLOT(saveSettings()));
+
+    Preferences *prefs = Preferences::instance();
+    mUi->removeObjsCheckBox->setChecked(prefs->removeObjectsOutsideMap());
 
     // Initialize the new size of the resizeHelper to the default values of
     // the spin boxes. Otherwise, if the map width or height is default, then
@@ -69,6 +76,19 @@ const QSize &ResizeDialog::newSize() const
 const QPoint &ResizeDialog::offset() const
 {
     return mUi->resizeHelper->offset();
+}
+
+bool ResizeDialog::removeObjsOutsideMap() const
+{
+    return mUi->removeObjsCheckBox->isChecked();
+}
+
+void ResizeDialog::saveSettings()
+{
+    Preferences *prefs = Preferences::instance();
+    prefs->setRemoveObjectsOutsideMap(mUi->removeObjsCheckBox->isChecked());
+    done(QDialog::Accepted);
+
 }
 
 void ResizeDialog::updateOffsetBounds(const QRect &bounds)
