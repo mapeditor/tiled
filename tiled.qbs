@@ -9,7 +9,7 @@ Project {
     property string version: qbs.getEnv("TILED_VERSION") || "0.15.0";
 
     references: [
-        "dist/win",
+        "dist/win/dist.qbs",
         "src/automappingconverter",
         "src/libtiled",
         "src/plugins",

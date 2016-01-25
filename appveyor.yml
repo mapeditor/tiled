@@ -20,6 +20,7 @@ build_script:
   - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
+  - cp dist/win/WiXModule.qbs C:\Qt\Tools\QtCreator\share\qtcreator\qbs\share\qbs\modules\wix\WiXModule.qbs
   - qbs setup-toolchains --detect
   - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
   - qbs config profiles.i686-w64-mingw32.cpp.nmPath nm.exe
