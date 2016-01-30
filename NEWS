@@ -1,3 +1,10 @@
+0.15.1 (30 January 2016)
+* Fixed adding/removing object name labels when set to always visible
+* Fixed a problem with 'Execute in Terminal' on OS X
+* Fixed mouse coordinate conversion for hexagonal renderer
+* Fixed image layer offset handling
+* Update Czech translation
+
 0.15.0 (4 January 2016)
 * Allow loading maps with broken external references
 * Allow plugins to be enabled/disabled
