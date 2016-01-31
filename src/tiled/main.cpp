@@ -290,9 +290,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    if (updater && updater->automaticallyChecksForUpdates())
-        updater->checkForUpdates();
-
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
 
