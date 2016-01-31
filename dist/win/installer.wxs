@@ -85,6 +85,10 @@
             <File Id="MSVCR120" Source="$(var.SystemDir)\MSVCR120.DLL"/>
             <?endif?>
 
+            <?ifdef Sparkle ?>
+            <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
+            <?endif?>
+
             <File Id="COPYING" Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>
             <File Id="AUTHORS" Name="AUTHORS.txt" Source="$(var.RootDir)\AUTHORS"/>
             <File Id="README" Name="README.txt" Source="$(var.RootDir)\README.md"/>
