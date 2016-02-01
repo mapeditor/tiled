@@ -61,6 +61,19 @@ deploy:
     password:
       secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
     folder: public_html/files.mapeditor.org/public/daily
+    artifact: /.*\.msi/
+    on:
+        branch: master
+        appveyor_repo_tag: false
+
+  - provider: FTP
+    protocol: sftp
+    host: update.mapeditor.org
+    username: bjorn
+    password:
+      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
+    folder: sparkle
+    artifact: 'appcast-win-snapshots.xml'
     on:
         branch: master
         appveyor_repo_tag: false
