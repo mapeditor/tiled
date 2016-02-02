@@ -62,7 +62,7 @@ WindowsInstallerPackage {
     Rule {
         inputs: ["appCastXmlIn"]
         Artifact {
-            filePath: input.completeBaseName
+            filePath: input.completeBaseName.replace('win', 'win' + product.bits);
             fileTags: "appcast"
         }
         prepare: {
@@ -79,6 +79,7 @@ WindowsInstallerPackage {
                 vars['DATE'] = new Date().toISOString().slice(0, 10);
                 vars['VERSION'] = project.version;
                 vars['FILENAME'] = product.targetName + ".msi";
+                vars['APPCAST_FILENAME'] = output.fileName;
 
                 for (i in vars) {
                     all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);

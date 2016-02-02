@@ -36,13 +36,13 @@ after_build:
   - cd qt-release
   - cd dist*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
-  - move appcast-win-snapshots.xml %APPVEYOR_BUILD_FOLDER%
+  - move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - name: Installer
     path: 'tiled-*.msi'
   - name: AppCast
-    path: 'appcast-win-snapshots.xml'
+    path: 'appcast-win*-snapshots.xml'
 
 deploy:
   - provider: GitHub
@@ -73,7 +73,7 @@ deploy:
     password:
       secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
     folder: sparkle
-    artifact: 'appcast-win-snapshots.xml'
+    artifact: /appcast-win.*-snapshots\.xml/
     on:
         branch: master
         appveyor_repo_tag: false

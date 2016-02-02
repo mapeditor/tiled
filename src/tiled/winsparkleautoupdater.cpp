@@ -28,7 +28,11 @@ namespace Tiled {
 namespace Internal {
 
 #ifdef TILED_SNAPSHOT
-static const char appcastUrl[] = "http://update.mapeditor.org/appcast-win-snapshots.xml";
+#ifdef Q_PROCESSOR_X86_32
+static const char appcastUrl[] = "http://update.mapeditor.org/appcast-win32-snapshots.xml";
+#else
+static const char appcastUrl[] = "http://update.mapeditor.org/appcast-win64-snapshots.xml";
+#endif
 #else
 static const char appcastUrl[] = "http://update.mapeditor.org/appcast-win.xml";
 #endif
