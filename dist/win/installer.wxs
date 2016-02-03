@@ -1,7 +1,10 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
 
-  <?define UpgradeCode = "F7EEDD05-BBFC-4D6A-9BF6-98D3BA77F327"?>
+  <?define ProductName = "Tiled" ?>
+  <?define Manufacturer = "mapeditor.org" ?>
+  <?define UpgradeCode = "F7EEDD05-BBFC-4D6A-9BF6-98D3BA77F327" ?>
+  <?define WebsiteURL="http://www.mapeditor.org/" ?>
 
   <?ifndef InstallRoot ?>
   <?error InstallRoot must be defined ?>
@@ -20,44 +23,57 @@
   <?endif?>
 
   <?if $(var.Platform) = x64 ?>
-  <?define ProductName = "Tiled $(var.Version) (64 bit)" ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
   <?define SystemDir = "C:\windows\SysWOW64" ?>
   <?else ?>
-  <?define ProductName = "Tiled $(var.Version) (32 bit)" ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
   <?define SystemDir = "C:\windows\system32" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
            UpgradeCode="$(var.UpgradeCode)" 
-           Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='mapeditor.org'>
+           Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='$(var.Manufacturer)'>
 
-    <Package Id='*' Keywords='Installer' Description="Tiled Installer"
-             Comments='Windows Installer Package' Manufacturer='mapeditor.org'
+    <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
+             Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
              Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
-    <Upgrade Id='$(var.UpgradeCode)'>
-      <UpgradeVersion OnlyDetect='yes' Property='SELFFOUND' Minimum='$(var.Version)' IncludeMinimum='yes' Maximum='$(var.Version)' IncludeMaximum='yes' />
-      <UpgradeVersion OnlyDetect='yes' Property='NEWERVERSIONDETECTED' Minimum='$(var.Version)' IncludeMinimum='no' />
-      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND' Minimum='0.0.0.0' IncludeMinimum='yes' Maximum='$(var.Version)' IncludeMaximum='no' />
-    </Upgrade>
+    <MajorUpgrade AllowDowngrades="yes" />
 
-    <CustomAction Id='AlreadyUpdated' Error='Tiled $(var.Version) is already installed. Uninstall it first if you want to reinstall.' />
-    <CustomAction Id='NoDowngrade' Error='A newer version of Tiled is already installed. Uninstall it first if you want to downgrade.' />
+    <!-- Set properties for add/remove programs -->
+    <Property Id="ARPPRODUCTICON" Value="tiled.exe" />
+    <Property Id="ARPURLINFOABOUT" Value="$(var.WebsiteURL)" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
 
     <Media Id='1' Cabinet='files.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
     <Property Id='DiskPrompt' Value="Tiled Installation [1]" />
 
+    <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
+    <InstallUISequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallExecuteSequence>
+
     <Property Id="INSTALLDIR">
-      <RegistrySearch Id='TiledRegistry' Type='raw' Root='HKLM' Key='Software\[Manufacturer]\Tiled' Name='InstallDir' />
+      <RegistrySearch Id='DetermineInstallLocation' Type='raw' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]' Name='InstallDir' />
     </Property>
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
         <Directory Id='INSTALLDIR' Name='Tiled'>
 
-          <Component Id='MainExecutable' Guid='0C99CE6A-5733-4197-AF54-A9C815F7A1B2'>
+          <Component Id='MainExecutable' Guid='{4DC82B82-E1A7-4829-92CC-2BEB40E361BD}'>
             <File Id='TiledEXE' Source='$(var.InstallRoot)\tiled.exe' KeyPath='yes'>
               <Shortcut Id="startmenuTiled" Directory="ProgramMenuDir" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
               <Shortcut Id="desktopTiled" Directory="DesktopFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
@@ -97,7 +113,7 @@
             <File Id="LICENSE_BSD" Name="LICENSE.BSD.txt" Source="$(var.RootDir)\LICENSE.BSD"/>
             <File Id="LICENSE_GPL" Name="LICENSE.GPL.txt" Source="$(var.RootDir)\LICENSE.GPL"/>
 
-            <RegistryKey Id='TiledRegInstallDir' Root='HKLM' Key='Software\[Manufacturer]\Tiled' ForceCreateOnInstall='yes' ForceDeleteOnUninstall='yes'>
+            <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'>
               <RegistryValue Type='string' Name='InstallDir' Value='[INSTALLDIR]'/>
             </RegistryKey>
 
@@ -111,7 +127,7 @@
 
           <Directory Id="dir83A7B7C3F39E24970C38654C9B6F4A12" Name="plugins">
             <Directory Id="dirED990048BCB522432182867E2817CD9B" Name="tiled">
-              <Component Id="Plugins" Guid="{0238B628-262E-4BC1-800E-D154769ED705}">
+              <Component Id="Plugins" Guid="{11ACEE38-A936-4FF4-BD8C-D1475D5454D1}">
                 <File Id="filD1109002A9E8142F43A07606A4BCE0A2" Source="$(var.InstallRoot)\plugins\tiled\csv.dll" />
                 <File Id="fil27B14922FA15B9385D880460E98E2D2E" Source="$(var.InstallRoot)\plugins\tiled\droidcraft.dll" />
                 <File Id="filD34235A8BFB590E5CCC1D9E2894616EC" Source="$(var.InstallRoot)\plugins\tiled\flare.dll" />
@@ -128,12 +144,12 @@
               </Component>
             </Directory>
             <Directory Id="platformPlugins" Name="platforms">
-              <Component Id="PlatformPlugins" Guid="{3122BEDA-7832-44D0-87BA-973CEB958E87}">
+              <Component Id="PlatformPlugins" Guid="{093AD7E9-DE6A-48F5-B40D-E260E3F6D4D5}">
                 <File Id="qwindows_dll" Source="$(var.QtDir)\plugins\platforms\qwindows.dll"/>
               </Component>
             </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
-              <Component Id="ImageFormatPlugins" Guid="{804AC53C-B038-444E-8608-02D2A8F84792}">
+              <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
                 <File Id="qtiff_dll" Source="$(var.QtDir)\plugins\imageformats\qtiff.dll"/>
@@ -142,7 +158,7 @@
           </Directory>
 
           <Directory Id="dir674F7F6D2030C2EBF39AA06B57EAF368" Name="translations">
-            <Component Id="Translations" Guid="{0676D9FC-E087-45FE-8840-4CE87E428595}">
+            <Component Id="Translations" Guid="{EA6DC1E2-A2EB-4130-A482-231583226C08}">
               <!-- Tiled translations -->
               <File Id="fil3C525D5A74BC448FF36832F8D3438CB9" Source="$(var.InstallRoot)\translations\tiled_ar_DZ.qm" />
               <File Id="filAB72AFE09E98BEA6DB799EEC31066C72" Source="$(var.InstallRoot)\translations\tiled_bg.qm" />
@@ -177,7 +193,7 @@
             </Component>
           </Directory>
           <Directory Id="examples" Name="examples">
-            <Component Id="Examples" Guid="{1165C5A1-AEF3-4BBA-9641-D3B0020E6A38}">
+            <Component Id="Examples" Guid="{AC8FD854-A03C-475D-AE66-64428B43C8D7}">
               <File Id="fil01FBB3D103DB1755CCB8215D90DCD886" Source="$(var.RootDir)\examples\desert.tmx" />
               <File Id="fil40BD750BCC31DCB35695B0715B5B9688" Source="$(var.RootDir)\examples\desert.tsx" />
               <File Id="fil3080562A01DBC7B7F1041145306559D2" Source="$(var.RootDir)\examples\hexagonal-mini.tmx" />
@@ -192,7 +208,7 @@
               <File Id="filB88E90685B869E6EFC580B33A2A7F5B0" Source="$(var.RootDir)\examples\tmw_desert_spacing.png" />
             </Component>
             <Directory Id="dir835E6648DA39D15AFC143959CBD1FC79" Name="sewer_automap">
-              <Component Id="AutomappingExample" Guid="{20DD3991-EAFB-4BEA-955F-8C208520261E}">
+              <Component Id="AutomappingExample" Guid="{46E8AEB0-C49F-430E-AA2C-210D3FE52198}">
                 <File Id="fil525782BA8FD1C2CABA3686ED9CD9D76C" Source="$(var.RootDir)\examples\sewer_automap\rules.txt" />
                 <File Id="filC480B04D39261981D4014E8D45310EA9" Source="$(var.RootDir)\examples\sewer_automap\rules_sewers.png" />
                 <File Id="fil84BA8D5F3679656906858B11B1D77107" Source="$(var.RootDir)\examples\sewer_automap\rule_001.tmx" />
@@ -212,10 +228,10 @@
       </Directory>
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ProgramMenuDir" Name="Tiled">
-          <Component Id="ProgramMenuDir" Guid="AE6EC5F1-4948-4F6E-9C84-A0DDC1FA8F21">
+        <Directory Id="ProgramMenuDir" Name="[ProductName]">
+          <Component Id="ProgramMenuDir" Guid="{2A4BD742-9A41-40D5-B871-0585CCF9805D}">
             <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
-            <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\Tiled' Type='string' Value='' KeyPath='yes' />
+            <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
           </Component>
         </Directory>
       </Directory>
@@ -234,7 +250,9 @@
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
 
-    <CustomAction Id='LaunchTiled' FileKey='TiledEXE' ExeCommand='' Return='asyncNoWait' />
+    <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
+    <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
+    <CustomAction Id='LaunchApplication' FileKey='TiledEXE' ExeCommand='' Return='asyncNoWait' />
 
     <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
     <UIRef Id="WixUI_InstallDir" />
@@ -247,16 +265,10 @@
     <WixVariable Id="WixUIDialogBmp" Value="$(var.RootDir)\dist\win\dialog.bmp" />
 
     <InstallExecuteSequence>
-      <Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>
-      <Custom Action='NoDowngrade' After='FindRelatedProducts'>NEWERVERSIONDETECTED</Custom>
-      <RemoveExistingProducts After="InstallFinalize" />
-      <Custom Action='LaunchTiled' After='InstallFinalize'>NOT Installed</Custom>
+      <!-- Determine the install location after the install path has been validated by the installer -->
+      <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
+      <Custom Action='LaunchApplication' After='InstallFinalize'>NOT Installed</Custom>
     </InstallExecuteSequence>
-
-    <InstallUISequence>
-      <Custom Action='AlreadyUpdated' After='FindRelatedProducts'>SELFFOUND</Custom>
-      <Custom Action="NoDowngrade" After="FindRelatedProducts">NEWERVERSIONDETECTED</Custom>
-    </InstallUISequence>
 
   </Product>
 </Wix>
