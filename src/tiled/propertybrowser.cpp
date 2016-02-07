@@ -314,6 +314,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
     if (mObject == object) {
+
         mUpdating = true;
         mNameToProperty[name]->setValue(object->property(name));
         mUpdating = false;
@@ -1128,6 +1129,8 @@ void PropertyBrowser::updateCustomProperties()
 
     mUpdating = true;
 
+    //qDebug().nospace() << "updateCustomProperties";
+
     qDeleteAll(mNameToProperty);
     mNameToProperty.clear();
 
@@ -1143,6 +1146,29 @@ void PropertyBrowser::updateCustomProperties()
             it.next();
             if (!mCombinedProperties.contains(it.key()))
                 mCombinedProperties.insert(it.key(), QString());
+        }
+    }
+
+    // Add Default properties
+    const ObjectType *curType = NULL;
+    ObjectTypes defObjTypes = Preferences::instance()->objectTypes();
+    foreach (const ObjectType &type, defObjTypes) {
+        if (mIdToProperty.contains(TypeProperty)) {
+            QString typeName = mIdToProperty[TypeProperty]->value().toString();            
+            if (type.name == typeName) { // match
+                curType = &type;
+                break;
+            }
+            //qDebug().nospace() << "FOOO: " << type.name << " == " << typeName;
+        }        
+    }
+    if (curType != NULL) {
+        QMapIterator<QString,QString> it(curType->defaultProperties);
+        while (it.hasNext()) {
+            it.next();
+            if (!mCombinedProperties.contains(it.key())) {
+                mCombinedProperties.insert(it.key(), it.value()); // add to view
+            }
         }
     }
 

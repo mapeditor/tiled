@@ -56,7 +56,7 @@ private slots:
     void selectedObjectTypesChanged();
     void removeSelectedObjectTypes();
     void objectTypeIndexClicked(const QModelIndex &index);
-    void applyObjectTypes();
+    //void applyObjectTypes();
     void importObjectTypes();
     void exportObjectTypes();
 
