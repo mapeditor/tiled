@@ -2,6 +2,7 @@
 * layeroffsettool.cpp
 * Copyright 2014, Mattia Basaglia
 * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+* Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
 *
 * This file is part of Tiled.
 *
@@ -28,8 +29,7 @@
 #include "snaphelper.h"
 
 #include <QUndoStack>
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -71,8 +71,8 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
         offsetPos -= layer->offset();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
-    const int x = (int) std::floor(tilePosF.x());
-    const int y = (int) std::floor(tilePosF.y());
+    const int x = (int) qFloor(tilePosF.x());
+    const int y = (int) qFloor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
 
     if (!mMousePressed)

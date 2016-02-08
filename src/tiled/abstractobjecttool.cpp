@@ -1,6 +1,7 @@
 /*
  * abstractobjecttool.cpp
  * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -33,8 +34,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QUndoStack>
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -84,8 +84,8 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
         offsetPos -= layer->offset();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
-    const int x = (int) std::floor(tilePosF.x());
-    const int y = (int) std::floor(tilePosF.y());
+    const int x = (int) qFloor(tilePosF.x());
+    const int y = (int) qFloor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
 }
 

@@ -1,6 +1,7 @@
 /*
  * isometricrenderer.cpp
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of libtiled.
  *
@@ -34,7 +35,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 
@@ -195,8 +196,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 
     // Determine the tile and pixel coordinates to start at
     QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
-    QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
-                           (int) std::floor(tilePos.y()));
+    QPoint rowItr = QPoint((int) qFloor(tilePos.x()),
+                           (int) qFloor(tilePos.y()));
     QPointF startPos = tileToScreenCoords(rowItr);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;

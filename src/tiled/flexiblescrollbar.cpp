@@ -1,6 +1,7 @@
 /*
  * flexiblescrollbar.cpp
  * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -66,8 +67,8 @@ void FlexibleScrollBar::sliderChange(QAbstractSlider::SliderChange change)
             } else if (min > val || max < val) {
                 // shrink only as much as allowed by the current value
                 allowNextRangeChange();
-                setRange(std::min(mDesiredMinimum, val),
-                         std::max(mDesiredMaximum, val));
+                setRange(qMin(mDesiredMinimum, val),
+                         qMax(mDesiredMaximum, val));
                 return;
             }
         }
@@ -76,9 +77,9 @@ void FlexibleScrollBar::sliderChange(QAbstractSlider::SliderChange change)
     case SliderValueChange:
         // shrink range back to desired range as much as possible
         if (mOverrideMinimum < mDesiredMinimum)
-            setOverrideMinimum(std::min(mDesiredMinimum, value()));
+            setOverrideMinimum(qMin(mDesiredMinimum, value()));
         if (mOverrideMaximum > mDesiredMaximum)
-            setOverrideMaximum(std::max(mDesiredMaximum, value()));
+            setOverrideMaximum(qMax(mDesiredMaximum, value()));
         break;
     case SliderOrientationChange:
     case SliderStepsChange:

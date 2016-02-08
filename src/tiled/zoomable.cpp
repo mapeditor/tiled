@@ -1,6 +1,7 @@
 /*
  * zoomable.cpp
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,8 +25,7 @@
 #include <QLineEdit>
 #include <QPinchGesture>
 #include <QValidator>
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled::Internal;
 
@@ -112,7 +112,7 @@ void Zoomable::handleWheelDelta(int delta)
                              mZoomFactors.back());
 
         // Round to at most four digits after the decimal point
-        setScale(std::floor(scale * 10000 + 0.5) / 10000);
+        setScale(qFloor(scale * 10000 + 0.5) / 10000);
     }
 }
 
@@ -132,7 +132,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         qreal scale = qBound(mZoomFactors.first(),
                              mGestureStartScale * factor,
                              mZoomFactors.back());
-        setScale(std::floor(scale * 10000 + 0.5) / 10000);
+        setScale(qFloor(scale * 10000 + 0.5) / 10000);
         break;
     }
     case Qt::GestureFinished:

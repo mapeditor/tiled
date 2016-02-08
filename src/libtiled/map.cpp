@@ -3,6 +3,7 @@
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of libtiled.
  *
@@ -35,8 +36,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 
@@ -105,10 +105,10 @@ QMargins Map::computeLayerOffsetMargins() const
 
     for (const Layer *layer : mLayers) {
         const QPointF offset = layer->offset();
-        offsetMargins = maxMargins(QMargins(std::ceil(-offset.x()),
-                                            std::ceil(-offset.y()),
-                                            std::ceil(offset.x()),
-                                            std::ceil(offset.y())),
+        offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
+                                            qCeil(-offset.y()),
+                                            qCeil(offset.x()),
+                                            qCeil(offset.y())),
                                    offsetMargins);
     }
 
