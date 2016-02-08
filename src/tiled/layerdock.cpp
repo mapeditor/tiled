@@ -4,6 +4,7 @@
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -36,6 +37,7 @@
 #include <QContextMenuEvent>
 #include <QLabel>
 #include <QMenu>
+#include <QPainter>
 #include <QSlider>
 #include <QUndoStack>
 #include <QToolBar>
@@ -222,6 +224,23 @@ void LayerDock::retranslateUi()
 
 //=============================================================================
 
+LayerVisibilityDelegate::LayerVisibilityDelegate(QObject *parent):
+    QItemDelegate(parent),
+    mPixmap(QLatin1String(":/images/12x12/layer-visible.png"))
+{
+}
+
+void LayerVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
+    const QRect &rect, Qt::CheckState state) const
+{
+    Q_UNUSED(option)
+    if (state == Qt::Checked)
+        painter->drawPixmap(rect, mPixmap, QRect(0, 0, rect.width(), rect.height()));
+}
+
+
+//=============================================================================
+
 LayerView::LayerView(QWidget *parent):
     QTreeView(parent),
     mMapDocument(nullptr)
@@ -230,6 +249,7 @@ LayerView::LayerView(QWidget *parent):
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
+    setItemDelegate(new LayerVisibilityDelegate(this));
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));

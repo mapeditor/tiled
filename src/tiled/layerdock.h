@@ -2,6 +2,7 @@
  * layerdock.h
  * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -25,6 +26,8 @@
 #include "mapdocument.h"
 
 #include <QDockWidget>
+#include <QItemDelegate>
+#include <QPixmap>
 #include <QTreeView>
 #include <QToolButton>
 
@@ -74,6 +77,22 @@ private:
     MapDocument *mMapDocument;
     bool mUpdatingSlider;
     bool mChangingLayerOpacity;
+};
+
+/**
+ * Delegate for drawing an eye icon in LayerView when the layer is visible.
+ */
+class LayerVisibilityDelegate: public QItemDelegate
+{
+public:
+    explicit LayerVisibilityDelegate(QObject *parent = 0);
+
+protected:
+    void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
+        const QRect &rect, Qt::CheckState state) const;
+
+private:
+    QPixmap mPixmap;
 };
 
 /**
