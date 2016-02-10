@@ -63,7 +63,7 @@ deploy:
     folder: public_html/files.mapeditor.org/public/daily
     artifact: /.*\.msi/
     on:
-        branch: master
+        branch: snapshot
         appveyor_repo_tag: false
 
   - provider: FTP
@@ -75,7 +75,7 @@ deploy:
     folder: sparkle
     artifact: /appcast-win.*-snapshots\.xml/
     on:
-        branch: master
+        branch: snapshot
         appveyor_repo_tag: false
 
 notifications:
