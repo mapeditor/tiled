@@ -82,6 +82,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY), 32).toInt();
 
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"), QVariant::fromValue(Map::XML));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
 
