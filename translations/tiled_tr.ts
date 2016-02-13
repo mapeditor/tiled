@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="tr_TR">
+<TS version="2.1" language="tr" sourcelanguage="en_US">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -77,7 +77,7 @@
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation>Çalıştırmadan önce haritayı &amp;kaydet</translation>
+        <translation>Önce haritayı &amp;kaydet</translation>
     </message>
 </context>
 <context>
@@ -189,7 +189,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation>Dosya yazmak üzere açılamadı.</translation>
+        <translation>Dosya yazılmak üzere açılamadı.</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -1346,7 +1346,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation></translation>
+        <translation>Python scriptleri tekrar yükleniyor</translation>
     </message>
 </context>
 <context>
@@ -1379,13 +1379,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation></translation>
+        <translation>Doğru</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation></translation>
+        <translation>Yanlış</translation>
     </message>
 </context>
 <context>
@@ -1393,12 +1393,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1696"/>
         <source>True</source>
-        <translation></translation>
+        <translation>Doğru</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation></translation>
+        <translation type="unfinished">Yanlış</translation>
     </message>
 </context>
 <context>
@@ -1406,7 +1406,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1700"/>
         <source>Clear Char</source>
-        <translation></translation>
+        <translation>Karakteri Temizle</translation>
     </message>
 </context>
 <context>
@@ -1414,7 +1414,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1543,12 +1543,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
-        <translation></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation></translation>
+        <translation>Yazıtipi Seç</translation>
     </message>
 </context>
 <context>
@@ -1594,7 +1594,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+234"/>
         <source>Clear Shortcut</source>
-        <translation></translation>
+        <translation>Kısayolu Temizle</translation>
     </message>
 </context>
 <context>
@@ -1602,17 +1602,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3533"/>
         <source>%1, %2</source>
-        <translation></translation>
+        <translation>%1, %2</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Language</source>
-        <translation></translation>
+        <translation>Dil</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation></translation>
+        <translation>Ülke</translation>
     </message>
 </context>
 <context>
@@ -1620,7 +1620,7 @@ Line %1, column %2</source>
     <message>
         <location line="+409"/>
         <source>(%1, %2)</source>
-        <translation></translation>
+        <translation type="unfinished">(%1, %2)</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -1656,7 +1656,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-141"/>
         <source>[%1, %2, %3] (%4)</source>
-        <translation></translation>
+        <translation>[%1, %2, %3] (%4)</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1795,7 +1795,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+478"/>
         <source>Property</source>
-        <translation></translation>
+        <translation type="unfinished">Özellik</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1943,7 +1943,6 @@ Line %1, column %2</source>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplicate Object</numerusform>
-            <numerusform>Duplicate %n Objects</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1951,7 +1950,6 @@ Line %1, column %2</source>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Remove Object</numerusform>
-            <numerusform>Remove %n Objects</numerusform>
         </translation>
     </message>
     <message>
@@ -2019,7 +2017,6 @@ Line %1, column %2</source>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Move Object to Layer</numerusform>
-            <numerusform>Move %n Objects to Layer</numerusform>
         </translation>
     </message>
     <message>
@@ -2033,7 +2030,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttiletool.cpp" line="+124"/>
         <source>empty</source>
-        <translation></translation>
+        <translation>boş</translation>
     </message>
 </context>
 <context>
@@ -2223,7 +2220,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/clipboardmanager.cpp" line="+166"/>
         <source>Paste Objects</source>
-        <translation></translation>
+        <translation>Nesneleri Yapıştır</translation>
     </message>
 </context>
 <context>
@@ -2348,7 +2345,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+44"/>
         <source>Edit Commands</source>
-        <translation></translation>
+        <translation>Komutları Düzenle</translation>
     </message>
 </context>
 <context>
@@ -2394,7 +2391,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation></translation>
+        <translation>Debug Konsolu</translation>
     </message>
 </context>
 <context>
@@ -2415,7 +2412,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createobjecttool.cpp" line="+46"/>
         <source>O</source>
-        <translation></translation>
+        <translation>O</translation>
     </message>
 </context>
 <context>
@@ -2509,7 +2506,6 @@ Line %1, column %2</source>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>Move Point</numerusform>
-            <numerusform>Move %n Points</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2518,7 +2514,6 @@ Line %1, column %2</source>
         <source>Delete %n Node(s)</source>
         <translation>
             <numerusform>Delete Node</numerusform>
-            <numerusform>Delete %n Nodes</numerusform>
         </translation>
     </message>
     <message>
@@ -2611,7 +2606,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-553"/>
         <source>File change detected. Discard changes and reload the map?</source>
-        <translation></translation>
+        <translation>Dosya değişikliği tespit edildi. Değişiklikler gözardı edilip harita tekrar yüklensin mi?</translation>
     </message>
 </context>
 <context>
@@ -2619,7 +2614,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+113"/>
         <source>Choose a File</source>
-        <translation></translation>
+        <translation>Dosya Seç</translation>
     </message>
 </context>
 <context>
@@ -2943,7 +2938,6 @@ Please select specific format.</source>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>Add Tileset</numerusform>
-            <numerusform>Add %n Tilesets</numerusform>
         </translation>
     </message>
 </context>
@@ -2969,7 +2963,6 @@ Please select specific format.</source>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Rotate Object</numerusform>
-            <numerusform>Rotate %n Objects</numerusform>
         </translation>
     </message>
     <message>
@@ -3017,7 +3010,6 @@ Please select specific format.</source>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplicate Object</numerusform>
-            <numerusform>Duplicate %n Objects</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3025,7 +3017,6 @@ Please select specific format.</source>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Remove Object</numerusform>
-            <numerusform>Remove %n Objects</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3033,7 +3024,6 @@ Please select specific format.</source>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Move Object to Layer</numerusform>
-            <numerusform>Move %n Objects to Layer</numerusform>
         </translation>
     </message>
 </context>
@@ -3119,7 +3109,6 @@ Please select specific format.</source>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplicate Object</numerusform>
-            <numerusform>Duplicate %n Objects</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3127,7 +3116,6 @@ Please select specific format.</source>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Remove Object</numerusform>
-            <numerusform>Remove %n Objects</numerusform>
         </translation>
     </message>
     <message>
@@ -3222,7 +3210,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
         <source>Mini-map</source>
-        <translation></translation>
+        <translation>Küçük-harita</translation>
     </message>
 </context>
 <context>
@@ -3316,7 +3304,6 @@ Please select specific format.</source>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Taşı</numerusform>
-            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3324,7 +3311,6 @@ Please select specific format.</source>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Döndür</numerusform>
-            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3332,7 +3318,6 @@ Please select specific format.</source>
         <source>Resize %n Object(s)</source>
         <translation>
             <numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
-            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
         </translation>
     </message>
 </context>
@@ -3371,7 +3356,6 @@ Please select specific format.</source>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Nesneyi Katmana Taşı</numerusform>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -3751,7 +3735,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
         <location line="+56"/>
         <source>Select Same Tile</source>
-        <translation>Aynı Tile'ı Seç</translation>
+        <translation>Aynı Tile&apos;ı Seç</translation>
     </message>
     <message>
         <location line="-53"/>
@@ -3803,7 +3787,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+97"/>
         <source>Terrain &amp;Properties...</source>
-        <translation></translation>
+        <translation>Zemin %Özellikleri...</translation>
     </message>
 </context>
 <context>
@@ -3811,7 +3795,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-58"/>
         <source>Delete Frames</source>
-        <translation></translation>
+        <translation>Çerçeveleri Sil</translation>
     </message>
 </context>
 <context>
@@ -4021,7 +4005,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
         <source>Edit...</source>
-        <translation type="unfinished">Düzenle...</translation>
+        <translation>Düzenle...</translation>
     </message>
 </context>
 <context>
@@ -4259,12 +4243,12 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished">Tileset Düzenle</translation>
+        <translation>Tileset Düzenle</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Change Columns</source>
-        <translation type="unfinished">Sütunları Değiştir</translation>
+        <translation>Sütunları Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -4448,17 +4432,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished">Tile İndislerini Ayarla</translation>
+        <translation>Tile İndislerini Ayarla</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished">Tile Resmini Değiştir</translation>
+        <translation>Tile Resmini Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished">Tileseti Değiştir</translation>
+        <translation>Tileseti Değiştir</translation>
     </message>
 </context>
 <context>
