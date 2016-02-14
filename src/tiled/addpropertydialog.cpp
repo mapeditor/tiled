@@ -1,57 +1,89 @@
+/*
+ * addpropertydialog.cpp
+ * Copyright 2015, CaptainFrog <jwilliam.perreault@gmail.com>
+ * Copyright 2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
-AddPropertyDialog::AddPropertyDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AddPropertyDialog)
+#include "preferences.h"
+#include "properties.h"
+
+#include <QPushButton>
+#include <QSettings>
+
+using namespace Tiled;
+using namespace Tiled::Internal;
+
+static const char * const TYPE_KEY = "AddPropertyDialog/PropertyType";
+
+AddPropertyDialog::AddPropertyDialog(QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::AddPropertyDialog)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
     // Add possible types from QVariant
-    ui->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Bool)));
+    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Bool)));
+    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Int)));
+    mUi->typeBox->addItem(QLatin1String("float"));
+    mUi->typeBox->addItem(QLatin1String("string"));
 
-    ui->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Int)));
+    mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-    ui->typeBox->addItem(QLatin1String("float")); /* Double */
+    // Restore previously used type
+    Preferences *prefs = Preferences::instance();
+    QSettings *s = prefs->settings();
+    QString lastType = s->value(QLatin1String(TYPE_KEY), QLatin1String("string")).toString();
 
-    // Rename QString, QSize and QPoint to something else
-    ui->typeBox->addItem(QLatin1String("String"));    /* QString */
+    mUi->typeBox->setCurrentText(lastType);
 
-
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-
-    //Select String as Default
-    ui->typeBox->setCurrentText(QLatin1String("String"));
-
+    connect(mUi->name, &QLineEdit::textChanged,
+            this, &AddPropertyDialog::nameChanged);
+    connect(mUi->typeBox, &QComboBox::currentTextChanged,
+            this, &AddPropertyDialog::typeChanged);
 }
 
 AddPropertyDialog::~AddPropertyDialog()
 {
-    delete ui;
+    delete mUi;
 }
 
-QString AddPropertyDialog::getPropertyName()
+QString AddPropertyDialog::propertyName() const
 {
-    return ui->name->text();
+    return mUi->name->text();
 }
 
-QVariant::Type AddPropertyDialog::getPropertyType()
+QVariant::Type AddPropertyDialog::propertyType() const
 {
-    QString typeText = ui->typeBox->currentText();
-
-    // Returned the correct type according to the name
-    if(typeText == QLatin1String("float")){ return QVariant::Double;}
-    if(typeText == QLatin1String("String")){ return QVariant::String;}
-
-    if(typeText == QLatin1String("Size")){ return QVariant::Size;}
-    if(typeText == QLatin1String("Size Float")){ return QVariant::SizeF;}
-    if(typeText == QLatin1String("Point")){ return QVariant::Point;}
-    if(typeText == QLatin1String("Point Float")){ return QVariant::PointF;}
-
-    return QVariant::nameToType(typeText.toLatin1().constData());
+    QString typeText = mUi->typeBox->currentText();
+    return nameToType(typeText);
 }
 
-void AddPropertyDialog::on_name_textChanged(const QString &arg1)
+void AddPropertyDialog::nameChanged(const QString &text)
 {
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!arg1.isEmpty());
+    mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!text.isEmpty());
+}
+
+void AddPropertyDialog::typeChanged(const QString &text)
+{
+    Preferences *prefs = Preferences::instance();
+    QSettings *s = prefs->settings();
+    s->setValue(QLatin1String(TYPE_KEY), text);
 }

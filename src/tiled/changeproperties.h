@@ -73,7 +73,7 @@ public:
     SetProperty(MapDocument *mapDocument,
                 const QList<Object*> &objects,
                 const QString &name,
-                const QString &value, const QVariant::Type type,
+                const QVariant &value,
                 QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -81,15 +81,14 @@ public:
 
 private:
     struct ObjectProperty {
-        QString previousValue;
+        QVariant previousValue;
         bool existed;
     };
     QVector<ObjectProperty> mProperties;
     MapDocument *mMapDocument;
     QList<Object*> mObjects;
     QString mName;
-    QString mValue;
-    QVariant::Type mType;       // The type of the property
+    QVariant mValue;
 };
 
 class RemoveProperty : public QUndoCommand
@@ -113,7 +112,7 @@ public:
 private:
     MapDocument *mMapDocument;
     QList<Object*> mObjects;
-    QVector<QString> mPreviousValues;
+    QVector<QVariant> mPreviousValues;
     QString mName;
 };
 

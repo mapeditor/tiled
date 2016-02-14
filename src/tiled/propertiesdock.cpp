@@ -215,17 +215,13 @@ void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 
 void PropertiesDock::addProperty()
 {
-    AddPropertyDialog *dialog = new AddPropertyDialog(mPropertyBrowser);
-    int result = dialog->exec();
-    if(result == AddPropertyDialog::Accepted){
-        addProperty(dialog->getPropertyName(),dialog->getPropertyType());
-    }
-    delete dialog;
+    AddPropertyDialog dialog(mPropertyBrowser);
+    if (dialog.exec() == AddPropertyDialog::Accepted)
+        addProperty(dialog.propertyName(), dialog.propertyType());
 }
 
 void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 {
-
     if (name.isEmpty())
         return;
     Object *object = mMapDocument->currentObject();
@@ -234,7 +230,9 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 
     if (!object->hasProperty(name)) {
         QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, QString(), type));
+        undoStack->push(new SetProperty(mMapDocument,
+                                        mMapDocument->currentObjects(),
+                                        name, QVariant(type)));
     }
 
     mPropertyBrowser->editCustomProperty(name);
@@ -258,7 +256,9 @@ void PropertiesDock::removeProperty()
             mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
         }
     }
-    undoStack->push(new RemoveProperty(mMapDocument, mMapDocument->currentObjects(), name));
+    undoStack->push(new RemoveProperty(mMapDocument,
+                                       mMapDocument->currentObjects(),
+                                       name));
 }
 
 void PropertiesDock::renameProperty()

@@ -22,6 +22,7 @@
 #define PROPERTIESDOCK_H
 
 #include <QDockWidget>
+#include <QVariant>
 
 class QtBrowserItem;
 

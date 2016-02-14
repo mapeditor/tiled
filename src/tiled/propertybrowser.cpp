@@ -288,8 +288,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
 
         mUpdating = true;
-        QtVariantProperty *property = mVariantManager->addProperty(mObject->propertyType(name), name);
-        property->setValue(mObject->property(name));
+        QVariant value = mObject->property(name);
+        QtVariantProperty *property = mVariantManager->addProperty(value.type(), name);
+        property->setValue(value);
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
         mPropertyToId.insert(property, CustomProperty);
         mNameToProperty.insert(name, property);
@@ -372,8 +373,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
                                         property->propertyName(),
-                                        val.toString(),
-                                        val.type()));
+                                        val));
         return;
     }
 
@@ -953,6 +953,11 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    QtProperty *parent)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
+    if (!property) {
+        // fall back to string property for unsupported property types
+        property = mVariantManager->addProperty(QVariant::String, name);
+    }
+
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
@@ -1175,7 +1180,7 @@ void PropertyBrowser::updateCustomProperties()
         const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
         for (const ObjectType &type : objectTypes) {
             if (type.name == currentType) {
-                QMapIterator<QString,QString> it(type.defaultProperties);
+                QMapIterator<QString,QVariant> it(type.defaultProperties);
                 while (it.hasNext()) {
                     it.next();
                     if (!mCombinedProperties.contains(it.key()))
@@ -1193,6 +1198,7 @@ void PropertyBrowser::updateCustomProperties()
                                                      it.value().type(),
                                                      it.key(),
                                                      mCustomPropertiesGroup);
+
         property->setValue(it.value());
         updatePropertyColor(it.key());
     }

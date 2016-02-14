@@ -61,7 +61,7 @@ private slots:
     void removeSelectedObjectTypes();
     void objectTypeIndexClicked(const QModelIndex &index);
     void applyObjectTypes();
-    void applyProperty(const QString &name, const QString &value);
+    void applyProperty(const QString &name, const QVariant &value);
     void removeProperty(const QString &name);
 
     void chooseObjectTypesFile();
@@ -72,7 +72,7 @@ private slots:
     void propertyValueChanged(QtProperty *property, const QVariant &val);
 
     void addProperty();
-    void addProperty(const QString &name, const QString &value = QString());
+    void addProperty(const QString &name, const QVariant &value = QVariant());
     void editCustomProperty(const QString &name);
     void removeProperty();
     void renameProperty();

@@ -52,7 +52,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     QTextStream out(&file);
 
     // Write the header
-    QString header = map->property("header");
+    QString header = map->property("header").toString();
     foreach (const QString &line, header.split("\\n")) {
         out << line << endl;
     }
@@ -108,18 +108,18 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
                 // Process the Object Layer
                 } else if (objectLayer) {
-                    foreach (const MapObject *obj, objectLayer->objects()) {
+                    for (const MapObject *obj : objectLayer->objects()) {
                         if (floor(obj->y()) <= y && y <= floor(obj->y() + obj->height())) {
                             if (floor(obj->x()) <= x && x <= floor(obj->x() + obj->width())) {
                                 // Check the Object Layer properties if either display or value was missing
-                                if (!obj->property("display").isEmpty()) {
+                                if (!obj->property("display").isNull()) {
                                     currentTile["display"] = obj->property("display");
-                                } else if (!objectLayer->property("display").isEmpty()) {
+                                } else if (!objectLayer->property("display").isNull()) {
                                     currentTile["display"] = objectLayer->property("display");
                                 }
-                                if (!obj->property("value").isEmpty()) {
+                                if (!obj->property("value").isNull()) {
                                     currentTile[layerKey] = obj->property("value");
-                                } else if (!objectLayer->property("value").isEmpty()) {
+                                } else if (!objectLayer->property("value").isNull()) {
                                     currentTile[layerKey] = objectLayer->property("value");
                                 }
                             }

@@ -89,12 +89,17 @@ public:
     /**
      * Returns the value of the object's \a name property.
      */
-    QString property(const QString &name) const
-    { return mProperties.value(name).toString(); }
+    QVariant property(const QString &name) const
+    { return mProperties.value(name); }
 
-    QVariant::Type propertyType(const QString &name) const {
-        return mProperties.value(name).type();
-    }
+    /**
+     * Returns the value of the object's \a name property, as a string.
+     *
+     * This is a workaround for the Python plugin, because I do not know how
+     * to pass a QVariant back to Python.
+     */
+    QString propertyAsString(const QString &name) const
+    { return mProperties.value(name).toString(); }
 
     /**
      * Returns whether this object has a property with the given \a name.
@@ -105,13 +110,8 @@ public:
     /**
      * Sets the value of the object's \a name property to \a value.
      */
-    void setProperty(const QString &name, const QString &value, QVariant::Type type = QVariant::String)
-    {
-        QVariant v;
-        v.setValue(value);
-        v.convert(type);
-        mProperties.insert(name, v);
-    }
+    void setProperty(const QString &name, const QVariant &value)
+    { mProperties.insert(name, value); }
 
     /**
      * Removes the property with the given \a name.

@@ -21,6 +21,7 @@
 #include "objecttypeseditor.h"
 #include "ui_objecttypeseditor.h"
 
+#include "addpropertydialog.h"
 #include "objecttypesmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -282,7 +283,7 @@ void ObjectTypesEditor::applyObjectTypes()
     }
 }
 
-void ObjectTypesEditor::applyProperty(const QString &name, const QString &value)
+void ObjectTypesEditor::applyProperty(const QString &name, const QVariant &value)
 {
     const auto selectionModel = mUi->objectTypesTable->selectionModel();
     const auto selectedRows = selectionModel->selectedRows();
@@ -436,7 +437,7 @@ void ObjectTypesEditor::updateProperties()
         const QString &name = it.key();
         const AggregatedPropertyData &data = it.value();
 
-        QtVariantProperty *property = createProperty(QVariant::String, name);
+        QtVariantProperty *property = createProperty(data.value().type(), name);
         property->setValue(data.value());
 
         bool everywhere = data.presenceCount() == selectedRows.size();
@@ -451,18 +452,23 @@ void ObjectTypesEditor::updateProperties()
 }
 
 void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
-                                             const QVariant &val)
+                                             const QVariant &value)
 {
     if (mUpdating)
         return;
 
-    applyProperty(property->propertyName(), val.toString());
+    applyProperty(property->propertyName(), value);
 }
 
 QtVariantProperty *ObjectTypesEditor::createProperty(int type,
                                                      const QString &name)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
+    if (!property) {
+        // fall back to string property for unsupported property types
+        property = mVariantManager->addProperty(QVariant::String, name);
+    }
+
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
@@ -474,14 +480,12 @@ QtVariantProperty *ObjectTypesEditor::createProperty(int type,
 
 void ObjectTypesEditor::addProperty()
 {
-    QInputDialog *dialog = new QInputDialog(window());
-    dialog->setInputMode(QInputDialog::TextInput);
-    dialog->setLabelText(tr("Name:"));
-    dialog->setWindowTitle(tr("Add Property"));
-    dialog->open(this, SLOT(addProperty(QString)));
+    AddPropertyDialog dialog(window());
+    if (dialog.exec() == AddPropertyDialog::Accepted)
+        addProperty(dialog.propertyName(), QVariant(dialog.propertyType()));
 }
 
-void ObjectTypesEditor::addProperty(const QString &name, const QString &value)
+void ObjectTypesEditor::addProperty(const QString &name, const QVariant &value)
 {
     if (name.isEmpty())
         return;

@@ -942,11 +942,14 @@ void MapReaderPrivate::readProperty(Properties *properties)
         }
     }
 
-    if(propertyType.isEmpty() || propertyType.isNull()){
-        propertyType = QLatin1String(QVariant::typeToName(QVariant::String)); // Default to String
-    }
     QVariant variant(propertyValue);
-    variant.convert(QVariant::nameToType(propertyType.toStdString().c_str()));
+
+    if (!propertyType.isEmpty()) {
+        QVariant::Type type = nameToType(propertyType);
+        if (type != QVariant::Invalid)
+            variant.convert(nameToType(propertyType));
+    }
+
     properties->insert(propertyName, variant);
 }
 

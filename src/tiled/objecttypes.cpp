@@ -57,15 +57,15 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
 
-        QMapIterator<QString,QString> it(objectType.defaultProperties);
+        QMapIterator<QString,QVariant> it(objectType.defaultProperties);
         while (it.hasNext()) {
             it.next();
             writer.writeStartElement(QLatin1String("property"));
             writer.writeAttribute(QLatin1String("name"), it.key());
-            writer.writeAttribute(QLatin1String("type"), QLatin1String("string"));
+            writer.writeAttribute(QLatin1String("type"), typeToName(it.value().type()));
 
-            if (!it.value().isEmpty())
-                writer.writeAttribute(QLatin1String("default"), it.value());
+            if (!it.value().isNull())
+                writer.writeAttribute(QLatin1String("default"), it.value().toString());
 
             writer.writeEndElement();
         }
@@ -105,35 +105,26 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
         return objectTypes;
     }
 
-    while(!reader.atEnd()) {
-        while (reader.readNextStartElement()) {
-            if (reader.name() == QLatin1String("objecttype")) {
-                const QXmlStreamAttributes atts = reader.attributes();
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("objecttype")) {
+            const QXmlStreamAttributes atts = reader.attributes();
 
-                const QString name(atts.value(QLatin1String("name")).toString());
-                const QColor color(atts.value(QLatin1String("color")).toString());
+            const QString name(atts.value(QLatin1String("name")).toString());
+            const QColor color(atts.value(QLatin1String("color")).toString());
 
-                //qDebug().nospace() << name;
-
-                // read the custom properties
-                Properties props;                                
-                while (reader.readNextStartElement()) {
-                    if (reader.name() == QLatin1String("property")){
-                        readObjectTypeProperty(reader, props);
-                    }
+            // read the custom properties
+            Properties props;
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("property")){
+                    readObjectTypeProperty(reader, props);
+                } else {
                     reader.skipCurrentElement();
                 }
-                objectTypes.append(ObjectType(name, color, props));
             }
-        }    
-    }   
 
-
-    // readNextStartElement() leaves the stream in
-    // an invalid state at the end. A single readNext()
-    // will advance us to EndDocument.
-    if (reader.tokenType() == QXmlStreamReader::Invalid)
-        reader.readNext();
+            objectTypes.append(ObjectType(name, color, props));
+        }
+    }
 
     if (reader.hasError()) {
         mError = QCoreApplication::translate("ObjectTypes",
@@ -147,20 +138,24 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     return objectTypes;
 }
 
-void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader& xml, Properties& props) {
+void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml, Properties& props) {
     
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString name(atts.value(QLatin1String("name")).toString());
-    QString type(atts.value(QLatin1String("type")).toString());
-    QString defaultValue(atts.value(QLatin1String("default")).toString());
+    QString typeName(atts.value(QLatin1String("type")).toString());
+    QVariant defaultValue(atts.value(QLatin1String("default")).toString());
 
-    //qDebug().nospace() << "Property: " << name << " " << type << " " << defaultValue;
-
-    // TODO: allow for real typed properties. Only strings for now
+    if (!typeName.isEmpty()) {
+        QVariant::Type type = nameToType(typeName);
+        if (type != QVariant::Invalid)
+            defaultValue.convert(type);
+    }
 
     props.insert(name, defaultValue);
+
+    xml.skipCurrentElement();
 }
 
 } // namespace Internal

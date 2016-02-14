@@ -86,6 +86,9 @@ private:
 };
 
 
+TILEDSHARED_EXPORT QString typeToName(QVariant::Type);
+TILEDSHARED_EXPORT QVariant::Type nameToType(const QString &name);
+
 } // namespace Tiled
 
 #endif // PROPERTIES_H
