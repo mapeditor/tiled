@@ -23,6 +23,8 @@
 #include "changeproperties.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
+#include "mapobject.h"
+#include "preferences.h"
 #include "propertybrowser.h"
 #include "terrain.h"
 #include "tile.h"
@@ -144,6 +146,21 @@ static bool isExternal(const Object *object)
     }
 }
 
+static bool isAddedByType(Object *object, const QString &name)
+{
+    if (!object || object->typeId() != Object::MapObjectType)
+        return false;
+
+    const QString objectType = static_cast<MapObject*>(object)->type();
+    const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+    for (const ObjectType &type : objectTypes) {
+        if (type.name == objectType)
+            return type.defaultProperties.contains(name);
+    }
+
+    return false;
+}
+
 void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
@@ -159,8 +176,12 @@ void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
     bool external = isExternal(mPropertyBrowser->object());
-    mActionRemoveProperty->setEnabled(isCustomProperty && !external);
-    mActionRenameProperty->setEnabled(isCustomProperty && !external);
+    bool addedByType = item && isAddedByType(mPropertyBrowser->object(),
+                                     item->property()->propertyName());
+    bool canModify = isCustomProperty && !external && !addedByType;
+
+    mActionRemoveProperty->setEnabled(canModify);
+    mActionRenameProperty->setEnabled(canModify);
 }
 
 void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)

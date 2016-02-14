@@ -36,11 +36,54 @@
 
 namespace Tiled {
 
+/**
+ * Collection of properties and their values.
+ */
 class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
 {
 public:
     void merge(const Properties &other);
 };
+
+class TILEDSHARED_EXPORT AggregatedPropertyData
+{
+public:
+    explicit AggregatedPropertyData(const QString &value)
+        : mValue(value)
+        , mPresenceCount(1)
+        , mValueConsistent(true)
+    {}
+
+    void aggregate(const QString &value)
+    {
+        mValueConsistent &= value == mValue;
+        mPresenceCount += 1;
+    }
+
+    const QString &value() const { return mValue; }
+    int presenceCount() const { return mPresenceCount; }
+    bool valueConsistent() const { return mValueConsistent; }
+
+private:
+    QString mValue;
+    int mPresenceCount;
+    bool mValueConsistent;
+};
+
+/**
+ * Collection of properties with information about the consistency of their
+ * presence and value over several property collections.
+ */
+class TILEDSHARED_EXPORT AggregatedProperties : public QMap<QString, AggregatedPropertyData>
+{
+public:
+    void aggregate(const Properties &properties);
+    int aggregatedCount() { return mAggregatedCount; }
+
+private:
+    int mAggregatedCount;
+};
+
 
 } // namespace Tiled
 

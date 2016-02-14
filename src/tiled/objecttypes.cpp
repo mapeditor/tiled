@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
+#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -36,7 +37,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 {
     mError.clear();
 
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "Could not open file for writing.");
@@ -51,17 +52,31 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
     writer.writeStartDocument();
     writer.writeStartElement(QLatin1String("objecttypes"));
 
-    foreach (const ObjectType &objectType, objectTypes) {
+    for (const ObjectType &objectType : objectTypes) {
         writer.writeStartElement(QLatin1String("objecttype"));
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
+
+        QMapIterator<QString,QString> it(objectType.defaultProperties);
+        while (it.hasNext()) {
+            it.next();
+            writer.writeStartElement(QLatin1String("property"));
+            writer.writeAttribute(QLatin1String("name"), it.key());
+            writer.writeAttribute(QLatin1String("type"), QLatin1String("string"));
+
+            if (!it.value().isEmpty())
+                writer.writeAttribute(QLatin1String("default"), it.value());
+
+            writer.writeEndElement();
+        }
+
         writer.writeEndElement();
     }
 
     writer.writeEndElement();
     writer.writeEndDocument();
 
-    if (file.error() != QFile::NoError) {
+    if (!file.commit()) {
         mError = file.errorString();
         return false;
     }

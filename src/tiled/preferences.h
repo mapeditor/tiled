@@ -85,7 +85,7 @@ public:
     void setUseOpenGL(bool useOpenGL);
 
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
-    void setObjectTypes(const QString& fileName, const ObjectTypes &objectTypes);
+    void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
         ObjectTypesFile,
@@ -104,6 +104,9 @@ public:
 
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
+
+    QString objectTypesFile() const;
+    void setObjectTypesFile(const QString &filePath);
 
     QDate firstRun() const;
     int runCount() const;
@@ -197,6 +200,7 @@ private:
 
     QString mMapsDirectory;
     QString mStampsDirectory;
+    QString mObjectTypesFile;
 
     QDate mFirstRun;
     int mRunCount;

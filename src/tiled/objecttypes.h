@@ -40,7 +40,7 @@ struct ObjectType
 
     ObjectType(QString name,
                const QColor &color,
-               const Properties& properties)
+               const Properties &properties = Properties())
         : name(std::move(name))
         , color(color)
         , defaultProperties(properties)
