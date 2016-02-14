@@ -115,6 +115,8 @@ protected:
                                               QString *error);
 
 private:
+    Q_DISABLE_COPY(MapReader)
+
     friend class Internal::MapReaderPrivate;
     Internal::MapReaderPrivate *d;
 };

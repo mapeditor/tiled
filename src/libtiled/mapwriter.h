@@ -105,6 +105,8 @@ public:
     bool isDtdEnabled() const;
 
 private:
+    Q_DISABLE_COPY(MapWriter)
+
     Internal::MapWriterPrivate *d;
 };
 

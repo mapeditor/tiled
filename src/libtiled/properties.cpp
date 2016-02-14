@@ -40,3 +40,22 @@ void Properties::merge(const Properties &other)
         insert(it.key(), it.value());
     }
 }
+
+void AggregatedProperties::aggregate(const Properties &properties)
+{
+    auto it = properties.constEnd();
+    const auto b = properties.constBegin();
+    while (it != b) {
+        --it;
+
+        auto pit = find(it.key());
+        if (pit != end()) {
+            AggregatedPropertyData &propertyData = pit.value();
+            propertyData.aggregate(it.value());
+        } else {
+            insert(it.key(), AggregatedPropertyData(it.value()));
+        }
+    }
+
+    ++mAggregatedCount;
+}

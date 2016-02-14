@@ -57,6 +57,7 @@ class MapsDock;
 class MapView;
 class MiniMapDock;
 class ObjectsDock;
+class ObjectTypesEditor;
 class PropertiesDock;
 class StampBrush;
 class TerrainBrush;
@@ -174,6 +175,7 @@ private slots:
     void autoMappingError(bool automatic);
     void autoMappingWarning(bool automatic);
 
+    void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
@@ -228,6 +230,7 @@ private:
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
+    ObjectTypesEditor *mObjectTypesEditor;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
     QComboBox *mLayerComboBox;
@@ -247,6 +250,7 @@ private:
 
     QMenu *mLayerMenu;
     QAction *mViewsAndToolbarsMenu;
+    QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
     QAction *mShowTileCollisionEditor;
 

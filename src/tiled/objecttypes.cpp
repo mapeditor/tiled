@@ -21,9 +21,13 @@
 #include "objecttypes.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QFile>
+#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#include "properties.h"
 
 namespace Tiled {
 namespace Internal {
@@ -33,7 +37,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 {
     mError.clear();
 
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "Could not open file for writing.");
@@ -48,17 +52,31 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
     writer.writeStartDocument();
     writer.writeStartElement(QLatin1String("objecttypes"));
 
-    foreach (const ObjectType &objectType, objectTypes) {
+    for (const ObjectType &objectType : objectTypes) {
         writer.writeStartElement(QLatin1String("objecttype"));
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
+
+        QMapIterator<QString,QString> it(objectType.defaultProperties);
+        while (it.hasNext()) {
+            it.next();
+            writer.writeStartElement(QLatin1String("property"));
+            writer.writeAttribute(QLatin1String("name"), it.key());
+            writer.writeAttribute(QLatin1String("type"), QLatin1String("string"));
+
+            if (!it.value().isEmpty())
+                writer.writeAttribute(QLatin1String("default"), it.value());
+
+            writer.writeEndElement();
+        }
+
         writer.writeEndElement();
     }
 
     writer.writeEndElement();
     writer.writeEndDocument();
 
-    if (file.error() != QFile::NoError) {
+    if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
@@ -87,17 +105,35 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
         return objectTypes;
     }
 
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("objecttype")) {
-            const QXmlStreamAttributes atts = reader.attributes();
+    while(!reader.atEnd()) {
+        while (reader.readNextStartElement()) {
+            if (reader.name() == QLatin1String("objecttype")) {
+                const QXmlStreamAttributes atts = reader.attributes();
 
-            const QString name(atts.value(QLatin1String("name")).toString());
-            const QColor color(atts.value(QLatin1String("color")).toString());
+                const QString name(atts.value(QLatin1String("name")).toString());
+                const QColor color(atts.value(QLatin1String("color")).toString());
 
-            objectTypes.append(ObjectType(name, color));
-        }
-        reader.skipCurrentElement();
-    }
+                //qDebug().nospace() << name;
+
+                // read the custom properties
+                Properties props;                                
+                while (reader.readNextStartElement()) {
+                    if (reader.name() == QLatin1String("property")){
+                        readObjectTypeProperty(reader, props);
+                    }
+                    reader.skipCurrentElement();
+                }
+                objectTypes.append(ObjectType(name, color, props));
+            }
+        }    
+    }   
+
+
+    // readNextStartElement() leaves the stream in
+    // an invalid state at the end. A single readNext()
+    // will advance us to EndDocument.
+    if (reader.tokenType() == QXmlStreamReader::Invalid)
+        reader.readNext();
 
     if (reader.hasError()) {
         mError = QCoreApplication::translate("ObjectTypes",
@@ -109,6 +145,22 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     }
 
     return objectTypes;
+}
+
+void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader& xml, Properties& props) {
+    
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString name(atts.value(QLatin1String("name")).toString());
+    QString type(atts.value(QLatin1String("type")).toString());
+    QString defaultValue(atts.value(QLatin1String("default")).toString());
+
+    //qDebug().nospace() << "Property: " << name << " " << type << " " << defaultValue;
+
+    // TODO: allow for real typed properties. Only strings for now
+
+    props.insert(name, defaultValue);
 }
 
 } // namespace Internal

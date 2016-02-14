@@ -143,6 +143,7 @@ SOURCES += aboutdialog.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
+    objecttypeseditor.cpp \
     objecttypesmodel.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
@@ -289,6 +290,7 @@ HEADERS += aboutdialog.h \
     objectselectionitem.h \
     objectselectiontool.h \
     objecttypes.h \
+    objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
     offsetmapdialog.h \
@@ -356,6 +358,7 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    objecttypeseditor.ui \
     offsetmapdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \

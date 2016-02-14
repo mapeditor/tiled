@@ -135,6 +135,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(mapChanged()));
         connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 SLOT(objectsChanged(QList<MapObject*>)));
+        connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
+                SLOT(objectsTypeChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(layerChanged(int)),
                 SLOT(layerChanged(int)));
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
@@ -173,6 +175,9 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(selectedObjectsChanged()));
         connect(mapDocument, SIGNAL(selectedTilesChanged()),
                 SLOT(selectedTilesChanged()));
+
+        connect(Preferences::instance(), &Preferences::objectTypesChanged,
+                this, &PropertyBrowser::objectTypesChanged);
     }
 }
 
@@ -211,6 +216,13 @@ void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
     if (mObject && mObject->typeId() == Object::MapObjectType)
         if (objects.contains(static_cast<MapObject*>(mObject)))
             updateProperties();
+}
+
+void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mObject)))
+            updateCustomProperties();
 }
 
 void PropertyBrowser::layerChanged(int index)
@@ -336,6 +348,12 @@ void PropertyBrowser::selectedObjectsChanged()
 void PropertyBrowser::selectedTilesChanged()
 {
     updateCustomProperties();
+}
+
+void PropertyBrowser::objectTypesChanged()
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        updateCustomProperties();
 }
 
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
@@ -998,6 +1016,8 @@ void PropertyBrowser::removeProperties()
 
 void PropertyBrowser::updateProperties()
 {
+    Q_ASSERT(mObject);
+
     mUpdating = true;
 
     switch (mObject->typeId()) {
@@ -1126,6 +1146,7 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
+    bool wasUpdating = mUpdating;
     mUpdating = true;
 
     qDeleteAll(mNameToProperty);
@@ -1146,6 +1167,22 @@ void PropertyBrowser::updateCustomProperties()
         }
     }
 
+    // Add properties based on object type, if defined
+    if (mObject->typeId() == Object::MapObjectType) {
+        const QString currentType = static_cast<MapObject*>(mObject)->type();
+        const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+        for (const ObjectType &type : objectTypes) {
+            if (type.name == currentType) {
+                QMapIterator<QString,QString> it(type.defaultProperties);
+                while (it.hasNext()) {
+                    it.next();
+                    if (!mCombinedProperties.contains(it.key()))
+                        mCombinedProperties.insert(it.key(), it.value());
+                }
+            }
+        }
+    }
+
     QMapIterator<QString,QString> it(mCombinedProperties);
 
     while (it.hasNext()) {
@@ -1158,7 +1195,7 @@ void PropertyBrowser::updateCustomProperties()
         updatePropertyColor(it.key());
     }
 
-    mUpdating = false;
+    mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.

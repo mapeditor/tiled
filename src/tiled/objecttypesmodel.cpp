@@ -30,6 +30,14 @@ void ObjectTypesModel::setObjectTypes(const ObjectTypes &objectTypes)
     endResetModel();
 }
 
+ObjectType ObjectTypesModel::objectTypeAt(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return ObjectType();
+
+    return mObjectTypes.at(index.row());
+}
+
 int ObjectTypesModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mObjectTypes.size();
@@ -104,6 +112,12 @@ void ObjectTypesModel::setObjectTypeColor(int objectIndex, const QColor &color)
 
     const QModelIndex mi = index(objectIndex, 1);
     emit dataChanged(mi, mi);
+}
+
+void ObjectTypesModel::setObjectTypeProperties(int objectIndex,
+                                               const Properties &properties)
+{
+    mObjectTypes[objectIndex].defaultProperties = properties;
 }
 
 void ObjectTypesModel::removeObjectTypes(const QModelIndexList &indexes)

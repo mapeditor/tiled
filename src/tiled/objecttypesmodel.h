@@ -22,6 +22,7 @@
 #define OBJECTTYPESMODEL_H
 
 #include "preferences.h"
+#include "properties.h"
 
 #include <QAbstractTableModel>
 
@@ -40,8 +41,9 @@ public:
     {}
 
     void setObjectTypes(const ObjectTypes &objectTypes);
-
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
+
+    ObjectType objectTypeAt(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
@@ -54,6 +56,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     void setObjectTypeColor(int objectIndex, const QColor &color);
+    void setObjectTypeProperties(int objectIndex, const Properties &properties);
     void removeObjectTypes(const QModelIndexList &indexes);
 
 public slots:

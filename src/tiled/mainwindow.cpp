@@ -63,6 +63,7 @@
 #include "resizedialog.h"
 #include "objectselectiontool.h"
 #include "objectgroup.h"
+#include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "preferences.h"
@@ -186,6 +187,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
     , mLayerComboBox(new QComboBox)
@@ -541,6 +543,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
+    mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
+    mShowObjectTypesEditor->setCheckable(true);
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
@@ -551,9 +555,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
+    connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
+            mObjectTypesEditor, SLOT(setVisible(bool)));
+    connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
 
     connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
             mTileAnimationEditor, SLOT(setVisible(bool)));
@@ -1446,6 +1455,11 @@ void MainWindow::autoMappingWarning(bool automatic)
         else
             QMessageBox::warning(this, title, warning);
     }
+}
+
+void MainWindow::onObjectTypesEditorClosed()
+{
+    mShowObjectTypesEditor->setChecked(false);
 }
 
 void MainWindow::onAnimationEditorClosed()

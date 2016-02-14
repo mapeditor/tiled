@@ -413,7 +413,10 @@ void MapObjectModel::setObjectType(MapObject *o, const QString &type)
     o->setType(type);
     QModelIndex index = this->index(o, 1);
     emit dataChanged(index, index);
-    emit objectsChanged(QList<MapObject*>() << o);
+
+    QList<MapObject*> objects = QList<MapObject*>() << o;
+    emit objectsChanged(objects);
+    emit objectsTypeChanged(objects);
 }
 
 void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
