@@ -22,6 +22,9 @@
       </property>
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="objectTypesLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QTableView" name="objectTypesTable">
           <property name="selectionBehavior">
@@ -42,6 +45,9 @@
       </widget>
       <widget class="QWidget" name="layoutWidget1">
        <layout class="QVBoxLayout" name="propertiesLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QtTreePropertyBrowser" name="propertiesView" native="true">
           <property name="sizePolicy">
@@ -64,8 +70,11 @@
      <x>0</x>
      <y>0</y>
      <width>652</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
