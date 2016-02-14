@@ -276,10 +276,18 @@ void ObjectTypesEditor::applyObjectTypes()
     Preferences *prefs = Preferences::instance();
     prefs->setObjectTypes(objectTypes);
 
+    QString objectTypesFile = prefs->objectTypesFile();
+    QDir objectTypesDir = QFileInfo(objectTypesFile).dir();
+
+    if (!objectTypesDir.exists())
+        objectTypesDir.mkpath(QLatin1String("."));
+
     ObjectTypesWriter writer;
-    if (!writer.writeObjectTypes(prefs->objectTypesFile(), objectTypes)) {
+    if (!writer.writeObjectTypes(objectTypesFile, objectTypes)) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              writer.errorString());
+                              tr("Error writing to %1:\n%2")
+                              .arg(prefs->objectTypesFile(),
+                                   writer.errorString()));
     }
 }
 
