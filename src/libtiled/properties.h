@@ -49,6 +49,11 @@ public:
 class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
+    AggregatedPropertyData()
+        : mPresenceCount(0)
+        , mValueConsistent(true)
+    {}
+
     explicit AggregatedPropertyData(const QVariant &value)
         : mValue(value)
         , mPresenceCount(1)
@@ -64,6 +69,13 @@ public:
     const QVariant &value() const { return mValue; }
     int presenceCount() const { return mPresenceCount; }
     bool valueConsistent() const { return mValueConsistent; }
+
+    bool operator==(const AggregatedPropertyData &other) const
+    {
+        return mValue == other.mValue &&
+                mPresenceCount == other.mPresenceCount &&
+                mValueConsistent == other.mValueConsistent;
+    }
 
 private:
     QVariant mValue;
