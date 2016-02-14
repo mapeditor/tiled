@@ -29,6 +29,7 @@
 #include <QtGroupPropertyManager>
 
 #include <QColorDialog>
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
