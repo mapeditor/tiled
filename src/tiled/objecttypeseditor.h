@@ -82,6 +82,8 @@ private slots:
     void currentItemChanged(QtBrowserItem *item);
 
 private:
+    void retranslateUi();
+
     QtVariantProperty *createProperty(int type,
                                       const QString &name);
 
@@ -94,6 +96,13 @@ private:
 
     AggregatedProperties mProperties;
     bool mUpdating;
+
+    QAction *mAddObjectTypeAction;
+    QAction *mRemoveObjectTypeAction;
+
+    QAction *mAddPropertyAction;
+    QAction *mRemovePropertyAction;
+    QAction *mRenamePropertyAction;
 };
 
 } // namespace Internal

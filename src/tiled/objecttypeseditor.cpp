@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QStyledItemDelegate>
+#include <QToolBar>
 
 namespace Tiled {
 namespace Internal {
@@ -104,15 +105,49 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
     horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
 
-    Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
-    Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");
-    Utils::setThemeIcon(mUi->addPropertyButton, "add");
-    Utils::setThemeIcon(mUi->removePropertyButton, "remove");
-
     mUi->propertiesView->setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     mUi->propertiesView->setResizeMode(QtTreePropertyBrowser::ResizeToContents);
     mUi->propertiesView->setRootIsDecorated(false);
     mUi->propertiesView->setPropertiesWithoutValueMarked(true);
+
+    mAddObjectTypeAction = new QAction(this);
+    mRemoveObjectTypeAction = new QAction(this);
+    mAddPropertyAction = new QAction(this);
+    mRemovePropertyAction = new QAction(this);
+    mRenamePropertyAction = new QAction(this);
+
+    mRemoveObjectTypeAction->setEnabled(false);
+    mAddPropertyAction->setEnabled(false);
+    mRemovePropertyAction->setEnabled(false);
+    mRenamePropertyAction->setEnabled(false);
+
+    QIcon addIcon(QLatin1String(":/images/22x22/add.png"));
+    QIcon removeIcon(QLatin1String(":/images/22x22/remove.png"));
+
+    mAddObjectTypeAction->setIcon(addIcon);
+    mRemoveObjectTypeAction->setIcon(removeIcon);
+    mAddPropertyAction->setIcon(addIcon);
+    mRemovePropertyAction->setIcon(removeIcon);
+    mRenamePropertyAction->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
+
+    Utils::setThemeIcon(mAddObjectTypeAction, "add");
+    Utils::setThemeIcon(mRemoveObjectTypeAction, "remove");
+    Utils::setThemeIcon(mAddPropertyAction, "add");
+    Utils::setThemeIcon(mRemovePropertyAction, "remove");
+
+    QToolBar *objectTypesToolBar = new QToolBar(this);
+    objectTypesToolBar->setIconSize(QSize(16, 16));
+    objectTypesToolBar->addAction(mAddObjectTypeAction);
+    objectTypesToolBar->addAction(mRemoveObjectTypeAction);
+
+    QToolBar *propertiesToolBar = new QToolBar(this);
+    propertiesToolBar->setIconSize(QSize(16, 16));
+    propertiesToolBar->addAction(mAddPropertyAction);
+    propertiesToolBar->addAction(mRemovePropertyAction);
+    propertiesToolBar->addAction(mRenamePropertyAction);
+
+    mUi->objectTypesLayout->addWidget(objectTypesToolBar);
+    mUi->propertiesLayout->addWidget(propertiesToolBar);
 
     auto selectionModel = mUi->objectTypesTable->selectionModel();
     connect(selectionModel, &QItemSelectionModel::selectionChanged,
@@ -122,16 +157,16 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->objectTypesTable, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(objectTypeIndexClicked(QModelIndex)));
 
-    connect(mUi->addObjectTypeButton, SIGNAL(clicked()),
+    connect(mAddObjectTypeAction, SIGNAL(triggered()),
             SLOT(addObjectType()));
-    connect(mUi->removeObjectTypeButton, SIGNAL(clicked()),
+    connect(mRemoveObjectTypeAction, SIGNAL(triggered()),
             SLOT(removeSelectedObjectTypes()));
 
-    connect(mUi->addPropertyButton, SIGNAL(clicked()),
+    connect(mAddPropertyAction, SIGNAL(triggered()),
             SLOT(addProperty()));
-    connect(mUi->removePropertyButton, SIGNAL(clicked()),
+    connect(mRemovePropertyAction, SIGNAL(triggered()),
             SLOT(removeProperty()));
-    connect(mUi->renamePropertyButton, SIGNAL(clicked()),
+    connect(mRenamePropertyAction, SIGNAL(triggered()),
             SLOT(renameProperty()));
 
     connect(mUi->actionChooseFile, SIGNAL(triggered()),
@@ -154,6 +189,8 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
 
     Preferences *prefs = Preferences::instance();
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+
+    retranslateUi();
 }
 
 ObjectTypesEditor::~ObjectTypesEditor()
@@ -174,10 +211,21 @@ void ObjectTypesEditor::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
+        retranslateUi();
         break;
     default:
         break;
     }
+}
+
+void ObjectTypesEditor::retranslateUi()
+{
+    mAddObjectTypeAction->setText(tr("Add Object Type"));
+    mRemoveObjectTypeAction->setText(tr("Remove Object Type"));
+
+    mAddPropertyAction->setText(tr("Add Property"));
+    mRemovePropertyAction->setText(tr("Remove Property"));
+    mRenamePropertyAction->setText(tr("Rename Property"));
 }
 
 void ObjectTypesEditor::addObjectType()
@@ -199,7 +247,7 @@ void ObjectTypesEditor::addObjectType()
 void ObjectTypesEditor::selectedObjectTypesChanged()
 {
     const QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    mUi->removeObjectTypeButton->setEnabled(sm->hasSelection());
+    mRemoveObjectTypeAction->setEnabled(sm->hasSelection());
 
     updateProperties();
 }
@@ -373,7 +421,7 @@ void ObjectTypesEditor::updateProperties()
         aggregatedProperties.aggregate(objectType.defaultProperties);
     }
 
-    mUi->addPropertyButton->setEnabled(!selectedRows.isEmpty());
+    mAddPropertyAction->setEnabled(!selectedRows.isEmpty());
 
     mProperties = aggregatedProperties;
 
@@ -536,8 +584,8 @@ void ObjectTypesEditor::selectFirstType()
 void ObjectTypesEditor::currentItemChanged(QtBrowserItem *item)
 {
     bool itemSelected = item != nullptr;
-    mUi->removePropertyButton->setEnabled(itemSelected);
-    mUi->renamePropertyButton->setEnabled(itemSelected);
+    mRemovePropertyAction->setEnabled(itemSelected);
+    mRenamePropertyAction->setEnabled(itemSelected);
 }
 
 } // namespace Internal
