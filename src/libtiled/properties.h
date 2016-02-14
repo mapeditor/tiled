@@ -33,13 +33,14 @@
 
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
 namespace Tiled {
 
 /**
  * Collection of properties and their values.
  */
-class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
+class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
 {
 public:
     void merge(const Properties &other);
@@ -48,24 +49,24 @@ public:
 class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
-    explicit AggregatedPropertyData(const QString &value)
+    explicit AggregatedPropertyData(const QVariant &value)
         : mValue(value)
         , mPresenceCount(1)
         , mValueConsistent(true)
     {}
 
-    void aggregate(const QString &value)
+    void aggregate(const QVariant &value)
     {
         mValueConsistent &= value == mValue;
         mPresenceCount += 1;
     }
 
-    const QString &value() const { return mValue; }
+    const QVariant &value() const { return mValue; }
     int presenceCount() const { return mPresenceCount; }
     bool valueConsistent() const { return mValueConsistent; }
 
 private:
-    QString mValue;
+    QVariant mValue;
     int mPresenceCount;
     bool mValueConsistent;
 };

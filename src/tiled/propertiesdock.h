@@ -55,7 +55,7 @@ private slots:
     void tilesetFileNameChanged(Tileset *tileset);
 
     void addProperty();
-    void addProperty(const QString &name);
+    void addProperty(const QString &name, QVariant::Type type);
     void removeProperty();
     void renameProperty();
     void renameProperty(const QString &name);

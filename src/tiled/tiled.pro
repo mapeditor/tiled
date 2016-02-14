@@ -58,6 +58,7 @@ SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
+    addpropertydialog.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
     addremoveterrain.cpp \
@@ -204,6 +205,7 @@ HEADERS += aboutdialog.h \
     abstractobjecttool.h \
     abstracttiletool.h \
     abstracttool.h \
+    addpropertydialog.h \
     addremovelayer.h \
     addremovemapobject.h \
     addremoveterrain.h \
@@ -352,6 +354,7 @@ HEADERS += aboutdialog.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \
+    addpropertydialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
     exportasimagedialog.ui \

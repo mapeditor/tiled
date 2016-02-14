@@ -288,7 +288,7 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
 
         mUpdating = true;
-        QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
+        QtVariantProperty *property = mVariantManager->addProperty(mObject->propertyType(name), name);
         property->setValue(mObject->property(name));
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
         mPropertyToId.insert(property, CustomProperty);
@@ -372,7 +372,8 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
                                         property->propertyName(),
-                                        val.toString()));
+                                        val.toString(),
+                                        val.type()));
         return;
     }
 
@@ -451,6 +452,7 @@ static QStringList objectTypeNames()
 
 void PropertyBrowser::addMapObjectProperties()
 {
+    // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
@@ -1158,7 +1160,7 @@ void PropertyBrowser::updateCustomProperties()
         if (obj == mObject)
             continue;
 
-        QMapIterator<QString,QString> it(obj->properties());
+        QMapIterator<QString,QVariant> it(obj->properties());
 
         while (it.hasNext()) {
             it.next();
@@ -1183,12 +1185,12 @@ void PropertyBrowser::updateCustomProperties()
         }
     }
 
-    QMapIterator<QString,QString> it(mCombinedProperties);
+    QMapIterator<QString,QVariant> it(mCombinedProperties);
 
     while (it.hasNext()) {
         it.next();
         QtVariantProperty *property = createProperty(CustomProperty,
-                                                     QVariant::String,
+                                                     it.value().type(),
                                                      it.key(),
                                                      mCustomPropertiesGroup);
         property->setValue(it.value());
