@@ -32,6 +32,7 @@
 #include "standardautoupdater.h"
 #include "tiledapplication.h"
 #include "tileset.h"
+#include "winsparkleautoupdater.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -279,10 +280,12 @@ int main(int argc, char *argv[])
 
     QScopedPointer<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
+#if defined(Q_OS_MAC)
     updater.reset(new SparkleAutoUpdater);
+#elif defined(Q_OS_WIN)
+    updater.reset(new WinSparkleAutoUpdater);
 #endif
-    if (updater && updater->automaticallyChecksForUpdates())
-        updater->checkForUpdates();
+#endif
 
     MainWindow w;
     w.show();

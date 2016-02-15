@@ -31,6 +31,7 @@
 
 #include "properties.h"
 
+
 namespace Tiled {
 
 /**
@@ -88,8 +89,17 @@ public:
     /**
      * Returns the value of the object's \a name property.
      */
-    QString property(const QString &name) const
+    QVariant property(const QString &name) const
     { return mProperties.value(name); }
+
+    /**
+     * Returns the value of the object's \a name property, as a string.
+     *
+     * This is a workaround for the Python plugin, because I do not know how
+     * to pass a QVariant back to Python.
+     */
+    QString propertyAsString(const QString &name) const
+    { return mProperties.value(name).toString(); }
 
     /**
      * Returns whether this object has a property with the given \a name.
@@ -100,7 +110,7 @@ public:
     /**
      * Sets the value of the object's \a name property to \a value.
      */
-    void setProperty(const QString &name, const QString &value)
+    void setProperty(const QString &name, const QVariant &value)
     { mProperties.insert(name, value); }
 
     /**

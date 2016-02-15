@@ -105,6 +105,9 @@ public:
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
 
+    QString objectTypesFile() const;
+    void setObjectTypesFile(const QString &filePath);
+
     QDate firstRun() const;
     int runCount() const;
 
@@ -197,6 +200,7 @@ private:
 
     QString mMapsDirectory;
     QString mStampsDirectory;
+    QString mObjectTypesFile;
 
     QDate mFirstRun;
     int mRunCount;

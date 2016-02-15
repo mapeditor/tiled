@@ -1,4 +1,5 @@
 clone_depth: 200
+version: '0.15.{build}'
 
 environment:
   global:
@@ -10,17 +11,18 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y nsis
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
-  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
-  - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%VERSION%
-  - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %VERSION%... (from %COMMITNOW%)
-  - if not defined APPVEYOR_REPO_TAG_NAME set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
-  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%COMMITNOW%
-  - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
+  - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
+  - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
+  - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
+  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
+  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
+  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SPARKLE=true
+  - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
+  - cp dist/win/WiXModule.qbs C:\Qt\Tools\QtCreator\share\qtcreator\qbs\share\qbs\modules\wix\WiXModule.qbs
   - qbs setup-toolchains --detect
   - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
   - qbs config profiles.i686-w64-mingw32.cpp.nmPath nm.exe
@@ -33,18 +35,21 @@ build_script:
 after_build:
   - cd qt-release
   - cd dist*
-  - move tiled-*-setup.exe %APPVEYOR_BUILD_FOLDER%
+  - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
+  - move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - name: Installer
-    path: 'tiled-*-setup.exe'
+    path: 'tiled-*.msi'
+  - name: AppCast
+    path: 'appcast-win*-snapshots.xml'
 
 deploy:
   - provider: GitHub
-    release: Tiled $(VERSION)
+    release: Tiled $(TILED_VERSION)
     auth_token:
       secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
-    artifact: /.*\.exe/
+    artifact: /.*\.msi/
     draft: true
     on:
         appveyor_repo_tag: true
@@ -56,8 +61,21 @@ deploy:
     password:
       secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
     folder: public_html/files.mapeditor.org/public/daily
+    artifact: /.*\.msi/
     on:
-        branch: master
+        branch: snapshot
+        appveyor_repo_tag: false
+
+  - provider: FTP
+    protocol: sftp
+    host: update.mapeditor.org
+    username: bjorn
+    password:
+      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
+    folder: sparkle
+    artifact: /appcast-win.*-snapshots\.xml/
+    on:
+        branch: snapshot
         appveyor_repo_tag: false
 
 notifications:

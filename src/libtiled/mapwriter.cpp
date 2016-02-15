@@ -626,12 +626,16 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());
 
-        const QString &value = it.value();
-        if (value.contains(QLatin1Char('\n'))) {
+        QString typeName = typeToName(it.value().type());
+        if (typeName != QLatin1String("string"))
+            w.writeAttribute(QLatin1String("type"), typeName);
+
+        const QString &value = it.value().toString();
+        if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);
-        } else {
-            w.writeAttribute(QLatin1String("value"), it.value());
-        }
+        else
+            w.writeAttribute(QLatin1String("value"), value);
+
         w.writeEndElement();
     }
 

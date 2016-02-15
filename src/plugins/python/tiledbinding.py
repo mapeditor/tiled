@@ -41,7 +41,17 @@ qtbinding.generate(mod)
 
 tiled = mod.add_cpp_namespace('Tiled')
 
-cls_tile = tiled.add_class('Tile')
+cls_props = tiled.add_class('Properties')
+cls_props.add_method('keys', 'QList<QString>', [])
+#cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
+
+cls_object = tiled.add_class('Object')
+cls_object.add_method('properties', retval('Tiled::Properties','p'), [])
+cls_object.add_method('propertyAsString', 'QString', [('QString','prop')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('QString','val')])
+
+cls_tile = tiled.add_class('Tile', cls_object)
 cls_tile.add_method('id', 'int', [])
 cls_tile.add_method('image', retval('const QPixmap&'), [])
 cls_tile.add_method('setImage', None, [('const QPixmap&','image')])
@@ -51,7 +61,7 @@ cls_tile.add_method('height', 'int', [])
 
 cls_sharedtileset = tiled.add_class('SharedTileset')
 
-cls_tileset = tiled.add_class('Tileset')
+cls_tileset = tiled.add_class('Tileset', cls_object)
 cls_tileset.add_method('create', 'Tiled::SharedTileset',
                        [('QString','name'), ('int','tileWidth'), ('int','tileHeight'), ('int','tileSpacing'), ('int','margin')],
                        is_static=True)
@@ -81,16 +91,12 @@ cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
 cls_tile.add_method('tileset',
     retval('Tiled::Tileset*',reference_existing_object=True), [])
 
-cls_layer = tiled.add_class('Layer')
+cls_layer = tiled.add_class('Layer', cls_object)
 
 #mod.add_container('QList<Tiled::Tileset*>',
 #                retval('Tiled::Tileset*',caller_owns_return=False), 'list')
 
-cls_props = tiled.add_class('Properties')
-cls_props.add_method('keys', 'QList<QString>', [])
-#cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
-
-cls_map = tiled.add_class('Map')
+cls_map = tiled.add_class('Map', cls_object)
 cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
 cls_map.add_copy_constructor()
 cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'),
@@ -122,10 +128,6 @@ cls_map.add_method('tilesetAt',
 cls_map.add_method('tilesetCount', 'int', [])
 cls_map.add_method('isTilesetUsed', 'bool',
     [param('const Tileset*','tileset')])
-cls_map.add_method('properties', retval('Tiled::Properties','p'), [])
-cls_map.add_method('property', 'QString', [('QString','name')])
-cls_map.add_method('setProperty', None, [('QString','name'),
-    ('QString','value')])
 
 cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',
@@ -145,18 +147,13 @@ cls_tilelayer.add_method('referencesTileset', 'bool',
     [param('Tileset*','ts',transfer_ownership=False)])
 cls_tilelayer.add_method('isEmpty', 'bool', [])
 
-cls_imagelayer = tiled.add_class('ImageLayer')
+cls_imagelayer = tiled.add_class('ImageLayer', cls_layer)
 cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
     ('int','w'), ('int','h')])
 cls_imagelayer.add_method('loadFromImage', 'bool',
     [('const QImage&','img'),('QString','file')])
 cls_imagelayer.add_method('image', retval('const QPixmap&'), [])
 cls_imagelayer.add_method('setImage', None, [('const QPixmap&','image')])
-
-cls_object = tiled.add_class('Object')
-cls_object.add_method('property', 'QString', [('QString','prop')])
-cls_object.add_method('setProperty', None,
-    [('QString','prop'),('QString','val')])
 
 cls_mapobject = tiled.add_class('MapObject', cls_object)
 cls_mapobject.add_constructor([])

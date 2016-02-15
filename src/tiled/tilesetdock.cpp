@@ -53,7 +53,6 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
-#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QSignalMapper>

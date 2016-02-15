@@ -135,6 +135,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(mapChanged()));
         connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 SLOT(objectsChanged(QList<MapObject*>)));
+        connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
+                SLOT(objectsTypeChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(layerChanged(int)),
                 SLOT(layerChanged(int)));
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
@@ -173,6 +175,9 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(selectedObjectsChanged()));
         connect(mapDocument, SIGNAL(selectedTilesChanged()),
                 SLOT(selectedTilesChanged()));
+
+        connect(Preferences::instance(), &Preferences::objectTypesChanged,
+                this, &PropertyBrowser::objectTypesChanged);
     }
 }
 
@@ -211,6 +216,13 @@ void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
     if (mObject && mObject->typeId() == Object::MapObjectType)
         if (objects.contains(static_cast<MapObject*>(mObject)))
             updateProperties();
+}
+
+void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mObject)))
+            updateCustomProperties();
 }
 
 void PropertyBrowser::layerChanged(int index)
@@ -276,8 +288,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
 
         mUpdating = true;
-        QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
-        property->setValue(mObject->property(name));
+        QVariant value = mObject->property(name);
+        QtVariantProperty *property = mVariantManager->addProperty(value.type(), name);
+        property->setValue(value);
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
         mPropertyToId.insert(property, CustomProperty);
         mNameToProperty.insert(name, property);
@@ -338,6 +351,12 @@ void PropertyBrowser::selectedTilesChanged()
     updateCustomProperties();
 }
 
+void PropertyBrowser::objectTypesChanged()
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        updateCustomProperties();
+}
+
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 {
     if (mUpdating)
@@ -354,7 +373,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
                                         property->propertyName(),
-                                        val.toString()));
+                                        val));
         return;
     }
 
@@ -433,6 +452,7 @@ static QStringList objectTypeNames()
 
 void PropertyBrowser::addMapObjectProperties()
 {
+    // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
@@ -933,6 +953,11 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    QtProperty *parent)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
+    if (!property) {
+        // fall back to string property for unsupported property types
+        property = mVariantManager->addProperty(QVariant::String, name);
+    }
+
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
@@ -998,6 +1023,8 @@ void PropertyBrowser::removeProperties()
 
 void PropertyBrowser::updateProperties()
 {
+    Q_ASSERT(mObject);
+
     mUpdating = true;
 
     switch (mObject->typeId()) {
@@ -1126,6 +1153,7 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
+    bool wasUpdating = mUpdating;
     mUpdating = true;
 
     qDeleteAll(mNameToProperty);
@@ -1137,7 +1165,7 @@ void PropertyBrowser::updateCustomProperties()
         if (obj == mObject)
             continue;
 
-        QMapIterator<QString,QString> it(obj->properties());
+        QMapIterator<QString,QVariant> it(obj->properties());
 
         while (it.hasNext()) {
             it.next();
@@ -1146,19 +1174,36 @@ void PropertyBrowser::updateCustomProperties()
         }
     }
 
-    QMapIterator<QString,QString> it(mCombinedProperties);
+    // Add properties based on object type, if defined
+    if (mObject->typeId() == Object::MapObjectType) {
+        const QString currentType = static_cast<MapObject*>(mObject)->type();
+        const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+        for (const ObjectType &type : objectTypes) {
+            if (type.name == currentType) {
+                QMapIterator<QString,QVariant> it(type.defaultProperties);
+                while (it.hasNext()) {
+                    it.next();
+                    if (!mCombinedProperties.contains(it.key()))
+                        mCombinedProperties.insert(it.key(), it.value());
+                }
+            }
+        }
+    }
+
+    QMapIterator<QString,QVariant> it(mCombinedProperties);
 
     while (it.hasNext()) {
         it.next();
         QtVariantProperty *property = createProperty(CustomProperty,
-                                                     QVariant::String,
+                                                     it.value().type(),
                                                      it.key(),
                                                      mCustomPropertiesGroup);
+
         property->setValue(it.value());
         updatePropertyColor(it.key());
     }
 
-    mUpdating = false;
+    mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.

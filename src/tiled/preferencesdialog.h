@@ -32,8 +32,6 @@ class PreferencesDialog;
 namespace Tiled {
 namespace Internal {
 
-class ObjectTypesModel;
-
 /**
  * The preferences dialog. Allows the user to configure some general behaviour
  * settings of Tiled and choose the language.
@@ -52,14 +50,6 @@ protected:
 private slots:
     void languageSelected(int index);
 
-    void addObjectType();
-    void selectedObjectTypesChanged();
-    void removeSelectedObjectTypes();
-    void objectTypeIndexClicked(const QModelIndex &index);
-    void applyObjectTypes();
-    void importObjectTypes();
-    void exportObjectTypes();
-
 private:
     void fromPreferences();
     void toPreferences();
@@ -71,7 +61,6 @@ private:
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
-    ObjectTypesModel *mObjectTypesModel;
 };
 
 

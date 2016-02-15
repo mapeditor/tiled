@@ -92,6 +92,8 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
             SIGNAL(objectsAdded(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)),
             SIGNAL(objectsChanged(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
+            SIGNAL(objectsTypeChanged(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
             SLOT(onObjectsRemoved(QList<MapObject*>)));
 
@@ -988,9 +990,10 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
 
 void MapDocument::setProperty(Object *object,
                               const QString &name,
-                              const QString &value)
+                              const QVariant &value)
 {
     const bool hadProperty = object->hasProperty(name);
+
     object->setProperty(name, value);
 
     if (hadProperty)

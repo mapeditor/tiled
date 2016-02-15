@@ -1,12 +1,14 @@
 import qbs
 import qbs.FileInfo
+import qbs.File
+import qbs.TextFile
 
-NSISSetup {
+WindowsInstallerPackage {
     builtByDefault: false
     condition: qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc")
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
-    type: base.concat(["installable"])
+    type: base.concat(["installable","appcast"])
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
@@ -18,21 +20,78 @@ NSISSetup {
             return 32;
     }
 
-    targetName: "tiled-" + project.version + "-win" + bits + "-setup"
+    targetName: "tiled-" + project.version + "-win" + bits
 
-    nsis.defines: [
-        "QT_DIR=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
-        "MINGW_DIR=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."),
-        "V=" + project.version,
-        "ARCH=" + bits,
-        "ROOT_DIR=" + project.sourceDirectory,
-        "BUILD_DIR=" + qbs.installRoot
+    wix.defines: {
+        var defs = [
+            "Version=" + project.version,
+            "InstallRoot=" + qbs.installRoot,
+            "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
+            "RootDir=" + project.sourceDirectory
+        ];
+
+        if (qbs.toolchain.contains("mingw")) {
+            defs.push("MingwDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."));
+        }
+
+        if (project.sparkleEnabled)
+            defs.push("Sparkle");
+
+        // A bit of a hack to exclude the Python plugin when it isn't built
+        if (File.exists("C:/Python27") &&
+                qbs.toolchain.contains("mingw") &&
+                !qbs.debugInformation) {
+            defs.push("Python");
+        }
+
+        return defs;
+    }
+
+    wix.extensions: [
+        "WixUIExtension"
     ]
 
-    files: {
-        if (qbs.toolchain.contains("mingw"))
-            return ["tiled-mingw.nsi"]
-        else
-            return ["tiled-vs2013.nsi"]
+    files: ["installer.wxs"]
+
+    Group {
+        name: "AppCastXml"
+        files: [ "../appcast-win-snapshots.xml.in" ]
+        fileTags: ["appCastXmlIn"]
+    }
+
+    Rule {
+        inputs: ["appCastXmlIn"]
+        Artifact {
+            filePath: input.completeBaseName.replace('win', 'win' + product.bits);
+            fileTags: "appcast"
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.description = "prepare " + FileInfo.fileName(output.filePath);
+            cmd.highlight = "codegen";
+
+            cmd.sourceCode = function() {
+                var i;
+                var vars = {};
+                var inf = new TextFile(input.filePath);
+                var all = inf.readAll();
+
+                vars['DATE'] = new Date().toISOString().slice(0, 10);
+                vars['VERSION'] = project.version;
+                vars['FILENAME'] = product.targetName + ".msi";
+                vars['APPCAST_FILENAME'] = output.fileName;
+
+                for (i in vars) {
+                    all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
+                }
+
+                var file = new TextFile(output.filePath, TextFile.WriteOnly);
+                file.truncate();
+                file.write(all);
+                file.close();
+            }
+
+            return cmd;
+        }
     }
 }

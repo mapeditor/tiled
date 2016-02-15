@@ -190,7 +190,7 @@ public:
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
 
-    void setProperty(Object *object, const QString &name, const QString &value);
+    void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
 
@@ -368,6 +368,7 @@ signals:
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
+    void objectsTypeChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     void propertyAdded(Object *object, const QString &name);

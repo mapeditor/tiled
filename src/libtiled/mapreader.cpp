@@ -929,6 +929,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
     QString propertyValue = atts.value(QLatin1String("value")).toString();
+    QString propertyType = atts.value(QLatin1String("type")).toString();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -941,7 +942,15 @@ void MapReaderPrivate::readProperty(Properties *properties)
         }
     }
 
-    properties->insert(propertyName, propertyValue);
+    QVariant variant(propertyValue);
+
+    if (!propertyType.isEmpty()) {
+        QVariant::Type type = nameToType(propertyType);
+        if (type != QVariant::Invalid)
+            variant.convert(nameToType(propertyType));
+    }
+
+    properties->insert(propertyName, variant);
 }
 
 

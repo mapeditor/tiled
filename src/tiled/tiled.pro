@@ -58,6 +58,7 @@ SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
+    addpropertydialog.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
     addremoveterrain.cpp \
@@ -143,6 +144,7 @@ SOURCES += aboutdialog.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
+    objecttypeseditor.cpp \
     objecttypesmodel.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
@@ -203,6 +205,7 @@ HEADERS += aboutdialog.h \
     abstractobjecttool.h \
     abstracttiletool.h \
     abstracttool.h \
+    addpropertydialog.h \
     addremovelayer.h \
     addremovemapobject.h \
     addremoveterrain.h \
@@ -289,6 +292,7 @@ HEADERS += aboutdialog.h \
     objectselectionitem.h \
     objectselectiontool.h \
     objecttypes.h \
+    objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
     offsetmapdialog.h \
@@ -350,12 +354,14 @@ HEADERS += aboutdialog.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \
+    addpropertydialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
     exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    objecttypeseditor.ui \
     offsetmapdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
