@@ -1,3 +1,8 @@
+0.15.2 (...)
+* Fixed hiding of object labels when deleting an object layer
+* Fixed updating of object label colors when changing object types
+* Updated Brazilian Portuguese translation
+
 0.15.1 (30 January 2016)
 * Fixed adding/removing object name labels when set to always visible
 * Fixed a problem with 'Execute in Terminal' on OS X
