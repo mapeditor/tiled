@@ -1,6 +1,6 @@
 /*
- * %FILENAME%
- * Copyright 2016, Your Name <your.name@domain>
+ * autoupdater.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -17,3 +17,29 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef AUTOUPDATER_H
+#define AUTOUPDATER_H
+
+#include <QDateTime>
+
+class AutoUpdater
+{
+public:
+    AutoUpdater();
+    virtual ~AutoUpdater();
+
+    virtual void checkForUpdates() = 0;
+
+    virtual void setAutomaticallyChecksForUpdates(bool on) = 0;
+    virtual bool automaticallyChecksForUpdates() = 0;
+
+    virtual QDateTime lastUpdateCheckDate() = 0;
+
+    static AutoUpdater *instance() { return sInstance; }
+
+private:
+    static AutoUpdater *sInstance;
+};
+
+#endif // AUTOUPDATER_H

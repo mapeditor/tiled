@@ -119,6 +119,7 @@ Preferences::Preferences()
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
+    mCheckForUpdates = boolValue("CheckForUpdates");
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
@@ -450,6 +451,17 @@ void Preferences::setPatron(bool isPatron)
     mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
 
     emit isPatronChanged();
+}
+
+void Preferences::setCheckForUpdates(bool on)
+{
+    if (mCheckForUpdates == on)
+        return;
+
+    mCheckForUpdates = on;
+    mSettings->setValue(QLatin1String("Install/CheckForUpdates"), on);
+
+    emit checkForUpdatesChanged();
 }
 
 void Preferences::setOpenLastFilesOnStartup(bool open)

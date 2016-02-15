@@ -1,6 +1,6 @@
 /*
- * %FILENAME%
- * Copyright 2016, Your Name <your.name@domain>
+ * standardautoupdater.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -17,3 +17,24 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef STANDARDAUTOUPDATER_H
+#define STANDARDAUTOUPDATER_H
+
+#include "autoupdater.h"
+
+class StandardAutoUpdater : public AutoUpdater
+{
+public:
+    StandardAutoUpdater();
+
+public:
+    void checkForUpdates() override;
+
+    void setAutomaticallyChecksForUpdates(bool on) override;
+    bool automaticallyChecksForUpdates() override;
+
+    QDateTime lastUpdateCheckDate() override;
+};
+
+#endif // STANDARDAUTOUPDATER_H

@@ -14,12 +14,7 @@ QtGuiApplication {
     cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 
-    cpp.defines: {
-        var version = qbs.getEnv("BUILD_INFO_VERSION");
-        if (version != undefined)
-            return ["BUILD_INFO_VERSION=" + version]
-        return []
-    }
+    cpp.defines: ["TILED_VERSION=" + project.version]
 
     consoleApplication: false
 
@@ -54,6 +49,8 @@ QtGuiApplication {
         "automappingmanager.h",
         "automappingutils.cpp",
         "automappingutils.h",
+        "autoupdater.cpp",
+        "autoupdater.h",
         "brokenlinks.cpp",
         "brokenlinks.h",
         "brushitem.cpp",
@@ -263,6 +260,8 @@ QtGuiApplication {
         "snaphelper.h",
         "stampbrush.cpp",
         "stampbrush.h",
+        "standardautoupdater.cpp",
+        "standardautoupdater.h",
         "terrainbrush.cpp",
         "terrainbrush.h",
         "terraindock.cpp",

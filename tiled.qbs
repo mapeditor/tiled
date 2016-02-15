@@ -4,7 +4,7 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.4.2"
 
-    property string version: qbs.getEnv("VERSION")
+    property string version: qbs.getEnv("TILED_VERSION") || "0.15.0";
 
     references: [
         "dist/win",

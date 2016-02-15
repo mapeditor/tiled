@@ -16,6 +16,8 @@ QT += widgets
 
 contains(QT_CONFIG, opengl):!macx: QT += opengl
 
+DEFINES += TILED_VERSION=$${TILED_VERSION}
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
@@ -23,6 +25,20 @@ macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
     LIBS += -framework Foundation
     DEFINES += QT_NO_OPENGL
+    OBJECTIVE_SOURCES += macsupport.mm
+
+    sparkle {
+        LIBS += -framework Sparkle -framework AppKit
+        QMAKE_POST_LINK = \
+            mkdir -p $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks && \
+            test -d $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/Sparkle.framework || \
+            cp -a /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
+        APP_RESOURCES.path = Contents/Resources
+        APP_RESOURCES.files = ../../dist/dsa_pub.pem
+        QMAKE_BUNDLE_DATA += APP_RESOURCES
+        DEFINES += TILED_SPARKLE
+        OBJECTIVE_SOURCES += sparkleautoupdater.mm
+    }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -52,6 +68,7 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
+    autoupdater.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
@@ -102,6 +119,7 @@ SOURCES += aboutdialog.cpp \
     layerdock.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
+    magicwandtool.cpp \
     main.cpp \
     mainwindow.cpp \
     mapdocumentactionhandler.cpp \
@@ -149,6 +167,7 @@ SOURCES += aboutdialog.cpp \
     selectsametiletool.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
+    standardautoupdater.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -178,8 +197,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    magicwandtool.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -195,6 +213,7 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
+    autoupdater.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
@@ -247,6 +266,7 @@ HEADERS += aboutdialog.h \
     layermodel.h \
     layeroffsettool.h \
     macsupport.h \
+    magicwandtool.h \
     mainwindow.h \
     mapdocumentactionhandler.h \
     mapdocument.h \
@@ -294,7 +314,9 @@ HEADERS += aboutdialog.h \
     selectionrectangle.h \
     selectsametiletool.h \
     snaphelper.h \
+    sparkleautoupdater.h \
     stampbrush.h \
+    standardautoupdater.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
@@ -325,12 +347,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    magicwandtool.h
-
-macx {
-    OBJECTIVE_SOURCES += macsupport.mm
-}
+    zoomable.h
 
 FORMS += aboutdialog.ui \
     commanddialog.ui \

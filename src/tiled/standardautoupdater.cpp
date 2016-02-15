@@ -1,6 +1,6 @@
 /*
- * %FILENAME%
- * Copyright 2016, Your Name <your.name@domain>
+ * standardautoupdater.cpp
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -17,3 +17,34 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "standardautoupdater.h"
+
+#include "preferences.h"
+
+using namespace Tiled::Internal;
+
+
+StandardAutoUpdater::StandardAutoUpdater()
+{
+}
+
+void StandardAutoUpdater::checkForUpdates()
+{
+    // todo
+}
+
+void StandardAutoUpdater::setAutomaticallyChecksForUpdates(bool on)
+{
+    Preferences::instance()->setCheckForUpdates(on);
+}
+
+bool StandardAutoUpdater::automaticallyChecksForUpdates()
+{
+    return Preferences::instance()->checkForUpdates();
+}
+
+QDateTime StandardAutoUpdater::lastUpdateCheckDate()
+{
+    return QDateTime(); // todo
+}
