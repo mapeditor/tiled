@@ -1,6 +1,7 @@
 0.15.2 (...)
 * Fixed hiding of object labels when deleting an object layer
 * Fixed updating of object label colors when changing object types
+* TMX: Added image size attributes to image layer images
 * Updated Brazilian Portuguese translation
 
 0.15.1 (30 January 2016)

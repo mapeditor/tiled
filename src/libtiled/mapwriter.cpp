@@ -586,7 +586,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 }
 
 void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
-                                        const ImageLayer &imageLayer)
+                                       const ImageLayer &imageLayer)
 {
     w.writeStartElement(QLatin1String("imagelayer"));
     writeLayerAttributes(w, imageLayer);
@@ -603,6 +603,14 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         const QColor transColor = imageLayer.transparentColor();
         if (transColor.isValid())
             w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
+
+        const QSize imageSize = imageLayer.image().size();
+        if (!imageSize.isNull()) {
+            w.writeAttribute(QLatin1String("width"),
+                             QString::number(imageSize.width()));
+            w.writeAttribute(QLatin1String("height"),
+                             QString::number(imageSize.height()));
+        }
 
         w.writeEndElement();
     }
