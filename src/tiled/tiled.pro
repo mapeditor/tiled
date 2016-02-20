@@ -411,7 +411,7 @@ macx {
     ICON = images/tiled-icon-mac.icns
 }
 win32 {
-    RC_FILE = tiled.rc
+    RC_FILE = tiled.rc.in
     PRECOMPILED_HEADER = pch.h
 }
 win32:INCLUDEPATH += .
