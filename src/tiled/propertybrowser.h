@@ -105,6 +105,8 @@ private slots:
 
     void valueChanged(QtProperty *property, const QVariant &val);
 
+    void resetProperty(QtProperty *property);
+
 private:
     enum PropertyId {
         NameProperty,

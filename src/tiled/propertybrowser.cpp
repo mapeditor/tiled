@@ -70,7 +70,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
 {
-    setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
+    VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
+
+    setFactoryForManager(mVariantManager, variantEditorFactory);
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
@@ -105,6 +107,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
+
+    connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
+            this, &PropertyBrowser::resetProperty);
 }
 
 void PropertyBrowser::setObject(Object *object)
@@ -384,6 +389,19 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TilesetType:   applyTilesetValue(id, val); break;
     case Object::TileType:      applyTileValue(id, val); break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
+    }
+}
+
+void PropertyBrowser::resetProperty(QtProperty *property)
+{
+    switch (mVariantManager->propertyType(property)) {
+    case QVariant::Color:
+        // At the moment it is only possible to reset color values
+        mVariantManager->setValue(property, QColor());
+        break;
+
+    default:
+        qWarning() << "Resetting of property type not supported right now";
     }
 }
 
@@ -817,10 +835,7 @@ void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case ColorProperty: {
-        QColor color = val.value<QColor>();
-        if (color == Qt::gray)
-            color = QColor();
-
+        const QColor color = val.value<QColor>();
         command = new ChangeObjectGroupProperties(mMapDocument,
                                                   objectGroup,
                                                   color,
@@ -859,10 +874,7 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
         break;
     }
     case ColorProperty: {
-        QColor color = val.value<QColor>();
-        if (color == Qt::gray)
-            color = QColor();
-
+        const QColor color = val.value<QColor>();
         const QString &imageSource = imageLayer->imageSource();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
@@ -1040,10 +1052,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
-        QColor backgroundColor = map->backgroundColor();
-        if (!backgroundColor.isValid())
-            backgroundColor = Qt::darkGray;
-        mIdToProperty[ColorProperty]->setValue(backgroundColor);
+        mIdToProperty[ColorProperty]->setValue(map->backgroundColor());
         break;
     }
     case Object::MapObjectType: {
@@ -1082,9 +1091,7 @@ void PropertyBrowser::updateProperties()
             break;
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
-            QColor color = objectGroup->color();
-            if (!color.isValid())
-                color = Qt::gray;
+            const QColor color = objectGroup->color();
             mIdToProperty[ColorProperty]->setValue(color);
             mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
