@@ -23,6 +23,7 @@
 
 #include <QByteArray>
 #include <QString>
+#include <QVariant>
 
 class QIODevice;
 
@@ -59,7 +60,7 @@ public:
     void writeKeyAndValue(const QByteArray &key, const QByteArray &value);
     void writeKeyAndValue(const QByteArray &key, const QString &value);
 
-    void writeQuotedKeyAndValue(const QString &key, const QString &value);
+    void writeQuotedKeyAndValue(const QString &key, const QVariant &value);
     void writeKeyAndUnquotedValue(const QByteArray &key,
                                   const QByteArray &value);
 
