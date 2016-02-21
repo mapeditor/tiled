@@ -42,7 +42,29 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
     , mSource(static_cast<TileLayer*>(source->clone()))
     , mX(x)
     , mY(y)
-    , mPaintedRegion(x, y, source->width(), source->height())
+    , mPaintedRegion(source->region().translated(QPoint(x, y) - source->position()))
+    , mMergeable(false)
+{
+    mErased = mTarget->copy(mX - mTarget->x(),
+                            mY - mTarget->y(),
+                            mSource->width(), mSource->height());
+    setText(QCoreApplication::translate("Undo Commands", "Paint"));
+}
+
+PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
+                               TileLayer *target,
+                               int x,
+                               int y,
+                               const TileLayer *source,
+                               const QRegion &paintRegion,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mTarget(target)
+    , mSource(static_cast<TileLayer*>(source->clone()))
+    , mX(x)
+    , mY(y)
+    , mPaintedRegion(paintRegion)
     , mMergeable(false)
 {
     mErased = mTarget->copy(mX - mTarget->x(),
@@ -70,7 +92,7 @@ void PaintTileLayer::redo()
     QUndoCommand::redo(); // redo child commands
 
     TilePainter painter(mMapDocument, mTarget);
-    painter.drawCells(mX, mY, mSource);
+    painter.setCells(mX, mY, mSource, mPaintedRegion);
 }
 
 bool PaintTileLayer::mergeWith(const QUndoCommand *other)

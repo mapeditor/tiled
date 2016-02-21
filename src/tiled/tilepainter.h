@@ -68,11 +68,10 @@ public:
      * Sets the cells at the given coordinates to the cells in the given tile
      * layer. The coordinates \a x and \a y are relative to the map origin.
      *
-     * When a \a mask is given, only cells that fall within this mask are set.
-     * The mask is applied in map coordinates.
+     * Only cells that fall within this mask are set. The mask is applied in
+     * map coordinates.
      */
-    void setCells(int x, int y, TileLayer *tileLayer,
-                  const QRegion &mask = QRegion());
+    void setCells(int x, int y, TileLayer *tileLayer, const QRegion &mask);
 
     /**
      * Draws the cells in the given tile layer at the given coordinates. The

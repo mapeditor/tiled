@@ -504,6 +504,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
+    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
+            mTerrainDock, &TerrainDock::setCurrentTerrain);
 
     connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));

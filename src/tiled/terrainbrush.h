@@ -82,6 +82,9 @@ public:
         setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles);
     }
 
+signals:
+    void terrainCaptured(Terrain *terrain);
+
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
 
