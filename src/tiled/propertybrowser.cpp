@@ -56,6 +56,7 @@
 #include <QtGroupPropertyManager>
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QMessageBox>
 
 namespace Tiled {
