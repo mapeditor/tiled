@@ -7,7 +7,7 @@
     <item>
       <title>Tiled @VERSION@</title>
       <pubDate>@DATE@</pubDate>
-      <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/master</sparkle:releaseNotesLink>
+      <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
       <enclosure url="http://files.mapeditor.org/daily/@FILENAME@"
                  sparkle:version="@VERSION@"
                  type="application/octet-stream"/>
