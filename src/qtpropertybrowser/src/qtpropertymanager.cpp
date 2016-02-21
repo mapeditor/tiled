@@ -6220,6 +6220,7 @@ public:
     PropertyValueMap m_values;
 
     QtIntPropertyManager *m_intPropertyManager;
+    bool m_applyingValueChange;
 
     QMap<const QtProperty *, QtProperty *> m_propertyToR;
     QMap<const QtProperty *, QtProperty *> m_propertyToG;
@@ -6234,6 +6235,9 @@ public:
 
 void QtColorPropertyManagerPrivate::slotIntChanged(QtProperty *property, int value)
 {
+    if (m_applyingValueChange)
+        return;
+
     if (QtProperty *prop = m_rToProperty.value(property, 0)) {
         QColor c = m_values[prop];
         c.setRed(value);
@@ -6312,6 +6316,8 @@ QtColorPropertyManager::QtColorPropertyManager(QObject *parent)
     d_ptr->q_ptr = this;
 
     d_ptr->m_intPropertyManager = new QtIntPropertyManager(this);
+    d_ptr->m_applyingValueChange = false;
+
     connect(d_ptr->m_intPropertyManager, SIGNAL(valueChanged(QtProperty *, int)),
                 this, SLOT(slotIntChanged(QtProperty *, int)));
 
@@ -6378,6 +6384,8 @@ QIcon QtColorPropertyManager::valueIcon(const QtProperty *property) const
     const QtColorPropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QIcon();
+    if (!it.value().isValid())
+        return QIcon();
     return QtPropertyBrowserUtils::brushValueIcon(QBrush(it.value()));
 }
 
@@ -6400,10 +6408,14 @@ void QtColorPropertyManager::setValue(QtProperty *property, const QColor &val)
 
     it.value() = val;
 
+    d_ptr->m_applyingValueChange = true;
+
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToR[property], val.red());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToG[property], val.green());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToB[property], val.blue());
     d_ptr->m_intPropertyManager->setValue(d_ptr->m_propertyToA[property], val.alpha());
+
+    d_ptr->m_applyingValueChange = false;
 
     emit propertyChanged(property);
     emit valueChanged(property, val);
