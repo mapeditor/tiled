@@ -24,7 +24,6 @@
 
 #include "brushitem.h"
 #include "geometry.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"

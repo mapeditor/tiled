@@ -70,6 +70,7 @@
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "stampbrush.h"
+#include "terrain.h"
 #include "terrainbrush.h"
 #include "tile.h"
 #include "tilelayer.h"
