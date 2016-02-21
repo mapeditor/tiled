@@ -76,7 +76,8 @@ public:
     QString errorString() const { return mError; }
 
 private:
-    Properties toProperties(const QVariant &variant);
+    Properties toProperties(const QVariant &propertiesVariant,
+                            const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
@@ -84,6 +85,8 @@ private:
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
+
+    Properties extractProperties(const QVariantMap &variantMap) const;
 
     Map *mMap;
     QDir mMapDir;
