@@ -246,11 +246,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
-    PropertiesDock *propertiesDock = new PropertiesDock(this);
+    mPropertiesDock = new PropertiesDock(this);
     TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
@@ -1800,6 +1800,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
     mActionHandler->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
+    mPropertiesDock->setMapDocument(mapDocument);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setMapDocument(mapDocument);

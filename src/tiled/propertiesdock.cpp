@@ -91,10 +91,6 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
-    DocumentManager *manager = DocumentManager::instance();
-    connect(manager, SIGNAL(currentDocumentChanged(MapDocument*)),
-            SLOT(mapDocumentChanged(MapDocument*)));
-
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
@@ -102,25 +98,6 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 }
 
 void PropertiesDock::setMapDocument(MapDocument *mapDocument)
-{
-    // Stop connecting to the DocumentManager singleton instance.
-    DocumentManager *manager = DocumentManager::instance();
-    disconnect(manager, SIGNAL(currentDocumentChanged(MapDocument*)), this,
-            SLOT(mapDocumentChanged(MapDocument*)));
-
-    // Connect to the document passed in.
-    // Note: Since we are disconnected from the document manager now we are responsible for setting the map document from now on.
-    mapDocumentChanged(mapDocument);
-}
-
-void PropertiesDock::bringToFront()
-{
-    show();
-    raise();
-    mPropertyBrowser->setFocus();
-}
-
-void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
 {
     if (mMapDocument)
         mMapDocument->disconnect(this);
@@ -140,6 +117,13 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
     } else {
         currentObjectChanged(nullptr);
     }
+}
+
+void PropertiesDock::bringToFront()
+{
+    show();
+    raise();
+    mPropertyBrowser->setFocus();
 }
 
 static bool isExternal(const Object *object)

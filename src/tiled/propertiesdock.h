@@ -44,8 +44,7 @@ public:
     explicit PropertiesDock(QWidget *parent = nullptr);
 
     /**
-     * Sets the MapDocument on which the properties browser will act on.
-     * This allows us to have multiple PropertiesDock instances that are registered with custom MapDocuments.
+     * Sets the \a mapDocument on which this properties dock will act.
      */
     void setMapDocument(MapDocument *mapDocument);
 
@@ -56,7 +55,6 @@ protected:
     bool event(QEvent *event) override;
 
 private slots:
-    void mapDocumentChanged(MapDocument *mapDocument);
     void currentObjectChanged(Object *object);
     void currentItemChanged(QtBrowserItem *item);
     void tilesetFileNameChanged(Tileset *tileset);

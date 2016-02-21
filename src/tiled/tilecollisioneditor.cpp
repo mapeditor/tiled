@@ -75,11 +75,13 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     layout->setSpacing(0);
     layout->setMargin(5);
 
-    // We want to re-use the PropertiesDock class in order to manipulate properties on collision objects.
-    // This instance of the PropertiesDock is best left with the docking features disabled though as it only belongs to the collision editor.
+    // We re-use the PropertiesDock class in order to manipulate properties on
+    // collision objects. This instance of the PropertiesDock is best left with
+    // the docking features disabled though as it only belongs to the collision
+    // editor.
     QDockWidget::DockWidgetFeatures features = QDockWidget::NoDockWidgetFeatures;
     mPropertiesDock->setFeatures(features);
-    mPropertiesDock->setMapDocument(0);
+    mPropertiesDock->setContextMenuPolicy(Qt::PreventContextMenu);
     addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
 
     mMapView->setScene(mMapScene);
@@ -93,6 +95,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);;
 
     QToolBar *toolBar = new QToolBar(this);
+    toolBar->setObjectName(QLatin1String("TileCollisionEditorToolBar"));
     toolBar->setMovable(false);
     toolBar->setFloatable(false);
     toolBar->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -178,8 +181,9 @@ void TileCollisionEditor::setTile(Tile *tile)
     MapDocument *previousDocument = mMapScene->mapDocument();
 
     if (tile) {
-        mMapView->setEnabled(!mTile->tileset()->isExternal());
-        mPropertiesDock->setEnabled(!mTile->tileset()->isExternal());
+        bool isExternal = mTile->tileset()->isExternal();
+        mMapView->setEnabled(!isExternal);
+        mPropertiesDock->setEnabled(!isExternal);
 
         Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
         map->addTileset(tile->sharedTileset());
@@ -210,19 +214,19 @@ void TileCollisionEditor::setTile(Tile *tile)
         connect(mapDocument->undoStack(), SIGNAL(indexChanged(int)),
                 SLOT(applyChanges()));
 
+        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+                this, &TileCollisionEditor::selectedObjectsChanged);
+
     } else {
         mMapView->setEnabled(false);
         mPropertiesDock->setEnabled(false);
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
-        mPropertiesDock->setMapDocument(0);
+        mPropertiesDock->setMapDocument(nullptr);
     }
 
-    if (previousDocument) {
-        previousDocument->undoStack()->disconnect(this);
-
+    if (previousDocument)
         delete previousDocument;
-    }
 }
 
 void TileCollisionEditor::closeEvent(QCloseEvent *event)
@@ -368,10 +372,17 @@ void TileCollisionEditor::delete_(Operation operation)
     QUndoStack *undoStack = dummyDocument->undoStack();
     undoStack->beginMacro(operation == Delete ? tr("Delete") : tr("Cut"));
 
-    foreach (MapObject *mapObject, selectedObjects)
+    for (MapObject *mapObject : selectedObjects)
         undoStack->push(new RemoveMapObject(dummyDocument, mapObject));
 
     undoStack->endMacro();
+}
+
+void TileCollisionEditor::selectedObjectsChanged()
+{
+    MapDocument *dummyDocument = mMapScene->mapDocument();
+    if (dummyDocument->selectedObjects().isEmpty())
+        dummyDocument->setCurrentObject(dummyDocument->map()->layerAt(1));
 }
 
 void TileCollisionEditor::changeEvent(QEvent *e)

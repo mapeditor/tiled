@@ -79,6 +79,8 @@ private slots:
     void paste();
     void delete_(Operation operation = Delete);
 
+    void selectedObjectsChanged();
+
 private:
     void retranslateUi();
 

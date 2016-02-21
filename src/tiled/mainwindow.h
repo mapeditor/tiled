@@ -224,6 +224,7 @@ private:
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
+    PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
