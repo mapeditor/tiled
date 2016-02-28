@@ -84,7 +84,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->setNextObjectId(nextObjectId);
 
     mMap = map.data();
-    map->setProperties(toProperties(variantMap[QLatin1String("properties")]));
+    map->setProperties(extractProperties(variantMap));
 
     const QString bgColor = variantMap[QLatin1String("backgroundcolor")].toString();
     if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
@@ -130,16 +130,25 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
     return tileset;
 }
 
-Properties VariantToMapConverter::toProperties(const QVariant &variant)
+Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant,
+                                               const QVariant &propertyTypesVariant) const
 {
-    const QVariantMap variantMap = variant.toMap();
+    const QVariantMap propertiesMap = propertiesVariant.toMap();
+    const QVariantMap propertyTypesMap = propertyTypesVariant.toMap();
 
     Properties properties;
 
-    QVariantMap::const_iterator it = variantMap.constBegin();
-    QVariantMap::const_iterator it_end = variantMap.constEnd();
-    for (; it != it_end; ++it)
-        properties[it.key()] = it.value().toString();
+    QVariantMap::const_iterator it = propertiesMap.constBegin();
+    QVariantMap::const_iterator it_end = propertiesMap.constEnd();
+    for (; it != it_end; ++it) {
+        QVariant::Type type = nameToType(propertyTypesMap.value(it.key()).toString());
+        if (type == QVariant::Invalid)
+            type = QVariant::String;
+
+        QVariant value = it.value();
+        value.convert(type);
+        properties[it.key()] = value;
+    }
 
     return properties;
 }
@@ -207,7 +216,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         tileset->setTransparentColor(QColor(trans));
 
-    tileset->setProperties(toProperties(variantMap[QLatin1String("properties")]));
+    tileset->setProperties(extractProperties(variantMap));
 
     // Read terrains
     QVariantList terrainsVariantList = variantMap[QLatin1String("terrains")].toList();
@@ -266,10 +275,12 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     // Read tile properties
     QVariantMap propertiesVariantMap = variantMap[QLatin1String("tileproperties")].toMap();
+    QVariantMap propertyTypesVariantMap = variantMap[QLatin1String("tilepropertytypes")].toMap();
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
         const int tileId = it.key().toInt();
         const QVariant propertiesVar = it.value();
-        const Properties properties = toProperties(propertiesVar);
+        const QVariant propertyTypesVar = propertyTypesVariantMap.value(it.key());
+        const Properties properties = toProperties(propertiesVar, propertyTypesVar);
         tileset->findOrCreateTile(tileId)->setProperties(properties);
     }
 
@@ -292,7 +303,7 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
         layer = toImageLayer(variantMap);
 
     if (layer) {
-        layer->setProperties(toProperties(variantMap[QLatin1String("properties")]));
+        layer->setProperties(extractProperties(variantMap));
 
         const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
                              variantMap[QLatin1String("offsety")].toDouble());
@@ -470,7 +481,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         if (objectVariantMap.contains(QLatin1String("visible")))
             object->setVisible(objectVariantMap[QLatin1String("visible")].toBool());
 
-        object->setProperties(toProperties(objectVariantMap[QLatin1String("properties")]));
+        object->setProperties(extractProperties(objectVariantMap));
         objectGroup->addObject(object);
 
         const QVariant polylineVariant = objectVariantMap[QLatin1String("polyline")];
@@ -530,4 +541,10 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         polygon.append(QPointF(pointX, pointY));
     }
     return polygon;
+}
+
+Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMap) const
+{
+    return toProperties(variantMap[QLatin1String("properties")],
+                        variantMap[QLatin1String("propertytypes")]);
 }

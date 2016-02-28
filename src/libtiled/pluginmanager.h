@@ -32,23 +32,46 @@
 #include "tiled_global.h"
 
 #include <QList>
+#include <QMap>
 #include <QObject>
 #include <QString>
 
 #include <functional>
 
+class QPluginLoader;
+
 namespace Tiled {
 
-struct LoadedPlugin
+enum PluginState
 {
-    LoadedPlugin(QString fileName, QObject *instance)
-        : fileName(std::move(fileName))
+    PluginDefault,
+    PluginEnabled,
+    PluginDisabled,
+    PluginStatic
+};
+
+struct TILEDSHARED_EXPORT PluginFile
+{
+    PluginFile(PluginState state,
+               QObject *instance,
+               QPluginLoader *loader = nullptr,
+               bool defaultEnable = true)
+        : state(state)
         , instance(instance)
+        , loader(loader)
+        , defaultEnable(defaultEnable)
     {}
 
-    QString fileName;
+    QString fileName() const;
+    bool hasError() const;
+    QString errorString() const;
+
+    PluginState state;
     QObject *instance;
+    QPluginLoader *loader;
+    bool defaultEnable;
 };
+
 
 /**
  * The plugin manager loads the plugins and provides ways to access them.
@@ -73,7 +96,7 @@ public:
     /**
      * Returns the list of plugins found by the plugin manager.
      */
-    const QList<LoadedPlugin> &plugins() const { return mPlugins; }
+    const QList<PluginFile> &plugins() const { return mPlugins; }
 
     /**
      * Adds the given \a object. This allows the object to be found later based
@@ -93,9 +116,10 @@ public:
     static QList<T*> objects()
     {
         QList<T*> results;
-        for (QObject *object : mInstance->mObjects)
-            if (T *result = qobject_cast<T*>(object))
-                results.append(result);
+        if (mInstance)
+            for (QObject *object : mInstance->mObjects)
+                if (T *result = qobject_cast<T*>(object))
+                    results.append(result);
         return results;
     }
 
@@ -105,12 +129,16 @@ public:
     template<typename T>
     static void each(std::function<void(T*)> function)
     {
-        for (QObject *object : mInstance->mObjects)
-            if (T *result = qobject_cast<T*>(object))
-                function(result);
+        if (mInstance)
+            for (QObject *object : mInstance->mObjects)
+                if (T *result = qobject_cast<T*>(object))
+                    function(result);
     }
 
-    const LoadedPlugin *pluginByFileName(const QString &pluginFileName) const;
+    PluginFile *pluginByFileName(const QString &fileName);
+
+    const QMap<QString, PluginState> &pluginStates() const;
+    bool setPluginState(const QString &fileName, PluginState state);
 
 signals:
     void objectAdded(QObject *object);
@@ -122,11 +150,21 @@ private:
     PluginManager();
     ~PluginManager();
 
+    bool loadPlugin(PluginFile *plugin);
+    bool unloadPlugin(PluginFile *plugin);
+
     static PluginManager *mInstance;
 
-    QList<LoadedPlugin> mPlugins;
+    QList<PluginFile> mPlugins;
+    QMap<QString, PluginState> mPluginStates;
     QObjectList mObjects;
 };
+
+
+inline const QMap<QString, PluginState> &PluginManager::pluginStates() const
+{
+    return mPluginStates;
+}
 
 } // namespace Tiled
 

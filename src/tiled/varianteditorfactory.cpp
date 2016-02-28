@@ -23,12 +23,58 @@
 
 #include "fileedit.h"
 #include "tilesetparametersedit.h"
+#include "utils.h"
 #include "variantpropertymanager.h"
 
 #include <QCompleter>
+#include <QHBoxLayout>
+#include <QToolButton>
 
 namespace Tiled {
 namespace Internal {
+
+class ResetWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent = nullptr);
+
+signals:
+    void resetProperty(QtProperty *property);
+
+private slots:
+    void buttonClicked();
+
+private:
+    QtProperty *mProperty;
+};
+
+ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
+    : QWidget(parent)
+    , mProperty(property)
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+
+    QToolButton *resetButton = new QToolButton(this);
+    resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
+    resetButton->setIconSize(QSize(16, 16));
+    resetButton->setAutoRaise(true);
+    Utils::setThemeIcon(resetButton, "edit-clear");
+
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(editor);
+    layout->addWidget(resetButton);
+
+    connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
+}
+
+void ResetWidget::buttonClicked()
+{
+    emit resetProperty(mProperty);
+}
+
 
 VariantEditorFactory::~VariantEditorFactory()
 {
@@ -90,6 +136,14 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 lineEdit->setCompleter(completer);
             }
         }
+    }
+
+    if (type == QVariant::Color) {
+        // Allow resetting a color property to the invalid color
+        ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
+        connect(resetWidget, &ResetWidget::resetProperty,
+                this, &VariantEditorFactory::resetProperty);
+        editor = resetWidget;
     }
 
     return editor;
@@ -173,3 +227,5 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "varianteditorfactory.moc"

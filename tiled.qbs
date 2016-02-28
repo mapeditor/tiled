@@ -1,13 +1,16 @@
 import qbs 1.0
 
 Project {
+    name: "Tiled"
+
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.4.2"
 
-    property string version: qbs.getEnv("VERSION")
+    property string version: qbs.getEnv("TILED_VERSION") || "0.15.0";
+    property bool sparkleEnabled: qbs.getEnv("TILED_SPARKLE")
 
     references: [
-        "dist/win",
+        "dist/win/dist.qbs",
         "src/automappingconverter",
         "src/libtiled",
         "src/plugins",

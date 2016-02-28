@@ -63,12 +63,14 @@
 #include "resizedialog.h"
 #include "objectselectiontool.h"
 #include "objectgroup.h"
+#include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "stampbrush.h"
+#include "terrain.h"
 #include "terrainbrush.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -90,7 +92,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tmxmapformat.h"
-#include "imagemovementtool.h"
+#include "layeroffsettool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
 
@@ -186,6 +188,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
     , mLayerComboBox(new QComboBox)
@@ -244,11 +247,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
-    PropertiesDock *propertiesDock = new PropertiesDock(this);
+    mPropertiesDock = new PropertiesDock(this);
     TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
@@ -306,6 +309,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
     QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
     mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
@@ -428,10 +432,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
-    connect(mUi->actionMapProperties, SIGNAL(triggered()),
-            SLOT(editMapProperties()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
+    connect(mUi->actionAutoMapWhileDrawing, &QAction::toggled,
+            preferences, &Preferences::setAutomappingDrawing);
+    connect(mUi->actionMapProperties, SIGNAL(triggered()),
+            SLOT(editMapProperties()));
 
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
@@ -499,6 +505,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
+    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
+            mTerrainDock, &TerrainDock::setCurrentTerrain);
 
     connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
@@ -525,7 +533,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
@@ -538,6 +546,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
+    mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
+    mShowObjectTypesEditor->setCheckable(true);
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
@@ -548,9 +558,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
+    connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
+            mObjectTypesEditor, SLOT(setVisible(bool)));
+    connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
 
     connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
             mTileAnimationEditor, SLOT(setVisible(bool)));
@@ -1445,6 +1460,11 @@ void MainWindow::autoMappingWarning(bool automatic)
     }
 }
 
+void MainWindow::onObjectTypesEditorClosed()
+{
+    mShowObjectTypesEditor->setChecked(false);
+}
+
 void MainWindow::onAnimationEditorClosed()
 {
     mShowTileAnimationEditor->setChecked(false);
@@ -1783,6 +1803,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
     mActionHandler->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
+    mPropertiesDock->setMapDocument(mapDocument);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setMapDocument(mapDocument);

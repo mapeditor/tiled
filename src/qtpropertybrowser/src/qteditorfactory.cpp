@@ -2316,6 +2316,7 @@ QtColorEditWidget::QtColorEditWidget(QWidget *parent) :
     connect(m_button, SIGNAL(clicked()), this, SLOT(buttonClicked()));
     lt->addWidget(m_button);
     m_pixmapLabel->setPixmap(QtPropertyBrowserUtils::brushValuePixmap(QBrush(m_color)));
+    m_pixmapLabel->setVisible(m_color.isValid());
     m_label->setText(QtPropertyBrowserUtils::colorValueText(m_color));
 }
 
@@ -2324,6 +2325,7 @@ void QtColorEditWidget::setValue(const QColor &c)
     if (m_color != c) {
         m_color = c;
         m_pixmapLabel->setPixmap(QtPropertyBrowserUtils::brushValuePixmap(QBrush(c)));
+        m_pixmapLabel->setVisible(c.isValid());
         m_label->setText(QtPropertyBrowserUtils::colorValueText(c));
     }
 }

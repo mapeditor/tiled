@@ -23,12 +23,13 @@
 #include "documentmanager.h"
 #include "languagemanager.h"
 #include "mapdocument.h"
+#include "pluginmanager.h"
 #include "tilesetmanager.h"
 
-#include <QStandardPaths>
-
+#include <QDebug>
 #include <QFileInfo>
 #include <QSettings>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -60,6 +61,7 @@ Preferences::Preferences()
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
+    mObjectTypesFile = stringValue("ObjectTypesFile");
     mSettings->endGroup();
 
     // Retrieve interface settings
@@ -81,16 +83,25 @@ Preferences::Preferences()
     mSettings->endGroup();
 
     // Retrieve defined object types
-    mSettings->beginGroup(QLatin1String("ObjectTypes"));
-    const QStringList names =
-            mSettings->value(QLatin1String("Names")).toStringList();
-    const QStringList colors =
-            mSettings->value(QLatin1String("Colors")).toStringList();
-    mSettings->endGroup();
+    ObjectTypesReader objectTypesReader;
+    mObjectTypes = objectTypesReader.readObjectTypes(objectTypesFile());
 
-    const int count = qMin(names.size(), colors.size());
-    for (int i = 0; i < count; ++i)
-        mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+    // For backwards compatibilty, read in object types from settings
+    if (!objectTypesReader.errorString().isEmpty()) {
+        mSettings->beginGroup(QLatin1String("ObjectTypes"));
+        const QStringList names = mSettings->value(QLatin1String("Names")).toStringList();
+        const QStringList colors = mSettings->value(QLatin1String("Colors")).toStringList();
+        mSettings->endGroup();
+
+        if (!names.isEmpty()) {
+            const int count = qMin(names.size(), colors.size());
+            for (int i = 0; i < count; ++i)
+                mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+        }
+    } else {
+        mSettings->remove(QLatin1String("ObjectTypes"));
+    }
+
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -104,11 +115,22 @@ Preferences::Preferences()
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
 
+    // Read the lists of enabled and disabled plugins
+    const QStringList disabledPlugins = mSettings->value(QLatin1String("Plugins/Disabled")).toStringList();
+    const QStringList enabledPlugins = mSettings->value(QLatin1String("Plugins/Enabled")).toStringList();
+
+    PluginManager *pluginManager = PluginManager::instance();
+    for (const QString &fileName : disabledPlugins)
+        pluginManager->setPluginState(fileName, PluginDisabled);
+    for (const QString &fileName : enabledPlugins)
+        pluginManager->setPluginState(fileName, PluginEnabled);
+
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
+    mCheckForUpdates = boolValue("CheckForUpdates");
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
@@ -334,19 +356,6 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;
-
-    QStringList names;
-    QStringList colors;
-    foreach (const ObjectType &objectType, objectTypes) {
-        names.append(objectType.name);
-        colors.append(objectType.color.name());
-    }
-
-    mSettings->beginGroup(QLatin1String("ObjectTypes"));
-    mSettings->setValue(QLatin1String("Names"), names);
-    mSettings->setValue(QLatin1String("Colors"), colors);
-    mSettings->endGroup();
-
     emit objectTypesChanged();
 }
 
@@ -442,6 +451,17 @@ void Preferences::setPatron(bool isPatron)
     emit isPatronChanged();
 }
 
+void Preferences::setCheckForUpdates(bool on)
+{
+    if (mCheckForUpdates == on)
+        return;
+
+    mCheckForUpdates = on;
+    mSettings->setValue(QLatin1String("Install/CheckForUpdates"), on);
+
+    emit checkForUpdatesChanged();
+}
+
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
@@ -449,6 +469,36 @@ void Preferences::setOpenLastFilesOnStartup(bool open)
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
+}
+
+void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
+{
+    PluginManager::instance()->setPluginState(fileName, enabled ? PluginEnabled : PluginDisabled);
+
+    QStringList disabledPlugins;
+    QStringList enabledPlugins;
+
+    PluginManager *pluginManager = PluginManager::instance();
+    auto &states = pluginManager->pluginStates();
+
+    for (auto it = states.begin(), it_end = states.end(); it != it_end; ++it) {
+        const QString &fileName = it.key();
+        PluginState state = it.value();
+        switch (state) {
+        case PluginEnabled:
+            enabledPlugins.append(fileName);
+            break;
+        case PluginDisabled:
+            disabledPlugins.append(fileName);
+            break;
+        case PluginDefault:
+        case PluginStatic:
+            break;
+        }
+    }
+
+    mSettings->setValue(QLatin1String("Plugins/Disabled"), disabledPlugins);
+    mSettings->setValue(QLatin1String("Plugins/Enabled"), enabledPlugins);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const
@@ -481,16 +531,20 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
     return mSettings->value(QLatin1String(key), defaultValue).toReal();
 }
 
+static QString dataLocation()
+{
+#if QT_VERSION >= 0x050400
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+#else
+    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+#endif
+}
+
 QString Preferences::stampsDirectory() const
 {
-    if (mStampsDirectory.isEmpty()) {
-#if QT_VERSION >= 0x050400
-        QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-#else
-        QString appData = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#endif
-        return appData + QLatin1String("/stamps");
-    }
+    if (mStampsDirectory.isEmpty())
+        return dataLocation() + QLatin1String("/stamps");
+
     return mStampsDirectory;
 }
 
@@ -503,4 +557,23 @@ void Preferences::setStampsDirectory(const QString &stampsDirectory)
     mSettings->setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
 
     emit stampsDirectoryChanged(stampsDirectory);
+}
+
+QString Preferences::objectTypesFile() const
+{
+    if (mObjectTypesFile.isEmpty())
+        return dataLocation() + QLatin1String("/objecttypes.xml");
+
+    return mObjectTypesFile;
+}
+
+void Preferences::setObjectTypesFile(const QString &fileName)
+{
+    if (mObjectTypesFile == fileName)
+        return;
+
+    mObjectTypesFile = fileName;
+    mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
+
+    emit stampsDirectoryChanged(fileName);
 }

@@ -68,11 +68,12 @@ public:
      * @param objects      the objects of which the property should be changed
      * @param name         the name of the property to be changed
      * @param value        the new value of the property
+     * @param type         the (new) type ot the property to be changed
      */
     SetProperty(Document *document,
                 const QList<Object*> &objects,
                 const QString &name,
-                const QString &value,
+                const QVariant &value,
                 QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -80,14 +81,14 @@ public:
 
 private:
     struct ObjectProperty {
-        QString previousValue;
+        QVariant previousValue;
         bool existed;
     };
     QVector<ObjectProperty> mProperties;
     Document *mDocument;
     QList<Object*> mObjects;
     QString mName;
-    QString mValue;
+    QVariant mValue;
 };
 
 class RemoveProperty : public QUndoCommand
@@ -111,7 +112,7 @@ public:
 private:
     Document *mDocument;
     QList<Object*> mObjects;
-    QVector<QString> mPreviousValues;
+    QVector<QVariant> mPreviousValues;
     QString mName;
 };
 

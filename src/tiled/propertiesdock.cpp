@@ -20,9 +20,12 @@
 
 #include "propertiesdock.h"
 
+#include "addpropertydialog.h"
 #include "changeproperties.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
+#include "mapobject.h"
+#include "preferences.h"
 #include "propertybrowser.h"
 #include "terrain.h"
 #include "tile.h"
@@ -88,24 +91,13 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
-    DocumentManager *manager = DocumentManager::instance();
-    connect(manager, SIGNAL(currentDocumentChanged(MapDocument*)),
-            SLOT(mapDocumentChanged(MapDocument*)));
-
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
     retranslateUi();
 }
 
-void PropertiesDock::bringToFront()
-{
-    show();
-    raise();
-    mPropertyBrowser->setFocus();
-}
-
-void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
+void PropertiesDock::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument)
         mMapDocument->disconnect(this);
@@ -127,6 +119,13 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
     }
 }
 
+void PropertiesDock::bringToFront()
+{
+    show();
+    raise();
+    mPropertyBrowser->setFocus();
+}
+
 static bool isExternal(const Object *object)
 {
     if (!object)
@@ -144,6 +143,21 @@ static bool isExternal(const Object *object)
     }
 }
 
+static bool isAddedByType(Object *object, const QString &name)
+{
+    if (!object || object->typeId() != Object::MapObjectType)
+        return false;
+
+    const QString objectType = static_cast<MapObject*>(object)->type();
+    const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+    for (const ObjectType &type : objectTypes) {
+        if (type.name == objectType)
+            return type.defaultProperties.contains(name);
+    }
+
+    return false;
+}
+
 void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
@@ -159,8 +173,12 @@ void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
     bool external = isExternal(mPropertyBrowser->object());
-    mActionRemoveProperty->setEnabled(isCustomProperty && !external);
-    mActionRenameProperty->setEnabled(isCustomProperty && !external);
+    bool addedByType = item && isAddedByType(mPropertyBrowser->object(),
+                                     item->property()->propertyName());
+    bool canModify = isCustomProperty && !external && !addedByType;
+
+    mActionRemoveProperty->setEnabled(canModify);
+    mActionRenameProperty->setEnabled(canModify);
 }
 
 void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
@@ -193,14 +211,12 @@ void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 
 void PropertiesDock::addProperty()
 {
-    QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
-    dialog->setInputMode(QInputDialog::TextInput);
-    dialog->setLabelText(tr("Name:"));
-    dialog->setWindowTitle(tr("Add Property"));
-    dialog->open(this, SLOT(addProperty(QString)));
+    AddPropertyDialog dialog(mPropertyBrowser);
+    if (dialog.exec() == AddPropertyDialog::Accepted)
+        addProperty(dialog.propertyName(), dialog.propertyType());
 }
 
-void PropertiesDock::addProperty(const QString &name)
+void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 {
     if (name.isEmpty())
         return;
@@ -210,7 +226,9 @@ void PropertiesDock::addProperty(const QString &name)
 
     if (!object->hasProperty(name)) {
         QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, QString()));
+        undoStack->push(new SetProperty(mMapDocument,
+                                        mMapDocument->currentObjects(),
+                                        name, QVariant(type)));
     }
 
     mPropertyBrowser->editCustomProperty(name);
@@ -234,7 +252,9 @@ void PropertiesDock::removeProperty()
             mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
         }
     }
-    undoStack->push(new RemoveProperty(mMapDocument, mMapDocument->currentObjects(), name));
+    undoStack->push(new RemoveProperty(mMapDocument,
+                                       mMapDocument->currentObjects(),
+                                       name));
 }
 
 void PropertiesDock::renameProperty()

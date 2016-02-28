@@ -31,6 +31,7 @@
 
 #include "tiled_global.h"
 
+#include <QList>
 #include <QObject>
 
 namespace Tiled {
@@ -45,11 +46,16 @@ class TILEDSHARED_EXPORT Plugin : public QObject
     Q_OBJECT
 
 public:
+    ~Plugin();
+
     virtual void initialize() = 0;
 
 protected:
-    static void addObject(QObject *object);
-    static void removeObject(QObject *object);
+    void addObject(QObject *object);
+    void removeObject(QObject *object);
+
+private:
+    QList<QObject*> mAddedObjects;
 };
 
 } // namespace Tiled

@@ -126,13 +126,27 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 }
 
 void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
-                                            const QString &value)
+                                            const QVariant &value)
 {
     prepareNewLine();
     write('[');
     write(quote(key).toUtf8());
     write("] = ");
-    write(quote(value).toUtf8());
+
+    switch (value.type()) {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+    case QVariant::Bool:
+        write(value.toString().toLatin1());
+        break;
+    default:
+        write(quote(value.toString()).toUtf8());
+        break;
+    }
+
     m_newLine = false;
     m_valueWritten = true;
 }

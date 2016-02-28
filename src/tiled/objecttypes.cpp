@@ -21,9 +21,13 @@
 #include "objecttypes.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QFile>
+#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#include "properties.h"
 
 namespace Tiled {
 namespace Internal {
@@ -33,7 +37,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 {
     mError.clear();
 
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "Could not open file for writing.");
@@ -48,17 +52,31 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
     writer.writeStartDocument();
     writer.writeStartElement(QLatin1String("objecttypes"));
 
-    foreach (const ObjectType &objectType, objectTypes) {
+    for (const ObjectType &objectType : objectTypes) {
         writer.writeStartElement(QLatin1String("objecttype"));
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
+
+        QMapIterator<QString,QVariant> it(objectType.defaultProperties);
+        while (it.hasNext()) {
+            it.next();
+            writer.writeStartElement(QLatin1String("property"));
+            writer.writeAttribute(QLatin1String("name"), it.key());
+            writer.writeAttribute(QLatin1String("type"), typeToName(it.value().type()));
+
+            if (!it.value().isNull())
+                writer.writeAttribute(QLatin1String("default"), it.value().toString());
+
+            writer.writeEndElement();
+        }
+
         writer.writeEndElement();
     }
 
     writer.writeEndElement();
     writer.writeEndDocument();
 
-    if (file.error() != QFile::NoError) {
+    if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
@@ -94,9 +112,18 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
             const QString name(atts.value(QLatin1String("name")).toString());
             const QColor color(atts.value(QLatin1String("color")).toString());
 
-            objectTypes.append(ObjectType(name, color));
+            // read the custom properties
+            Properties props;
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("property")){
+                    readObjectTypeProperty(reader, props);
+                } else {
+                    reader.skipCurrentElement();
+                }
+            }
+
+            objectTypes.append(ObjectType(name, color, props));
         }
-        reader.skipCurrentElement();
     }
 
     if (reader.hasError()) {
@@ -109,6 +136,26 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     }
 
     return objectTypes;
+}
+
+void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml, Properties& props) {
+    
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString name(atts.value(QLatin1String("name")).toString());
+    QString typeName(atts.value(QLatin1String("type")).toString());
+    QVariant defaultValue(atts.value(QLatin1String("default")).toString());
+
+    if (!typeName.isEmpty()) {
+        QVariant::Type type = nameToType(typeName);
+        if (type != QVariant::Invalid)
+            defaultValue.convert(type);
+    }
+
+    props.insert(name, defaultValue);
+
+    xml.skipCurrentElement();
 }
 
 } // namespace Internal

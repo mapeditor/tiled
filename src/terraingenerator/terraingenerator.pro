@@ -22,7 +22,7 @@ macx {
 }
 
 # Make sure the executable can find libtiled
-!win32:!macx {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually

@@ -45,6 +45,7 @@ public:
     void clear();
 
     void setTileLayer(const SharedTileLayer &tileLayer);
+    void setTileLayer(const SharedTileLayer &tileLayer, const QRegion &region);
     const SharedTileLayer &tileLayer() const;
 
     void setTileLayerPosition(const QPoint &pos);

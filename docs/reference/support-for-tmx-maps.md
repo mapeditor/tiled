@@ -31,6 +31,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [TMXLoader](https://bitbucket.org/martingrant/tmxloader) based on [RapidXml](http://rapidxml.sourceforge.net/). Limited functionality (check the [website](http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/) for details).
 
 ### C#/.NET ###
+* [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended) has a Tiled map loader and renderer that works with MonoGame on all platforms that support portable class libraries.
 * [XNA map loader](https://github.com/zachmu/tiled-xna) by Kevin Gadd, extended by Stephen Belanger and Zach Musgrave (has dependency on XNA but supposedly can be turned into a standalone parser easily)
 * [TiledSharp](https://github.com/marshallward/TiledSharp): Yet another C# TMX importer library, with Tiled 0.11 support. TiledSharp is a generic parser which can be used in any framework, but it cannot be used to render the maps. Available via NuGet.
 * [NTiled](https://github.com/patriksvensson/ntiled): Generic parser for 0.9.1 tiled maps. Available via NuGet.
@@ -60,7 +61,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [PHP TMX Viewer](https://github.com/sebbu2/php-tmx-viewer) by sebbu : render the map as an image (allow some modifications as well)
 
 ### Pike
-* [TMX parser](https://gitorious.org/tmx-parser): a simple loader for TMX maps (CSV format only).
+* [TMX parser](https://gitlab.com/tmx-parser/tmx-parser): a simple loader for TMX maps (CSV format only).
 
 ### Python
 * [pytmxlib](http://pytmxlib.readthedocs.org/en/latest/): library for programmatic manipulation of TMX maps

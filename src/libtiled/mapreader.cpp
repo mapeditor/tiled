@@ -754,6 +754,11 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
     readLayerAttributes(*imageLayer, atts);
 
+    // Image layer pixel position moved from x/y to offsetx/offsety for
+    // consistency with other layers. This is here for backwards compatibility.
+    if (!atts.hasAttribute(QLatin1String("offsetx")))
+        imageLayer->setOffset(QPointF(x, y));
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("image"))
             readImageLayerImage(*imageLayer);
@@ -924,6 +929,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
     QString propertyValue = atts.value(QLatin1String("value")).toString();
+    QString propertyType = atts.value(QLatin1String("type")).toString();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -936,7 +942,15 @@ void MapReaderPrivate::readProperty(Properties *properties)
         }
     }
 
-    properties->insert(propertyName, propertyValue);
+    QVariant variant(propertyValue);
+
+    if (!propertyType.isEmpty()) {
+        QVariant::Type type = nameToType(propertyType);
+        if (type != QVariant::Invalid)
+            variant.convert(nameToType(propertyType));
+    }
+
+    properties->insert(propertyName, variant);
 }
 
 

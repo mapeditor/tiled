@@ -349,6 +349,7 @@ signals:
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
+    void objectsTypeChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
 private slots:

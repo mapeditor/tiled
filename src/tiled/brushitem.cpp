@@ -69,6 +69,21 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 }
 
 /**
+ * Sets a tile layer as well as the region that should be highlighted along
+ * with it. This allows highlighting of areas that are not covered by tiles in
+ * the given tile layer.
+ */
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
+                             const QRegion &region)
+{
+    mTileLayer = tileLayer;
+    mRegion = region;
+
+    updateBoundingRect();
+    update();
+}
+
+/**
  * Changes the position of the tile layer, if one is set.
  */
 void BrushItem::setTileLayerPosition(const QPoint &pos)

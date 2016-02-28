@@ -56,6 +56,7 @@
 #include <QtGroupPropertyManager>
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QMessageBox>
 
 namespace Tiled {
@@ -70,7 +71,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     , mGroupManager(new QtGroupPropertyManager(this))
     , mCustomPropertiesGroup(nullptr)
 {
-    setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
+    VariantEditorFactory *variantEditorFactory = new VariantEditorFactory(this);
+
+    setFactoryForManager(mVariantManager, variantEditorFactory);
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
@@ -105,6 +108,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
+
+    connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
+            this, &PropertyBrowser::resetProperty);
 }
 
 void PropertyBrowser::setObject(Object *object)
@@ -135,6 +141,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(mapChanged()));
         connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 SLOT(objectsChanged(QList<MapObject*>)));
+        connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
+                SLOT(objectsTypeChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(layerChanged(int)),
                 SLOT(layerChanged(int)));
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
@@ -174,6 +182,9 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 this, &PropertyBrowser::selectedObjectsChanged);
         connect(mapDocument, &MapDocument::selectedTilesChanged,
                 this, &PropertyBrowser::selectedTilesChanged);
+
+        connect(Preferences::instance(), &Preferences::objectTypesChanged,
+                this, &PropertyBrowser::objectTypesChanged);
     }
 }
 
@@ -212,6 +223,13 @@ void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
     if (mObject && mObject->typeId() == Object::MapObjectType)
         if (objects.contains(static_cast<MapObject*>(mObject)))
             updateProperties();
+}
+
+void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mObject)))
+            updateCustomProperties();
 }
 
 void PropertyBrowser::layerChanged(int index)
@@ -277,8 +295,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
 
         mUpdating = true;
-        QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
-        property->setValue(mObject->property(name));
+        QVariant value = object->property(name);
+        QtVariantProperty *property = mVariantManager->addProperty(value.type(), name);
+        property->setValue(value);
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
         mPropertyToId.insert(property, CustomProperty);
         mNameToProperty.insert(name, property);
@@ -339,6 +358,12 @@ void PropertyBrowser::selectedTilesChanged()
     updateCustomProperties();
 }
 
+void PropertyBrowser::objectTypesChanged()
+{
+    if (mObject && mObject->typeId() == Object::MapObjectType)
+        updateCustomProperties();
+}
+
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 {
     if (mUpdating)
@@ -355,7 +380,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
                                         property->propertyName(),
-                                        val.toString()));
+                                        val));
         return;
     }
 
@@ -366,6 +391,19 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TilesetType:   applyTilesetValue(id, val); break;
     case Object::TileType:      applyTileValue(id, val); break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
+    }
+}
+
+void PropertyBrowser::resetProperty(QtProperty *property)
+{
+    switch (mVariantManager->propertyType(property)) {
+    case QVariant::Color:
+        // At the moment it is only possible to reset color values
+        mVariantManager->setValue(property, QColor());
+        break;
+
+    default:
+        qWarning() << "Resetting of property type not supported right now";
     }
 }
 
@@ -434,6 +472,7 @@ static QStringList objectTypeNames()
 
 void PropertyBrowser::addMapObjectProperties()
 {
+    // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
@@ -515,8 +554,8 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    createProperty(XProperty, QVariant::Int, tr("X"), groupProperty);
-    createProperty(YProperty, QVariant::Int, tr("Y"), groupProperty);
+    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -798,10 +837,7 @@ void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case ColorProperty: {
-        QColor color = val.value<QColor>();
-        if (color == Qt::gray)
-            color = QColor();
-
+        const QColor color = val.value<QColor>();
         command = new ChangeObjectGroupProperties(mMapDocument,
                                                   objectGroup,
                                                   color,
@@ -840,29 +876,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
         break;
     }
     case ColorProperty: {
-        QColor color = val.value<QColor>();
-        if (color == Qt::gray)
-            color = QColor();
-
+        const QColor color = val.value<QColor>();
         const QString &imageSource = imageLayer->imageSource();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
                                                        imageSource));
-        break;
-    }
-    case XProperty: {
-        QPoint pos(val.toReal(), imageLayer->y());
-        undoStack->push(new ChangeImageLayerPosition(mMapDocument,
-                                                     imageLayer,
-                                                     pos));
-        break;
-    }
-    case YProperty: {
-        QPoint pos(imageLayer->x(), val.toReal());
-        undoStack->push(new ChangeImageLayerPosition(mMapDocument,
-                                                     imageLayer,
-                                                     pos));
         break;
     }
     default:
@@ -948,6 +967,11 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    QtProperty *parent)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
+    if (!property) {
+        // fall back to string property for unsupported property types
+        property = mVariantManager->addProperty(QVariant::String, name);
+    }
+
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
 
@@ -1013,6 +1037,8 @@ void PropertyBrowser::removeProperties()
 
 void PropertyBrowser::updateProperties()
 {
+    Q_ASSERT(mObject);
+
     mUpdating = true;
 
     switch (mObject->typeId()) {
@@ -1028,10 +1054,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
-        QColor backgroundColor = map->backgroundColor();
-        if (!backgroundColor.isValid())
-            backgroundColor = Qt::darkGray;
-        mIdToProperty[ColorProperty]->setValue(backgroundColor);
+        mIdToProperty[ColorProperty]->setValue(map->backgroundColor());
         break;
     }
     case Object::MapObjectType: {
@@ -1062,19 +1085,15 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
+        mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
+        mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
-            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             break;
         case Layer::ObjectGroupType: {
-            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
-            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
-            QColor color = objectGroup->color();
-            if (!color.isValid())
-                color = Qt::gray;
+            const QColor color = objectGroup->color();
             mIdToProperty[ColorProperty]->setValue(color);
             mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
@@ -1083,8 +1102,6 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
-            mIdToProperty[XProperty]->setValue(imageLayer->x());
-            mIdToProperty[YProperty]->setValue(imageLayer->y());
             break;
         }
         break;
@@ -1145,6 +1162,7 @@ void PropertyBrowser::updateCustomProperties()
     if (!mObject)
         return;
 
+    bool wasUpdating = mUpdating;
     mUpdating = true;
 
     qDeleteAll(mNameToProperty);
@@ -1156,7 +1174,7 @@ void PropertyBrowser::updateCustomProperties()
         if (obj == mObject)
             continue;
 
-        QMapIterator<QString,QString> it(obj->properties());
+        QMapIterator<QString,QVariant> it(obj->properties());
 
         while (it.hasNext()) {
             it.next();
@@ -1165,19 +1183,36 @@ void PropertyBrowser::updateCustomProperties()
         }
     }
 
-    QMapIterator<QString,QString> it(mCombinedProperties);
+    // Add properties based on object type, if defined
+    if (mObject->typeId() == Object::MapObjectType) {
+        const QString currentType = static_cast<MapObject*>(mObject)->type();
+        const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+        for (const ObjectType &type : objectTypes) {
+            if (type.name == currentType) {
+                QMapIterator<QString,QVariant> it(type.defaultProperties);
+                while (it.hasNext()) {
+                    it.next();
+                    if (!mCombinedProperties.contains(it.key()))
+                        mCombinedProperties.insert(it.key(), it.value());
+                }
+            }
+        }
+    }
+
+    QMapIterator<QString,QVariant> it(mCombinedProperties);
 
     while (it.hasNext()) {
         it.next();
         QtVariantProperty *property = createProperty(CustomProperty,
-                                                     QVariant::String,
+                                                     it.value().type(),
                                                      it.key(),
                                                      mCustomPropertiesGroup);
+
         property->setValue(it.value());
         updatePropertyColor(it.key());
     }
 
-    mUpdating = false;
+    mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.

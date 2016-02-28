@@ -29,6 +29,7 @@
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "staggeredrenderer.h"
+#include "tile.h"
 #include "tilelayer.h"
 
 namespace Tiled {
@@ -71,6 +72,54 @@ static bool smoothTransform(qreal scale)
     return scale != qreal(1) && scale < qreal(2);
 }
 
+static QRectF cellRect(const MapRenderer &renderer,
+                       const Cell &cell,
+                       const QPointF &tileCoords)
+{
+    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords);
+    QPointF offset = cell.tile->tileset()->tileOffset();
+    QSize size = cell.tile->size();
+
+    if (cell.flippedAntiDiagonally)
+        std::swap(size.rwidth(), size.rheight());
+
+    // This is a correction needed because tileToScreenCoords does not return
+    // the bottom-left origin of the tile image, but rather the top-left
+    // corner of the cell.
+    pixelCoords.ry() += renderer.map()->tileHeight() - size.height();
+
+    return QRectF(pixelCoords, size).translated(offset);
+}
+
+static QRect computeMapRect(const MapRenderer &renderer)
+{
+    // Start with the basic map size
+    QRectF rect(QPointF(0, 0), renderer.mapSize());
+
+    // Take into account large tiles extending beyond their cell
+    for (const Layer *layer : renderer.map()->layers()) {
+        if (layer->layerType() != Layer::TileLayerType)
+            continue;
+
+        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+        const QPointF offset = tileLayer->offset();
+
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const Cell &cell = tileLayer->cellAt(x, y);
+
+                if (!cell.isEmpty()) {
+                    QRectF r = cellRect(renderer, cell, QPointF(x, y));
+                    r.translate(offset);
+                    rect |= r;
+                }
+            }
+        }
+    }
+
+    return rect.toAlignedRect();
+}
+
 QImage ThumbnailRenderer::render(const QSize &size) const
 {
     QImage image(size, QImage::Format_ARGB32_Premultiplied);
@@ -84,16 +133,12 @@ QImage ThumbnailRenderer::render(const QSize &size) const
         image.fill(Qt::transparent);
     }
 
-    QSize mapSize = mRenderer->mapSize();
+    QRect mapRect = computeMapRect(*mRenderer);
 
-    QMargins margins = mRenderer->map()->drawMargins();
-    mapSize.rwidth() += margins.left() + margins.right();
-    mapSize.rheight() += margins.top() + margins.bottom();
+    qreal scale = qMin(qreal(size.width()) / mapRect.width(),
+                       qreal(size.height()) / mapRect.height());
 
-    qreal scale = qMin(qreal(size.width()) / mapSize.width(),
-                       qreal(size.height()) / mapSize.height());
-
-    QSize scaledSize = mapSize * scale;
+    QSize scaledSize = mapRect.size() * scale;
 
     QPainter painter(&image);
 
@@ -103,30 +148,33 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
     // Scale the map and translate it to adjust for its margins
     painter.scale(scale, scale);
-    painter.translate(margins.left() + (size.width() - scaledSize.width()) / 2,
-                      margins.top() + (size.height() - scaledSize.height()) / 2);
+    painter.translate(-mapRect.left() + (size.width() - scaledSize.width()) / 2,
+                      -mapRect.top() + (size.height() - scaledSize.height()) / 2);
 
     if (smoothTransform(scale))
         painter.setRenderHints(QPainter::SmoothPixmapTransform);
 
     mRenderer->setPainterScale(scale);
 
-    foreach (const Layer *layer, mMap->layers()) {
+    for (const Layer *layer : mMap->layers()) {
         if (mVisibleLayersOnly && !layer->isVisible())
             continue;
 
         painter.setOpacity(layer->opacity());
+        painter.translate(layer->offset());
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-
-        if (tileLayer) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
             mRenderer->drawTileLayer(&painter, tileLayer);
-        } else if (objGroup) {
-            QList<MapObject*> objects = objGroup->objects();
+            break;
+        }
 
-            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
+        case Layer::ObjectGroupType: {
+            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+            QList<MapObject*> objects = objectGroup->objects();
+
+            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 qStableSort(objects.begin(), objects.end(), objectLessThan);
 
             foreach (const MapObject *object, objects) {
@@ -146,9 +194,16 @@ QImage ThumbnailRenderer::render(const QSize &size) const
                         painter.restore();
                 }
             }
-        } else if (imageLayer) {
-            mRenderer->drawImageLayer(&painter, imageLayer);
+            break;
         }
+        case Layer::ImageLayerType: {
+            const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+            mRenderer->drawImageLayer(&painter, imageLayer);
+            break;
+        }
+        }
+
+        painter.translate(-layer->offset());
     }
 
     return image;

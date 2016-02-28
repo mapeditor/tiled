@@ -60,7 +60,7 @@ void ChangeProperties::swapProperties()
 SetProperty::SetProperty(Document *document,
                          const QList<Object*> &objects,
                          const QString &name,
-                         const QString &value,
+                         const QVariant &value,
                          QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
@@ -145,7 +145,7 @@ RenameProperty::RenameProperty(Document *document,
             continue;
 
         const QList<Object*> objects { object };
-        const QString value = object->property(oldName);
+        const QVariant value = object->property(oldName);
 
         new SetProperty(document, objects, newName, value, this);
     }

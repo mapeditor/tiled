@@ -28,6 +28,7 @@
 #include <QMap>
 
 class QModelIndex;
+class QPushButton;
 
 namespace Tiled {
 
@@ -67,9 +68,12 @@ public:
 
 signals:
     /**
-     * Emitted when the current tile changed.
+     * Emitted when the current terrain changed.
      */
     void currentTerrainChanged(const Terrain *terrain);
+
+public slots:
+    void setCurrentTerrain(Terrain *terrain);
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -78,13 +82,14 @@ private slots:
     void currentRowChanged(const QModelIndex &index);
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
+    void eraseTerrainButtonClicked();
 
 private:
-    void setCurrentTerrain(Terrain *terrain);
     void retranslateUi();
 
     MapDocument *mMapDocument;
     TerrainView *mTerrainView;
+    QPushButton *mEraseTerrainButton;
     Terrain *mCurrentTerrain;
     TerrainFilterModel *mProxyModel;
 };

@@ -35,6 +35,7 @@ class AbstractTool;
 class MapDocument;
 class MapScene;
 class MapView;
+class PropertiesDock;
 class ToolManager;
 
 class TileCollisionEditor : public QMainWindow
@@ -78,6 +79,8 @@ private slots:
     void paste();
     void delete_(Operation operation = Delete);
 
+    void selectedObjectsChanged();
+
 private:
     void retranslateUi();
 
@@ -86,6 +89,7 @@ private:
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;
+    PropertiesDock *mPropertiesDock;
     bool mApplyingChanges;
     bool mSynchronizing;
 };

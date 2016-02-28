@@ -86,6 +86,7 @@ protected:
 private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
+    void objectsTypeChanged(const QList<MapObject*> &objects);
     void layerChanged(int index);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
@@ -100,7 +101,11 @@ private slots:
     void selectedObjectsChanged();
     void selectedTilesChanged();
 
+    void objectTypesChanged();
+
     void valueChanged(QtProperty *property, const QVariant &val);
+
+    void resetProperty(QtProperty *property);
 
 private:
     enum PropertyId {

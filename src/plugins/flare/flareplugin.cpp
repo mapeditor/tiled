@@ -295,7 +295,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     Properties::const_iterator it = map->properties().constBegin();
     Properties::const_iterator it_end = map->properties().constEnd();
     for (; it != it_end; ++it) {
-        out << it.key() << "=" << it.value() << "\n";
+        out << it.key() << "=" << it.value().toString() << "\n";
     }
     out << "\n";
 
@@ -366,7 +366,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     Properties::const_iterator it = o->properties().constBegin();
                     Properties::const_iterator it_end = o->properties().constEnd();
                     for (; it != it_end; ++it) {
-                        out << it.key() << "=" << it.value() << "\n";
+                        out << it.key() << "=" << it.value().toString() << "\n";
                     }
                     out << "\n";
                 }

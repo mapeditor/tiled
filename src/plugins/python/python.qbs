@@ -11,10 +11,8 @@ TiledPlugin {
         } else if (qbs.targetOS.contains("windows")) {
             // On Windows, currently only the default install location of
             // Python 2.7 is supported, and only when compiling with MinGW in
-            // release mode. Also, it needs to be Python 2.7.9, since 2.7.10
-            // results in a linker error.
-            //
-            // https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
+            // release mode. Also, avoid Python 2.7.10, since it results in a
+            // linker error.
             //
             return File.exists("C:/Python27") &&
                     qbs.toolchain.contains("mingw") &&
@@ -49,6 +47,7 @@ TiledPlugin {
     }
 
     files: [
+        "plugin.json",
         "pythonplugin.cpp",
         "pythonplugin.h",
         "pythonbind.cpp",

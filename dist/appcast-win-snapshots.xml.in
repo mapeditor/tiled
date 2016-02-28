@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Tiled Development Snapshots</title>
+    <link>http://update.mapeditor.org/@APPCAST_FILENAME@</link>
+    <language>en</language>
+    <item>
+      <title>Tiled @VERSION@</title>
+      <pubDate>@DATE@</pubDate>
+      <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
+      <enclosure url="http://files.mapeditor.org/daily/@FILENAME@"
+                 sparkle:version="@VERSION@"
+                 type="application/octet-stream"/>
+    </item>
+  </channel>
+</rss>

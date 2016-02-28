@@ -1,9 +1,11 @@
-site_name: Tiled Documentation
+site_name: Tiled
+site_favicon: http://blog.mapeditor.org/favicon.ico
 repo_url: https://github.com/bjorn/tiled
 theme: cerulean
+theme_dir: 'docs_theme'
 google_analytics: ['UA-380618-1', 'mapeditor.org']
 pages:
-- Home: index.md
+- Index: index.md
 - Manual:
     - Contents: manual/index.md
     - Introduction: manual/introduction.md

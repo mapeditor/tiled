@@ -65,7 +65,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
                 const Cell &cell = tileLayer->cellAt(x, y);
                 const Tile *tile = cell.tile;
                 if (tile && tile->hasProperty(QLatin1String("name"))) {
-                    file.write(tile->property(QLatin1String("name")).toUtf8());
+                    file.write(tile->property(QLatin1String("name")).toString().toUtf8());
                 } else {
                     const int id = tile ? tile->id() : -1;
                     file.write(QByteArray::number(id));

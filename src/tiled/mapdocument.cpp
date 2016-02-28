@@ -91,6 +91,8 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
             SIGNAL(objectsAdded(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)),
             SIGNAL(objectsChanged(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
+            SIGNAL(objectsTypeChanged(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
             SLOT(onObjectsRemoved(QList<MapObject*>)));
 

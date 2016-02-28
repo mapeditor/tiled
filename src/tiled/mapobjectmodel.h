@@ -105,6 +105,7 @@ public:
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
     void objectsChanged(const QList<MapObject *> &objects);
+    void objectsTypeChanged(const QList<MapObject *> &objects);
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:

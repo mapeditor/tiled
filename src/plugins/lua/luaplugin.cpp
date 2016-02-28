@@ -401,10 +401,12 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
 
     writer.writeKeyAndValue("type", "imagelayer");
     writer.writeKeyAndValue("name", imageLayer->name());
-    writer.writeKeyAndValue("x", imageLayer->x());
-    writer.writeKeyAndValue("y", imageLayer->y());
     writer.writeKeyAndValue("visible", imageLayer->isVisible());
     writer.writeKeyAndValue("opacity", imageLayer->opacity());
+
+    const QPointF offset = imageLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
 
     const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
     writer.writeKeyAndValue("image", rel);

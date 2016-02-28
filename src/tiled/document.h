@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QVariant>
 
 class QUndoStack;
 
@@ -51,7 +52,7 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
-    void setProperty(Object *object, const QString &name, const QString &value);
+    void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
 

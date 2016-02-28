@@ -96,8 +96,8 @@ void TilePainter::setCells(int x, int y,
     QRegion region = paintableRegion(x, y,
                                      tileLayer->width(),
                                      tileLayer->height());
-    if (!mask.isEmpty())
-        region &= mask;
+    region &= mask;
+
     if (region.isEmpty())
         return;
 

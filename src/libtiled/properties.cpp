@@ -28,7 +28,7 @@
 
 #include "properties.h"
 
-using namespace Tiled;
+namespace Tiled {
 
 void Properties::merge(const Properties &other)
 {
@@ -40,3 +40,44 @@ void Properties::merge(const Properties &other)
         insert(it.key(), it.value());
     }
 }
+
+void AggregatedProperties::aggregate(const Properties &properties)
+{
+    auto it = properties.constEnd();
+    const auto b = properties.constBegin();
+    while (it != b) {
+        --it;
+
+        auto pit = find(it.key());
+        if (pit != end()) {
+            AggregatedPropertyData &propertyData = pit.value();
+            propertyData.aggregate(it.value());
+        } else {
+            insert(it.key(), AggregatedPropertyData(it.value()));
+        }
+    }
+
+    ++mAggregatedCount;
+}
+
+QString typeToName(QVariant::Type type)
+{
+    if (type == QVariant::String)
+        return QStringLiteral("string");
+    if (type == QVariant::Double)
+        return QStringLiteral("float");
+
+    return QLatin1String(QVariant::typeToName(type));
+}
+
+QVariant::Type nameToType(const QString &name)
+{
+    if (name == QLatin1String("string"))
+        return QVariant::String;
+    if (name == QLatin1String("float"))
+        return QVariant::Double;
+
+    return QVariant::nameToType(name.toLatin1().constData());
+}
+
+} // namespace Tiled

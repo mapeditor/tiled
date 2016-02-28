@@ -13,13 +13,17 @@ Have a look at the [changelog](tmx-changelog.md) when you're interested in what 
 ## &lt;map> ##
 
 * <b>version:</b> The TMX format version, generally 1.0.
-* <b>orientation:</b> Map orientation. Tiled supports "orthogonal", "isometric" and "staggered" (since 0.9) at the moment.
+* <b>orientation:</b> Map orientation. Tiled supports "orthogonal", "isometric", "staggered" (since 0.9) and "hexagonal" (since 0.11).
+* <b>renderorder:</b> The order in which tiles on tile layers are rendered. Valid values are `right-down` (the default), `right-up`, `left-down` and `left-up`. In all cases, the map is drawn row-by-row. (since 0.10, but only supported for orthogonal maps at the moment)
 * <b>width:</b> The map width in tiles.
 * <b>height:</b> The map height in tiles.
 * <b>tilewidth:</b> The width of a tile.
 * <b>tileheight:</b> The height of a tile.
-* <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional)
-* <b>renderorder:</b> The order in which tiles on tile layers are rendered. Valid values are `right-down` (the default), `right-up`, `left-down` and `left-up`. In all cases, the map is drawn row-by-row. (since 0.10, but only supported for orthogonal maps at the moment)
+* <b>hexsidelength:</b> Only for hexagonal maps. Determines the width or height (depending on the staggered axis) of the tile's edge, in pixels.
+* <b>staggeraxis:</b> For staggered and hexagonal maps, determines which axis ("x" or "y") is staggered. (since 0.11)
+* <b>staggerindex:</b> For staggered and hexagonal maps, determines whether the "even" or "odd" indexes along the staggered axis are shifted. (since 0.11)
+* <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional, may include alpha value since 0.15 in the form `#AARRGGBB`)
+* <b>nextobjectid:</b> Stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed. (since 0.11)
 
 The `tilewidth` and `tileheight` properties determine the general grid size of the map. The individual tiles may have different sizes. Larger tiles will extend at the top and right (anchored to the bottom left).
 
@@ -37,8 +41,9 @@ Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [o
 * <b>spacing:</b> The spacing in pixels between the tiles in this tileset (applies to the tileset image).
 * <b>margin:</b> The margin around the tiles in this tileset (applies to the tileset image).
 * <b>tilecount:</b> The number of tiles in this tileset (since 0.13)
+* <b>columns:</b> The number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset. (since 0.15)
 
-If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1 and it can be assumed that there are no gaps in the valid range of global tile IDs.
+If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1. Since Tiled 0.15, image collection tilesets do not necessarily number their tiles consecutively since gaps can occur when removing tiles.
 
 Can contain: [tileoffset](#tileoffset) (since 0.8), [properties](#properties) (since 0.8), [image](#image), [terraintypes](#terraintypes) (since 0.9), [tile](#tile)
 
@@ -220,7 +225,7 @@ While tile layers are very suitable for anything repetitive aligned to the tile 
 
 You generally use objects to add custom information to your tile map, such as spawn points, warps, exits, etc.
 
-When the object has a `gid` set, then it is represented by the image of the tile with that global ID. Currently that means `width` and `height` are ignored for such objects. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
+When the object has a `gid` set, then it is represented by the image of the tile with that global ID. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
 
 Can contain: [properties](#properties), [ellipse](#ellipse) (since 0.9), [polygon](#polygon), [polyline](#polyline), <i>image</i>
 
@@ -243,8 +248,10 @@ A `polyline` follows the same placement definition as a `polygon` object.
 ## &lt;imagelayer> ##
 
 * <b>name:</b> The name of the image layer.
-* <b>x:</b> The x position of the image layer in pixels.
-* <b>y:</b> The y position of the image layer in pixels.
+* <b>offsetx:</b> Rendering offset of the image layer in pixels. Defaults to 0. (since 0.15)
+* <b>offsety:</b> Rendering offset of the image layer in pixels. Defaults to 0. (since 0.15)
+* <i>x:</i> The x position of the image layer in pixels. (deprecated since 0.15)
+* <i>y:</i> The y position of the image layer in pixels. (deprecated since 0.15)
 * <i>width:</i> The width of the image layer in tiles. Meaningless.
 * <i>height:</i> The height of the image layer in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.

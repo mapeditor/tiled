@@ -34,6 +34,9 @@ class QEvent;
 class QKeyEvent;
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -156,6 +159,8 @@ protected:
     }
 
     MapDocument *mapDocument() const { return mMapDocument; }
+
+    Layer *currentLayer() const;
 
 protected slots:
     /**

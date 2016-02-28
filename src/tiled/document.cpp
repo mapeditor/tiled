@@ -57,9 +57,10 @@ bool Document::isModified() const
 
 void Document::setProperty(Object *object,
                            const QString &name,
-                           const QString &value)
+                           const QVariant &value)
 {
     const bool hadProperty = object->hasProperty(name);
+
     object->setProperty(name, value);
 
     if (hadProperty)

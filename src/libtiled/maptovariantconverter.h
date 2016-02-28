@@ -53,6 +53,7 @@ public:
 private:
     QVariant toVariant(const Tileset *tileset, int firstGid) const;
     QVariant toVariant(const Properties &properties) const;
+    QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const TileLayer *tileLayer,
                        Map::LayerDataFormat format) const;
     QVariant toVariant(const ObjectGroup *objectGroup) const;
@@ -60,6 +61,9 @@ private:
 
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Layer *layer) const;
+
+    void addProperties(QVariantMap &variantMap,
+                       const Properties &properties) const;
 
     QDir mMapDir;
     GidMapper mGidMapper;
