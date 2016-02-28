@@ -937,7 +937,8 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
     switch (id) {
     case TileProbabilityProperty:
         undoStack->push(new ChangeTileProbability(mMapDocument,
-                                                  tile, val.toFloat()));
+                                                  mMapDocument->selectedTiles(),
+                                                  val.toFloat()));
         break;
     case ImageSourceProperty:
         undoStack->push(new ChangeTileImageSource(mMapDocument,

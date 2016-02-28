@@ -35,7 +35,7 @@ class ChangeTileProbability : public QUndoCommand
 {
 public:
     ChangeTileProbability(MapDocument *mapDocument,
-                          Tile *tile,
+                          const QList<Tile*> &tiles,
                           float probability);
 
     void undo() override { swap(); }
@@ -45,8 +45,8 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    Tile *mTile;
-    float mProbability;
+    QList<Tile*> mTiles;
+    QList<float> mProbabilities;
 };
 
 } // namespace Internal
