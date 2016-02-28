@@ -19,7 +19,7 @@ Have a look at the [changelog](tmx-changelog.md) when you're interested in what 
 * <b>height:</b> The map height in tiles.
 * <b>tilewidth:</b> The width of a tile.
 * <b>tileheight:</b> The height of a tile.
-* <b>hexsidelength:</b> For staggered and hexagonal maps, determines the amount of width or height (depending on the staggered axis) of the tile's edge, in pixels.
+* <b>hexsidelength:</b> Only for hexagonal maps. Determines the width or height (depending on the staggered axis) of the tile's edge, in pixels.
 * <b>staggeraxis:</b> For staggered and hexagonal maps, determines which axis ("x" or "y") is staggered. (since 0.11)
 * <b>staggerindex:</b> For staggered and hexagonal maps, determines whether the "even" or "odd" indexes along the staggered axis are shifted. (since 0.11)
 * <b>backgroundcolor:</b> The background color of the map. (since 0.9, optional, may include alpha value since 0.15 in the form `#AARRGGBB`)
