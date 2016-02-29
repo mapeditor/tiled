@@ -96,11 +96,9 @@ private:
 
     /**
      * Merges the tile layer of its brush item into the current map.
-     * mergeable determines if this can be merged with similar actions for undo.
-     * whereX and whereY give an offset where to merge the brush items tilelayer
-     * into the current map.
+     * \a mergeable determines if this can be merged with similar actions for undo.
      */
-    void doPaint(bool mergeable, int whereX, int whereY);
+    void doPaint(bool mergeable);
 
     void capture();
 
@@ -114,7 +112,6 @@ private:
      */
     const Terrain *mTerrain;
     int mPaintX, mPaintY;
-    int mOffsetX, mOffsetY;
 
     bool mIsActive;
 

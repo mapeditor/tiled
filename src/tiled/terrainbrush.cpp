@@ -48,7 +48,6 @@ TerrainBrush::TerrainBrush(QObject *parent)
                        parent)
     , mTerrain(nullptr)
     , mPaintX(0), mPaintY(0)
-    , mOffsetX(0), mOffsetY(0)
     , mIsActive(false)
     , mBrushBehavior(Free)
     , mLineReferenceX(0)
@@ -81,7 +80,7 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
         int y = mPaintY;
         foreach (const QPoint &p, pointsOnLine(x, y, pos.x(), pos.y())) {
             updateBrush(p);
-            doPaint(true, p.x(), p.y());
+            doPaint(true);
         }
         break;
     }
@@ -111,7 +110,7 @@ void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
             mBrushBehavior = LineStartSet;
             break;
         case LineStartSet:
-            doPaint(false, mPaintX, mPaintY);
+            doPaint(false);
             mLineReferenceX = mPaintX;
             mLineReferenceY = mPaintY;
             break;
@@ -186,7 +185,7 @@ void TerrainBrush::beginPaint()
         return;
 
     mBrushBehavior = Paint;
-    doPaint(false, mPaintX, mPaintY);
+    doPaint(false);
 }
 
 void TerrainBrush::capture()
@@ -211,7 +210,7 @@ void TerrainBrush::capture()
     emit terrainCaptured(terrain);
 }
 
-void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
+void TerrainBrush::doPaint(bool mergeable)
 {
     TileLayer *stamp = brushItem()->tileLayer().data();
 
@@ -222,14 +221,11 @@ void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    whereX -= mOffsetX;
-    whereY -= mOffsetY;
-
-    if (!tileLayer->bounds().intersects(QRect(whereX, whereY, stamp->width(), stamp->height())))
+    if (!tileLayer->bounds().intersects(stamp->bounds()))
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                                               whereX, whereY,
+                                               stamp->x(), stamp->y(),
                                                stamp, brushItem()->tileRegion());
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
@@ -307,6 +303,9 @@ static unsigned short rightEdge(const Tile *tile)
 
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
+    mPaintX = cursorPos.x();
+    mPaintY = cursorPos.y();
+
     // get the current tile layer
     TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
@@ -329,8 +328,10 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // if the cursor is outside of the map, bail out
-    if (!currentLayer->bounds().contains(cursorPos))
+    if (!currentLayer->bounds().contains(cursorPos)) {
+        brushItem()->clear();
         return;
+    }
 
     Tileset *terrainTileset = nullptr;
     int terrainId = -1;
@@ -527,9 +528,4 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     delete[] checked;
     delete[] newTerrain;
-
-    mPaintX = cursorPos.x();
-    mPaintY = cursorPos.y();
-    mOffsetX = cursorPos.x() - brushRect.left();
-    mOffsetY = cursorPos.y() - brushRect.top();
 }
