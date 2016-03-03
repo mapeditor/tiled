@@ -50,7 +50,6 @@ class AutomappingManager;
 class BucketFillTool;
 class CommandButton;
 class DocumentManager;
-class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;
 class MapsDock;
@@ -168,7 +167,7 @@ private slots:
     void setTerrainBrush(const Terrain *terrain);
     void updateStatusInfoLabel(const QString &statusInfo);
 
-    void mapDocumentChanged(MapDocument *mapDocument);
+    void mapDocumentChanged(Document *document);
     void closeMapDocument(int index);
 
     void reloadError(const QString &error);
@@ -191,7 +190,7 @@ private:
       *         saved, <code>false</code> when the user cancelled or saving
       *         failed.
       */
-    bool confirmSave(MapDocument *mapDocument);
+    bool confirmSave(Document *document);
 
     /**
       * Checks all maps for changes, if so, ask if to save these changes.
@@ -223,7 +222,6 @@ private:
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
-    LayerDock *mLayerDock;
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
     ObjectsDock *mObjectsDock;

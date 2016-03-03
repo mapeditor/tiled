@@ -46,7 +46,6 @@
 #include "bucketfilltool.h"
 #include "languagemanager.h"
 #include "layer.h"
-#include "layerdock.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -181,7 +180,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mUi(new Ui::MainWindow)
     , mMapDocument(nullptr)
     , mActionHandler(new MapDocumentActionHandler(this))
-    , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
     , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
@@ -250,7 +248,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mPropertiesDock = new PropertiesDock(this);
     TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
 
-    addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
@@ -262,7 +259,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
     tabifyDockWidget(tileStampsDock, undoDock);
@@ -577,8 +573,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
-    connect(mDocumentManager, SIGNAL(currentDocumentChanged(MapDocument*)),
-            SLOT(mapDocumentChanged(MapDocument*)));
+    connect(mDocumentManager, &DocumentManager::currentDocumentChanged,
+            this, &MainWindow::mapDocumentChanged);
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
     connect(mDocumentManager, SIGNAL(reloadError(QString)),
@@ -769,6 +765,8 @@ void MainWindow::openLastFiles()
         mSettings.remove(QLatin1String("recentOpenedFiles"));
     }
 
+    // todo: move this code to MapEditHost
+    /*
     QStringList mapScales = mSettings.value(
                 QLatin1String("mapScale")).toStringList();
     QStringList scrollX = mSettings.value(
@@ -806,6 +804,8 @@ void MainWindow::openLastFiles()
                 mMapDocument->setCurrentLayerIndex(layer);
         }
     }
+    */
+
     QString lastActiveDocument =
             mSettings.value(QLatin1String("lastActive")).toString();
     int documentIndex = mDocumentManager->findDocument(lastActiveDocument);
@@ -913,19 +913,20 @@ bool MainWindow::saveFileAs()
 
 void MainWindow::saveAll()
 {
-    for (MapDocument *mapDoc : mDocumentManager->documents()) {
-        if (!mapDoc->isModified())
+    for (Document *document : mDocumentManager->documents()) {
+        if (!document->isModified())
             continue;
 
-        QString fileName(mapDoc->fileName());
+        QString fileName(document->fileName());
         QString error;
 
         if (fileName.isEmpty()) {
-            mDocumentManager->switchToDocument(mapDoc);
+            mDocumentManager->switchToDocument(document);
             if (!saveFileAs())
                 return;
-        } else if (!mapDoc->save(fileName, &error)) {
-            mDocumentManager->switchToDocument(mapDoc);
+            // todo: move the 'save' function to Document (virtual?)
+        } else if (false) { // !document->save(fileName, &error)) {
+            mDocumentManager->switchToDocument(document);
             QMessageBox::critical(this, tr("Error Saving Map"), error);
             return;
         }
@@ -934,12 +935,12 @@ void MainWindow::saveAll()
     }
 }
 
-bool MainWindow::confirmSave(MapDocument *mapDocument)
+bool MainWindow::confirmSave(Document *document)
 {
-    if (!mapDocument || !mapDocument->isModified())
+    if (!document || !document->isModified())
         return true;
 
-    mDocumentManager->switchToDocument(mapDocument);
+    mDocumentManager->switchToDocument(document);
 
     int ret = QMessageBox::warning(
             this, tr("Unsaved Changes"),
@@ -1705,9 +1706,11 @@ void MainWindow::writeSettings()
     mSettings.endGroup();
 
     mSettings.beginGroup(QLatin1String("recentFiles"));
-    if (MapDocument *document = mDocumentManager->currentDocument())
+    if (Document *document = mDocumentManager->currentDocument())
         mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 
+    // todo: move this to the MapEditHost
+    /*
     QStringList fileList;
     QStringList mapScales;
     QStringList scrollX;
@@ -1732,6 +1735,7 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("scrollY"), scrollY);
     mSettings.setValue(QLatin1String("selectedLayer"), selectedLayer);
     mSettings.endGroup();
+    */
 }
 
 void MainWindow::readSettings()
@@ -1786,58 +1790,60 @@ void MainWindow::retranslateUi()
     mToolManager->retranslateTools();
 }
 
-void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
+void MainWindow::mapDocumentChanged(Document *document)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    // todo: most of this code will have to be moved to the MapEditHost
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (mMapDocument)
+            mMapDocument->disconnect(this);
 
-    if (mZoomable) {
-        mZoomable->connectToComboBox(nullptr);
+        if (mZoomable) {
+            mZoomable->connectToComboBox(nullptr);
 
-        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                   this, SLOT(updateZoomLabel()));
-    }
-    mZoomable = nullptr;
+            disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                       this, SLOT(updateZoomLabel()));
+        }
+        mZoomable = nullptr;
 
-    mMapDocument = mapDocument;
+        mMapDocument = mapDocument;
 
-    mActionHandler->setMapDocument(mapDocument);
-    mLayerDock->setMapDocument(mapDocument);
-    mPropertiesDock->setMapDocument(mapDocument);
-    mObjectsDock->setMapDocument(mapDocument);
-    mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setMapDocument(mapDocument);
-    mMiniMapDock->setMapDocument(mapDocument);
-    mTileAnimationEditor->setMapDocument(mapDocument);
-    mTileCollisionEditor->setMapDocument(mapDocument);
-    mToolManager->setMapDocument(mapDocument);
-    mAutomappingManager->setMapDocument(mapDocument);
+        mActionHandler->setMapDocument(mapDocument);
+        mPropertiesDock->setMapDocument(mapDocument);
+        mObjectsDock->setMapDocument(mapDocument);
+        mTilesetDock->setMapDocument(mapDocument);
+        mTerrainDock->setMapDocument(mapDocument);
+        mMiniMapDock->setMapDocument(mapDocument);
+        mTileAnimationEditor->setMapDocument(mapDocument);
+        mTileCollisionEditor->setMapDocument(mapDocument);
+        mToolManager->setMapDocument(mapDocument);
+        mAutomappingManager->setMapDocument(mapDocument);
 
-    if (mapDocument) {
-        connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
-                SLOT(updateWindowTitle()));
-        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-                SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-                SLOT(updateActions()));
+        if (mapDocument) {
+            connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
+                    SLOT(updateWindowTitle()));
+            connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                    SLOT(updateActions()));
+            connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
+                    SLOT(updateActions()));
+            connect(mapDocument, SIGNAL(selectedObjectsChanged()),
+                    SLOT(updateActions()));
 
-        if (MapView *mapView = mDocumentManager->currentMapView()) {
-            mZoomable = mapView->zoomable();
-            mZoomable->connectToComboBox(mZoomComboBox);
+            if (MapView *mapView = mDocumentManager->currentMapView()) {
+                mZoomable = mapView->zoomable();
+                mZoomable->connectToComboBox(mZoomComboBox);
 
-            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                    this, SLOT(updateZoomLabel()));
+                connect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                        this, SLOT(updateZoomLabel()));
+            }
+
+            uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
+            mLayerComboBox->setModel(&uncheckableLayerModel);
+        } else {
+            mLayerComboBox->setModel(&emptyModel);
         }
 
-        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
-        mLayerComboBox->setModel(&uncheckableLayerModel);
-    } else {
-        mLayerComboBox->setModel(&emptyModel);
+        mLayerComboBox->setEnabled(mapDocument);
     }
-
-    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();

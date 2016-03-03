@@ -32,6 +32,7 @@ class ObjectGroup;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
 class MapObjectModel;
 class ObjectsView;
@@ -53,7 +54,7 @@ private slots:
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
-    void documentAboutToClose(MapDocument *mapDocument);
+    void documentAboutToClose(Document *document);
 
 private:
     void retranslateUi();

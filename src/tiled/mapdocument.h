@@ -28,7 +28,6 @@
 #include "tiled.h"
 #include "tileset.h"
 
-#include <QDateTime>
 #include <QList>
 #include <QPointer>
 #include <QRegion>
@@ -119,9 +118,7 @@ public:
     MapFormat *exportFormat() const;
     void setExportFormat(MapFormat *format);
 
-    QString displayName() const;
-
-    QDateTime lastSaved() const { return mLastSaved; }
+    QString displayName() const override;
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -264,8 +261,6 @@ public:
     void emitEditCurrentObject();
 
 signals:
-    void saved();
-
     /**
      * Emitted when the selected tile region changes. Sends the currently
      * selected region and the previously selected region.
@@ -388,7 +383,6 @@ private:
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;
     TerrainModel *mTerrainModel;
-    QDateTime mLastSaved;
 };
 
 

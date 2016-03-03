@@ -49,6 +49,7 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
 class TilesetView;
 class TileStamp;
@@ -137,7 +138,7 @@ private slots:
     void addTiles();
     void removeTiles();
 
-    void documentAboutToClose(MapDocument *mapDocument);
+    void documentAboutToClose(Document *document);
 
     void refreshTilesetMenu();
 

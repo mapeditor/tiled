@@ -21,6 +21,9 @@
 #ifndef TILED_INTERNAL_DOCUMENT_H
 #define TILED_INTERNAL_DOCUMENT_H
 
+#include "properties.h"
+
+#include <QDateTime>
 #include <QObject>
 #include <QString>
 #include <QVariant>
@@ -49,6 +52,10 @@ public:
 
     QString fileName() const;
 
+    virtual QString displayName() const;
+
+    QDateTime lastSaved() const { return mLastSaved; }
+
     QUndoStack *undoStack() const;
     bool isModified() const;
 
@@ -57,6 +64,8 @@ public:
     void removeProperty(Object *object, const QString &name);
 
 signals:
+    void saved();
+
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void modifiedChanged();
@@ -71,6 +80,7 @@ protected:
 
     QString mFileName;
     QUndoStack *mUndoStack;
+    QDateTime mLastSaved;
 };
 
 

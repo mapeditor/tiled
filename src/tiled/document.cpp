@@ -22,6 +22,7 @@
 
 #include "object.h"
 
+#include <QFileInfo>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -35,6 +36,19 @@ Document::Document(const QString &fileName,
 {
     connect(mUndoStack, &QUndoStack::cleanChanged,
             this, &Document::modifiedChanged);
+}
+
+/**
+ * Returns the name with which to display this document. It is the file name
+ * without its path, or 'untitled' when the document has no file name.
+ */
+QString Document::displayName() const
+{
+    QString displayName = QFileInfo(mFileName).fileName();
+    if (displayName.isEmpty())
+        displayName = tr("untitled");
+
+    return displayName;
 }
 
 void Document::setFileName(const QString &fileName)

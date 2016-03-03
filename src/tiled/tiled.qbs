@@ -184,6 +184,8 @@ QtGuiApplication {
         "mapdocumentactionhandler.h",
         "mapdocument.cpp",
         "mapdocument.h",
+        "mapeditor.cpp",
+        "mapeditor.h",
         "mapobjectitem.cpp",
         "mapobjectitem.h",
         "mapobjectmodel.cpp",

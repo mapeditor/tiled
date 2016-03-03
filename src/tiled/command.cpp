@@ -36,18 +36,24 @@ QString Command::finalCommand() const
     QString finalCommand = command;
 
     // Perform variable replacement
-    MapDocument *mapDocument = DocumentManager::instance()->currentDocument();
-    if (mapDocument) {
-        const QString fileName = mapDocument->fileName();
+    Document *document = DocumentManager::instance()->currentDocument();
+    if (document) {
+        const QString fileName = document->fileName();
 
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
 
-        MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject());
+        finalCommand.replace(QLatin1String("%file"),
+                             QString(QLatin1String("\"%1\"")).arg(fileName));
+
+        // todo: consider moving currentObject up into Document
+        /*
+        MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject());
         if (currentObject) {
             finalCommand.replace(QLatin1String("%objecttype"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
         }
+        */
     }
 
     return finalCommand;
@@ -59,9 +65,10 @@ void Command::execute(bool inTerminal) const
     QSettings settings;
     QVariant variant = settings.value(QLatin1String("saveBeforeExecute"), true);
     if (variant.toBool()) {
-        MapDocument *document = DocumentManager::instance()->currentDocument();
-        if (document)
-            document->save();
+        // todo: Move the 'save' function up into Document
+//        Document *document = DocumentManager::instance()->currentDocument();
+//        if (document)
+//            document->save();
     }
 
     // Start the process

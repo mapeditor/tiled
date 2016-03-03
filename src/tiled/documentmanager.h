@@ -30,6 +30,8 @@
 #include <QPointF>
 
 class QUndoGroup;
+class QStackedLayout;
+class QTabBar;
 
 namespace Tiled {
 
@@ -38,7 +40,9 @@ class FileSystemWatcher;
 namespace Internal {
 
 class AbstractTool;
+class Document;
 class MapDocument;
+class MapEditor;
 class MapScene;
 class MapView;
 class MovableTabWidget;
@@ -65,14 +69,14 @@ public:
      * Returns the undo group that combines the undo stacks of all opened map
      * documents.
      *
-     * @see MapDocument::undoStack()
+     * @see Document::undoStack()
      */
     QUndoGroup *undoGroup() const { return mUndoGroup; }
 
     /**
      * Returns the current map document, or 0 when there is none.
      */
-    MapDocument *currentDocument() const;
+    Document *currentDocument() const;
 
     /**
      * Returns the map view of the current document, or 0 when there is none.
@@ -105,12 +109,12 @@ public:
      * Switches to the map document at the given \a index.
      */
     void switchToDocument(int index);
-    void switchToDocument(MapDocument *mapDocument);
+    void switchToDocument(Document *document);
 
     /**
      * Adds the new or opened \a mapDocument to the document manager.
      */
-    void addDocument(MapDocument *mapDocument);
+    void addDocument(Document *document);
 
     /**
      * Closes the current map document. Will not ask the user whether to save
@@ -151,7 +155,7 @@ public:
     /**
      * Returns all open map documents.
      */
-    const QList<MapDocument*> &documents() const { return mDocuments; }
+    const QList<Document*> &documents() const { return mDocuments; }
 
     /**
      * Searches for a document for the given tileset.
@@ -169,7 +173,7 @@ signals:
     /**
      * Emitted when the current displayed map document changed.
      */
-    void currentDocumentChanged(MapDocument *mapDocument);
+    void currentDocumentChanged(Document *mapDocument);
 
     /**
      * Emitted when the user requested the document at \a index to be closed.
@@ -179,7 +183,7 @@ signals:
     /**
      * Emitted when a document is about to be closed.
      */
-    void documentAboutToClose(MapDocument *document);
+    void documentAboutToClose(Document *document);
 
     /**
      * Emitted when an error occurred while reloading the map.
@@ -221,9 +225,13 @@ private:
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
-    QList<MapDocument*> mDocuments;
+    QList<Document*> mDocuments;
 
-    MovableTabWidget *mTabWidget;
+    QWidget *mWidget;
+    QTabBar *mTabBar;
+    QStackedLayout *mHostStack;
+    MapEditor *mMapEditHost;
+
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
