@@ -1792,58 +1792,59 @@ void MainWindow::retranslateUi()
 
 void MainWindow::mapDocumentChanged(Document *document)
 {
-    // todo: most of this code will have to be moved to the MapEditHost
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
-        if (mMapDocument)
-            mMapDocument->disconnect(this);
+    MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
 
-        if (mZoomable) {
-            mZoomable->connectToComboBox(nullptr);
+    // todo: most of this code will have to be moved to the MapEditor
 
-            disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                       this, SLOT(updateZoomLabel()));
-        }
-        mZoomable = nullptr;
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
 
-        mMapDocument = mapDocument;
+    if (mZoomable) {
+        mZoomable->connectToComboBox(nullptr);
 
-        mActionHandler->setMapDocument(mapDocument);
-        mPropertiesDock->setMapDocument(mapDocument);
-        mObjectsDock->setMapDocument(mapDocument);
-        mTilesetDock->setMapDocument(mapDocument);
-        mTerrainDock->setMapDocument(mapDocument);
-        mMiniMapDock->setMapDocument(mapDocument);
-        mTileAnimationEditor->setMapDocument(mapDocument);
-        mTileCollisionEditor->setMapDocument(mapDocument);
-        mToolManager->setMapDocument(mapDocument);
-        mAutomappingManager->setMapDocument(mapDocument);
-
-        if (mapDocument) {
-            connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
-                    SLOT(updateWindowTitle()));
-            connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                    SLOT(updateActions()));
-            connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-                    SLOT(updateActions()));
-            connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-                    SLOT(updateActions()));
-
-            if (MapView *mapView = mDocumentManager->currentMapView()) {
-                mZoomable = mapView->zoomable();
-                mZoomable->connectToComboBox(mZoomComboBox);
-
-                connect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                        this, SLOT(updateZoomLabel()));
-            }
-
-            uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
-            mLayerComboBox->setModel(&uncheckableLayerModel);
-        } else {
-            mLayerComboBox->setModel(&emptyModel);
-        }
-
-        mLayerComboBox->setEnabled(mapDocument);
+        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                   this, SLOT(updateZoomLabel()));
     }
+    mZoomable = nullptr;
+
+    mMapDocument = mapDocument;
+
+    if (mapDocument) {
+        connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
+                SLOT(updateWindowTitle()));
+        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                SLOT(updateActions()));
+        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
+                SLOT(updateActions()));
+        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
+                SLOT(updateActions()));
+
+        if (MapView *mapView = mDocumentManager->currentMapView()) {
+            mZoomable = mapView->zoomable();
+            mZoomable->connectToComboBox(mZoomComboBox);
+
+            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                    this, SLOT(updateZoomLabel()));
+        }
+
+        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
+        mLayerComboBox->setModel(&uncheckableLayerModel);
+    } else {
+        mLayerComboBox->setModel(&emptyModel);
+    }
+
+    mActionHandler->setMapDocument(mapDocument);
+    mPropertiesDock->setMapDocument(mapDocument);
+    mObjectsDock->setMapDocument(mapDocument);
+    mTilesetDock->setMapDocument(mapDocument);
+    mTerrainDock->setMapDocument(mapDocument);
+    mMiniMapDock->setMapDocument(mapDocument);
+    mTileAnimationEditor->setMapDocument(mapDocument);
+    mTileCollisionEditor->setMapDocument(mapDocument);
+    mToolManager->setMapDocument(mapDocument);
+    mAutomappingManager->setMapDocument(mapDocument);
+
+    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();

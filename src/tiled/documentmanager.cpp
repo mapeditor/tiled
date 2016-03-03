@@ -28,7 +28,6 @@
 #include "mapdocument.h"
 #include "mapeditor.h"
 #include "maprenderer.h"
-#include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
 #include "tilesetdocument.h"
@@ -67,21 +66,21 @@ void DocumentManager::deleteInstance()
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mUndoGroup(new QUndoGroup(this))
-    , mSelectedTool(nullptr)
-    , mViewWithTool(nullptr)
     , mFileSystemWatcher(new FileSystemWatcher(this))
 {
     mWidget = new QWidget;
 
     mTabBar = new QTabBar(mWidget);
-    mMapEditHost = new MapEditor(mWidget);
+    mMapEditor = new MapEditor(mWidget);
 
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
+    vertical->setMargin(0);
+    vertical->setSpacing(0);
 
-    mHostStack = new QStackedLayout;
-    mHostStack->addWidget(mMapEditHost);
-    vertical->addLayout(mHostStack);
+    mEditorStack = new QStackedLayout;
+    mEditorStack->addWidget(mMapEditor);
+    vertical->addLayout(mEditorStack);
 
     mTabBar->setDocumentMode(true);
     mTabBar->setTabsClosable(true);
@@ -223,18 +222,11 @@ void DocumentManager::addDocument(Document *document)
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->addPath(document->fileName());
 
-    // todo:
-    // * find the right edit host for this document
-    // * add the document to it
 
-    /*
-    MapView *view = new MapView;
-    MapScene *scene = new MapScene(view); // scene is owned by the view
-    MapViewContainer *container = new MapViewContainer(view, document, mTabWidget);
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+        mMapEditor->addMapDocument(mapDocument);
+    // todo: Handle TilesetDocument
 
-    scene->setMapDocument(document);
-    view->setScene(scene);
-    */
 
     const int documentIndex = mDocuments.size() - 1;
 
@@ -272,14 +264,11 @@ void DocumentManager::closeDocumentAt(int index)
     Document *document = mDocuments.at(index);
     emit documentAboutToClose(document);
 
-    // todo:
-    // * find the right edit host
-    // * remove the document from it
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+        mMapEditor->removeMapDocument(mapDocument);
 
-//    QWidget *mapViewContainer = mTabWidget->widget(index);
-//    mDocuments.removeAt(index);
-//    mTabWidget->removeTab(index);
-//    delete mapViewContainer;
+    mDocuments.removeAt(index);
+    mTabBar->removeTab(index);
 
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->removePath(document->fileName());
@@ -355,67 +344,48 @@ void DocumentManager::currentIndexChanged()
 {
     Document *document = currentDocument();
 
-    // todo:
-    // * find the right edit host for the document
-    // * tell the edit host to switch to this document
-    // * make the edit host visible
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        mMapEditor->setCurrentMapDocument(mapDocument);
+        mEditorStack->setCurrentWidget(mMapEditor);
+    }
 
     if (document)
         mUndoGroup->setActiveStack(document->undoStack());
-
-    /*
-    if (mViewWithTool) {
-        MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
-        mViewWithTool = nullptr;
-    }
-
-    if (MapView *mapView = currentMapView()) {
-        MapScene *mapScene = mapView->mapScene();
-        mapScene->setSelectedTool(mSelectedTool);
-        mapScene->enableSelectedTool();
-        if (mSelectedTool)
-            mapView->viewport()->setCursor(mSelectedTool->cursor());
-        else
-            mapView->viewport()->unsetCursor();
-        mViewWithTool = mapView;
-    }
-    */
 
     emit currentDocumentChanged(document);
 }
 
 void DocumentManager::setSelectedTool(AbstractTool *tool)
 {
-    if (mSelectedTool == tool)
-        return;
+//    if (mSelectedTool == tool)
+//        return;
 
-    if (mSelectedTool) {
-        disconnect(mSelectedTool, &AbstractTool::cursorChanged,
-                   this, &DocumentManager::cursorChanged);
-    }
+//    if (mSelectedTool) {
+//        disconnect(mSelectedTool, &AbstractTool::cursorChanged,
+//                   this, &DocumentManager::cursorChanged);
+//    }
 
-    mSelectedTool = tool;
+//    mSelectedTool = tool;
 
-    if (mViewWithTool) {
-        MapScene *mapScene = mViewWithTool->mapScene();
-        mapScene->disableSelectedTool();
+//    if (mViewWithTool) {
+//        MapScene *mapScene = mViewWithTool->mapScene();
+//        mapScene->disableSelectedTool();
 
-        if (tool) {
-            mapScene->setSelectedTool(tool);
-            mapScene->enableSelectedTool();
-        }
+//        if (tool) {
+//            mapScene->setSelectedTool(tool);
+//            mapScene->enableSelectedTool();
+//        }
 
-        if (tool)
-            mViewWithTool->viewport()->setCursor(tool->cursor());
-        else
-            mViewWithTool->viewport()->unsetCursor();
-    }
+//        if (tool)
+//            mViewWithTool->viewport()->setCursor(tool->cursor());
+//        else
+//            mViewWithTool->viewport()->unsetCursor();
+//    }
 
-    if (tool) {
-        connect(tool, &AbstractTool::cursorChanged,
-                this, &DocumentManager::cursorChanged);
-    }
+//    if (tool) {
+//        connect(tool, &AbstractTool::cursorChanged,
+//                this, &DocumentManager::cursorChanged);
+//    }
 }
 
 void DocumentManager::fileNameChanged(const QString &fileName,
@@ -523,8 +493,8 @@ void DocumentManager::reloadRequested()
 
 void DocumentManager::cursorChanged(const QCursor &cursor)
 {
-    if (mViewWithTool)
-        mViewWithTool->viewport()->setCursor(cursor);
+//    if (mViewWithTool)
+//        mViewWithTool->viewport()->setCursor(cursor);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)

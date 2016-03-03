@@ -229,12 +229,10 @@ private:
 
     QWidget *mWidget;
     QTabBar *mTabBar;
-    QStackedLayout *mHostStack;
-    MapEditor *mMapEditHost;
+    QStackedLayout *mEditorStack;
+    MapEditor *mMapEditor;
 
     QUndoGroup *mUndoGroup;
-    AbstractTool *mSelectedTool;
-    MapView *mViewWithTool;
     FileSystemWatcher *mFileSystemWatcher;
 
     QMap<SharedTileset, TilesetDocument*> mTilesetDocuments;

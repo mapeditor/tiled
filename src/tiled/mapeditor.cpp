@@ -22,6 +22,7 @@
 
 #include "brokenlinks.h"
 #include "layerdock.h"
+#include "mapscene.h"
 #include "mapview.h"
 
 #include <QDialogButtonBox>
@@ -141,6 +142,8 @@ MapEditor::MapEditor(QWidget *parent)
     : QMainWindow(parent)
     , mLayerDock(new LayerDock(this))
     , mWidgetStack(new QStackedWidget(this))
+    , mSelectedTool(nullptr)
+    , mViewWithTool(nullptr)
 {
     setWindowFlags(windowFlags() & ~Qt::Window);
 
@@ -153,22 +156,45 @@ MapEditor::MapEditor(QWidget *parent)
 
 void MapEditor::addMapDocument(MapDocument *mapDocument)
 {
-//    MapView *view = new MapView;
-//    MapScene *scene = new MapScene(view); // scene is owned by the view
-//    MapViewContainer *container = new MapViewContainer(view, document, mTabWidget);
+    MapView *view = new MapView;
+    MapScene *scene = new MapScene(view); // scene is owned by the view
+    MapViewContainer *container = new MapViewContainer(view, mapDocument, mWidgetStack);
 
-//    scene->setMapDocument(document);
-//    view->setScene(scene);
+    scene->setMapDocument(mapDocument);
+    view->setScene(scene);
+
+    mWidgetStack->addWidget(container);
+    mWidgetForMap.insert(mapDocument, container);
 }
 
 void MapEditor::removeMapDocument(MapDocument *mapDocument)
 {
-
+    delete mWidgetForMap.take(mapDocument);
 }
 
 void MapEditor::setCurrentMapDocument(MapDocument *mapDocument)
 {
+    MapViewContainer *container = mWidgetForMap.value(mapDocument);
+    mWidgetStack->setCurrentWidget(container);
 
+    /*
+    if (mViewWithTool) {
+        MapScene *mapScene = mViewWithTool->mapScene();
+        mapScene->disableSelectedTool();
+        mViewWithTool = nullptr;
+    }
+
+    if (MapView *mapView = currentMapView()) {
+        MapScene *mapScene = mapView->mapScene();
+        mapScene->setSelectedTool(mSelectedTool);
+        mapScene->enableSelectedTool();
+        if (mSelectedTool)
+            mapView->viewport()->setCursor(mSelectedTool->cursor());
+        else
+            mapView->viewport()->unsetCursor();
+        mViewWithTool = mapView;
+    }
+    */
 }
 
 } // namespace Internal

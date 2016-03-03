@@ -22,9 +22,17 @@
 #define TILED_INTERNAL_MAPEDITOR_H
 
 #include <QMainWindow>
+#include <QHash>
+
+class QStackedWidget;
 
 namespace Tiled {
 namespace Internal {
+
+class AbstractTool;
+class MapDocument;
+class MapView;
+class MapViewContainer;
 
 class LayerDock;
 
@@ -35,6 +43,10 @@ class MapEditor : public QMainWindow
 public:
     explicit MapEditor(QWidget *parent = nullptr);
 
+    void addMapDocument(MapDocument *mapDocument);
+    void removeMapDocument(MapDocument *mapDocument);
+    void setCurrentMapDocument(MapDocument *mapDocument);
+
 signals:
 
 public slots:
@@ -42,6 +54,10 @@ public slots:
 private:
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
+    QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
+
+    AbstractTool *mSelectedTool;
+    MapView *mViewWithTool;
 };
 
 } // namespace Internal
