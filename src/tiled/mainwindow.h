@@ -47,7 +47,6 @@ class Terrain;
 namespace Internal {
 
 class AutomappingManager;
-class BucketFillTool;
 class CommandButton;
 class DocumentManager;
 class MapDocumentActionHandler;
@@ -58,15 +57,11 @@ class MiniMapDock;
 class ObjectsDock;
 class ObjectTypesEditor;
 class PropertiesDock;
-class StampBrush;
-class TerrainBrush;
 class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionEditor;
 class TilesetDock;
-class TileStamp;
 class TileStampManager;
-class ToolManager;
 class Zoomable;
 
 /**
@@ -155,16 +150,6 @@ private slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void flipHorizontally() { flip(FlipHorizontally); }
-    void flipVertically() { flip(FlipVertically); }
-    void rotateLeft() { rotate(RotateLeft); }
-    void rotateRight() { rotate(RotateRight); }
-
-    void flip(FlipDirection direction);
-    void rotate(RotateDirection direction);
-
-    void setStamp(const TileStamp &stamp);
-    void setTerrainBrush(const Terrain *terrain);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(Document *document);
@@ -240,10 +225,6 @@ private:
     QToolButton *mRandomButton;
     CommandButton *mCommandButton;
 
-    StampBrush *mStampBrush;
-    BucketFillTool *mBucketFillTool;
-    TerrainBrush *mTerrainBrush;
-
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
 
@@ -257,7 +238,6 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-    ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
 };
 

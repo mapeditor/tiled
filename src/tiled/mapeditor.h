@@ -24,15 +24,25 @@
 #include <QMainWindow>
 #include <QHash>
 
+#include "tiled.h"
+
 class QStackedWidget;
 
 namespace Tiled {
+
+class Terrain;
+
 namespace Internal {
 
 class AbstractTool;
 class MapDocument;
 class MapView;
 class MapViewContainer;
+class ToolManager;
+class StampBrush;
+class TerrainBrush;
+class BucketFillTool;
+class TileStamp;
 
 class LayerDock;
 
@@ -42,20 +52,53 @@ class MapEditor : public QMainWindow
 
 public:
     explicit MapEditor(QWidget *parent = nullptr);
+    ~MapEditor();
 
     void addMapDocument(MapDocument *mapDocument);
     void removeMapDocument(MapDocument *mapDocument);
+
     void setCurrentMapDocument(MapDocument *mapDocument);
+    MapDocument *currentMapDocument() const;
+
+    MapView *viewForDocument(MapDocument *mapDocument) const;
+    MapView *currentMapView() const;
 
 signals:
 
 public slots:
+    void setSelectedTool(AbstractTool *tool);
+
+    void flipHorizontally() { flip(FlipHorizontally); }
+    void flipVertically() { flip(FlipVertically); }
+    void rotateLeft() { rotate(RotateLeft); }
+    void rotateRight() { rotate(RotateRight); }
+
+    void flip(FlipDirection direction);
+    void rotate(RotateDirection direction);
+
+    void setStamp(const TileStamp &stamp);
+    void setTerrainBrush(const Terrain *terrain);
+
+protected:
+    void changeEvent(QEvent *event) override;
+
+private slots:
+    void cursorChanged(const QCursor &cursor);
 
 private:
+    void retranslateUi();
+
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
+    MapDocument *mCurrentMapDocument;
 
+    StampBrush *mStampBrush;
+    BucketFillTool *mBucketFillTool;
+    TerrainBrush *mTerrainBrush;
+
+    QToolBar *mToolBar;
+    ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
 };

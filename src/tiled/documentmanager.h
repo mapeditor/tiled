@@ -88,10 +88,6 @@ public:
      */
     MapScene *currentMapScene() const;
 
-    /**
-     * Returns the map view that displays the given document, or 0 when there
-     * is none.
-     */
     MapView *viewForDocument(MapDocument *mapDocument) const;
 
     /**
@@ -194,8 +190,6 @@ public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
 
-    void setSelectedTool(AbstractTool *tool);
-
 private slots:
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
@@ -211,8 +205,6 @@ private slots:
     void fileChanged(const QString &fileName);
 
     void reloadRequested();
-
-    void cursorChanged(const QCursor &cursor);
 
     void tilesetChanged(Tileset *tileset);
 

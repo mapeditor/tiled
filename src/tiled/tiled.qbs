@@ -20,7 +20,7 @@ QtGuiApplication {
 
     cpp.includePaths: ["."]
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
-    cpp.cxxPrecompiledHeader: "pch.h"
+//    cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
@@ -156,6 +156,8 @@ QtGuiApplication {
         "exportasimagedialog.cpp",
         "exportasimagedialog.h",
         "exportasimagedialog.ui",
+        "filechangedwarning.cpp",
+        "filechangedwarning.h",
         "fileedit.cpp",
         "fileedit.h",
         "flexiblescrollbar.cpp",

@@ -32,18 +32,9 @@
 #include "automappingmanager.h"
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
-#include "createobjecttool.h"
-#include "createrectangleobjecttool.h"
-#include "createellipseobjecttool.h"
-#include "createtileobjecttool.h"
-#include "createpolygonobjecttool.h"
-#include "createpolylineobjecttool.h"
 #include "documentmanager.h"
-#include "editpolygontool.h"
-#include "eraser.h"
 #include "erasetiles.h"
 #include "exportasimagedialog.h"
-#include "bucketfilltool.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "layermodel.h"
@@ -60,7 +51,6 @@
 #include "newtilesetdialog.h"
 #include "pluginmanager.h"
 #include "resizedialog.h"
-#include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
@@ -68,19 +58,15 @@
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
-#include "stampbrush.h"
 #include "terrain.h"
-#include "terrainbrush.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "terraindock.h"
-#include "toolmanager.h"
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -91,9 +77,6 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tmxmapformat.h"
-#include "layeroffsettool.h"
-#include "magicwandtool.h"
-#include "selectsametiletool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -195,8 +178,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mStatusInfoLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mToolManager(new ToolManager(this))
-    , mTileStampManager(new TileStampManager(*mToolManager, this))
+    , mTileStampManager(new TileStampManager(nullptr, this)) // todo: needs ToolManager
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -476,22 +458,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
-    mStampBrush = new StampBrush(this);
-    mTerrainBrush = new TerrainBrush(this);
-    mBucketFillTool = new BucketFillTool(this);
-    CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
-    CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
-    CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
-    CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
-    connect(mTilesetDock, SIGNAL(stampCaptured(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
-    connect(mStampBrush, SIGNAL(stampCaptured(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
-
-    connect(mTilesetDock, &TilesetDock::currentTileChanged,
-            tileObjectsTool, &CreateObjectTool::setTile);
+//    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+//            tileObjectsTool, &CreateObjectTool::setTile);
     connect(mTilesetDock, &TilesetDock::currentTileChanged,
             mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(mTilesetDock, &TilesetDock::currentTileChanged,
@@ -499,45 +468,17 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTilesetDock, SIGNAL(newTileset()),
             this, SLOT(newTileset()));
 
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
-            this, SLOT(setTerrainBrush(const Terrain*)));
-    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
-            mTerrainDock, &TerrainDock::setCurrentTerrain);
+//    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
+//            this, SLOT(setTerrainBrush(const Terrain*)));
+//    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
+//            mTerrainDock, &TerrainDock::setCurrentTerrain);
 
-    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
-
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mStampBrush, SLOT(setRandom(bool)));
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mBucketFillTool, SLOT(setRandom(bool)));
-
-    QToolBar *toolBar = mUi->toolsToolBar;
-    toolBar->addAction(mToolManager->registerTool(mStampBrush));
-    toolBar->addAction(mToolManager->registerTool(mTerrainBrush));
-    toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
-    toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
-    toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
-    toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
-    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
-    toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
-
-    mDocumentManager->setSelectedTool(mToolManager->selectedTool());
-    connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            mDocumentManager, SLOT(setSelectedTool(AbstractTool*)));
+//    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
+//            this, SLOT(setStamp(TileStamp)));
 
     statusBar()->addWidget(mStatusInfoLabel);
-    connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
-            this, SLOT(updateStatusInfoLabel(QString)));
+//    connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
+//            this, SLOT(updateStatusInfoLabel(QString)));
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -595,11 +536,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mDocumentManager, SLOT(switchToRightDocument()));
 
 
-    new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
-    new QShortcut(tr("Y"), this, SLOT(flipVertically()));
-    new QShortcut(tr("Z"), this, SLOT(rotateRight()));
-    new QShortcut(tr("Shift+Z"), this, SLOT(rotateLeft()));
-
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
@@ -627,12 +563,6 @@ MainWindow::~MainWindow()
 
     delete mTileStampManager;
     mTileStampManager = nullptr;
-
-    delete mStampBrush;
-    mStampBrush = nullptr;
-
-    delete mBucketFillTool;
-    mBucketFillTool = nullptr;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1209,10 +1139,10 @@ void MainWindow::paste()
     if (layer->isTileLayer()) {
         // Reset selection and paste into the stamp brush
         mActionHandler->selectNone();
-        Map *stamp = map.take(); // TileStamp will take ownership
-        setStamp(TileStamp(stamp));
-        tilesetManager->removeReferences(stamp->tilesets());
-        mToolManager->selectTool(mStampBrush);
+//        Map *stamp = map.take(); // TileStamp will take ownership
+//        setStamp(TileStamp(stamp));
+//        tilesetManager->removeReferences(stamp->tilesets());
+//        mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
@@ -1636,63 +1566,6 @@ void MainWindow::openDocumentation()
     QDesktopServices::openUrl(QUrl(QLatin1String("http://doc.mapeditor.org")));
 }
 
-void MainWindow::flip(FlipDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.flipped(direction));
-
-    } else if (mMapDocument) {
-        mMapDocument->flipSelectedObjects(direction);
-    }
-}
-
-void MainWindow::rotate(RotateDirection direction)
-{
-    if (mStampBrush->isEnabled()) {
-        const TileStamp &stamp = mStampBrush->stamp();
-        if (!stamp.isEmpty())
-            setStamp(stamp.rotated(direction));
-
-    } else if (mMapDocument) {
-        mMapDocument->rotateSelectedObjects(direction);
-    }
-}
-
-/**
- * Sets the current stamp, which is used by both the stamp brush and the bucket
- * fill tool.
- */
-void MainWindow::setStamp(const TileStamp &stamp)
-{
-    if (stamp.isEmpty())
-        return;
-
-    mStampBrush->setStamp(stamp);
-    mBucketFillTool->setStamp(stamp);
-
-    // When selecting a new stamp, it makes sense to switch to a stamp tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
-        mToolManager->selectTool(mStampBrush);
-
-    mTilesetDock->selectTilesInStamp(stamp);
-}
-
-/**
- * Sets the terrain brush.
- */
-void MainWindow::setTerrainBrush(const Terrain *terrain)
-{
-    mTerrainBrush->setTerrain(terrain);
-
-    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mTerrainBrush)
-        mToolManager->selectTool(mTerrainBrush);
-}
-
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
@@ -1787,7 +1660,6 @@ void MainWindow::retranslateUi()
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
-    mToolManager->retranslateTools();
 }
 
 void MainWindow::mapDocumentChanged(Document *document)
@@ -1808,6 +1680,16 @@ void MainWindow::mapDocumentChanged(Document *document)
     mZoomable = nullptr;
 
     mMapDocument = mapDocument;
+
+    mActionHandler->setMapDocument(mapDocument);
+    mPropertiesDock->setMapDocument(mapDocument);
+    mObjectsDock->setMapDocument(mapDocument);
+    mTilesetDock->setMapDocument(mapDocument);
+    mTerrainDock->setMapDocument(mapDocument);
+    mMiniMapDock->setMapDocument(mapDocument);
+    mTileAnimationEditor->setMapDocument(mapDocument);
+    mTileCollisionEditor->setMapDocument(mapDocument);
+    mAutomappingManager->setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
@@ -1832,17 +1714,6 @@ void MainWindow::mapDocumentChanged(Document *document)
     } else {
         mLayerComboBox->setModel(&emptyModel);
     }
-
-    mActionHandler->setMapDocument(mapDocument);
-    mPropertiesDock->setMapDocument(mapDocument);
-    mObjectsDock->setMapDocument(mapDocument);
-    mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setMapDocument(mapDocument);
-    mMiniMapDock->setMapDocument(mapDocument);
-    mTileAnimationEditor->setMapDocument(mapDocument);
-    mTileCollisionEditor->setMapDocument(mapDocument);
-    mToolManager->setMapDocument(mapDocument);
-    mAutomappingManager->setMapDocument(mapDocument);
 
     mLayerComboBox->setEnabled(mapDocument);
 
@@ -1884,8 +1755,8 @@ void MainWindow::setupQuickStamps()
     connect(extendMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(extendQuickStamp(int)));
 
-    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+//    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
+//            this, SLOT(setStamp(TileStamp)));
 }
 
 void MainWindow::closeMapDocument(int index)

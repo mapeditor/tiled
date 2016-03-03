@@ -71,6 +71,11 @@ DocumentManager::DocumentManager(QObject *parent)
     mWidget = new QWidget;
 
     mTabBar = new QTabBar(mWidget);
+    mTabBar->setExpanding(false);
+    mTabBar->setDocumentMode(true);
+    mTabBar->setTabsClosable(true);
+    mTabBar->setMovable(true);
+
     mMapEditor = new MapEditor(mWidget);
 
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
@@ -81,10 +86,6 @@ DocumentManager::DocumentManager(QObject *parent)
     mEditorStack = new QStackedLayout;
     mEditorStack->addWidget(mMapEditor);
     vertical->addLayout(mEditorStack);
-
-    mTabBar->setDocumentMode(true);
-    mTabBar->setTabsClosable(true);
-    mTabBar->setMovable(true);
 
     connect(mTabBar, &QTabBar::currentChanged,
             this, &DocumentManager::currentIndexChanged);
@@ -124,15 +125,7 @@ Document *DocumentManager::currentDocument() const
 
 MapView *DocumentManager::currentMapView() const
 {
-    // todo:
-    // * get index from mTabBar
-    // * get document by index
-    // * ask the right main window for the map view
-
-//    if (QWidget *widget = mTabWidget->currentWidget())
-//        return static_cast<MapViewContainer*>(widget)->mapView();
-
-    return nullptr;
+    return mMapEditor->currentMapView();
 }
 
 MapScene *DocumentManager::currentMapScene() const
@@ -148,16 +141,13 @@ MapScene *DocumentManager::currentMapScene() const
     return nullptr;
 }
 
+/**
+ * Returns the map view that displays the given document, or null when there
+ * is none.
+ */
 MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
 {
-    const int index = mDocuments.indexOf(mapDocument);
-    if (index == -1)
-        return nullptr;
-
-    // todo: ask the right main window for the map view
-
-//    return static_cast<MapViewContainer*>(mTabWidget->widget(index))->mapView();
-    return nullptr;
+    return mMapEditor->viewForDocument(mapDocument);
 }
 
 int DocumentManager::findDocument(const QString &fileName) const
@@ -264,11 +254,11 @@ void DocumentManager::closeDocumentAt(int index)
     Document *document = mDocuments.at(index);
     emit documentAboutToClose(document);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mMapEditor->removeMapDocument(mapDocument);
-
     mDocuments.removeAt(index);
     mTabBar->removeTab(index);
+
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+        mMapEditor->removeMapDocument(mapDocument);
 
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->removePath(document->fileName());
@@ -349,43 +339,13 @@ void DocumentManager::currentIndexChanged()
         mEditorStack->setCurrentWidget(mMapEditor);
     }
 
+    if (!document)
+        mMapEditor->setCurrentMapDocument(nullptr);
+
     if (document)
         mUndoGroup->setActiveStack(document->undoStack());
 
     emit currentDocumentChanged(document);
-}
-
-void DocumentManager::setSelectedTool(AbstractTool *tool)
-{
-//    if (mSelectedTool == tool)
-//        return;
-
-//    if (mSelectedTool) {
-//        disconnect(mSelectedTool, &AbstractTool::cursorChanged,
-//                   this, &DocumentManager::cursorChanged);
-//    }
-
-//    mSelectedTool = tool;
-
-//    if (mViewWithTool) {
-//        MapScene *mapScene = mViewWithTool->mapScene();
-//        mapScene->disableSelectedTool();
-
-//        if (tool) {
-//            mapScene->setSelectedTool(tool);
-//            mapScene->enableSelectedTool();
-//        }
-
-//        if (tool)
-//            mViewWithTool->viewport()->setCursor(tool->cursor());
-//        else
-//            mViewWithTool->viewport()->unsetCursor();
-//    }
-
-//    if (tool) {
-//        connect(tool, &AbstractTool::cursorChanged,
-//                this, &DocumentManager::cursorChanged);
-//    }
 }
 
 void DocumentManager::fileNameChanged(const QString &fileName,
@@ -489,12 +449,6 @@ void DocumentManager::reloadRequested()
 //    int index = mTabWidget->indexOf(static_cast<MapViewContainer*>(sender()));
 //    Q_ASSERT(index != -1);
 //    reloadDocumentAt(index);
-}
-
-void DocumentManager::cursorChanged(const QCursor &cursor)
-{
-//    if (mViewWithTool)
-//        mViewWithTool->viewport()->setCursor(cursor);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)
