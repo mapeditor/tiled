@@ -51,18 +51,8 @@ class CommandButton;
 class DocumentManager;
 class MapDocumentActionHandler;
 class MapScene;
-class MapsDock;
 class MapView;
-class MiniMapDock;
-class ObjectsDock;
 class ObjectTypesEditor;
-class PropertiesDock;
-class TerrainDock;
-class TileAnimationEditor;
-class TileCollisionEditor;
-class TilesetDock;
-class TileStampManager;
-class Zoomable;
 
 /**
  * The main editor window.
@@ -150,8 +140,6 @@ private slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void updateStatusInfoLabel(const QString &statusInfo);
-
     void mapDocumentChanged(Document *document);
     void closeMapDocument(int index);
 
@@ -162,8 +150,6 @@ private slots:
     void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
-
-    void layerComboActivated(int index);
 
 private:
     /**
@@ -207,20 +193,8 @@ private:
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
-    PropertiesDock *mPropertiesDock;
-    MapsDock *mMapsDock;
-    ObjectsDock *mObjectsDock;
-    TilesetDock *mTilesetDock;
-    TerrainDock *mTerrainDock;
-    MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
     ObjectTypesEditor *mObjectTypesEditor;
-    TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
-    QComboBox *mLayerComboBox;
-    Zoomable *mZoomable;
-    QComboBox *mZoomComboBox;
-    QLabel *mStatusInfoLabel;
     QSettings mSettings;
     QToolButton *mRandomButton;
     CommandButton *mCommandButton;
@@ -238,7 +212,6 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-    TileStampManager *mTileStampManager;
 };
 
 } // namespace Internal

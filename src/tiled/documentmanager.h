@@ -22,6 +22,7 @@
 #ifndef DOCUMENT_MANAGER_H
 #define DOCUMENT_MANAGER_H
 
+#include "document.h"
 #include "tileset.h"
 
 #include <QList>
@@ -64,6 +65,10 @@ public:
      * and a tab bar to switch between them.
      */
     QWidget *widget() const;
+
+    void setEditor(Document::DocumentType documentType, QWidget *editor);
+
+    void openFile(const QString &path);
 
     /**
      * Returns the undo group that combines the undo stacks of all opened map
@@ -166,6 +171,8 @@ public:
     { centerViewOn(pos.x(), pos.y()); }
 
 signals:
+    void fileOpenRequested(const QString &path);
+
     /**
      * Emitted when the current displayed map document changed.
      */
@@ -223,6 +230,8 @@ private:
     QTabBar *mTabBar;
     QStackedLayout *mEditorStack;
     MapEditor *mMapEditor;
+
+    QHash<Document::DocumentType, QWidget*> mEditorForType;
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;

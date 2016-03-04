@@ -33,6 +33,7 @@
 #include "tilestamp.h"
 #include "layeroffsettool.h"
 #include "eraser.h"
+#include "tile.h"
 #include "tileselectiontool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
@@ -43,6 +44,18 @@
 #include "stampbrush.h"
 #include "terrainbrush.h"
 #include "bucketfilltool.h"
+#include "mapsdock.h"
+#include "propertiesdock.h"
+#include "tilesetdock.h"
+#include "tilestampsdock.h"
+#include "terraindock.h"
+#include "objectsdock.h"
+#include "minimapdock.h"
+#include "tileanimationeditor.h"
+#include "tilecollisioneditor.h"
+#include "tilestampmanager.h"
+#include "zoomable.h"
+#include "layermodel.h"
 
 #include <QShortcut>
 #include <QDialogButtonBox>
@@ -50,9 +63,66 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QToolBar>
+#include <QIdentityProxyModel>
+#include <QComboBox>
+#include <QStatusBar>
+#include <QSignalMapper>
 
 namespace Tiled {
 namespace Internal {
+
+namespace {
+
+/**
+ * A model that is always empty.
+ */
+class EmptyModel : public QAbstractListModel
+{
+public:
+    EmptyModel(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {}
+
+    int rowCount(const QModelIndex &) const override
+    { return 0; }
+
+    QVariant data(const QModelIndex &, int) const override
+    { return QVariant(); }
+};
+
+/**
+ * A proxy model that makes sure no items are checked or checkable.
+ *
+ * Used in the layer combo box, since the checkboxes can't be used in that
+ * context but are otherwise anyway rendered there on Windows.
+ */
+class UncheckableItemsModel : public QIdentityProxyModel
+{
+public:
+    UncheckableItemsModel(QObject *parent = nullptr)
+        : QIdentityProxyModel(parent)
+    {}
+
+    QVariant data(const QModelIndex &index, int role) const override
+    {
+        if (role == Qt::CheckStateRole)
+            return QVariant();
+
+        return QIdentityProxyModel::data(index, role);
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        Qt::ItemFlags rc = QIdentityProxyModel::flags(index);
+        return rc & ~Qt::ItemIsUserCheckable;
+    }
+};
+
+static EmptyModel emptyModel;
+static UncheckableItemsModel uncheckableLayerModel;
+
+} // anonymous namespace
+
 
 class MapViewContainer : public QWidget
 {
@@ -130,9 +200,21 @@ MapEditor::MapEditor(QWidget *parent)
     , mLayerDock(new LayerDock(this))
     , mWidgetStack(new QStackedWidget(this))
     , mCurrentMapDocument(nullptr)
+    , mMapsDock(new MapsDock(this))
+    , mObjectsDock(new ObjectsDock(this))
+    , mTilesetDock(new TilesetDock(this))
+    , mTerrainDock(new TerrainDock(this))
+    , mMiniMapDock(new MiniMapDock(this))
+    , mTileAnimationEditor(new TileAnimationEditor(this))
+    , mTileCollisionEditor(new TileCollisionEditor(this))
+    , mLayerComboBox(new QComboBox)
+    , mZoomable(nullptr)
+    , mZoomComboBox(new QComboBox)
+    , mStatusInfoLabel(new QLabel)
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
+    , mTileStampManager(new TileStampManager(mToolManager, this))
 {
     setWindowFlags(windowFlags() & ~Qt::Window);
 
@@ -172,8 +254,44 @@ MapEditor::MapEditor(QWidget *parent)
 
     addToolBar(mToolBar);
 
-//    connect(mTilesetDock, SIGNAL(stampCaptured(TileStamp)),
-//            this, SLOT(setStamp(TileStamp)));
+    mPropertiesDock = new PropertiesDock(this);
+    TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
+
+    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
+    addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
+
+    tabifyDockWidget(mMiniMapDock, mObjectsDock);
+    tabifyDockWidget(mTerrainDock, mTilesetDock);
+
+    mMapsDock->setVisible(false);
+    tileStampsDock->setVisible(false);
+
+    mLayerComboBox->setMinimumContentsLength(10);
+    mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    connect(mLayerComboBox, SIGNAL(activated(int)),
+            this, SLOT(layerComboActivated(int)));
+
+    statusBar()->addPermanentWidget(mLayerComboBox);
+    statusBar()->addPermanentWidget(mZoomComboBox);
+
+    statusBar()->addWidget(mStatusInfoLabel);
+    connect(mToolManager, &ToolManager::statusInfoChanged,
+            this, &MapEditor::updateStatusInfoLabel);
+
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            tileObjectsTool, &CreateObjectTool::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            mTileAnimationEditor, &TileAnimationEditor::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            mTileCollisionEditor, &TileCollisionEditor::setTile);
+
+    connect(mTilesetDock, &TilesetDock::stampCaptured,
+            this, &MapEditor::setStamp);
     connect(mStampBrush, &StampBrush::stampCaptured,
             this, &MapEditor::setStamp);
 
@@ -191,6 +309,7 @@ MapEditor::MapEditor(QWidget *parent)
     new QShortcut(tr("Z"), this, SLOT(rotateRight()));
     new QShortcut(tr("Shift+Z"), this, SLOT(rotateLeft()));
 
+    setupQuickStamps();
     retranslateUi();
 }
 
@@ -227,6 +346,9 @@ void MapEditor::setCurrentMapDocument(MapDocument *mapDocument)
     if (mCurrentMapDocument == mapDocument)
         return;
 
+    if (mCurrentMapDocument)
+        mCurrentMapDocument->disconnect(this);
+
     mCurrentMapDocument = mapDocument;
 
     MapViewContainer *container = mWidgetForMap.value(mapDocument);
@@ -235,12 +357,52 @@ void MapEditor::setCurrentMapDocument(MapDocument *mapDocument)
     mLayerDock->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
 
+    if (mZoomable) {
+        mZoomable->connectToComboBox(nullptr);
+
+        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                   this, SLOT(updateZoomLabel()));
+    }
+    mZoomable = nullptr;
+
+    mPropertiesDock->setMapDocument(mapDocument);
+    mObjectsDock->setMapDocument(mapDocument);
+    mTilesetDock->setMapDocument(mapDocument);
+    mTerrainDock->setMapDocument(mapDocument);
+    mMiniMapDock->setMapDocument(mapDocument);
+    mTileAnimationEditor->setMapDocument(mapDocument);
+    mTileCollisionEditor->setMapDocument(mapDocument);
+
+    if (mapDocument) {
+        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                SLOT(updateLayerComboIndex()));
+//        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
+//                SLOT(updateActions()));
+//        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
+//                SLOT(updateActions()));
+
+        if (MapView *mapView = currentMapView()) {
+            mZoomable = mapView->zoomable();
+            mZoomable->connectToComboBox(mZoomComboBox);
+
+            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                    this, SLOT(updateZoomLabel()));
+        }
+
+        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
+        mLayerComboBox->setModel(&uncheckableLayerModel);
+    } else {
+        mLayerComboBox->setModel(&emptyModel);
+    }
+
+    mLayerComboBox->setEnabled(mapDocument);
+
+    // Take the currently active tool to the new map view
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
         mapScene->disableSelectedTool();
         mViewWithTool = nullptr;
     }
-
     if (MapView *mapView = currentMapView()) {
         MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);
@@ -377,6 +539,89 @@ void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
         mViewWithTool->viewport()->setCursor(cursor);
+}
+
+void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
+{
+    mStatusInfoLabel->setText(statusInfo);
+}
+
+void MapEditor::updateZoomLabel()
+{
+    MapView *mapView = currentMapView();
+    Zoomable *zoomable = mapView ? mapView->zoomable() : nullptr;
+
+    if (zoomable) {
+        mZoomComboBox->setEnabled(true);
+    } else {
+        int index = mZoomComboBox->findData((qreal)1.0);
+        mZoomComboBox->setCurrentIndex(index);
+        mZoomComboBox->setEnabled(false);
+    }
+}
+
+void MapEditor::layerComboActivated(int index)
+{
+    if (index == -1)
+        return;
+    if (!mCurrentMapDocument)
+        return;
+
+    int layerIndex = mCurrentMapDocument->layerModel()->toLayerIndex(index);
+
+    if (layerIndex != mCurrentMapDocument->currentLayerIndex())
+        mCurrentMapDocument->setCurrentLayerIndex(layerIndex);
+}
+
+void MapEditor::updateLayerComboIndex()
+{
+    int layerComboIndex = -1;
+
+    if (mCurrentMapDocument) {
+        int layerIndex = mCurrentMapDocument->currentLayerIndex();
+        if (layerIndex != -1)
+            layerComboIndex = mCurrentMapDocument->layerModel()->layerIndexToRow(layerIndex);
+    }
+
+    mLayerComboBox->setCurrentIndex(layerComboIndex);
+}
+
+void MapEditor::setupQuickStamps()
+{
+    QList<Qt::Key> keys = TileStampManager::quickStampKeys();
+
+    QSignalMapper *selectMapper = new QSignalMapper(this);
+    QSignalMapper *createMapper = new QSignalMapper(this);
+    QSignalMapper *extendMapper = new QSignalMapper(this);
+
+    for (int i = 0; i < keys.length(); i++) {
+        Qt::Key key = keys.at(i);
+
+        // Set up shortcut for selecting this quick stamp
+        QShortcut *selectStamp = new QShortcut(key, this);
+        connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
+        selectMapper->setMapping(selectStamp, i);
+
+        // Set up shortcut for creating this quick stamp
+        QShortcut *createStamp = new QShortcut(Qt::CTRL + key, this);
+        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
+        createMapper->setMapping(createStamp, i);
+
+        // Set up shortcut for extending this quick stamp
+        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
+        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
+        extendMapper->setMapping(extendStamp, i);
+    }
+
+    connect(selectMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(selectQuickStamp(int)));
+    connect(createMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(createQuickStamp(int)));
+    connect(extendMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(extendQuickStamp(int)));
+
+    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 }
 
 void MapEditor::retranslateUi()

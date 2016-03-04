@@ -24,7 +24,7 @@ namespace Tiled {
 namespace Internal {
 
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
-    : Document(fileName)
+    : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
 {
     // warning: will need to be kept up-to-date

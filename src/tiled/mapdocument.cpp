@@ -62,7 +62,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapDocument::MapDocument(Map *map, const QString &fileName)
-    : Document(fileName)
+    : Document(MapDocumentType, fileName)
     , mMap(map)
     , mLayerModel(new LayerModel(this))
     , mCurrentObject(map)

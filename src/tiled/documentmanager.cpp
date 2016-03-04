@@ -65,6 +65,7 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
+    , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
 {
@@ -76,15 +77,12 @@ DocumentManager::DocumentManager(QObject *parent)
     mTabBar->setTabsClosable(true);
     mTabBar->setMovable(true);
 
-    mMapEditor = new MapEditor(mWidget);
-
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
     vertical->setMargin(0);
     vertical->setSpacing(0);
 
     mEditorStack = new QStackedLayout;
-    mEditorStack->addWidget(mMapEditor);
     vertical->addLayout(mEditorStack);
 
     connect(mTabBar, &QTabBar::currentChanged,
@@ -112,6 +110,21 @@ DocumentManager::~DocumentManager()
 QWidget *DocumentManager::widget() const
 {
     return mWidget;
+}
+
+void DocumentManager::setEditor(Document::DocumentType documentType, QWidget *editor)
+{
+    Q_ASSERT(!mEditorForType.contains(documentType));
+    mEditorForType.insert(documentType, editor);
+    mEditorStack->addWidget(editor);
+
+    if (MapEditor *mapEditor = qobject_cast<MapEditor*>(editor))
+        mMapEditor = mapEditor;
+}
+
+void DocumentManager::openFile(const QString &path)
+{
+    emit fileOpenRequested(path);
 }
 
 Document *DocumentManager::currentDocument() const
@@ -334,9 +347,10 @@ void DocumentManager::currentIndexChanged()
 {
     Document *document = currentDocument();
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
-        mMapEditor->setCurrentMapDocument(mapDocument);
-        mEditorStack->setCurrentWidget(mMapEditor);
+    if (QWidget *editor = mEditorForType.value(document->type())) {
+        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+            mMapEditor->setCurrentMapDocument(mapDocument);
+        mEditorStack->setCurrentWidget(editor);
     }
 
     if (!document)

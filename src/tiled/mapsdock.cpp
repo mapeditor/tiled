@@ -20,7 +20,7 @@
 
 #include "mapsdock.h"
 
-#include "mainwindow.h"
+#include "documentmanager.h"
 #include "mapformat.h"
 #include "pluginmanager.h"
 #include "preferences.h"
@@ -61,10 +61,10 @@ public:
     }
 };
 
-MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
+MapsDock::MapsDock(QWidget *parent)
     : QDockWidget(parent)
     , mDirectoryEdit(new QLineEdit)
-    , mMapsView(new MapsView(mainWindow))
+    , mMapsView(new MapsView)
 {
     setObjectName(QLatin1String("MapsDock"));
 
@@ -140,9 +140,8 @@ void MapsDock::retranslateUi()
 
 ///// ///// ///// ///// /////
 
-MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
+MapsView::MapsView(QWidget *parent)
     : QTreeView(parent)
-    , mMainWindow(mainWindow)
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
@@ -232,5 +231,6 @@ void MapsView::onActivated(const QModelIndex &index)
         prefs->setMapsDirectory(fileInfo.canonicalFilePath());
         return;
     }
-    mMainWindow->openFile(path);
+
+    DocumentManager::instance()->openFile(path);
 }

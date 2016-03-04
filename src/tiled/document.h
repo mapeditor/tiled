@@ -47,8 +47,16 @@ class Document : public QObject
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
 
 public:
-    Document(const QString &fileName = QString(),
+    enum DocumentType {
+        MapDocumentType,
+        TilesetDocumentType
+    };
+
+    Document(DocumentType type,
+             const QString &fileName = QString(),
              QObject *parent = nullptr);
+
+    DocumentType type() const { return mType; }
 
     QString fileName() const;
 
@@ -78,6 +86,7 @@ signals:
 protected:
     void setFileName(const QString &fileName);
 
+    DocumentType mType;
     QString mFileName;
     QUndoStack *mUndoStack;
     QDateTime mLastSaved;

@@ -26,6 +26,8 @@
 
 #include "tiled.h"
 
+class QComboBox;
+class QLabel;
 class QStackedWidget;
 
 namespace Tiled {
@@ -43,8 +45,18 @@ class StampBrush;
 class TerrainBrush;
 class BucketFillTool;
 class TileStamp;
-
+class MapDocumentActionHandler;
+class MapsDock;
+class MiniMapDock;
+class ObjectsDock;
+class PropertiesDock;
+class TerrainDock;
+class TilesetDock;
+class Zoomable;
+class TileAnimationEditor;
+class TileCollisionEditor;
 class LayerDock;
+class TileStampManager;
 
 class MapEditor : public QMainWindow
 {
@@ -85,13 +97,34 @@ protected:
 private slots:
     void cursorChanged(const QCursor &cursor);
 
+    void updateStatusInfoLabel(const QString &statusInfo);
+
+    void updateZoomLabel();
+
+    void layerComboActivated(int index);
+    void updateLayerComboIndex();
+
 private:
+    void setupQuickStamps();
     void retranslateUi();
 
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
+
+    PropertiesDock *mPropertiesDock;
+    MapsDock *mMapsDock;
+    ObjectsDock *mObjectsDock;
+    TilesetDock *mTilesetDock;
+    TerrainDock *mTerrainDock;
+    MiniMapDock* mMiniMapDock;
+    TileAnimationEditor *mTileAnimationEditor;
+    TileCollisionEditor *mTileCollisionEditor;
+    QComboBox *mLayerComboBox;
+    Zoomable *mZoomable;
+    QComboBox *mZoomComboBox;
+    QLabel *mStatusInfoLabel;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
@@ -101,6 +134,8 @@ private:
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
+
+    TileStampManager *mTileStampManager;
 };
 
 } // namespace Internal

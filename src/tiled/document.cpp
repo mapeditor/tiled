@@ -28,9 +28,10 @@
 namespace Tiled {
 namespace Internal {
 
-Document::Document(const QString &fileName,
+Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
     : QObject(parent)
+    , mType(type)
     , mFileName(fileName)
     , mUndoStack(new QUndoStack(this))
 {
