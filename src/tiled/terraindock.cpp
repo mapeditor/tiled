@@ -138,7 +138,9 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        mTerrainView->setMapDocument(mMapDocument);
+        // todo: Can only be done for TerrainDock when it has a TilesetDocument
+        // (maybe when used in TilesetEditor?)
+//        mTerrainView->setTilesetDocument(mMapDocument);
         mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
         setCurrentTerrain(firstTerrain(mapDocument));

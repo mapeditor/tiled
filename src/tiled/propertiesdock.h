@@ -33,6 +33,7 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
 class PropertyBrowser;
 
@@ -44,9 +45,9 @@ public:
     explicit PropertiesDock(QWidget *parent = nullptr);
 
     /**
-     * Sets the \a mapDocument on which this properties dock will act.
+     * Sets the \a document on which this properties dock will act.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
 public slots:
     void bringToFront();
@@ -68,7 +69,7 @@ private slots:
 private:
     void retranslateUi();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     PropertyBrowser *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;

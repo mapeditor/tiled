@@ -1,6 +1,6 @@
 /*
  * tilesetdocument.cpp
- * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -27,6 +27,8 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
 {
+    mCurrentObject = tileset.data();
+
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
 }
@@ -41,6 +43,27 @@ void TilesetDocument::removeMapDocument(MapDocument *mapDocument)
 {
     Q_ASSERT(mMapDocuments.contains(mapDocument));
     mMapDocuments.removeOne(mapDocument);
+}
+
+void TilesetDocument::setTilesetFileName(const QString &fileName)
+{
+    mTileset->setFileName(fileName);
+    setFileName(fileName);
+    emit tilesetFileNameChanged(mTileset.data());
+}
+
+void TilesetDocument::setTilesetName(const QString &name)
+{
+    mTileset->setName(name);
+    emit tilesetNameChanged(mTileset.data());
+}
+
+void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
+{
+    mTileset->setTileOffset(tileOffset);
+    // todo: Have the maps using this tileset recompute their draw margins
+//    mMap->recomputeDrawMargins();
+    emit tilesetTileOffsetChanged(mTileset.data());
 }
 
 } // namespace Internal

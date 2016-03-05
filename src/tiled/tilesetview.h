@@ -28,7 +28,7 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -42,10 +42,10 @@ public:
     TilesetView(QWidget *parent = nullptr);
 
     /**
-     * Sets the map document associated with the tileset to be displayed, which
-     * is needed for the undo support.
+     * Sets the tileset document associated with the tileset to be displayed,
+     * which is needed for the undo support.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     QSize sizeHint() const override;
 
@@ -138,7 +138,7 @@ private:
     Tile *currentTile() const;
 
     Zoomable *mZoomable;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     bool mDrawGrid;
 
     bool mMarkAnimatedTiles;

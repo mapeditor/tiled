@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -55,7 +55,14 @@
      </property>
      <addaction name="actionClearRecentFiles"/>
     </widget>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>&amp;New</string>
+     </property>
+     <addaction name="actionNewMap"/>
+     <addaction name="actionNewTileset"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
@@ -95,7 +102,6 @@
     <property name="title">
      <string>&amp;Map</string>
     </property>
-    <addaction name="actionNewTileset"/>
     <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
@@ -147,12 +153,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
    <addaction name="separator"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="tiled.qrc">
@@ -273,20 +275,7 @@
     <string>Save &amp;As...</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New...</string>
-   </property>
-  </action>
   <action name="actionNewTileset">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
    <property name="text">
     <string>New &amp;Tileset...</string>
    </property>
@@ -518,6 +507,16 @@
    </property>
    <property name="text">
     <string>AutoMap While Drawing</string>
+   </property>
+  </action>
+  <action name="actionNewMap">
+   <property name="text">
+    <string>New Map...</string>
+   </property>
+  </action>
+  <action name="actionNewTileset_2">
+   <property name="text">
+    <string>New Tileset...</string>
    </property>
   </action>
  </widget>

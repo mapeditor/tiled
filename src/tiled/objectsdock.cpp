@@ -182,7 +182,7 @@ void ObjectsDock::objectProperties()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     MapObject *mapObject = selectedObjects.first();
     mMapDocument->setCurrentObject(mapObject);
-    mMapDocument->emitEditCurrentObject();
+    emit mMapDocument->editCurrentObject();
 }
 
 void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
@@ -281,7 +281,7 @@ void ObjectsView::onActivated(const QModelIndex &index)
 {
     if (MapObject *mapObject = model()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
-        mMapDocument->emitEditCurrentObject();
+        emit mMapDocument->editCurrentObject();
     }
 }
 

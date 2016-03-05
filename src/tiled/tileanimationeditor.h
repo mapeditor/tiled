@@ -38,7 +38,7 @@ class Tileset;
 namespace Internal {
 
 class FrameListModel;
-class MapDocument;
+class TilesetDocument;
 
 class TileAnimationEditor : public QWidget
 {
@@ -48,7 +48,7 @@ public:
     explicit TileAnimationEditor(QWidget *parent = nullptr);
     ~TileAnimationEditor();
 
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     void writeSettings();
 
@@ -83,7 +83,7 @@ private slots:
 private:
     Ui::TileAnimationEditor *mUi;
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;

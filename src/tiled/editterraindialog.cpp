@@ -23,11 +23,11 @@
 
 #include "addremoveterrain.h"
 #include "changetileterrain.h"
-#include "mapdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "tile.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -42,24 +42,28 @@ namespace {
 class SetTerrainImage : public QUndoCommand
 {
 public:
-    SetTerrainImage(MapDocument *mapDocument,
-                    Tileset *tileset,
+    SetTerrainImage(TilesetDocument *tilesetDocument,
                     int terrainId,
                     int tileId)
         : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                    "Change Terrain Image"))
-        , mTerrainModel(mapDocument->terrainModel())
-        , mTileset(tileset)
+        // todo: TilesetDocument will needs its own TerrainModel
+//        , mTerrainModel(mapDocument->terrainModel())
+        , mTileset(tilesetDocument->tileset().data())
         , mTerrainId(terrainId)
-        , mOldImageTileId(tileset->terrain(terrainId)->imageTileId())
+        , mOldImageTileId(mTileset->terrain(terrainId)->imageTileId())
         , mNewImageTileId(tileId)
     {}
 
     void undo() override
-    { mTerrainModel->setTerrainImage(mTileset, mTerrainId, mOldImageTileId); }
+    {
+//        mTerrainModel->setTerrainImage(mTileset, mTerrainId, mOldImageTileId);
+    }
 
     void redo() override
-    { mTerrainModel->setTerrainImage(mTileset, mTerrainId, mNewImageTileId); }
+    {
+//        mTerrainModel->setTerrainImage(mTileset, mTerrainId, mNewImageTileId);
+    }
 
 private:
     TerrainModel *mTerrainModel;
@@ -72,14 +76,13 @@ private:
 } // anonymous namespace
 
 
-EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
-                                     Tileset *tileset,
+EditTerrainDialog::EditTerrainDialog(TilesetDocument *tilesetDocument,
                                      QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::EditTerrainDialog)
-    , mMapDocument(mapDocument)
-    , mInitialUndoStackIndex(mMapDocument->undoStack()->index())
-    , mTileset(tileset)
+    , mTilesetDocument(tilesetDocument)
+    , mInitialUndoStackIndex(mTilesetDocument->undoStack()->index())
+    , mTileset(tilesetDocument->tileset().data())
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -91,20 +94,21 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     zoomable->connectToComboBox(mUi->zoomComboBox);
 
     TilesetModel *tilesetModel = new TilesetModel(mTileset, mUi->tilesetView);
-    connect(mapDocument, SIGNAL(tileTerrainChanged(QList<Tile*>)),
+    connect(tilesetDocument, SIGNAL(tileTerrainChanged(QList<Tile*>)),
             tilesetModel, SLOT(tilesChanged(QList<Tile*>)));
 
     mUi->tilesetView->setEditTerrain(true);
-    mUi->tilesetView->setMapDocument(mapDocument);
+    mUi->tilesetView->setTilesetDocument(tilesetDocument);
     mUi->tilesetView->setZoomable(zoomable);
     mUi->tilesetView->setModel(tilesetModel);
 
-    mTerrainModel = mapDocument->terrainModel();
-    const QModelIndex rootIndex = mTerrainModel->index(tileset);
+    // todo: Add TilesetDocument::terrainModel
+//    mTerrainModel = tilesetDocument->terrainModel();
+//    const QModelIndex rootIndex = mTerrainModel->index(tileset);
 
-    mUi->terrainList->setMapDocument(mapDocument);
-    mUi->terrainList->setModel(mTerrainModel);
-    mUi->terrainList->setRootIndex(rootIndex);
+    mUi->terrainList->setTilesetDocument(tilesetDocument);
+//    mUi->terrainList->setModel(mTerrainModel);
+//    mUi->terrainList->setRootIndex(rootIndex);
 
     QHeaderView *terrainListHeader = mUi->terrainList->header();
     terrainListHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -113,12 +117,12 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(selectedTerrainChanged(QModelIndex)));
 
-    if (mTerrainModel->rowCount(rootIndex) > 0) {
-        selectionModel->setCurrentIndex(mTerrainModel->index(0, 0, rootIndex),
-                                        QItemSelectionModel::SelectCurrent |
-                                        QItemSelectionModel::Rows);
-        mUi->terrainList->setFocus();
-    }
+//    if (mTerrainModel->rowCount(rootIndex) > 0) {
+//        selectionModel->setCurrentIndex(mTerrainModel->index(0, 0, rootIndex),
+//                                        QItemSelectionModel::SelectCurrent |
+//                                        QItemSelectionModel::Rows);
+//        mUi->terrainList->setFocus();
+//    }
 
     connect(mUi->eraseTerrain, SIGNAL(toggled(bool)),
             SLOT(eraseTerrainToggled(bool)));
@@ -133,7 +137,7 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     connect(mUi->tilesetView, SIGNAL(terrainImageSelected(Tile*)),
             SLOT(setTerrainImage(Tile*)));
 
-    QUndoStack *undoStack = mapDocument->undoStack();
+    QUndoStack *undoStack = tilesetDocument->undoStack();
     connect(undoStack, SIGNAL(indexChanged(int)),
             SLOT(updateUndoButton()));
     connect(undoStack, SIGNAL(canRedoChanged(bool)),
@@ -164,8 +168,8 @@ EditTerrainDialog::~EditTerrainDialog()
 void EditTerrainDialog::selectedTerrainChanged(const QModelIndex &index)
 {
     int terrainId = -1;
-    if (Terrain *terrain = mTerrainModel->terrainAt(index))
-        terrainId = terrain->id();
+//    if (Terrain *terrain = mTerrainModel->terrainAt(index))
+//        terrainId = terrain->id();
 
     mUi->tilesetView->setTerrainId(terrainId);
     mUi->removeTerrainTypeButton->setEnabled(terrainId != -1);
@@ -183,15 +187,15 @@ void EditTerrainDialog::addTerrainType(Tile *tile)
                                    QString(), tile ? tile->id() : -1);
     terrain->setName(tr("New Terrain"));
 
-    mMapDocument->undoStack()->push(new AddTerrain(mMapDocument, terrain));
+    mTilesetDocument->undoStack()->push(new AddTerrain(mTilesetDocument, terrain));
 
     // Select the newly added terrain and edit its name
-    const QModelIndex index = mTerrainModel->index(terrain);
-    QItemSelectionModel *selectionModel = mUi->terrainList->selectionModel();
-    selectionModel->setCurrentIndex(index,
-                                    QItemSelectionModel::ClearAndSelect |
-                                    QItemSelectionModel::Rows);
-    mUi->terrainList->edit(index);
+//    const QModelIndex index = mTerrainModel->index(terrain);
+//    QItemSelectionModel *selectionModel = mUi->terrainList->selectionModel();
+//    selectionModel->setCurrentIndex(index,
+//                                    QItemSelectionModel::ClearAndSelect |
+//                                    QItemSelectionModel::Rows);
+//    mUi->terrainList->edit(index);
 }
 
 void EditTerrainDialog::removeTerrainType()
@@ -200,14 +204,16 @@ void EditTerrainDialog::removeTerrainType()
     if (!currentIndex.isValid())
         return;
 
-    Terrain *terrain = mTerrainModel->terrainAt(currentIndex);
-    RemoveTerrain *removeTerrain = new RemoveTerrain(mMapDocument, terrain);
+    // todo: Probably all this code should be moved to the TilesetEditor
+//    Terrain *terrain = mTerrainModel->terrainAt(currentIndex);
+//    RemoveTerrain *removeTerrain = new RemoveTerrain(mTilesetDocument, terrain);
 
     /*
      * Clear any references to the terrain that is about to be removed with
      * an undo command, as a way of preserving them when undoing the removal
      * of the terrain.
      */
+    /*
     ChangeTileTerrain::Changes changes;
 
     foreach (Tile *tile, terrain->tileset()->tiles()) {
@@ -224,24 +230,24 @@ void EditTerrainDialog::removeTerrainType()
         }
     }
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mTilesetDocument->undoStack();
 
     if (!changes.isEmpty()) {
         undoStack->beginMacro(removeTerrain->text());
-        undoStack->push(new ChangeTileTerrain(mMapDocument, changes));
+        undoStack->push(new ChangeTileTerrain(mTilesetDocument, changes));
     }
 
-    mMapDocument->undoStack()->push(removeTerrain);
+    mTilesetDocument->undoStack()->push(removeTerrain);
 
     if (!changes.isEmpty())
         undoStack->endMacro();
-
+*/
     /*
      * Removing a terrain usually changes the selected terrain without the
      * selection changing rows, so we can't rely on the currentRowChanged
      * signal.
      */
-    selectedTerrainChanged(mUi->terrainList->currentIndex());
+//    selectedTerrainChanged(mUi->terrainList->currentIndex());
 }
 
 void EditTerrainDialog::setTerrainImage(Tile *tile)
@@ -251,15 +257,14 @@ void EditTerrainDialog::setTerrainImage(Tile *tile)
         return;
 
     Terrain *terrain = mTerrainModel->terrainAt(currentIndex);
-    mMapDocument->undoStack()->push(new SetTerrainImage(mMapDocument,
-                                                        terrain->tileset(),
-                                                        terrain->id(),
-                                                        tile->id()));
+    mTilesetDocument->undoStack()->push(new SetTerrainImage(mTilesetDocument,
+                                                            terrain->id(),
+                                                            tile->id()));
 }
 
 void EditTerrainDialog::updateUndoButton()
 {
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mTilesetDocument->undoStack();
     const bool canUndo = undoStack->index() > mInitialUndoStackIndex;
     const bool canRedo = undoStack->canRedo();
 

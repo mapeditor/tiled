@@ -1,6 +1,6 @@
 /*
- * renameterrain.h
- * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * editor.cpp
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,39 +18,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMETERRAIN_H
-#define RENAMETERRAIN_H
-
-#include <QUndoCommand>
+#include "editor.h"
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
-class TilesetDocument;
-class TerrainModel;
-
-class RenameTerrain : public QUndoCommand
+Editor::Editor(QObject *parent)
+    : QObject(parent)
 {
-public:
-    RenameTerrain(TilesetDocument *tilesetDocument,
-                  int terrainId,
-                  const QString &newName);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    TerrainModel *mTerrainModel;
-    Tileset *mTileset;
-    int mTerrainId;
-    QString mOldName;
-    QString mNewName;
-};
+}
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RENAMETERRAIN_H

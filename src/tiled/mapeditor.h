@@ -21,14 +21,16 @@
 #ifndef TILED_INTERNAL_MAPEDITOR_H
 #define TILED_INTERNAL_MAPEDITOR_H
 
-#include <QMainWindow>
 #include <QHash>
 
+#include "editor.h"
 #include "tiled.h"
 
 class QComboBox;
 class QLabel;
+class QMainWindow;
 class QStackedWidget;
+class QToolBar;
 
 namespace Tiled {
 
@@ -53,24 +55,24 @@ class PropertiesDock;
 class TerrainDock;
 class TilesetDock;
 class Zoomable;
-class TileAnimationEditor;
-class TileCollisionEditor;
 class LayerDock;
 class TileStampManager;
 
-class MapEditor : public QMainWindow
+class MapEditor : public Editor
 {
     Q_OBJECT
 
 public:
-    explicit MapEditor(QWidget *parent = nullptr);
+    explicit MapEditor(QObject *parent = nullptr);
     ~MapEditor();
 
-    void addMapDocument(MapDocument *mapDocument);
-    void removeMapDocument(MapDocument *mapDocument);
+    void addDocument(Document *document) override;
+    void removeDocument(Document *document) override;
 
-    void setCurrentMapDocument(MapDocument *mapDocument);
-    MapDocument *currentMapDocument() const;
+    void setCurrentDocument(Document *document) override;
+    Document *currentDocument() const override;
+
+    QWidget *editorWidget() const override;
 
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
@@ -92,9 +94,12 @@ public slots:
     void setTerrainBrush(const Terrain *terrain);
 
 protected:
-    void changeEvent(QEvent *event) override;
+    // todo: consider how to get this event here from the main window
+//    void changeEvent(QEvent *event) override;
 
 private slots:
+    void currentWidgetChanged();
+
     void cursorChanged(const QCursor &cursor);
 
     void updateStatusInfoLabel(const QString &statusInfo);
@@ -108,6 +113,8 @@ private:
     void setupQuickStamps();
     void retranslateUi();
 
+    QMainWindow *mMainWindow;
+
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
@@ -119,8 +126,6 @@ private:
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
-    TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
     QComboBox *mLayerComboBox;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;

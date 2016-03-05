@@ -67,6 +67,11 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
+    Object *currentObject() const { return mCurrentObject; }
+    void setCurrentObject(Object *object);
+
+    virtual QList<Object*> currentObjects() const;
+
     void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
@@ -77,6 +82,13 @@ signals:
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void modifiedChanged();
+
+    void currentObjectChanged(Object *object);
+
+    /**
+     * Makes the Properties window visible and take focus.
+     */
+    void editCurrentObject();
 
     void propertyAdded(Object *object, const QString &name);
     void propertyRemoved(Object *object, const QString &name);
@@ -90,6 +102,8 @@ protected:
     QString mFileName;
     QUndoStack *mUndoStack;
     QDateTime mLastSaved;
+
+    Object *mCurrentObject;             /**< Current properties object. */
 };
 
 

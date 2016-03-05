@@ -67,6 +67,8 @@
 #include "commandbutton.h"
 #include "consoledock.h"
 #include "tmxmapformat.h"
+#include "tileseteditor.h"
+#include "tilesetdocument.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -106,6 +108,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->setupUi(this);
 
     mDocumentManager->setEditor(Document::MapDocumentType, new MapEditor);
+    mDocumentManager->setEditor(Document::TilesetDocumentType, new TilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
 
@@ -125,23 +128,23 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
 
     // Add larger icon versions for actions used in the tool bar
-    QIcon newIcon = mUi->actionNew->icon();
-    QIcon openIcon = mUi->actionOpen->icon();
-    QIcon saveIcon = mUi->actionSave->icon();
-    newIcon.addFile(QLatin1String(":images/24x24/document-new.png"));
-    openIcon.addFile(QLatin1String(":images/24x24/document-open.png"));
-    saveIcon.addFile(QLatin1String(":images/24x24/document-save.png"));
-    redoIcon.addFile(QLatin1String(":images/24x24/edit-redo.png"));
-    undoIcon.addFile(QLatin1String(":images/24x24/edit-undo.png"));
-    mUi->actionNew->setIcon(newIcon);
-    mUi->actionOpen->setIcon(openIcon);
-    mUi->actionSave->setIcon(saveIcon);
+//    QIcon newIcon = mUi->actionNew->icon();
+//    QIcon openIcon = mUi->actionOpen->icon();
+//    QIcon saveIcon = mUi->actionSave->icon();
+//    newIcon.addFile(QLatin1String(":images/24x24/document-new.png"));
+//    openIcon.addFile(QLatin1String(":images/24x24/document-open.png"));
+//    saveIcon.addFile(QLatin1String(":images/24x24/document-save.png"));
+//    redoIcon.addFile(QLatin1String(":images/24x24/edit-redo.png"));
+//    undoIcon.addFile(QLatin1String(":images/24x24/edit-undo.png"));
+//    mUi->actionNew->setIcon(newIcon);
+//    mUi->actionOpen->setIcon(openIcon);
+//    mUi->actionSave->setIcon(saveIcon);
 
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
-    mUi->actionNew->setPriority(QAction::LowPriority);
+//    mUi->actionNew->setPriority(QAction::LowPriority);
 #if QT_VERSION >= 0x050500
     undoAction->setPriority(QAction::LowPriority);
 #endif
@@ -164,7 +167,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoDock->setVisible(false);
     mConsoleDock->setVisible(false);
 
-    mUi->actionNew->setShortcuts(QKeySequence::New);
+//    mUi->actionNew->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
@@ -271,7 +274,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
-    connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
+    connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
             SLOT(clearRecentFiles()));
@@ -340,7 +343,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
 
-    setThemeIcon(mUi->actionNew, "document-new");
+    setThemeIcon(mUi->menuNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
     setThemeIcon(mUi->menuRecentFiles, "document-open-recent");
     setThemeIcon(mUi->actionClearRecentFiles, "edit-clear");
@@ -357,7 +360,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
-    setThemeIcon(mUi->actionNewTileset, "document-new");
+//    setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
@@ -466,8 +469,8 @@ MainWindow::~MainWindow()
 //    delete mTileStampManager;
 //    mTileStampManager = nullptr;
 
-    TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
+    TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
@@ -547,7 +550,7 @@ void MainWindow::newMap()
 }
 
 bool MainWindow::openFile(const QString &fileName,
-                          MapFormat *format)
+                          FileFormat *format)
 {
     if (fileName.isEmpty())
         return false;
@@ -559,8 +562,11 @@ bool MainWindow::openFile(const QString &fileName,
         return true;
     }
 
+    // todo: determine whether it's a tileset or a map
+    // ... impossible since sometimes it's just XML or JSON!?
+
     QString error;
-    MapDocument *mapDocument = MapDocument::load(fileName, format, &error);
+    MapDocument *mapDocument = MapDocument::load(fileName, qobject_cast<MapFormat*>(format), &error);
     if (!mapDocument) {
         QMessageBox::critical(this, tr("Error Opening Map"), error);
         return false;
@@ -650,12 +656,12 @@ void MainWindow::openLastFiles()
 void MainWindow::openFile()
 {
     QString filter = tr("All Files (*)");
-
-    QString selectedFilter = TmxMapFormat().nameFilter();
+    QString selectedFilter = filter;
     filter += QLatin1String(";;");
-    filter += selectedFilter;
+    filter += TmxMapFormat().nameFilter();
+    filter += TsxTilesetFormat().nameFilter();
 
-    FormatHelper<MapFormat> helper(MapFormat::Read, filter);
+    FormatHelper<FileFormat> helper(FileFormat::Read, filter);
 
     selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
                                      selectedFilter).toString();
@@ -668,11 +674,11 @@ void MainWindow::openFile()
         return;
 
     // When a particular filter was selected, use the associated format
-    MapFormat *mapFormat = helper.formatByNameFilter(selectedFilter);
+    FileFormat *fileFormat = helper.formatByNameFilter(selectedFilter);
 
     mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
     foreach (const QString &fileName, fileNames)
-        openFile(fileName, mapFormat);
+        openFile(fileName, fileFormat);
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -813,8 +819,8 @@ void MainWindow::export_()
             exportFormat = &tmxFormat;
 
         if (exportFormat->write(mMapDocument->map(), exportFileName)) {
-            statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
-                                     3000);
+//            statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
+//                                     3000);
             return;
         }
 
@@ -1119,10 +1125,6 @@ void MainWindow::zoomNormal()
 
 bool MainWindow::newTileset(const QString &path)
 {
-    if (!mMapDocument)
-        return false;
-
-    Map *map = mMapDocument->map();
     Preferences *prefs = Preferences::instance();
 
     const QString startLocation = path.isEmpty()
@@ -1131,10 +1133,12 @@ bool MainWindow::newTileset(const QString &path)
 
     NewTilesetDialog newTileset(this);
     newTileset.setImagePath(startLocation);
-    newTileset.setTileSize(map->tileSize());
+//    newTileset.setTileSize(map->tileSize());
 
     if (SharedTileset tileset = newTileset.createTileset()) {
-        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
+        mDocumentManager->addDocument(new TilesetDocument(tileset));
+
+//        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
         prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
         return true;
     }
@@ -1266,7 +1270,7 @@ void MainWindow::editMapProperties()
         return;
 
     mMapDocument->setCurrentObject(mMapDocument->map());
-    mMapDocument->emitEditCurrentObject();
+    emit mMapDocument->editCurrentObject();
 }
 
 void MainWindow::autoMappingError(bool automatic)
@@ -1275,7 +1279,7 @@ void MainWindow::autoMappingError(bool automatic)
     QString error = mAutomappingManager->errorString();
     if (!error.isEmpty()) {
         if (automatic)
-            statusBar()->showMessage(error, 3000);
+            ;//statusBar()->showMessage(error, 3000);
         else
             QMessageBox::critical(this, title, error);
     }
@@ -1287,7 +1291,7 @@ void MainWindow::autoMappingWarning(bool automatic)
     QString warning = mAutomappingManager->warningString();
     if (!warning.isEmpty()) {
         if (automatic)
-            statusBar()->showMessage(warning, 3000);
+            ;//statusBar()->showMessage(warning, 3000);
         else
             QMessageBox::warning(this, title, warning);
     }
@@ -1411,7 +1415,7 @@ void MainWindow::updateActions()
     mUi->actionCopy->setEnabled(canCopy);
     mUi->actionPaste->setEnabled(ClipboardManager::instance()->hasMap());
     mUi->actionDelete->setEnabled(canCopy);
-    mUi->actionNewTileset->setEnabled(map);
+//    mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
@@ -1546,7 +1550,7 @@ void MainWindow::mapDocumentChanged(Document *document)
     mAutomappingManager->setMapDocument(mapDocument);
 
     if (document) {
-        connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
+        connect(document, SIGNAL(fileNameChanged(QString,QString)),
                 SLOT(updateWindowTitle()));
     }
 

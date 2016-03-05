@@ -65,11 +65,12 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
     : Document(MapDocumentType, fileName)
     , mMap(map)
     , mLayerModel(new LayerModel(this))
-    , mCurrentObject(map)
     , mRenderer(nullptr)
     , mMapObjectModel(new MapObjectModel(this))
     , mTerrainModel(new TerrainModel(this, this))
 {
+    mCurrentObject = map;
+
     createRenderer();
 
     mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
@@ -657,15 +658,6 @@ void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
     emit selectedTilesChanged();
 }
 
-void MapDocument::setCurrentObject(Object *object)
-{
-    if (object == mCurrentObject)
-        return;
-
-    mCurrentObject = object;
-    emit currentObjectChanged(object);
-}
-
 QList<Object*> MapDocument::currentObjects() const
 {
     QList<Object*> objects;
@@ -775,18 +767,6 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
 }
 
 /**
- * Emits the tileset changed signal. This signal is currently used when adding
- * or removing tiles from a tileset.
- *
- * @todo Emit more specific signals.
- */
-void MapDocument::emitTilesetChanged(Tileset *tileset)
-{
-    Q_ASSERT(contains(mMap->tilesets(), tileset));
-    emit tilesetChanged(tileset);
-}
-
-/**
  * Before forwarding the signal, the objects are removed from the list of
  * selected objects, triggering a selectedObjectsChanged signal when
  * appropriate.
@@ -893,27 +873,6 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 
     if (removedCount > 0)
         emit selectedObjectsChanged();
-}
-
-void MapDocument::setTilesetFileName(Tileset *tileset,
-                                     const QString &fileName)
-{
-    tileset->setFileName(fileName);
-    emit tilesetFileNameChanged(tileset);
-}
-
-void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
-{
-    tileset->setName(name);
-    emit tilesetNameChanged(tileset);
-}
-
-void MapDocument::setTilesetTileOffset(Tileset *tileset,
-                                       const QPoint &tileOffset)
-{
-    tileset->setTileOffset(tileOffset);
-    mMap->recomputeDrawMargins();
-    emit tilesetTileOffsetChanged(tileset);
 }
 
 void MapDocument::duplicateObjects(const QList<MapObject *> &objects)

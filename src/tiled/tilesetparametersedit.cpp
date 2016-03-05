@@ -23,6 +23,7 @@
 #include "newtilesetdialog.h"
 #include "tileset.h"
 #include "tilesetchanges.h"
+#include "tilesetdocument.h"
 
 #include <QFocusEvent>
 #include <QHBoxLayout>
@@ -56,31 +57,30 @@ TilesetParametersEdit::TilesetParametersEdit(QWidget *parent)
             this, &TilesetParametersEdit::buttonClicked);
 }
 
-void TilesetParametersEdit::setTileset(const EmbeddedTileset &tileset)
+void TilesetParametersEdit::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    mTileset = tileset;
+    mTilesetDocument = tilesetDocument;
 
-    if (tileset.tileset())
-        mLabel->setText(QFileInfo(tileset.tileset()->imageSource()).fileName());
+    if (tilesetDocument)
+        mLabel->setText(QFileInfo(tilesetDocument->tileset()->imageSource()).fileName());
     else
         mLabel->clear();
 }
 
 void TilesetParametersEdit::buttonClicked()
 {
-    if (!mTileset.tileset())
+    if (!mTilesetDocument)
         return;
 
-    TilesetParameters parameters(*mTileset.tileset());
+    TilesetParameters parameters(*mTilesetDocument->tileset());
     NewTilesetDialog dialog(window());
 
     if (dialog.editTilesetParameters(parameters)) {
-        if (parameters != TilesetParameters(*mTileset.tileset())) {
-            auto command = new ChangeTilesetParameters(mTileset.mapDocument(),
-                                                       *mTileset.tileset(),
+        if (parameters != TilesetParameters(*mTilesetDocument->tileset())) {
+            auto command = new ChangeTilesetParameters(mTilesetDocument,
                                                        parameters);
 
-            mTileset.mapDocument()->undoStack()->push(command);
+            mTilesetDocument->undoStack()->push(command);
         }
     }
 }

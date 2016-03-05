@@ -42,6 +42,7 @@ namespace Internal {
 
 class AbstractTool;
 class Document;
+class Editor;
 class MapDocument;
 class MapEditor;
 class MapScene;
@@ -66,7 +67,7 @@ public:
      */
     QWidget *widget() const;
 
-    void setEditor(Document::DocumentType documentType, QWidget *editor);
+    void setEditor(Document::DocumentType documentType, Editor *editor);
 
     void openFile(const QString &path);
 
@@ -227,11 +228,12 @@ private:
     QList<Document*> mDocuments;
 
     QWidget *mWidget;
+    QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     QStackedLayout *mEditorStack;
     MapEditor *mMapEditor;
 
-    QHash<Document::DocumentType, QWidget*> mEditorForType;
+    QHash<Document::DocumentType, Editor*> mEditorForType;
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;

@@ -34,6 +34,7 @@ Document::Document(DocumentType type, const QString &fileName,
     , mType(type)
     , mFileName(fileName)
     , mUndoStack(new QUndoStack(this))
+    , mCurrentObject(nullptr)
 {
     connect(mUndoStack, &QUndoStack::cleanChanged,
             this, &Document::modifiedChanged);
@@ -68,6 +69,23 @@ void Document::setFileName(const QString &fileName)
 bool Document::isModified() const
 {
     return !mUndoStack->isClean();
+}
+
+void Document::setCurrentObject(Object *object)
+{
+    if (object == mCurrentObject)
+        return;
+
+    mCurrentObject = object;
+    emit currentObjectChanged(object);
+}
+
+QList<Object *> Document::currentObjects() const
+{
+    QList<Object*> list;
+    if (mCurrentObject)
+        list << mCurrentObject;
+    return list;
 }
 
 void Document::setProperty(Object *object,

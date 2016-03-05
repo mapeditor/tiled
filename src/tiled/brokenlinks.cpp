@@ -69,10 +69,11 @@ BrokenLinksModel::BrokenLinksModel(MapDocument *mapDocument, QObject *parent)
 {
     refresh();
 
-    connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-            this, &BrokenLinksModel::tileImageSourceChanged);
-    connect(mMapDocument, &MapDocument::tilesetChanged,
-            this, &BrokenLinksModel::tilesetChanged);
+    // todo: see how we can still route these changes here
+//    connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+//            this, &BrokenLinksModel::tileImageSourceChanged);
+//    connect(mMapDocument, &MapDocument::tilesetChanged,
+//            this, &BrokenLinksModel::tilesetChanged);
     connect(mMapDocument, &MapDocument::tilesetReplaced,
             this, &BrokenLinksModel::tilesetReplaced);
 }
@@ -338,17 +339,19 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
             TilesetParameters parameters(*link.tileset);
             parameters.imageSource = newFileName;
 
-            auto command = new ChangeTilesetParameters(mapDocument,
-                                                       *link.tileset,
-                                                       parameters);
+            // todo: This will need to work on the TilesetDocument
+//            auto command = new ChangeTilesetParameters(mapDocument,
+//                                                       *link.tileset,
+//                                                       parameters);
 
-            mapDocument->undoStack()->push(command);
+//            mapDocument->undoStack()->push(command);
         } else {
-            auto command = new ChangeTileImageSource(mapDocument,
-                                                     link.tile,
-                                                     newFileName);
+            // todo: This will need to work on the TilesetDocument
+//            auto command = new ChangeTileImageSource(mapDocument,
+//                                                     link.tile,
+//                                                     newFileName);
 
-            mapDocument->undoStack()->push(command);
+//            mapDocument->undoStack()->push(command);
         }
 
         prefs->setLastPath(Preferences::ImageFile, newFileName);

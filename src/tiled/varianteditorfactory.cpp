@@ -22,6 +22,7 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
@@ -114,7 +115,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
         auto editor = new TilesetParametersEdit(parent);
-        editor->setTileset(manager->value(property).value<EmbeddedTileset>());
+        editor->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
         mCreatedTilesetEdits[property].append(editor);
         mTilesetEditToProperty[editor] = property;
 
@@ -167,7 +168,7 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
     }
     else if (mCreatedTilesetEdits.contains(property)) {
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
-            edit->setTileset(value.value<EmbeddedTileset>());
+            edit->setTilesetDocument(value.value<TilesetDocument*>());
     }
 }
 

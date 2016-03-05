@@ -32,7 +32,7 @@ class Tileset;
 namespace Internal {
 
 class AbstractTool;
-class MapDocument;
+class TilesetDocument;
 class MapScene;
 class MapView;
 class PropertiesDock;
@@ -51,7 +51,7 @@ public:
     explicit TileCollisionEditor(QWidget *parent = nullptr);
     ~TileCollisionEditor();
 
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     void writeSettings();
 
@@ -85,7 +85,7 @@ private:
     void retranslateUi();
 
     Tile *mTile;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;

@@ -227,7 +227,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (action == propertiesAction) {
         MapObject *mapObject = selectedObjects.first();
         mapDocument()->setCurrentObject(mapObject);
-        mapDocument()->emitEditCurrentObject();
+        emit mapDocument()->editCurrentObject();
         return;
     }
 

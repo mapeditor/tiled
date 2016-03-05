@@ -46,7 +46,7 @@ namespace Internal {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
-    , mMapDocument(nullptr)
+    , mDocument(nullptr)
     , mPropertyBrowser(new PropertyBrowser)
 {
     setObjectName(QLatin1String("propertiesDock"));
@@ -97,23 +97,23 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     retranslateUi();
 }
 
-void PropertiesDock::setMapDocument(MapDocument *mapDocument)
+void PropertiesDock::setDocument(Document *document)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mDocument)
+        mDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
-    mPropertyBrowser->setMapDocument(mapDocument);
+    mDocument = document;
+    mPropertyBrowser->setDocument(document);
 
-    if (mapDocument) {
-        connect(mapDocument, SIGNAL(currentObjectChanged(Object*)),
+    if (document) {
+        connect(document, SIGNAL(currentObjectChanged(Object*)),
                 SLOT(currentObjectChanged(Object*)));
-        connect(mapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(tilesetFileNameChanged(Tileset*)));
-        connect(mapDocument, SIGNAL(editCurrentObject()),
+//        connect(mapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+//                SLOT(tilesetFileNameChanged(Tileset*)));
+        connect(document, SIGNAL(editCurrentObject()),
                 SLOT(bringToFront()));
 
-        currentObjectChanged(mapDocument->currentObject());
+        currentObjectChanged(document->currentObject());
     } else {
         currentObjectChanged(nullptr);
     }
@@ -183,7 +183,7 @@ void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 
 void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 {
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     if (!object)
         return;
 
@@ -220,14 +220,14 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 {
     if (name.isEmpty())
         return;
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     if (!object)
         return;
 
     if (!object->hasProperty(name)) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument,
-                                        mMapDocument->currentObjects(),
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new SetProperty(mDocument,
+                                        mDocument->currentObjects(),
                                         name, QVariant(type)));
     }
 
@@ -237,12 +237,12 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 void PropertiesDock::removeProperty()
 {
     QtBrowserItem *item = mPropertyBrowser->currentItem();
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     if (!item || !object)
         return;
 
     const QString name = item->property()->propertyName();
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mDocument->undoStack();
     QList<QtBrowserItem *> items = item->parent()->children();
     if (items.count() > 1) {
         int currentItemIndex = items.indexOf(item);
@@ -252,8 +252,8 @@ void PropertiesDock::removeProperty()
             mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
         }
     }
-    undoStack->push(new RemoveProperty(mMapDocument,
-                                       mMapDocument->currentObjects(),
+    undoStack->push(new RemoveProperty(mDocument,
+                                       mDocument->currentObjects(),
                                        name));
 }
 
@@ -286,8 +286,8 @@ void PropertiesDock::renameProperty(const QString &name)
     if (oldName == name)
         return;
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
+    QUndoStack *undoStack = mDocument->undoStack();
+    undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
 }
 
 

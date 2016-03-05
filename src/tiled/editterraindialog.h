@@ -38,16 +38,15 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
 class TerrainModel;
+class TilesetDocument;
 
 class EditTerrainDialog : public QDialog
 {
     Q_OBJECT
     
 public:
-    explicit EditTerrainDialog(MapDocument *mapDocument,
-                               Tileset *tileset,
+    explicit EditTerrainDialog(TilesetDocument *tilesetDocument,
                                QWidget *parent = nullptr);
     ~EditTerrainDialog();
 
@@ -63,7 +62,7 @@ private slots:
     
 private:
     Ui::EditTerrainDialog *mUi;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     int mInitialUndoStackIndex;
     Tileset *mTileset;
     TerrainModel *mTerrainModel;

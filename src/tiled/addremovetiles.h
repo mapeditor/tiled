@@ -30,7 +30,7 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 /**
  * Abstract base class for AddTiles and RemoveTiles.
@@ -38,7 +38,7 @@ class MapDocument;
 class AddRemoveTiles : public QUndoCommand
 {
 public:
-    AddRemoveTiles(MapDocument *mapDocument,
+    AddRemoveTiles(TilesetDocument *tilesetDocument,
                    Tileset *tileset,
                    const QList<Tile*> &tiles,
                    bool add);
@@ -50,7 +50,7 @@ protected:
     void removeTiles();
 
 private:
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tileset *mTileset;
     QList<Tile*> mTiles;
     bool mTilesAdded;
@@ -62,7 +62,7 @@ private:
 class AddTiles : public AddRemoveTiles
 {
 public:
-    AddTiles(MapDocument *mapDocument,
+    AddTiles(TilesetDocument *tilesetDocument,
              Tileset *tileset,
              const QList<Tile*> &tiles);
 
@@ -79,7 +79,7 @@ public:
 class RemoveTiles : public AddRemoveTiles
 {
 public:
-    RemoveTiles(MapDocument *mapDocument,
+    RemoveTiles(TilesetDocument *tilesetDocument,
                 Tileset *tileset,
                 const QList<Tile *> &tiles);
 

@@ -75,6 +75,7 @@ namespace {
  *
  * @warning Does not work for tilesets that are shared by multiple maps!
  */
+/*
 class SetTilesetFileName : public QUndoCommand
 {
 public:
@@ -108,7 +109,7 @@ private:
     Tileset *mTileset;
     QString mFileName;
 };
-
+*/
 
 class TilesetMenuButton : public QToolButton
 {
@@ -345,7 +346,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
         for (const SharedTileset &tileset : mTilesets) {
             TilesetView *view = new TilesetView;
-            view->setMapDocument(mMapDocument);
+            // todo: Make sure the view does not crash in read-only mode
+//            view->setTilesetDocument(mMapDocument);
             view->setZoomable(mZoomable);
 
             mTabBar->addTab(tileset->name());
@@ -360,16 +362,19 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 this, &TilesetDock::tilesetMoved);
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &TilesetDock::tilesetReplaced);
-        connect(mMapDocument, &MapDocument::tilesetNameChanged,
-                this, &TilesetDock::tilesetNameChanged);
-        connect(mMapDocument, &MapDocument::tilesetFileNameChanged,
-                this, &TilesetDock::updateActions);
-        connect(mMapDocument, &MapDocument::tilesetChanged,
-                this, &TilesetDock::tilesetChanged);
-        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-                this, &TilesetDock::tileImageSourceChanged);
-        connect(mMapDocument, &MapDocument::tileAnimationChanged,
-                this, &TilesetDock::tileAnimationChanged);
+
+        // todo: Determine whether all these changes are still relevant, and
+        // how route them to the TilesetDock
+//        connect(mMapDocument, &MapDocument::tilesetNameChanged,
+//                this, &TilesetDock::tilesetNameChanged);
+//        connect(mMapDocument, &MapDocument::tilesetFileNameChanged,
+//                this, &TilesetDock::updateActions);
+//        connect(mMapDocument, &MapDocument::tilesetChanged,
+//                this, &TilesetDock::tilesetChanged);
+//        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+//                this, &TilesetDock::tileImageSourceChanged);
+//        connect(mMapDocument, &MapDocument::tileAnimationChanged,
+//                this, &TilesetDock::tileAnimationChanged);
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
         for (int i = 0; i < mTabBar->count(); ++i) {
@@ -601,7 +606,7 @@ void TilesetDock::indexPressed(const QModelIndex &index)
 void TilesetDock::tilesetAdded(int index, Tileset *tileset)
 {
     TilesetView *view = new TilesetView;
-    view->setMapDocument(mMapDocument);
+//    view->setTilesetDocument(mMapDocument);
     view->setZoomable(mZoomable);
 
     mTilesets.insert(index, tileset->sharedPointer());
@@ -842,7 +847,7 @@ void TilesetDock::editTilesetProperties()
         return;
 
     mMapDocument->setCurrentObject(tileset);
-    mMapDocument->emitEditCurrentObject();
+    emit mMapDocument->editCurrentObject();
 }
 
 void TilesetDock::exportTileset()
@@ -883,10 +888,11 @@ void TilesetDock::exportTileset()
         format = &tsxFormat;
 
     if (format->write(*tileset, fileName)) {
-        QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                       tileset,
-                                                       fileName);
-        mMapDocument->undoStack()->push(command);
+        // todo: Reconsider what these import/export actions will actually do
+//        QUndoCommand *command = new SetTilesetFileName(mMapDocument,
+//                                                       tileset,
+//                                                       fileName);
+//        mMapDocument->undoStack()->push(command);
     } else {
         QString error = format->errorString();
         QMessageBox::critical(window(),
@@ -901,10 +907,11 @@ void TilesetDock::importTileset()
     if (!tileset)
         return;
 
-    QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                   tileset,
-                                                   QString());
-    mMapDocument->undoStack()->push(command);
+    // todo: Reconsider what these import/export actions will actually do
+//    QUndoCommand *command = new SetTilesetFileName(mMapDocument,
+//                                                   tileset,
+//                                                   QString());
+//    mMapDocument->undoStack()->push(command);
 }
 
 void TilesetDock::editTerrain()
@@ -913,8 +920,9 @@ void TilesetDock::editTerrain()
     if (!tileset)
         return;
 
-    EditTerrainDialog editTerrainDialog(mMapDocument, tileset, this);
-    editTerrainDialog.exec();
+    // todo: Editing of terrain will have to be moved to the TilesetEditor
+    //EditTerrainDialog editTerrainDialog(mMapDocument, tileset, this);
+    //editTerrainDialog.exec();
 }
 
 void TilesetDock::addTiles()
@@ -968,9 +976,10 @@ void TilesetDock::addTiles()
         tiles.append(newTile);
     }
 
-    mMapDocument->undoStack()->push(new AddTiles(mMapDocument,
-                                                 tileset,
-                                                 tiles));
+    // todo: The AddTiles action will need to be moved to the TilesetEditor
+//    mMapDocument->undoStack()->push(new AddTiles(mMapDocument,
+//                                                 tileset,
+//                                                 tiles));
 }
 
 void TilesetDock::removeTiles()
@@ -1017,8 +1026,9 @@ void TilesetDock::removeTiles()
     if (inUse)
         removeTileReferences(mMapDocument, matchesAnyTile);
 
-    Tileset *tileset = view->tilesetModel()->tileset();
-    undoStack->push(new RemoveTiles(mMapDocument, tileset, tiles));
+    // todo: The RemoveTiles action will need to be moved to the TilesetEditor
+//    Tileset *tileset = view->tilesetModel()->tileset();
+//    undoStack->push(new RemoveTiles(mMapDocument, tileset, tiles));
 
     undoStack->endMacro();
 

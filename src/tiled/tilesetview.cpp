@@ -22,10 +22,10 @@
 
 #include "changetileterrain.h"
 #include "map.h"
-#include "mapdocument.h"
 #include "preferences.h"
 #include "tile.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -354,7 +354,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(nullptr)
-    , mMapDocument(nullptr)
+    , mTilesetDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
     , mEraseTerrain(false)
@@ -390,9 +390,9 @@ TilesetView::TilesetView(QWidget *parent)
             SLOT(setDrawGrid(bool)));
 }
 
-void TilesetView::setMapDocument(MapDocument *mapDocument)
+void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    mMapDocument = mapDocument;
+    mTilesetDocument = tilesetDocument;
 }
 
 QSize TilesetView::sizeHint() const
@@ -651,8 +651,8 @@ void TilesetView::editTileProperties()
     if (!tile)
         return;
 
-    mMapDocument->setCurrentObject(tile);
-    mMapDocument->emitEditCurrentObject();
+    mTilesetDocument->setCurrentObject(tile);
+    emit mTilesetDocument->editCurrentObject();
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
@@ -684,8 +684,8 @@ void TilesetView::applyTerrain()
     if (terrain == tile->terrain())
         return;
 
-    QUndoCommand *command = new ChangeTileTerrain(mMapDocument, tile, terrain);
-    mMapDocument->undoStack()->push(command);
+    QUndoCommand *command = new ChangeTileTerrain(mTilesetDocument, tile, terrain);
+    mTilesetDocument->undoStack()->push(command);
     mTerrainChanged = true;
 }
 
@@ -695,7 +695,7 @@ void TilesetView::finishTerrainChange()
         return;
 
     // Prevent further merging since mouse was released
-    mMapDocument->undoStack()->push(new ChangeTileTerrain);
+    mTilesetDocument->undoStack()->push(new ChangeTileTerrain);
     mTerrainChanged = false;
 }
 

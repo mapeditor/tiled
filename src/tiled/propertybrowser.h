@@ -44,7 +44,9 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
+class TilesetDocument;
 
 class PropertyBrowser : public QtTreePropertyBrowser
 {
@@ -64,10 +66,10 @@ public:
     Object *object() const;
 
     /**
-     * Sets the \a mapDocument, used for keeping track of changes and for
+     * Sets the \a document, used for keeping track of changes and for
      * undo/redo support.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
     /**
      * Returns whether the given \a item displays a custom property.
@@ -179,7 +181,9 @@ private:
     void updatePropertyColor(const QString &name);
 
     Object *mObject;
+    Document *mDocument;
     MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;

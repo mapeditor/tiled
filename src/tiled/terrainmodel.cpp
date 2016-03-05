@@ -148,6 +148,8 @@ bool TerrainModel::setData(const QModelIndex &index,
                            const QVariant &value,
                            int role)
 {
+    // todo: Can only rename terrain when editing the tileset
+    /*
     if (role == Qt::EditRole) {
         const QString newName = value.toString();
         Terrain *terrain = terrainAt(index);
@@ -160,6 +162,7 @@ bool TerrainModel::setData(const QModelIndex &index,
         }
         return true;
     }
+    */
 
     return false;
 }

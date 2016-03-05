@@ -47,6 +47,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
+#include "tilesetdocument.h"
 #include "tilesetformat.h"
 #include "tmxmapformat.h"
 #include "utils.h"
@@ -66,6 +67,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
     , mUpdating(false)
     , mObject(nullptr)
+    , mDocument(nullptr)
     , mMapDocument(nullptr)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
@@ -111,6 +113,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
 
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
+
+    connect(Preferences::instance(), &Preferences::objectTypesChanged,
+            this, &PropertyBrowser::objectTypesChanged);
 }
 
 void PropertyBrowser::setObject(Object *object)
@@ -124,17 +129,23 @@ void PropertyBrowser::setObject(Object *object)
     addProperties();
 }
 
-void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
+void PropertyBrowser::setDocument(Document *document)
 {
-    if (mMapDocument == mapDocument)
+    MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+
+    if (mDocument == document)
         return;
 
-    if (mMapDocument) {
-        mMapDocument->disconnect(this);
-        mMapDocument->terrainModel()->disconnect(this);
+    if (mDocument) {
+        mDocument->disconnect(this);
+        if (mMapDocument)
+            mMapDocument->terrainModel()->disconnect(this);
     }
 
+    mDocument = document;
     mMapDocument = mapDocument;
+    mTilesetDocument = tilesetDocument;
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(mapChanged()),
@@ -150,24 +161,33 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 SLOT(imageLayerChanged(ImageLayer*)));
 
-        connect(mapDocument, &MapDocument::tilesetFileNameChanged,
-                this, &PropertyBrowser::tilesetChanged);
-        connect(mapDocument, &MapDocument::tilesetNameChanged,
-                this, &PropertyBrowser::tilesetChanged);
-        connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
-                this, &PropertyBrowser::tilesetChanged);
-        connect(mapDocument, &MapDocument::tilesetChanged,
-                this, &PropertyBrowser::tilesetChanged);
-
-        connect(mapDocument, &MapDocument::tileProbabilityChanged,
-                this, &PropertyBrowser::tileChanged);
-        connect(mapDocument, &MapDocument::tileImageSourceChanged,
-                this, &PropertyBrowser::tileChanged);
-
         TerrainModel *terrainModel = mapDocument->terrainModel();
         connect(terrainModel, SIGNAL(terrainChanged(Tileset*,int)),
                 SLOT(terrainChanged(Tileset*,int)));
 
+        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+                this, &PropertyBrowser::selectedObjectsChanged);
+        connect(mapDocument, &MapDocument::selectedTilesChanged,
+                this, &PropertyBrowser::selectedTilesChanged);
+    }
+
+    if (tilesetDocument) {
+        connect(tilesetDocument, &TilesetDocument::tilesetFileNameChanged,
+                this, &PropertyBrowser::tilesetChanged);
+        connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
+                this, &PropertyBrowser::tilesetChanged);
+        connect(tilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
+                this, &PropertyBrowser::tilesetChanged);
+        connect(tilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &PropertyBrowser::tilesetChanged);
+
+        connect(tilesetDocument, &TilesetDocument::tileProbabilityChanged,
+                this, &PropertyBrowser::tileChanged);
+        connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+                this, &PropertyBrowser::tileChanged);
+    }
+
+    if (document) {
         // For custom properties:
         connect(mapDocument, &Document::propertyAdded,
                 this, &PropertyBrowser::propertyAdded);
@@ -177,14 +197,6 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 this, &PropertyBrowser::propertyChanged);
         connect(mapDocument, &Document::propertiesChanged,
                 this, &PropertyBrowser::propertiesChanged);
-
-        connect(mapDocument, &MapDocument::selectedObjectsChanged,
-                this, &PropertyBrowser::selectedObjectsChanged);
-        connect(mapDocument, &MapDocument::selectedTilesChanged,
-                this, &PropertyBrowser::selectedTilesChanged);
-
-        connect(Preferences::instance(), &Preferences::objectTypesChanged,
-                this, &PropertyBrowser::objectTypesChanged);
     }
 }
 
@@ -280,7 +292,7 @@ void PropertyBrowser::terrainChanged(Tileset *tileset, int index)
 
 void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
-    if (!mMapDocument->currentObjects().contains(object))
+    if (!mDocument->currentObjects().contains(object))
         return;
     if (mNameToProperty.keys().contains(name)) {
         if (mObject == object) {
@@ -308,11 +320,13 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 {
-    if (!mMapDocument->currentObjects().contains(object))
+    if (!mDocument->currentObjects().contains(object))
         return;
     if (mObject == object) {
         bool deleteProperty = true;
-        for (Object *obj : mMapDocument->currentObjects()) {
+
+        const QList<Object *> currentObjects = mDocument->currentObjects();
+        for (Object *obj : currentObjects) {
             if (mObject == obj)
                 continue;
             if (obj->properties().contains(name)) {
@@ -324,6 +338,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
                 break;
             }
         }
+
         // No other selected objects have this property so delete it.
         if (deleteProperty)
             delete mNameToProperty.take(name);
@@ -338,13 +353,13 @@ void PropertyBrowser::propertyChanged(Object *object, const QString &name)
         mNameToProperty[name]->setValue(object->property(name));
         mUpdating = false;
     }
-    if (mMapDocument->currentObjects().contains(object))
+    if (mDocument->currentObjects().contains(object))
         updatePropertyColor(name);
 }
 
 void PropertyBrowser::propertiesChanged(Object *object)
 {
-    if (mMapDocument->currentObjects().contains(object))
+    if (mDocument->currentObjects().contains(object))
         updateCustomProperties();
 }
 
@@ -368,7 +383,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 {
     if (mUpdating)
         return;
-    if (!mObject || !mMapDocument)
+    if (!mObject || !mDocument)
         return;
     if (!mPropertyToId.contains(property))
         return;
@@ -376,9 +391,9 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     const PropertyId id = mPropertyToId.value(property);
 
     if (id == CustomProperty) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument,
-                                        mMapDocument->currentObjects(),
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new SetProperty(mDocument,
+                                        mDocument->currentObjects(),
                                         property->propertyName(),
                                         val));
         return;
@@ -691,7 +706,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     }
 
     if (command)
-        mMapDocument->undoStack()->push(command);
+        mDocument->undoStack()->push(command);
 }
 
 QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject)
@@ -767,8 +782,8 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
 
     QUndoCommand *command = applyMapObjectValueTo(id, val, mapObject);
 
-    mMapDocument->undoStack()->beginMacro(command->text());
-    mMapDocument->undoStack()->push(command);
+    mDocument->undoStack()->beginMacro(command->text());
+    mDocument->undoStack()->push(command);
 
     //Used to share non-custom properties.
     QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
@@ -776,12 +791,12 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
         for (MapObject *obj : selectedObjects) {
             if (obj != mapObject) {
                 if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
-                    mMapDocument->undoStack()->push(cmd);
+                    mDocument->undoStack()->push(cmd);
             }
         }
     }
 
-    mMapDocument->undoStack()->endMacro();
+    mDocument->undoStack()->endMacro();
 }
 
 void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
@@ -821,7 +836,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
     }
 
     if (command)
-        mMapDocument->undoStack()->push(command);
+        mDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
@@ -857,13 +872,13 @@ void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
     }
 
     if (command)
-        mMapDocument->undoStack()->push(command);
+        mDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
 {
     ImageLayer *imageLayer = static_cast<ImageLayer*>(mObject);
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mDocument->undoStack();
 
     switch (id) {
     case ImageSourceProperty: {
@@ -892,7 +907,7 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
 {
     Tileset *tileset = static_cast<Tileset*>(mObject);
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mDocument->undoStack();
 
     switch (id) {
     case FileNameProperty: {
@@ -911,18 +926,17 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
         break;
     }
     case NameProperty:
-        undoStack->push(new RenameTileset(mMapDocument,
-                                          tileset,
-                                          val.toString()));
+        Q_ASSERT(mTilesetDocument);
+        undoStack->push(new RenameTileset(mTilesetDocument, val.toString()));
         break;
     case TileOffsetProperty:
-        undoStack->push(new ChangeTilesetTileOffset(mMapDocument,
-                                                    tileset,
+        Q_ASSERT(mTilesetDocument);
+        undoStack->push(new ChangeTilesetTileOffset(mTilesetDocument,
                                                     val.toPoint()));
         break;
     case ColumnCountProperty:
-        undoStack->push(new ChangeTilesetColumnCount(mMapDocument,
-                                                     *tileset,
+        Q_ASSERT(mTilesetDocument);
+        undoStack->push(new ChangeTilesetColumnCount(mTilesetDocument,
                                                      val.toInt()));
         break;
     default:
@@ -932,16 +946,18 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
 
 void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
 {
+    Q_ASSERT(mTilesetDocument);
+
     Tile *tile = static_cast<Tile*>(mObject);
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mDocument->undoStack();
 
     switch (id) {
     case TileProbabilityProperty:
-        undoStack->push(new ChangeTileProbability(mMapDocument,
+        undoStack->push(new ChangeTileProbability(mTilesetDocument,
                                                   tile, val.toFloat()));
         break;
     case ImageSourceProperty:
-        undoStack->push(new ChangeTileImageSource(mMapDocument,
+        undoStack->push(new ChangeTileImageSource(mTilesetDocument,
                                                   tile, val.toString()));
         break;
     default:
@@ -951,12 +967,13 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
 {
+    Q_ASSERT(mTilesetDocument);
+
     Terrain *terrain = static_cast<Terrain*>(mObject);
 
     if (id == NameProperty) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new RenameTerrain(mMapDocument,
-                                          terrain->tileset(),
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new RenameTerrain(mTilesetDocument,
                                           terrain->id(),
                                           val.toString()));
     }
@@ -1122,9 +1139,10 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[ColumnCountProperty]->setEnabled(!external && tileset->isCollection());
 
         if (!tileset->isCollection()) {
-            EmbeddedTileset embeddedTileset(mMapDocument, tileset);
+            // todo: Consider when to set the TilesetDocument on the parameters edit
+//            EmbeddedTileset embeddedTileset(mMapDocument, tileset);
 
-            mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));
+//            mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));
             mIdToProperty[ImageSourceProperty]->setValue(tileset->imageSource());
             mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
             mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());
@@ -1170,7 +1188,7 @@ void PropertyBrowser::updateCustomProperties()
 
     mCombinedProperties = mObject->properties();
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
-    for (Object *obj : mMapDocument->currentObjects()) {
+    for (Object *obj : mDocument->currentObjects()) {
         if (obj == mObject)
             continue;
 

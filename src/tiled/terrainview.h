@@ -29,7 +29,7 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -43,7 +43,7 @@ class TerrainView : public QTreeView
 public:
     TerrainView(QWidget *parent = nullptr);
 
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     Zoomable *zoomable() const { return mZoomable; }
 
@@ -63,7 +63,7 @@ private slots:
 
 private:
     Zoomable *mZoomable;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
 };
 
 } // namespace Internal

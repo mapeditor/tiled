@@ -1,6 +1,6 @@
 /*
  * tilesetdocument.h
- * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -36,6 +36,8 @@ class MapDocument;
  */
 class TilesetDocument : public Document
 {
+    Q_OBJECT
+
 public:
     TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
 
@@ -46,6 +48,46 @@ public:
     const QList<MapDocument*> &mapDocuments() const;
     void addMapDocument(MapDocument *mapDocument);
     void removeMapDocument(MapDocument *mapDocument);
+
+    void setTilesetFileName(const QString &fileName);
+    void setTilesetName(const QString &name);
+    void setTilesetTileOffset(const QPoint &tileOffset);
+
+signals:
+    /**
+     * This signal is currently used when adding or removing tiles from a tileset.
+     *
+     * @todo Emit more specific signals.
+     */
+    void tilesetChanged(Tileset *tileset);
+
+    void tilesetFileNameChanged(Tileset *tileset);
+    void tilesetNameChanged(Tileset *tileset);
+    void tilesetTileOffsetChanged(Tileset *tileset);
+
+    void tileImageSourceChanged(Tile *tile);
+
+    /**
+     * Emits the signal notifying tileset models about changes to tile terrain
+     * information. All the \a tiles need to be from the same tileset.
+     */
+    void tileTerrainChanged(const QList<Tile*> &tiles);
+
+    /**
+     * Emits the signal notifying about the terrain probability of a tile changing.
+     */
+    void tileProbabilityChanged(Tile *tile);
+
+    /**
+     * Emits the signal notifying the TileCollisionEditor about the object group
+     * of a tile changing.
+     */
+    void tileObjectGroupChanged(Tile *tile);
+
+    /**
+     * Emits the signal notifying about the animation of a tile changing.
+     */
+    void tileAnimationChanged(Tile *tile);
 
 private:
     SharedTileset mTileset;

@@ -41,6 +41,7 @@ class MainWindow;
 
 namespace Tiled {
 
+class FileFormat;
 class TileLayer;
 class Terrain;
 
@@ -79,7 +80,7 @@ public:
      *
      * @return whether the file was successfully opened
      */
-    bool openFile(const QString &fileName, MapFormat *format);
+    bool openFile(const QString &fileName, FileFormat *format);
 
     /**
      * Attempt to open the previously opened file.

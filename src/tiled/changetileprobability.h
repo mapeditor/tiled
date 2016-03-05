@@ -29,12 +29,12 @@ class Tile;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileProbability : public QUndoCommand
 {
 public:
-    ChangeTileProbability(MapDocument *mapDocument,
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
                           Tile *tile,
                           float probability);
 
@@ -44,7 +44,7 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     float mProbability;
 };

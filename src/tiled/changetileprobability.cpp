@@ -20,7 +20,7 @@
 
 #include "changetileprobability.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -28,10 +28,10 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              Tile *tile,
                                              float probability)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mProbability(probability)
 {
@@ -44,7 +44,7 @@ void ChangeTileProbability::swap()
     float probability = mTile->probability();
     mTile->setProbability(mProbability);
     mProbability = probability;
-    mMapDocument->emitTileProbabilityChanged(mTile);
+    emit mTilesetDocument->tileProbabilityChanged(mTile);
 }
 
 } // namespace Internal

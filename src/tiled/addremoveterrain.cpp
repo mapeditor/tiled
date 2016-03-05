@@ -20,22 +20,21 @@
 
 #include "addremoveterrain.h"
 
-#include "mapdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-AddRemoveTerrain::AddRemoveTerrain(MapDocument *mapDocument,
-                                   Tileset *tileset,
+AddRemoveTerrain::AddRemoveTerrain(TilesetDocument *tilesetDocument,
                                    int index,
                                    Terrain *terrain)
-    : mMapDocument(mapDocument)
-    , mTileset(tileset)
+    : mTilesetDocument(tilesetDocument)
+    , mTileset(tilesetDocument->tileset().data())
     , mIndex(index)
     , mTerrain(terrain)
 {
@@ -49,20 +48,21 @@ AddRemoveTerrain::~AddRemoveTerrain()
 void AddRemoveTerrain::removeTerrain()
 {
     Q_ASSERT(!mTerrain);
-    mTerrain = mMapDocument->terrainModel()->takeTerrainAt(mTileset, mIndex);
+    // todo: Introduce a TerrainModel for TilesetDocument
+//    mTerrain = mTilesetDocument->terrainModel()->takeTerrainAt(mTileset, mIndex);
 }
 
 void AddRemoveTerrain::addTerrain()
 {
     Q_ASSERT(mTerrain);
-    mMapDocument->terrainModel()->insertTerrain(mTileset, mIndex, mTerrain);
+    // todo: Introduce a TerrainModel for TilesetDocument
+//    mTilesetDocument->terrainModel()->insertTerrain(mTileset, mIndex, mTerrain);
     mTerrain = nullptr;
 }
 
 
-AddTerrain::AddTerrain(MapDocument *mapDocument, Terrain *terrain)
-    : AddRemoveTerrain(mapDocument,
-                       terrain->tileset(),
+AddTerrain::AddTerrain(TilesetDocument *tilesetDocument, Terrain *terrain)
+    : AddRemoveTerrain(tilesetDocument,
                        terrain->tileset()->terrainCount(),
                        terrain)
 {
@@ -70,9 +70,8 @@ AddTerrain::AddTerrain(MapDocument *mapDocument, Terrain *terrain)
 }
 
 
-RemoveTerrain::RemoveTerrain(MapDocument *mapDocument, Terrain *terrain)
-    : AddRemoveTerrain(mapDocument,
-                       terrain->tileset(),
+RemoveTerrain::RemoveTerrain(TilesetDocument *tilesetDocument, Terrain *terrain)
+    : AddRemoveTerrain(tilesetDocument,
                        terrain->id(),
                        nullptr)
 {

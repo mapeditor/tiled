@@ -20,7 +20,7 @@
 
 #include "changetileterrain.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -29,16 +29,16 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileTerrain::ChangeTileTerrain()
-    : mMapDocument(nullptr)
+    : mTilesetDocument(nullptr)
     , mTileset(nullptr)
     , mMergeable(false)
 {
     initText();
 }
 
-ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
+ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
                                      Tile *tile, unsigned terrain)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTileset(tile->tileset())
     , mMergeable(true)
 {
@@ -46,9 +46,9 @@ ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
     mChanges.insert(tile, Change(tile->terrain(), terrain));
 }
 
-ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
+ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
                                      const Changes &changes)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTileset(changes.begin().key()->tileset())
     , mChanges(changes)
     , mMergeable(true)
@@ -73,7 +73,7 @@ void ChangeTileTerrain::undo()
         ++i;
     }
 
-    mMapDocument->emitTileTerrainChanged(changedTiles);
+    emit mTilesetDocument->tileTerrainChanged(changedTiles);
 }
 
 void ChangeTileTerrain::redo()
@@ -93,7 +93,7 @@ void ChangeTileTerrain::redo()
         ++i;
     }
 
-    mMapDocument->emitTileTerrainChanged(changedTiles);
+    emit mTilesetDocument->tileTerrainChanged(changedTiles);
 }
 
 bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
@@ -102,7 +102,7 @@ bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
         return false;
 
     const ChangeTileTerrain *o = static_cast<const ChangeTileTerrain*>(other);
-    if (o->mMapDocument && !(mMapDocument == o->mMapDocument &&
+    if (o->mTilesetDocument && !(mTilesetDocument == o->mTilesetDocument &&
                              mTileset == o->mTileset))
         return false;
 

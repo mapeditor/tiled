@@ -22,6 +22,7 @@
 #include "variantpropertymanager.h"
 
 #include "mapdocument.h"
+#include "tilesetdocument.h"
 
 #include <QFileInfo>
 
@@ -72,7 +73,7 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == filePathTypeId())
         return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
-        return qMetaTypeId<EmbeddedTileset>();
+        return qMetaTypeId<TilesetDocument*>();
     return QtVariantPropertyManager::valueType(propertyType);
 }
 

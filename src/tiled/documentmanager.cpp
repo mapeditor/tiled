@@ -23,6 +23,7 @@
 
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
+#include "editor.h"
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -65,13 +66,13 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
+    , mWidget(new QWidget)
+    , mNoEditorWidget(new QWidget)
+    , mTabBar(new QTabBar(mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
 {
-    mWidget = new QWidget;
-
-    mTabBar = new QTabBar(mWidget);
     mTabBar->setExpanding(false);
     mTabBar->setDocumentMode(true);
     mTabBar->setTabsClosable(true);
@@ -83,6 +84,7 @@ DocumentManager::DocumentManager(QObject *parent)
     vertical->setSpacing(0);
 
     mEditorStack = new QStackedLayout;
+    mEditorStack->addWidget(mNoEditorWidget);
     vertical->addLayout(mEditorStack);
 
     connect(mTabBar, &QTabBar::currentChanged,
@@ -112,11 +114,11 @@ QWidget *DocumentManager::widget() const
     return mWidget;
 }
 
-void DocumentManager::setEditor(Document::DocumentType documentType, QWidget *editor)
+void DocumentManager::setEditor(Document::DocumentType documentType, Editor *editor)
 {
     Q_ASSERT(!mEditorForType.contains(documentType));
     mEditorForType.insert(documentType, editor);
-    mEditorStack->addWidget(editor);
+    mEditorStack->addWidget(editor->editorWidget());
 
     if (MapEditor *mapEditor = qobject_cast<MapEditor*>(editor))
         mMapEditor = mapEditor;
@@ -225,11 +227,8 @@ void DocumentManager::addDocument(Document *document)
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->addPath(document->fileName());
 
-
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mMapEditor->addMapDocument(mapDocument);
-    // todo: Handle TilesetDocument
-
+    if (Editor *editor = mEditorForType.value(document->type()))
+        editor->addDocument(document);
 
     const int documentIndex = mDocuments.size() - 1;
 
@@ -250,7 +249,9 @@ void DocumentManager::addDocument(Document *document)
 //    connect(container, SIGNAL(reload()), SLOT(reloadRequested()));
 
     switchToDocument(documentIndex);
-    centerViewOn(0, 0);
+
+    // todo: fix this (move to MapEditor)
+//    centerViewOn(0, 0);
 }
 
 void DocumentManager::closeCurrentDocument()
@@ -270,8 +271,8 @@ void DocumentManager::closeDocumentAt(int index)
     mDocuments.removeAt(index);
     mTabBar->removeTab(index);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mMapEditor->removeMapDocument(mapDocument);
+    if (Editor *editor = mEditorForType.value(document->type()))
+        editor->removeDocument(document);
 
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->removePath(document->fileName());
@@ -346,18 +347,19 @@ void DocumentManager::closeAllDocuments()
 void DocumentManager::currentIndexChanged()
 {
     Document *document = currentDocument();
+    Editor *editor = nullptr;
 
-    if (QWidget *editor = mEditorForType.value(document->type())) {
-        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-            mMapEditor->setCurrentMapDocument(mapDocument);
-        mEditorStack->setCurrentWidget(editor);
+    if (document) {
+        editor = mEditorForType.value(document->type());
+        mUndoGroup->setActiveStack(document->undoStack());
     }
 
-    if (!document)
-        mMapEditor->setCurrentMapDocument(nullptr);
-
-    if (document)
-        mUndoGroup->setActiveStack(document->undoStack());
+    if (editor) {
+        editor->setCurrentDocument(document);
+        mEditorStack->setCurrentWidget(editor->editorWidget());
+    } else {
+        mEditorStack->setCurrentWidget(mNoEditorWidget);
+    }
 
     emit currentDocumentChanged(document);
 }

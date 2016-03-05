@@ -42,6 +42,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "toolmanager.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -60,7 +61,7 @@ using namespace Tiled::Internal;
 TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     : QMainWindow(parent)
     , mTile(nullptr)
-    , mMapDocument(nullptr)
+    , mTilesetDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
@@ -147,20 +148,20 @@ TileCollisionEditor::~TileCollisionEditor()
     setTile(nullptr);
 }
 
-void TileCollisionEditor::setMapDocument(MapDocument *mapDocument)
+void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mTilesetDocument)
+        mTilesetDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
+    mTilesetDocument = tilesetDocument;
 
-    if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
+    if (mTilesetDocument) {
+        connect(mTilesetDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
                 SLOT(tileObjectGroupChanged(Tile*)));
-        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+        connect(mTilesetDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
                 SLOT(tilesetFileNameChanged(Tileset*)));
 
-        connect(mMapDocument, &MapDocument::currentObjectChanged,
+        connect(mTilesetDocument, &MapDocument::currentObjectChanged,
                 this, &TileCollisionEditor::currentObjectChanged);
     }
 }
@@ -205,7 +206,7 @@ void TileCollisionEditor::setTile(Tile *tile)
         mMapScene->setMapDocument(mapDocument);
 
         mToolManager->setMapDocument(mapDocument);
-        mPropertiesDock->setMapDocument(mapDocument);
+        mPropertiesDock->setDocument(mapDocument);
 
         mapDocument->setCurrentLayerIndex(1);
 
@@ -222,7 +223,7 @@ void TileCollisionEditor::setTile(Tile *tile)
         mPropertiesDock->setEnabled(false);
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
-        mPropertiesDock->setMapDocument(nullptr);
+        mPropertiesDock->setDocument(nullptr);
     }
 
     if (previousDocument)
@@ -252,9 +253,9 @@ void TileCollisionEditor::applyChanges()
     Layer *objectGroup = dummyDocument->map()->layerAt(1);
     ObjectGroup *clonedGroup = static_cast<ObjectGroup*>(objectGroup->clone());
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
-    undoStack->push(new ChangeTileObjectGroup(mMapDocument, mTile, clonedGroup));
+    undoStack->push(new ChangeTileObjectGroup(mTilesetDocument, mTile, clonedGroup));
     mApplyingChanges = false;
 }
 
@@ -307,14 +308,14 @@ void TileCollisionEditor::currentObjectChanged(Object *object)
 
 void TileCollisionEditor::undo()
 {
-    if (mMapDocument)
-        mMapDocument->undoStack()->undo();
+    if (mTilesetDocument)
+        mTilesetDocument->undoStack()->undo();
 }
 
 void TileCollisionEditor::redo()
 {
-    if (mMapDocument)
-        mMapDocument->undoStack()->redo();
+    if (mTilesetDocument)
+        mTilesetDocument->undoStack()->redo();
 }
 
 void TileCollisionEditor::cut()

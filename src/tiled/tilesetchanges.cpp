@@ -21,8 +21,8 @@
 
 #include "tilesetchanges.h"
 
-#include "mapdocument.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
 #include <QCoreApplication>
@@ -30,53 +30,49 @@
 namespace Tiled {
 namespace Internal {
 
-RenameTileset::RenameTileset(MapDocument *mapDocument,
-                             Tileset *tileset,
+RenameTileset::RenameTileset(TilesetDocument *tilesetDocument,
                              const QString &newName)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Tileset Name"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldName(tileset->name())
+    , mTilesetDocument(tilesetDocument)
+    , mOldName(tilesetDocument->tileset()->name())
     , mNewName(newName)
 {}
 
 void RenameTileset::undo()
 {
-    mMapDocument->setTilesetName(mTileset, mOldName);
+    mTilesetDocument->setTilesetName(mOldName);
 }
 
 void RenameTileset::redo()
 {
-    mMapDocument->setTilesetName(mTileset, mNewName);
+    mTilesetDocument->setTilesetName(mNewName);
 }
 
 
-ChangeTilesetTileOffset::ChangeTilesetTileOffset(MapDocument *mapDocument,
-                                                 Tileset *tileset,
+ChangeTilesetTileOffset::ChangeTilesetTileOffset(TilesetDocument *tilesetDocument,
                                                  QPoint tileOffset)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Drawing Offset"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldTileOffset(tileset->tileOffset())
+    , mTilesetDocument(tilesetDocument)
+    , mOldTileOffset(tilesetDocument->tileset()->tileOffset())
     , mNewTileOffset(tileOffset)
 {}
 
 void ChangeTilesetTileOffset::undo()
 {
-    mMapDocument->setTilesetTileOffset(mTileset, mOldTileOffset);
+    mTilesetDocument->setTilesetTileOffset(mOldTileOffset);
 }
 
 void ChangeTilesetTileOffset::redo()
 {
-    mMapDocument->setTilesetTileOffset(mTileset, mNewTileOffset);
+    mTilesetDocument->setTilesetTileOffset(mNewTileOffset);
 }
 
 bool ChangeTilesetTileOffset::mergeWith(const QUndoCommand *other)
 {
     const ChangeTilesetTileOffset *o = static_cast<const ChangeTilesetTileOffset*>(other);
-    if (!(mMapDocument == o->mMapDocument && mTileset == o->mTileset))
+    if (mTilesetDocument != o->mTilesetDocument)
         return false;
 
     mNewTileOffset = o->mNewTileOffset;
@@ -102,13 +98,12 @@ bool TilesetParameters::operator != (const TilesetParameters &other) const
            margin               != other.margin;
 }
 
-ChangeTilesetParameters::ChangeTilesetParameters(MapDocument *mapDocument,
-                                                 Tileset &tileset,
+ChangeTilesetParameters::ChangeTilesetParameters(TilesetDocument *tilesetDocument,
                                                  const TilesetParameters &parameters)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Edit Tileset"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldParameters(tileset)
+    , mTilesetDocument(tilesetDocument)
+    , mTileset(*tilesetDocument->tileset())
+    , mOldParameters(mTileset)
     , mNewParameters(parameters)
 {
 }
@@ -140,15 +135,15 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
     if (mTileset.loadImage())
         emit tilesetManager->tilesetChanged(&mTileset);
 
-    emit mMapDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&mTileset);
 }
 
-ChangeTilesetColumnCount::ChangeTilesetColumnCount(MapDocument *mapDocument,
-                                                   Tileset &tileset,
+
+ChangeTilesetColumnCount::ChangeTilesetColumnCount(TilesetDocument *tilesetDocument,
                                                    int columnCount)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Columns"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
+    , mTilesetDocument(tilesetDocument)
+    , mTileset(*tilesetDocument->tileset())
     , mColumnCount(columnCount)
 {
 }
@@ -159,7 +154,7 @@ void ChangeTilesetColumnCount::swap()
     mTileset.setColumnCount(mColumnCount);
     mColumnCount = oldColumnCount;
 
-    emit mMapDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&mTileset);
 }
 
 } // namespace Internal

@@ -173,9 +173,6 @@ public:
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
-    void setTilesetFileName(Tileset *tileset, const QString &fileName);
-    void setTilesetName(Tileset *tileset, const QString &name);
-    void setTilesetTileOffset(Tileset *tileset, const QPoint &tileOffset);
 
     void duplicateObjects(const QList<MapObject*> &objects);
     void removeObjects(const QList<MapObject*> &objects);
@@ -233,10 +230,7 @@ public:
 
     void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
-    Object *currentObject() const { return mCurrentObject; }
-    void setCurrentObject(Object *object);
-
-    QList<Object*> currentObjects() const;
+    QList<Object*> currentObjects() const override;
 
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
@@ -247,18 +241,11 @@ public:
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
     void emitTileLayerDrawMarginsChanged(TileLayer *layer);
-    void emitTilesetChanged(Tileset *tileset);
-
-    void emitTileProbabilityChanged(Tile *tile);
-    void emitTileTerrainChanged(const QList<Tile*> &tiles);
-    void emitTileObjectGroupChanged(Tile *tile);
-    void emitTileAnimationChanged(Tile *tile);
 
     void emitObjectGroupChanged(ObjectGroup *objectGroup);
     void emitImageLayerChanged(ImageLayer *imageLayer);
 
     void emitEditLayerNameRequested();
-    void emitEditCurrentObject();
 
 signals:
     /**
@@ -278,8 +265,6 @@ signals:
      */
     void selectedTilesChanged();
 
-    void currentObjectChanged(Object *object);
-
     /**
      * Emitted when the map size or its tile size changes.
      */
@@ -296,8 +281,6 @@ signals:
      * Applies to the current layer.
      */
     void editLayerNameRequested();
-
-    void editCurrentObject();
 
     /**
      * Emitted when the current layer index changes.
@@ -319,12 +302,6 @@ signals:
 
     void tileLayerDrawMarginsChanged(TileLayer *layer);
 
-    void tileImageSourceChanged(Tile *tile);
-    void tileTerrainChanged(const QList<Tile*> &tiles);
-    void tileProbabilityChanged(Tile *tile);
-    void tileObjectGroupChanged(Tile *tile);
-    void tileAnimationChanged(Tile *tile);
-
     void objectGroupChanged(ObjectGroup *objectGroup);
 
     void imageLayerChanged(ImageLayer *imageLayer);
@@ -335,10 +312,6 @@ signals:
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
-    void tilesetFileNameChanged(Tileset *tileset);
-    void tilesetNameChanged(Tileset *tileset);
-    void tilesetTileOffsetChanged(Tileset *tileset);
-    void tilesetChanged(Tileset *tileset);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
@@ -458,41 +431,6 @@ inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
 }
 
 /**
- * Emits the signal notifying about the terrain probability of a tile changing.
- */
-inline void MapDocument::emitTileProbabilityChanged(Tile *tile)
-{
-    emit tileProbabilityChanged(tile);
-}
-
-/**
- * Emits the signal notifying tileset models about changes to tile terrain
- * information. All the \a tiles need to be from the same tileset.
- */
-inline void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
-{
-    if (!tiles.isEmpty())
-        emit tileTerrainChanged(tiles);
-}
-
-/**
- * Emits the signal notifying the TileCollisionEditor about the object group
- * of a tile changing.
- */
-inline void MapDocument::emitTileObjectGroupChanged(Tile *tile)
-{
-    emit tileObjectGroupChanged(tile);
-}
-
-/**
- * Emits the signal notifying about the animation of a tile changing.
- */
-inline void MapDocument::emitTileAnimationChanged(Tile *tile)
-{
-    emit tileAnimationChanged(tile);
-}
-
-/**
  * Emits the objectGroupChanged signal, should be called when changing the
  * color or drawing order of an object group.
  */
@@ -516,15 +454,6 @@ inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
 inline void MapDocument::emitEditLayerNameRequested()
 {
     emit editLayerNameRequested();
-}
-
-/**
- * Emits the editCurrentObject signal, which makes the Properties window become
- * visible and take focus.
- */
-inline void MapDocument::emitEditCurrentObject()
-{
-    emit editCurrentObject();
 }
 
 } // namespace Internal

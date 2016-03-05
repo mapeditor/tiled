@@ -21,8 +21,8 @@
 
 #include "terrainview.h"
 
-#include "mapdocument.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "utils.h"
@@ -42,7 +42,7 @@ using namespace Tiled::Internal;
 TerrainView::TerrainView(QWidget *parent)
     : QTreeView(parent)
     , mZoomable(new Zoomable(this))
-    , mMapDocument(nullptr)
+    , mTilesetDocument(nullptr)
 {
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setRootIsDecorated(false);
@@ -53,9 +53,9 @@ TerrainView::TerrainView(QWidget *parent)
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }
 
-void TerrainView::setMapDocument(MapDocument *mapDocument)
+void TerrainView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    mMapDocument = mapDocument;
+    mTilesetDocument = tilesetDocument;
 }
 
 Terrain *TerrainView::terrainAt(const QModelIndex &index) const
@@ -87,17 +87,16 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
     Terrain *terrain = terrainAt(indexAt(event->pos()));
     if (!terrain)
         return;
+    if (!mTilesetDocument)
+        return;
 
-    const bool isExternal = terrain->tileset()->isExternal();
     QMenu menu;
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
 
     QAction *terrainProperties = menu.addAction(propIcon,
                                              tr("Terrain &Properties..."));
-    terrainProperties->setEnabled(!isExternal);
     Utils::setThemeIcon(terrainProperties, "document-properties");
-    menu.addSeparator();
 
     connect(terrainProperties, SIGNAL(triggered()),
             SLOT(editTerrainProperties()));
@@ -111,8 +110,8 @@ void TerrainView::editTerrainProperties()
     if (!terrain)
         return;
 
-    mMapDocument->setCurrentObject(terrain);
-    mMapDocument->emitEditCurrentObject();
+    mTilesetDocument->setCurrentObject(terrain);
+    emit mTilesetDocument->editCurrentObject();
 }
 
 void TerrainView::adjustScale()
