@@ -15,6 +15,7 @@ Project {
         "src/libtiled",
         "src/plugins",
         "src/qtpropertybrowser",
+        "src/qtsingleapplication",
         "src/terraingenerator",
         "src/tiled",
         "src/tmxrasterizer",
