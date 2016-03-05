@@ -834,7 +834,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation></translation>
+        <translation>Tile %1 için gömülü resim okuma hatası</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -871,7 +871,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-168"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation></translation>
+        <translation>Geçersiz (negatif) tile id %1</translation>
     </message>
 </context>
 <context>
@@ -1359,22 +1359,22 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/automappingconverter/convertercontrol.h" line="+33"/>
         <source>v0.8 and before</source>
-        <translation></translation>
+        <translation>v0.8 ve öncesi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation></translation>
+        <translation>v0.9 ve sonrası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unknown</source>
-        <translation></translation>
+        <translation>bilinmeyen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not a map</source>
-        <translation></translation>
+        <translation>harita değil</translation>
     </message>
 </context>
 <context>
@@ -1427,22 +1427,22 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4724"/>
         <source>Red</source>
-        <translation></translation>
+        <translation>Kırmızı</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation></translation>
+        <translation>Yeşil</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation></translation>
+        <translation>Mavi</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation></translation>
+        <translation>Alfa</translation>
     </message>
 </context>
 <context>
@@ -2270,83 +2270,83 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/commanddatamodel.cpp" line="+60"/>
         <source>Open in text editor</source>
-        <translation></translation>
+        <translation>Metin editörü ile aç</translation>
     </message>
     <message>
         <location line="+91"/>
         <location line="+69"/>
         <source>&lt;new command&gt;</source>
-        <translation></translation>
+        <translation>&lt;yeni komut&gt;</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Set a name for this command</source>
-        <translation></translation>
+        <translation>Bu komut için bir isim belirleyin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set the shell command to execute</source>
-        <translation></translation>
+        <translation>Çalıştırılacak kabuk komutunu belirleyin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation></translation>
+        <translation>Bu komutu komut listesinde gösterin veya gizleyin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add a new command</source>
-        <translation></translation>
+        <translation>Yeni komut ekle</translation>
     </message>
     <message>
         <location line="+107"/>
         <source>Name</source>
-        <translation></translation>
+        <translation>İsim</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command</source>
-        <translation></translation>
+        <translation>Komut</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation></translation>
+        <translation>Aktifleştir</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation></translation>
+        <translation>Yukarı Taşı</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation></translation>
+        <translation>Aşağı Taşı</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation></translation>
+        <translation>Çalıştır</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation></translation>
+        <translation>Terminal&apos;de Çalıştır</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation></translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation></translation>
+        <translation>%1 (kopya)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation></translation>
+        <translation>Yeni Komut</translation>
     </message>
 </context>
 <context>
@@ -3284,12 +3284,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation></translation>
+        <translation>Tileset resmi &apos;%1&apos; yüklenemedi.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation></translation>
+        <translation>Bu tileset resminde belirtilen tile ayarları ile uyumlu herhangi bir tile bulunamadı.</translation>
     </message>
     <message>
         <location line="+42"/>
