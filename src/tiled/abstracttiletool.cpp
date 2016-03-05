@@ -92,7 +92,6 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 
     if (mTilePosition != tilePos) {
         mTilePosition = tilePos;
-
         tilePositionChanged(tilePos);
         updateStatusInfo();
     }

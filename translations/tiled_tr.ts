@@ -3045,106 +3045,106 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
         <source>Ctrl+Shift+A</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Ctrl+Shift+D</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Ctrl+Shift+Up</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+Yukarı</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+Aşağı</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Select &amp;All</source>
-        <translation></translation>
+        <translation>Hepsini &amp;Seç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation></translation>
+        <translation>Seçimi İptal Et</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Crop to Selection</source>
-        <translation></translation>
+        <translation>&amp;Seçime Kırp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Tile Layer</source>
-        <translation></translation>
+        <translation>&amp;Tile Katmanı Ekle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation></translation>
+        <translation>&amp;Nesne Katmanı Ekle</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation></translation>
+        <translation>Ön&amp;ceki Katmanı Seç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation></translation>
+        <translation>So&amp;nraki Katmanı Seç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation></translation>
+        <translation>Katm&amp;anı Yükselt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation></translation>
+        <translation>Katmanı Altça&amp;lt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation></translation>
+        <translation>Diğer Tüm Katm&amp;anları Göster/Gizle</translation>
     </message>
     <message numerus="yes">
         <location line="+248"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicate Object</numerusform>
+            <numerusform>%n Nesneyi Kopyala</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remove Object</numerusform>
+            <numerusform>%n Nesneyi Sil</numerusform>
         </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation></translation>
+        <translation>Nesneleri Kopyala</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation></translation>
+        <translation>Nesneleri Sil</translation>
     </message>
     <message>
         <location line="-259"/>
         <source>&amp;Duplicate Layer</source>
-        <translation></translation>
+        <translation>Katmanı Çoğal&amp;t</translation>
     </message>
     <message>
         <location line="-80"/>
@@ -3159,22 +3159,22 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+76"/>
         <source>Add &amp;Image Layer</source>
-        <translation></translation>
+        <translation>Resim Katman&amp;ı Ekle</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation></translation>
+        <translation>Kat&amp;manı Alttakiyle Birleştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Layer</source>
-        <translation></translation>
+        <translation>Katmanı &amp;Sil</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Layer &amp;Properties...</source>
-        <translation></translation>
+        <translation>Katman &amp;Özellikleri..</translation>
     </message>
 </context>
 <context>
