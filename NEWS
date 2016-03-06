@@ -1,3 +1,10 @@
+0.15.2 (6 March 2016)
+* Added Turkish translation (by Nuri Uzunoğlu)
+* Fixed hiding of object labels when deleting an object layer
+* Fixed updating of object label colors when changing object types
+* TMX: Added image size attributes to image layer images
+* Updated Brazilian Portuguese translation
+
 0.15.1 (30 January 2016)
 * Fixed adding/removing object name labels when set to always visible
 * Fixed a problem with 'Execute in Terminal' on OS X
@@ -28,7 +35,7 @@
 * Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations
 
 0.14.2 (12 October 2015)
-* Added Polish translation
+* Added Polish translation (by Tomasz Kubiak)
 * Fixed layer offsets missing in the Lua export
 * Fixed JSON tileset format missing in 'Add External Tileset' action
 * Fixed language selection entries for Portuguese
