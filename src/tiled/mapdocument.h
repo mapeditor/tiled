@@ -74,29 +74,9 @@ public:
      */
     MapDocument(Map *map, const QString &fileName = QString());
 
-    /**
-     * Destructor.
-     */
     ~MapDocument();
 
-    /**
-     * Saves the map to its current file name. Returns whether or not the file
-     * was saved successfully. If not, <i>error</i> will be set to the error
-     * message if it is not 0.
-     */
-    bool save(QString *error = nullptr);
-
-    /**
-     * Saves the map to the file at \a fileName. Returns whether or not the
-     * file was saved successfully. If not, <i>error</i> will be set to the
-     * error message if it is not 0.
-     *
-     * If the save was successful, the file name of this document will be set
-     * to \a fileName.
-     *
-     * The map format will be the same as this map was opened with.
-     */
-    bool save(const QString &fileName, QString *error = nullptr);
+    bool save(const QString &fileName, QString *error = nullptr) override;
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
@@ -112,7 +92,7 @@ public:
     MapFormat *readerFormat() const;
     void setReaderFormat(MapFormat *format);
 
-    MapFormat *writerFormat() const;
+    FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
 
     MapFormat *exportFormat() const;

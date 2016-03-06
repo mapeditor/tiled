@@ -121,11 +121,6 @@ MapDocument::~MapDocument()
     delete mMap;
 }
 
-bool MapDocument::save(QString *error)
-{
-    return save(fileName(), error);
-}
-
 bool MapDocument::save(const QString &fileName, QString *error)
 {
     MapFormat *mapFormat = mWriterFormat;
@@ -180,7 +175,7 @@ void MapDocument::setReaderFormat(MapFormat *format)
     mReaderFormat = format;
 }
 
-MapFormat *MapDocument::writerFormat() const
+FileFormat *MapDocument::writerFormat() const
 {
     return mWriterFormat;
 }

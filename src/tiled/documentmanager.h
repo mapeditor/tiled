@@ -112,7 +112,7 @@ public:
     void switchToDocument(Document *document);
 
     /**
-     * Adds the new or opened \a mapDocument to the document manager.
+     * Adds the new or opened \a document to the document manager.
      */
     void addDocument(Document *document);
 
@@ -177,7 +177,7 @@ signals:
     /**
      * Emitted when the current displayed map document changed.
      */
-    void currentDocumentChanged(Document *mapDocument);
+    void currentDocumentChanged(Document *document);
 
     /**
      * Emitted when the user requested the document at \a index to be closed.

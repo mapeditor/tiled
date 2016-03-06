@@ -170,14 +170,15 @@ class FormatHelper
 {
 public:
     FormatHelper(FileFormat::Capabilities capabilities,
-                 QString initialFilter)
+                 QString initialFilter = QString())
         : mFilter(std::move(initialFilter))
     {
         PluginManager::each<Format>([this,capabilities](Format *format) {
             if (format->hasCapabilities(capabilities)) {
                 const QString nameFilter = format->nameFilter();
 
-                mFilter += QLatin1String(";;");
+                if (!mFilter.isEmpty())
+                    mFilter += QLatin1String(";;");
                 mFilter += nameFilter;
 
                 mFormats.append(format);

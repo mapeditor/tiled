@@ -36,6 +36,7 @@ namespace Internal {
 class TmxMapFormat : public MapFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::MapFormat)
 
 public:
     TmxMapFormat(QObject *parent = nullptr);
@@ -78,6 +79,7 @@ private:
 class TsxTilesetFormat : public TilesetFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::TilesetFormat)
 
 public:
     TsxTilesetFormat(QObject *parent = nullptr);

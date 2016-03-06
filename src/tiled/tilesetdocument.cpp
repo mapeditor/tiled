@@ -20,6 +20,11 @@
 
 #include "tilesetdocument.h"
 
+#include "tmxmapformat.h"
+
+#include <QFileInfo>
+#include <QUndoStack>
+
 namespace Tiled {
 namespace Internal {
 
@@ -31,6 +36,48 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
 
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
+}
+
+bool TilesetDocument::save(const QString &fileName, QString *error)
+{
+    TilesetFormat *tilesetFormat = mWriterFormat;
+
+    TsxTilesetFormat tsxTilesetFormat;
+    if (!tilesetFormat)
+        tilesetFormat = &tsxTilesetFormat;
+
+    if (!tilesetFormat->write(*tileset(), fileName)) {
+        if (error)
+            *error = tilesetFormat->errorString();
+        return false;
+    }
+
+    undoStack()->setClean();
+    setFileName(fileName);
+    mLastSaved = QFileInfo(fileName).lastModified();
+
+    emit saved();
+    return true;
+}
+
+TilesetFormat *TilesetDocument::readerFormat() const
+{
+    return mReaderFormat;
+}
+
+void TilesetDocument::setReaderFormat(TilesetFormat *format)
+{
+    mReaderFormat = format;
+}
+
+FileFormat *TilesetDocument::writerFormat() const
+{
+    return mWriterFormat;
+}
+
+void TilesetDocument::setWriterFormat(TilesetFormat *format)
+{
+    mWriterFormat = format;
 }
 
 void TilesetDocument::addMapDocument(MapDocument *mapDocument)

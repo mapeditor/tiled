@@ -25,8 +25,12 @@
 #include "tileset.h"
 
 #include <QList>
+#include <QPointer>
 
 namespace Tiled {
+
+class TilesetFormat;
+
 namespace Internal {
 
 class MapDocument;
@@ -40,6 +44,14 @@ class TilesetDocument : public Document
 
 public:
     TilesetDocument(const SharedTileset &tileset, const QString &fileName = QString());
+
+    bool save(const QString &fileName, QString *error = nullptr) override;
+
+    TilesetFormat *readerFormat() const;
+    void setReaderFormat(TilesetFormat *format);
+
+    FileFormat *writerFormat() const override;
+    void setWriterFormat(TilesetFormat *format);
 
     const SharedTileset &tileset() const;
 
@@ -92,6 +104,9 @@ signals:
 private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
+
+    QPointer<TilesetFormat> mReaderFormat;
+    QPointer<TilesetFormat> mWriterFormat;
 };
 
 

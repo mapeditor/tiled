@@ -61,7 +61,7 @@ TilesetManager::~TilesetManager()
 {
     // Since all MapDocuments should be deleted first, we assert that there are
     // no remaining tileset references.
-    Q_ASSERT(mTilesets.size() == 0);
+    Q_ASSERT(mTilesets.isEmpty());
 }
 
 TilesetManager *TilesetManager::instance()

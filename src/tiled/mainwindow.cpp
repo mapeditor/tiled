@@ -568,9 +568,9 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     QString error;
     Document *document = nullptr;
 
-    if (MapFormat *mapFormat = dynamic_cast<MapFormat*>(fileFormat)) {
+    if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
         document = MapDocument::load(fileName, mapFormat, &error);
-    } else if (TilesetFormat *tilesetFormat = dynamic_cast<TilesetFormat*>(fileFormat)) {
+    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
         SharedTileset tileset = tilesetFormat->read(fileName);
         if (tileset.isNull())
             error = tilesetFormat->errorString();
@@ -655,15 +655,16 @@ void MainWindow::openFile()
 
 bool MainWindow::saveFile(const QString &fileName)
 {
-    if (!mMapDocument)
+    Document *document = mDocumentManager->currentDocument();
+    if (!document)
         return false;
 
     if (fileName.isEmpty())
         return false;
 
     QString error;
-    if (!mMapDocument->save(fileName, &error)) {
-        QMessageBox::critical(this, tr("Error Saving Map"), error);
+    if (!document->save(fileName, &error)) {
+        QMessageBox::critical(this, tr("Error Saving File"), error);
         return false;
     }
 
@@ -673,10 +674,11 @@ bool MainWindow::saveFile(const QString &fileName)
 
 bool MainWindow::saveFile()
 {
-    if (!mMapDocument)
+    Document *document = mDocumentManager->currentDocument();
+    if (!document)
         return false;
 
-    const QString currentFileName = mMapDocument->fileName();
+    const QString currentFileName = document->fileName();
 
     if (currentFileName.isEmpty())
         return saveFileAs();
@@ -686,37 +688,58 @@ bool MainWindow::saveFile()
 
 bool MainWindow::saveFileAs()
 {
-    const QString tmxFilter = TmxMapFormat().nameFilter();
-
-    FormatHelper<MapFormat> helper(MapFormat::ReadWrite, tmxFilter);
-
-    QString selectedFilter;
-    if (mMapDocument) {
-        if (MapFormat *format = mMapDocument->writerFormat())
-            selectedFilter = format->nameFilter();
-    }
-
-    if (selectedFilter.isEmpty())
-        selectedFilter = tmxFilter;
-
-    QString suggestedFileName;
-    if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
-        suggestedFileName = mMapDocument->fileName();
-    } else {
-        suggestedFileName = fileDialogStartLocation();
-        suggestedFileName += QLatin1Char('/');
-        suggestedFileName += tr("untitled.tmx");
-    }
-
-    const QString fileName =
-            QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
-                                         helper.filter(), &selectedFilter);
-
-    if (fileName.isEmpty())
+    Document *document = mDocumentManager->currentDocument();
+    if (!document)
         return false;
 
-    MapFormat *format = helper.formatByNameFilter(selectedFilter);
-    mMapDocument->setWriterFormat(format);
+    QString filter;
+    QString selectedFilter;
+    QString fileName = document->fileName();
+
+    if (FileFormat *format = document->writerFormat())
+        selectedFilter = format->nameFilter();
+
+    auto getSaveFileName = [&,this](const QString &defaultFileName) {
+        if (fileName.isEmpty()) {
+            fileName = fileDialogStartLocation();
+            fileName += QLatin1Char('/');
+            fileName += defaultFileName;
+        }
+
+        return QFileDialog::getSaveFileName(this, QString(),
+                                            fileName,
+                                            filter,
+                                            &selectedFilter);
+    };
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TmxMapFormat().nameFilter();
+
+        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(tr("untitled.tmx"));
+        if (fileName.isEmpty())
+            return false;
+
+        MapFormat *format = helper.formatByNameFilter(selectedFilter);
+        mapDocument->setWriterFormat(format);
+
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TsxTilesetFormat().nameFilter();
+
+        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(tr("untitled.tsx"));
+        if (fileName.isEmpty())
+            return false;
+
+        TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
+        tilesetDocument->setWriterFormat(format);
+    }
 
     return saveFile(fileName);
 }
@@ -734,10 +757,9 @@ void MainWindow::saveAll()
             mDocumentManager->switchToDocument(document);
             if (!saveFileAs())
                 return;
-            // todo: move the 'save' function to Document (virtual?)
-        } else if (false) { // !document->save(fileName, &error)) {
+        } else if (!document->save(fileName, &error)) {
             mDocumentManager->switchToDocument(document);
-            QMessageBox::critical(this, tr("Error Saving Map"), error);
+            QMessageBox::critical(this, tr("Error Saving File"), error);
             return;
         }
 
@@ -863,11 +885,6 @@ void MainWindow::exportAs()
         }
     }
 
-    // Also support exporting to the TMX map format when requested
-    TmxMapFormat tmxMapFormat;
-    if (!chosenFormat && tmxMapFormat.supportsFile(fileName))
-        chosenFormat = &tmxMapFormat;
-
     if (!chosenFormat) {
         QMessageBox::critical(this, tr("Unknown File Format"),
                               tr("The given filename does not have any known "
@@ -918,8 +935,7 @@ void MainWindow::exportAs()
     } else {
         // Remember export parameters, so subsequent exports can be done faster
         mMapDocument->setLastExportFileName(fileName);
-        if (chosenFormat != &tmxMapFormat)
-            mMapDocument->setExportFormat(chosenFormat);
+        mMapDocument->setExportFormat(chosenFormat);
     }
 }
 
@@ -1357,7 +1373,7 @@ void MainWindow::updateRecentFiles()
 
 void MainWindow::updateActions()
 {
-    Map *map = nullptr;
+    Document *document = mDocumentManager->currentDocument();
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
@@ -1365,7 +1381,6 @@ void MainWindow::updateActions()
     if (mMapDocument) {
         Layer *currentLayer = mMapDocument->currentLayer();
 
-        map = mMapDocument->map();
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
@@ -1374,27 +1389,30 @@ void MainWindow::updateActions()
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
             || objectsSelected;
 
-    mUi->actionSave->setEnabled(map);
-    mUi->actionSaveAs->setEnabled(map);
-    mUi->actionSaveAll->setEnabled(map);
-    mUi->actionExportAsImage->setEnabled(map);
-    mUi->actionExport->setEnabled(map);
-    mUi->actionExportAs->setEnabled(map);
-    mUi->actionReload->setEnabled(map);
-    mUi->actionClose->setEnabled(map);
-    mUi->actionCloseAll->setEnabled(map);
+    mUi->actionSave->setEnabled(document);
+    mUi->actionSaveAs->setEnabled(document);
+    mUi->actionSaveAll->setEnabled(document);
+
+    mUi->actionExportAsImage->setEnabled(mMapDocument);
+    mUi->actionExport->setEnabled(mMapDocument);
+    mUi->actionExportAs->setEnabled(mMapDocument);
+    mUi->actionReload->setEnabled(mMapDocument);
+    mUi->actionClose->setEnabled(document);
+    mUi->actionCloseAll->setEnabled(document);
+
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
     mUi->actionPaste->setEnabled(ClipboardManager::instance()->hasMap());
     mUi->actionDelete->setEnabled(canCopy);
-//    mUi->actionNewTileset->setEnabled(map);
-    mUi->actionAddExternalTileset->setEnabled(map);
-    mUi->actionResizeMap->setEnabled(map);
-    mUi->actionOffsetMap->setEnabled(map);
-    mUi->actionMapProperties->setEnabled(map);
-    mUi->actionAutoMap->setEnabled(map);
 
-//    mCommandButton->setEnabled(map);
+//    mUi->actionNewTileset->setEnabled(mMapDocument);
+    mUi->actionAddExternalTileset->setEnabled(mMapDocument);
+    mUi->actionResizeMap->setEnabled(mMapDocument);
+    mUi->actionOffsetMap->setEnabled(mMapDocument);
+    mUi->actionMapProperties->setEnabled(mMapDocument);
+    mUi->actionAutoMap->setEnabled(mMapDocument);
+
+//    mCommandButton->setEnabled(mMapDocument);
 
     updateZoomLabel(); // for the zoom actions
 }

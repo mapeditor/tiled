@@ -83,6 +83,9 @@ MainToolBar::MainToolBar(QWidget *parent)
     connect(mOpenAction, SIGNAL(triggered(bool)), documentManager, SLOT(openFile()));
     connect(mSaveAction, SIGNAL(triggered(bool)), documentManager, SLOT(saveFile()));
 
+    connect(documentManager, &DocumentManager::currentDocumentChanged,
+            this, &MainToolBar::currentDocumentChanged);
+
     connect(this, &MainToolBar::orientationChanged,
             this, &MainToolBar::onOrientationChanged);
 
@@ -105,6 +108,11 @@ void MainToolBar::onOrientationChanged(Qt::Orientation orientation)
 {
     setToolButtonStyle(orientation == Qt::Horizontal ? Qt::ToolButtonFollowStyle :
                                                        Qt::ToolButtonIconOnly);
+}
+
+void MainToolBar::currentDocumentChanged(Document *document)
+{
+    mSaveAction->setEnabled(document);
 }
 
 void MainToolBar::retranslateUi()

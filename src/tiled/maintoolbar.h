@@ -26,6 +26,8 @@
 namespace Tiled {
 namespace Internal {
 
+class Document;
+
 class MainToolBar : public QToolBar
 {
 public:
@@ -36,6 +38,8 @@ protected:
 
 private slots:
     void onOrientationChanged(Qt::Orientation orientation);
+
+    void currentDocumentChanged(Document *document);
 
 private:
     void retranslateUi();

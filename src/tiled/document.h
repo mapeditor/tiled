@@ -32,6 +32,7 @@ class QUndoStack;
 
 namespace Tiled {
 
+class FileFormat;
 class Object;
 
 namespace Internal {
@@ -61,6 +62,20 @@ public:
     QString fileName() const;
 
     virtual QString displayName() const;
+
+    /**
+     * Saves the document to the file at \a fileName. Returns whether or not
+     * the file was saved successfully. If not, <i>error</i> will be set to the
+     * error message if it is not 0.
+     *
+     * If the save was successful, the file name of this document will be set
+     * to \a fileName.
+     *
+     * The file format will be the same as this map was opened with.
+     */
+    virtual bool save(const QString &fileName, QString *error = nullptr) = 0;
+
+    virtual FileFormat *writerFormat() const = 0;
 
     QDateTime lastSaved() const { return mLastSaved; }
 
