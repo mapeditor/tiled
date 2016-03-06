@@ -106,11 +106,13 @@ SOURCES += aboutdialog.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
+    editor.cpp \
     editpolygontool.cpp \
     editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
+    filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
@@ -122,9 +124,11 @@ SOURCES += aboutdialog.cpp \
     layeroffsettool.cpp \
     magicwandtool.cpp \
     main.cpp \
+    maintoolbar.cpp \
     mainwindow.cpp \
     mapdocumentactionhandler.cpp \
     mapdocument.cpp \
+    mapeditor.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
@@ -185,6 +189,7 @@ SOURCES += aboutdialog.cpp \
     tilesetchanges.cpp \
     tilesetdock.cpp \
     tilesetdocument.cpp \
+    tileseteditor.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
     tilesetview.cpp \
@@ -253,11 +258,13 @@ HEADERS += aboutdialog.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \
+    editor.h \
     editpolygontool.h \
     editterraindialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
+    filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
@@ -269,9 +276,11 @@ HEADERS += aboutdialog.h \
     layeroffsettool.h \
     macsupport.h \
     magicwandtool.h \
+    maintoolbar.h \
     mainwindow.h \
     mapdocumentactionhandler.h \
     mapdocument.h \
+    mapeditor.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \
@@ -335,6 +344,7 @@ HEADERS += aboutdialog.h \
     tilesetchanges.h \
     tilesetdock.h \
     tilesetdocument.h \
+    tileseteditor.h \
     tilesetmodel.h \
     tilesetparametersedit.h \
     tilesetview.h \
