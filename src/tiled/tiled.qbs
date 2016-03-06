@@ -9,6 +9,7 @@ QtGuiApplication {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
+    Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 
     property string sparkleDir: {

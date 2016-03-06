@@ -86,6 +86,7 @@
             <File Id="qt_conf" Source="$(var.RootDir)\dist\win\qt.conf" />
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
+            <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
             <File Id="Qt5OpenGL_dll" Source="$(var.QtDir)\bin\Qt5OpenGL.dll"/>
             <File Id="icuin54_dll" Source="$(var.QtDir)\bin\icuin54.dll"/>

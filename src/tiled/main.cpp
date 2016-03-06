@@ -36,6 +36,8 @@
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QtPlugin>
 #include <QStyle>
 #include <QStyleFactory>
@@ -59,6 +61,7 @@ public:
     bool showedVersion;
     bool disableOpenGL;
     bool exportMap;
+    bool newInstance;
 
 private:
     void showVersion();
@@ -66,6 +69,7 @@ private:
     void setDisableOpenGL();
     void setExportMap();
     void showExportFormats();
+    void startNewInstance();
 
     // Convenience wrapper around registerOption
     template <void (CommandLineHandler::*memberFunction)()>
@@ -88,6 +92,7 @@ CommandLineHandler::CommandLineHandler()
     , showedVersion(false)
     , disableOpenGL(false)
     , exportMap(false)
+    , newInstance(false)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -113,6 +118,11 @@ CommandLineHandler::CommandLineHandler()
                 QChar(),
                 QLatin1String("--export-formats"),
                 tr("Print a list of supported export formats"));
+
+    option<&CommandLineHandler::startNewInstance>(
+                QChar(),
+                QLatin1String("--new-instance"),
+                tr("Start a new instance, even if an instance is already running"));
 }
 
 void CommandLineHandler::showVersion()
@@ -152,6 +162,11 @@ void CommandLineHandler::showExportFormats()
     }
 
     quit = true;
+}
+
+void CommandLineHandler::startNewInstance()
+{
+    newInstance = true;
 }
 
 int main(int argc, char *argv[])
@@ -277,7 +292,11 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
-
+    if (!commandLine.newInstance) {
+        QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
+        if (a.sendMessage(QLatin1String(doc.toJson())))
+            return 0;
+    }
     QScopedPointer<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
 #if defined(Q_OS_MAC)
@@ -289,6 +308,8 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+
+    a.setActivationWindow(&w);
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
