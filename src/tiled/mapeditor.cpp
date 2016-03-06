@@ -221,7 +221,6 @@ MapEditor::MapEditor(QObject *parent)
     , mViewWithTool(nullptr)
     , mTileStampManager(new TileStampManager(mToolManager, this))
 {
-    mMainWindow->setWindowFlags(mMainWindow->windowFlags() & ~Qt::Window);
     mMainWindow->setCentralWidget(mWidgetStack);
 
     mToolsToolBar = new QToolBar(mMainWindow);

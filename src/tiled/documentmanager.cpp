@@ -67,7 +67,7 @@ void DocumentManager::deleteInstance()
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mWidget(new QWidget)
-    , mNoEditorWidget(new QWidget)
+    , mNoEditorWidget(new QWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
