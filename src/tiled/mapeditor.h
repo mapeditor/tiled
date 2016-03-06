@@ -137,7 +137,8 @@ private:
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
 
-    QToolBar *mToolBar;
+    QToolBar *mMainToolBar;
+    QToolBar *mToolsToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;

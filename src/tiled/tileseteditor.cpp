@@ -20,9 +20,10 @@
 
 #include "tileseteditor.h"
 
+#include "maintoolbar.h"
+#include "propertiesdock.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
-#include "propertiesdock.h"
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
@@ -43,6 +44,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mCurrentTilesetDocument(nullptr)
 {
     mMainWindow->setCentralWidget(mWidgetStack);
+    mMainWindow->addToolBar(new MainToolBar(mMainWindow));
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
 }
 

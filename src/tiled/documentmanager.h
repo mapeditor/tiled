@@ -69,8 +69,6 @@ public:
 
     void setEditor(Document::DocumentType documentType, Editor *editor);
 
-    void openFile(const QString &path);
-
     /**
      * Returns the undo group that combines the undo stacks of all opened map
      * documents.
@@ -172,7 +170,9 @@ public:
     { centerViewOn(pos.x(), pos.y()); }
 
 signals:
+    void fileOpenRequested();
     void fileOpenRequested(const QString &path);
+    void fileSaveRequested();
 
     /**
      * Emitted when the current displayed map document changed.
@@ -197,6 +197,10 @@ signals:
 public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
+
+    void openFile();
+    void openFile(const QString &path);
+    void saveFile();
 
 private slots:
     void currentIndexChanged();

@@ -131,32 +131,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setWindowIcon(tiledIcon);
 #endif
 
-    // Add larger icon versions for actions used in the tool bar
-//    QIcon newIcon = mUi->actionNew->icon();
-//    QIcon openIcon = mUi->actionOpen->icon();
-//    QIcon saveIcon = mUi->actionSave->icon();
-//    newIcon.addFile(QLatin1String(":images/24x24/document-new.png"));
-//    openIcon.addFile(QLatin1String(":images/24x24/document-open.png"));
-//    saveIcon.addFile(QLatin1String(":images/24x24/document-save.png"));
-//    redoIcon.addFile(QLatin1String(":images/24x24/edit-redo.png"));
-//    undoIcon.addFile(QLatin1String(":images/24x24/edit-undo.png"));
-//    mUi->actionNew->setIcon(newIcon);
-//    mUi->actionOpen->setIcon(openIcon);
-//    mUi->actionSave->setIcon(saveIcon);
-
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
-    mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
-//    mUi->actionNew->setPriority(QAction::LowPriority);
-#if QT_VERSION >= 0x050500
-    undoAction->setPriority(QAction::LowPriority);
-#endif
-    redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
-    redoAction->setIconText(tr("Redo"));
-    undoAction->setIconText(tr("Undo"));
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
@@ -241,23 +220,21 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuEdit->insertAction(mUi->actionPreferences,
                                 mActionHandler->actionSelectNone());
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
-    mUi->mainToolBar->addAction(undoAction);
-    mUi->mainToolBar->addAction(redoAction);
 
-    mUi->mainToolBar->addSeparator();
-
-    mCommandButton = new CommandButton(this);
-    mUi->mainToolBar->addWidget(mCommandButton);
+    // todo: Turn into Command menu
+//    mCommandButton = new CommandButton(this);
+//    mUi->mainToolBar->addWidget(mCommandButton);
 
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
 
-    mRandomButton = new QToolButton(this);
-    mRandomButton->setToolTip(tr("Random Mode"));
-    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
-    mRandomButton->setCheckable(true);
-    mRandomButton->setShortcut(QKeySequence(tr("D")));
-    mUi->mainToolBar->addWidget(mRandomButton);
+    // todo: Move into Tools menu
+//    mRandomButton = new QToolButton(this);
+//    mRandomButton->setToolTip(tr("Random Mode"));
+//    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
+//    mRandomButton->setCheckable(true);
+//    mRandomButton->setShortcut(QKeySequence(tr("D")));
+//    mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
@@ -423,6 +400,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mDocumentManager, SIGNAL(fileOpenRequested(QString)),
             this, SLOT(openFile(QString)));
+    connect(mDocumentManager, SIGNAL(fileOpenRequested()),
+            this, SLOT(openFile()));
+    connect(mDocumentManager, SIGNAL(fileSaveRequested()),
+            this, SLOT(saveFile()));
     connect(mDocumentManager, &DocumentManager::currentDocumentChanged,
             this, &MainWindow::mapDocumentChanged);
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
@@ -1413,7 +1394,7 @@ void MainWindow::updateActions()
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAutoMap->setEnabled(map);
 
-    mCommandButton->setEnabled(map);
+//    mCommandButton->setEnabled(map);
 
     updateZoomLabel(); // for the zoom actions
 }
@@ -1498,7 +1479,7 @@ void MainWindow::retranslateUi()
 {
     updateWindowTitle();
 
-    mRandomButton->setToolTip(tr("Random Mode"));
+//    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));

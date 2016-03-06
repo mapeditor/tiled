@@ -181,6 +181,8 @@ QtGuiApplication {
         "magicwandtool.h",
         "magicwandtool.cpp",
         "main.cpp",
+        "maintoolbar.cpp",
+        "maintoolbar.h",
         "mainwindow.cpp",
         "mainwindow.h",
         "mainwindow.ui",

@@ -55,6 +55,7 @@
 #include "zoomable.h"
 #include "layermodel.h"
 #include "preferences.h"
+#include "maintoolbar.h"
 
 #include <QShortcut>
 #include <QDialogButtonBox>
@@ -214,6 +215,7 @@ MapEditor::MapEditor(QObject *parent)
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
+    , mMainToolBar(new MainToolBar(mMainWindow))
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
@@ -222,8 +224,8 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->setWindowFlags(mMainWindow->windowFlags() & ~Qt::Window);
     mMainWindow->setCentralWidget(mWidgetStack);
 
-    mToolBar = new QToolBar(mMainWindow);
-    mToolBar->setObjectName(QLatin1String("toolsToolBar"));
+    mToolsToolBar = new QToolBar(mMainWindow);
+    mToolsToolBar->setObjectName(QLatin1String("toolsToolBar"));
 
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
@@ -234,25 +236,26 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
-    mToolBar->addAction(mToolManager->registerTool(mStampBrush));
-    mToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
-    mToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
-    mToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
-    mToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
-    mToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
-    mToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
-    mToolBar->addSeparator();
-    mToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    mToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
-    mToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
-    mToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
-    mToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    mToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
-    mToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
-    mToolBar->addSeparator();
-    mToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
+    mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
+    mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
+    mToolsToolBar->addSeparator();
+    mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
+    mToolsToolBar->addSeparator();
+    mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
-    mMainWindow->addToolBar(mToolBar);
+    mMainWindow->addToolBar(mMainToolBar);
+    mMainWindow->addToolBar(mToolsToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
     TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
@@ -294,11 +297,15 @@ MapEditor::MapEditor(QObject *parent)
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
 
-    // todo: connect these signals differently
-    new QShortcut(tr("X"), mMainWindow, SLOT(flipHorizontally()));
-    new QShortcut(tr("Y"), mMainWindow, SLOT(flipVertically()));
-    new QShortcut(tr("Z"), mMainWindow, SLOT(rotateRight()));
-    new QShortcut(tr("Shift+Z"), mMainWindow, SLOT(rotateLeft()));
+    QShortcut *flipHorizontallyShortcut = new QShortcut(tr("X"), mMainWindow);
+    QShortcut *flipVerticallyShortcut = new QShortcut(tr("Y"), mMainWindow);
+    QShortcut *rotateRightShortcut = new QShortcut(tr("Z"), mMainWindow);
+    QShortcut *rotateLeftShortcut = new QShortcut(tr("Shift+Z"), mMainWindow);
+
+    connect(flipHorizontallyShortcut, &QShortcut::activated, this, &MapEditor::flipHorizontally);
+    connect(flipVerticallyShortcut, &QShortcut::activated, this, &MapEditor::flipVertically);
+    connect(rotateRightShortcut, &QShortcut::activated, this, &MapEditor::rotateRight);
+    connect(rotateLeftShortcut, &QShortcut::activated, this, &MapEditor::rotateLeft);
 
     setupQuickStamps();
     retranslateUi();
@@ -324,8 +331,8 @@ void MapEditor::addDocument(Document *document)
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
-    mWidgetStack->addWidget(container);
     mWidgetForMap.insert(mapDocument, container);
+    mWidgetStack->addWidget(container);
 
     // restore the previous state for this map
     QVariantMap mapState = mMapStates.value(document->fileName()).toMap();
@@ -546,7 +553,7 @@ void MapEditor::setStamp(const TileStamp &stamp)
     if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
         mToolManager->selectTool(mStampBrush);
 
-//    mTilesetDock->selectTilesInStamp(stamp);
+    mTilesetDock->selectTilesInStamp(stamp);
 }
 
 /**
@@ -672,7 +679,7 @@ void MapEditor::setupQuickStamps()
 
 void MapEditor::retranslateUi()
 {
-    mToolBar->setWindowTitle(tr("Tools"));
+    mToolsToolBar->setWindowTitle(tr("Tools"));
 }
 
 } // namespace Internal

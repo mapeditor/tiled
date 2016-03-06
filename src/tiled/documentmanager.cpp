@@ -124,11 +124,6 @@ void DocumentManager::setEditor(Document::DocumentType documentType, Editor *edi
         mMapEditor = mapEditor;
 }
 
-void DocumentManager::openFile(const QString &path)
-{
-    emit fileOpenRequested(path);
-}
-
 Document *DocumentManager::currentDocument() const
 {
     const int index = mTabBar->currentIndex();
@@ -210,6 +205,21 @@ void DocumentManager::switchToRightDocument()
 
     const int currentIndex = mTabBar->currentIndex();
     switchToDocument((currentIndex + 1) % tabCount);
+}
+
+void DocumentManager::openFile()
+{
+    emit fileOpenRequested();
+}
+
+void DocumentManager::openFile(const QString &path)
+{
+    emit fileOpenRequested(path);
+}
+
+void DocumentManager::saveFile()
+{
+    emit fileSaveRequested();
 }
 
 void DocumentManager::addDocument(Document *document)
