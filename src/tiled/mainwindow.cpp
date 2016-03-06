@@ -81,7 +81,6 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegExp>
-#include <QScrollBar>
 #include <QSessionManager>
 #include <QShortcut>
 #include <QTextStream>
@@ -636,46 +635,8 @@ void MainWindow::openLastFiles()
         mSettings.remove(QLatin1String("recentOpenedFiles"));
     }
 
-    // todo: move this code to MapEditHost
-    /*
-    QStringList mapScales = mSettings.value(
-                QLatin1String("mapScale")).toStringList();
-    QStringList scrollX = mSettings.value(
-                QLatin1String("scrollX")).toStringList();
-    QStringList scrollY = mSettings.value(
-                QLatin1String("scrollY")).toStringList();
-    QStringList selectedLayer = mSettings.value(
-                QLatin1String("selectedLayer")).toStringList();
-
-    for (int i = 0; i < lastOpenFiles.size(); i++) {
-        if (!(i < mapScales.size()))
-            continue;
-        if (!(i < scrollX.size()))
-            continue;
-        if (!(i < scrollY.size()))
-            continue;
-        if (!(i < selectedLayer.size()))
-            continue;
-
-        if (openFile(lastOpenFiles.at(i))) {
-            MapView *mapView = mDocumentManager->currentMapView();
-
-            // Restore camera to the previous position
-            qreal scale = mapScales.at(i).toDouble();
-            if (scale > 0)
-                mapView->zoomable()->setScale(scale);
-
-            const int hor = scrollX.at(i).toInt();
-            const int ver = scrollY.at(i).toInt();
-            mapView->horizontalScrollBar()->setSliderPosition(hor);
-            mapView->verticalScrollBar()->setSliderPosition(ver);
-
-            int layer = selectedLayer.at(i).toInt();
-            if (layer > 0 && layer < mMapDocument->map()->layerCount())
-                mMapDocument->setCurrentLayerIndex(layer);
-        }
-    }
-    */
+    for (int i = 0; i < lastOpenFiles.size(); i++)
+        openFile(lastOpenFiles.at(i));
 
     QString lastActiveDocument =
             mSettings.value(QLatin1String("lastActive")).toString();
@@ -1485,33 +1446,13 @@ void MainWindow::writeSettings()
     if (Document *document = mDocumentManager->currentDocument())
         mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 
-    // todo: move this to the MapEditHost
-    /*
     QStringList fileList;
-    QStringList mapScales;
-    QStringList scrollX;
-    QStringList scrollY;
-    QStringList selectedLayer;
     for (int i = 0; i < mDocumentManager->documentCount(); i++) {
-        MapDocument *document = mDocumentManager->documents().at(i);
-        MapView *mapView = mDocumentManager->viewForDocument(document);
+        Document *document = mDocumentManager->documents().at(i);
         fileList.append(document->fileName());
-        const int currentLayerIndex = document->currentLayerIndex();
-
-        mapScales.append(QString::number(mapView->zoomable()->scale()));
-        scrollX.append(QString::number(
-                       mapView->horizontalScrollBar()->sliderPosition()));
-        scrollY.append(QString::number(
-                       mapView->verticalScrollBar()->sliderPosition()));
-        selectedLayer.append(QString::number(currentLayerIndex));
     }
     mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
-    mSettings.setValue(QLatin1String("mapScale"), mapScales);
-    mSettings.setValue(QLatin1String("scrollX"), scrollX);
-    mSettings.setValue(QLatin1String("scrollY"), scrollY);
-    mSettings.setValue(QLatin1String("selectedLayer"), selectedLayer);
     mSettings.endGroup();
-    */
 }
 
 void MainWindow::readSettings()

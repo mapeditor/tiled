@@ -22,6 +22,8 @@
 #define TILED_INTERNAL_MAPEDITOR_H
 
 #include <QHash>
+#include <QMap>
+#include <QVariant>
 
 #include "editor.h"
 #include "tiled.h"
@@ -141,6 +143,8 @@ private:
     MapView *mViewWithTool;
 
     TileStampManager *mTileStampManager;
+
+    QMap<QString, QVariant> mMapStates;
 };
 
 } // namespace Internal

@@ -54,6 +54,7 @@
 #include "tilestampmanager.h"
 #include "zoomable.h"
 #include "layermodel.h"
+#include "preferences.h"
 
 #include <QShortcut>
 #include <QDialogButtonBox>
@@ -63,9 +64,13 @@
 #include <QToolBar>
 #include <QIdentityProxyModel>
 #include <QComboBox>
+#include <QScrollBar>
+#include <QSettings>
 #include <QStatusBar>
 #include <QSignalMapper>
 #include <QMainWindow>
+
+static char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
 namespace Internal {
@@ -297,6 +302,10 @@ MapEditor::MapEditor(QObject *parent)
 
     setupQuickStamps();
     retranslateUi();
+
+    Preferences *prefs = Preferences::instance();
+    QSettings *settings = prefs->settings();
+    mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
 }
 
 MapEditor::~MapEditor()
@@ -317,6 +326,23 @@ void MapEditor::addDocument(Document *document)
 
     mWidgetStack->addWidget(container);
     mWidgetForMap.insert(mapDocument, container);
+
+    // restore the previous state for this map
+    QVariantMap mapState = mMapStates.value(document->fileName()).toMap();
+    if (!mapState.isEmpty()) {
+        qreal scale = mapState.value(QLatin1String("scale")).toReal();
+        if (scale > 0)
+            view->zoomable()->setScale(scale);
+
+        const int hor = mapState.value(QLatin1String("scrollX")).toInt();
+        const int ver = mapState.value(QLatin1String("scrollY")).toInt();
+        view->horizontalScrollBar()->setSliderPosition(hor);
+        view->verticalScrollBar()->setSliderPosition(ver);
+
+        int layer = mapState.value(QLatin1String("selectedLayer")).toInt();
+        if (layer > 0 && layer < mapDocument->map()->layerCount())
+            mapDocument->setCurrentLayerIndex(layer);
+    }
 }
 
 void MapEditor::removeDocument(Document *document)
@@ -326,6 +352,23 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mWidgetForMap.contains(mapDocument));
 
     MapViewContainer *mapViewContainer = mWidgetForMap.take(mapDocument);
+
+    // remember the state of this map before deleting the view
+    if (!mapDocument->fileName().isEmpty()) {
+        MapView *mapView = mapViewContainer->mapView();
+
+        QVariantMap mapState;
+        mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
+        mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
+        mapState.insert(QLatin1String("scrollY"), mapView->verticalScrollBar()->sliderPosition());
+        mapState.insert(QLatin1String("selectedLayer"), mapDocument->currentLayerIndex());
+        mMapStates.insert(mapDocument->fileName(), mapState);
+
+        Preferences *prefs = Preferences::instance();
+        QSettings *settings = prefs->settings();
+        settings->setValue(QLatin1String(MAPSTATES_KEY), mMapStates);
+    }
+
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(mapViewContainer);
     delete mapViewContainer;
