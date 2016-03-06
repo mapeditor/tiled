@@ -292,11 +292,13 @@ int main(int argc, char *argv[])
         }
         return 0;
     }
+
     if (!commandLine.newInstance) {
         QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
+
     QScopedPointer<AutoUpdater> updater;
 #ifdef TILED_SPARKLE
 #if defined(Q_OS_MAC)
