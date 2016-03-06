@@ -54,6 +54,8 @@ class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class TmxMapFormat;
+class TsxTilesetFormat;
 
 /**
  * The main editor window.
@@ -80,7 +82,7 @@ public:
      *
      * @return whether the file was successfully opened
      */
-    bool openFile(const QString &fileName, FileFormat *format);
+    bool openFile(const QString &fileName, FileFormat *fileFormat);
 
     /**
      * Attempt to open the previously opened file.
@@ -213,6 +215,9 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+
+    TmxMapFormat *mTmxMapFormat;
+    TsxTilesetFormat *mTsxTilesetFormat;
 };
 
 } // namespace Internal

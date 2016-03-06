@@ -101,6 +101,8 @@ public:
  */
 class TILEDSHARED_EXPORT MapFormat : public FileFormat
 {
+    Q_OBJECT
+
 public:
     explicit MapFormat(QObject *parent = nullptr)
         : FileFormat(parent)

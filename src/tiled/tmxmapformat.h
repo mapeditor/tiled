@@ -38,6 +38,8 @@ class TmxMapFormat : public MapFormat
     Q_OBJECT
 
 public:
+    TmxMapFormat(QObject *parent = nullptr);
+
     Map *read(const QString &fileName) override;
 
     bool write(const Map *map, const QString &fileName) override;
@@ -61,8 +63,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx)"); }
 
-    bool supportsFile(const QString &fileName) const override
-    { return fileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive); }
+    bool supportsFile(const QString &fileName) const override;
 
     QString errorString() const override { return mError; }
 
@@ -79,14 +80,15 @@ class TsxTilesetFormat : public TilesetFormat
     Q_OBJECT
 
 public:
+    TsxTilesetFormat(QObject *parent = nullptr);
+
     SharedTileset read(const QString &fileName) override;
 
     bool write(const Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
 
-    bool supportsFile(const QString &fileName) const override
-    { return fileName.endsWith(QLatin1String(".tsx"), Qt::CaseInsensitive); }
+    bool supportsFile(const QString &fileName) const override;
 
     QString errorString() const override { return mError; }
 

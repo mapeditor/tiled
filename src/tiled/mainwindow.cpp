@@ -104,6 +104,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
+    , mTmxMapFormat(new TmxMapFormat(this))
+    , mTsxTilesetFormat(new TsxTilesetFormat(this))
 {
     mUi->setupUi(this);
 
@@ -111,6 +113,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mDocumentManager->setEditor(Document::TilesetDocumentType, new TilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
+
+    PluginManager::addObject(mTmxMapFormat);
+    PluginManager::addObject(mTsxTilesetFormat);
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -469,6 +474,9 @@ MainWindow::~MainWindow()
 //    delete mTileStampManager;
 //    mTileStampManager = nullptr;
 
+    PluginManager::removeObject(mTmxMapFormat);
+    PluginManager::removeObject(mTsxTilesetFormat);
+
     DocumentManager::deleteInstance();
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
@@ -549,8 +557,7 @@ void MainWindow::newMap()
     mDocumentManager->addDocument(mapDocument);
 }
 
-bool MainWindow::openFile(const QString &fileName,
-                          FileFormat *format)
+bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 {
     if (fileName.isEmpty())
         return false;
@@ -562,18 +569,44 @@ bool MainWindow::openFile(const QString &fileName,
         return true;
     }
 
-    // todo: determine whether it's a tileset or a map
-    // ... impossible since sometimes it's just XML or JSON!?
+    if (!fileFormat) {
+        // Try to find a plugin that implements support for this format
+        auto formats = PluginManager::objects<FileFormat>();
+        for (FileFormat *format : formats) {
+            if (format->supportsFile(fileName)) {
+                fileFormat = format;
+                break;
+            }
+        }
+    }
 
-    QString error;
-    MapDocument *mapDocument = MapDocument::load(fileName, qobject_cast<MapFormat*>(format), &error);
-    if (!mapDocument) {
-        QMessageBox::critical(this, tr("Error Opening Map"), error);
+    if (!fileFormat) {
+        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format"));
         return false;
     }
 
-    mDocumentManager->addDocument(mapDocument);
-    mDocumentManager->checkTilesetColumns(mapDocument);
+    QString error;
+    Document *document = nullptr;
+
+    if (MapFormat *mapFormat = dynamic_cast<MapFormat*>(fileFormat)) {
+        document = MapDocument::load(fileName, mapFormat, &error);
+    } else if (TilesetFormat *tilesetFormat = dynamic_cast<TilesetFormat*>(fileFormat)) {
+        SharedTileset tileset = tilesetFormat->read(fileName);
+        if (tileset.isNull())
+            error = tilesetFormat->errorString();
+        else
+            document = new TilesetDocument(tileset, fileName);
+    }
+
+    if (!document) {
+        QMessageBox::critical(this, tr("Error Opening File"), error);
+        return false;
+    }
+
+    mDocumentManager->addDocument(document);
+
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+        mDocumentManager->checkTilesetColumns(mapDocument);
 
     setRecentFile(fileName);
     return true;
@@ -657,9 +690,6 @@ void MainWindow::openFile()
 {
     QString filter = tr("All Files (*)");
     QString selectedFilter = filter;
-    filter += QLatin1String(";;");
-    filter += TmxMapFormat().nameFilter();
-    filter += TsxTilesetFormat().nameFilter();
 
     FormatHelper<FileFormat> helper(FileFormat::Read, filter);
 

@@ -49,6 +49,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantMap mapVariant;
 
+    mapVariant[QLatin1String("type")] = QLatin1String("map");
     mapVariant[QLatin1String("version")] = 1.0;
     mapVariant[QLatin1String("orientation")] = orientationToString(map->orientation());
     mapVariant[QLatin1String("renderorder")] = renderOrderToString(map->renderOrder());
@@ -126,6 +127,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         // Tileset is external, so no need to write any of the stuff below
         return tilesetVariant;
     }
+
+    // Include a 'type' property if we are writing the tileset to its own file
+    if (firstGid == 0)
+        tilesetVariant[QLatin1String("type")] = QLatin1String("tileset");
 
     tilesetVariant[QLatin1String("name")] = tileset->name();
     tilesetVariant[QLatin1String("tilewidth")] = tileset->tileWidth();

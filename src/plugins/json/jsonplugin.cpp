@@ -28,6 +28,8 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSaveFile>
 #include <QTextStream>
 
@@ -147,10 +149,41 @@ QString JsonMapFormat::nameFilter() const
 
 bool JsonMapFormat::supportsFile(const QString &fileName) const
 {
-    if (mSubFormat == Json)
-        return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
-    else
-        return fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
+    if (mSubFormat == Json) {
+        if (!fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive))
+            return false;
+    } else {
+        if (!fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive))
+            return false;
+    }
+
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QByteArray contents = file.readAll();
+
+        if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
+            // Scan past JSONP prefix; look for an open curly at the start of the line
+            int i = contents.indexOf(QLatin1String("\n{"));
+            if (i > 0) {
+                contents.remove(0, i);
+                contents = contents.trimmed(); // potential trailing whitespace
+                if (contents.endsWith(';')) contents.chop(1);
+                if (contents.endsWith(')')) contents.chop(1);
+            }
+        }
+
+        const QJsonObject object = QJsonDocument::fromJson(contents).object();
+
+        // This is a good indication, but not present in older map files
+        if (object.value(QLatin1String("type")).toString() == QLatin1String("map"))
+            return true;
+
+        // Guess based on expected property
+        if (object.contains(QLatin1String("orientation")))
+            return true;
+    }
+
+    return false;
 }
 
 QString JsonMapFormat::errorString() const
@@ -199,7 +232,25 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
 
 bool JsonTilesetFormat::supportsFile(const QString &fileName) const
 {
-    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
+
+            // This is a good indication, but not present in older external tilesets
+            if (object.value(QLatin1String("type")).toString() == QLatin1String("tileset"))
+                return true;
+
+            // Guess based on some expected properties
+            if (object.contains(QLatin1String("name")) &&
+                object.contains(QLatin1String("tilewidth")) &&
+                object.contains(QLatin1String("tileheight")))
+                return true;
+        }
+    }
+
+    return false;
 }
 
 bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,

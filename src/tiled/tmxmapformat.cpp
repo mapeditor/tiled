@@ -58,6 +58,11 @@ protected:
 } // anonymous namespace
 
 
+TmxMapFormat::TmxMapFormat(QObject *parent)
+    : MapFormat(parent)
+{
+}
+
 Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
@@ -113,6 +118,31 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     return map;
 }
 
+bool TmxMapFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("map"))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+
+TsxTilesetFormat::TsxTilesetFormat(QObject *parent)
+    : TilesetFormat(parent)
+{
+}
 
 SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
@@ -140,4 +170,24 @@ bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
         mError.clear();
 
     return result;
+}
+
+bool TsxTilesetFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".tsx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("tileset"))
+                return true;
+        }
+    }
+
+    return false;
 }

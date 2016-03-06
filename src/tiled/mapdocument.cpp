@@ -42,7 +42,6 @@
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
-#include "pluginmanager.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
@@ -153,32 +152,11 @@ MapDocument *MapDocument::load(const QString &fileName,
                                MapFormat *mapFormat,
                                QString *error)
 {
-    TmxMapFormat tmxMapFormat;
-
-    if (!mapFormat && !tmxMapFormat.supportsFile(fileName)) {
-        // Try to find a plugin that implements support for this format
-        auto formats = PluginManager::objects<MapFormat>();
-        for (MapFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                mapFormat = format;
-                break;
-            }
-        }
-    }
-
-    Map *map = nullptr;
-    QString errorString;
-    if (mapFormat) {
-        map = mapFormat->read(fileName);
-        errorString = mapFormat->errorString();
-    } else {
-        map = tmxMapFormat.read(fileName);
-        errorString = tmxMapFormat.errorString();
-    }
+    Map *map = mapFormat->read(fileName);
 
     if (!map) {
         if (error)
-            *error = errorString;
+            *error = mapFormat->errorString();;
         return nullptr;
     }
 
@@ -188,6 +166,7 @@ MapDocument *MapDocument::load(const QString &fileName,
         if (mapFormat->hasCapabilities(MapFormat::Write))
             mapDocument->setWriterFormat(mapFormat);
     }
+
     return mapDocument;
 }
 

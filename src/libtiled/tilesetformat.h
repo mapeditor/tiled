@@ -41,6 +41,8 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT TilesetFormat : public FileFormat
 {
+    Q_OBJECT
+
 public:
     explicit TilesetFormat(QObject *parent = nullptr)
         : FileFormat(parent)
