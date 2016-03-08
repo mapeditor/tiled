@@ -55,7 +55,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato non riconosciuto (vedi --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
