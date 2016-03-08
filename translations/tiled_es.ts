@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Añadir Atributo</translation>
+        <translation>Añadir Atributo</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del Atributo</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Comenzar una nueva instancia, incluso si una instancia ya está ejecutandose</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1083,27 +1083,27 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de Tipos de Objeto</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Archivo</translation>
+        <translation>Archivo</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Tipos de Objeto...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar Tipos de Objeto...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Elegir Archivo con Tipos de Objeto...</translation>
     </message>
 </context>
 <context>
@@ -1321,17 +1321,17 @@ Línea %1, columna %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizaciones</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprobar Ahora</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprobar automaticamente por actualizaciones</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1687,7 +1687,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>No establecer</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2775,7 +2775,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor de Tipos de Objeto</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3385,73 +3385,74 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Añadir Tipo</translation>
+        <translation>Añadir Tipo de Objeto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar Tipo de Objeto</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Añadir Atributo</translation>
+        <translation>Añadir Atributo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Eliminar Atributo</translation>
+        <translation>Eliminar Atributo</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Renombrar Atributo</translation>
+        <translation>Renombrar Atributo</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Error Escribiendo Tipos</translation>
+        <translation>Error Escribiendo Tipos de Objeto</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Error escribiendo a %1:
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Elegir Archivo con Tipos de Objeto</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Archivos de Tipos (*.xml)</translation>
+        <translation>Archivos de Tipos de Objeto (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Error Leyendo Tipos</translation>
+        <translation>Error Leyendo Tipos de Objeto</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Importar Tipos</translation>
+        <translation>Importar Tipos de Objeto</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Exportar Tipos</translation>
+        <translation>Exportar Tipos de Objeto</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">Nombre:</translation>
+        <translation>Nombre:</translation>
     </message>
 </context>
 <context>
@@ -3543,7 +3544,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Última vez comprobado: %1</translation>
     </message>
 </context>
 <context>
@@ -3903,7 +3904,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar Terreno</translation>
     </message>
 </context>
 <context>
