@@ -451,8 +451,8 @@ MainWindow::~MainWindow()
 //    mTileCollisionEditor->setTile(nullptr);
 //    mTileCollisionEditor->writeSettings();
 
-//    delete mTileStampManager;
-//    mTileStampManager = nullptr;
+    mDocumentManager->deleteEditor(Document::MapDocumentType);
+    mDocumentManager->deleteEditor(Document::TilesetDocumentType);
 
     PluginManager::removeObject(mTmxMapFormat);
     PluginManager::removeObject(mTsxTilesetFormat);

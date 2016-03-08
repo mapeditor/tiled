@@ -68,6 +68,7 @@ public:
     QWidget *widget() const;
 
     void setEditor(Document::DocumentType documentType, Editor *editor);
+    void deleteEditor(Document::DocumentType documentType);
 
     /**
      * Returns the undo group that combines the undo stacks of all opened map

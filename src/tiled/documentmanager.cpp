@@ -124,6 +124,15 @@ void DocumentManager::setEditor(Document::DocumentType documentType, Editor *edi
         mMapEditor = mapEditor;
 }
 
+void DocumentManager::deleteEditor(Document::DocumentType documentType)
+{
+    Q_ASSERT(mEditorForType.contains(documentType));
+    Editor *editor = mEditorForType.take(documentType);
+    if (editor == mMapEditor)
+        mMapEditor = nullptr;
+    delete editor;
+}
+
 Document *DocumentManager::currentDocument() const
 {
     const int index = mTabBar->currentIndex();
