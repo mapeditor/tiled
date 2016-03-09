@@ -167,8 +167,6 @@ void PropertyBrowser::setDocument(Document *document)
 
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &PropertyBrowser::selectedObjectsChanged);
-        connect(mapDocument, &MapDocument::selectedTilesChanged,
-                this, &PropertyBrowser::selectedTilesChanged);
     }
 
     if (tilesetDocument) {
@@ -189,14 +187,17 @@ void PropertyBrowser::setDocument(Document *document)
 
     if (document) {
         // For custom properties:
-        connect(mapDocument, &Document::propertyAdded,
+        connect(document, &Document::propertyAdded,
                 this, &PropertyBrowser::propertyAdded);
-        connect(mapDocument, &Document::propertyRemoved,
+        connect(document, &Document::propertyRemoved,
                 this, &PropertyBrowser::propertyRemoved);
-        connect(mapDocument, &Document::propertyChanged,
+        connect(document, &Document::propertyChanged,
                 this, &PropertyBrowser::propertyChanged);
-        connect(mapDocument, &Document::propertiesChanged,
+        connect(document, &Document::propertiesChanged,
                 this, &PropertyBrowser::propertiesChanged);
+
+        connect(document, &Document::selectedTilesChanged,
+                this, &PropertyBrowser::selectedTilesChanged);
     }
 }
 
@@ -264,18 +265,8 @@ void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
 {
-    if (mObject != tileset)
-        return;
-
-    bool isExternal = tileset->isExternal();
-    bool wasExternal = mIdToProperty.contains(FileNameProperty);
-
-    if (isExternal == wasExternal) {
+    if (mObject == tileset)
         updateProperties();
-    } else {
-        removeProperties();
-        addProperties();
-    }
 }
 
 void PropertyBrowser::tileChanged(Tile *tile)
@@ -580,7 +571,7 @@ void PropertyBrowser::addTilesetProperties()
 
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
 
-    if (tileset->isExternal()) {
+    if (mMapDocument) {
         auto property = createProperty(FileNameProperty, VariantPropertyManager::filePathTypeId(), tr("Filename"), groupProperty);
 
         QString filter = QCoreApplication::translate("MainWindow", "All Files (*)");
@@ -591,8 +582,11 @@ void PropertyBrowser::addTilesetProperties()
         property->setAttribute(QStringLiteral("filter"), helper.filter());
     }
 
-    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+    QtVariantProperty *nameProperty = createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    nameProperty->setEnabled(mTilesetDocument);
+
+    QtVariantProperty *tileOffsetProperty = createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+    tileOffsetProperty->setEnabled(mTilesetDocument);
 
     QtVariantProperty *columnsProperty = createProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
@@ -601,6 +595,8 @@ void PropertyBrowser::addTilesetProperties()
     if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
                 createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
+
+        parametersProperty->setEnabled(mTilesetDocument);
 
         QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
         QtVariantProperty *tileWidthProperty = createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
@@ -634,6 +630,7 @@ void PropertyBrowser::addTileProperties()
                                                             groupProperty);
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
+    probabilityProperty->setEnabled(mTilesetDocument);
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
@@ -643,6 +640,7 @@ void PropertyBrowser::addTileProperties()
 
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
+        imageSourceProperty->setEnabled(mTilesetDocument);
     }
 
     addProperty(groupProperty);
@@ -651,7 +649,8 @@ void PropertyBrowser::addTileProperties()
 void PropertyBrowser::addTerrainProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
-    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    QtVariantProperty *nameProperty = createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    nameProperty->setEnabled(mTilesetDocument);
     addProperty(groupProperty);
 }
 
@@ -1125,7 +1124,6 @@ void PropertyBrowser::updateProperties()
     }
     case Object::TilesetType: {
         Tileset *tileset = static_cast<Tileset*>(mObject);
-        const bool external = tileset->isExternal();
 
         if (QtVariantProperty *fileNameProperty = mIdToProperty.value(FileNameProperty))
             fileNameProperty->setValue(tileset->fileName());
@@ -1133,10 +1131,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         mIdToProperty[ColumnCountProperty]->setValue(tileset->columnCount());
-
-        mIdToProperty[NameProperty]->setEnabled(!external);
-        mIdToProperty[TileOffsetProperty]->setEnabled(!external);
-        mIdToProperty[ColumnCountProperty]->setEnabled(!external && tileset->isCollection());
+        mIdToProperty[ColumnCountProperty]->setEnabled(mTilesetDocument && tileset->isCollection());
 
         if (!tileset->isCollection()) {
             // todo: Consider when to set the TilesetDocument on the parameters edit
@@ -1149,8 +1144,6 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[MarginProperty]->setValue(tileset->margin());
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
-
-            mIdToProperty[TilesetImageParametersProperty]->setEnabled(!external);
         }
         break;
     }
@@ -1243,7 +1236,7 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
     QString propertyName = property->propertyName();
     QString propertyValue = property->valueText();
 
-    const auto &objects = mMapDocument->currentObjects();
+    const auto &objects = mDocument->currentObjects();
 
     // If one of the objects doesn't have this property then gray out the name and value.
     for (Object *obj : objects) {

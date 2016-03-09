@@ -29,6 +29,9 @@ class QMainWindow;
 class QStackedWidget;
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class PropertiesDock;
@@ -52,12 +55,21 @@ public:
 
     QWidget *editorWidget() const override;
 
+    TilesetView *currentTilesetView() const;
+
 signals:
+    void currentTileChanged(Tile *tile);
 
 private slots:
     void currentWidgetChanged();
 
+    void selectionChanged();
+    void currentChanged(const QModelIndex &index);
+    void indexPressed(const QModelIndex &index);
+
 private:
+    void setCurrentTile(Tile *tile);
+
     QMainWindow *mMainWindow;
     QStackedWidget *mWidgetStack;
 
@@ -67,6 +79,8 @@ private:
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument;
+
+    Tile *mCurrentTile;
 };
 
 } // namespace Internal

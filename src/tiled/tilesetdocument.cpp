@@ -46,6 +46,9 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     if (!tilesetFormat)
         tilesetFormat = &tsxTilesetFormat;
 
+    // todo: workaround to avoid it writing the tileset like an extenal tileset reference
+    mTileset->setFileName(QString());
+
     if (!tilesetFormat->write(*tileset(), fileName)) {
         if (error)
             *error = tilesetFormat->errorString();

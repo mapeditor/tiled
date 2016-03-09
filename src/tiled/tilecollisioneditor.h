@@ -69,7 +69,6 @@ private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
-    void tilesetFileNameChanged(Tileset *);
     void currentObjectChanged(Object *object);
 
     void undo();

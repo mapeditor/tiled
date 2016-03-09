@@ -626,29 +626,17 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
         setCurrentObject(selectedObjects.first());
 }
 
-void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
-{
-    mSelectedTiles = selectedTiles;
-    emit selectedTilesChanged();
-}
-
 QList<Object*> MapDocument::currentObjects() const
 {
-    QList<Object*> objects;
-    if (mCurrentObject) {
-        if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            const auto &selectedObjects = mSelectedObjects;
-            for (MapObject *mapObj : selectedObjects)
-                objects.append(mapObj);
-        } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            const auto &selectedTiles = mSelectedTiles;
-            for (Tile *tile : selectedTiles)
-                objects.append(tile);
-        } else {
-            objects.append(mCurrentObject);
-        }
+    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
+        QList<Object*> objects;
+        const auto &selectedObjects = mSelectedObjects;
+        for (MapObject *mapObj : selectedObjects)
+            objects.append(mapObj);
+        return objects;
     }
-    return objects;
+
+    return Document::currentObjects();
 }
 
 /**

@@ -322,8 +322,6 @@ void TileAnimationEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
     if (mTilesetDocument) {
         connect(mTilesetDocument, &TilesetDocument::tileAnimationChanged,
                 this, &TileAnimationEditor::tileAnimationChanged);
-        connect(mTilesetDocument, &TilesetDocument::tilesetFileNameChanged,
-                this, &TileAnimationEditor::tilesetFileNameChanged);
 
         connect(mTilesetDocument, &TilesetDocument::currentObjectChanged,
                 this, &TileAnimationEditor::currentObjectChanged);
@@ -345,7 +343,7 @@ void TileAnimationEditor::setTile(Tile *tile)
         mFrameListModel->setFrames(nullptr, QVector<Frame>());
     }
 
-    mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());
+    mUi->frameList->setEnabled(tile);
 
     resetPreview();
 }
@@ -408,12 +406,6 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
     mFrameListModel->setFrames(tile->tileset(), tile->frames());
 }
 
-void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
-{
-    if (mTile && mTile->tileset() == tileset)
-        mUi->frameList->setEnabled(!tileset->isExternal());
-}
-
 void TileAnimationEditor::currentObjectChanged(Object *object)
 {
     // If a tile object is selected, edit the animation frames for that tile
@@ -427,9 +419,6 @@ void TileAnimationEditor::currentObjectChanged(Object *object)
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
 {
     Q_ASSERT(mTile);
-
-    if (mTile->tileset()->isExternal())
-        return;
 
     const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
     mFrameListModel->addTileIdAsFrame(tile->id());
@@ -450,9 +439,6 @@ void TileAnimationEditor::redo()
 void TileAnimationEditor::delete_()
 {
     if (!mTilesetDocument || !mTile)
-        return;
-
-    if (mTile->tileset()->isExternal())
         return;
 
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();

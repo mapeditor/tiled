@@ -22,6 +22,7 @@
 
 #include "maintoolbar.h"
 #include "propertiesdock.h"
+#include "tile.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tilesetdocument.h"
@@ -42,6 +43,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
     , mCurrentTilesetDocument(nullptr)
+    , mCurrentTile(nullptr)
 {
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(new MainToolBar(mMainWindow));
@@ -61,13 +63,13 @@ void TilesetEditor::addDocument(Document *document)
     Tileset *tileset = tilesetDocument->tileset().data();
     view->setModel(new TilesetModel(tileset, view));
 
-//    QItemSelectionModel *s = view->selectionModel();
-//    connect(s, &QItemSelectionModel::selectionChanged,
-//            this, &TilesetDock::selectionChanged);
-//    connect(s, &QItemSelectionModel::currentChanged,
-//            this, &TilesetDock::currentChanged);
-//    connect(view, &TilesetView::pressed,
-//            this, &TilesetDock::indexPressed);
+    QItemSelectionModel *s = view->selectionModel();
+    connect(s, &QItemSelectionModel::selectionChanged,
+            this, &TilesetEditor::selectionChanged);
+    connect(s, &QItemSelectionModel::currentChanged,
+            this, &TilesetEditor::currentChanged);
+    connect(view, &TilesetView::pressed,
+            this, &TilesetEditor::indexPressed);
 
     // todo: Connect the TilesetView tile selection to these editors
     // maybe only connect to the currently visible view
@@ -122,10 +124,64 @@ QWidget *TilesetEditor::editorWidget() const
     return mMainWindow;
 }
 
+TilesetView *TilesetEditor::currentTilesetView() const
+{
+    return static_cast<TilesetView*>(mWidgetStack->currentWidget());
+}
+
 void TilesetEditor::currentWidgetChanged()
 {
     auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
     setCurrentDocument(view ? view->tilesetDocument() : nullptr);
+}
+
+void TilesetEditor::selectionChanged()
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    const QItemSelectionModel *s = view->selectionModel();
+    const QModelIndexList indexes = s->selection().indexes();
+    if (indexes.isEmpty())
+        return;
+
+    const TilesetModel *model = view->tilesetModel();
+    QList<Tile*> selectedTiles;
+
+    for (const QModelIndex &index : indexes)
+        if (Tile *tile = model->tileAt(index))
+            selectedTiles.append(tile);
+
+    mCurrentTilesetDocument->setSelectedTiles(selectedTiles);
+}
+
+void TilesetEditor::currentChanged(const QModelIndex &index)
+{
+    if (!index.isValid())
+        return;
+
+    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    setCurrentTile(model->tileAt(index));
+}
+
+void TilesetEditor::indexPressed(const QModelIndex &index)
+{
+    TilesetView *view = currentTilesetView();
+    if (Tile *tile = view->tilesetModel()->tileAt(index))
+        mCurrentTilesetDocument->setCurrentObject(tile);
+}
+
+void TilesetEditor::setCurrentTile(Tile *tile)
+{
+    if (mCurrentTile == tile)
+        return;
+
+    mCurrentTile = tile;
+    emit currentTileChanged(tile);
+
+    if (tile)
+        mCurrentTilesetDocument->setCurrentObject(tile);
 }
 
 } // namespace Internal

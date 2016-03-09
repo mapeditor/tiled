@@ -588,7 +588,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     Tile *tile = model->tileAt(index);
 
-    const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
@@ -602,18 +601,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            addTerrain->setEnabled(!isExternal);
             connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
 
             if (mTerrainId != -1) {
                 QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-                setImage->setEnabled(!isExternal);
                 connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
             }
-        } else {
+        } else if (mTilesetDocument) {
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
-            tileProperties->setEnabled(!isExternal);
             Utils::setThemeIcon(tileProperties, "document-properties");
             connect(tileProperties, SIGNAL(triggered()),
                     SLOT(editTileProperties()));
@@ -647,6 +643,8 @@ void TilesetView::selectTerrainImage()
 
 void TilesetView::editTileProperties()
 {
+    Q_ASSERT(mTilesetDocument);
+
     Tile *tile = currentTile();
     if (!tile)
         return;

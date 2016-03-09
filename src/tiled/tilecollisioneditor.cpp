@@ -158,8 +158,6 @@ void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
     if (mTilesetDocument) {
         connect(mTilesetDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
                 SLOT(tileObjectGroupChanged(Tile*)));
-        connect(mTilesetDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(tilesetFileNameChanged(Tileset*)));
 
         connect(mTilesetDocument, &MapDocument::currentObjectChanged,
                 this, &TileCollisionEditor::currentObjectChanged);
@@ -182,10 +180,6 @@ void TileCollisionEditor::setTile(Tile *tile)
     MapDocument *previousDocument = mMapScene->mapDocument();
 
     if (tile) {
-        bool isExternal = mTile->tileset()->isExternal();
-        mMapView->setEnabled(!isExternal);
-        mPropertiesDock->setEnabled(!isExternal);
-
         Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
         map->addTileset(tile->sharedTileset());
 
@@ -286,14 +280,6 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
     dummyDocument->setCurrentLayerIndex(1);
 
     mSynchronizing = false;
-}
-
-void TileCollisionEditor::tilesetFileNameChanged(Tileset *tileset)
-{
-    if (mTile && mTile->tileset() == tileset) {
-        mMapView->setEnabled(!tileset->isExternal());
-        mPropertiesDock->setEnabled(!tileset->isExternal());
-    }
 }
 
 void TileCollisionEditor::currentObjectChanged(Object *object)

@@ -126,18 +126,16 @@ void PropertiesDock::bringToFront()
     mPropertyBrowser->setFocus();
 }
 
-static bool isExternal(const Object *object)
+static bool isPartOfTileset(const Object *object)
 {
     if (!object)
         return false;
 
     switch (object->typeId()) {
     case Object::TilesetType:
-        return static_cast<const Tileset*>(object)->isExternal();
     case Object::TileType:
-        return static_cast<const Tile*>(object)->tileset()->isExternal();
     case Object::TerrainType:
-        return static_cast<const Terrain*>(object)->tileset()->isExternal();
+        return true;
     default:
         return false;
     }
@@ -162,20 +160,24 @@ void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
 
-    const bool external = isExternal(object);
-    const bool isTileset = object && object->typeId() == Object::TilesetType;
+    bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
+    bool isTileset = isPartOfTileset(object);
+    bool enabled = object && (isTileset && editingTileset);
 
-    mPropertyBrowser->setEnabled(object && (!external || isTileset));
-    mActionAddProperty->setEnabled(object && !external);
+    mPropertyBrowser->setEnabled(enabled || isTileset);
+    mActionAddProperty->setEnabled(enabled);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    bool external = isExternal(mPropertyBrowser->object());
+    bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
+    bool isTileset = isPartOfTileset(mPropertyBrowser->object());
+    bool enabled = !isTileset || editingTileset;
+
     bool addedByType = item && isAddedByType(mPropertyBrowser->object(),
                                      item->property()->propertyName());
-    bool canModify = isCustomProperty && !external && !addedByType;
+    bool canModify = isCustomProperty && enabled && !addedByType;
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify);

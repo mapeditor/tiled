@@ -202,14 +202,6 @@ public:
      */
     void setSelectedObjects(const QList<MapObject*> &selectedObjects);
 
-    /**
-     * Returns the list of selected tiles.
-     */
-    const QList<Tile*> &selectedTiles() const
-    { return mSelectedTiles; }
-
-    void setSelectedTiles(const QList<Tile*> &selectedTiles);
-
     QList<Object*> currentObjects() const override;
 
     void unifyTilesets(Map *map);
@@ -239,11 +231,6 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
-
-    /**
-     * Emitted when the list of selected tiles from the dock changes.
-     */
-    void selectedTilesChanged();
 
     /**
      * Emitted when the map size or its tile size changes.
@@ -330,7 +317,6 @@ private:
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
-    QList<Tile*> mSelectedTiles;
     Object *mCurrentObject;             /**< Current properties object. */
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;

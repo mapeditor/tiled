@@ -21,6 +21,7 @@
 #include "document.h"
 
 #include "object.h"
+#include "tile.h"
 
 #include <QFileInfo>
 #include <QUndoStack>
@@ -82,10 +83,23 @@ void Document::setCurrentObject(Object *object)
 
 QList<Object *> Document::currentObjects() const
 {
-    QList<Object*> list;
-    if (mCurrentObject)
-        list << mCurrentObject;
-    return list;
+    QList<Object*> objects;
+    if (mCurrentObject) {
+        if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
+            const auto &selectedTiles = mSelectedTiles;
+            for (Tile *tile : selectedTiles)
+                objects.append(tile);
+        } else {
+            objects.append(mCurrentObject);
+        }
+    }
+    return objects;
+}
+
+void Document::setSelectedTiles(const QList<Tile*> &selectedTiles)
+{
+    mSelectedTiles = selectedTiles;
+    emit selectedTilesChanged();
 }
 
 void Document::setProperty(Object *object,
