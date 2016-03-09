@@ -46,6 +46,7 @@ public:
      * which is needed for the undo support.
      */
     void setTilesetDocument(TilesetDocument *tilesetDocument);
+    TilesetDocument *tilesetDocument() const;
 
     QSize sizeHint() const override;
 
@@ -151,6 +152,11 @@ private:
 
     const QIcon mImageMissingIcon;
 };
+
+inline TilesetDocument *TilesetView::tilesetDocument() const
+{
+    return mTilesetDocument;
+}
 
 inline bool TilesetView::markAnimatedTiles() const
 {

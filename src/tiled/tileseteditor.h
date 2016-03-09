@@ -54,6 +54,9 @@ public:
 
 signals:
 
+private slots:
+    void currentWidgetChanged();
+
 private:
     QMainWindow *mMainWindow;
     QStackedWidget *mWidgetStack;

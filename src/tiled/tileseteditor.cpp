@@ -46,6 +46,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(new MainToolBar(mMainWindow));
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+
+    connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 }
 
 void TilesetEditor::addDocument(Document *document)
@@ -54,6 +56,7 @@ void TilesetEditor::addDocument(Document *document)
     Q_ASSERT(tilesetDocument);
 
     TilesetView *view = new TilesetView(mWidgetStack);
+    view->setTilesetDocument(tilesetDocument);
 
     Tileset *tileset = tilesetDocument->tileset().data();
     view->setModel(new TilesetModel(tileset, view));
@@ -73,8 +76,8 @@ void TilesetEditor::addDocument(Document *document)
     //    connect(mTilesetDock, &TilesetDock::currentTileChanged,
     //            mTileCollisionEditor, &TileCollisionEditor::setTile);
 
-    mWidgetStack->addWidget(view);
     mViewForTileset.insert(tilesetDocument, view);
+    mWidgetStack->addWidget(view);
 }
 
 void TilesetEditor::removeDocument(Document *document)
@@ -93,6 +96,9 @@ void TilesetEditor::setCurrentDocument(Document *document)
 {
     TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument || !document);
+
+    if (mCurrentTilesetDocument == tilesetDocument)
+        return;
 
     if (document) {
         Q_ASSERT(mViewForTileset.contains(tilesetDocument));
@@ -114,6 +120,12 @@ Document *TilesetEditor::currentDocument() const
 QWidget *TilesetEditor::editorWidget() const
 {
     return mMainWindow;
+}
+
+void TilesetEditor::currentWidgetChanged()
+{
+    auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
+    setCurrentDocument(view ? view->tilesetDocument() : nullptr);
 }
 
 } // namespace Internal
