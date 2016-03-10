@@ -16,7 +16,7 @@ BEGIN
         BLOCK "040904B0" // US English, Unicode
         BEGIN
             VALUE "CompanyName", "mapeditor.org\0"
-            VALUE "FileDescription", "Tiled executable\0"
+            VALUE "FileDescription", "Tiled\0"
             VALUE "FileVersion", "1.0\0"
             VALUE "InternalName", "tiled\0"
             VALUE "OriginalFilename", "tiled.exe\0"
