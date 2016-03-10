@@ -31,6 +31,8 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PatreonDialog)
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     ui->setupUi(this);
     ui->maybeLaterButton->setVisible(false);
 
