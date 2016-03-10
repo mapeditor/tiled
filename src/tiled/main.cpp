@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (!commandLine.newInstance) {
+    if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
         QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
