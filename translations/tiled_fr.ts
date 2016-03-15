@@ -36,12 +36,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Ajouter une propriété</translation>
+        <translation>Ajouter une propriété</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la Propriété</translation>
     </message>
 </context>
 <context>
@@ -120,7 +120,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer une nouvelle instance, même si une instance est déjà en cours</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1082,27 +1082,27 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur de Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Fichier</translation>
+        <translation>Fichier</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter des Types d&apos;Objet ...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des Types d&apos;Objet ...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le Fichier de Types d&apos;Objet ...</translation>
     </message>
 </context>
 <context>
@@ -1320,17 +1320,17 @@ Ligne %1, colonne %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Mises à jour</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier Maintenant</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier les mises à jour automatiquement</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1686,7 +1686,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Non défini</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2773,7 +2773,7 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur de Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3383,73 +3383,74 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Ajouter un type d&apos;objet</translation>
+        <translation>Ajouter un Type d&apos;Objet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer un Type d&apos;Objet</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Ajouter une propriété</translation>
+        <translation>Ajouter une Propriété</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Effacer une propriété</translation>
+        <translation>Effacer une Propriété</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Renommer une propriété</translation>
+        <translation>Renommer une Propriété</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Erreur lors de l&apos;écriture des types d&apos;objet</translation>
+        <translation>Erreur lors de l&apos;écriture des Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;écriture sur %1 :
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le Fichier de Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Fichier de types d&apos;objet (*.xml)</translation>
+        <translation>Fichier de Types d&apos;Objet (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Erreur lors de la lecture des types d&apos;objet</translation>
+        <translation>Erreur lors de la Lecture des Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Importer les types d&apos;objet</translation>
+        <translation>Importer les Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Exporter les types d&apos;objet</translation>
+        <translation>Exporter les Types d&apos;Objet</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">Nom :</translation>
+        <translation>Nom :</translation>
     </message>
 </context>
 <context>
@@ -3541,7 +3542,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dernière vérification : %1</translation>
     </message>
 </context>
 <context>
@@ -3901,7 +3902,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer le Terrain</translation>
     </message>
 </context>
 <context>
