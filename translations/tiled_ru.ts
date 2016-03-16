@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Добавить параметр</translation>
+        <translation>Добавить параметр</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя параметра</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новый экземпляр, даже если один уже запущен</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1083,27 +1083,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор типов объектов</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт типов объектов...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт типов объектов...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите файл типов объектов...</translation>
     </message>
 </context>
 <context>
@@ -1321,17 +1321,17 @@ Line %1, column %2</source>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить сейчас</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверять обновления автоматически</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1687,7 +1687,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указан</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2779,7 +2779,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор типов объектов</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3399,73 +3399,74 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Добавить тип объекта</translation>
+        <translation>Добавить тип объекта</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить тип объекта</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Добавить параметр</translation>
+        <translation>Добавить параметр</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Удалить параметр</translation>
+        <translation>Удалить параметр</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Переименовать параметр</translation>
+        <translation>Переименовать параметр</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Ошибка записи типов объектов</translation>
+        <translation>Ошибка записи типов объектов</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка записи в %1:
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите файл типов объектов...</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Файл типов объектов (*.xml)</translation>
+        <translation>Файл типов объектов (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Ошибка чтения типов объектов</translation>
+        <translation>Ошибка чтения типов объектов</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Импортировать типы объектов</translation>
+        <translation>Импорт типов объектов</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Экспортировать типы объектов</translation>
+        <translation>Экспорт типов объектов</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">Имя:</translation>
+        <translation>Имя:</translation>
     </message>
 </context>
 <context>
@@ -3558,7 +3559,7 @@ Please select specific format.</source>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Последняя проверка: %1</translation>
     </message>
 </context>
 <context>
@@ -3918,7 +3919,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Стирание участка</translation>
     </message>
 </context>
 <context>
