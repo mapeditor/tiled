@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">プロパティを追加</translation>
+        <translation>プロパティを追加</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>プロパティ名</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>インスタンスがすでに起動されている場合でも、新しくインスタンスを起動します</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1066,7 +1066,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation>オブジェクトタイプがファイルに含まれていない.</translation>
+        <translation>オブジェクト・タイプがファイルに含まれていない.</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1083,27 +1083,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ・エディター</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">ファイル</translation>
+        <translation>ファイル</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプをエクスポート...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプをインポート...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ・ファイルを選択...</translation>
     </message>
 </context>
 <context>
@@ -1322,17 +1322,17 @@ Line %1, column %2</source>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>ソフトの更新</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>今すぐ更新</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>自動的に新しいバージョンへ更新する</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1688,7 +1688,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>未設定</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2776,7 +2776,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ・エディター</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3219,7 +3219,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation>オブジェクト種類を変更</translation>
+        <translation>オブジェクト・タイプを変更</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3371,73 +3371,74 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">オブジェクト・タイプの追加</translation>
+        <translation>オブジェクト・タイプの追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプを削除</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">プロパティを追加</translation>
+        <translation>プロパティを追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">プロパティを削除</translation>
+        <translation>プロパティを削除</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">プロパティ名を変更</translation>
+        <translation>プロパティ名を変更</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプを書き込み中にエラー</translation>
+        <translation>オブジェクト・タイプを書き込み中にエラー</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 へ書き込み中にエラー: 
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ・ファイルを選択</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">オブジェクト・タイプ ファイル (*.xml)</translation>
+        <translation>オブジェクト・タイプ ファイル (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプを読み込み中にエラー</translation>
+        <translation>オブジェクト・タイプを読み込み中にエラー</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプをインポート</translation>
+        <translation>オブジェクト・タイプをインポート</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">オブジェクト・タイプをエクスポート</translation>
+        <translation>オブジェクト・タイプをエクスポート</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">名前:</translation>
+        <translation>名前:</translation>
     </message>
 </context>
 <context>
@@ -3528,7 +3529,7 @@ Please select specific format.</source>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>最終チェック: %1</translation>
     </message>
 </context>
 <context>
@@ -3888,7 +3889,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>地形を削除</translation>
     </message>
 </context>
 <context>
