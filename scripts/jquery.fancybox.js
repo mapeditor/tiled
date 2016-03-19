@@ -1,6 +1,6 @@
 /*!
  * fancyBox - jQuery Plugin
- * version: 2.1.4 (Thu, 10 Jan 2013)
+ * version: 2.1.5 (Fri, 14 Jun 2013)
  * @requires jQuery v1.6 or later
  *
  * Examples at http://fancyapps.com/fancybox/
@@ -13,14 +13,15 @@
 (function (window, document, $, undefined) {
 	"use strict";
 
-	var W = $(window),
+	var H = $("html"),
+		W = $(window),
 		D = $(document),
 		F = $.fancybox = function () {
 			F.open.apply( this, arguments );
 		},
-		IE =  navigator.userAgent.match(/msie/),
-		didUpdate = null,
-		isTouch	  = document.createTouch !== undefined,
+		IE =  navigator.userAgent.match(/msie/i),
+		didUpdate	= null,
+		isTouch		= document.createTouch !== undefined,
 
 		isQuery	= function(obj) {
 			return obj && obj.hasOwnProperty && obj instanceof $;
@@ -49,7 +50,7 @@
 
 	$.extend(F, {
 		// The current version of fancyBox
-		version: '2.1.4',
+		version: '2.1.5',
 
 		defaults: {
 			padding : 15,
@@ -61,6 +62,7 @@
 			minHeight : 100,
 			maxWidth  : 9999,
 			maxHeight : 9999,
+			pixelRatio: 1, // Set to 2 for retina display support
 
 			autoSize   : true,
 			autoHeight : false,
@@ -438,7 +440,7 @@
 				stop = function () {
 					clear();
 
-					$('body').unbind('.player');
+					D.unbind('.player');
 
 					F.player.isActive = false;
 
@@ -448,9 +450,9 @@
 					if (F.current && (F.current.loop || F.current.index < F.group.length - 1)) {
 						F.player.isActive = true;
 
-						$('body').bind({
-							'afterShow.player onUpdate.player'   : set,
+						D.bind({
 							'onCancel.player beforeClose.player' : stop,
+							'onUpdate.player'   : set,
 							'beforeLoad.player' : clear
 						});
 
@@ -754,18 +756,16 @@
 			if (obj.helpers) {
 				$.each(obj.helpers, function (helper, opts) {
 					if (opts && F.helpers[helper] && $.isFunction(F.helpers[helper][event])) {
-						opts = $.extend(true, {}, F.helpers[helper].defaults, opts);
-
-						F.helpers[helper][event](opts, obj);
+						F.helpers[helper][event]($.extend(true, {}, F.helpers[helper].defaults, opts), obj);
 					}
 				});
 			}
 
-			$.event.trigger(event + '.fb');
+			D.trigger(event);
 		},
 
 		isImage: function (str) {
-			return isString(str) && str.match(/(^data:image\/.*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp)((\?|#).*)?$)/i);
+			return isString(str) && str.match(/(^data:image\/.*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg)((\?|#).*)?$)/i);
 		},
 
 		isSWF: function (str) {
@@ -942,8 +942,8 @@
 			img.onload = function () {
 				this.onload = this.onerror = null;
 
-				F.coming.width  = this.width;
-				F.coming.height = this.height;
+				F.coming.width  = this.width / F.opts.pixelRatio;
+				F.coming.height = this.height / F.opts.pixelRatio;
 
 				F._afterLoad();
 			};
@@ -1228,7 +1228,7 @@
 								body.css('overflow-x', 'hidden');
 							}
 
-							origHeight = body.height();
+							origHeight = body.outerHeight(true);
 						}
 
 					} catch (e) {}
@@ -1689,16 +1689,17 @@
 
 	F.helpers.overlay = {
 		defaults : {
-			closeClick : true,  // if true, fancyBox will be closed when user clicks on the overlay
-			speedOut   : 200,   // duration of fadeOut animation
-			showEarly  : true,  // indicates if should be opened immediately or wait until the content is ready
-			css        : {},    // custom CSS properties
+			closeClick : true,      // if true, fancyBox will be closed when user clicks on the overlay
+			speedOut   : 200,       // duration of fadeOut animation
+			showEarly  : true,      // indicates if should be opened immediately or wait until the content is ready
+			css        : {},        // custom CSS properties
 			locked     : !isTouch,  // if true, the content will be locked into overlay
-			fixed      : true   // if false, the overlay CSS position property will not be set to "fixed"
+			fixed      : true       // if false, the overlay CSS position property will not be set to "fixed"
 		},
 
-		overlay : null,   // current handle
-		fixed   : false,  // indicates if the overlay has position "fixed"
+		overlay : null,      // current handle
+		fixed   : false,     // indicates if the overlay has position "fixed"
+		el      : $('html'), // element that contains "the lock"
 
 		// Public methods
 		create : function(opts) {
@@ -1708,7 +1709,7 @@
 				this.close();
 			}
 
-			this.overlay = $('<div class="fancybox-overlay"></div>').appendTo( 'body' );
+			this.overlay = $('<div class="fancybox-overlay"></div>').appendTo( F.coming ? F.coming.parent : opts.parent );
 			this.fixed   = false;
 
 			if (opts.fixed && F.defaults.fixed) {
@@ -1744,6 +1745,8 @@
 						} else {
 							that.close();
 						}
+
+						return false;
 					}
 				});
 			}
@@ -1752,21 +1755,27 @@
 		},
 
 		close : function() {
-			$('.fancybox-overlay').remove();
+			var scrollV, scrollH;
 
 			W.unbind('resize.overlay');
 
-			this.overlay = null;
+			if (this.el.hasClass('fancybox-lock')) {
+				$('.fancybox-margin').removeClass('fancybox-margin');
 
-			if (this.margin !== false) {
-				$('body').css('margin-right', this.margin);
+				scrollV = W.scrollTop();
+				scrollH = W.scrollLeft();
 
-				this.margin = false;
-			}
-
-			if (this.el) {
 				this.el.removeClass('fancybox-lock');
+
+				W.scrollTop( scrollV ).scrollLeft( scrollH );
 			}
+
+			$('.fancybox-overlay').remove().hide();
+
+			$.extend(this, {
+				overlay : null,
+				fixed   : false
+			});
 		},
 
 		// Private, callbacks
@@ -1794,16 +1803,19 @@
 
 		// This is where we can manipulate DOM, because later it would cause iframes to reload
 		onReady : function (opts, obj) {
+			var overlay = this.overlay;
+
 			$('.fancybox-overlay').stop(true, true);
 
-			if (!this.overlay) {
-				this.margin = D.height() > W.height() || $('body').css('overflow-y') === 'scroll' ? $('body').css('margin-right') : false;
-				this.el     = document.all && !document.querySelector ? $('html') : $('body');
-
+			if (!overlay) {
 				this.create(opts);
 			}
 
-			if (opts.locked && this.fixed) {
+			if (opts.locked && this.fixed && obj.fixed) {
+				if (!overlay) {
+					this.margin = D.height() > W.height() ? $('html').css('margin-right').replace("px", "") : false;
+				}
+
 				obj.locked = this.overlay.append( obj.wrap );
 				obj.fixed  = false;
 			}
@@ -1814,12 +1826,23 @@
 		},
 
 		beforeShow : function(opts, obj) {
+			var scrollV, scrollH;
+
 			if (obj.locked) {
+				if (this.margin !== false) {
+					$('*').filter(function(){
+						return ($(this).css('position') === 'fixed' && !$(this).hasClass("fancybox-overlay") && !$(this).hasClass("fancybox-wrap") );
+					}).addClass('fancybox-margin');
+
+					this.el.addClass('fancybox-margin');
+				}
+
+				scrollV = W.scrollTop();
+				scrollH = W.scrollLeft();
+
 				this.el.addClass('fancybox-lock');
 
-				if (this.margin !== false) {
-					$('body').css('margin-right', getScalar( this.margin ) + obj.scrollbarWidth);
-				}
+				W.scrollTop( scrollV ).scrollLeft( scrollH );
 			}
 
 			this.open(opts);
@@ -1834,7 +1857,8 @@
 		afterClose: function (opts) {
 			// Remove overlay if exists and fancyBox is not opening
 			// (e.g., it is not being open using afterClose callback)
-			if (this.overlay && !F.isActive) {
+			//if (this.overlay && !F.isActive) {
+			if (this.overlay && !F.coming) {
 				this.overlay.fadeOut(opts.speedOut, $.proxy( this.close, this ));
 			}
 		}
@@ -1949,6 +1973,8 @@
 
 	// Tests that need a body at doc ready
 	D.ready(function() {
+		var w1, w2;
+
 		if ( $.scrollbarWidth === undefined ) {
 			// http://benalman.com/projects/jquery-misc-plugins/#scrollbarwidth
 			$.scrollbarWidth = function() {
@@ -1978,6 +2004,17 @@
 			fixed  : $.support.fixedPosition,
 			parent : $('body')
 		});
+
+		//Get real width of page scroll-bar
+		w1 = $(window).width();
+
+		H.addClass('fancybox-lock-test');
+
+		w2 = $(window).width();
+
+		H.removeClass('fancybox-lock-test');
+
+		$("<style type='text/css'>.fancybox-margin{margin-right:" + (w2 - w1) + "px;}</style>").appendTo("head");
 	});
 
 }(window, document, jQuery));
