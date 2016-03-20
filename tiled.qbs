@@ -8,6 +8,7 @@ Project {
 
     property string version: qbs.getEnv("TILED_VERSION") || "0.16.0";
     property bool sparkleEnabled: qbs.getEnv("TILED_SPARKLE")
+    property bool snapshot: qbs.getEnv("TILED_SNAPSHOT")
 
     references: [
         "dist/win/dist.qbs",

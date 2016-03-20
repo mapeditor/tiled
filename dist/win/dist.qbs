@@ -57,6 +57,7 @@ WindowsInstallerPackage {
         name: "AppCastXml"
         files: [ "../appcast-win-snapshots.xml.in" ]
         fileTags: ["appCastXmlIn"]
+        condition: project.snapshot
     }
 
     Rule {

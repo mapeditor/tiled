@@ -26,7 +26,7 @@ QtGuiApplication {
 
     cpp.defines: {
         var defs = ["TILED_VERSION=" + project.version];
-        if (qbs.getEnv("TILED_SNAPSHOT"))
+        if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
