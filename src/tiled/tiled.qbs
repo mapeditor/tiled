@@ -439,6 +439,7 @@ QtGuiApplication {
 
                 // replace vars
                 vars['VERSION'] = project.version;
+                vars['VERSION_CSV'] = project.version.replace(/\./g, ',');
 
                 for (i in vars) {
                     all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
