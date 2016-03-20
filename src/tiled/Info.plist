@@ -53,7 +53,7 @@
 		</dict>
 	</dict>
 	<key>SUFeedURL</key>
-	<string>http://update.mapeditor.org/appcast.xml</string>
+	<string>http://update.mapeditor.org/appcast-osx.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>SUEnableAutomaticChecks</key>
