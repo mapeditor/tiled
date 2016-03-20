@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Eigenschap Toevoegen</translation>
+        <translation>Eigenschap Toevoegen</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe instantie starten, ook als er al een instantie actief is</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1083,27 +1083,27 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Editor</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Bestand</translation>
+        <translation>Bestand</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types E&amp;xporteren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types &amp;Importeren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Bestand Kiezen...</translation>
     </message>
 </context>
 <context>
@@ -1321,17 +1321,17 @@ Regel %1, colom %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Updates</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu Controleren</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch op updates controleren</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2780,7 +2780,7 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Editor</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3386,73 +3386,74 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Object Type Toevoegen</translation>
+        <translation>Object Type Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Type Verwijderen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Eigenschap Toevoegen</translation>
+        <translation>Eigenschap Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Eigenschap Verwijderen</translation>
+        <translation>Eigenschap Verwijderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Eigenschap Hernoemen</translation>
+        <translation>Eigenschap Hernoemen</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Fout Bij Object Types Schrijven</translation>
+        <translation>Fout Bij Object Types Schrijven</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het schrijven naar %1:
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Bestand Kiezen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Object Types bestanden (*.xml)</translation>
+        <translation>Object Types bestanden (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Fout Bij Object Types Lezen</translation>
+        <translation>Fout Bij Object Types Lezen</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Object Types Importeren</translation>
+        <translation>Object Types Importeren</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Object Types Exporteren</translation>
+        <translation>Object Types Exporteren</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">Naam:</translation>
+        <translation>Naam:</translation>
     </message>
 </context>
 <context>
@@ -3544,7 +3545,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Laatst gecontroleerd: %1</translation>
     </message>
 </context>
 <context>
@@ -3904,7 +3905,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrein Wissen</translation>
     </message>
 </context>
 <context>
