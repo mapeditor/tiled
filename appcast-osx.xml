@@ -1,0 +1,5 @@
+---
+release_only: true
+os: 'osx'
+---
+{%include appcast.inc %}

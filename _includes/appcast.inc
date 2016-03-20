@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>{{ site.github.project_title }}</title>
-        <description>Most recent releases with links to updates.</description>
+        <description>Most recent '{{ page.os }}' releases with links to updates.</description>
         <language>en</language>
         {% for release in site.github.releases %}
             {% unless release.draft %}
@@ -20,7 +20,7 @@
                         {% assign os = 'unknown' %}
                         {% endif %}
 
-                        {% if os == 'osx' %}
+                        {% if os == page.os %}
                             <item>
                                 <title>{{ release.name }}</title>
                                 <description><![CDATA[{{ release.body | markdownify }}]]></description>
@@ -28,6 +28,7 @@
                                 <enclosure
                                     url="{{ asset.browser_download_url }}"
                                     sparkle:version="{{ version }}"
+                                    sparkle:os="{{ os }}"
                                     length="{{ asset.size }}"
                                     type="application/octet-stream" />
                             </item>

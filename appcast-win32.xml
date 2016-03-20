@@ -1,0 +1,5 @@
+---
+release_only: true
+os: 'windows-x86'
+---
+{%include appcast.inc %}
