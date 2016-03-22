@@ -26,6 +26,7 @@
 
 #include "mapdocument.h"
 #include "consoledock.h"
+#include "preferencesdialog.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -261,6 +262,8 @@ private:
     DocumentManager *mDocumentManager;
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
+
+    QPointer<PreferencesDialog> mPreferencesDialog;
 };
 
 } // namespace Internal

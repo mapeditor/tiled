@@ -53,21 +53,31 @@ SparkleAutoUpdater::~SparkleAutoUpdater()
 }
 
 /**
- * Checks for updates in the background using Sparkle.
+ * Checks for updates using Sparkle.
  */
 void SparkleAutoUpdater::checkForUpdates()
 {
-    [d->updater checkForUpdatesInBackground];
+    [d->updater checkForUpdates:nil];
 }
 
 void SparkleAutoUpdater::setAutomaticallyChecksForUpdates(bool on)
 {
-  [d->updater setAutomaticallyChecksForUpdates:on];
+    [d->updater setAutomaticallyChecksForUpdates:on];
 }
 
 bool SparkleAutoUpdater::automaticallyChecksForUpdates()
 {
-  return [d->updater automaticallyChecksForUpdates];
+    return [d->updater automaticallyChecksForUpdates];
+}
+
+void SparkleAutoUpdater::setAutomaticallyDownloadsUpdates(bool on)
+{
+    [d->updater setAutomaticallyDownloadsUpdates:on];
+}
+
+bool SparkleAutoUpdater::automaticallyDownloadsUpdates()
+{
+    return [d->updater automaticallyDownloadsUpdates];
 }
 
 QDateTime SparkleAutoUpdater::lastUpdateCheckDate()

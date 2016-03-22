@@ -67,7 +67,6 @@
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "preferences.h"
-#include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "stampbrush.h"
 #include "terrain.h"
@@ -1250,8 +1249,14 @@ void MainWindow::delete_()
 
 void MainWindow::openPreferences()
 {
-    PreferencesDialog preferencesDialog(this);
-    preferencesDialog.exec();
+    if (!mPreferencesDialog) {
+        mPreferencesDialog = new PreferencesDialog(this);
+        mPreferencesDialog->setAttribute(Qt::WA_DeleteOnClose);
+    }
+
+    mPreferencesDialog->show();
+    mPreferencesDialog->activateWindow();
+    mPreferencesDialog->raise();
 }
 
 void MainWindow::labelVisibilityActionTriggered(QAction *action)
