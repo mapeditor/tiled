@@ -33,12 +33,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Eigenschaft hinzufügen</translation>
+        <translation>Eigenschaft hinzufügen</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschaftsname</translation>
     </message>
 </context>
 <context>
@@ -117,7 +117,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine neue Instanz starten, selbst wenn bereits eine Instanz läuft</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1079,27 +1079,27 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen Editor</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Datei</translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen exporieren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen importieren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen-Datei auswählen...</translation>
     </message>
 </context>
 <context>
@@ -1317,17 +1317,17 @@ Zeile %1, Spalte %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisierungen</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Jetzt prüfen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch auf Updates prüfen</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1337,7 +1337,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished">Aktivierte Plugins</translation>
+        <translation>Aktivierte Plugins</translation>
     </message>
 </context>
 <context>
@@ -1683,7 +1683,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gesetzt</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2771,7 +2771,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen Editor</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3381,73 +3381,74 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Objekttyp hinzufügen</translation>
+        <translation>Objekttyp hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttyp löschen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Eigenschaft hinzufügen</translation>
+        <translation>Eigenschaft hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Eigenschaft entfernen</translation>
+        <translation>Eigenschaft entfernen</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Eigenschaft umbenennen</translation>
+        <translation>Eigenschaft umbenennen</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Fehler beim Schreiben der Objekttypen</translation>
+        <translation>Fehler beim Schreiben der Objekttypen</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Schreiben zu %1:
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttypen-Datei auswählen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Objekttyp-Dateien (*.xml)</translation>
+        <translation>Objekttyp-Dateien (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Fehler beim Lesen der Objekttypen</translation>
+        <translation>Fehler beim Lesen der Objekttypen</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Objekttypen importieren</translation>
+        <translation>Objekttypen importieren</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Objekttypen exportieren</translation>
+        <translation>Objekttypen exportieren</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
 </context>
 <context>
@@ -3539,7 +3540,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt geprüft: %1</translation>
     </message>
 </context>
 <context>
@@ -3899,7 +3900,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrain löschen</translation>
     </message>
 </context>
 <context>
