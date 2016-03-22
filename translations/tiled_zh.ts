@@ -766,7 +766,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+570"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">全部文件 (*)</translation>
+        <translation>全部文件 (*)</translation>
     </message>
 </context>
 <context>
@@ -980,7 +980,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Type:</source>
-        <translation type="unfinished">类型:</translation>
+        <translation>类型:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1014,7 +1014,7 @@ Line %1, column %2</source>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished">图像</translation>
+        <translation>图像</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1089,7 +1089,7 @@ Line %1, column %2</source>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">文件</translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2111,13 +2111,13 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>找不到 'regions' 和 'regions_output' 图层。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到 input_&lt;名称&gt; 图层！</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -3372,12 +3372,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">增加一个对象类型</translation>
+        <translation>增加物件类型</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation>移除对象类型</translation>
+        <translation>移除物件类型</translation>
     </message>
     <message>
         <location line="+2"/>
