@@ -33,12 +33,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Property</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Property name</translation>
     </message>
 </context>
 <context>
@@ -117,7 +117,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Start a new instance, even if an instance is already running</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -628,7 +628,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMap While Drawing</translation>
     </message>
     <message>
         <location line="-170"/>
@@ -758,7 +758,7 @@
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+570"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>All Files (*)</translation>
     </message>
 </context>
 <context>
@@ -840,7 +840,7 @@ Line %1, column %2</source>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error reading embedded image for tile %1</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -877,7 +877,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-170"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid (negative) tile id: %1</translation>
     </message>
 </context>
 <context>
