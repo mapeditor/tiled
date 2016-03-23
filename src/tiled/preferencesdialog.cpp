@@ -74,19 +74,23 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     auto *preferences = Preferences::instance();
 
+    connect(mUi->enableDtd, &QCheckBox::toggled,
+            preferences, &Preferences::setDtdEnabled);
+    connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
+            preferences, &Preferences::setReloadTilesetsOnChanged);
+    connect(mUi->openLastFiles, &QCheckBox::toggled,
+            preferences, &Preferences::setOpenLastFilesOnStartup);
+
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
-    connect(mUi->openGL, &QCheckBox::toggled,
-            preferences, &Preferences::setUseOpenGL);
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             preferences, SLOT(setGridColor(QColor)));
     connect(mUi->gridFine, SIGNAL(valueChanged(int)),
             preferences, SLOT(setGridFine(int)));
     connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
             preferences, SLOT(setObjectLineWidth(qreal)));
-
-    connect(mUi->openLastFiles, &QCheckBox::toggled,
-            preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->openGL, &QCheckBox::toggled,
+            preferences, &Preferences::setUseOpenGL);
 
     connect(mUi->autoUpdateCheckBox, &QPushButton::toggled,
             this, &PreferencesDialog::autoUpdateToggled);
@@ -99,7 +103,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
 PreferencesDialog::~PreferencesDialog()
 {
-    toPreferences();
     delete mUi;
 }
 
@@ -153,15 +156,6 @@ void PreferencesDialog::fromPreferences()
         mUi->autoUpdateCheckBox->setChecked(autoUpdateEnabled);
         mUi->lastAutoUpdateCheckLabel->setText(tr("Last checked: %1").arg(lastCheckedString));
     }
-}
-
-void PreferencesDialog::toPreferences()
-{
-    Preferences *prefs = Preferences::instance();
-
-    prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
-    prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
 }
 
 void PreferencesDialog::retranslateUi()
