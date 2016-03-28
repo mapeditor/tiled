@@ -3900,7 +3900,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation>Terrain löschen</translation>
+        <translation>Terrain radieren</translation>
     </message>
 </context>
 <context>
