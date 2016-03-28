@@ -502,8 +502,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTilesetDock, SIGNAL(newTileset()),
             this, SLOT(newTileset()));
 
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
-            this, SLOT(setTerrainBrush(const Terrain*)));
+    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
+            mTerrainBrush, &TerrainBrush::setTerrain);
+    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
+            this, &MainWindow::selectTerrainBrush);
     connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
             mTerrainDock, &TerrainDock::setCurrentTerrain);
 
@@ -1684,17 +1686,9 @@ void MainWindow::setStamp(const TileStamp &stamp)
     mTilesetDock->selectTilesInStamp(stamp);
 }
 
-/**
- * Sets the terrain brush.
- */
-void MainWindow::setTerrainBrush(const Terrain *terrain)
+void MainWindow::selectTerrainBrush()
 {
-    mTerrainBrush->setTerrain(terrain);
-
-    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mTerrainBrush)
-        mToolManager->selectTool(mTerrainBrush);
+    mToolManager->selectTool(mTerrainBrush);
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)

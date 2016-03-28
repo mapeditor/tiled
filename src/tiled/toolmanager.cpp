@@ -32,8 +32,10 @@ ToolManager::ToolManager(QObject *parent)
     : QObject(parent)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(nullptr)
+    , mDisabledTool(nullptr)
     , mPreviouslyDisabledTool(nullptr)
     , mMapDocument(nullptr)
+    , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
@@ -97,6 +99,9 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
  */
 void ToolManager::selectTool(AbstractTool *tool)
 {
+    if (mSelectedTool == tool)
+        return;
+
     if (tool && !tool->isEnabled()) // Refuse to select disabled tools
         return;
 
@@ -144,22 +149,30 @@ void ToolManager::toolEnabledChanged(bool enabled)
         }
     }
 
-    // Switch to another tool when the current tool gets disabled. This is done
-    // with a delayed call since we first want all the tools to update their
-    // enabled state.
     if ((!enabled && tool == mSelectedTool) || (enabled && !mSelectedTool)) {
-        QMetaObject::invokeMethod(this, "selectEnabledTool",
-                                  Qt::QueuedConnection);
+        if (mSelectedTool) {
+            mDisabledTool = mSelectedTool;
+            setSelectedTool(nullptr);
+        }
+
+        // Automatically switch to another enabled tool when the current tool
+        // gets disabled. This is done with a delayed call since we first want
+        // all the tools to update their enabled state.
+        if (!mSelectEnabledToolPending) {
+            mSelectEnabledToolPending = true;
+            QMetaObject::invokeMethod(this, "selectEnabledTool",
+                                      Qt::QueuedConnection);
+        }
     }
 }
 
 void ToolManager::selectEnabledTool()
 {
+    mSelectEnabledToolPending = false;
+
     // Avoid changing tools when it's no longer necessary
     if (mSelectedTool && mSelectedTool->isEnabled())
         return;
-
-    AbstractTool *currentTool = mSelectedTool;
 
     // Prefer the tool we switched away from last time
     if (mPreviouslyDisabledTool && mPreviouslyDisabledTool->isEnabled())
@@ -167,7 +180,7 @@ void ToolManager::selectEnabledTool()
     else
         selectTool(firstEnabledTool());
 
-    mPreviouslyDisabledTool = currentTool;
+    mPreviouslyDisabledTool = mDisabledTool;
 }
 
 AbstractTool *ToolManager::firstEnabledTool() const

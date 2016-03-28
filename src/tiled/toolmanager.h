@@ -78,8 +78,11 @@ private:
 
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool;
+    AbstractTool *mDisabledTool;
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
+
+    bool mSelectEnabledToolPending;
 };
 
 

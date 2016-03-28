@@ -166,7 +166,7 @@ private slots:
     void rotate(RotateDirection direction);
 
     void setStamp(const TileStamp &stamp);
-    void setTerrainBrush(const Terrain *terrain);
+    void selectTerrainBrush();
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
