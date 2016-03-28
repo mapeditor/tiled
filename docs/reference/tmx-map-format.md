@@ -270,6 +270,7 @@ Wraps any number of custom properties. Can be used as a child of the `map`, `til
 ### &lt;property> ###
 
 * <b>name:</b> The name of the property.
+* <b>type:</b> The type of the property. Can be `string` (default), `int`, `float` or `bool`. (since 0.16)
 * <b>value:</b> The value of the property.
 
 When the property spans contains newlines, the current versions of Tiled Java and Tiled Qt will write out the value as characters contained inside the `property` element rather than as the `value` attribute. However, it is at the moment not really possible to edit properties consisting of multiple lines with Tiled.

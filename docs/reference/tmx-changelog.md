@@ -3,13 +3,17 @@
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 0.16 ##
+
+* The [`property`](tmx-map-format.md#property) element gained a `type` attribute, storing the type of the value. Currently supported types are `string` (the default), `int`, `float` and `bool`.
+
 ## Tiled 0.15 ##
 
-* The `offsetx` and `offsety` attributes are now also used for `imagelayer` elements, replacing the `x` and `y` attributes previously used. This change was made for consistency with the other layer types.
+* The `offsetx` and `offsety` attributes are now also used for [`imagelayer`](tmx-map-format.md#imagelayer) elements, replacing the `x` and `y` attributes previously used. This change was made for consistency with the other layer types.
 * The tiles in an image collection tileset are no longer guaranteed to be consecutive, because removing tiles from the collection will no longer change the IDs of other tiles.
 * The pure XML and Gzip-compressed tile layer data formats were deprecated, since they didn't have any advantage over other formats. Remaining formats are CSV, base64 and Zlib-compressed layer data.
-* Added `columns` attribute to the `tileset` element, which specifies the number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset.
-* The `backgroundcolor` attribute of the `map` element will now take the format `#AARRGGBB` when its alpha value differs from 255. Previously the alpha value was silently discarded.
+* Added `columns` attribute to the [`tileset`](tmx-map-format.md#tileset) element, which specifies the number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset.
+* The `backgroundcolor` attribute of the [`map`](tmx-map-format.md#map) element will now take the format `#AARRGGBB` when its alpha value differs from 255. Previously the alpha value was silently discarded.
 
 ## Tiled 0.14 ##
 
