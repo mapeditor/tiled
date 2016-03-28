@@ -1,4 +1,4 @@
-0.16.0 (21 March 2016)
+0.16.0 (28 March 2016)
 * Added checking for updates, based on Sparkle and WinSparkle
 * Added default property definitions to object types (with Michael Bickel)
 * Added types to custom properties: string, float, int, boolean (with CaptainFrog)
@@ -10,7 +10,8 @@
 * New MSI based installer for Windows
 * Optimized selection of many objects
 * libtiled-java: Fixed loading of maps with CSV layer data that are not square (by Zachary Jia)
-* Updated Dutch, French, Japanese, Russian and Spanish translations
+* Fixed potential crash when having Terrain Brush selected and switching maps
+* Updated Dutch, French, German, Japanese, Russian and Spanish translations
 
 0.15.2 (6 March 2016)
 * Added Turkish translation (by Nuri Uzunoğlu)
