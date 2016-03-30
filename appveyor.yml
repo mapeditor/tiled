@@ -1,5 +1,5 @@
 clone_depth: 200
-version: '0.15.{build}'
+version: '0.16.{build}'
 
 environment:
   global:
