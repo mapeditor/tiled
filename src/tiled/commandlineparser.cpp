@@ -65,7 +65,7 @@ bool CommandLineParser::parse(const QStringList &arguments)
             continue;
 
         if (noMoreArguments || arg.at(0) != QLatin1Char('-')) {
-            mFilesToOpen.append(arg);
+            mFilesToOpen.append(QFileInfo(arg).absoluteFilePath());
             continue;
         }
 

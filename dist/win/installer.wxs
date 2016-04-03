@@ -75,7 +75,7 @@
 
           <Component Id='MainExecutable' Guid='{4DC82B82-E1A7-4829-92CC-2BEB40E361BD}'>
             <File Id='TiledEXE' Source='$(var.InstallRoot)\tiled.exe' KeyPath='yes'>
-              <Shortcut Id="startmenuTiled" Directory="ProgramMenuDir" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
+              <Shortcut Id="startmenuTiled" Directory="ProgramMenuFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
               <Shortcut Id="desktopTiled" Directory="DesktopFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
             </File>
             <File Id="filFC35B15ADCD88C87362A53A3161884C1" Source="$(var.InstallRoot)\automappingconverter.exe" />
@@ -86,6 +86,7 @@
             <File Id="qt_conf" Source="$(var.RootDir)\dist\win\qt.conf" />
             <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
+            <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
             <File Id="Qt5OpenGL_dll" Source="$(var.QtDir)\bin\Qt5OpenGL.dll"/>
             <File Id="icuin54_dll" Source="$(var.QtDir)\bin\icuin54.dll"/>
@@ -228,12 +229,9 @@
       </Directory>
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
-        <Directory Id="ProgramMenuDir" Name="[ProductName]">
-          <Component Id="ProgramMenuDir" Guid="{2A4BD742-9A41-40D5-B871-0585CCF9805D}">
-            <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
-            <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
-          </Component>
-        </Directory>
+        <Component Id="ProgramMenuDir" Guid="{2A4BD742-9A41-40D5-B871-0585CCF9805D}">
+          <RegistryValue Root='HKMU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+        </Component>
       </Directory>
 
       <Directory Id="DesktopFolder" Name="Desktop" />

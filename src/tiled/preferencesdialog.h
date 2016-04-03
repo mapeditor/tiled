@@ -52,7 +52,6 @@ private slots:
 
 private:
     void fromPreferences();
-    void toPreferences();
 
     void retranslateUi();
 

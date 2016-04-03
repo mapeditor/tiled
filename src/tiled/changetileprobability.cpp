@@ -29,22 +29,28 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
-                                             Tile *tile,
+                                             const QList<Tile*>& tiles,
                                              float probability)
     : mTilesetDocument(tilesetDocument)
-    , mTile(tile)
-    , mProbability(probability)
+    , mTiles(tiles)
 {
+    mProbabilities.reserve(tiles.size());
+    for (int i = 0; i < tiles.size(); ++ i)
+        mProbabilities.append(probability);
+
     setText(QCoreApplication::translate("Undo Commands",
                                         "Change Tile Probability"));
 }
 
 void ChangeTileProbability::swap()
 {
-    float probability = mTile->probability();
-    mTile->setProbability(mProbability);
-    mProbability = probability;
-    emit mTilesetDocument->tileProbabilityChanged(mTile);
+    for (int i = 0; i < mTiles.size(); ++ i) {
+        Tile *tile = mTiles[i];
+        float probability = tile->probability();
+        tile->setProbability(mProbabilities[i]);
+        mProbabilities[i] = probability;
+        emit mTilesetDocument->tileProbabilityChanged(tile);
+    }
 }
 
 } // namespace Internal

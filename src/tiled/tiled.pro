@@ -1,6 +1,7 @@
 include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
 include(../qtpropertybrowser/src/qtpropertybrowser.pri)
+include(../qtsingleapplication/src/qtsingleapplication.pri)
 
 TEMPLATE = app
 TARGET = tiled

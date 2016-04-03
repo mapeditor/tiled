@@ -555,17 +555,9 @@ void MapEditor::setStamp(const TileStamp &stamp)
     mTilesetDock->selectTilesInStamp(stamp);
 }
 
-/**
- * Sets the terrain brush.
- */
-void MapEditor::setTerrainBrush(const Terrain *terrain)
+void MapEditor::selectTerrainBrush()
 {
-    mTerrainBrush->setTerrain(terrain);
-
-    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mTerrainBrush)
-        mToolManager->selectTool(mTerrainBrush);
+    mToolManager->selectTool(mTerrainBrush);
 }
 
 void MapEditor::currentWidgetChanged()

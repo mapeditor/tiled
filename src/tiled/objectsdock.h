@@ -96,6 +96,8 @@ private slots:
     void selectedObjectsChanged();
 
 private:
+    void synchronizeSelectedItems();
+
     MapDocument *mMapDocument;
     bool mSynching;
 };

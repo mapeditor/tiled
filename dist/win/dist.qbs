@@ -5,7 +5,10 @@ import qbs.TextFile
 
 WindowsInstallerPackage {
     builtByDefault: false
-    condition: qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc")
+    condition: {
+        return (project.snapshot || project.release) &&
+               (qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"));
+    }
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
     type: base.concat(["installable","appcast"])
@@ -57,6 +60,7 @@ WindowsInstallerPackage {
         name: "AppCastXml"
         files: [ "../appcast-win-snapshots.xml.in" ]
         fileTags: ["appCastXmlIn"]
+        condition: project.snapshot
     }
 
     Rule {

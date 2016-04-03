@@ -199,14 +199,6 @@ void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
     foreach (ObjectGroup *og, mExpandedGroups[mapDoc])
         mObjectsView->setExpanded(mObjectsView->model()->index(og), true);
     mExpandedGroups[mapDoc].clear();
-
-    // Also restore the selection
-    foreach (MapObject *o, mapDoc->selectedObjects()) {
-        QModelIndex index = mObjectsView->model()->index(o);
-        mObjectsView->selectionModel()->select(index,
-                                               QItemSelectionModel::Select |
-                                               QItemSelectionModel::Rows);
-    }
 }
 
 void ObjectsDock::documentAboutToClose(Document *document)
@@ -259,6 +251,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
+
+        synchronizeSelectedItems();
     } else {
         setModel(nullptr);
     }
@@ -303,11 +297,11 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     if (!mMapDocument || mSynching)
         return;
 
-    QModelIndexList selectedRows = selectionModel()->selectedRows();
+    const QModelIndexList selectedRows = selectionModel()->selectedRows();
     int currentLayerIndex = -1;
 
     QList<MapObject*> selectedObjects;
-    foreach (const QModelIndex &index, selectedRows) {
+    for (const QModelIndex &index : selectedRows) {
         if (ObjectGroup *og = model()->toLayer(index)) {
             int index = mMapDocument->map()->layers().indexOf(og);
             if (currentLayerIndex == -1)
@@ -341,21 +335,32 @@ void ObjectsView::selectedObjectsChanged()
     if (mSynching)
         return;
 
-    if (!mMapDocument)
-        return;
+    synchronizeSelectedItems();
 
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
-
-    mSynching = true;
-    clearSelection();
-    foreach (MapObject *o, selectedObjects) {
-        QModelIndex index = model()->index(o);
-        selectionModel()->select(index, QItemSelectionModel::Select |  QItemSelectionModel::Rows);
-    }
-    mSynching = false;
-
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
         scrollTo(model()->index(o));
     }
+}
+
+void ObjectsView::synchronizeSelectedItems()
+{
+    Q_ASSERT(!mSynching);
+    Q_ASSERT(mMapDocument);
+
+    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
+    QItemSelection itemSelection;
+
+    for (MapObject *o : selectedObjects) {
+        QModelIndex index = model()->index(o);
+        itemSelection.select(index, index);
+    }
+
+    mSynching = true;
+    selectionModel()->select(itemSelection,
+                             QItemSelectionModel::Select |
+                             QItemSelectionModel::Rows |
+                             QItemSelectionModel::Clear);
+    mSynching = false;
 }

@@ -7,7 +7,7 @@ TiledPlugin {
 
     condition: {
         if (qbs.targetOS.contains("linux")) {
-            return true;
+            return pkgConfig.found;
         } else if (qbs.targetOS.contains("windows")) {
             // On Windows, currently only the default install location of
             // Python 2.7 is supported, and only when compiling with MinGW in

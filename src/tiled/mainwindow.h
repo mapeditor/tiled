@@ -26,6 +26,7 @@
 
 #include "mapdocument.h"
 #include "consoledock.h"
+#include "preferencesdialog.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -218,6 +219,8 @@ private:
 
     TmxMapFormat *mTmxMapFormat;
     TsxTilesetFormat *mTsxTilesetFormat;
+
+    QPointer<PreferencesDialog> mPreferencesDialog;
 };
 
 } // namespace Internal

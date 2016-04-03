@@ -37,6 +37,8 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     mUi->setupUi(this);
 
     // Add possible types from QVariant

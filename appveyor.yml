@@ -1,5 +1,5 @@
 clone_depth: 200
-version: '0.15.{build}'
+version: '0.16.{build}'
 
 environment:
   global:
@@ -18,6 +18,7 @@ build_script:
   - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
+  - if defined APPVEYOR_REPO_TAG_NAME set TILED_RELEASE=true
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SPARKLE=true
@@ -36,7 +37,7 @@ after_build:
   - cd qt-release
   - cd dist*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
-  - move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
+  - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - name: Installer

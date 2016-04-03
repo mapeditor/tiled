@@ -141,6 +141,25 @@ protected:
 };
 
 
+class WheelEnabledTabBar : public QTabBar
+{
+public:
+    WheelEnabledTabBar(QWidget *parent = nullptr)
+       : QTabBar(parent)
+    {}
+
+    void wheelEvent(QWheelEvent *event) override
+    {
+        int index = currentIndex();
+        if (index != -1) {
+            index += event->delta() > 0 ? -1 : 1;
+            if (index >= 0 && index < count())
+                setCurrentIndex(index);
+        }
+    }
+};
+
+
 static bool hasTileReferences(MapDocument *mapDocument,
                               std::function<bool(const Cell &)> condition)
 {
@@ -185,7 +204,7 @@ static void removeTileReferences(MapDocument *mapDocument,
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(nullptr),
-    mTabBar(new QTabBar),
+    mTabBar(new WheelEnabledTabBar),
     mViewStack(new QStackedWidget),
     mToolBar(new QToolBar),
     mCurrentTile(nullptr),
@@ -653,7 +672,9 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
 
 void TilesetDock::tilesetMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050200
+#if QT_VERSION >= 0x050600
+    mTilesets.move(from, to);
+#elif QT_VERSION >= 0x050200
     mTilesets.insert(to, mTilesets.takeAt(from));
 #else
     SharedTileset tileset = mTilesets.at(from);

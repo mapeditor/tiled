@@ -72,6 +72,11 @@ signals:
      */
     void currentTerrainChanged(const Terrain *terrain);
 
+    /**
+     * Emitted when it would make sense to switch to the Terrain Brush.
+     */
+    void selectTerrainBrush();
+
 public slots:
     void setCurrentTerrain(Terrain *terrain);
 

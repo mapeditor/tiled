@@ -9,6 +9,7 @@ QtGuiApplication {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
+    Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 
     property string sparkleDir: {
@@ -25,7 +26,7 @@ QtGuiApplication {
 
     cpp.defines: {
         var defs = ["TILED_VERSION=" + project.version];
-        if (qbs.getEnv("TILED_SNAPSHOT"))
+        if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
@@ -446,6 +447,7 @@ QtGuiApplication {
 
                 // replace vars
                 vars['VERSION'] = project.version;
+                vars['VERSION_CSV'] = project.version.replace(/\./g, ',');
 
                 for (i in vars) {
                     all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);

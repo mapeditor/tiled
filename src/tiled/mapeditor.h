@@ -93,7 +93,7 @@ public slots:
     void rotate(RotateDirection direction);
 
     void setStamp(const TileStamp &stamp);
-    void setTerrainBrush(const Terrain *terrain);
+    void selectTerrainBrush();
 
 protected:
     // todo: consider how to get this event here from the main window
