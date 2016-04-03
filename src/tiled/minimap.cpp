@@ -45,7 +45,7 @@ using namespace Tiled::Internal;
 
 MiniMap::MiniMap(QWidget *parent)
     : QFrame(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mDragging(false)
     , mMouseMoveCursorState(false)
     , mRedrawMapImage(false)
@@ -280,7 +280,7 @@ void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
     if (delta != 0)
         mapView->zoomable()->handleWheelDelta(delta);
 
-    mapView->centerOn(mapToScene(centerPos));
+    mapView->forceCenterOn(mapToScene(centerPos));
 }
 
 void MiniMap::redrawTimeout()

@@ -52,19 +52,19 @@ public:
     MiniMapRenderFlags renderFlags() const { return mRenderFlags; }
     void setRenderFlags(MiniMapRenderFlags flags) { mRenderFlags = flags; }
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
 public slots:
     /** Schedules a redraw of the minimap image. */
     void scheduleMapImageUpdate();
 
 protected:
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *);
-    void wheelEvent(QWheelEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private slots:
     void redrawTimeout();

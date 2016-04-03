@@ -1,11 +1,80 @@
-0.14.0 (...)
+0.16.0 (28 March 2016)
+* Added checking for updates, based on Sparkle and WinSparkle
+* Added default property definitions to object types (with Michael Bickel)
+* Added types to custom properties: string, float, int, boolean (with CaptainFrog)
+* Added Properties view to the Tile Collision Editor (by Seanba)
+* Added a reset button for color properties
+* Added eraser mode to Terrain Brush and fixed some small issues
+* Reuse existing Tiled instance when opening maps from the file manager (with Will Luongo)
+* Allow setting tile probability for multiple tiles (by Henrik Heino)
+* New MSI based installer for Windows
+* Optimized selection of many objects
+* libtiled-java: Fixed loading of maps with CSV layer data that are not square (by Zachary Jia)
+* Fixed potential crash when having Terrain Brush selected and switching maps
+* Updated Dutch, French, German, Japanese, Russian and Spanish translations
+
+0.15.2 (6 March 2016)
+* Added Turkish translation (by Nuri Uzunoğlu)
+* Fixed hiding of object labels when deleting an object layer
+* Fixed updating of object label colors when changing object types
+* TMX: Added image size attributes to image layer images
+* Updated Brazilian Portuguese translation
+
+0.15.1 (30 January 2016)
+* Fixed adding/removing object name labels when set to always visible
+* Fixed a problem with 'Execute in Terminal' on OS X
+* Fixed mouse coordinate conversion for hexagonal renderer
+* Fixed image layer offset handling
+* Update Czech translation
+
+0.15.0 (4 January 2016)
+* Allow loading maps with broken external references
+* Allow plugins to be enabled/disabled
+* Allow changing tileset image parameters
+* Allow changing the images of tiles in a collection tileset
+* Allow changing external tileset references
+* Allow panning over the edges of the map
+* Added Terrain Generator tool
+* Added column count property to image collection tilesets
+* Added a combo box for changing the current layer to the status bar
+* Moved the AutoMapping while drawing toggle into the menu
+* Removing tiles from collection tilesets no longer changes tile IDs
+* Unified layer offset handling
+* Default tile layer data format changed to CSV
+* Deprecated pure XML and Gzip-compressed tile layer data formats
+* Fixed random tile picker for tiles with zero probability (by Henrik Heino)
+* Fixed saving of alpha value of the map background color
+* Fixed crash in tmxrasterizer and tmxviewer
+* Fixed tmxrasterizer not reporting write errors
+* Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
+* Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations
+
+0.14.2 (12 October 2015)
+* Added Polish translation (by Tomasz Kubiak)
+* Fixed layer offsets missing in the Lua export
+* Fixed JSON tileset format missing in 'Add External Tileset' action
+* Fixed language selection entries for Portuguese
+* Fixed an issue with copy/pasting when using image collection tilesets
+* Updated Brazilian Portuguese translation
+
+0.14.1 (28 September 2015)
+* Added missing 'renderorder' property to the Lua export
+* Fixed editing of properties of tiles captured from the map
+
+0.14.0 (21 September 2015)
 * Added support for custom external tileset formats (JSON format added)
 * Added support for shifting layers by some distance in pixels
 * Added back object name labels in a much improved form
+* Added tile stamp variation support to the fill tool
+* Synchronize tileset selection when capturing tiles from the map
+* Change tile in collision and animation editors based on selected tile object
 * Keep the active brush when switching maps
 * Python plugins can now add export-only map formats
 * Fixed updating of current tile when changing map
 * Fixed animated tile overlay to look less odd in some cases
+* Fixed Save As dialog popping up when saving fails
+* Fixed tilesets view collapsing when switching maps on OS X
+* Updated Russian, Spanish, Czech, French, Japanese, German, Dutch and Bulgarian translations
 
 0.13.1 (6 September 2015)
 * Added Bulgarian translation (by Lyubomir Vasilev)

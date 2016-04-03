@@ -66,7 +66,7 @@ public:
     /**
      * Constructor.
      */
-    TilesetDock(QWidget *parent = 0);
+    TilesetDock(QWidget *parent = nullptr);
 
     ~TilesetDock();
 
@@ -79,6 +79,8 @@ public:
      * Returns the currently selected tile.
      */
     Tile *currentTile() const { return mCurrentTile; }
+
+    void selectTilesInStamp(const TileStamp &);
 
 signals:
     /**
@@ -99,23 +101,28 @@ signals:
     void newTileset();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
-    void dragEnterEvent(QDragEnterEvent *);
-    void dropEvent(QDropEvent *);
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 private slots:
+    void currentTilesetChanged();
     void selectionChanged();
+    void currentChanged(const QModelIndex &index);
+
     void updateActions();
     void updateCurrentTiles();
-    void updateCurrentTile();
     void indexPressed(const QModelIndex &index);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
+    void tilesetReplaced(int index, Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
+
+    void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
 
     void removeTileset();
@@ -142,6 +149,8 @@ private:
     Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
+
+    void setupTilesetModel(TilesetView *view, Tileset *tileset);
 
     MapDocument *mMapDocument;
 
@@ -173,6 +182,9 @@ private:
 
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
+
+    bool mEmittingStampCaptured;
+    bool mSynchronizingSelection;
 };
 
 } // namespace Internal

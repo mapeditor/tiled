@@ -55,7 +55,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     // Check the data
     if (uncompressed.count() != 48 * 48) {
         mError = tr("This is not a valid Droidcraft map file!");
-        return 0;
+        return nullptr;
     }
 
     // Build 48 x 48 map
@@ -72,12 +72,12 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {
-        unsigned char tileFile = uncompressed.at(i);
+        unsigned char tileId = uncompressed.at(i);
 
         int y = i / 48;
         int x = i - (48 * y);
 
-        Tile *tile = mapTileset->tileAt(tileFile);
+        Tile *tile = mapTileset->findTile(tileId);
         mapLayer->setCell(x, y, Cell(tile));
     }
 

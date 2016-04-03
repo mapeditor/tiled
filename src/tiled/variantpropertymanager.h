@@ -24,6 +24,8 @@
 
 #include <QtVariantPropertyManager>
 
+#include <QFileIconProvider>
+
 namespace Tiled {
 namespace Internal {
 
@@ -36,42 +38,43 @@ class VariantPropertyManager : public QtVariantPropertyManager
     Q_OBJECT
 
 public:
-    explicit VariantPropertyManager(QObject *parent = 0)
-        : QtVariantPropertyManager(parent)
-        , mSuggestionsAttribute(QLatin1String("suggestions"))
-    {}
+    explicit VariantPropertyManager(QObject *parent = nullptr);
 
-    QVariant value(const QtProperty *property) const;
-    int valueType(int propertyType) const;
-    bool isPropertyTypeSupported(int propertyType) const;
+    QVariant value(const QtProperty *property) const override;
+    int valueType(int propertyType) const override;
+    bool isPropertyTypeSupported(int propertyType) const override;
 
-    QStringList attributes(int propertyType) const;
-    int attributeType(int propertyType, const QString &attribute) const;
+    QStringList attributes(int propertyType) const override;
+    int attributeType(int propertyType, const QString &attribute) const override;
     QVariant attributeValue(const QtProperty *property,
-                            const QString &attribute) const;
+                            const QString &attribute) const override;
 
     static int filePathTypeId();
+    static int tilesetParametersTypeId();
 
 public slots:
-    void setValue(QtProperty *property, const QVariant &val);
+    void setValue(QtProperty *property, const QVariant &val) override;
     void setAttribute(QtProperty *property,
                       const QString &attribute,
-                      const QVariant &value);
+                      const QVariant &value) override;
 
 protected:
-    QString valueText(const QtProperty *property) const;
-    void initializeProperty(QtProperty *property);
-    void uninitializeProperty(QtProperty *property);
+    QString valueText(const QtProperty *property) const override;
+    QIcon valueIcon(const QtProperty *property) const override;
+    void initializeProperty(QtProperty *property) override;
+    void uninitializeProperty(QtProperty *property) override;
 
 private:
     struct Data {
-        QString value;
+        QVariant value;
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;
     QMap<const QtProperty *, QStringList> mSuggestions;
 
     const QString mSuggestionsAttribute;
+    QIcon mImageMissingIcon;
+    QFileIconProvider mIconProvider;
 };
 
 } // namespace Internal

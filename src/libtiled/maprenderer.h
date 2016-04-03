@@ -59,7 +59,7 @@ class TILEDSHARED_EXPORT MapRenderer
 public:
     MapRenderer(const Map *map)
         : mMap(map)
-        , mFlags(0)
+        , mFlags(nullptr)
         , mObjectLineWidth(2)
         , mPainterScale(1)
     {}

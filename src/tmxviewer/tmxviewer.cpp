@@ -54,7 +54,7 @@ class MapObjectItem : public QGraphicsItem
 {
 public:
     MapObjectItem(MapObject *mapObject, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mMapObject(mapObject)
         , mRenderer(renderer)
@@ -70,12 +70,12 @@ public:
         setRotation(mapObject->rotation());
     }
 
-    QRectF boundingRect() const
+    QRectF boundingRect() const override
     {
         return mBoundingRect;
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
@@ -96,7 +96,7 @@ class TileLayerItem : public QGraphicsItem
 {
 public:
     TileLayerItem(TileLayer *tileLayer, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mTileLayer(tileLayer)
         , mRenderer(renderer)
@@ -105,12 +105,12 @@ public:
         setPos(mTileLayer->offset());
     }
 
-    QRectF boundingRect() const
+    QRectF boundingRect() const override
     {
         return mRenderer->boundingRect(mTileLayer->bounds());
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *)
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
         mRenderer->drawTileLayer(p, mTileLayer, option->rect);
     }
@@ -127,7 +127,7 @@ class ObjectGroupItem : public QGraphicsItem
 {
 public:
     ObjectGroupItem(ObjectGroup *objectGroup, MapRenderer *renderer,
-                    QGraphicsItem *parent = 0)
+                    QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
@@ -143,8 +143,8 @@ public:
         }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 /**
@@ -153,7 +153,7 @@ public:
 class MapItem : public QGraphicsItem
 {
 public:
-    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = 0)
+    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
@@ -168,16 +168,16 @@ public:
         }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 
 TmxViewer::TmxViewer(QWidget *parent) :
     QGraphicsView(parent),
     mScene(new QGraphicsScene(this)),
-    mMap(0),
-    mRenderer(0)
+    mMap(nullptr),
+    mRenderer(nullptr)
 {
     setWindowTitle(tr("TMX Viewer"));
 
@@ -201,7 +201,7 @@ TmxViewer::~TmxViewer()
 bool TmxViewer::viewMap(const QString &fileName)
 {
     delete mRenderer;
-    mRenderer = 0;
+    mRenderer = nullptr;
 
     mScene->clear();
     centerOn(0, 0);

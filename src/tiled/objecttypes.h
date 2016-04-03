@@ -24,6 +24,9 @@
 #include <QString>
 #include <QColor>
 #include <QVector>
+#include <QXmlStreamReader>
+
+#include "properties.h"
 
 namespace Tiled {
 namespace Internal {
@@ -35,14 +38,18 @@ struct ObjectType
 {
     ObjectType() : color(Qt::gray) {}
 
-    ObjectType(const QString &name,
-               const QColor &color)
-        : name(name)
+    ObjectType(QString name,
+               const QColor &color,
+               const Properties &properties = Properties())
+        : name(std::move(name))
         , color(color)
+        , defaultProperties(properties)
     {}
 
     QString name;
     QColor color;
+
+    Properties defaultProperties;
 };
 
 typedef QVector<ObjectType> ObjectTypes;
@@ -65,6 +72,8 @@ class ObjectTypesReader
 {
 public:
     ObjectTypes readObjectTypes(const QString &fileName);
+
+    void readObjectTypeProperty(QXmlStreamReader& xml, Properties& props);
 
     QString errorString() const { return mError; }
 

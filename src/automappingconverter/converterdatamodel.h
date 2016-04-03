@@ -35,7 +35,7 @@ class ConverterDataModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    ConverterDataModel(ConverterControl *control, QObject *parent = 0);
+    ConverterDataModel(ConverterControl *control, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 

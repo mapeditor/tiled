@@ -1,14 +1,12 @@
 import qbs 1.0
 
-QtGuiApplication {
+TiledQtGuiApplication {
     name: "tmxviewer"
 
     Depends { name: "libtiled" }
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: ["$ORIGIN/../lib"]
-    cpp.cxxLanguageVersion: "c++11"
 
     consoleApplication: false
 
@@ -17,15 +15,4 @@ QtGuiApplication {
         "tmxviewer.cpp",
         "tmxviewer.h",
     ]
-
-    Group {
-        qbs.install: true
-        qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
-                return ""
-            else
-                return "bin"
-        }
-        fileTagsFilter: product.type
-    }
 }

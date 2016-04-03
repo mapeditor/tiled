@@ -39,6 +39,31 @@
 
 namespace Tiled {
 
+QString PluginFile::fileName() const
+{
+    if (loader)
+        return loader->fileName();
+
+    return QStringLiteral("<static>");
+}
+
+bool PluginFile::hasError() const
+{
+    if (instance)
+        return false;
+
+    return state == PluginEnabled || (defaultEnable && state == PluginDefault);
+}
+
+QString PluginFile::errorString() const
+{
+    if (loader)
+        return loader->errorString();
+
+    return QString();
+}
+
+
 PluginManager *PluginManager::mInstance;
 
 PluginManager::PluginManager()
@@ -47,6 +72,72 @@ PluginManager::PluginManager()
 
 PluginManager::~PluginManager()
 {
+}
+
+/**
+ * Sets the enabled state of the given plugin to be explicitly enabled or
+ * disabled or to use the default state.
+ *
+ * Returns whether the change was successful.
+ */
+bool PluginManager::setPluginState(const QString &fileName, PluginState state)
+{
+    if (state == PluginDefault)
+        mPluginStates.remove(fileName);
+    else
+        mPluginStates.insert(fileName, state);
+
+    PluginFile *plugin = pluginByFileName(fileName);
+    if (!plugin)
+        return false;
+
+    plugin->state = state;
+
+    bool loaded = plugin->instance != nullptr;
+    bool enable = state == PluginEnabled || (plugin->defaultEnable && state != PluginDisabled);
+    bool success = false;
+
+    if (enable && !loaded) {
+        success = loadPlugin(plugin);
+    } else if (!enable && loaded) {
+        success = unloadPlugin(plugin);
+    } else {
+        success = true;
+    }
+
+    return success;
+}
+
+bool PluginManager::loadPlugin(PluginFile *plugin)
+{
+    plugin->instance = plugin->loader->instance();
+
+    if (plugin->instance) {
+        if (Plugin *p = qobject_cast<Plugin*>(plugin->instance))
+            p->initialize();
+        else
+            addObject(plugin->instance);
+
+        return true;
+    } else {
+        qWarning() << "Error:" << qPrintable(plugin->loader->errorString());
+        return false;
+    }
+}
+
+bool PluginManager::unloadPlugin(PluginFile *plugin)
+{
+    bool derivedPlugin = qobject_cast<Plugin*>(plugin->instance) != nullptr;
+
+    if (plugin->loader->unload()) {
+        if (!derivedPlugin)
+            removeObject(plugin->instance);
+
+        plugin->instance = nullptr;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 PluginManager *PluginManager::instance()
@@ -60,7 +151,7 @@ PluginManager *PluginManager::instance()
 void PluginManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 void PluginManager::addObject(QObject *object)
@@ -75,8 +166,10 @@ void PluginManager::addObject(QObject *object)
 
 void PluginManager::removeObject(QObject *object)
 {
+    if (!mInstance)
+        return;
+
     Q_ASSERT(object);
-    Q_ASSERT(mInstance);
     Q_ASSERT(mInstance->mObjects.contains(object));
 
     emit mInstance->objectAboutToBeRemoved(object);
@@ -86,8 +179,9 @@ void PluginManager::removeObject(QObject *object)
 void PluginManager::loadPlugins()
 {
     // Load static plugins
-    foreach (QObject *instance, QPluginLoader::staticInstances()) {
-        mPlugins.append(LoadedPlugin(QLatin1String("<static>"), instance));
+    const QObjectList &staticPluginInstances = QPluginLoader::staticInstances();
+    for (QObject *instance : staticPluginInstances) {
+        mPlugins.append(PluginFile(PluginStatic, instance));
 
         if (Plugin *plugin = qobject_cast<Plugin*>(instance))
             plugin->initialize();
@@ -117,15 +211,28 @@ void PluginManager::loadPlugins()
         if (!QLibrary::isLibrary(pluginFile))
             continue;
 
-        QPluginLoader loader(pluginFile);
-        QObject *instance = loader.instance();
+        QString fileName = QFileInfo(pluginFile).fileName();
+        PluginState state = mPluginStates.value(fileName);
 
-        if (!instance) {
-            qWarning() << "Error:" << qPrintable(loader.errorString());
-            continue;
+        auto *loader = new QPluginLoader(pluginFile, this);
+        auto metaData = loader->metaData().value(QStringLiteral("MetaData")).toObject();
+        bool defaultEnable = metaData.value(QStringLiteral("defaultEnable")).toBool();
+
+        bool enable = state == PluginEnabled || (defaultEnable && state != PluginDisabled);
+
+        QObject *instance = nullptr;
+
+        if (enable) {
+            instance = loader->instance();
+
+            if (!instance)
+                qWarning() << "Error:" << qPrintable(loader->errorString());
         }
 
-        mPlugins.append(LoadedPlugin(pluginFile, instance));
+        mPlugins.append(PluginFile(state, instance, loader, defaultEnable));
+
+        if (!instance)
+            continue;
 
         if (Plugin *plugin = qobject_cast<Plugin*>(instance))
             plugin->initialize();
@@ -134,13 +241,13 @@ void PluginManager::loadPlugins()
     }
 }
 
-const LoadedPlugin *PluginManager::pluginByFileName(const QString &pluginFileName) const
+PluginFile *PluginManager::pluginByFileName(const QString &fileName)
 {
-    foreach (const LoadedPlugin &plugin, mPlugins)
-        if (pluginFileName == plugin.fileName)
+    for (PluginFile &plugin : mPlugins)
+        if (plugin.loader && QFileInfo(plugin.loader->fileName()).fileName() == fileName)
             return &plugin;
 
-    return 0;
+    return nullptr;
 }
 
 } // namespace Tiled

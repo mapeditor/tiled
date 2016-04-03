@@ -139,7 +139,7 @@ public:
     /**
      * Returns whether this object group contains any objects.
      */
-    bool isEmpty() const;
+    bool isEmpty() const override;
 
     /**
      * Computes and returns the set of tilesets used by this object group.
@@ -150,13 +150,14 @@ public:
      * Returns whether any tile objects in this object group reference tiles
      * in the given tileset.
      */
-    bool referencesTileset(const Tileset *tileset) const;
+    bool referencesTileset(const Tileset *tileset) const override;
 
     /**
      * Replaces all references to tiles from \a oldTileset with tiles from
      * \a newTileset.
      */
-    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceReferencesToTileset(Tileset *oldTileset,
+                                    Tileset *newTileset) override;
 
     /**
      * Offsets all objects within the group by the \a offset given in pixel
@@ -169,8 +170,8 @@ public:
     void offsetObjects(const QPointF &offset, const QRectF &bounds,
                        bool wrapX, bool wrapY);
 
-    bool canMergeWith(Layer *other) const;
-    Layer *mergedWith(Layer *other) const;
+    bool canMergeWith(Layer *other) const override;
+    Layer *mergedWith(Layer *other) const override;
 
     const QColor &color() const;
     void setColor(const QColor &color);
@@ -178,7 +179,13 @@ public:
     DrawOrder drawOrder() const;
     void setDrawOrder(DrawOrder drawOrder);
 
-    Layer *clone() const;
+    Layer *clone() const override;
+
+    // Enable easy iteration over cells with range-based for
+    QList<MapObject*>::iterator begin() { return mObjects.begin(); }
+    QList<MapObject*>::iterator end() { return mObjects.end(); }
+    QList<MapObject*>::const_iterator begin() const { return mObjects.begin(); }
+    QList<MapObject*>::const_iterator end() const { return mObjects.end(); }
 
 protected:
     ObjectGroup *initializeClone(ObjectGroup *clone) const;

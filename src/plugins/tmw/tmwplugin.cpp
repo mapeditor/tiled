@@ -37,7 +37,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 
-    TileLayer *collisionLayer = 0;
+    TileLayer *collisionLayer = nullptr;
 
     foreach (Layer *layer, map->layers()) {
         if (layer->name().compare(QLatin1String("collision"),

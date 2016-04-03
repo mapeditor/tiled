@@ -67,10 +67,10 @@ public:
         setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
     }
 
-    void undo()
+    void undo() override
     { removeLayer(); }
 
-    void redo()
+    void redo() override
     { addLayer(); }
 };
 
@@ -84,15 +84,15 @@ public:
      * Creates an undo command that removes the layer at \a index.
      */
     RemoveLayer(MapDocument *mapDocument, int index)
-        : AddRemoveLayer(mapDocument, index, 0)
+        : AddRemoveLayer(mapDocument, index, nullptr)
     {
         setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
     }
 
-    void undo()
+    void undo() override
     { addLayer(); }
 
-    void redo()
+    void redo() override
     { removeLayer(); }
 };
 

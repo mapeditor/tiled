@@ -35,9 +35,9 @@ public:
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 };
 
 } // namespace Internal

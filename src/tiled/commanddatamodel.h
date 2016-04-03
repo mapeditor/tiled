@@ -75,7 +75,7 @@ public:
      * Remove the given row or rows from the model.
      */
     bool removeRows(int row, int count,
-                    const QModelIndex &parent = QModelIndex());
+                    const QModelIndex &parent = QModelIndex()) override;
 
     /**
       * Deletes the commands associated with the given row <i>indices</i>.
@@ -85,35 +85,35 @@ public:
     /**
      * Returns the number of rows (this includes the <New Command> row).
      */
-    int rowCount(const QModelIndex &) const;
+    int rowCount(const QModelIndex &) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &) const;
+    int columnCount(const QModelIndex &) const override;
 
     /**
      * Returns the data at <i>index</i> for the given <i>role</i>.
      */
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     /**
      * Sets the data at <i>index</i> to the given <i>value</i>.
      * for the given <i>role</i>
      */
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     /**
      * Returns flags for the item at <i>index</i>.
      */
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /**
      * Returns the header data for the given <i>section</i> and <i>role</i>.
      * <i>orientation</i> should be Qt::Horizontal.
      */
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::EditRole) const;
+                        int role = Qt::EditRole) const override;
 
     /**
      * Returns a menu containing a list of appropriate actions for the item at
@@ -124,23 +124,23 @@ public:
     /**
      * Returns mime data for the first index in <i>indexes</i>.
      */
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
     /**
      * Returns a list of mime types that can represent a command.
      */
-    QStringList mimeTypes() const;
+    QStringList mimeTypes() const override;
 
     /**
      * Returns the drop actions that can be performed.
      */
-    Qt::DropActions supportedDropActions() const;
+    Qt::DropActions supportedDropActions() const override;
 
     /**
      * Handles dropping of mime data onto <i>parent</i>.
      */
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
-                      int column, const QModelIndex &parent);
+                      int column, const QModelIndex &parent) override;
 
 public slots:
 

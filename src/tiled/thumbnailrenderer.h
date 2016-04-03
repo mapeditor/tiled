@@ -1,6 +1,6 @@
 /*
- *
- * Copyright 2011, Your Name <your.name@domain>
+ * thumbnailrenderer.h
+ * Copyright 2011-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *

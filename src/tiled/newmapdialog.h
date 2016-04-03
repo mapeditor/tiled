@@ -40,7 +40,7 @@ class NewMapDialog : public QDialog
     Q_OBJECT
 
 public:
-    NewMapDialog(QWidget *parent = 0);
+    NewMapDialog(QWidget *parent = nullptr);
     ~NewMapDialog();
 
     /**

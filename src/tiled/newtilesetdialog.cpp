@@ -56,9 +56,8 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
     }
 }
 
-NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
+NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     QDialog(parent),
-    mPath(path),
     mUi(new Ui::NewTilesetDialog),
     mNameWasEdited(false)
 {
@@ -67,6 +66,7 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
+
     int tilesetType = s->value(QLatin1String(TYPE_KEY)).toInt();
     bool colorEnabled = s->value(QLatin1String(COLOR_ENABLED_KEY)).toBool();
     QString colorName = s->value(QLatin1String(COLOR_KEY)).toString();
@@ -87,13 +87,6 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
             SLOT(tilesetTypeChanged(int)));
 
-    // Set the image and name fields if the given path is a file
-    const QFileInfo fileInfo(path);
-    if (fileInfo.isFile()) {
-        mUi->image->setText(path);
-        mUi->name->setText(fileInfo.completeBaseName());
-    }
-
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -103,22 +96,69 @@ NewTilesetDialog::~NewTilesetDialog()
     delete mUi;
 }
 
-void NewTilesetDialog::setTileWidth(int width)
+/**
+ * Sets the path to start in by default.
+ *
+ * Also sets the image and name fields if the given path is a file.
+ */
+void NewTilesetDialog::setImagePath(const QString &path)
 {
-    mUi->tileWidth->setValue(width);
+    mPath = path;
+
+    const QFileInfo fileInfo(path);
+    if (fileInfo.isFile()) {
+        mUi->image->setText(path);
+        mUi->name->setText(fileInfo.completeBaseName());
+    }
 }
 
-void NewTilesetDialog::setTileHeight(int height)
+void NewTilesetDialog::setTileSize(QSize size)
 {
-    mUi->tileHeight->setValue(height);
+    mUi->tileWidth->setValue(size.width());
+    mUi->tileHeight->setValue(size.height());
 }
 
+/**
+ * Shows the dialog and returns the created tileset. Returns 0 if the
+ * dialog was cancelled.
+ */
 SharedTileset NewTilesetDialog::createTileset()
 {
+    setMode(CreateTileset);
+
     if (exec() != QDialog::Accepted)
         return SharedTileset();
 
     return mNewTileset;
+}
+
+/**
+ * Shows the dialog and allows to change the given parameters.
+ *
+ * Returns whether the dialog was accepted.
+ */
+bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
+{
+    setMode(EditTilesetParameters);
+
+    mPath = parameters.imageSource;
+    mUi->image->setText(parameters.imageSource);
+
+    QColor transparentColor = parameters.transparentColor;
+    mUi->useTransparentColor->setChecked(transparentColor.isValid());
+    if (transparentColor.isValid())
+        mUi->colorButton->setColor(transparentColor);
+
+    mUi->tileWidth->setValue(parameters.tileSize.width());
+    mUi->tileHeight->setValue(parameters.tileSize.height());
+    mUi->spacing->setValue(parameters.tileSpacing);
+    mUi->margin->setValue(parameters.margin);
+
+    if (exec() != QDialog::Accepted)
+        return false;
+
+    parameters = TilesetParameters(*mNewTileset);
+    return true;
 }
 
 void NewTilesetDialog::tryAccept()
@@ -163,18 +203,36 @@ void NewTilesetDialog::tryAccept()
             }
         }
 
-        s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
-        s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
-        s->setValue(QLatin1String(SPACING_KEY), spacing);
-        s->setValue(QLatin1String(MARGIN_KEY), margin);
+        if (mMode == CreateTileset) {
+            s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
+            s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
+            s->setValue(QLatin1String(SPACING_KEY), spacing);
+            s->setValue(QLatin1String(MARGIN_KEY), margin);
+        }
     } else {
         tileset = Tileset::create(name, 1, 1);
     }
 
-    s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
+    if (mMode == CreateTileset)
+        s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
 
     mNewTileset = tileset;
     accept();
+}
+
+void NewTilesetDialog::setMode(Mode mode)
+{
+    mMode = mode;
+
+    if (mode == EditTilesetParameters) {
+        mUi->tilesetType->setCurrentIndex(0);
+        setWindowTitle(QApplication::translate("NewTilesetDialog", "Edit Tileset"));
+    } else {
+        setWindowTitle(QApplication::translate("NewTilesetDialog", "New Tileset"));
+    }
+
+    mUi->tilesetGroupBox->setVisible(mode == CreateTileset);
+    updateOkButton();
 }
 
 void NewTilesetDialog::browse()
@@ -206,7 +264,9 @@ void NewTilesetDialog::updateOkButton()
 {
     QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
 
-    bool enabled = !mUi->name->text().isEmpty();
+    bool enabled = true;
+    if (mMode == CreateTileset)
+        enabled &= !mUi->name->text().isEmpty();
     if (tilesetType(mUi) == TilesetImage)
         enabled &= !mUi->image->text().isEmpty();
 

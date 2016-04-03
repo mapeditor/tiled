@@ -26,6 +26,7 @@
 
 #include "mapdocument.h"
 #include "consoledock.h"
+#include "preferencesdialog.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -57,6 +58,7 @@ class MapsDock;
 class MapView;
 class MiniMapDock;
 class ObjectsDock;
+class ObjectTypesEditor;
 class PropertiesDock;
 class StampBrush;
 class TerrainBrush;
@@ -80,7 +82,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr);
     ~MainWindow();
 
     void commitData(QSessionManager &manager);
@@ -105,14 +107,14 @@ public slots:
     bool openFile(const QString &fileName);
 
 protected:
-    void closeEvent(QCloseEvent *event);
-    void changeEvent(QEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *);
-    void keyReleaseEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *) override;
+    void keyReleaseEvent(QKeyEvent *) override;
 
-    void dragEnterEvent(QDragEnterEvent *);
-    void dropEvent(QDropEvent *);
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 private slots:
     void newMap();
@@ -164,7 +166,7 @@ private slots:
     void rotate(RotateDirection direction);
 
     void setStamp(const TileStamp &stamp);
-    void setTerrainBrush(const Terrain *terrain);
+    void selectTerrainBrush();
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -174,8 +176,11 @@ private slots:
     void autoMappingError(bool automatic);
     void autoMappingWarning(bool automatic);
 
+    void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
+
+    void layerComboActivated(int index);
 
 private:
     /**
@@ -220,15 +225,17 @@ private:
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
+    PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
+    ObjectTypesEditor *mObjectTypesEditor;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
-    QLabel *mCurrentLayerLabel;
+    QComboBox *mLayerComboBox;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
@@ -245,6 +252,7 @@ private:
 
     QMenu *mLayerMenu;
     QAction *mViewsAndToolbarsMenu;
+    QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
     QAction *mShowTileCollisionEditor;
 
@@ -254,6 +262,8 @@ private:
     DocumentManager *mDocumentManager;
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
+
+    QPointer<PreferencesDialog> mPreferencesDialog;
 };
 
 } // namespace Internal

@@ -34,15 +34,15 @@ class Eraser : public AbstractTileTool
     Q_OBJECT
 
 public:
-    Eraser(QObject *parent = 0);
+    Eraser(QObject *parent = nullptr);
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
 private:
     void doErase(bool continuation);

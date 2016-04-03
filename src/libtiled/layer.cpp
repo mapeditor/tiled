@@ -47,7 +47,7 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y,
     mHeight(height),
     mOpacity(1.0f),
     mVisible(true),
-    mMap(0)
+    mMap(nullptr)
 {
 }
 
@@ -73,15 +73,15 @@ Layer *Layer::initializeClone(Layer *clone) const
 
 TileLayer *Layer::asTileLayer()
 {
-    return isTileLayer() ? static_cast<TileLayer*>(this) : 0;
+    return isTileLayer() ? static_cast<TileLayer*>(this) : nullptr;
 }
 
 ObjectGroup *Layer::asObjectGroup()
 {
-    return isObjectGroup() ? static_cast<ObjectGroup*>(this) : 0;
+    return isObjectGroup() ? static_cast<ObjectGroup*>(this) : nullptr;
 }
 
 ImageLayer *Layer::asImageLayer()
 {
-    return isImageLayer() ? static_cast<ImageLayer*>(this) : 0;
+    return isImageLayer() ? static_cast<ImageLayer*>(this) : nullptr;
 }

@@ -42,6 +42,29 @@ static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+template<typename Type>
+static Type comboBoxValue(QComboBox *comboBox)
+{
+#if QT_VERSION >= 0x050200
+    const QVariant currentData = comboBox->currentData();
+#else
+    const int currentIndex = comboBox->currentIndex();
+    const QVariant currentData = comboBox->itemData(currentIndex);
+#endif
+    return currentData.value<Type>();
+}
+
+template<typename Type>
+static bool setComboBoxValue(QComboBox *comboBox, Type value)
+{
+    const int index = comboBox->findData(QVariant::fromValue(value));
+    if (index == -1)
+        return false;
+    comboBox->setCurrentIndex(index);
+    return true;
+}
+
+
 NewMapDialog::NewMapDialog(QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewMapDialog)
@@ -52,32 +75,34 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
+    const auto orientation = static_cast<Map::Orientation>(s->value(QLatin1String(ORIENTATION_KEY)).toInt());
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
     const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
-    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
-                                    32).toInt();
+    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY), 32).toInt();
 
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
 
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"), QVariant::fromValue(Map::LeftDown));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"), QVariant::fromValue(Map::LeftUp));
 
-    mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
-    mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
-    mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
-    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), Map::Hexagonal);
+    mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
+    mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
+    mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
+    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), QVariant::fromValue(Map::Hexagonal));
 
-    mUi->orientation->setCurrentIndex(orientation);
-    mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
-    mUi->renderOrder->setCurrentIndex(prefs->mapRenderOrder());
+    if (!setComboBoxValue(mUi->orientation, orientation))
+        setComboBoxValue(mUi->orientation, Map::Orthogonal);
+
+    if (!setComboBoxValue(mUi->layerFormat, prefs->layerDataFormat()))
+        setComboBoxValue(mUi->layerFormat, Map::CSV);
+
+    setComboBoxValue(mUi->renderOrder, prefs->mapRenderOrder());
+
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
@@ -105,21 +130,16 @@ NewMapDialog::~NewMapDialog()
 MapDocument *NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return 0;
+        return nullptr;
 
     const int mapWidth = mUi->mapWidth->value();
     const int mapHeight = mUi->mapHeight->value();
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
 
-    const int orientationIndex = mUi->orientation->currentIndex();
-    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
-    const Map::Orientation orientation =
-            static_cast<Map::Orientation>(orientationData.toInt());
-    const Map::LayerDataFormat layerFormat =
-            static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
-    const Map::RenderOrder renderOrder =
-            static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
+    const auto orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
+    const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
+    const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
@@ -148,7 +168,7 @@ MapDocument *NewMapDialog::createMap()
     prefs->setLayerDataFormat(layerFormat);
     prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
+    s->setValue(QLatin1String(ORIENTATION_KEY), orientation);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
@@ -159,12 +179,7 @@ MapDocument *NewMapDialog::createMap()
 
 void NewMapDialog::refreshPixelSize()
 {
-    const int orientationIndex = mUi->orientation->currentIndex();
-    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
-    const Map::Orientation orientation =
-            static_cast<Map::Orientation>(orientationData.toInt());
-
-    const Map map(orientation,
+    const Map map(comboBoxValue<Map::Orientation>(mUi->orientation),
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
@@ -172,7 +187,7 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
-    switch (orientation) {
+    switch (map.orientation()) {
     case Map::Isometric:
         size = IsometricRenderer(&map).mapSize();
         break;

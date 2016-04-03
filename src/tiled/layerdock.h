@@ -49,7 +49,7 @@ public:
     /**
      * Constructor.
      */
-    explicit LayerDock(QWidget *parent = 0);
+    explicit LayerDock(QWidget *parent = nullptr);
 
     /**
      * Sets the map for which the layers should be displayed.
@@ -57,7 +57,7 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void updateOpacitySlider();
@@ -85,14 +85,14 @@ class LayerView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit LayerView(QWidget *parent = 0);
+    explicit LayerView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void currentRowChanged(const QModelIndex &index);

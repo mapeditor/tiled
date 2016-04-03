@@ -35,11 +35,11 @@ namespace Internal {
 struct Command
 {
     Command(bool isEnabled = true,
-            const QString &name = QString(),
-            const QString &command = QString())
+            QString name = QString(),
+            QString command = QString())
         : isEnabled(isEnabled)
-        , name(name)
-        , command(command) {}
+        , name(std::move(name))
+        , command(std::move(command)) {}
 
     bool isEnabled;
     QString name;

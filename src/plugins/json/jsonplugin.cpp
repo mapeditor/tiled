@@ -51,7 +51,7 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError = tr("Could not open file for reading.");
-        return 0;
+        return nullptr;
     }
 
     JsonReader reader;
@@ -72,7 +72,7 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
 
     if (!variant.isValid()) {
         mError = tr("Error parsing file.");
-        return 0;
+        return nullptr;
     }
 
     Tiled::VariantToMapConverter converter;

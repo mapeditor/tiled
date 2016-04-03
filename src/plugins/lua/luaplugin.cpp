@@ -98,8 +98,10 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
     const QString orientation = orientationToString(map->orientation());
+    const QString renderOrder = renderOrderToString(map->renderOrder());
 
     writer.writeKeyAndValue("orientation", orientation);
+    writer.writeKeyAndValue("renderorder", renderOrder);
     writer.writeKeyAndValue("width", map->width());
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
@@ -136,15 +138,15 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     mGidMapper.clear();
     unsigned firstGid = 1;
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         writeTileset(writer, tileset.data(), firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
     writer.writeEndTable();
 
     writer.writeStartTable("layers");
-    foreach (const Layer *layer, map->layers()) {
+    for (const Layer *layer : map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
             writeTileLayer(writer,
@@ -252,15 +254,13 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 
     writer.writeKeyAndValue("tilecount", tileset->tileCount());
     writer.writeStartTable("tiles");
-    for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
-
+    for (const Tile *tile : tileset->tiles()) {
         // For brevity only write tiles with interesting properties
         if (!includeTile(tile))
             continue;
 
         writer.writeStartTable();
-        writer.writeKeyAndValue("id", i);
+        writer.writeKeyAndValue("id", tile->id());
 
         if (!tile->properties().isEmpty())
             writeProperties(writer, tile->properties());
@@ -295,7 +295,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             const QVector<Frame> &frames = tile->frames();
 
             writer.writeStartTable("animation");
-            foreach (const Frame &frame, frames) {
+            for (const Frame &frame : frames) {
                 writer.writeStartTable();
                 writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
                 writer.writeKeyAndValue("duration", QString::number(frame.duration));
@@ -325,6 +325,11 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("height", tileLayer->height());
     writer.writeKeyAndValue("visible", tileLayer->isVisible());
     writer.writeKeyAndValue("opacity", tileLayer->opacity());
+
+    const QPointF offset = tileLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
     writeProperties(writer, tileLayer->properties());
 
     switch (format) {
@@ -374,10 +379,15 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
     writer.writeKeyAndValue("opacity", objectGroup->opacity());
+
+    const QPointF offset = objectGroup->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
     writeProperties(writer, objectGroup->properties());
 
     writer.writeStartTable("objects");
-    foreach (MapObject *mapObject, objectGroup->objects())
+    for (MapObject *mapObject : objectGroup->objects())
         writeMapObject(writer, mapObject);
     writer.writeEndTable();
 
@@ -391,10 +401,12 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
 
     writer.writeKeyAndValue("type", "imagelayer");
     writer.writeKeyAndValue("name", imageLayer->name());
-    writer.writeKeyAndValue("x", imageLayer->x());
-    writer.writeKeyAndValue("y", imageLayer->y());
     writer.writeKeyAndValue("visible", imageLayer->isVisible());
     writer.writeKeyAndValue("opacity", imageLayer->opacity());
+
+    const QPointF offset = imageLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
 
     const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
     writer.writeKeyAndValue("image", rel);
@@ -461,7 +473,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
          *    ...
          *  }
          */
-        foreach (const QPointF &point, polygon) {
+        for (const QPointF &point : polygon) {
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
@@ -481,7 +493,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
          *    ...
          *  }
          */
-        foreach (const QPointF &point, polygon) {
+        for (const QPointF &point : polygon) {
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
@@ -503,14 +515,14 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
         writer.writeStartTable("x");
         writer.setSuppressNewlines(true);
-        foreach (const QPointF &point, polygon)
+        for (const QPointF &point : polygon)
             writer.writeValue(point.x());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 
         writer.writeStartTable("y");
         writer.setSuppressNewlines(true);
-        foreach (const QPointF &point, polygon)
+        for (const QPointF &point : polygon)
             writer.writeValue(point.y());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);

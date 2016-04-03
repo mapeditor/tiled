@@ -22,6 +22,8 @@
 #include "documentmanager.h"
 
 #include "abstracttool.h"
+#include "adjusttileindexes.h"
+#include "brokenlinks.h"
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -29,16 +31,19 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
+#include "tilesetmanager.h"
 #include "zoomable.h"
 
-#include <QUndoGroup>
 #include <QFileInfo>
+#include <QUndoGroup>
 
-#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QDialogButtonBox>
+#include <QMessageBox>
 #include <QScrollBar>
+#include <QUndoStack>
+#include <QVBoxLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -51,7 +56,7 @@ class FileChangedWarning : public QWidget
     Q_OBJECT
 
 public:
-    FileChangedWarning(QWidget *parent = 0)
+    FileChangedWarning(QWidget *parent = nullptr)
         : QWidget(parent)
         , mLabel(new QLabel(this))
         , mButtons(new QDialogButtonBox(QDialogButtonBox::Yes |
@@ -85,22 +90,37 @@ class MapViewContainer : public QWidget
     Q_OBJECT
 
 public:
-    MapViewContainer(MapView *mapView, QWidget *parent = 0)
+    MapViewContainer(MapView *mapView,
+                     MapDocument *mapDocument,
+                     QWidget *parent = nullptr)
         : QWidget(parent)
         , mMapView(mapView)
         , mWarning(new FileChangedWarning)
+        , mBrokenLinksModel(new BrokenLinksModel(mapDocument, this))
+        , mBrokenLinksWidget(nullptr)
     {
         mWarning->setVisible(false);
 
-        QVBoxLayout *layout = new QVBoxLayout;
+        QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(0);
+
+        if (mBrokenLinksModel->hasBrokenLinks()) {
+            mBrokenLinksWidget = new BrokenLinksWidget(mBrokenLinksModel, this);
+            layout->addWidget(mBrokenLinksWidget);
+
+            connect(mBrokenLinksWidget, &BrokenLinksWidget::ignore,
+                    this, &MapViewContainer::deleteBrokenLinksWidget);
+        }
+
+        connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
+                this, &MapViewContainer::hasBrokenLinksChanged);
+
         layout->addWidget(mapView);
         layout->addWidget(mWarning);
-        setLayout(layout);
 
-        connect(mWarning, SIGNAL(reload()), SIGNAL(reload()));
-        connect(mWarning, SIGNAL(ignore()), mWarning, SLOT(hide()));
+        connect(mWarning, &FileChangedWarning::reload, this, &MapViewContainer::reload);
+        connect(mWarning, &FileChangedWarning::ignore, mWarning, &FileChangedWarning::hide);
     }
 
     MapView *mapView() const { return mMapView; }
@@ -111,9 +131,27 @@ public:
 signals:
     void reload();
 
+private slots:
+    void hasBrokenLinksChanged(bool hasBrokenLinks)
+    {
+        if (!hasBrokenLinks)
+            deleteBrokenLinksWidget();
+    }
+
+    void deleteBrokenLinksWidget()
+    {
+        if (mBrokenLinksWidget) {
+            mBrokenLinksWidget->deleteLater();
+            mBrokenLinksWidget = nullptr;
+        }
+    }
+
 private:
     MapView *mMapView;
+
     FileChangedWarning *mWarning;
+    BrokenLinksModel *mBrokenLinksModel;
+    BrokenLinksWidget *mBrokenLinksWidget;
 };
 
 } // namespace Internal
@@ -131,7 +169,7 @@ DocumentManager *DocumentManager::instance()
 void DocumentManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 DocumentManager::DocumentManager(QObject *parent)
@@ -154,6 +192,9 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(mFileSystemWatcher, SIGNAL(fileChanged(QString)),
             SLOT(fileChanged(QString)));
+
+    connect(TilesetManager::instance(), &TilesetManager::tilesetChanged,
+            this, &DocumentManager::tilesetChanged);
 }
 
 DocumentManager::~DocumentManager()
@@ -172,7 +213,7 @@ MapDocument *DocumentManager::currentDocument() const
 {
     const int index = mTabWidget->currentIndex();
     if (index == -1)
-        return 0;
+        return nullptr;
 
     return mDocuments.at(index);
 }
@@ -182,7 +223,7 @@ MapView *DocumentManager::currentMapView() const
     if (QWidget *widget = mTabWidget->currentWidget())
         return static_cast<MapViewContainer*>(widget)->mapView();
 
-    return 0;
+    return nullptr;
 }
 
 MapScene *DocumentManager::currentMapScene() const
@@ -190,14 +231,14 @@ MapScene *DocumentManager::currentMapScene() const
     if (MapView *mapView = currentMapView())
         return mapView->mapScene();
 
-    return 0;
+    return nullptr;
 }
 
 MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
 {
     const int index = mDocuments.indexOf(mapDocument);
     if (index == -1)
-        return 0;
+        return nullptr;
 
     return static_cast<MapViewContainer*>(mTabWidget->widget(index))->mapView();
 }
@@ -262,7 +303,7 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
 
     MapView *view = new MapView;
     MapScene *scene = new MapScene(view); // scene is owned by the view
-    MapViewContainer *container = new MapViewContainer(view, mTabWidget);
+    MapViewContainer *container = new MapViewContainer(view, mapDocument, mTabWidget);
 
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
@@ -348,6 +389,8 @@ bool DocumentManager::reloadDocumentAt(int index)
     mapView->verticalScrollBar()->setSliderPosition(verticalPosition);
     if (layerIndex > 0 && layerIndex < newDocument->map()->layerCount())
         newDocument->setCurrentLayerIndex(layerIndex);
+
+    checkTilesetColumns(newDocument);
 
     return true;
 }
@@ -498,11 +541,91 @@ void DocumentManager::cursorChanged(const QCursor &cursor)
 
 void DocumentManager::centerViewOn(qreal x, qreal y)
 {
-    MapView *view = currentMapView();
-    if (!view)
+    const int index = mTabWidget->currentIndex();
+    if (index == -1)
         return;
 
-    view->centerOn(currentDocument()->renderer()->pixelToScreenCoords(x, y));
+    MapView *view = currentMapView();
+    MapDocument *document = mDocuments.at(index);
+
+    view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
+}
+
+static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
+{
+    if (tileset.isCollection())
+        return false;
+    if (!tileset.imageLoaded())
+        return false;
+    if (tileset.columnCount() == tileset.expectedColumnCount())
+        return false;
+    if (tileset.columnCount() == 0 || tileset.expectedColumnCount() == 0)
+        return false;
+
+    return true;
+}
+
+void DocumentManager::tilesetChanged(Tileset *tileset)
+{
+    if (!mayNeedColumnCountAdjustment(*tileset))
+        return;
+
+    SharedTileset sharedTileset = tileset->sharedPointer();
+
+    bool anyRelevantMap = false;
+    for (MapDocument *document : mDocuments) {
+        if (document->map()->tilesets().contains(sharedTileset)) {
+            anyRelevantMap = true;
+            break;
+        }
+    }
+
+    if (anyRelevantMap && askForAdjustment(*tileset)) {
+        for (MapDocument *mapDocument : mDocuments) {
+            Map *map = mapDocument->map();
+
+            if (map->tilesets().contains(sharedTileset)) {
+                auto command = new AdjustTileIndexes(mapDocument, tileset);
+                mapDocument->undoStack()->push(command);
+            }
+        }
+    }
+
+    tileset->syncExpectedColumnCount();
+}
+
+/**
+ * Checks whether the number of columns in tileset image based tilesets matches
+ * with the expected amount. Offers to adjust tile indexes if not.
+ */
+void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
+{
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
+        if (!mayNeedColumnCountAdjustment(*tileset))
+            continue;
+
+        if (askForAdjustment(*tileset)) {
+            auto command = new AdjustTileIndexes(mapDocument, tileset.data());
+            mapDocument->undoStack()->push(command);
+        }
+
+        tileset.data()->syncExpectedColumnCount();
+    }
+}
+
+bool DocumentManager::askForAdjustment(const Tileset &tileset)
+{
+    int r = QMessageBox::question(mTabWidget->window(),
+                                  tr("Tileset Columns Changed"),
+                                  tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
+                                     "Do you want to adjust tile references?")
+                                  .arg(tileset.name())
+                                  .arg(tileset.expectedColumnCount())
+                                  .arg(tileset.columnCount()),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::Yes);
+
+    return r == QMessageBox::Yes;
 }
 
 #include "documentmanager.moc"

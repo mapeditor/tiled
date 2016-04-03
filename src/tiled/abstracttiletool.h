@@ -50,22 +50,22 @@ public:
 
     ~AbstractTileTool();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mouseEntered();
-    void mouseLeft();
-    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void mouseEntered() override;
+    void mouseLeft() override;
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
     /**
      * Overridden to only enable this tool when the currently selected layer is
      * a tile layer.
      */
-    void updateEnabledState();
+    void updateEnabledState() override;
 
     /**
      * New virtual method to implement for tile tools. This method is called

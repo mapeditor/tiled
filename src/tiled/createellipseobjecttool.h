@@ -32,9 +32,9 @@ class CreateEllipseObjectTool : public CreateScalableObjectTool
     Q_OBJECT
 public:
     CreateEllipseObjectTool(QObject *parent);
-    void languageChanged();
+    void languageChanged() override;
 protected:
-    MapObject *createNewMapObject();
+    MapObject *createNewMapObject() override;
 };
 
 }

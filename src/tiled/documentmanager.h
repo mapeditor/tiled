@@ -144,6 +144,8 @@ public:
      */
     void closeAllDocuments();
 
+    void checkTilesetColumns(MapDocument *mapDocument);
+
     /**
      * Returns all open map documents.
      */
@@ -197,9 +199,13 @@ private slots:
 
     void cursorChanged(const QCursor &cursor);
 
+    void tilesetChanged(Tileset *tileset);
+
 private:
-    DocumentManager(QObject *parent = 0);
+    DocumentManager(QObject *parent = nullptr);
     ~DocumentManager();
+
+    bool askForAdjustment(const Tileset &tileset);
 
     QList<MapDocument*> mDocuments;
 

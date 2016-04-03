@@ -81,5 +81,14 @@
         <file>images/24x24/move-image-layer.png</file>
         <file>images/16x16/rename.png</file>
         <file>images/22x22/stock-tool-fuzzy-select-22.png</file>
+        <file>images/16x16/image-missing.png</file>
+        <file>images/32x32/image-missing.png</file>
+        <file>images/22x22/stock-tool-move-22.png</file>
+        <file>images/16x16/plugin.png</file>
+        <file>images/22x22/plugin.png</file>
+        <file>images/32x32/plugin.png</file>
+        <file>images/16x16/error.png</file>
+        <file>images/22x22/error.png</file>
+        <file>images/32x32/error.png</file>
     </qresource>
 </RCC>

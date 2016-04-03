@@ -56,7 +56,7 @@ void AddRemoveTerrain::addTerrain()
 {
     Q_ASSERT(mTerrain);
     mMapDocument->terrainModel()->insertTerrain(mTileset, mIndex, mTerrain);
-    mTerrain = 0;
+    mTerrain = nullptr;
 }
 
 
@@ -74,7 +74,7 @@ RemoveTerrain::RemoveTerrain(MapDocument *mapDocument, Terrain *terrain)
     : AddRemoveTerrain(mapDocument,
                        terrain->tileset(),
                        terrain->id(),
-                       0)
+                       nullptr)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Terrain"));
 }

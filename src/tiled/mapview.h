@@ -55,7 +55,7 @@ public:
         NoStaticContents,
     };
 
-    MapView(QWidget *parent = 0, Mode mode = StaticContents);
+    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView();
 
     MapScene *mapScene() const;
@@ -65,16 +65,18 @@ public:
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
 
+    void forceCenterOn(const QPointF &pos);
+
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
-    void hideEvent(QHideEvent *);
+    void hideEvent(QHideEvent *) override;
 
-    void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     void handlePinchGesture(QPinchGesture *pinch);
 

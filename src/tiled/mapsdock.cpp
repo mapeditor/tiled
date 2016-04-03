@@ -47,7 +47,7 @@ using namespace Tiled::Internal;
 class FileSystemModel : public QFileSystemModel
 {
 public:
-    explicit FileSystemModel(QObject *parent = 0):
+    explicit FileSystemModel(QObject *parent = nullptr):
         QFileSystemModel(parent)
     {
     }

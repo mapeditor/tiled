@@ -32,8 +32,8 @@ using namespace Tiled::Internal;
 
 LayerModel::LayerModel(QObject *parent):
     QAbstractListModel(parent),
-    mMapDocument(0),
-    mMap(0),
+    mMapDocument(nullptr),
+    mMap(nullptr),
     mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
     mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
@@ -160,11 +160,19 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
  */
 int LayerModel::toLayerIndex(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        return mMap->layerCount() - index.row() - 1;
-    } else {
-        return -1;
-    }
+    if (index.isValid())
+        return toLayerIndex(index.row());
+
+    return -1;
+}
+
+/**
+ * Returns the layer index associated with a given row index.
+ * \sa layerIndexToRow
+ */
+int LayerModel::toLayerIndex(int index) const
+{
+    return mMap->layerCount() - index - 1;
 }
 
 /**

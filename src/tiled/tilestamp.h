@@ -35,9 +35,19 @@ namespace Internal {
 
 struct TileStampVariation
 {
-    TileStampVariation(Map *map = 0, qreal probability = 1.0)
+    TileStampVariation()
+        : map(nullptr), probability(1.0)
+    {
+    }
+
+    TileStampVariation(Map *map, qreal probability = 1.0)
         : map(map), probability(probability)
-    {}
+    {
+        Q_ASSERT(map->layerCount() == 1);
+        Q_ASSERT(map->layerAt(0)->isTileLayer());
+    }
+
+    TileLayer *tileLayer() const;
 
     Map *map;
     qreal probability;
@@ -68,6 +78,8 @@ public:
     qreal probability(int index) const;
     void setProbability(int index, qreal probability);
 
+    QSize maxSize() const;
+
     const QVector<TileStampVariation> &variations() const;
     void addVariation(Map *map, qreal probability = 1.0);
     void addVariation(const TileStampVariation &variation);
@@ -78,7 +90,7 @@ public:
     int quickStampIndex() const;
     void setQuickStampIndex(int quickStampIndex);
 
-    Map *randomVariation() const;
+    TileStampVariation randomVariation() const;
 
     TileStamp flipped(FlipDirection direction) const;
     TileStamp rotated(RotateDirection direction) const;

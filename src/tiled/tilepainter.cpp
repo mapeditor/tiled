@@ -22,7 +22,6 @@
 #include "tilepainter.h"
 
 #include "mapdocument.h"
-#include "tilelayer.h"
 #include "map.h"
 
 using namespace Tiled;
@@ -97,8 +96,8 @@ void TilePainter::setCells(int x, int y,
     QRegion region = paintableRegion(x, y,
                                      tileLayer->width(),
                                      tileLayer->height());
-    if (!mask.isEmpty())
-        region &= mask;
+    region &= mask;
+
     if (region.isEmpty())
         return;
 
@@ -121,7 +120,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 
     DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
 
-    foreach (const QRect &rect, region.rects()) {
+    for (const QRect &rect : region.rects()) {
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
@@ -155,7 +154,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const int h = stamp->height();
     const QRect regionBounds = region.boundingRect();
 
-    foreach (const QRect &rect, region.rects()) {
+    for (const QRect &rect : region.rects()) {
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;

@@ -32,14 +32,14 @@ namespace Internal {
 class SelectionRectangle : public QGraphicsItem
 {
 public:
-    SelectionRectangle(QGraphicsItem *parent = 0);
+    SelectionRectangle(QGraphicsItem *parent = nullptr);
 
     void setRectangle(const QRectF &rectangle);
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr) override;
 
 private:
     QRectF mRectangle;

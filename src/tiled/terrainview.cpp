@@ -42,7 +42,7 @@ using namespace Tiled::Internal;
 TerrainView::TerrainView(QWidget *parent)
     : QTreeView(parent)
     , mZoomable(new Zoomable(this))
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
 {
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setRootIsDecorated(false);

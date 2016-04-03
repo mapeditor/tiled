@@ -46,7 +46,7 @@ void AddRemoveLayer::addLayer()
     const int currentLayer = mMapDocument->currentLayerIndex();
 
     mMapDocument->layerModel()->insertLayer(mIndex, mLayer);
-    mLayer = 0;
+    mLayer = nullptr;
 
     // Insertion below or at the current layer increases current layer index
     if (mIndex <= currentLayer)

@@ -21,17 +21,65 @@
 
 #include "varianteditorfactory.h"
 
-#include "variantpropertymanager.h"
 #include "fileedit.h"
+#include "tilesetparametersedit.h"
+#include "utils.h"
+#include "variantpropertymanager.h"
 
 #include <QCompleter>
+#include <QHBoxLayout>
+#include <QToolButton>
 
 namespace Tiled {
 namespace Internal {
 
+class ResetWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent = nullptr);
+
+signals:
+    void resetProperty(QtProperty *property);
+
+private slots:
+    void buttonClicked();
+
+private:
+    QtProperty *mProperty;
+};
+
+ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
+    : QWidget(parent)
+    , mProperty(property)
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+
+    QToolButton *resetButton = new QToolButton(this);
+    resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
+    resetButton->setIconSize(QSize(16, 16));
+    resetButton->setAutoRaise(true);
+    Utils::setThemeIcon(resetButton, "edit-clear");
+
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(editor);
+    layout->addWidget(resetButton);
+
+    connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
+}
+
+void ResetWidget::buttonClicked()
+{
+    emit resetProperty(mProperty);
+}
+
+
 VariantEditorFactory::~VariantEditorFactory()
 {
-    qDeleteAll(mEditorToProperty.keys());
+    qDeleteAll(mFileEditToProperty.keys());
+    qDeleteAll(mTilesetEditToProperty.keys());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -53,13 +101,26 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         FileEdit *editor = new FileEdit(parent);
         editor->setFilePath(manager->value(property).toString());
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
-        mCreatedEditors[property].append(editor);
-        mEditorToProperty[editor] = property;
+        mCreatedFileEdits[property].append(editor);
+        mFileEditToProperty[editor] = property;
 
         connect(editor, SIGNAL(filePathChanged(const QString &)),
-                this, SLOT(slotSetValue(const QString &)));
+                this, SLOT(fileEditFilePathChanged(const QString &)));
         connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
+
+        return editor;
+    }
+
+    if (type == VariantPropertyManager::tilesetParametersTypeId()) {
+        auto editor = new TilesetParametersEdit(parent);
+        editor->setTileset(manager->value(property).value<EmbeddedTileset>());
+        mCreatedTilesetEdits[property].append(editor);
+        mTilesetEditToProperty[editor] = property;
+
+        connect(editor, SIGNAL(destroyed(QObject *)),
+                this, SLOT(slotEditorDestroyed(QObject *)));
+
         return editor;
     }
 
@@ -77,6 +138,14 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         }
     }
 
+    if (type == QVariant::Color) {
+        // Allow resetting a color property to the invalid color
+        ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
+        connect(resetWidget, &ResetWidget::resetProperty,
+                this, &VariantEditorFactory::resetProperty);
+        editor = resetWidget;
+    }
+
     return editor;
 }
 
@@ -92,64 +161,71 @@ void VariantEditorFactory::disconnectPropertyManager(QtVariantPropertyManager *m
 void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
                                                const QVariant &value)
 {
-    if (!mCreatedEditors.contains(property))
-        return;
-
-    QList<FileEdit *> editors = mCreatedEditors[property];
-    QListIterator<FileEdit *> itEditor(editors);
-    while (itEditor.hasNext())
-        itEditor.next()->setFilePath(value.toString());
+    if (mCreatedFileEdits.contains(property)) {
+        for (FileEdit *edit : mCreatedFileEdits[property])
+            edit->setFilePath(value.toString());
+    }
+    else if (mCreatedTilesetEdits.contains(property)) {
+        for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
+            edit->setTileset(value.value<EmbeddedTileset>());
+    }
 }
 
 void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
                                                         const QString &attribute,
                                                         const QVariant &value)
 {
-    if (!mCreatedEditors.contains(property))
-        return;
-
-    if (attribute != QLatin1String("filter"))
-        return;
-
-    QList<FileEdit *> editors = mCreatedEditors[property];
-    QListIterator<FileEdit *> itEditor(editors);
-    while (itEditor.hasNext())
-        itEditor.next()->setFilter(value.toString());
+    if (mCreatedFileEdits.contains(property)) {
+        if (attribute == QLatin1String("filter")) {
+            for (FileEdit *edit : mCreatedFileEdits[property])
+                edit->setFilter(value.toString());
+        }
+    }
 }
 
-void VariantEditorFactory::slotSetValue(const QString &value)
+void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
 {
-    QObject *object = sender();
-    QMap<FileEdit *, QtProperty *>::ConstIterator itEditor = mEditorToProperty.constBegin();
-    while (itEditor != mEditorToProperty.constEnd()) {
-        if (itEditor.key() == object) {
-            QtProperty *property = itEditor.value();
-            QtVariantPropertyManager *manager = propertyManager(property);
-            if (!manager)
-                return;
-            manager->setValue(property, value);
+    FileEdit *fileEdit = qobject_cast<FileEdit*>(sender());
+    Q_ASSERT(fileEdit);
+
+    if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
             return;
-        }
-        itEditor++;
+        manager->setValue(property, value);
     }
 }
 
 void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
-    QMap<FileEdit *, QtProperty *>::ConstIterator itEditor = mEditorToProperty.constBegin();
-    while (itEditor != mEditorToProperty.constEnd()) {
-        if (itEditor.key() == object) {
-            FileEdit *editor = itEditor.key();
-            QtProperty *property = itEditor.value();
-            mEditorToProperty.remove(editor);
-            mCreatedEditors[property].removeAll(editor);
-            if (mCreatedEditors[property].isEmpty())
-                mCreatedEditors.remove(property);
+    // Check if it was a FileEdit
+    {
+        FileEdit *fileEdit = static_cast<FileEdit*>(object);
+
+        if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
+            mFileEditToProperty.remove(fileEdit);
+            mCreatedFileEdits[property].removeAll(fileEdit);
+            if (mCreatedFileEdits[property].isEmpty())
+                mCreatedFileEdits.remove(property);
             return;
         }
-        itEditor++;
+    }
+
+    // Check if it was a TilesetParametersEdit
+    {
+        TilesetParametersEdit *tilesetEdit = static_cast<TilesetParametersEdit*>(object);
+
+        if (QtProperty *property = mTilesetEditToProperty.value(tilesetEdit)) {
+            mTilesetEditToProperty.remove(tilesetEdit);
+            mCreatedTilesetEdits[property].removeAll(tilesetEdit);
+            if (mCreatedTilesetEdits[property].isEmpty())
+                mCreatedTilesetEdits.remove(property);
+            return;
+        }
     }
 }
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "varianteditorfactory.moc"

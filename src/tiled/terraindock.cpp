@@ -24,13 +24,15 @@
 #include "terraindock.h"
 
 #include "documentmanager.h"
+#include "map.h"
 #include "mapdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "terrainview.h"
 
 #include <QEvent>
-#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QTreeView>
 
@@ -40,6 +42,19 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
+static Terrain *firstTerrain(MapDocument *mapDocument)
+{
+    if (!mapDocument)
+        return nullptr;
+
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+        if (tileset->terrainCount() > 0)
+            return tileset->terrain(0);
+
+    return nullptr;
+}
+
+
 /**
  * Filter model that filters out tilesets that have no terrains from the
  * TerrainModel.
@@ -47,13 +62,13 @@ namespace Internal {
 class TerrainFilterModel : public QSortFilterProxyModel
 {
 public:
-    TerrainFilterModel(QObject *parent = 0)
+    TerrainFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
     }
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
     {
         if (sourceParent.isValid())
             return true;
@@ -69,9 +84,9 @@ protected:
 
 TerrainDock::TerrainDock(QWidget *parent):
     QDockWidget(parent),
-    mMapDocument(0),
+    mMapDocument(nullptr),
     mTerrainView(new TerrainView),
-    mCurrentTerrain(0),
+    mCurrentTerrain(nullptr),
     mProxyModel(new TerrainFilterModel(this))
 {
     setObjectName(QLatin1String("TerrainDock"));
@@ -88,10 +103,20 @@ TerrainDock::TerrainDock(QWidget *parent):
 
     QWidget *w = new QWidget(this);
 
-    QHBoxLayout *horizontal = new QHBoxLayout(w);
-    horizontal->setSpacing(5);
+    mEraseTerrainButton = new QPushButton(this);
+    mEraseTerrainButton->setIconSize(QSize(16, 16));
+    mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseTerrainButton->setCheckable(true);
+    mEraseTerrainButton->setAutoExclusive(true);
+
+    connect(mEraseTerrainButton, &QPushButton::clicked,
+            this, &TerrainDock::eraseTerrainButtonClicked);
+
+    QVBoxLayout *horizontal = new QVBoxLayout(w);
+    horizontal->setSpacing(0);
     horizontal->setMargin(5);
     horizontal->addWidget(mTerrainView);
+    horizontal->addWidget(mEraseTerrainButton);
 
     setWidget(w);
     retranslateUi();
@@ -116,8 +141,10 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
         mTerrainView->setMapDocument(mMapDocument);
         mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
+        setCurrentTerrain(firstTerrain(mapDocument));
     } else {
-        mProxyModel->setSourceModel(0);
+        mProxyModel->setSourceModel(nullptr);
+        setCurrentTerrain(nullptr);
     }
 }
 
@@ -141,8 +168,10 @@ void TerrainDock::currentRowChanged(const QModelIndex &index)
 
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
-    if (Terrain *terrain = mTerrainView->terrainAt(index))
+    if (Terrain *terrain = mTerrainView->terrainAt(index)) {
         mMapDocument->setCurrentObject(terrain);
+        emit selectTerrainBrush();
+    }
 }
 
 void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)
@@ -156,6 +185,13 @@ void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)
         mTerrainView->expand(mProxyModel->index(row, 0, parent));
 }
 
+void TerrainDock::eraseTerrainButtonClicked()
+{
+    setCurrentTerrain(nullptr);
+    mEraseTerrainButton->setChecked(true);
+    emit selectTerrainBrush();
+}
+
 void TerrainDock::setCurrentTerrain(Terrain *terrain)
 {
     if (mCurrentTerrain == terrain)
@@ -163,8 +199,20 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
 
     mCurrentTerrain = terrain;
 
+    if (terrain) {
+        QModelIndex sourceIndex = mMapDocument->terrainModel()->index(terrain);
+        QModelIndex viewIndex = mProxyModel->mapFromSource(sourceIndex);
+        mTerrainView->setCurrentIndex(viewIndex);
+    } else {
+        mTerrainView->selectionModel()->clearCurrentIndex();
+        mTerrainView->selectionModel()->clearSelection();
+        mCurrentTerrain = nullptr;
+    }
+
     if (terrain)
         mMapDocument->setCurrentObject(terrain);
+
+    mEraseTerrainButton->setChecked(terrain == nullptr);
 
     emit currentTerrainChanged(mCurrentTerrain);
 }
@@ -172,4 +220,5 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
 void TerrainDock::retranslateUi()
 {
     setWindowTitle(tr("Terrains"));
+    mEraseTerrainButton->setText(tr("Erase Terrain"));
 }

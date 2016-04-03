@@ -1,6 +1,6 @@
 /*
- *
- * Copyright 2015, Your Name <your.name@domain>
+ * objectselectionitem.h
+ * Copyright 2015-2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -49,8 +49,13 @@ public:
 private slots:
     void selectedObjectsChanged();
     void mapChanged();
+    void layerAdded(int index);
+    void layerAboutToBeRemoved(int index);
     void layerChanged(int index);
     void syncOverlayItems(const QList<MapObject *> &objects);
+    void updateObjectLabelColors();
+    void objectsAdded(const QList<MapObject*> &objects);
+    void objectsRemoved(const QList<MapObject*> &objects);
 
     void objectLabelVisibilityChanged();
 

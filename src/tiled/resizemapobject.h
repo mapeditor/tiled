@@ -44,8 +44,8 @@ public:
                     const QSizeF &newSize,
                     const QSizeF &oldSize);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;

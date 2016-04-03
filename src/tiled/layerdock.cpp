@@ -48,7 +48,7 @@ LayerDock::LayerDock(QWidget *parent):
     mOpacityLabel(new QLabel),
     mOpacitySlider(new QSlider(Qt::Horizontal)),
     mLayerView(new LayerView),
-    mMapDocument(0),
+    mMapDocument(nullptr),
     mUpdatingSlider(false),
     mChangingLayerOpacity(false)
 {
@@ -224,7 +224,7 @@ void LayerDock::retranslateUi()
 
 LayerView::LayerView(QWidget *parent):
     QTreeView(parent),
-    mMapDocument(0)
+    mMapDocument(nullptr)
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
@@ -263,7 +263,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 
         currentLayerIndexChanged(mMapDocument->currentLayerIndex());
     } else {
-        setModel(0);
+        setModel(nullptr);
     }
 }
 

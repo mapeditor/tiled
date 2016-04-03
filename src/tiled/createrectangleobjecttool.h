@@ -32,9 +32,9 @@ class CreateRectangleObjectTool : public CreateScalableObjectTool
     Q_OBJECT
 public:
     CreateRectangleObjectTool(QObject *parent);
-    void languageChanged();
+    void languageChanged() override;
 protected:
-    MapObject *createNewMapObject();
+    MapObject *createNewMapObject() override;
 };
 
 }

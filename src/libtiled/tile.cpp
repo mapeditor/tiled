@@ -33,32 +33,25 @@
 
 using namespace Tiled;
 
-Tile::Tile(const QPixmap &image,
-           int id,
-           Tileset *tileset):
+Tile::Tile(int id, Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
-    mImage(image),
     mTerrain(-1),
     mProbability(1.f),
-    mObjectGroup(0),
+    mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
 
-Tile::Tile(const QPixmap &image,
-           const QString &imageSource,
-           int id,
-           Tileset *tileset):
+Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
     mImage(image),
-    mImageSource(imageSource),
     mTerrain(-1),
     mProbability(1.f),
-    mObjectGroup(0),
+    mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
 {}
@@ -84,7 +77,7 @@ const QPixmap &Tile::currentFrameImage() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->tileAt(frame.tileId)->image();
+        return mTileset->findTile(frame.tileId)->image();
     } else {
         return mImage;
     }

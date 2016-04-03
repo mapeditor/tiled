@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <?define ProductName = "Tiled" ?>
+  <?define Manufacturer = "mapeditor.org" ?>
+  <?define UpgradeCode = "F7EEDD05-BBFC-4D6A-9BF6-98D3BA77F327" ?>
+  <?define WebsiteURL="http://www.mapeditor.org/" ?>
+
+  <?ifndef InstallRoot ?>
+  <?error InstallRoot must be defined ?>
+  <?endif?>
+  <?ifndef QtDir ?>
+  <?error QtDir must be defined ?>
+  <?endif?>
+  <?ifndef RootDir ?>
+  <?error RootDir must be defined ?>
+  <?endif?>
+  <?ifndef Version ?>
+  <?error Version must be defined ?>
+  <?endif?>
+  <?ifndef Platform ?>
+  <?error Platform must be defined ?>
+  <?endif?>
+
+  <?if $(var.Platform) = x64 ?>
+  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?define SystemDir = "C:\windows\SysWOW64" ?>
+  <?else ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?define SystemDir = "C:\windows\system32" ?>
+  <?endif ?>
+
+  <Product Name='$(var.ProductName)' Id="*"
+           UpgradeCode="$(var.UpgradeCode)" 
+           Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='$(var.Manufacturer)'>
+
+    <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
+             Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
+             Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+
+    <MajorUpgrade AllowDowngrades="yes" />
+
+    <!-- Set properties for add/remove programs -->
+    <Property Id="ARPPRODUCTICON" Value="tiled.exe" />
+    <Property Id="ARPURLINFOABOUT" Value="$(var.WebsiteURL)" />
+    <Property Id="ARPNOREPAIR" Value="yes" Secure="yes" />      <!-- Remove repair -->
+
+    <Media Id='1' Cabinet='files.cab' EmbedCab='yes' DiskPrompt="CD-ROM #1" CompressionLevel="high" />
+    <Property Id='DiskPrompt' Value="Tiled Installation [1]" />
+
+    <!-- Save the command line value INSTALLDIR and restore it later in the sequence or it will be overwritten by the value saved to the registry during an upgrade -->
+    <!-- http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/ -->
+    <CustomAction Id='SaveCmdLineValueINSTALLDIR' Property='CMDLINE_INSTALLDIR' Value='[INSTALLDIR]' Execute='firstSequence' />
+    <CustomAction Id='SetFromCmdLineValueINSTALLDIR' Property='INSTALLDIR' Value='[CMDLINE_INSTALLDIR]' Execute='firstSequence' />
+    <InstallUISequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action='SaveCmdLineValueINSTALLDIR' Before='AppSearch' />
+      <Custom Action='SetFromCmdLineValueINSTALLDIR' After='AppSearch'>
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallExecuteSequence>
+
+    <Property Id="INSTALLDIR">
+      <RegistrySearch Id='DetermineInstallLocation' Type='raw' Root='HKLM' Key='Software\[Manufacturer]\[ProductName]' Name='InstallDir' />
+    </Property>
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='Tiled'>
+
+          <Component Id='MainExecutable' Guid='{4DC82B82-E1A7-4829-92CC-2BEB40E361BD}'>
+            <File Id='TiledEXE' Source='$(var.InstallRoot)\tiled.exe' KeyPath='yes'>
+              <Shortcut Id="startmenuTiled" Directory="ProgramMenuFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
+              <Shortcut Id="desktopTiled" Directory="DesktopFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
+            </File>
+            <File Id="filFC35B15ADCD88C87362A53A3161884C1" Source="$(var.InstallRoot)\automappingconverter.exe" />
+            <File Id="filF01A89E83F9999A5C328B9967FB4E6A0" Source="$(var.InstallRoot)\terraingenerator.exe" />
+            <File Id="fil806C195E384F65A83656FBCFB9431D61" Source="$(var.InstallRoot)\tiled.dll" />
+            <File Id="fil3F7B07FEDA3DAC1FD6C5491D240B7867" Source="$(var.InstallRoot)\tmxrasterizer.exe" />
+            <File Id="filD983BDC2720F3EFE2D47E635AAE6BC70" Source="$(var.InstallRoot)\tmxviewer.exe" />
+            <File Id="qt_conf" Source="$(var.RootDir)\dist\win\qt.conf" />
+            <File Id="Qt5Core_dll" Source="$(var.QtDir)\bin\Qt5Core.dll"/>
+            <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
+            <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
+            <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
+            <File Id="Qt5OpenGL_dll" Source="$(var.QtDir)\bin\Qt5OpenGL.dll"/>
+            <File Id="icuin54_dll" Source="$(var.QtDir)\bin\icuin54.dll"/>
+            <File Id="icuuc54_dll" Source="$(var.QtDir)\bin\icuuc54.dll"/>
+            <File Id="icudt54_dll" Source="$(var.QtDir)\bin\icudt54.dll"/>
+
+            <?ifdef MingwDir ?>
+            <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
+            <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
+            <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
+            <?else?>
+            <File Id="MSVCP120" Source="$(var.SystemDir)\MSVCP120.DLL"/>
+            <File Id="MSVCR120" Source="$(var.SystemDir)\MSVCR120.DLL"/>
+            <?endif?>
+
+            <?ifdef Sparkle ?>
+            <File Id="WinSparkleDLL" Source="$(var.InstallRoot)\WinSparkle.dll" />
+            <?endif?>
+
+            <File Id="COPYING" Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>
+            <File Id="AUTHORS" Name="AUTHORS.txt" Source="$(var.RootDir)\AUTHORS"/>
+            <File Id="README" Name="README.txt" Source="$(var.RootDir)\README.md"/>
+            <File Id="NEWS" Name="NEWS.txt" Source="$(var.RootDir)\NEWS"/>
+            <File Id="LICENSE_APACHE" Name="LICENSE.APACHE.txt" Source="$(var.RootDir)\LICENSE.APACHE"/>
+            <File Id="LICENSE_BSD" Name="LICENSE.BSD.txt" Source="$(var.RootDir)\LICENSE.BSD"/>
+            <File Id="LICENSE_GPL" Name="LICENSE.GPL.txt" Source="$(var.RootDir)\LICENSE.GPL"/>
+
+            <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'>
+              <RegistryValue Type='string' Name='InstallDir' Value='[INSTALLDIR]'/>
+            </RegistryKey>
+
+            <!-- Associated Tiled with .tmx files -->
+            <ProgId Id='Tiled.tmx' Description='Tiled map file' Icon='TiledEXE'>
+              <Extension Id='tmx' ContentType='application/x-tiled-tmx'>
+                <Verb Id='open' Command='Open' TargetFile='TiledEXE' Argument='"%1"' />
+              </Extension>
+            </ProgId>
+          </Component>
+
+          <Directory Id="dir83A7B7C3F39E24970C38654C9B6F4A12" Name="plugins">
+            <Directory Id="dirED990048BCB522432182867E2817CD9B" Name="tiled">
+              <Component Id="Plugins" Guid="{11ACEE38-A936-4FF4-BD8C-D1475D5454D1}">
+                <File Id="filD1109002A9E8142F43A07606A4BCE0A2" Source="$(var.InstallRoot)\plugins\tiled\csv.dll" />
+                <File Id="fil27B14922FA15B9385D880460E98E2D2E" Source="$(var.InstallRoot)\plugins\tiled\droidcraft.dll" />
+                <File Id="filD34235A8BFB590E5CCC1D9E2894616EC" Source="$(var.InstallRoot)\plugins\tiled\flare.dll" />
+                <File Id="fil39697F4D8941F23FE8E9024568D7FAD6" Source="$(var.InstallRoot)\plugins\tiled\json.dll" />
+                <File Id="fil4D119D1A1F54B04C4EB7C3E1B25B1616" Source="$(var.InstallRoot)\plugins\tiled\lua.dll" />
+
+                <?ifdef Python ?>
+                <File Id="fil89F906FEF817FD158A58A494F40E605A" Source="$(var.InstallRoot)\plugins\tiled\python.dll" />
+                <?endif?>
+
+                <File Id="fil83082E185B35EDA2A47D26DD9809D3CD" Source="$(var.InstallRoot)\plugins\tiled\replicaisland.dll" />
+                <File Id="filBC15082CAF13E014CD4B725625D9B371" Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
+                <File Id="fil423C95BE607BAACF542685468BB445BF" Source="$(var.InstallRoot)\plugins\tiled\tmw.dll" />
+              </Component>
+            </Directory>
+            <Directory Id="platformPlugins" Name="platforms">
+              <Component Id="PlatformPlugins" Guid="{093AD7E9-DE6A-48F5-B40D-E260E3F6D4D5}">
+                <File Id="qwindows_dll" Source="$(var.QtDir)\plugins\platforms\qwindows.dll"/>
+              </Component>
+            </Directory>
+            <Directory Id="imageFormatPlugins" Name="imageformats">
+              <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
+                <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
+                <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
+                <File Id="qtiff_dll" Source="$(var.QtDir)\plugins\imageformats\qtiff.dll"/>
+              </Component>
+            </Directory>
+          </Directory>
+
+          <Directory Id="dir674F7F6D2030C2EBF39AA06B57EAF368" Name="translations">
+            <Component Id="Translations" Guid="{EA6DC1E2-A2EB-4130-A482-231583226C08}">
+              <!-- Tiled translations -->
+              <File Id="fil3C525D5A74BC448FF36832F8D3438CB9" Source="$(var.InstallRoot)\translations\tiled_ar_DZ.qm" />
+              <File Id="filAB72AFE09E98BEA6DB799EEC31066C72" Source="$(var.InstallRoot)\translations\tiled_bg.qm" />
+              <File Id="filE9E184FF20DEF09116F8BF274094E369" Source="$(var.InstallRoot)\translations\tiled_cs.qm" />
+              <File Id="filFACF36529196967E4CFA6391EBDD5CF6" Source="$(var.InstallRoot)\translations\tiled_de.qm" />
+              <File Id="fil5D0F7497E05278ABCA30DE9CE4F56E77" Source="$(var.InstallRoot)\translations\tiled_en.qm" />
+              <File Id="filC018335544F53B73675E2FB664EC5FD3" Source="$(var.InstallRoot)\translations\tiled_es.qm" />
+              <File Id="fil594E5E839EC4145E8B4B931A2C493B0A" Source="$(var.InstallRoot)\translations\tiled_fr.qm" />
+              <File Id="filDAF5806F37158DE1542D5AC722DE9888" Source="$(var.InstallRoot)\translations\tiled_he.qm" />
+              <File Id="fil4F6A21C501F8FD2F62A48F9F675562F0" Source="$(var.InstallRoot)\translations\tiled_it.qm" />
+              <File Id="fil474CB8EA4ACE7F46CDE67A76BD4C7898" Source="$(var.InstallRoot)\translations\tiled_ja.qm" />
+              <File Id="fil0A08E9AD349EA1E74DB7693B48EA6223" Source="$(var.InstallRoot)\translations\tiled_lv.qm" />
+              <File Id="fil3D78804A5164D3A538A69CC410748489" Source="$(var.InstallRoot)\translations\tiled_nl.qm" />
+              <File Id="fil2093FF1FA956B072F088284F7E8D9EB0" Source="$(var.InstallRoot)\translations\tiled_pl.qm" />
+              <File Id="filE804DB50B5E2D66789D32FE2DAC6B890" Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
+              <File Id="fil3C89A9D825948C24FA8369978AFFA7A8" Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
+              <File Id="fil0EAEEC884057A18ABC38BE695E59BEF9" Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
+              <File Id="fil69C6C852D465D530C36403B014136302" Source="$(var.InstallRoot)\translations\tiled_zh.qm" />
+              <File Id="fil36A85C97B3C872B1AF9E53D0F5DC0FE6" Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
+
+              <!-- Qt translations -->
+              <File Id="qt_cs" Source="$(var.QtDir)\translations\qt_cs.qm"/>
+              <File Id="qt_de" Source="$(var.QtDir)\translations\qt_de.qm"/>
+              <File Id="qt_es" Source="$(var.QtDir)\translations\qt_es.qm"/>
+              <File Id="qt_fr" Source="$(var.QtDir)\translations\qt_fr.qm"/>
+              <File Id="qt_he" Source="$(var.QtDir)\translations\qt_he.qm"/>
+              <File Id="qt_ja" Source="$(var.QtDir)\translations\qt_ja.qm"/>
+              <File Id="qt_pt" Source="$(var.QtDir)\translations\qt_pt.qm"/>
+              <File Id="qt_ru" Source="$(var.QtDir)\translations\qt_ru.qm"/>
+              <File Id="qt_zh_CN" Source="$(var.QtDir)\translations\qt_zh_CN.qm"/>
+              <File Id="qt_zh_TW" Source="$(var.QtDir)\translations\qt_zh_TW.qm"/>
+            </Component>
+          </Directory>
+          <Directory Id="examples" Name="examples">
+            <Component Id="Examples" Guid="{AC8FD854-A03C-475D-AE66-64428B43C8D7}">
+              <File Id="fil01FBB3D103DB1755CCB8215D90DCD886" Source="$(var.RootDir)\examples\desert.tmx" />
+              <File Id="fil40BD750BCC31DCB35695B0715B5B9688" Source="$(var.RootDir)\examples\desert.tsx" />
+              <File Id="fil3080562A01DBC7B7F1041145306559D2" Source="$(var.RootDir)\examples\hexagonal-mini.tmx" />
+              <File Id="fil6E9588C95E7516578817E1B1E11FF260" Source="$(var.RootDir)\examples\hexmini.png" />
+              <File Id="fil7E331997A1A47660DD7769FC2ABFCD81" Source="$(var.RootDir)\examples\isometric_grass_and_water.png" />
+              <File Id="filF81CC1893F020E84515A015FED263C36" Source="$(var.RootDir)\examples\isometric_grass_and_water.tmx" />
+              <File Id="fil85474E8AA51CEEF46A271B3332327D1A" Source="$(var.RootDir)\examples\perspective_walls.png" />
+              <File Id="fil0D4F93797A8DA4A03B4E76C7CD236FD2" Source="$(var.RootDir)\examples\perspective_walls.tmx" />
+              <File Id="filFA44B0BCF546E4834A2F0E55BDCB5170" Source="$(var.RootDir)\examples\perspective_walls.tsx" />
+              <File Id="filDE886E8A7F591AD37B743D1CFADE58A4" Source="$(var.RootDir)\examples\sewers.tmx" />
+              <File Id="fil3A7FCA83C2BF44F1F00BE57BBB748503" Source="$(var.RootDir)\examples\sewer_tileset.png" />
+              <File Id="filB88E90685B869E6EFC580B33A2A7F5B0" Source="$(var.RootDir)\examples\tmw_desert_spacing.png" />
+            </Component>
+            <Directory Id="dir835E6648DA39D15AFC143959CBD1FC79" Name="sewer_automap">
+              <Component Id="AutomappingExample" Guid="{46E8AEB0-C49F-430E-AA2C-210D3FE52198}">
+                <File Id="fil525782BA8FD1C2CABA3686ED9CD9D76C" Source="$(var.RootDir)\examples\sewer_automap\rules.txt" />
+                <File Id="filC480B04D39261981D4014E8D45310EA9" Source="$(var.RootDir)\examples\sewer_automap\rules_sewers.png" />
+                <File Id="fil84BA8D5F3679656906858B11B1D77107" Source="$(var.RootDir)\examples\sewer_automap\rule_001.tmx" />
+                <File Id="fil41B7466115C7A04E365DBF100401EF1C" Source="$(var.RootDir)\examples\sewer_automap\rule_002.tmx" />
+                <File Id="filBAEB71DA5D85A3082830CFB41D2E6E50" Source="$(var.RootDir)\examples\sewer_automap\rule_003.tmx" />
+                <File Id="filE8973503C211DB081EFCB60C756BA7E6" Source="$(var.RootDir)\examples\sewer_automap\rule_004.tmx" />
+                <File Id="fil0D71FDCFCFC12933AB2E4326447A5CF8" Source="$(var.RootDir)\examples\sewer_automap\rule_005.tmx" />
+                <File Id="fil76705F75F42D489172793557C9C3D286" Source="$(var.RootDir)\examples\sewer_automap\rule_006.tmx" />
+                <File Id="filF9728AA470D5C6E989840E568C0AC461" Source="$(var.RootDir)\examples\sewer_automap\rule_007.tmx" />
+                <File Id="fil227071375832B6211BFEC5298A25872B" Source="$(var.RootDir)\examples\sewer_automap\rule_008.tmx" />
+                <File Id="filEAE27FE1E863EFBAE343865EE9901DEF" Source="$(var.RootDir)\examples\sewer_automap\rule_009.tmx" />
+                <File Id="fil33A5BE7FFA4773701D415525C1C81165" Source="$(var.RootDir)\examples\sewer_automap\sewers.tmx" />
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Component Id="ProgramMenuDir" Guid="{2A4BD742-9A41-40D5-B871-0585CCF9805D}">
+          <RegistryValue Root='HKMU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+        </Component>
+      </Directory>
+
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+
+    <Feature Id='Complete' Level='1' Title="Tiled" Description="The complete package." ConfigurableDirectory='INSTALLDIR' AllowAdvertise='no' Absent='disallow'>
+      <ComponentRef Id='MainExecutable' />
+      <ComponentRef Id='Plugins' />
+      <ComponentRef Id='Translations' />
+      <ComponentRef Id='Examples' />
+      <ComponentRef Id='AutomappingExample' />
+      <ComponentRef Id='PlatformPlugins' />
+      <ComponentRef Id='ImageFormatPlugins' />
+      <ComponentRef Id='ProgramMenuDir' />
+    </Feature>
+
+    <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
+    <CustomAction Id="SetARPINSTALLLOCATION" Property="ARPINSTALLLOCATION" Value="[INSTALLDIR]" />
+    <CustomAction Id='LaunchApplication' FileKey='TiledEXE' ExeCommand='' Return='asyncNoWait' />
+
+    <Property Id="WIXUI_INSTALLDIR">INSTALLDIR</Property>
+    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+
+    <Icon Id="tiled.exe" SourceFile="$(var.InstallRoot)\tiled.exe" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.RootDir)\dist\win\gpl-2.0.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.RootDir)\dist\win\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.RootDir)\dist\win\dialog.bmp" />
+
+    <InstallExecuteSequence>
+      <!-- Determine the install location after the install path has been validated by the installer -->
+      <Custom Action="SetARPINSTALLLOCATION" After="InstallValidate"></Custom>
+      <Custom Action='LaunchApplication' After='InstallFinalize'>NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

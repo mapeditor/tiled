@@ -325,10 +325,13 @@ void TileStampManager::saveStamp(const TileStamp &stamp)
     }
 
     QString filePath = stampsDir.filePath(stamp.fileName());
+    QSaveFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qDebug() << "Failed to open stamp file for writing" << filePath;
+        return;
+    }
 
     QJsonObject stampJson = stamp.toJson(QFileInfo(filePath).dir());
-    QSaveFile file(filePath);
-    file.open(QIODevice::WriteOnly);
     file.write(QJsonDocument(stampJson).toJson(QJsonDocument::Compact));
 
     if (!file.commit())

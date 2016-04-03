@@ -7,5 +7,6 @@ TiledPlugin {
         "flare_global.h",
         "flareplugin.cpp",
         "flareplugin.h",
+        "plugin.json",
     ]
 }

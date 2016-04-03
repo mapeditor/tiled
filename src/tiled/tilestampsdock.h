@@ -42,14 +42,14 @@ class TileStampsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    TileStampsDock(TileStampManager *stampManager, QWidget *parent = 0);
+    TileStampsDock(TileStampManager *stampManager, QWidget *parent = nullptr);
 
 signals:
     void setStamp(const TileStamp &);
 
 protected:
-    void changeEvent(QEvent *e);
-    void keyPressEvent(QKeyEvent *);
+    void changeEvent(QEvent *e) override;
+    void keyPressEvent(QKeyEvent *) override;
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
@@ -89,9 +89,9 @@ class TileStampView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit TileStampView(QWidget *parent = 0);
+    explicit TileStampView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 };
 
 } // namespace Internal

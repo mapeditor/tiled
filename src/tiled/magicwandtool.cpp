@@ -24,7 +24,6 @@
 #include "magicwandtool.h"
 
 #include "brushitem.h"
-#include "filltiles.h"
 #include "tilepainter.h"
 #include "tile.h"
 #include "mapscene.h"

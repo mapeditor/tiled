@@ -37,8 +37,8 @@ public:
                         Tile *tile,
                         const QVector<Frame> &frames);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();

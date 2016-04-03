@@ -203,14 +203,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
-    const QTransform savedTransform = painter->transform();
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
-
-    painter->translate(layerPos);
 
     int startX = 0;
     int startY = 0;
@@ -238,6 +235,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     // Return immediately when there is nothing to draw
     if (startX > endX || startY > endY)
         return;
+
+    const QTransform savedTransform = painter->transform();
+    painter->translate(layerPos);
 
     CellRenderer renderer(painter);
 

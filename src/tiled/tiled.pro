@@ -1,6 +1,7 @@
 include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
 include(../qtpropertybrowser/src/qtpropertybrowser.pri)
+include(../qtsingleapplication/src/qtsingleapplication.pri)
 
 TEMPLATE = app
 TARGET = tiled
@@ -16,6 +17,8 @@ QT += widgets
 
 contains(QT_CONFIG, opengl):!macx: QT += opengl
 
+DEFINES += TILED_VERSION=$${TILED_VERSION}
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
@@ -23,6 +26,20 @@ macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
     LIBS += -framework Foundation
     DEFINES += QT_NO_OPENGL
+    OBJECTIVE_SOURCES += macsupport.mm
+
+    sparkle {
+        LIBS += -framework Sparkle -framework AppKit
+        QMAKE_POST_LINK = \
+            mkdir -p $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks && \
+            test -d $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/Sparkle.framework || \
+            cp -a /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
+        APP_RESOURCES.path = Contents/Resources
+        APP_RESOURCES.files = ../../dist/dsa_pub.pem
+        QMAKE_BUNDLE_DATA += APP_RESOURCES
+        DEFINES += TILED_SPARKLE
+        OBJECTIVE_SOURCES += sparkleautoupdater.mm
+    }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -30,7 +47,7 @@ macx {
 }
 
 # Make sure the Tiled executable can find libtiled
-!win32:!macx:contains(RPATH, yes) {
+!win32:!macx:!cygwin:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
@@ -39,19 +56,22 @@ macx {
 }
 
 SOURCES += aboutdialog.cpp \
-    abstractimagetool.cpp \
     abstractobjecttool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
+    addpropertydialog.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
     addremoveterrain.cpp \
     addremovetiles.cpp \
     addremovetileset.cpp \
+    adjusttileindexes.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
+    autoupdater.cpp \
+    brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     changeimagelayerposition.cpp \
@@ -64,6 +84,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
+    changetileimagesource.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changeselectedarea.cpp \
@@ -92,14 +113,15 @@ SOURCES += aboutdialog.cpp \
     exportasimagedialog.cpp \
     fileedit.cpp \
     filesystemwatcher.cpp \
-    filltiles.cpp \
+    flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
-    imagemovementtool.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
+    layeroffsettool.cpp \
+    magicwandtool.cpp \
     main.cpp \
     mainwindow.cpp \
     mapdocumentactionhandler.cpp \
@@ -123,11 +145,13 @@ SOURCES += aboutdialog.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
+    objecttypeseditor.cpp \
     objecttypesmodel.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
     patreondialog.cpp \
+    pluginlistmodel.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
@@ -135,6 +159,7 @@ SOURCES += aboutdialog.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
+    replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
     resizemap.cpp \
@@ -145,6 +170,7 @@ SOURCES += aboutdialog.cpp \
     selectsametiletool.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
+    standardautoupdater.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -162,6 +188,7 @@ SOURCES += aboutdialog.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
     tilesetmodel.cpp \
+    tilesetparametersedit.cpp \
     tilesetview.cpp \
     tilestamp.cpp \
     tilestampmanager.cpp \
@@ -173,23 +200,25 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    magicwandtool.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
-    abstractimagetool.h \
     abstractobjecttool.h \
     abstracttiletool.h \
     abstracttool.h \
+    addpropertydialog.h \
     addremovelayer.h \
     addremovemapobject.h \
     addremoveterrain.h \
     addremovetiles.h \
     addremovetileset.h \
+    adjusttileindexes.h \
     automapper.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
+    autoupdater.h \
+    brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
     changeimagelayerposition.h \
@@ -202,6 +231,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changetileanimation.h \
+    changetileimagesource.h \
     changetileobjectgroup.h \
     changetileprobability.h \
     changeselectedarea.h \
@@ -231,15 +261,16 @@ HEADERS += aboutdialog.h \
     exportasimagedialog.h \
     fileedit.h \
     filesystemwatcher.h \
-    filltiles.h \
+    flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
-    imagemovementtool.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
+    layeroffsettool.h \
     macsupport.h \
+    magicwandtool.h \
     mainwindow.h \
     mapdocumentactionhandler.h \
     mapdocument.h \
@@ -262,13 +293,15 @@ HEADERS += aboutdialog.h \
     objectselectionitem.h \
     objectselectiontool.h \
     objecttypes.h \
+    objecttypeseditor.h \
     objecttypesmodel.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
     patreondialog.h \
-    preferencesdialog.h \
+    pluginlistmodel.h \
     preferences.h \
+    preferencesdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
@@ -276,6 +309,7 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
+    replacetileset.h \
     resizedialog.h \
     resizehelper.h \
     resizemap.h \
@@ -285,7 +319,9 @@ HEADERS += aboutdialog.h \
     selectionrectangle.h \
     selectsametiletool.h \
     snaphelper.h \
+    sparkleautoupdater.h \
     stampbrush.h \
+    standardautoupdater.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
@@ -303,6 +339,7 @@ HEADERS += aboutdialog.h \
     tilesetdock.h \
     tilesetmanager.h \
     tilesetmodel.h \
+    tilesetparametersedit.h \
     tilesetview.h \
     tilestamp.h \
     tilestampmanager.h \
@@ -315,20 +352,17 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    magicwandtool.h
-
-macx {
-    OBJECTIVE_SOURCES += macsupport.mm
-}
+    zoomable.h
 
 FORMS += aboutdialog.ui \
+    addpropertydialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
     exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
+    objecttypeseditor.ui \
     offsetmapdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
@@ -378,7 +412,7 @@ macx {
     ICON = images/tiled-icon-mac.icns
 }
 win32 {
-    RC_FILE = tiled.rc
+    RC_FILE = tiled.rc.in
     PRECOMPILED_HEADER = pch.h
 }
 win32:INCLUDEPATH += .

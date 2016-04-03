@@ -37,12 +37,12 @@ class MiniMapDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MiniMapDock(QWidget *parent = 0);
+    MiniMapDock(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void retranslateUi();    

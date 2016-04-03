@@ -38,7 +38,7 @@ class ConverterWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConverterWindow(QWidget *parent = 0);
+    explicit ConverterWindow(QWidget *parent = nullptr);
     ~ConverterWindow();
 
 public slots:

@@ -24,7 +24,9 @@
 
 #include "undocommands.h"
 
+#include <QColor>
 #include <QPoint>
+#include <QSize>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -42,8 +44,8 @@ public:
                   Tileset *tileset,
                   const QString &newName);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
@@ -59,17 +61,72 @@ public:
                             Tileset *tileset,
                             QPoint tileOffset);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_ChangeTilesetTileOffset; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_ChangeTilesetTileOffset; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;
     Tileset *mTileset;
     QPoint mOldTileOffset;
     QPoint mNewTileOffset;
+};
+
+struct TilesetParameters
+{
+    TilesetParameters()
+        : tileSpacing(0)
+        , margin(0)
+    {}
+
+    explicit TilesetParameters(const Tileset &tileset);
+
+    bool operator != (const TilesetParameters &other) const;
+
+    QString imageSource;
+    QColor transparentColor;
+    QSize tileSize;
+    int tileSpacing;
+    int margin;
+};
+
+class ChangeTilesetParameters : public QUndoCommand
+{
+public:
+    ChangeTilesetParameters(MapDocument *mapDocument,
+                            Tileset &tileset,
+                            const TilesetParameters &parameters);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    void apply(const TilesetParameters &parameters);
+
+    MapDocument *mMapDocument;
+    Tileset &mTileset;
+    TilesetParameters mOldParameters;
+    TilesetParameters mNewParameters;
+};
+
+class ChangeTilesetColumnCount : public QUndoCommand
+{
+public:
+    ChangeTilesetColumnCount(MapDocument *mapDocument,
+                             Tileset &tileset,
+                             int columnCount);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Tileset &mTileset;
+    int mColumnCount;
 };
 
 } // namespace Internal

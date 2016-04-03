@@ -22,6 +22,7 @@
 #define PROPERTIESDOCK_H
 
 #include <QDockWidget>
+#include <QVariant>
 
 class QtBrowserItem;
 
@@ -40,22 +41,26 @@ class PropertiesDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit PropertiesDock(QWidget *parent = 0);
+    explicit PropertiesDock(QWidget *parent = nullptr);
+
+    /**
+     * Sets the \a mapDocument on which this properties dock will act.
+     */
+    void setMapDocument(MapDocument *mapDocument);
 
 public slots:
     void bringToFront();
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private slots:
-    void mapDocumentChanged(MapDocument *mapDocument);
     void currentObjectChanged(Object *object);
     void currentItemChanged(QtBrowserItem *item);
     void tilesetFileNameChanged(Tileset *tileset);
 
     void addProperty();
-    void addProperty(const QString &name);
+    void addProperty(const QString &name, QVariant::Type type);
     void removeProperty();
     void renameProperty();
     void renameProperty(const QString &name);

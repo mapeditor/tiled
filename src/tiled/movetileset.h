@@ -38,11 +38,11 @@ class MoveTileset : public QUndoCommand
 public:
     MoveTileset(MapDocument *mapDocument, int from, int to);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_MoveTileset; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_MoveTileset; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;

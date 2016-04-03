@@ -28,11 +28,16 @@
 #include "mapreader.h"
 #include "mapformat.h"
 #include "preferences.h"
+#include "sparkleautoupdater.h"
+#include "standardautoupdater.h"
 #include "tiledapplication.h"
 #include "tileset.h"
+#include "winsparkleautoupdater.h"
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QtPlugin>
 #include <QStyle>
 #include <QStyleFactory>
@@ -56,6 +61,7 @@ public:
     bool showedVersion;
     bool disableOpenGL;
     bool exportMap;
+    bool newInstance;
 
 private:
     void showVersion();
@@ -63,6 +69,7 @@ private:
     void setDisableOpenGL();
     void setExportMap();
     void showExportFormats();
+    void startNewInstance();
 
     // Convenience wrapper around registerOption
     template <void (CommandLineHandler::*memberFunction)()>
@@ -85,6 +92,7 @@ CommandLineHandler::CommandLineHandler()
     , showedVersion(false)
     , disableOpenGL(false)
     , exportMap(false)
+    , newInstance(false)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -110,6 +118,11 @@ CommandLineHandler::CommandLineHandler()
                 QChar(),
                 QLatin1String("--export-formats"),
                 tr("Print a list of supported export formats"));
+
+    option<&CommandLineHandler::startNewInstance>(
+                QChar(),
+                QLatin1String("--new-instance"),
+                tr("Start a new instance, even if an instance is already running"));
 }
 
 void CommandLineHandler::showVersion()
@@ -151,6 +164,11 @@ void CommandLineHandler::showExportFormats()
     quit = true;
 }
 
+void CommandLineHandler::startNewInstance()
+{
+    newInstance = true;
+}
+
 int main(int argc, char *argv[])
 {
     TiledApplication a(argc, argv);
@@ -162,12 +180,7 @@ int main(int argc, char *argv[])
     a.setApplicationName(QLatin1String("tiled"));
 #endif
     a.setApplicationDisplayName(QLatin1String("Tiled"));
-
-#ifdef BUILD_INFO_VERSION
-    a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
-#else
-    a.setApplicationVersion(QLatin1String("0.14.0"));
-#endif
+    a.setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
 
 #ifdef Q_OS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
@@ -216,7 +229,7 @@ int main(int argc, char *argv[])
             return 1;
         }
         int index = 0;
-        const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : 0;
+        const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
@@ -280,8 +293,25 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
+        QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
+        if (a.sendMessage(QLatin1String(doc.toJson())))
+            return 0;
+    }
+
+    QScopedPointer<AutoUpdater> updater;
+#ifdef TILED_SPARKLE
+#if defined(Q_OS_MAC)
+    updater.reset(new SparkleAutoUpdater);
+#elif defined(Q_OS_WIN)
+    updater.reset(new WinSparkleAutoUpdater);
+#endif
+#endif
+
     MainWindow w;
     w.show();
+
+    a.setActivationWindow(&w);
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));

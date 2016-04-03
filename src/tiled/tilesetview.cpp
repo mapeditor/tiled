@@ -53,16 +53,16 @@ namespace {
 class TileDelegate : public QAbstractItemDelegate
 {
 public:
-    TileDelegate(TilesetView *tilesetView, QObject *parent = 0)
+    TileDelegate(TilesetView *tilesetView, QObject *parent = nullptr)
         : QAbstractItemDelegate(parent)
         , mTilesetView(tilesetView)
     { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+               const QModelIndex &index) const override;
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const;
+                   const QModelIndex &index) const override;
 
 private:
     TilesetView *mTilesetView;
@@ -217,7 +217,19 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
-    const QSize tileSize = tileImage.size() * zoom;
+
+    QSize tileSize = tileImage.size();
+    if (tileImage.isNull()) {
+        Tileset *tileset = model->tileset();
+        if (tileset->isCollection()) {
+            tileSize = QSize(32, 32);
+        } else {
+            int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+            int min = std::min(max, 32);
+            tileSize = QSize(min, min);
+        }
+    }
+    tileSize *= zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
@@ -229,7 +241,11 @@ void TileDelegate::paint(QPainter *painter,
         if (zoomable->smoothTransform())
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->drawPixmap(targetRect, tileImage);
+    if (!tileImage.isNull())
+        painter->drawPixmap(targetRect, tileImage);
+    else
+        mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
+
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated()) {
@@ -311,9 +327,22 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
     if (const Tile *tile = m->tileAt(index)) {
-        const QSize tileSize = tile->size() * mTilesetView->scale();
-        return QSize(tileSize.width() + extra,
-                     tileSize.height() + extra);
+        const QPixmap &image = tile->image();
+        QSize tileSize = image.size();
+
+        if (image.isNull()) {
+            Tileset *tileset = m->tileset();
+            if (tileset->isCollection()) {
+                tileSize = QSize(32, 32);
+            } else {
+                int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+                int min = std::min(max, 32);
+                tileSize = QSize(min, min);
+            }
+        }
+
+        return QSize(tileSize.width() * mTilesetView->scale() + extra,
+                     tileSize.height() * mTilesetView->scale() + extra);
     }
 
     return QSize(extra, extra);
@@ -324,14 +353,15 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
-    , mZoomable(0)
-    , mMapDocument(0)
+    , mZoomable(nullptr)
+    , mMapDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
     , mEraseTerrain(false)
     , mTerrainId(-1)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
+    , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -377,7 +407,7 @@ int TilesetView::sizeHintForColumn(int column) const
     if (!model)
         return -1;
 #if QT_VERSION >= 0x050200
-    if (model->tileset()->imageSource().isEmpty())
+    if (model->tileset()->isCollection())
         return QTableView::sizeHintForColumn(column);
 #endif
 
@@ -392,7 +422,7 @@ int TilesetView::sizeHintForRow(int row) const
     if (!model)
         return -1;
 #if QT_VERSION >= 0x050200
-    if (model->tileset()->imageSource().isEmpty())
+    if (model->tileset()->isCollection())
         return QTableView::sizeHintForRow(row);
 #endif
 
@@ -455,6 +485,11 @@ void TilesetView::setTerrainId(int terrainId)
     mTerrainId = terrainId;
     if (mEditTerrain)
         viewport()->update();
+}
+
+QIcon TilesetView::imageMissingIcon() const
+{
+    return QIcon::fromTheme(QLatin1String("image-missing"), mImageMissingIcon);
 }
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
@@ -624,13 +659,13 @@ void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
     if (TilesetModel *model = tilesetModel())
-        model->tilesetChanged();
+        model->resetModel();
 }
 
 void TilesetView::adjustScale()
 {
     if (TilesetModel *model = tilesetModel())
-        model->tilesetChanged();
+        model->resetModel();
 }
 
 void TilesetView::applyTerrain()
@@ -667,5 +702,5 @@ void TilesetView::finishTerrainChange()
 Tile *TilesetView::currentTile() const
 {
     const TilesetModel *model = tilesetModel();
-    return model ? model->tileAt(currentIndex()) : 0;
+    return model ? model->tileAt(currentIndex()) : nullptr;
 }

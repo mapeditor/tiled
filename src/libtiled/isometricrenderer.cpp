@@ -228,8 +228,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 
     CellRenderer renderer(painter);
 
-    for (int y = startPos.y(); y - tileHeight < rect.bottom();
-         y += tileHeight / 2)
+    for (int y = startPos.y() * 2; y - tileHeight * 2 < rect.bottom() * 2;
+         y += tileHeight)
     {
         QPoint columnItr = rowItr;
 
@@ -237,7 +237,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    renderer.render(cell, QPointF(x, y), QSizeF(0, 0),
+                    renderer.render(cell, QPointF(x, (float)y / 2), QSizeF(0, 0),
                                     CellRenderer::BottomLeft);
                 }
             }

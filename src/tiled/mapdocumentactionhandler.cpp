@@ -44,7 +44,7 @@ MapDocumentActionHandler *MapDocumentActionHandler::mInstance;
 
 MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     : QObject(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
@@ -141,7 +141,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
 MapDocumentActionHandler::~MapDocumentActionHandler()
 {
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 void MapDocumentActionHandler::retranslateUi()
@@ -357,7 +357,7 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
 
 void MapDocumentActionHandler::updateActions()
 {
-    Map *map = 0;
+    Map *map = nullptr;
     int currentLayerIndex = -1;
     QRegion selection;
     int selectedObjectsCount = 0;

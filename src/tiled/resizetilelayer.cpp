@@ -38,7 +38,7 @@ ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
                                                "Resize Layer"))
     , mMapDocument(mapDocument)
     , mIndex(mapDocument->map()->layers().indexOf(layer))
-    , mOriginalLayer(0)
+    , mOriginalLayer(nullptr)
 {
     Q_ASSERT(mIndex != -1);
 
@@ -57,14 +57,14 @@ void ResizeTileLayer::undo()
 {
     Q_ASSERT(!mResizedLayer);
     mResizedLayer = static_cast<TileLayer*>(swapLayer(mOriginalLayer));
-    mOriginalLayer = 0;
+    mOriginalLayer = nullptr;
 }
 
 void ResizeTileLayer::redo()
 {
     Q_ASSERT(!mOriginalLayer);
     mOriginalLayer = static_cast<TileLayer*>(swapLayer(mResizedLayer));
-    mResizedLayer = 0;
+    mResizedLayer = nullptr;
 }
 
 Layer *ResizeTileLayer::swapLayer(Layer *layer)

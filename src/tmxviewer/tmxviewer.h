@@ -41,7 +41,7 @@ class TmxViewer : public QGraphicsView
     Q_OBJECT
 
 public:
-    explicit TmxViewer(QWidget *parent = 0);
+    explicit TmxViewer(QWidget *parent = nullptr);
     ~TmxViewer();
 
     bool viewMap(const QString &fileName);

@@ -98,13 +98,15 @@ public:
     void setLastPath(FileType fileType, const QString &path);
 
     bool automappingDrawing() const { return mAutoMapDrawing; }
-    void setAutomappingDrawing(bool enabled);
 
     QString mapsDirectory() const;
     void setMapsDirectory(const QString &path);
 
     QString stampsDirectory() const;
     void setStampsDirectory(const QString &stampsDirectory);
+
+    QString objectTypesFile() const;
+    void setObjectTypesFile(const QString &filePath);
 
     QDate firstRun() const;
     int runCount() const;
@@ -113,7 +115,9 @@ public:
     void setPatron(bool isPatron);
 
     bool openLastFilesOnStartup() const;
-    void setOpenLastFilesOnStartup(bool load);
+
+    bool checkForUpdates() const;
+    void setCheckForUpdates(bool on);
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -132,6 +136,9 @@ public slots:
     void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
+    void setAutomappingDrawing(bool enabled);
+    void setOpenLastFilesOnStartup(bool load);
+    void setPluginEnabled(const QString &fileName, bool enabled);
 
 signals:
     void showGridChanged(bool showGrid);
@@ -154,6 +161,7 @@ signals:
     void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
+    void checkForUpdatesChanged();
 
 private:
     Preferences();
@@ -192,10 +200,12 @@ private:
 
     QString mMapsDirectory;
     QString mStampsDirectory;
+    QString mObjectTypesFile;
 
     QDate mFirstRun;
     int mRunCount;
     bool mIsPatron;
+    bool mCheckForUpdates;
 
     static Preferences *mInstance;
 };
@@ -219,6 +229,11 @@ inline int Preferences::runCount() const
 inline bool Preferences::isPatron() const
 {
     return mIsPatron;
+}
+
+inline bool Preferences::checkForUpdates() const
+{
+    return mCheckForUpdates;
 }
 
 inline bool Preferences::openLastFilesOnStartup() const

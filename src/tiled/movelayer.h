@@ -48,8 +48,8 @@ public:
      */
     MoveLayer(MapDocument *mapDocument, int index, Direction direction);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void moveLayer();

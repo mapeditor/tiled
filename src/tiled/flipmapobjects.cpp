@@ -38,7 +38,7 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 {
     setText(QCoreApplication::translate("Undo Commands",
                                         "Flip %n Object(s)",
-                                        0, mapObjects.size()));
+                                        nullptr, mapObjects.size()));
 }
 
 void FlipMapObjects::flip()

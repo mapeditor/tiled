@@ -27,6 +27,7 @@
 #include <QSettings>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QMainWindow>
 #include <QMenu>
 
 static QString toImageFileFilter(const QList<QByteArray> &formats)
@@ -34,7 +35,7 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
     QString filter(QCoreApplication::translate("Utils", "Image files"));
     filter += QLatin1String(" (");
     bool first = true;
-    foreach (const QByteArray &format, formats) {
+    for (const QByteArray &format : formats) {
         if (!first)
             filter += QLatin1Char(' ');
         first = false;
@@ -67,9 +68,15 @@ void restoreGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QString key = widget->objectName() + QLatin1String("/Geometry");
     const QSettings *settings = Internal::Preferences::instance()->settings();
+
+    const QString key = widget->objectName() + QLatin1String("/Geometry");
     widget->restoreGeometry(settings->value(key).toByteArray());
+
+    if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
+        const QString stateKey = widget->objectName() + QLatin1String("/State");
+        mainWindow->restoreState(settings->value(stateKey).toByteArray());
+    }
 }
 
 /**
@@ -80,9 +87,15 @@ void saveGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QString key = widget->objectName() + QLatin1String("/Geometry");
     QSettings *settings = Internal::Preferences::instance()->settings();
+
+    const QString key = widget->objectName() + QLatin1String("/Geometry");
     settings->setValue(key, widget->saveGeometry());
+
+    if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
+        const QString stateKey = widget->objectName() + QLatin1String("/State");
+        settings->setValue(stateKey, mainWindow->saveState());
+    }
 }
 
 } // namespace Utils

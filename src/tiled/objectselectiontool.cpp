@@ -139,7 +139,7 @@ static QPainterPath createResizeArrow(bool straight)
 class Handle : public QGraphicsItem
 {
 public:
-    Handle(QGraphicsItem *parent = 0)
+    Handle(QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mUnderMouse(false)
     {
@@ -150,9 +150,9 @@ public:
     }
 
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = true; update(); }
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = false; update(); }
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) override { mUnderMouse = true; update(); }
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override { mUnderMouse = false; update(); }
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     bool mUnderMouse;
 };
@@ -172,15 +172,15 @@ QVariant Handle::itemChange(GraphicsItemChange change, const QVariant &value)
 class OriginIndicator : public Handle
 {
 public:
-    OriginIndicator(QGraphicsItem *parent = 0)
+    OriginIndicator(QGraphicsItem *parent = nullptr)
         : Handle(parent)
     {
         setFlag(QGraphicsItem::ItemIsMovable);
         setZValue(10000 + 1);
     }
 
-    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return QRectF(-9, -9, 18, 18); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 };
 
 void OriginIndicator::paint(QPainter *painter,
@@ -205,7 +205,7 @@ void OriginIndicator::paint(QPainter *painter,
 class RotateHandle : public Handle
 {
 public:
-    RotateHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
+    RotateHandle(AnchorPosition corner, QGraphicsItem *parent = nullptr)
         : Handle(parent)
         , mArrow(createRotateArrow())
     {
@@ -223,8 +223,8 @@ public:
         mArrow = transform.map(mArrow);
     }
 
-    QRectF boundingRect() const { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     QPainterPath mArrow;
@@ -249,7 +249,7 @@ void RotateHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 class ResizeHandle : public Handle
 {
 public:
-    ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = 0)
+    ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = nullptr)
         : Handle(parent)
         , mAnchorPosition(anchorPosition)
         , mResizingLimitHorizontal(false)
@@ -284,8 +284,8 @@ public:
     bool resizingLimitHorizontal() const { return mResizingLimitHorizontal; }
     bool resizingLimitVertical() const { return mResizingLimitVertical; }
     
-    QRectF boundingRect() const { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     AnchorPosition mAnchorPosition;
@@ -340,10 +340,10 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mSelectionRectangle;
     delete mOriginIndicator;
 
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        delete mRotateHandles[i];
-    for (int i = 0; i < AnchorCount; ++i)
-        delete mResizeHandles[i];
+    for (RotateHandle *handle : mRotateHandles)
+        delete handle;
+    for (ResizeHandle *handle : mResizeHandles)
+        delete handle;
 }
 
 void ObjectSelectionTool::activate(MapScene *scene)
@@ -363,19 +363,19 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, SLOT(objectsRemoved(QList<MapObject*>)));
 
     scene->addItem(mOriginIndicator);
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->addItem(mRotateHandles[i]);
-    for (int i = 0; i < AnchorCount; ++i)
-        scene->addItem(mResizeHandles[i]);
+    for (RotateHandle *handle : mRotateHandles)
+        scene->addItem(handle);
+    for (ResizeHandle *handle : mResizeHandles)
+        scene->addItem(handle);
 }
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mOriginIndicator);
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->removeItem(mRotateHandles[i]);
-    for (int i = 0; i < AnchorCount; ++i)
-        scene->removeItem(mResizeHandles[i]);
+    for (RotateHandle *handle : mRotateHandles)
+        scene->removeItem(handle);
+    for (ResizeHandle *handle : mResizeHandles)
+        scene->removeItem(handle);
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
                this, SLOT(updateHandles()));
@@ -512,7 +512,7 @@ static QGraphicsView *findView(QGraphicsSceneEvent *event)
 {
     if (QWidget *viewport = event->widget())
         return qobject_cast<QGraphicsView*>(viewport->parent());
-    return 0;
+    return nullptr;
 }
 
 void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -840,10 +840,10 @@ void ObjectSelectionTool::updateHandles()
         mResizeHandles[BottomRightAnchor]->setPos(bottomRight);
         mResizeHandles[BottomRightAnchor]->setResizingOrigin(topLeft);
 
-        for (int i = 0; i < CornerAnchorCount; ++i)
-            mRotateHandles[i]->setRotation(handleRotation);
-        for (int i = 0; i < AnchorCount; ++i)
-            mResizeHandles[i]->setRotation(handleRotation);
+        for (RotateHandle *handle : mRotateHandles)
+            handle->setRotation(handleRotation);
+        for (ResizeHandle *handle : mResizeHandles)
+            handle->setRotation(handleRotation);
     }
 
     updateHandleVisibility();
@@ -856,10 +856,10 @@ void ObjectSelectionTool::updateHandleVisibility()
     const bool showOrigin = hasSelection &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
-    for (int i = 0; i < CornerAnchorCount; ++i)
-        mRotateHandles[i]->setVisible(showHandles && mMode == Rotate);
-    for (int i = 0; i < AnchorCount; ++i)
-        mResizeHandles[i]->setVisible(showHandles && mMode == Resize);
+    for (RotateHandle *handle : mRotateHandles)
+        handle->setVisible(showHandles && mMode == Rotate);
+    for (ResizeHandle *handle : mResizeHandles)
+        handle->setVisible(showHandles && mMode == Resize);
 
     mOriginIndicator->setVisible(showOrigin);
 }

@@ -22,13 +22,11 @@
 #ifndef TILEPAINTER_H
 #define TILEPAINTER_H
 
+#include "tilelayer.h"
+
 #include <QRegion>
 
 namespace Tiled {
-
-class Cell;
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -58,6 +56,7 @@ public:
      * of the layer.
      */
     Cell cellAt(int x, int y) const;
+    Cell cellAt(QPoint pos) const;
 
     /**
      * Sets the cell at the given coordinates. The coordinates are relative to
@@ -69,11 +68,10 @@ public:
      * Sets the cells at the given coordinates to the cells in the given tile
      * layer. The coordinates \a x and \a y are relative to the map origin.
      *
-     * When a \a mask is given, only cells that fall within this mask are set.
-     * The mask is applied in map coordinates.
+     * Only cells that fall within this mask are set. The mask is applied in
+     * map coordinates.
      */
-    void setCells(int x, int y, TileLayer *tileLayer,
-                  const QRegion &mask = QRegion());
+    void setCells(int x, int y, TileLayer *tileLayer, const QRegion &mask);
 
     /**
      * Draws the cells in the given tile layer at the given coordinates. The
@@ -120,6 +118,11 @@ private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
 };
+
+inline Cell TilePainter::cellAt(QPoint pos) const
+{
+    return cellAt(pos.x(), pos.y());
+}
 
 } // namespace Tiled
 } // namespace Internal

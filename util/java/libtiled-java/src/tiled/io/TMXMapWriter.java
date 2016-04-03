@@ -51,7 +51,7 @@ public class TMXMapWriter
     private static final boolean encodeLayerData = true;
     private static final boolean compressLayerData = encodeLayerData;
 
-    private HashMap<String, Integer> firstGidPerTileset;
+    private HashMap<TileSet, Integer> firstGidPerTileset;
 
     public static class Settings {
         public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
@@ -151,7 +151,7 @@ public class TMXMapWriter
 
         writeProperties(map.getProperties(), w);
 
-        firstGidPerTileset = new HashMap<String, Integer>();
+        firstGidPerTileset = new HashMap<TileSet, Integer>();
         int firstgid = 1;
         for (TileSet tileset : map.getTileSets()) {
             setFirstGidForTileset(tileset, firstgid);
@@ -600,10 +600,10 @@ public class TMXMapWriter
     }
 
     private void setFirstGidForTileset(TileSet tileset, int firstGid) {
-        firstGidPerTileset.put(tileset.getName(), firstGid);
+        firstGidPerTileset.put(tileset, firstGid);
     }
 
     private int getFirstGidForTileset(TileSet tileset) {
-        return firstGidPerTileset.get(tileset.getName());
+        return firstGidPerTileset.get(tileset);
     }
 }

@@ -1,5 +1,6 @@
-build
-bin
+# General build artifacts
+build/
+bin/
 lib/tiled/plugins/*
 lib/*.so*
 Makefile*
@@ -8,9 +9,7 @@ Makefile*
 *.moc
 moc_*.cpp
 ui_*.h
-*.pro.user*
 qrc_*
-html
 
 # Build artifacts on Windows
 tiled.exe
@@ -27,10 +26,18 @@ automappingconverter.exe
 # Build artifacts on Mac
 translations/phony_target.app
 
+# IDE files
+*.pro.user*
+*.qbs.user*
+
 tests/test_mapreader
 
 # Ronn html outputs
 man/*.1.html
 
-# mkdocs
+# mkdocs and Doxygen
 site/
+html/
+
+# Work-in-progress worktrees
+wip/

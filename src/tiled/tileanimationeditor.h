@@ -30,6 +30,7 @@ class TileAnimationEditor;
 
 namespace Tiled {
 
+class Object;
 class Tile;
 class Tileset;
 
@@ -44,7 +45,7 @@ class TileAnimationEditor : public QWidget
     Q_OBJECT
 
 public:
-    explicit TileAnimationEditor(QWidget *parent = 0);
+    explicit TileAnimationEditor(QWidget *parent = nullptr);
     ~TileAnimationEditor();
 
     void setMapDocument(MapDocument *mapDocument);
@@ -58,16 +59,17 @@ public slots:
     void setTile(Tile *tile);
 
 protected:
-    void closeEvent(QCloseEvent *);
-    void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *) override;
+    void changeEvent(QEvent *e) override;
 
-    void showEvent(QShowEvent *);
-    void hideEvent(QHideEvent *);
+    void showEvent(QShowEvent *) override;
+    void hideEvent(QHideEvent *) override;
 
 private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
     void tilesetFileNameChanged(Tileset *);
+    void currentObjectChanged(Object *object);
 
     void addFrameForTileAt(const QModelIndex &index);
 

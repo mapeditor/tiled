@@ -52,7 +52,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     QTextStream out(&file);
 
     // Write the header
-    QString header = map->property("header");
+    QString header = map->property("header").toString();
     foreach (const QString &line, header.split("\\n")) {
         out << line << endl;
     }
@@ -108,18 +108,18 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
                 // Process the Object Layer
                 } else if (objectLayer) {
-                    foreach (const MapObject *obj, objectLayer->objects()) {
+                    for (const MapObject *obj : objectLayer->objects()) {
                         if (floor(obj->y()) <= y && y <= floor(obj->y() + obj->height())) {
                             if (floor(obj->x()) <= x && x <= floor(obj->x() + obj->width())) {
                                 // Check the Object Layer properties if either display or value was missing
-                                if (!obj->property("display").isEmpty()) {
+                                if (!obj->property("display").isNull()) {
                                     currentTile["display"] = obj->property("display");
-                                } else if (!objectLayer->property("display").isEmpty()) {
+                                } else if (!objectLayer->property("display").isNull()) {
                                     currentTile["display"] = objectLayer->property("display");
                                 }
-                                if (!obj->property("value").isEmpty()) {
+                                if (!obj->property("value").isNull()) {
                                     currentTile[layerKey] = obj->property("value");
-                                } else if (!objectLayer->property("value").isEmpty()) {
+                                } else if (!objectLayer->property("value").isNull()) {
                                     currentTile[layerKey] = objectLayer->property("value");
                                 }
                             }
@@ -128,17 +128,17 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 }
             }
             // If the currentTile does not exist in the cache, add it
-            if (!cachedTiles.contains(currentTile["display"])) {
-                cachedTiles[currentTile["display"]] = currentTile;
+            if (!cachedTiles.contains(currentTile["display"].toString())) {
+                cachedTiles[currentTile["display"].toString()] = currentTile;
             // Otherwise check that it EXACTLY matches the cached one
             // and if not...
-            } else if (currentTile != cachedTiles[currentTile["display"]]) {
+            } else if (currentTile != cachedTiles[currentTile["display"].toString()]) {
                 // Search the cached tiles for a match
                 bool foundInCache = false;
                 QString displayString;
                 for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
                     displayString = i.key();
-                    currentTile["display"] = displayString;
+                    currentTile["display"].setValue(displayString);
                     if (currentTile == i.value()) {
                         foundInCache = true;
                         break;
@@ -161,14 +161,14 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                         if (!cachedTiles.contains(displayString)) {
                             cachedTiles[displayString] = currentTile;
                             break;
-                        } else if (currentTile == cachedTiles[currentTile["display"]]) {
+                        } else if (currentTile == cachedTiles[currentTile["display"].toString()]) {
                             break;
                         }
                     }
                 }
             }
             // Check the output type
-            if (currentTile["display"].length() > 1) {
+            if (currentTile["display"].toString().length() > 1) {
                 outputLists = true;
             }
             // Check if we are still the emptyTile
@@ -176,7 +176,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 numEmptyTiles++;
             }
             // Finally add the character to the asciiMap
-            asciiMap.append(currentTile["display"]);
+            asciiMap.append(currentTile["display"].toString());
         }
     }
     // Write the definitions to the file
@@ -300,12 +300,13 @@ QString TenginePlugin::errorString() const
     return mError;
 }
 
-QString TenginePlugin::constructArgs(Tiled::Properties props, QList<QString> propOrder) const
+QString TenginePlugin::constructArgs(const Tiled::Properties &props,
+                                     const QList<QString> &propOrder) const
 {
     QString argString;
     // We work backwards so we don't have to include a bunch of nils
     for (int i = propOrder.size() - 1; i >= 0; --i) {
-        QString currentValue = props[propOrder[i]];
+        QString currentValue = props[propOrder[i]].toString();
         // Special handling of the "additional" property
         if ((propOrder[i] == "additional") && currentValue.isEmpty()) {
             currentValue = constructAdditionalTable(props, propOrder);
@@ -323,23 +324,26 @@ QString TenginePlugin::constructArgs(Tiled::Properties props, QList<QString> pro
 }
 
 // Finds unhandled properties and bundles them into a Lua table
-QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<QString> propOrder) const
+QString TenginePlugin::constructAdditionalTable(const Tiled::Properties &props,
+                                                const QList<QString> &propOrder) const
 {
     QString tableString;
-    QMap<QString, QString> unhandledProps = QMap<QString, QString>(props);
+    QMap<QString, QVariant> unhandledProps = QMap<QString, QVariant>(props);
+
     // Remove handled properties
-    for (int i = 0; i < propOrder.size(); i++) {
-        unhandledProps.remove(propOrder[i]);
-    }
+    for (const QString &prop : propOrder)
+        unhandledProps.remove(prop);
+
     // Construct the Lua string
     if (unhandledProps.size() > 0) {
         tableString = "{";
-        QMapIterator<QString, QString> i(unhandledProps);
+        QMapIterator<QString, QVariant> i(unhandledProps);
         while (i.hasNext()) {
             i.next();
-            tableString = QString("%1%2=%3,").arg(tableString, i.key(), i.value());
+            tableString = QString("%1%2=%3,").arg(tableString, i.key(), i.value().toString());
         }
         tableString = QString("%1}").arg(tableString);
     }
+
     return tableString;
 }

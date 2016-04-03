@@ -47,7 +47,7 @@ public:
     /**
      * Constructor.
      */
-    AutomappingManager(QObject *parent = 0);
+    AutomappingManager(QObject *parent = nullptr);
 
     ~AutomappingManager();
 

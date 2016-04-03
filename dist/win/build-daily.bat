@@ -41,13 +41,13 @@ set LINK=/SUBSYSTEM:WINDOWS,5.01
 
 mkdir %TILED_BUILD_DIR%
 pushd %TILED_BUILD_DIR%
-qmake.exe -r %TILED_SOURCE_DIR%\tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DBUILD_INFO_VERSION=%COMMITNOW%"
+qmake.exe -r %TILED_SOURCE_DIR%\tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DTILED_VERSION=%COMMITNOW%"
 %MAKE%
 popd
 
 echo Building Installer...
 pushd %TILED_SOURCE_DIR%\dist\win
-makensis.exe tiled.nsi
+makensis.exe tiled-vs2013.nsi
 
 echo Uploading installer...
 %SCP% -B tiled-%VERSION%-win32-setup.exe %DESTINATION%

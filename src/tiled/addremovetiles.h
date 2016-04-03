@@ -40,9 +40,8 @@ class AddRemoveTiles : public QUndoCommand
 public:
     AddRemoveTiles(MapDocument *mapDocument,
                    Tileset *tileset,
-                   int index,
-                   int count,
-                   const QList<Tile*> &tiles = QList<Tile*>());
+                   const QList<Tile*> &tiles,
+                   bool add);
 
     ~AddRemoveTiles();
 
@@ -53,9 +52,8 @@ protected:
 private:
     MapDocument *mMapDocument;
     Tileset *mTileset;
-    int mIndex;
-    int mCount;
     QList<Tile*> mTiles;
+    bool mTilesAdded;
 };
 
 /**
@@ -68,10 +66,10 @@ public:
              Tileset *tileset,
              const QList<Tile*> &tiles);
 
-    void undo()
+    void undo() override
     { removeTiles(); }
 
-    void redo()
+    void redo() override
     { addTiles(); }
 };
 
@@ -83,13 +81,12 @@ class RemoveTiles : public AddRemoveTiles
 public:
     RemoveTiles(MapDocument *mapDocument,
                 Tileset *tileset,
-                int index,
-                int count);
+                const QList<Tile *> &tiles);
 
-    void undo()
+    void undo() override
     { addTiles(); }
 
-    void redo()
+    void redo() override
     { removeTiles(); }
 };
 

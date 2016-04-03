@@ -42,18 +42,18 @@ class BucketFillTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    BucketFillTool(QObject *parent = 0);
+    BucketFillTool(QObject *parent = nullptr);
     ~BucketFillTool();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers);
+    void modifiersChanged(Qt::KeyboardModifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
     /**
      * Sets the stamp that is drawn when filling.
@@ -69,10 +69,10 @@ public slots:
     void setRandom(bool value);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
 private slots:
     void clearOverlay();
@@ -108,12 +108,12 @@ private:
      * Updates the list of random cells.
      * This is done by taking all non-null tiles from the original stamp mStamp.
      */
-    void updateRandomList();
+    void updateRandomListAndMissingTilesets();
 
     /**
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
-    void randomFill(TileLayer *tileLayer, const QRegion &region) const;
+    void randomFill(TileLayer &tileLayer, const QRegion &region) const;
 };
 
 } // namespace Internal

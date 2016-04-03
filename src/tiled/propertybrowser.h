@@ -51,7 +51,7 @@ class PropertyBrowser : public QtTreePropertyBrowser
     Q_OBJECT
 
 public:
-    explicit PropertyBrowser(QWidget *parent = 0);
+    explicit PropertyBrowser(QWidget *parent = nullptr);
 
     /**
      * Sets the \a object for which to display the properties.
@@ -81,11 +81,12 @@ public:
     void editCustomProperty(const QString &name);
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
+    void objectsTypeChanged(const QList<MapObject*> &objects);
     void layerChanged(int index);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
@@ -100,7 +101,11 @@ private slots:
     void selectedObjectsChanged();
     void selectedTilesChanged();
 
+    void objectTypesChanged();
+
     void valueChanged(QtProperty *property, const QVariant &val);
+
+    void resetProperty(QtProperty *property);
 
 private:
     enum PropertyId {
@@ -125,13 +130,15 @@ private:
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
+        TilesetImageParametersProperty,
         FlippingProperty,
         DrawOrderProperty,
+        FileNameProperty,
         TileOffsetProperty,
-        SourceImageProperty,
         MarginProperty,
         SpacingProperty,
         TileProbabilityProperty,
+        ColumnCountProperty,
         IdProperty,
         CustomProperty
     };

@@ -23,6 +23,7 @@
 
 #include "changetileanimation.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "rangeset.h"
 #include "tile.h"
 #include "tileanimationdriver.h"
@@ -45,24 +46,24 @@ class FrameListModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit FrameListModel(QObject *parent = 0)
+    explicit FrameListModel(QObject *parent = nullptr)
         : QAbstractListModel(parent)
-        , mTileset(0)
+        , mTileset(nullptr)
     {}
 
-    int rowCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    bool removeRows(int row, int count, const QModelIndex &parent);
+    bool removeRows(int row, int count, const QModelIndex &parent) override;
 
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action,
                       int row, int column,
-                      const QModelIndex &parent);
-    Qt::DropActions supportedDropActions() const;
+                      const QModelIndex &parent) override;
+    Qt::DropActions supportedDropActions() const override;
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
     void addTileIdAsFrame(int id);
@@ -90,7 +91,7 @@ QVariant FrameListModel::data(const QModelIndex &index, int role) const
         return mFrames.at(index.row()).duration;
     case Qt::DecorationRole: {
         int tileId = mFrames.at(index.row()).tileId;
-        if (Tile *tile = mTileset->tileAt(tileId))
+        if (Tile *tile = mTileset->findTile(tileId))
             return tile->image();
     }
     }
@@ -258,8 +259,8 @@ const QVector<Frame> &FrameListModel::frames() const
 TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     : QWidget(parent, Qt::Window)
     , mUi(new Ui::TileAnimationEditor)
-    , mMapDocument(0)
-    , mTile(0)
+    , mMapDocument(nullptr)
+    , mTile(nullptr)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
     , mPreviewAnimationDriver(new TileAnimationDriver(this))
@@ -323,6 +324,9 @@ void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
                 SLOT(tileAnimationChanged(Tile*)));
         connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
                 SLOT(tilesetFileNameChanged(Tileset*)));
+
+        connect(mMapDocument, &MapDocument::currentObjectChanged,
+                this, &TileAnimationEditor::currentObjectChanged);
     }
 }
 
@@ -410,6 +414,16 @@ void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
         mUi->frameList->setEnabled(!tileset->isExternal());
 }
 
+void TileAnimationEditor::currentObjectChanged(Object *object)
+{
+    // If a tile object is selected, edit the animation frames for that tile
+    if (object && object->typeId() == Object::MapObjectType) {
+        const Cell &cell = static_cast<MapObject*>(object)->cell();
+        if (cell.tile)
+            setTile(cell.tile);
+    }
+}
+
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
 {
     Q_ASSERT(mTile);
@@ -486,7 +500,8 @@ void TileAnimationEditor::advancePreviewAnimation(int ms)
     }
 
     if (previousTileId != frame.tileId) {
-        if (const Tile *tile = mTile->tileset()->tileAt(frame.tileId))
+        Tileset *tileset = mTile->tileset();
+        if (const Tile *tile = tileset->findTile(frame.tileId))
             mUi->preview->setPixmap(tile->image());
     }
 }
@@ -498,7 +513,8 @@ void TileAnimationEditor::resetPreview()
 
     if (mTile && mTile->isAnimated()) {
         const int tileId = mTile->frames().first().tileId;
-        if (const Tile *tile = mTile->tileset()->tileAt(tileId)) {
+        Tileset *tileset = mTile->tileset();
+        if (Tile *tile = tileset->findTile(tileId)) {
             mUi->preview->setPixmap(tile->image());
             return;
         }

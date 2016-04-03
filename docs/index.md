@@ -17,6 +17,8 @@ place to refer to for any details about using Tiled.*
 
 ### Tiled User Manual
 
+* [Introduction](manual/introduction.md)
+* [Custom Properties](manual/custom-properties.md)
 * [Using the Terrain Tool](manual/using-the-terrain-tool.md)
 * [Using Commands](manual/using-commands.md)
 

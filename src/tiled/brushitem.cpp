@@ -69,6 +69,21 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 }
 
 /**
+ * Sets a tile layer as well as the region that should be highlighted along
+ * with it. This allows highlighting of areas that are not covered by tiles in
+ * the given tile layer.
+ */
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
+                             const QRegion &region)
+{
+    mTileLayer = tileLayer;
+    mRegion = region;
+
+    updateBoundingRect();
+    update();
+}
+
+/**
  * Changes the position of the tile layer, if one is set.
  */
 void BrushItem::setTileLayerPosition(const QPoint &pos)
@@ -155,11 +170,11 @@ void BrushItem::updateBoundingRect()
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
-        const Map *map = mMapDocument->map();
+        QSize tileSize = mMapDocument->map()->tileSize();
 
         QMargins drawMargins = mTileLayer->drawMargins();
-        drawMargins.setTop(drawMargins.top() - map->tileHeight());
-        drawMargins.setRight(drawMargins.right() - map->tileWidth());
+        drawMargins.setTop(drawMargins.top() - tileSize.height());
+        drawMargins.setRight(drawMargins.right() - tileSize.width());
 
         // Since we're also drawing a tile selection, we should not apply
         // negative margins

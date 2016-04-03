@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>Tiled Development Snapshots</title>
+    <link>http://update.mapeditor.org/appcast-snapshots.xml</link>
+    <language>en</language>
+    <item>
+      <title>Tiled @VERSION@</title>
+      <pubDate>@VERSIONDATE@</pubDate>
+      <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
+      <sparkle:minimumSystemVersion>10.7.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://tilemapkit.com/tiled/tiled-@VERSIONDATE@.dmg"
+                 sparkle:version="@VERSIONDATE@"
+                 sparkle:shortVersionString="@VERSION@"
+                 sparkle:dsaSignature="@DSASIGNATURE@"
+                 length="@FILESIZE@"
+                 type="application/octet-stream"/>
+    </item>
+  </channel>
+</rss>

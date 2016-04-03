@@ -40,7 +40,7 @@ public:
     AddRemoveTileset(MapDocument *mapDocument,
                      int index,
                      const SharedTileset &tileset,
-                     QUndoCommand *parent = 0);
+                     QUndoCommand *parent = nullptr);
 
     ~AddRemoveTileset();
 
@@ -61,12 +61,12 @@ class AddTileset : public AddRemoveTileset
 {
 public:
     AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
-               QUndoCommand *parent = 0);
+               QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { removeTileset(); }
 
-    void redo()
+    void redo() override
     { addTileset(); }
 };
 
@@ -78,10 +78,10 @@ class RemoveTileset : public AddRemoveTileset
 public:
     RemoveTileset(MapDocument *mapDocument, int index);
 
-    void undo()
+    void undo() override
     { addTileset(); }
 
-    void redo()
+    void redo() override
     { removeTileset(); }
 };
 

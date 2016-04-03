@@ -38,15 +38,6 @@ class EditorMapReader : public MapReader
 {
 protected:
     /**
-     * Overridden to make sure the resolved reference is a clean path.
-     */
-    QString resolveReference(const QString &reference, const QString &mapPath)
-    {
-        QString resolved = MapReader::resolveReference(reference, mapPath);
-        return QDir::cleanPath(resolved);
-    }
-
-    /**
      * Overridden in order to check with the TilesetManager whether the tileset
      * is already loaded.
      */

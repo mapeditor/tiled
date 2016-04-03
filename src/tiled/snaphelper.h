@@ -29,7 +29,7 @@ namespace Internal {
 class SnapHelper
 {
 public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = 0);
+    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = nullptr);
 
     void toggleSnap();
 

@@ -21,7 +21,7 @@
 #ifndef TILEDAPPLICATION_H
 #define TILEDAPPLICATION_H
 
-#include <QApplication>
+#include <QtSingleApplication>
 
 namespace Tiled {
 namespace Internal {
@@ -30,7 +30,7 @@ namespace Internal {
  * Custom QApplication subclass which handles the QFileOpenEvent, in order
  * to be able to open files appropriately on MacOS X.
  */
-class TiledApplication : public QApplication
+class TiledApplication : public QtSingleApplication
 {
     Q_OBJECT
 
@@ -38,10 +38,13 @@ public:
     TiledApplication(int &argc, char **argv);
 
 protected:
-    bool event(QEvent *);
+    bool event(QEvent *) override;
 
 signals:
     void fileOpenRequest(const QString &file);
+
+private slots:
+    void onMessageReceived(const QString &message);
 };
 
 } // namespace Internal

@@ -29,23 +29,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-/**
- * Determines whether a cell matches specified one.
- */
-class MatchesSpecifiedCell
-{
-public:
-    MatchesSpecifiedCell(const Cell &cell) : mCell(cell) {}
-
-    bool operator() (const Cell &cell) const
-    {
-        return cell == mCell;
-    }
-
-private:
-    Cell mCell;
-};
-
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
     : AbstractTileTool(tr("Select Same Tile"),
                        QIcon(QLatin1String(
@@ -64,9 +47,8 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
 
     QRegion resultRegion;
     if (tileLayer->contains(tilePos)) {
-        const Cell matchCell = tileLayer->cellAt(tilePos);
-        MatchesSpecifiedCell condition(matchCell);
-        resultRegion = tileLayer->region(condition);
+        const Cell &matchCell = tileLayer->cellAt(tilePos);
+        resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
     }
     mSelectedRegion = resultRegion;
     brushItem()->setTileRegion(mSelectedRegion);

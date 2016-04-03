@@ -79,7 +79,7 @@ public:
     StaggeredRenderer(const Map *map) : HexagonalRenderer(map) {}
 
     using HexagonalRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y) const;
+    QPointF screenToTileCoords(qreal x, qreal y) const override;
 };
 
 } // namespace Tiled

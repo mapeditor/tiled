@@ -44,8 +44,8 @@ public:
                   const QPointF &newPos,
                   const QPointF &oldPos);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;

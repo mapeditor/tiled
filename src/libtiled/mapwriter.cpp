@@ -50,6 +50,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static QString colorToString(const QColor &color)
+{
+#if QT_VERSION >= 0x050200
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+#endif
+    return color.name();
+}
+
 namespace Tiled {
 namespace Internal {
 
@@ -190,7 +199,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     if (map.backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
-                         map.backgroundColor().name());
+                         colorToString(map.backgroundColor()));
     }
 
     w.writeAttribute(QLatin1String("nextobjectid"),
@@ -203,7 +212,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 
     for (const Layer *layer : map.layers()) {
@@ -266,6 +275,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
     w.writeAttribute(QLatin1String("tilecount"),
                      QString::number(tileset.tileCount()));
+    w.writeAttribute(QLatin1String("columns"),
+                     QString::number(tileset.columnCount()));
 
     const QPoint offset = tileset.tileOffset();
     if (!offset.isNull()) {
@@ -319,8 +330,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the properties for those tiles that have them
-    for (int i = 0; i < tileset.tileCount(); ++i) {
-        const Tile *tile = tileset.tileAt(i);
+    for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         unsigned terrain = tile->terrain();
         float probability = tile->probability();
@@ -328,7 +338,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
         if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != 1.f || imageSource.isEmpty() || objectGroup || tile->isAnimated()) {
             w.writeStartElement(QLatin1String("tile"));
-            w.writeAttribute(QLatin1String("id"), QString::number(i));
+            w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
             if (terrain != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
             if (probability != 1.f)
@@ -576,7 +586,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 }
 
 void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
-                                        const ImageLayer &imageLayer)
+                                       const ImageLayer &imageLayer)
 {
     w.writeStartElement(QLatin1String("imagelayer"));
     writeLayerAttributes(w, imageLayer);
@@ -593,6 +603,14 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         const QColor transColor = imageLayer.transparentColor();
         if (transColor.isValid())
             w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
+
+        const QSize imageSize = imageLayer.image().size();
+        if (!imageSize.isNull()) {
+            w.writeAttribute(QLatin1String("width"),
+                             QString::number(imageSize.width()));
+            w.writeAttribute(QLatin1String("height"),
+                             QString::number(imageSize.height()));
+        }
 
         w.writeEndElement();
     }
@@ -616,12 +634,16 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());
 
-        const QString &value = it.value();
-        if (value.contains(QLatin1Char('\n'))) {
+        QString typeName = typeToName(it.value().type());
+        if (typeName != QLatin1String("string"))
+            w.writeAttribute(QLatin1String("type"), typeName);
+
+        const QString &value = it.value().toString();
+        if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);
-        } else {
-            w.writeAttribute(QLatin1String("value"), it.value());
-        }
+        else
+            w.writeAttribute(QLatin1String("value"), value);
+
         w.writeEndElement();
     }
 

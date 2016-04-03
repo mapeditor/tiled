@@ -52,7 +52,25 @@ public:
     PaintTileLayer(MapDocument *mapDocument,
                    TileLayer *target,
                    int x, int y,
-                   const TileLayer *source);
+                   const TileLayer *source,
+                   QUndoCommand *parent = nullptr);
+
+    /**
+     * Constructor that takes an explicit paint region.
+     *
+     * @param mapDocument the map document that's being edited
+     * @param target      the target layer to paint on
+     * @param x           the x position of the paint location
+     * @param y           the y position of the paint location
+     * @param source      the source layer to paint on the target layer
+     * @param paintRegion the region to paint, in map coordinates
+     */
+    PaintTileLayer(MapDocument *mapDocument,
+                   TileLayer *target,
+                   int x, int y,
+                   const TileLayer *source,
+                   const QRegion &paintRegion,
+                   QUndoCommand *parent = nullptr);
 
     ~PaintTileLayer();
 
@@ -61,11 +79,11 @@ public:
      */
     void setMergeable(bool mergeable);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_PaintTileLayer; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_PaintTileLayer; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;

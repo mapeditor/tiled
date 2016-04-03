@@ -3,14 +3,35 @@
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 0.16 ##
+
+* The [`property`](tmx-map-format.md#property) element gained a `type` attribute, storing the type of the value. Currently supported types are `string` (the default), `int`, `float` and `bool`.
+
+## Tiled 0.15 ##
+
+* The `offsetx` and `offsety` attributes are now also used for [`imagelayer`](tmx-map-format.md#imagelayer) elements, replacing the `x` and `y` attributes previously used. This change was made for consistency with the other layer types.
+* The tiles in an image collection tileset are no longer guaranteed to be consecutive, because removing tiles from the collection will no longer change the IDs of other tiles.
+* The pure XML and Gzip-compressed tile layer data formats were deprecated, since they didn't have any advantage over other formats. Remaining formats are CSV, base64 and Zlib-compressed layer data.
+* Added `columns` attribute to the [`tileset`](tmx-map-format.md#tileset) element, which specifies the number of tile columns in the tileset. For image collection tilesets it is editable and is used when displaying the tileset.
+* The `backgroundcolor` attribute of the [`map`](tmx-map-format.md#map) element will now take the format `#AARRGGBB` when its alpha value differs from 255. Previously the alpha value was silently discarded.
+
+## Tiled 0.14 ##
+
+* Added optional `offsetx` and `offsety` attributes to the `layer` and `objectgroup` elements. These specify an offset in pixels that is to be applied when rendering the layer. The default values are 0.
+
+## Tiled 0.13 ##
+
+* Added an optional `tilecount` attribute to the `tileset` element, which is written by Tiled to help parsers determine the amount of memory to allocate for tile data.
+
 ## Tiled 0.12 ##
 
 * Previously tile objects never had `width` and `height` properties, though the format technically allowed this. Now these properties are used to store the size the image should be rendered at. The default values for these attributes are the dimensions of the tile image.
 
 ## Tiled 0.11 ##
 
-* Added `hexagonal` to the supported values for the `orientation` attribute on the `map` element. This also adds `staggerindex` (`even` or `odd`) and `staggerdirection` (`rows` or `columns`) and `hexsidelength` (integer value) attributes to the `map` element, in order to support the many variations of staggered hexagonal. The `staggerindex` attribute is now also supported when using the `staggered` map orientation.
+* Added `hexagonal` to the supported values for the `orientation` attribute on the `map` element. This also adds `staggerindex` (`even` or `odd`) and `staggeraxis` (`x` or `y`) and `hexsidelength` (integer value) attributes to the `map` element, in order to support the many variations of staggered hexagonal. The new `staggerindex` and `staggeraxis` attributes are also supported when using the `staggered` map orientation.
 * Added an `id` attribute to the `object` element, which stores a map-unique ID of the object.
+* Added a `nextobjectid` attribute to the `map` element, which stores the next available ID for new objects. This number is stored to prevent reuse of the same ID after objects have been removed.
 
 ## Tiled 0.10 ##
 
@@ -75,7 +96,7 @@ Below are described the changes/additions that were made to the [TMX format](tmx
 
 * Added map property for specifying the background color:
 ```xml
-<map ... backgroundcolor="#XXXXXX">
+<map ... backgroundcolor="#RRGGBB">
 ```
 
 * Added initial (non-GUI) support for individual and/or embedded tile images (since there is no way to set this up in Tiled Qt but only in Tiled Java or with [pytmxlib](https://github.com/encukou/pytmxlib), this is not very important to support at the moment):

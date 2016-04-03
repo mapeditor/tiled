@@ -179,141 +179,96 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>Object Types</string>
+       <string>Updates</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
-          <string>Object Types</string>
+          <string>Updates</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QTableView" name="objectTypesTable">
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <property name="verticalScrollMode">
-             <enum>QAbstractItemView::ScrollPerPixel</enum>
-            </property>
-            <property name="wordWrap">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="3">
+           <widget class="QPushButton" name="checkForUpdate">
+            <property name="enabled">
              <bool>false</bool>
             </property>
-            <attribute name="horizontalHeaderHighlightSections">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderHighlightSections">
-             <bool>false</bool>
-            </attribute>
+            <property name="text">
+             <string>Check Now</string>
+            </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="4">
+           <widget class="QCheckBox" name="autoUpdateCheckBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Automatically check for updates</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lastAutoUpdateCheckLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Plugins</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Enabled Plugins</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QToolButton" name="addObjectTypeButton">
-              <property name="toolTip">
-               <string>Add Object Type</string>
-              </property>
-              <property name="text">
-               <string>Add</string>
-              </property>
-              <property name="icon">
-               <iconset resource="tiled.qrc">
-                <normaloff>:/images/22x22/add.png</normaloff>:/images/22x22/add.png</iconset>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="removeObjectTypeButton">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="toolTip">
-               <string>Remove Selected Object Types</string>
-              </property>
-              <property name="text">
-               <string>Remove</string>
-              </property>
-              <property name="icon">
-               <iconset resource="tiled.qrc">
-                <normaloff>:/images/22x22/remove.png</normaloff>:/images/22x22/remove.png</iconset>
-              </property>
-              <property name="autoRaise">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="importObjectTypesButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Import...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="exportObjectTypesButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Export...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QListView" name="pluginList"/>
           </item>
          </layout>
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>Automapping</string>
-      </attribute>
-      <widget class="QCheckBox" name="autoMapWhileDrawing">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>391</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Use Automapping, when drawing into layers</string>
-       </property>
-      </widget>
      </widget>
     </widget>
    </item>
@@ -337,7 +292,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
@@ -346,16 +300,8 @@
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>importObjectTypesButton</tabstop>
-  <tabstop>exportObjectTypesButton</tabstop>
-  <tabstop>autoMapWhileDrawing</tabstop>
-  <tabstop>removeObjectTypeButton</tabstop>
-  <tabstop>addObjectTypeButton</tabstop>
-  <tabstop>objectTypesTable</tabstop>
  </tabstops>
- <resources>
-  <include location="tiled.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -364,8 +310,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>313</x>
-     <y>373</y>
+     <x>322</x>
+     <y>416</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>

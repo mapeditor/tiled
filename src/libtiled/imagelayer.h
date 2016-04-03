@@ -64,7 +64,7 @@ public:
     void replaceReferencesToTileset(Tileset *, Tileset *) override {}
 
     bool canMergeWith(Layer *) const override { return false; }
-    Layer *mergedWith(Layer *) const override { return 0; }
+    Layer *mergedWith(Layer *) const override { return nullptr; }
 
     /**
      * Returns the transparent color, or an invalid color if no transparent
@@ -116,10 +116,12 @@ public:
      */
     bool loadFromImage(const QImage &image, const QString &fileName);
 
+    bool loadFromImage(const QString &fileName);
+
     /**
      * Returns true if no image source has been set.
      */
-    bool isEmpty() const;
+    bool isEmpty() const override;
 
     Layer *clone() const override;
 
@@ -131,6 +133,12 @@ private:
     QColor mTransparentColor;
     QPixmap mImage;
 };
+
+
+inline bool ImageLayer::loadFromImage(const QString &fileName)
+{
+    return loadFromImage(QImage(fileName), fileName);
+}
 
 } // namespace Tiled
 

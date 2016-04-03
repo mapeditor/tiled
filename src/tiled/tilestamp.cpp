@@ -32,6 +32,13 @@
 namespace Tiled {
 namespace Internal {
 
+TileLayer *TileStampVariation::tileLayer() const
+{
+    Q_ASSERT(map);
+    return static_cast<TileLayer*>(map->layerAt(0));
+}
+
+
 class TileStampData : public QSharedData
 {
 public:
@@ -139,6 +146,16 @@ void TileStamp::setProbability(int index, qreal probability)
     d->variations[index].probability = probability;
 }
 
+QSize TileStamp::maxSize() const
+{
+    QSize size;
+    for (const TileStampVariation &variation : d->variations) {
+        size.setWidth(qMax(size.width(), variation.map->width()));
+        size.setHeight(qMax(size.height(), variation.map->height()));
+    }
+    return size;
+}
+
 const QVector<TileStampVariation> &TileStamp::variations() const
 {
     return d->variations;
@@ -199,10 +216,9 @@ void TileStamp::setQuickStampIndex(int quickStampIndex)
     d->quickStampIndex = quickStampIndex;
 }
 
-Map *TileStamp::randomVariation() const
+TileStampVariation TileStamp::randomVariation() const
 {
-    if (d->variations.isEmpty())
-        return 0;
+    Q_ASSERT(!d->variations.isEmpty());
 
     RandomPicker<const TileStampVariation *> randomPicker;
     for (const TileStampVariation &variation : d->variations)
@@ -221,7 +237,7 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
     flipped.d.detach();
 
     for (const TileStampVariation &variation : flipped.variations()) {
-        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        TileLayer *layer = variation.tileLayer();
         layer->flip(direction);
     }
 
@@ -238,7 +254,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     rotated.d.detach();
 
     for (const TileStampVariation &variation : rotated.variations()) {
-        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        TileLayer *layer = variation.tileLayer();
         layer->rotate(direction);
 
         variation.map->setWidth(layer->width());

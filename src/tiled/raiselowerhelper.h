@@ -51,7 +51,7 @@ public:
     RaiseLowerHelper(MapScene *mapScene)
         : mMapDocument(mapScene->mapDocument())
         , mMapScene(mapScene)
-        , mObjectGroup(0)
+        , mObjectGroup(nullptr)
     {}
 
     void raise();

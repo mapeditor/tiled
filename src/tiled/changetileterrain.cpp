@@ -29,8 +29,8 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileTerrain::ChangeTileTerrain()
-    : mMapDocument(0)
-    , mTileset(0)
+    : mMapDocument(nullptr)
+    , mTileset(nullptr)
     , mMergeable(false)
 {
     initText();

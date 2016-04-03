@@ -80,3 +80,40 @@ void SetMapObjectVisible::redo()
 {
     mMapObjectModel->setObjectVisible(mMapObject, mNewVisible);
 }
+
+
+ChangeMapObjects::ChangeMapObjects(MapDocument *mapDocument,
+                                   const QVector<MapObjectChange> &changes,
+                                   ChangeProperty property,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapObjectModel(mapDocument->mapObjectModel())
+    , mChanges(changes)
+    , mProperty(property)
+{
+}
+
+static QList<MapObject*> objectList(const QVector<MapObjectChange> &changes)
+{
+    QList<MapObject*> result;
+    result.reserve(changes.size());
+
+    for (const MapObjectChange &change : changes)
+        result.append(change.object);
+
+    return result;
+}
+
+void ChangeMapObjects::swap()
+{
+    switch (mProperty) {
+    case ChangeTile:
+        for (MapObjectChange &change : mChanges) {
+            auto cell = change.object->cell();
+            std::swap(cell.tile, change.tile);
+            change.object->setCell(cell);
+        }
+        emit mMapObjectModel->objectsChanged(objectList(mChanges));
+        break;
+    }
+}

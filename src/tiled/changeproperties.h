@@ -47,8 +47,8 @@ public:
                      const QString &kind,
                      Object *object,
                      const Properties &newProperties);
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swapProperties();
@@ -68,26 +68,27 @@ public:
      * @param objects      the objects of which the property should be changed
      * @param name         the name of the property to be changed
      * @param value        the new value of the property
+     * @param type         the (new) type ot the property to be changed
      */
     SetProperty(MapDocument *mapDocument,
                 const QList<Object*> &objects,
                 const QString &name,
-                const QString &value,
-                QUndoCommand *parent = 0);
+                const QVariant &value,
+                QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     struct ObjectProperty {
-        QString previousValue;
+        QVariant previousValue;
         bool existed;
     };
     QVector<ObjectProperty> mProperties;
     MapDocument *mMapDocument;
     QList<Object*> mObjects;
     QString mName;
-    QString mValue;
+    QVariant mValue;
 };
 
 class RemoveProperty : public QUndoCommand
@@ -103,15 +104,15 @@ public:
     RemoveProperty(MapDocument *mapDocument,
                    const QList<Object*> &objects,
                    const QString &name,
-                   QUndoCommand *parent = 0);
+                   QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
     QList<Object*> mObjects;
-    QVector<QString> mPreviousValues;
+    QVector<QVariant> mPreviousValues;
     QString mName;
 };
 

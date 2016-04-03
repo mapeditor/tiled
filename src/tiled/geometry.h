@@ -36,7 +36,7 @@ inline QVector<QPoint> pointsOnEllipse(QPoint a, QPoint b)
 inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
 { return pointsOnLine(a.x(), a.y(), b.x(), b.y()); }
 
-QList<QRegion> coherentRegions(const QRegion &region);
+QVector<QRegion> coherentRegions(const QRegion &region);
 
 } // namespace Tiled
 

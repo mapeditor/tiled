@@ -43,7 +43,7 @@ class MapDocumentActionHandler : public QObject
     Q_OBJECT
 
 public:
-    explicit MapDocumentActionHandler(QObject *parent = 0);
+    explicit MapDocumentActionHandler(QObject *parent = nullptr);
     ~MapDocumentActionHandler();
 
     static MapDocumentActionHandler *instance() { return mInstance; }

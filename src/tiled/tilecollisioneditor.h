@@ -25,6 +25,7 @@
 
 namespace Tiled {
 
+class Object;
 class Tile;
 class Tileset;
 
@@ -34,6 +35,7 @@ class AbstractTool;
 class MapDocument;
 class MapScene;
 class MapView;
+class PropertiesDock;
 class ToolManager;
 
 class TileCollisionEditor : public QMainWindow
@@ -46,7 +48,7 @@ class TileCollisionEditor : public QMainWindow
     };
 
 public:
-    explicit TileCollisionEditor(QWidget *parent = 0);
+    explicit TileCollisionEditor(QWidget *parent = nullptr);
     ~TileCollisionEditor();
 
     void setMapDocument(MapDocument *mapDocument);
@@ -60,14 +62,15 @@ public slots:
     void setTile(Tile *tile);
 
 protected:
-    void closeEvent(QCloseEvent *);
-    void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *) override;
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
     void tilesetFileNameChanged(Tileset *);
+    void currentObjectChanged(Object *object);
 
     void undo();
     void redo();
@@ -75,6 +78,8 @@ private slots:
     void copy();
     void paste();
     void delete_(Operation operation = Delete);
+
+    void selectedObjectsChanged();
 
 private:
     void retranslateUi();
@@ -84,6 +89,7 @@ private:
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;
+    PropertiesDock *mPropertiesDock;
     bool mApplyingChanges;
     bool mSynchronizing;
 };

@@ -53,46 +53,46 @@ public:
      * @param mapDocument the map to manage terrains for
      */
     TerrainModel(MapDocument *mapDocument,
-                 QObject *parent = 0);
+                 QObject *parent = nullptr);
 
     ~TerrainModel();
 
     QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
+                      const QModelIndex &parent = QModelIndex()) const override;
 
     QModelIndex index(Tileset *tileset) const;
     QModelIndex index(Terrain *terrain) const;
 
-    QModelIndex parent(const QModelIndex &child) const;
+    QModelIndex parent(const QModelIndex &child) const override;
 
     /**
      * Returns the number of rows. For the root, this is the number of tilesets
      * with terrain types defined. Otherwise it is the number of terrain types
      * in a certain tileset.
      */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data stored under the given <i>role</i> for the item
      * referred to by the <i>index</i>.
      */
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
     /**
      * Allows for changing the name of a terrain.
      */
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     /**
      * Makes terrain names editable.
      */
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /**
      * Returns the tileset at the given \a index, or 0 if there is no tileset.

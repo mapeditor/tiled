@@ -38,8 +38,8 @@ public:
                    const QList<MapObject *> &mapObjects,
                    FlipDirection flipDirection);
 
-    void undo() { flip(); }
-    void redo() { flip(); }
+    void undo() override { flip(); }
+    void redo() override { flip(); }
 
 private:
     void flip();

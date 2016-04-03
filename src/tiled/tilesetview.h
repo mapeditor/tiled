@@ -39,7 +39,7 @@ class TilesetView : public QTableView
     Q_OBJECT
 
 public:
-    TilesetView(QWidget *parent = 0);
+    TilesetView(QWidget *parent = nullptr);
 
     /**
      * Sets the map document associated with the tileset to be displayed, which
@@ -47,10 +47,10 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
-    int sizeHintForColumn(int column) const;
-    int sizeHintForRow(int row) const;
+    int sizeHintForColumn(int column) const override;
+    int sizeHintForRow(int row) const override;
 
     void setZoomable(Zoomable *zoomable);
     Zoomable *zoomable() const { return mZoomable; }
@@ -109,18 +109,20 @@ public:
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
 
+    QIcon imageMissingIcon() const;
+
 signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
 
 protected:
-    bool event(QEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void leaveEvent(QEvent *);
-    void wheelEvent(QWheelEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    bool event(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private slots:
     void createNewTerrain();
@@ -146,6 +148,8 @@ private:
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;
+
+    const QIcon mImageMissingIcon;
 };
 
 inline bool TilesetView::markAnimatedTiles() const

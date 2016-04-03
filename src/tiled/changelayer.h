@@ -41,8 +41,8 @@ public:
                     int layerIndex,
                     bool visible);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();
@@ -62,12 +62,12 @@ public:
                     int layerIndex,
                     float opacity);
 
-    void undo() { setOpacity(mOldOpacity); }
-    void redo() { setOpacity(mNewOpacity); }
+    void undo() override { setOpacity(mOldOpacity); }
+    void redo() override { setOpacity(mNewOpacity); }
 
-    int id() const { return Cmd_ChangeLayerOpacity; }
+    int id() const override { return Cmd_ChangeLayerOpacity; }
 
-    bool mergeWith(const QUndoCommand *other);
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     void setOpacity(float opacity);
@@ -88,10 +88,10 @@ public:
                    int layerIndex,
                    const QPointF &offset);
 
-    void undo() { setOffset(mOldOffset); }
-    void redo() { setOffset(mNewOffset); }
+    void undo() override { setOffset(mOldOffset); }
+    void redo() override { setOffset(mNewOffset); }
 
-    int id() const { return Cmd_ChangeLayerOffset; }
+    int id() const override { return Cmd_ChangeLayerOffset; }
 
 private:
     void setOffset(const QPointF &offset);

@@ -56,10 +56,10 @@ public:
     void syncWithTileLayer();
 
     // QGraphicsItem
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr) override;
 
 private:
     TileLayer *mLayer;

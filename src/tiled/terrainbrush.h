@@ -48,18 +48,18 @@ public:
         PaintVertex          // paint terrain to map vertices
     };
 
-    TerrainBrush(QObject *parent = 0);
+    TerrainBrush(QObject *parent = nullptr);
     ~TerrainBrush();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
     /**
      * Sets the stamp that is drawn when painting. The stamp brush takes
@@ -82,22 +82,23 @@ public:
         setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles);
     }
 
+signals:
+    void terrainCaptured(Terrain *terrain);
+
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
 private:
     void beginPaint();
 
     /**
      * Merges the tile layer of its brush item into the current map.
-     * mergeable determines if this can be merged with similar actions for undo.
-     * whereX and whereY give an offset where to merge the brush items tilelayer
-     * into the current map.
+     * \a mergeable determines if this can be merged with similar actions for undo.
      */
-    void doPaint(bool mergeable, int whereX, int whereY);
+    void doPaint(bool mergeable);
 
     void capture();
 
@@ -111,7 +112,6 @@ private:
      */
     const Terrain *mTerrain;
     int mPaintX, mPaintY;
-    int mOffsetX, mOffsetY;
 
     bool mIsActive;
 

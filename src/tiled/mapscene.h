@@ -35,6 +35,7 @@ class ImageLayer;
 class Layer;
 class MapObject;
 class ObjectGroup;
+class Tile;
 class TileLayer;
 class Tileset;
 
@@ -117,19 +118,19 @@ protected:
     /**
      * QGraphicsScene::drawForeground override that draws the tile grid.
      */
-    void drawForeground(QPainter *painter, const QRectF &rect);
+    void drawForeground(QPainter *painter, const QRectF &rect) override;
 
     /**
      * Override for handling enter and leave events.
      */
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void keyPressEvent(QKeyEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
-    void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
+    void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private slots:
     void setGridVisible(bool visible);
@@ -164,7 +165,10 @@ private slots:
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
 
-    void tilesetTileOffsetChanged(Tileset *tileset);
+    void adaptToTilesetTileSizeChanges(Tileset *tileset);
+    void adaptToTileSizeChanges(Tile *tile);
+
+    void tilesetReplaced(int index, Tileset *tileset);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);
@@ -180,7 +184,7 @@ private:
     void updateSceneRect();
     void updateCurrentLayerHighlight();
 
-    bool eventFilter(QObject *object, QEvent *event);
+    bool eventFilter(QObject *object, QEvent *event) override;
 
     MapDocument *mMapDocument;
     AbstractTool *mSelectedTool;

@@ -33,14 +33,73 @@
 
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
+/**
+ * Collection of properties and their values.
+ */
+class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
 {
 public:
     void merge(const Properties &other);
 };
+
+class TILEDSHARED_EXPORT AggregatedPropertyData
+{
+public:
+    AggregatedPropertyData()
+        : mPresenceCount(0)
+        , mValueConsistent(true)
+    {}
+
+    explicit AggregatedPropertyData(const QVariant &value)
+        : mValue(value)
+        , mPresenceCount(1)
+        , mValueConsistent(true)
+    {}
+
+    void aggregate(const QVariant &value)
+    {
+        mValueConsistent &= value == mValue;
+        mPresenceCount += 1;
+    }
+
+    const QVariant &value() const { return mValue; }
+    int presenceCount() const { return mPresenceCount; }
+    bool valueConsistent() const { return mValueConsistent; }
+
+    bool operator==(const AggregatedPropertyData &other) const
+    {
+        return mValue == other.mValue &&
+                mPresenceCount == other.mPresenceCount &&
+                mValueConsistent == other.mValueConsistent;
+    }
+
+private:
+    QVariant mValue;
+    int mPresenceCount;
+    bool mValueConsistent;
+};
+
+/**
+ * Collection of properties with information about the consistency of their
+ * presence and value over several property collections.
+ */
+class TILEDSHARED_EXPORT AggregatedProperties : public QMap<QString, AggregatedPropertyData>
+{
+public:
+    void aggregate(const Properties &properties);
+    int aggregatedCount() { return mAggregatedCount; }
+
+private:
+    int mAggregatedCount;
+};
+
+
+TILEDSHARED_EXPORT QString typeToName(QVariant::Type);
+TILEDSHARED_EXPORT QVariant::Type nameToType(const QString &name);
 
 } // namespace Tiled
 

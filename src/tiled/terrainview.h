@@ -41,7 +41,7 @@ class TerrainView : public QTreeView
     Q_OBJECT
 
 public:
-    TerrainView(QWidget *parent = 0);
+    TerrainView(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -53,8 +53,8 @@ public:
     Terrain *terrainAt(const QModelIndex &index) const;
 
 protected:
-    void wheelEvent(QWheelEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private slots:
     void editTerrainProperties();

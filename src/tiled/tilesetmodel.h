@@ -51,24 +51,24 @@ public:
      *
      * @param tileset the initial tileset to display
      */
-    TilesetModel(Tileset *tileset, QObject *parent = 0);
+    TilesetModel(Tileset *tileset, QObject *parent = nullptr);
 
     /**
      * Returns the number of rows.
      */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data stored under the given <i>role</i> for the item
      * referred to by the <i>index</i>.
      */
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
 
 
@@ -77,19 +77,19 @@ public:
      * minimum width and height of the sections.
      */
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
     /**
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;
 
-    int tileIndexAt(const QModelIndex &index) const;
+    int tileIdAt(const QModelIndex &index) const;
 
     /**
      * Returns the index of the given \a tile. The tile is required to be from
@@ -108,9 +108,15 @@ public:
     void setTileset(Tileset *tileset);
 
     /**
-     * Performs a reset on the model.
+     * Refreshes the list of tile IDs. Should be called after tiles are added
+     * or removed from the tileset.
      */
     void tilesetChanged();
+
+    /**
+     * Performs a reset on the model.
+     */
+    void resetModel();
 
 public slots:
     /**
@@ -133,7 +139,10 @@ public slots:
     void tileChanged(Tile *tile);
 
 private:
+    void refreshTileIds();
+
     Tileset *mTileset;
+    QList<int> mTileIds;
 };
 
 } // namespace Internal

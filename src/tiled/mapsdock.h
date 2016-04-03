@@ -41,7 +41,7 @@ class MapsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MapsDock(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsDock(MainWindow *mainWindow, QWidget *parent = nullptr);
 
 private slots:
     void browse();
@@ -49,7 +49,7 @@ private slots:
     void onMapsDirectoryChanged();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void retranslateUi();
@@ -66,14 +66,14 @@ class MapsView : public QTreeView
     Q_OBJECT
 
 public:
-    MapsView(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsView(MainWindow *mainWindow, QWidget *parent = nullptr);
 
     /**
      * Returns a sensible size hint.
      */
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
     QFileSystemModel *model() const { return mFSModel; }
 

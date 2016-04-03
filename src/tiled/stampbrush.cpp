@@ -195,8 +195,8 @@ void StampBrush::updateRandomList()
     mMissingTilesets.clear();
 
     for (const TileStampVariation &variation : mStamp.variations()) {
-        TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+        TileLayer *tileLayer = variation.tileLayer();
         for (int x = 0; x < tileLayer->width(); x++) {
             for (int y = 0; y < tileLayer->height(); y++) {
                 const Cell &cell = tileLayer->cellAt(x, y);
@@ -298,7 +298,7 @@ QRect StampBrush::capturedArea() const
  */
 QRegion StampBrush::doPaint(int flags)
 {
-    TileLayer *preview = mPreviewLayer.data();
+    const TileLayer *preview = mPreviewLayer.data();
     if (!preview)
         return QRegion();
 
@@ -383,10 +383,10 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QHash<TileLayer *, QRegion> regionCache;
 
         for (const QPoint &p : list) {
-            Map *variation = mStamp.randomVariation();
-            mapDocument()->unifyTilesets(variation, mMissingTilesets);
+            const TileStampVariation variation = mStamp.randomVariation();
+            mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
-            TileLayer *stamp = static_cast<TileLayer*>(variation->layerAt(0));
+            TileLayer *stamp = variation.tileLayer();
 
             QRegion stampRegion;
             if (regionCache.contains(stamp)) {

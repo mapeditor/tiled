@@ -49,11 +49,11 @@ public:
     void setMergeable(bool mergeable)
     { mMergeable = mergeable; }
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_EraseTiles; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_EraseTiles; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;

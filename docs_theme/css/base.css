@@ -1,0 +1,184 @@
+h1[id]:before, h2[id]:before, h3[id]:before, h4[id]:before, h5[id]:before, h6[id]:before {
+    content: "";
+    display: block;
+    margin-top: -70px;
+    height: 70px;
+}
+
+ul.nav li.main {
+    font-weight: bold;
+}
+
+div.col-md-3 {
+    padding-left: 0;
+}
+
+div.col-md-9 {
+    padding-bottom: 100px;
+}
+
+div.source-links {
+    float: right;
+}
+
+/*
+ * Side navigation
+ *
+ * Scrollspy and affixed enhanced navigation to highlight sections and secondary
+ * sections of docs content.
+ */
+
+/* By default it's not affixed in mobile views, so undo that */
+.bs-sidebar.affix {
+    position: static;
+}
+
+.bs-sidebar.well {
+    padding: 0;
+}
+
+/* First level of nav */
+.bs-sidenav {
+    padding-top:    10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+}
+
+/* All levels of nav */
+.bs-sidebar .nav > li > a {
+    display: block;
+    padding: 5px 20px;
+    z-index: 1;
+}
+.bs-sidebar .nav > li > a:hover,
+.bs-sidebar .nav > li > a:focus {
+    text-decoration: none;
+    border-right: 1px solid;
+}
+.bs-sidebar .nav > .active > a,
+.bs-sidebar .nav > .active:hover > a,
+.bs-sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    background-color: transparent;
+    border-right: 1px solid;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    margin-bottom: 8px;
+}
+.bs-sidebar .nav .nav > li > a {
+    padding-top:    3px;
+    padding-bottom: 3px;
+    padding-left: 30px;
+    font-size: 90%;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-sidebar.affix,
+    .bs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 80px;
+    }
+    .bs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-sidebar.affix-bottom .bs-sidenav,
+    .bs-sidebar.affix .bs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-sidebar.affix-bottom,
+    .bs-sidebar.affix {
+        width: 263px;
+    }
+}
+
+#top-navbar-container {
+    background-color: #F8F8F8;
+    background-image: linear-gradient(to bottom, #FFF 0px, #F8F8F8 100%);
+    background-repeat: repeat-x;
+}
+
+#top-navbar {
+    list-style: outside none none;
+    text-align: center;
+    color: #333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+}
+
+#top-navbar > li {
+    float: left;
+    display: block;
+}
+
+#top-navbar > li > a {
+    padding: 10px 15px;
+    display: block;
+    position: relative;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.25);
+    color: #777;
+    text-decoration: none;
+}
+
+#top-navbar > li > a:hover {
+    color: #333;
+}
+
+#top-navbar > li.active > a {
+    background-image: linear-gradient(to bottom, #EBEBEB 0px, #F3F3F3 100%);
+    background-repeat: repeat-x;
+    box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.075) inset;
+    color: #555;
+    background-color: #E7E7E7;
+}
+
+.wrap::before, .wrap::after {
+    display: table;
+    content: " ";
+}
+.wrap::after {
+    clear: both;
+}
+
+#mkdocsheader {
+    border-width: 0px 0px 1px;
+    z-index: 1030;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#mkdocstoc {
+    margin-top: 20px;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-sidebar.affix {
+        top: 100px;
+    }
+}
+
+.navbar {
+    border-radius: 0px;
+}
+.collapse {
+    padding-right: 0px;
+}

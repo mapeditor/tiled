@@ -45,6 +45,7 @@ public:
     void clear();
 
     void setTileLayer(const SharedTileLayer &tileLayer);
+    void setTileLayer(const SharedTileLayer &tileLayer, const QRegion &region);
     const SharedTileLayer &tileLayer() const;
 
     void setTileLayerPosition(const QPoint &pos);
@@ -55,10 +56,10 @@ public:
     void setLayerOffset(const QPointF &offset);
 
     // QGraphicsItem
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr) override;
 
 private:
     void updateBoundingRect();

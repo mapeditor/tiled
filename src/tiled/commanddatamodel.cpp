@@ -110,10 +110,9 @@ void CommandDataModel::removeRows(QModelIndexList indices)
         mCommands.removeAt(row);
 
         // Decrement later indices since we removed a row
-        for (QModelIndexList::iterator i = indices.begin(); i != indices.end();
-                                                                            ++i)
-            if (i->row() > row)
-                *i = i->sibling(i->row() - 1, i->column());
+        for (QModelIndex &index : indices)
+            if (index.row() > row)
+                index = index.sibling(index.row() - 1, index.column());
 
         endRemoveRows();
     }
@@ -343,12 +342,12 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
     foreach (const QModelIndex &index, indices) {
         // Only generate mime data on command rows
         if (index.row() < 0 || index.row() >= mCommands.size())
-            return 0;
+            return nullptr;
 
         // Currently only one row at a time is supported for drags
         // Note: we can get multiple indexes in the same row (different columns)
         if (row != -1 && index.row() != row)
-            return 0;
+            return nullptr;
 
         row = index.row();
     }

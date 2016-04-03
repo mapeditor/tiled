@@ -41,12 +41,12 @@ class ObjectsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    ObjectsDock(QWidget *parent = 0);
+    ObjectsDock(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *mapDoc);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void updateActions();
@@ -76,9 +76,9 @@ class ObjectsView : public QTreeView
     Q_OBJECT
 
 public:
-    ObjectsView(QWidget *parent = 0);
+    ObjectsView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     void setMapDocument(MapDocument *mapDoc);
 
@@ -86,7 +86,7 @@ public:
 
 protected:
     void selectionChanged(const QItemSelection &selected,
-                          const QItemSelection &deselected);
+                          const QItemSelection &deselected) override;
 
 private slots:
     void onPressed(const QModelIndex &index);
@@ -95,6 +95,8 @@ private slots:
     void selectedObjectsChanged();
 
 private:
+    void synchronizeSelectedItems();
+
     MapDocument *mMapDocument;
     bool mSynching;
 };

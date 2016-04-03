@@ -36,7 +36,7 @@ using namespace Tiled::Internal;
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mLoaded(false)
 {
 }
@@ -55,7 +55,7 @@ void AutomappingManager::autoMap()
     int w = map->width();
     int h = map->height();
 
-    autoMapInternal(QRect(0, 0, w, h), 0);
+    autoMapInternal(QRect(0, 0, w, h), nullptr);
 }
 
 void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
@@ -72,7 +72,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     if (!mMapDocument)
         return;
 
-    const bool automatic = touchedLayer != 0;
+    const bool automatic = touchedLayer != nullptr;
 
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();

@@ -216,23 +216,25 @@ void ExportAsImageDialog::accept()
 
     painter.translate(margins.left(), margins.top());
 
-    foreach (const Layer *layer, mMapDocument->map()->layers()) {
+    for (const Layer *layer : mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
             continue;
 
         painter.setOpacity(layer->opacity());
         painter.translate(layer->offset());
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-
-        if (tileLayer) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
             renderer->drawTileLayer(&painter, tileLayer);
-        } else if (objGroup) {
-            QList<MapObject*> objects = objGroup->objects();
+            break;
+        }
 
-            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
+        case Layer::ObjectGroupType: {
+            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+            QList<MapObject*> objects = objectGroup->objects();
+
+            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 qStableSort(objects.begin(), objects.end(), objectLessThan);
 
             foreach (const MapObject *object, objects) {
@@ -252,8 +254,13 @@ void ExportAsImageDialog::accept()
                         painter.restore();
                 }
             }
-        } else if (imageLayer) {
+            break;
+        }
+        case Layer::ImageLayerType: {
+            const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             renderer->drawImageLayer(&painter, imageLayer);
+            break;
+        }
         }
 
         painter.translate(-layer->offset());
@@ -288,7 +295,7 @@ void ExportAsImageDialog::browse()
     const QString filter = Utils::writableImageFormatsFilter();
     QString f = QFileDialog::getSaveFileName(this, tr("Image"),
                                              mUi->fileNameEdit->text(),
-                                             filter, 0,
+                                             filter, nullptr,
                                              QFileDialog::DontConfirmOverwrite);
     if (!f.isEmpty()) {
         mUi->fileNameEdit->setText(f);

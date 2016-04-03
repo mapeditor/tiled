@@ -40,7 +40,7 @@ class ResizeHelper : public QWidget
     Q_OBJECT
 
 public:
-    ResizeHelper(QWidget *parent = 0);
+    ResizeHelper(QWidget *parent = nullptr);
 
     const QSize &oldSize() const
     { return mOldSize; }
@@ -83,13 +83,13 @@ public slots:
     void setNewHeight(int height);
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
-    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event) override;
 
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 
     void recalculateScale();
 

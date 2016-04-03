@@ -43,7 +43,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                                                "Offset Layer"))
     , mMapDocument(mapDocument)
     , mIndex(index)
-    , mOriginalLayer(0)
+    , mOriginalLayer(nullptr)
 {
     // Create the offset layer (once)
     Layer *layer = mMapDocument->map()->layerAt(mIndex);
@@ -78,14 +78,14 @@ void OffsetLayer::undo()
 {
     Q_ASSERT(!mOffsetLayer);
     mOffsetLayer = swapLayer(mOriginalLayer);
-    mOriginalLayer = 0;
+    mOriginalLayer = nullptr;
 }
 
 void OffsetLayer::redo()
 {
     Q_ASSERT(!mOriginalLayer);
     mOriginalLayer = swapLayer(mOffsetLayer);
-    mOffsetLayer = 0;
+    mOffsetLayer = nullptr;
 }
 
 Layer *OffsetLayer::swapLayer(Layer *layer)

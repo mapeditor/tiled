@@ -45,15 +45,15 @@ class StampBrush : public AbstractTileTool
     Q_OBJECT
 
 public:
-    StampBrush(QObject *parent = 0);
+    StampBrush(QObject *parent = nullptr);
     ~StampBrush();
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
     /**
      * Sets the stamp that is drawn when painting.
@@ -77,10 +77,10 @@ signals:
     void stampCaptured(const TileStamp &stamp);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
 private:
     enum PaintFlags {

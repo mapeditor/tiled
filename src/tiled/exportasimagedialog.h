@@ -48,11 +48,11 @@ public:
     ExportAsImageDialog(MapDocument *mapDocument,
                         const QString &fileName,
                         qreal currentScale,
-                        QWidget *parent = 0);
+                        QWidget *parent = nullptr);
     ~ExportAsImageDialog();
 
 public:
-    void accept();
+    void accept() override;
 
 private slots:
     void browse();

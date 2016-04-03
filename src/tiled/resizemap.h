@@ -38,8 +38,8 @@ class ResizeMap : public QUndoCommand
 public:
     ResizeMap(MapDocument *mapDocument, const QSize &size);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swapSize();

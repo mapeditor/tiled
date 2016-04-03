@@ -48,14 +48,14 @@ class EditTerrainDialog : public QDialog
 public:
     explicit EditTerrainDialog(MapDocument *mapDocument,
                                Tileset *tileset,
-                               QWidget *parent = 0);
+                               QWidget *parent = nullptr);
     ~EditTerrainDialog();
 
 
 private slots:
     void selectedTerrainChanged(const QModelIndex &index);
     void eraseTerrainToggled(bool checked);
-    void addTerrainType(Tile *tile = 0);
+    void addTerrainType(Tile *tile = nullptr);
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
 

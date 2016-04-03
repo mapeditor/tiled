@@ -40,8 +40,8 @@ public:
                   int terrainId,
                   const QString &newName);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     TerrainModel *mTerrainModel;

@@ -34,6 +34,9 @@ class QEvent;
 class QKeyEvent;
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -66,7 +69,7 @@ public:
     AbstractTool(const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
-                 QObject *parent = 0);
+                 QObject *parent = nullptr);
 
     virtual ~AbstractTool() {}
 
@@ -156,6 +159,8 @@ protected:
     }
 
     MapDocument *mapDocument() const { return mMapDocument; }
+
+    Layer *currentLayer() const;
 
 protected slots:
     /**
