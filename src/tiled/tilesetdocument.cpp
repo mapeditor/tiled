@@ -20,6 +20,7 @@
 
 #include "tilesetdocument.h"
 
+#include "mapdocument.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -81,6 +82,32 @@ FileFormat *TilesetDocument::writerFormat() const
 void TilesetDocument::setWriterFormat(TilesetFormat *format)
 {
     mWriterFormat = format;
+}
+
+QString TilesetDocument::displayName() const
+{
+    QString displayName;
+
+    if (isEmbedded()) {
+        MapDocument *mapDocument = mMapDocuments.first();
+        displayName = mapDocument->displayName();
+        displayName += QLatin1String("#");
+        displayName += mTileset->name();
+    } else {
+        displayName = QFileInfo(mFileName).fileName();
+        if (displayName.isEmpty())
+            displayName = tr("untitled.tsx");
+    }
+
+    return displayName;
+}
+
+/**
+ * Used when a map that has this tileset embedded is saved.
+ */
+void TilesetDocument::setClean()
+{
+    undoStack()->setClean();
 }
 
 void TilesetDocument::addMapDocument(MapDocument *mapDocument)

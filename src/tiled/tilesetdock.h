@@ -131,6 +131,7 @@ private slots:
     void moveTileset(int from, int to);
 
     void editTilesetProperties();
+    void editTileset();
     void importTileset();
     void exportTileset();
 
@@ -169,6 +170,7 @@ private:
     QAction *mImportTileset;
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
+    QAction *mEditTileset;
     QAction *mDeleteTileset;
     QAction *mEditTerrain;
     QAction *mAddTiles;

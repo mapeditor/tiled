@@ -176,12 +176,8 @@ private:
       */
     bool confirmAllSave();
 
-    /**
-     * Save the current map to the given file name. When saved successfully, the
-     * file is added to the list of recent files.
-     * @return <code>true</code> on success, <code>false</code> on failure
-     */
-    bool saveFile(const QString &fileName);
+    bool saveDocument(Document *document, const QString &fileName);
+    bool saveDocumentAs(Document *document);
 
     void writeSettings();
     void readSettings();

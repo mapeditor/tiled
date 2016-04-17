@@ -41,19 +41,6 @@ Document::Document(DocumentType type, const QString &fileName,
             this, &Document::modifiedChanged);
 }
 
-/**
- * Returns the name with which to display this document. It is the file name
- * without its path, or 'untitled' when the document has no file name.
- */
-QString Document::displayName() const
-{
-    QString displayName = QFileInfo(mFileName).fileName();
-    if (displayName.isEmpty())
-        displayName = tr("untitled");
-
-    return displayName;
-}
-
 void Document::setFileName(const QString &fileName)
 {
     if (mFileName == fileName)

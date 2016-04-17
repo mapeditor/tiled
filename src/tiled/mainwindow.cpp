@@ -654,12 +654,14 @@ void MainWindow::openFile()
         openFile(fileName, fileFormat);
 }
 
-bool MainWindow::saveFile(const QString &fileName)
+/**
+ * Save the given document with the given file name. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool MainWindow::saveDocument(Document *document, const QString &fileName)
 {
-    Document *document = mDocumentManager->currentDocument();
-    if (!document)
-        return false;
-
     if (fileName.isEmpty())
         return false;
 
@@ -673,18 +675,29 @@ bool MainWindow::saveFile(const QString &fileName)
     return true;
 }
 
+static Document *saveAsDocument(Document *document)
+{
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
+        if (tilesetDocument->isEmbedded())
+            document = tilesetDocument->mapDocuments().first();
+
+    return document;
+}
+
 bool MainWindow::saveFile()
 {
     Document *document = mDocumentManager->currentDocument();
     if (!document)
         return false;
 
+    document = saveAsDocument(document);
+
     const QString currentFileName = document->fileName();
 
     if (currentFileName.isEmpty())
-        return saveFileAs();
+        return saveDocumentAs(document);
     else
-        return saveFile(currentFileName);
+        return saveDocument(document, currentFileName);
 }
 
 bool MainWindow::saveFileAs()
@@ -693,6 +706,19 @@ bool MainWindow::saveFileAs()
     if (!document)
         return false;
 
+    document = saveAsDocument(document);
+
+    return saveDocumentAs(document);
+}
+
+/**
+ * Save the given document with a file name chosen by the user. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool MainWindow::saveDocumentAs(Document *document)
+{
     QString filter;
     QString selectedFilter;
     QString fileName = document->fileName();
@@ -742,13 +768,24 @@ bool MainWindow::saveFileAs()
         tilesetDocument->setWriterFormat(format);
     }
 
-    return saveFile(fileName);
+    return saveDocument(document, fileName);
+}
+
+bool isEmbeddedTilesetDocument(Document *document)
+{
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document))
+        return tilesetDocument->isEmbedded();
+    return false;
 }
 
 void MainWindow::saveAll()
 {
     for (Document *document : mDocumentManager->documents()) {
-        if (!document->isModified())
+        if (!mDocumentManager->isDocumentModified(document))
+            continue;
+
+        // Skip embedded tilesets, they will be saved when their map is checked
+        if (isEmbeddedTilesetDocument((document)))
             continue;
 
         QString fileName(document->fileName());
@@ -756,7 +793,7 @@ void MainWindow::saveAll()
 
         if (fileName.isEmpty()) {
             mDocumentManager->switchToDocument(document);
-            if (!saveFileAs())
+            if (!saveDocumentAs(document))
                 return;
         } else if (!document->save(fileName, &error)) {
             mDocumentManager->switchToDocument(document);
@@ -770,7 +807,7 @@ void MainWindow::saveAll()
 
 bool MainWindow::confirmSave(Document *document)
 {
-    if (!document || !document->isModified())
+    if (!document || !mDocumentManager->isDocumentModified(document))
         return true;
 
     mDocumentManager->switchToDocument(document);
@@ -791,8 +828,10 @@ bool MainWindow::confirmSave(Document *document)
 
 bool MainWindow::confirmAllSave()
 {
-    for (int i = 0; i < mDocumentManager->documentCount(); ++i) {
-        if (!confirmSave(mDocumentManager->documents().at(i)))
+    for (Document *document : mDocumentManager->documents()) {
+        if (isEmbeddedTilesetDocument((document)))
+            continue;
+        if (!confirmSave(document))
             return false;
     }
 

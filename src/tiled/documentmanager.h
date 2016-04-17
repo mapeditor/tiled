@@ -110,12 +110,14 @@ public:
      * Switches to the map document at the given \a index.
      */
     void switchToDocument(int index);
-    void switchToDocument(Document *document);
+    bool switchToDocument(Document *document);
 
     /**
      * Adds the new or opened \a document to the document manager.
      */
     void addDocument(Document *document);
+
+    bool isDocumentModified(Document *document) const;
 
     /**
      * Closes the current map document. Will not ask the user whether to save
@@ -158,10 +160,12 @@ public:
      */
     const QList<Document*> &documents() const { return mDocuments; }
 
+    TilesetDocument *findOrCreateTilesetDocument(const SharedTileset &tileset);
+
     /**
-     * Searches for a document for the given tileset.
+     * Opens the document for the given \a tileset.
      */
-    TilesetDocument *findTilesetDocument(const SharedTileset &tileset);
+    void openTileset(const SharedTileset &tileset);
 
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
@@ -207,7 +211,8 @@ private slots:
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
-    void updateDocumentTab();
+    void modifiedChanged();
+    void updateDocumentTab(Document *document);
     void documentSaved();
     void documentTabMoved(int from, int to);
 

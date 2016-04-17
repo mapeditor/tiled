@@ -189,11 +189,15 @@ void DocumentManager::switchToDocument(int index)
     mTabBar->setCurrentIndex(index);
 }
 
-void DocumentManager::switchToDocument(Document *document)
+bool DocumentManager::switchToDocument(Document *document)
 {
     const int index = mDocuments.indexOf(document);
-    if (index != -1)
+    if (index != -1) {
         switchToDocument(index);
+        return true;
+    }
+
+    return false;
 }
 
 void DocumentManager::switchToLeftDocument()
@@ -239,9 +243,12 @@ void DocumentManager::addDocument(Document *document)
     mDocuments.append(document);
     mUndoGroup->addStack(document->undoStack());
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             addToTilesetDocument(tileset, mapDocument);
+    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        mTilesetDocuments.insert(tilesetDocument->tileset(), tilesetDocument);
+    }
 
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->addPath(document->fileName());
@@ -254,9 +261,10 @@ void DocumentManager::addDocument(Document *document)
     mTabBar->addTab(document->displayName());
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
+    // todo: updateDocumentTab if an embedded tileset name changes
     connect(document, SIGNAL(fileNameChanged(QString,QString)),
             SLOT(fileNameChanged(QString,QString)));
-    connect(document, SIGNAL(modifiedChanged()), SLOT(updateDocumentTab()));
+    connect(document, SIGNAL(modifiedChanged()), SLOT(modifiedChanged()));
     connect(document, SIGNAL(saved()), SLOT(documentSaved()));
 
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
@@ -270,7 +278,25 @@ void DocumentManager::addDocument(Document *document)
     switchToDocument(documentIndex);
 
     // todo: fix this (move to MapEditor)
-//    centerViewOn(0, 0);
+    //    centerViewOn(0, 0);
+}
+
+/**
+ * Returns whether the given document has unsaved modifications. For map files
+ * with embedded tilesets, that includes checking whether any of the embedded
+ * tilesets have unsaved modifications.
+ */
+bool DocumentManager::isDocumentModified(Document *document) const
+{
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
+            if (TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset))
+                if (tilesetDocument->isEmbedded() && tilesetDocument->isModified())
+                    return true;
+        }
+    }
+
+    return document->isModified();
 }
 
 void DocumentManager::closeCurrentDocument()
@@ -296,11 +322,17 @@ void DocumentManager::closeDocumentAt(int index)
     if (!document->fileName().isEmpty())
         mFileSystemWatcher->removePath(document->fileName());
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             removeFromTilesetDocument(tileset, mapDocument);
 
-    delete document;
+        delete document;
+    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (tilesetDocument->mapDocuments().isEmpty()) {
+            mTilesetDocuments.remove(tilesetDocument->tileset());
+            delete document;
+        }
+    }
 }
 
 bool DocumentManager::reloadCurrentDocument()
@@ -391,13 +423,28 @@ void DocumentManager::fileNameChanged(const QString &fileName,
     if (!oldFileName.isEmpty())
         mFileSystemWatcher->removePath(oldFileName);
 
-    updateDocumentTab();
+    // Update the tabs for all opened embedded tilesets
+    Document *document = static_cast<Document*>(sender());
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
+            if (TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset))
+                updateDocumentTab(tilesetDocument);
+        }
+    }
+
+    updateDocumentTab(document);
 }
 
-void DocumentManager::updateDocumentTab()
+void DocumentManager::modifiedChanged()
 {
-    Document *document = static_cast<Document*>(sender());
+    updateDocumentTab(static_cast<Document*>(sender()));
+}
+
+void DocumentManager::updateDocumentTab(Document *document)
+{
     const int index = mDocuments.indexOf(document);
+    if (index == -1)
+        return;
 
     QString tabText = document->displayName();
     if (document->isModified())
@@ -498,14 +545,13 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     }
 }
 
-TilesetDocument *DocumentManager::findTilesetDocument(const SharedTileset &tileset)
+/**
+ * Searches for a document for the given tileset, creating it if it does not
+ * exist already.
+ */
+TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTileset &tileset)
 {
-    return mTilesetDocuments.value(tileset);
-}
-
-void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
-{
-    auto tilesetDocument = findTilesetDocument(tileset);
+    auto tilesetDocument = mTilesetDocuments.value(tileset);
 
     // Create TilesetDocument instance when it doesn't exist yet
     if (!tilesetDocument) {
@@ -513,27 +559,40 @@ void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocu
         mTilesetDocuments.insert(tileset, tilesetDocument);
     }
 
+    return tilesetDocument;
+}
+
+void DocumentManager::openTileset(const SharedTileset &tileset)
+{
+    auto tilesetDocument = mTilesetDocuments.value(tileset);
+    Q_ASSERT(tilesetDocument);
+
+    if (!switchToDocument(tilesetDocument))
+        addDocument(tilesetDocument);
+}
+
+void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
+{
+    auto tilesetDocument = findOrCreateTilesetDocument(tileset);
     tilesetDocument->addMapDocument(mapDocument);
 }
 
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
+    TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset);
     Q_ASSERT(tilesetDocument);
 
     tilesetDocument->removeMapDocument(mapDocument);
 
     // Delete the TilesetDocument instance when its tileset is no longer reachable
-    //
-    // TODO: since the tileset document is also deleted here, the user will
-    // need to be prompted to save any changes to this tileset. This affects:
-    //  * Closing a map
-    //  * Removing a tileset from a map
-    //  * Replacing a tileset of a map
-    //
     if (tilesetDocument->mapDocuments().isEmpty()) {
-        mTilesetDocuments.remove(tileset);
-        delete tilesetDocument;
+        int index = mDocuments.indexOf(tilesetDocument);
+        if (index != -1) {
+            closeDocumentAt(index);
+        } else {
+            mTilesetDocuments.remove(tileset);
+            delete tilesetDocument;
+        }
     }
 }
 

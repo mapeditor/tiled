@@ -62,7 +62,11 @@ public:
 
     QString fileName() const;
 
-    virtual QString displayName() const;
+    /**
+     * Returns the name with which to display this document. It is the file name
+     * without its path, or 'untitled' when the document has no file name.
+     */
+    virtual QString displayName() const = 0;
 
     /**
      * Saves the document to the file at \a fileName. Returns whether or not

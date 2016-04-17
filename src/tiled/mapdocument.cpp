@@ -27,6 +27,7 @@
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
+#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
@@ -50,6 +51,7 @@
 #include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 
@@ -138,6 +140,14 @@ bool MapDocument::save(const QString &fileName, QString *error)
     undoStack()->setClean();
     setFileName(fileName);
     mLastSaved = QFileInfo(fileName).lastModified();
+
+    // Mark TilesetDocuments for embedded tilesets as saved
+    auto documentManager = DocumentManager::instance();
+    for (const SharedTileset &tileset : mMap->tilesets()) {
+        TilesetDocument *tilesetDocument = documentManager->findOrCreateTilesetDocument(tileset);
+        if (tilesetDocument->isEmbedded())
+            tilesetDocument->setClean();
+    }
 
     emit saved();
     return true;

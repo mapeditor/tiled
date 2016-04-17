@@ -53,9 +53,12 @@ public:
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
 
+    QString displayName() const override;
+
     const SharedTileset &tileset() const;
 
     bool isEmbedded() const;
+    void setClean();
 
     const QList<MapDocument*> &mapDocuments() const;
     void addMapDocument(MapDocument *mapDocument);
@@ -117,7 +120,7 @@ inline const SharedTileset &TilesetDocument::tileset() const
 
 inline bool TilesetDocument::isEmbedded() const
 {
-    return fileName().isEmpty();
+    return fileName().isEmpty() && mMapDocuments.count() == 1;
 }
 
 /**

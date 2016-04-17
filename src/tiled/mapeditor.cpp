@@ -269,6 +269,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
 
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
+    mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
 
     mMapsDock->setVisible(false);

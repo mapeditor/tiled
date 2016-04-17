@@ -213,6 +213,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
     mPropertiesTileset(new QAction(this)),
+    mEditTileset(new QAction(this)),
     mDeleteTileset(new QAction(this)),
     mEditTerrain(new QAction(this)),
     mAddTiles(new QAction(this)),
@@ -277,6 +278,8 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(exportTileset()));
     connect(mPropertiesTileset, SIGNAL(triggered()),
             SLOT(editTilesetProperties()));
+    connect(mEditTileset, SIGNAL(triggered()),
+            SLOT(editTileset()));
     connect(mDeleteTileset, SIGNAL(triggered()),
             SLOT(removeTileset()));
     connect(mEditTerrain, SIGNAL(triggered()),
@@ -291,6 +294,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mImportTileset);
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mPropertiesTileset);
+    mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
     mToolBar->addAction(mEditTerrain);
     mToolBar->addAction(mAddTiles);
@@ -823,6 +827,7 @@ void TilesetDock::retranslateUi()
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
+    mEditTileset->setText(tr("Edit..."));
     mDeleteTileset->setText(tr("&Remove Tileset"));
     mEditTerrain->setText(tr("Edit &Terrain Information"));
     mAddTiles->setText(tr("Add Tiles"));
@@ -869,6 +874,16 @@ void TilesetDock::editTilesetProperties()
 
     mMapDocument->setCurrentObject(tileset);
     emit mMapDocument->editCurrentObject();
+}
+
+void TilesetDock::editTileset()
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    DocumentManager *documentManager = DocumentManager::instance();
+    documentManager->openTileset(tileset->sharedPointer());
 }
 
 void TilesetDock::exportTileset()
