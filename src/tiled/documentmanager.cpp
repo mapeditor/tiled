@@ -267,10 +267,14 @@ void DocumentManager::addDocument(Document *document)
     connect(document, SIGNAL(modifiedChanged()), SLOT(modifiedChanged()));
     connect(document, SIGNAL(saved()), SLOT(documentSaved()));
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto *mapDocument = qobject_cast<MapDocument*>(document)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
         connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
+    }
+
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
     }
 
 //    connect(container, SIGNAL(reload()), SLOT(reloadRequested()));
@@ -290,7 +294,7 @@ bool DocumentManager::isDocumentModified(Document *document) const
 {
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
-            if (TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset))
+            if (TilesetDocument *tilesetDocument = findTilesetDocument(tileset))
                 if (tilesetDocument->isEmbedded() && tilesetDocument->isModified())
                     return true;
         }
@@ -331,6 +335,8 @@ void DocumentManager::closeDocumentAt(int index)
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetDocuments.remove(tilesetDocument->tileset());
             delete document;
+        } else {
+            tilesetDocument->disconnect(this);
         }
     }
 }
@@ -427,7 +433,7 @@ void DocumentManager::fileNameChanged(const QString &fileName,
     Document *document = static_cast<Document*>(sender());
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
-            if (TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset))
+            if (TilesetDocument *tilesetDocument = findTilesetDocument(tileset))
                 updateDocumentTab(tilesetDocument);
         }
     }
@@ -497,6 +503,13 @@ void DocumentManager::tilesetReplaced(int index, Tileset *tileset, Tileset *oldT
     removeFromTilesetDocument(oldTileset->sharedPointer(), mapDocument);
 }
 
+void DocumentManager::tilesetNameChanged(Tileset *tileset)
+{
+    auto *tilesetDocument = findTilesetDocument(tileset->sharedPointer());
+    if (tilesetDocument->isEmbedded())
+        updateDocumentTab(tilesetDocument);
+}
+
 void DocumentManager::fileChanged(const QString &fileName)
 {
     const int index = findDocument(fileName);
@@ -545,13 +558,18 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     }
 }
 
+TilesetDocument *DocumentManager::findTilesetDocument(const SharedTileset &tileset) const
+{
+    return mTilesetDocuments.value(tileset);
+}
+
 /**
  * Searches for a document for the given tileset, creating it if it does not
  * exist already.
  */
 TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTileset &tileset)
 {
-    auto tilesetDocument = mTilesetDocuments.value(tileset);
+    auto tilesetDocument = findTilesetDocument(tileset);
 
     // Create TilesetDocument instance when it doesn't exist yet
     if (!tilesetDocument) {
@@ -564,7 +582,7 @@ TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTilese
 
 void DocumentManager::openTileset(const SharedTileset &tileset)
 {
-    auto tilesetDocument = mTilesetDocuments.value(tileset);
+    auto tilesetDocument = findTilesetDocument(tileset);
     Q_ASSERT(tilesetDocument);
 
     if (!switchToDocument(tilesetDocument))
@@ -579,7 +597,7 @@ void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocu
 
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    TilesetDocument *tilesetDocument = mTilesetDocuments.value(tileset);
+    TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
     Q_ASSERT(tilesetDocument);
 
     tilesetDocument->removeMapDocument(mapDocument);

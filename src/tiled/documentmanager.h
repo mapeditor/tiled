@@ -160,6 +160,7 @@ public:
      */
     const QList<Document*> &documents() const { return mDocuments; }
 
+    TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findOrCreateTilesetDocument(const SharedTileset &tileset);
 
     /**
@@ -219,6 +220,8 @@ private slots:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
+
+    void tilesetNameChanged(Tileset *tileset);
 
     void fileChanged(const QString &fileName);
 

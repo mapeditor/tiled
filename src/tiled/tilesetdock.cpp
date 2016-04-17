@@ -38,6 +38,7 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
 #include "tilesetformat.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
@@ -366,16 +367,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     if (mMapDocument) {
         mTilesets = mMapDocument->map()->tilesets();
-
-        for (const SharedTileset &tileset : mTilesets) {
-            TilesetView *view = new TilesetView;
-            // todo: Make sure the view does not crash in read-only mode
-//            view->setTilesetDocument(mMapDocument);
-            view->setZoomable(mZoomable);
-
-            mTabBar->addTab(tileset->name());
-            mViewStack->addWidget(view);
-        }
+        for (int i = 0; i < mTilesets.size(); ++i)
+            createTilesetView(i, mTilesets.at(i).data());
 
         connect(mMapDocument, &MapDocument::tilesetAdded,
                 this, &TilesetDock::tilesetAdded);
@@ -385,19 +378,6 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 this, &TilesetDock::tilesetMoved);
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &TilesetDock::tilesetReplaced);
-
-        // todo: Determine whether all these changes are still relevant, and
-        // how route them to the TilesetDock
-//        connect(mMapDocument, &MapDocument::tilesetNameChanged,
-//                this, &TilesetDock::tilesetNameChanged);
-//        connect(mMapDocument, &MapDocument::tilesetFileNameChanged,
-//                this, &TilesetDock::updateActions);
-//        connect(mMapDocument, &MapDocument::tilesetChanged,
-//                this, &TilesetDock::tilesetChanged);
-//        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-//                this, &TilesetDock::tileImageSourceChanged);
-//        connect(mMapDocument, &MapDocument::tileAnimationChanged,
-//                this, &TilesetDock::tileAnimationChanged);
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
         for (int i = 0; i < mTabBar->count(); ++i) {
@@ -628,15 +608,33 @@ void TilesetDock::indexPressed(const QModelIndex &index)
 
 void TilesetDock::tilesetAdded(int index, Tileset *tileset)
 {
+    mTilesets.insert(index, tileset->sharedPointer());
+    createTilesetView(index, tileset);
+    updateActions();    // todo: check if needed
+}
+
+void TilesetDock::createTilesetView(int index, Tileset *tileset)
+{
     TilesetView *view = new TilesetView;
+    // todo: Make sure the view does not crash in read-only mode
 //    view->setTilesetDocument(mMapDocument);
     view->setZoomable(mZoomable);
 
-    mTilesets.insert(index, tileset->sharedPointer());
     mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
 
-    updateActions();
+    auto *documentManager = DocumentManager::instance();
+    auto *tilesetDocument = documentManager->findOrCreateTilesetDocument(tileset->sharedPointer());
+    connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
+            this, &TilesetDock::tilesetNameChanged);
+    connect(tilesetDocument, &TilesetDocument::fileNameChanged,
+            this, &TilesetDock::updateActions);
+    connect(tilesetDocument, &TilesetDocument::tilesetChanged,
+            this, &TilesetDock::tilesetChanged);
+    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+            this, &TilesetDock::tileImageSourceChanged);
+    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
+            this, &TilesetDock::tileAnimationChanged);
 }
 
 void TilesetDock::tilesetChanged(Tileset *tileset)
@@ -652,6 +650,10 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 
 void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
+    auto *documentManager = DocumentManager::instance();
+    if (auto *tilesetDocument = documentManager->findTilesetDocument(tileset->sharedPointer()))
+        tilesetDocument->disconnect(this);
+
     // Delete the related tileset view
     const int index = indexOf(mTilesets, tileset);
     Q_ASSERT(index != -1);
@@ -704,6 +706,10 @@ void TilesetDock::tilesetMoved(int from, int to)
 
 void TilesetDock::tilesetReplaced(int index, Tileset *tileset)
 {
+    auto *documentManager = DocumentManager::instance();
+    if (auto *tilesetDocument = documentManager->findTilesetDocument(tileset->sharedPointer()))
+        tilesetDocument->disconnect(this);
+
     mTilesets.replace(index, tileset->sharedPointer());
 
     if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())

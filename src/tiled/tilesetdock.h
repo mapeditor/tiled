@@ -152,6 +152,7 @@ private:
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
+    void createTilesetView(int index, Tileset *tileset);
     void setupTilesetModel(TilesetView *view, Tileset *tileset);
 
     MapDocument *mMapDocument;
