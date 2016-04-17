@@ -1,3 +1,7 @@
+0.16.1 (...)
+* Fixed crash when pressing Backspace with Custom Properties section selected
+* Updated Turkish translation
+
 0.16.0 (28 March 2016)
 * Added checking for updates, based on Sparkle and WinSparkle
 * Added default property definitions to object types (with Michael Bickel)
