@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="tr" sourcelanguage="en_US">
+<TS version="2.0" language="tr" sourcelanguage="en_US">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Özellik Ekle</translation>
+        <translation>Özellik Ekle</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Özellik ismi</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir örnek çalışıyor olsa bile yeni bir örnek başlat</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -150,7 +150,8 @@
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanım:
+  %1 [seçenekler] [dosyalar...]</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -411,7 +412,7 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation>Dosya okumak üzere açılamadı</translation>
+        <translation>Dosya okumak üzere açılamadı.</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -421,7 +422,7 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation>Dosya yazılmak üzere açılamadı</translation>
+        <translation>Dosya yazılmak üzere açılamadı.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -680,7 +681,7 @@
     <message>
         <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>Dış Tileset &amp;Ekle</translation>
+        <translation>Dış Tileset &amp;Ekle...</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -869,7 +870,7 @@ Satır %1, sütun %2</translation>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Katman &apos;%3&apos; deki tile (%1,%2) ayrıştırılamadı.</translation>
+        <translation>Katman &apos;%3&apos; deki tile (%1,%2) ayrıştırılamadı</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -989,7 +990,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+51"/>
         <source>&amp;Browse...</source>
-        <translation>&amp;Gözat</translation>
+        <translation>&amp;Gözat...</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1083,27 +1084,27 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türü Düzenleyicisi</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">Dosya</translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türlerini Dışa Aktar...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türlerini İçeri Aktar...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türü Dosyası Seç...</translation>
     </message>
 </context>
 <context>
@@ -1323,17 +1324,17 @@ Satır %1, sütun %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Güncellemeler</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Şimdi Kontrol Et</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Güncellemeleri otamatik denetle</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1689,7 +1690,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Belirtilmemiş</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2772,7 +2773,7 @@ Onu değiştirmek istiyor musunuz?</translation>
     <message>
         <location line="-1232"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türleri Düzenleyicisi</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3108,7 +3109,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation>Seçimi İptal Et</translation>
+        <translation>Seçimi &amp;İptal Et</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3207,7 +3208,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+6"/>
         <source>Layer &amp;Properties...</source>
-        <translation>Katman &amp;Özellikleri..</translation>
+        <translation>Katman &amp;Özellikleri...</translation>
     </message>
 </context>
 <context>
@@ -3322,7 +3323,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Bu tileset resminde belirtilen tile ayarları ile uyumlu herhangi bir tile bulunamadı.</translation>
+        <translation>Bu tileset resminde belirtilen tile ayarları ile uyumlu herhangi bir tile bulunamadı!</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -3349,21 +3350,21 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+548"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Taşı</numerusform>
+            <numerusform>%n Nesneyi Taşı</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+67"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Döndür</numerusform>
+            <numerusform>%n Nesneyi Döndür</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
+            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
         </translation>
     </message>
 </context>
@@ -3372,73 +3373,73 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">Nesne Türü Ekle</translation>
+        <translation>Nesne Türü Ekle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türünü Sil</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished">Özellik Ekle</translation>
+        <translation>Özellik Ekle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Özelliği Sil</translation>
+        <translation>Özelliği Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Özelliği Yeniden Adlandır</translation>
+        <translation>Özelliği Yeniden Adlandır</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">Nesne Türleri Yazma Hatası</translation>
+        <translation>Nesne Türleri Yazma Hatası</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 e yazılamadı: %2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesne Türü Dosyası Seç</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">Nesne Türleri dosyaları (*.xml)</translation>
+        <translation>Nesne Türleri dosyaları (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">Nesne Türleri Okuma Hatası</translation>
+        <translation>Nesne Türleri Okuma Hatası</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">Nesne Türlerini İçe Aktar</translation>
+        <translation>Nesne Türlerini İçe Aktar</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">Nesne Türlerini Dışa Aktar</translation>
+        <translation>Nesne Türlerini Dışa Aktar</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">İsim:</translation>
+        <translation>İsim:</translation>
     </message>
 </context>
 <context>
@@ -3475,7 +3476,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Nesneyi Katmana Taşı</numerusform>
+            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
         </translation>
     </message>
 </context>
@@ -3521,7 +3522,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-15"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Son denetleme: %1</translation>
     </message>
 </context>
 <context>
@@ -3883,7 +3884,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Zemini Sil</translation>
     </message>
 </context>
 <context>
@@ -3891,7 +3892,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+97"/>
         <source>Terrain &amp;Properties...</source>
-        <translation>Zemin %Özellikleri...</translation>
+        <translation>Zemin &amp;Özellikleri...</translation>
     </message>
 </context>
 <context>
