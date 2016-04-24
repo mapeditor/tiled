@@ -25,12 +25,15 @@
 
 #include <QHash>
 
+class QAction;
 class QMainWindow;
 class QStackedWidget;
+class QToolBar;
 
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 namespace Internal {
 
@@ -56,6 +59,7 @@ public:
     QWidget *editorWidget() const override;
 
     TilesetView *currentTilesetView() const;
+    Tileset *currentTileset() const;
 
 signals:
     void currentTileChanged(Tile *tile);
@@ -67,11 +71,24 @@ private slots:
     void currentChanged(const QModelIndex &index);
     void indexPressed(const QModelIndex &index);
 
+    void tilesetChanged();
+
+    void addTiles();
+    void removeTiles();
+
+    void updateAddRemoveActions();
+
 private:
     void setCurrentTile(Tile *tile);
 
+    void retranslateUi();
+
     QMainWindow *mMainWindow;
     QStackedWidget *mWidgetStack;
+    QToolBar *mTilesetToolBar;
+
+    QAction *mAddTiles;
+    QAction *mRemoveTiles;
 
     PropertiesDock *mPropertiesDock;
     TileAnimationEditor *mTileAnimationEditor;

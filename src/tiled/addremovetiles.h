@@ -26,7 +26,6 @@
 namespace Tiled {
 
 class Tile;
-class Tileset;
 
 namespace Internal {
 
@@ -39,7 +38,6 @@ class AddRemoveTiles : public QUndoCommand
 {
 public:
     AddRemoveTiles(TilesetDocument *tilesetDocument,
-                   Tileset *tileset,
                    const QList<Tile*> &tiles,
                    bool add);
 
@@ -51,7 +49,6 @@ protected:
 
 private:
     TilesetDocument *mTilesetDocument;
-    Tileset *mTileset;
     QList<Tile*> mTiles;
     bool mTilesAdded;
 };
@@ -63,7 +60,6 @@ class AddTiles : public AddRemoveTiles
 {
 public:
     AddTiles(TilesetDocument *tilesetDocument,
-             Tileset *tileset,
              const QList<Tile*> &tiles);
 
     void undo() override
@@ -80,7 +76,6 @@ class RemoveTiles : public AddRemoveTiles
 {
 public:
     RemoveTiles(TilesetDocument *tilesetDocument,
-                Tileset *tileset,
                 const QList<Tile *> &tiles);
 
     void undo() override

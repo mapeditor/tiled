@@ -136,8 +136,6 @@ private slots:
     void exportTileset();
 
     void editTerrain();
-    void addTiles();
-    void removeTiles();
 
     void documentAboutToClose(Document *document);
 
@@ -174,8 +172,6 @@ private:
     QAction *mEditTileset;
     QAction *mDeleteTileset;
     QAction *mEditTerrain;
-    QAction *mAddTiles;
-    QAction *mRemoveTiles;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 

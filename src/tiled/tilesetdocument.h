@@ -68,6 +68,9 @@ public:
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(const QPoint &tileOffset);
 
+    void addTiles(const QList<Tile*> &tiles);
+    void removeTiles(const QList<Tile*> &tiles);
+
 signals:
     /**
      * This signal is currently used when adding or removing tiles from a tileset.

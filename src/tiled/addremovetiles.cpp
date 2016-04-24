@@ -20,8 +20,6 @@
 
 #include "addremovetiles.h"
 
-#include "tile.h"
-#include "tileset.h"
 #include "tilesetdocument.h"
 
 #include <QCoreApplication>
@@ -30,11 +28,9 @@ namespace Tiled {
 namespace Internal {
 
 AddRemoveTiles::AddRemoveTiles(TilesetDocument *tilesetDocument,
-                               Tileset *tileset,
                                const QList<Tile *> &tiles,
                                bool add)
     : mTilesetDocument(tilesetDocument)
-    , mTileset(tileset)
     , mTiles(tiles)
     , mTilesAdded(!add)
 {
@@ -48,32 +44,28 @@ AddRemoveTiles::~AddRemoveTiles()
 
 void AddRemoveTiles::addTiles()
 {
-    mTileset->addTiles(mTiles);
-    emit mTilesetDocument->tilesetChanged(mTileset);
+    mTilesetDocument->addTiles(mTiles);
     mTilesAdded = true;
 }
 
 void AddRemoveTiles::removeTiles()
 {
-    mTileset->removeTiles(mTiles);
-    emit mTilesetDocument->tilesetChanged(mTileset);
+    mTilesetDocument->removeTiles(mTiles);
     mTilesAdded = false;
 }
 
 
 AddTiles::AddTiles(TilesetDocument *tilesetDocument,
-                   Tileset *tileset,
                    const QList<Tile *> &tiles)
-    : AddRemoveTiles(tilesetDocument, tileset, tiles, true)
+    : AddRemoveTiles(tilesetDocument, tiles, true)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tiles"));
 }
 
 
 RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument,
-                         Tileset *tileset,
                          const QList<Tile *> &tiles)
-    : AddRemoveTiles(tilesetDocument, tileset, tiles, false)
+    : AddRemoveTiles(tilesetDocument, tiles, false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 }

@@ -21,6 +21,7 @@
 #include "tilesetdocument.h"
 
 #include "mapdocument.h"
+#include "tile.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -141,6 +142,26 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
     // todo: Have the maps using this tileset recompute their draw margins
 //    mMap->recomputeDrawMargins();
     emit tilesetTileOffsetChanged(mTileset.data());
+}
+
+void TilesetDocument::addTiles(const QList<Tile *> &tiles)
+{
+    mTileset->addTiles(tiles);
+    emit tilesetChanged(mTileset.data());
+}
+
+void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
+{
+    // Switch current object to the tileset when it is one of the removed tiles
+    for (Tile *tile : tiles) {
+        if (tile == currentObject()) {
+            setCurrentObject(mTileset.data());
+            break;
+        }
+    }
+
+    mTileset->removeTiles(tiles);
+    emit tilesetChanged(mTileset.data());
 }
 
 } // namespace Internal
