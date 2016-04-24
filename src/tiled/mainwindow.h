@@ -26,6 +26,7 @@
 
 #include "mapdocument.h"
 #include "consoledock.h"
+#include "clipboardmanager.h"
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
@@ -132,6 +133,8 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void pasteInPlace();
+    void paste(ClipboardManager::PasteFlags flags);
     void delete_(); // 'delete' is a reserved word
     void openPreferences();
 

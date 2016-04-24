@@ -23,7 +23,6 @@
 #include "addremovemapobject.h"
 #include "editpolygontool.h"
 #include "changetileobjectgroup.h"
-#include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
@@ -47,6 +46,7 @@
 #include "zoomable.h"
 
 #include <QCloseEvent>
+#include <QCoreApplication>
 #include <QComboBox>
 #include <QShortcut>
 #include <QStatusBar>
@@ -126,6 +126,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     QShortcut *cutShortcut = new QShortcut(QKeySequence::Cut, this);
     QShortcut *copyShortcut = new QShortcut(QKeySequence::Copy, this);
     QShortcut *pasteShortcut = new QShortcut(QKeySequence::Paste, this);
+    QShortcut *pasteInPlaceShortcut = new QShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Shift+V"), this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
     QShortcut *deleteShortcut2 = new QShortcut(QKeySequence(Qt::Key_Backspace), this);
 
@@ -134,6 +135,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     connect(cutShortcut, SIGNAL(activated()), SLOT(cut()));
     connect(copyShortcut, SIGNAL(activated()), SLOT(copy()));
     connect(pasteShortcut, SIGNAL(activated()), SLOT(paste()));
+    connect(pasteInPlaceShortcut, SIGNAL(activated()), SLOT(pasteInPlace()));
     connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
     connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
 
@@ -344,6 +346,16 @@ void TileCollisionEditor::copy()
 
 void TileCollisionEditor::paste()
 {
+    paste(ClipboardManager::PasteDefault);
+}
+
+void TileCollisionEditor::pasteInPlace()
+{
+    paste(ClipboardManager::PasteInPlace);
+}
+
+void TileCollisionEditor::paste(ClipboardManager::PasteFlags flags)
+{
     if (!mTile)
         return;
 
@@ -362,7 +374,7 @@ void TileCollisionEditor::paste()
         MapDocument *dummyDocument = mMapScene->mapDocument();
         clipboardManager->pasteObjectGroup(objectGroup,
                                            dummyDocument, mMapView,
-                                           ClipboardManager::NoTileObjects);
+                                           flags | ClipboardManager::PasteNoTileObjects);
     }
 }
 
