@@ -1,6 +1,7 @@
 0.16.1 (...)
 * Fixed saving of object IDs assigned to tile collision shapes
 * Fixed crash when pressing Backspace with Custom Properties section selected
+* Fixed potential crash on exit when having Tile Collision Editor open
 * Updated Turkish translation
 
 0.16.0 (28 March 2016)

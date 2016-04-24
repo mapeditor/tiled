@@ -212,8 +212,8 @@ void TileCollisionEditor::setTile(Tile *tile)
 
         mMapScene->enableSelectedTool();
 
-        connect(mapDocument->undoStack(), SIGNAL(indexChanged(int)),
-                SLOT(applyChanges()));
+        connect(mapDocument->undoStack(), &QUndoStack::indexChanged,
+                this, &TileCollisionEditor::applyChanges);
 
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &TileCollisionEditor::selectedObjectsChanged);
@@ -226,8 +226,14 @@ void TileCollisionEditor::setTile(Tile *tile)
         mPropertiesDock->setMapDocument(nullptr);
     }
 
-    if (previousDocument)
+    if (previousDocument) {
+        // Explicitly disconnect early from this signal, since it can get fired
+        // from the QUndoStack destructor.
+        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
+                   this, &TileCollisionEditor::applyChanges);
+
         delete previousDocument;
+    }
 }
 
 void TileCollisionEditor::closeEvent(QCloseEvent *event)
