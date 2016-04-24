@@ -107,7 +107,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
-        foreach (const MapObject *mapObject, selectedObjects)
+        for (const MapObject *mapObject : selectedObjects)
             objectGroup->addObject(mapObject->clone());
         copyLayer = objectGroup;
     } else {
@@ -164,11 +164,12 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     pastedObjects.reserve(objectGroup->objectCount());
 
     undoStack->beginMacro(tr("Paste Objects"));
-    foreach (const MapObject *mapObject, objectGroup->objects()) {
+    for (const MapObject *mapObject : objectGroup->objects()) {
         if (mode == NoTileObjects && !mapObject->cell().isEmpty())
             continue;
 
         MapObject *objectClone = mapObject->clone();
+        objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
         pastedObjects.append(objectClone);
         undoStack->push(new AddMapObject(mapDocument,

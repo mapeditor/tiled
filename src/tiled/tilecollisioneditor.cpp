@@ -199,6 +199,7 @@ void TileCollisionEditor::setTile(Tile *tile)
             objectGroup = new ObjectGroup;
 
         objectGroup->setDrawOrder(ObjectGroup::IndexOrder);
+        map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
         MapDocument *mapDocument = new MapDocument(map);

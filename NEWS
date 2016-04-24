@@ -1,4 +1,5 @@
 0.16.1 (...)
+* Fixed saving of object IDs assigned to tile collision shapes
 * Fixed crash when pressing Backspace with Custom Properties section selected
 * Updated Turkish translation
 

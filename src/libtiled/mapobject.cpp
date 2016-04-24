@@ -125,6 +125,7 @@ void MapObject::flip(FlipDirection direction)
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
+    o->setId(mId);
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
