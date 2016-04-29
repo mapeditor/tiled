@@ -222,12 +222,12 @@
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation>Kartet må ha akkurat ett flislag!</translation>
+        <translation>Kartet må ha akkurat ett rutelag!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation>Laget må ha en størrelse på 48 x 48 fliser!</translation>
+        <translation>Laget må ha en størrelse på 48 x 48 ruter!</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -325,7 +325,7 @@
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation>&amp;Tegn flisrutenettet</translation>
+        <translation>&amp;Tegn rutenettet</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -343,23 +343,23 @@
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation>Feil ved lasting av flisbrett %1, som utvides til %2. Filbane ikke funnet!</translation>
+        <translation>Feil ved lasting av rutebrett %1, som utvides til %2. Filbane ikke funnet!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation>Ingen flisbrettseksjoner funnet før lagseksjon.</translation>
+        <translation>Ingen rutebrettseksjoner funnet før lagseksjon.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Error mapping tile id %1.</source>
-        <translation>Feil ved kartlegging av flis-ID %1.</translation>
+        <translation>Feil ved kartlegging av rute-ID %1.</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translatorcomment>The first sentence of the source text is strange. Assumed that it should&apos;ve been &quot;This seems to not be valid flare map&quot;.</translatorcomment>
-        <translation>Dette ser ikke ut til å væe et gyldig Flare-kart. Et Flare-kart består av minst en headerseksjon, en flisbrettseksjon og et flislag.</translation>
+        <translation>Dette ser ikke ut til å væe et gyldig Flare-kart. Et Flare-kart består av minst en headerseksjon, en rutebrettseksjon og et rutelag.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -434,7 +434,7 @@
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation>Json-flisbrettfiler (*.json)</translation>
+        <translation>Json-rutebrettfiler (*.json)</translation>
     </message>
 </context>
 <context>
@@ -575,7 +575,7 @@
     <message>
         <location line="+9"/>
         <source>New &amp;Tileset...</source>
-        <translation>Nytt &amp;Flisbrett...</translation>
+        <translation>Nytt &amp;Rutebrett...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -680,7 +680,7 @@
     <message>
         <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>&amp;Legg Til Extern Flisbrett...</translation>
+        <translation>&amp;Legg Til Eksternt Rutebrett...</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -735,7 +735,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation>Vis Flisobjekt&amp;omriss</translation>
+        <translation>Vis Ruteobjekt&amp;omriss</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -745,7 +745,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation>Vis Flisanimasjoner</translation>
+        <translation>Vis Ruteanimasjoner</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -778,7 +778,7 @@
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Ikke en flisbrettfil.</translation>
+        <translation>Ikke en rutebrettfil.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -810,12 +810,12 @@ Linje %1, kolonne %2</translation>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+133"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Ugyldig flisbrettparametre for flisbrett &apos;%1&apos;</translation>
+        <translation>Ugyldig rutebrettparametre for rutebrett &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Invalid tile ID: %1</source>
-        <translation>Ugyldig flis-ID: %1</translation>
+        <translation>Ugyldig rute-ID: %1</translation>
     </message>
     <message>
         <location line="+228"/>
@@ -827,7 +827,7 @@ Linje %1, kolonne %2</translation>
         <location line="+43"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+218"/>
         <source>Invalid tile: %1</source>
-        <translation>Ugyldig flis: %1</translation>
+        <translation>Ugyldig rute: %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -849,7 +849,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation>Feil under skriving av innebydge bilder for flis %1</translation>
+        <translation>Feil under skriving av innebydge bilder for rute %1</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -869,14 +869,14 @@ Linje %1, kolonne %2</translation>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Kunne ikke tolke flis på (%1,%2) på lag &apos;%3&apos;</translation>
+        <translation>Kunne ikke tolke rute på (%1,%2) på lag &apos;%3&apos;</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+44"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Flis brukt uten at et flisbrett er spesifisert</translation>
+        <translation>Rute brukt uten at et rutebrett er spesifisert</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+115"/>
@@ -886,7 +886,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-170"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation>Ugyldig (negativ) flis-ID: %1</translation>
+        <translation>Ugyldig (negativ) rute-ID: %1</translation>
     </message>
 </context>
 <context>
@@ -912,7 +912,7 @@ Linje %1, kolonne %2</translation>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation> fliser</translation>
+        <translation> ruter</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -923,7 +923,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-32"/>
         <source>Tile size</source>
-        <translation>Flisstørrelse</translation>
+        <translation>Rutestørrelse</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -945,12 +945,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation>Flis lagformat:</translation>
+        <translation>Rute lagformat:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation>Flis tegnerekkefølge:</translation>
+        <translation>Rute tegnerekkefølge:</translation>
     </message>
 </context>
 <context>
@@ -959,17 +959,17 @@ Linje %1, kolonne %2</translation>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+231"/>
         <source>New Tileset</source>
-        <translation>Nytt Flisbrett</translation>
+        <translation>Nytt Rutebrett</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation>Flisbrett</translation>
+        <translation>Rutebrett</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation>Basert på Flisbrettbilde</translation>
+        <translation>Basert på Rutebrettbilde</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -999,7 +999,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation>Flisbredde:</translation>
+        <translation>Rutebredde:</translation>
     </message>
     <message>
         <location line="-100"/>
@@ -1023,7 +1023,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+101"/>
         <source>The space at the edges of the tileset.</source>
-        <translation>Mellomrommet på sidene av flisbrettet.</translation>
+        <translation>Mellomrommet på sidene av rutebrettet.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1033,12 +1033,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation>Flishøyde:</translation>
+        <translation>Rutehøyde:</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>The space between the tiles.</source>
-        <translation>Mellomrommet mellom flisene.</translation>
+        <translation>Mellomrommet mellom rutene.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1048,7 +1048,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation>Rediger Flisbrett</translation>
+        <translation>Rediger Rutebrett</translation>
     </message>
 </context>
 <context>
@@ -1265,7 +1265,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>&amp;Last inn flisbrettbilder på nytt når de forandres</translation>
+        <translation>&amp;Last inn rutebrettbilder på nytt når de forandres</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1884,7 +1884,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation>Kan ikke lagre ikke-flislag!</translation>
+        <translation>Kan ikke lagre ikke-rutelag!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1958,7 +1958,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.ui" line="+14"/>
         <source>Tile Animation Editor</source>
-        <translation>Flisanimasjoneditor</translation>
+        <translation>Ruteanimasjoneditor</translation>
     </message>
     <message>
         <location line="+99"/>
@@ -2093,7 +2093,7 @@ Linje %1, kolonne %2</translation>
         <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos;-lag må være flislag.</translation>
+        <translation>&apos;regions_*&apos;-lag må være rutelag.</translation>
     </message>
     <message>
         <location line="-6"/>
@@ -2103,7 +2103,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+41"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; og &apos;inputnot_*&apos; lag må være flislag.</translation>
+        <translation>&apos;input_*&apos; og &apos;inputnot_*&apos; lag må være rutelag.</translation>
     </message>
     <message>
         <location line="+56"/>
@@ -2123,7 +2123,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+165"/>
         <source>Tile</source>
-        <translation>Flis</translation>
+        <translation>Rute</translation>
     </message>
 </context>
 <context>
@@ -2167,17 +2167,17 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation>Flisbrettbilde</translation>
+        <translation>Rutebrettbilde</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset</source>
-        <translation>Flisbrett</translation>
+        <translation>Rutebrett</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation>Flisbilde</translation>
+        <translation>Rutebilde</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2230,12 +2230,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation>Finn Eksternt Flisbrett</translation>
+        <translation>Finn Eksternt Rutebrett</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation>Feil Under Lesing Av Flisbrett</translation>
+        <translation>Feil Under Lesing Av Rutebrett</translation>
     </message>
 </context>
 <context>
@@ -2497,7 +2497,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+79"/>
         <source>Insert Tile</source>
-        <translation>Sett Inn Flis</translation>
+        <translation>Sett Inn Rute</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2519,12 +2519,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+250"/>
         <source>Tileset Columns Changed</source>
-        <translation>Flisbrettkolonner Forandret</translation>
+        <translation>Rutebrettkolonner Forandret</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Antall fliskolonner i flisbrettet &apos;%1&apos; ser ut til å ha blitt endret fra %2 til %3. Vil du justere flisreferansene?</translation>
+        <translation>Antall rutekolonner i rutebrettet &apos;%1&apos; ser ut til å ha blitt endret fra %2 til %3. Vil du justere rutereferansene?</translation>
     </message>
 </context>
 <context>
@@ -2931,7 +2931,7 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+133"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
-        <translation>Feil Under Lesing Av Flisbrett</translation>
+        <translation>Feil Under Lesing Av Rutebrett</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -2953,13 +2953,13 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="-1231"/>
         <location line="+1232"/>
         <source>Tile Animation Editor</source>
-        <translation>Flisanimasjoneditor</translation>
+        <translation>Ruteanimasjoneditor</translation>
     </message>
     <message>
         <location line="-1230"/>
         <location line="+1231"/>
         <source>Tile Collision Editor</source>
-        <translation>Fliskollisjoneditor</translation>
+        <translation>Rutekollisjoneditor</translation>
     </message>
     <message>
         <location line="-1197"/>
@@ -2974,7 +2974,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+756"/>
         <source>Add External Tileset(s)</source>
-        <translation>Legg Til Eksternt Flisbrett</translation>
+        <translation>Legg Til Eksternt Rutebrett</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2985,8 +2985,8 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Legg Til Flisbrett</numerusform>
-            <numerusform>Legg Til %n Flisbrett</numerusform>
+            <numerusform>Legg Til Rutebrett</numerusform>
+            <numerusform>Legg Til %n Rutebrett</numerusform>
         </translation>
     </message>
 </context>
@@ -3018,7 +3018,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+35"/>
         <source>Tile Layer %1</source>
-        <translation>Flislag %1</translation>
+        <translation>Rutelag %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3048,12 +3048,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+238"/>
         <source>Tile</source>
-        <translation>Flis</translation>
+        <translation>Rute</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tileset Changes</source>
-        <translation>Flisbrettforandringer</translation>
+        <translation>Rutebrettforandringer</translation>
     </message>
     <message numerus="yes">
         <location line="+189"/>
@@ -3125,7 +3125,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>Add &amp;Tile Layer</source>
-        <translation>Legg Til &amp;Flislag</translation>
+        <translation>Legg Til &amp;Rutelag</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3297,7 +3297,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+60"/>
         <source>Tile Layer 1</source>
-        <translation>Flislag 1</translation>
+        <translation>Rutelag 1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3307,7 +3307,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation>Flislag for dette kartet vil bruke opp %L 1 GB av minne hver. Lager ikke en som standard.</translation>
+        <translation>Rutelag for dette kartet vil bruke opp %L 1 GB av minne hver. Lager ikke en som standard.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3326,17 +3326,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Kunne ikke laste inn flisbrettbilde &apos;%1&apos;.</translation>
+        <translation>Kunne ikke laste inn rutebrettbilde &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Ingen fliser funnet i flisbrettbildet når den gitte flisstørrelse, marginen og mellomromet ble brukt!</translation>
+        <translation>Ingen ruter funnet i rutebrettbildet når den gitte rutestørrelsen, marginen og mellomromet ble brukt!</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Tileset Image</source>
-        <translation>Flisbrettbilde</translation>
+        <translation>Rutebrettbilde</translation>
     </message>
 </context>
 <context>
@@ -3610,12 +3610,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+31"/>
         <source>Relative chance this tile will be picked</source>
-        <translation>Relativ sjanse for at denne flisen blir plukket</translation>
+        <translation>Relativ sjanse for at denne ruten blir plukket</translation>
     </message>
     <message>
         <location line="+282"/>
         <source>Error Reading Tileset</source>
-        <translation>Feil Under Lesing Av Flisbrett</translation>
+        <translation>Feil Under Lesing Av Rutebrett</translation>
     </message>
     <message>
         <location line="+117"/>
@@ -3630,12 +3630,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+36"/>
         <source>Tile Layer Format</source>
-        <translation>Flislagformat</translation>
+        <translation>Rutelagformat</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation>Flis Tegnerekkefølge</translation>
+        <translation>Rute Tegnerekkefølge</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3711,18 +3711,18 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="-190"/>
         <location line="+167"/>
         <source>Tile Width</source>
-        <translation>Flisbredde</translation>
+        <translation>Rutebredde</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Tile Height</source>
-        <translation>Flishøyde</translation>
+        <translation>Rutehøyde</translation>
     </message>
     <message>
         <location line="-165"/>
         <source>Tile Side Length (Hex)</source>
-        <translation>Flis Sidelengde (Heksagonal)</translation>
+        <translation>Rute Sidelengde (Heksagonal)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3766,7 +3766,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-41"/>
         <source>Tile Layer</source>
-        <translation>Flislag</translation>
+        <translation>Rutelag</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3804,7 +3804,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="-29"/>
         <source>Tileset</source>
-        <translation>Flisbrett</translation>
+        <translation>Rutebrett</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3829,7 +3829,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation>Flis</translation>
+        <translation>Rute</translation>
     </message>
     <message>
         <location line="-133"/>
@@ -3854,7 +3854,7 @@ Vennligst velgt et spesifikt format.</translation>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
         <location line="+56"/>
         <source>Select Same Tile</source>
-        <translation>Velg Samme Flis</translation>
+        <translation>Velg Samme Rute</translation>
     </message>
     <message>
         <location line="-53"/>
@@ -3937,7 +3937,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+29"/>
         <source>Tile Collision Editor</source>
-        <translation>Fliskollisjoneditor</translation>
+        <translation>Rutekollisjoneditor</translation>
     </message>
 </context>
 <context>
@@ -3993,7 +3993,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation>Flisstempler</translation>
+        <translation>Rutestempler</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4031,66 +4031,66 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+708"/>
         <source>Remove Tileset</source>
-        <translation>Fjern Flisbrettet</translation>
+        <translation>Fjern Rutebrettet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Flisbrettet %1 blir fortsatt brukt av kartet!</translation>
+        <translation>Rutebrettet %1 blir fortsatt brukt av kartet!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation>Fjern dette flisbrettet og alle referanser til flisene i dette flisbrettet?</translation>
+        <translation>Fjern dette rutebrettet og alle referanser til rutene i dette rutebrettet?</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Tilesets</source>
-        <translation>Flisbrett</translation>
+        <translation>Rutebrett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation>Nytt Flisbrett</translation>
+        <translation>Nytt Rutebrett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation>&amp;Importer Flisbrett</translation>
+        <translation>&amp;Importer Rutebrett</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>&amp;Eksporter Flisbrett Som...</translation>
+        <translation>&amp;Eksporter Rutebrett Som...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile&amp;set Properties</source>
-        <translation>&amp;Flisbrettegenskaper</translation>
+        <translation>&amp;Rutebrettegenskaper</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Tileset</source>
-        <translation>&amp;Fjern Flisbrettet</translation>
+        <translation>&amp;Fjern Rutebrettet</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+128"/>
         <location line="+15"/>
         <source>Add Tiles</source>
-        <translation>Legg Til Fliser</translation>
+        <translation>Legg Til Ruter</translation>
     </message>
     <message>
         <location line="-142"/>
         <location line="+199"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
-        <translation>Fjern Fliser</translation>
+        <translation>Fjern Ruter</translation>
     </message>
     <message>
         <location line="-121"/>
         <source>Error saving tileset: %1</source>
-        <translation>Feil under lesing av flisbrett: %1</translation>
+        <translation>Feil under lesing av rutebrett: %1</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -4100,12 +4100,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+57"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
-        <translation>En eller flere av flisene som skal fjernes blir fortsatt brukt av kartet!</translation>
+        <translation>En eller flere av rutene som skal fjernes blir fortsatt brukt av kartet!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove all references to these tiles?</source>
-        <translation>Fjern alle referanser til disse flisene?</translation>
+        <translation>Fjern alle referanser til disse rutene?</translation>
     </message>
     <message>
         <location line="-207"/>
@@ -4116,12 +4116,12 @@ Vennligst velgt et spesifikt format.</translation>
         <location line="+69"/>
         <location line="+23"/>
         <source>Export Tileset</source>
-        <translation>Eksporter Flisbrett</translation>
+        <translation>Eksporter Rutebrett</translation>
     </message>
     <message>
         <location line="-39"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation>Tiled-flisbrettfiler (*.tsx)</translation>
+        <translation>Tiled-rutebrettfiler (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4147,7 +4147,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+6"/>
         <source>Tile &amp;Properties...</source>
-        <translation>Flis&amp;egenskaper...</translation>
+        <translation>Rute&amp;egenskaper...</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4168,7 +4168,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation>Tiled-flisbrettfiler (*.tsx)</translation>
+        <translation>Tiled-rutebrettfiler (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4240,12 +4240,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+66"/>
         <source>Add Tileset</source>
-        <translation>Legg Til Flisbrett</translation>
+        <translation>Legg Til Rutebrett</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tileset</source>
-        <translation>Fjern Flisbrett</translation>
+        <translation>Fjern Rutebrett</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+36"/>
@@ -4311,7 +4311,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/movetileset.cpp" line="+31"/>
         <source>Move Tileset</source>
-        <translation>Flytt Flisbrett</translation>
+        <translation>Flytt Rutebrett</translation>
     </message>
     <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+42"/>
@@ -4348,17 +4348,17 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-765"/>
         <source>Import Tileset</source>
-        <translation>Importer Flisbrett</translation>
+        <translation>Importer Rutebrett</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Tileset</source>
-        <translation>Eksporter Flisbrett</translation>
+        <translation>Eksporter Rutebrett</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetchanges.cpp" line="+36"/>
         <source>Change Tileset Name</source>
-        <translation>Endre Flisbrettnavn</translation>
+        <translation>Endre Rutebrettnavn</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -4368,7 +4368,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation>Rediger Flisbrett</translation>
+        <translation>Rediger Rutebrett</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -4409,7 +4409,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+131"/>
         <source>Change Tile Terrain</source>
-        <translation>Endre Flisterreng</translation>
+        <translation>Endre Ruteterreng</translation>
     </message>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
@@ -4454,12 +4454,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+69"/>
         <source>Add Tiles</source>
-        <translation>Legg Til Fliser</translation>
+        <translation>Legg Til Ruter</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tiles</source>
-        <translation>Fjern Fliser</translation>
+        <translation>Fjern Ruter</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
@@ -4481,12 +4481,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
         <source>Change Tile Animation</source>
-        <translation>Endre Flisanimasjon</translation>
+        <translation>Endre Ruteanimasjon</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
         <source>Change Tile Collision</source>
-        <translation>Endre Fliskollisjon</translation>
+        <translation>Endre Rutekollisjon</translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
@@ -4507,12 +4507,12 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation>Endre Flisbredde</translation>
+        <translation>Endre Rutebredde</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation>Endre Flishøyde</translation>
+        <translation>Endre Rutehøyde</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4552,22 +4552,22 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
         <source>Change Tile Probability</source>
-        <translation>Endre Flissannsynlighet</translation>
+        <translation>Endre Rutesannsynlighet</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
         <source>Adjust Tile Indexes</source>
-        <translation>Juster Flisindekser</translation>
+        <translation>Juster Ruteindekser</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation>Endre Flisbilde</translation>
+        <translation>Endre Rutebilde</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation>Erstatt Flisbrett</translation>
+        <translation>Erstatt Rutebrett</translation>
     </message>
 </context>
 <context>
