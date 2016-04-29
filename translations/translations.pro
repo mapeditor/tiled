@@ -20,6 +20,7 @@ LANGUAGES = \
     it \
     ja \
     lv \
+    nb \
     nl \
     pl \
     pt \
