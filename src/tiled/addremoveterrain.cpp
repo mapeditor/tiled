@@ -21,9 +21,9 @@
 #include "addremoveterrain.h"
 
 #include "terrain.h"
-#include "terrainmodel.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
+#include "tilesetterrainmodel.h"
 
 #include <QCoreApplication>
 
@@ -48,15 +48,13 @@ AddRemoveTerrain::~AddRemoveTerrain()
 void AddRemoveTerrain::removeTerrain()
 {
     Q_ASSERT(!mTerrain);
-    // todo: Introduce a TerrainModel for TilesetDocument
-//    mTerrain = mTilesetDocument->terrainModel()->takeTerrainAt(mTileset, mIndex);
+    mTerrain = mTilesetDocument->terrainModel()->takeTerrainAt(mIndex);
 }
 
 void AddRemoveTerrain::addTerrain()
 {
     Q_ASSERT(mTerrain);
-    // todo: Introduce a TerrainModel for TilesetDocument
-//    mTilesetDocument->terrainModel()->insertTerrain(mTileset, mIndex, mTerrain);
+    mTilesetDocument->terrainModel()->insertTerrain(mIndex, mTerrain);
     mTerrain = nullptr;
 }
 

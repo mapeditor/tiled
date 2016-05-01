@@ -23,6 +23,7 @@
 #include "changetileterrain.h"
 #include "map.h"
 #include "preferences.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
@@ -358,7 +359,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
     , mEraseTerrain(false)
-    , mTerrainId(-1)
+    , mTerrain(nullptr)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
     , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
@@ -477,12 +478,21 @@ void TilesetView::setEditTerrain(bool enabled)
     viewport()->update();
 }
 
-void TilesetView::setTerrainId(int terrainId)
+/**
+ * The id of the terrain currently being specified. Returns -1 when no terrain
+ * is set (used for erasing terrain info).
+ */
+int TilesetView::terrainId() const
 {
-    if (mTerrainId == terrainId)
+     return mTerrain ? mTerrain->id() : -1;
+}
+
+void TilesetView::setTerrain(const Terrain *terrain)
+{
+    if (mTerrain == terrain)
         return;
 
-    mTerrainId = terrainId;
+    mTerrain = terrain;
     if (mEditTerrain)
         viewport()->update();
 }
@@ -601,9 +611,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
+            connect(addTerrain, SIGNAL(triggered()), SLOT(addTerrainType()));
 
-            if (mTerrainId != -1) {
+            if (mTerrain) {
                 QAction *setImage = menu.addAction(tr("Set Terrain Image"));
                 connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
             }
@@ -629,7 +639,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
-void TilesetView::createNewTerrain()
+void TilesetView::addTerrainType()
 {
     if (Tile *tile = currentTile())
         emit createNewTerrain(tile);
@@ -677,7 +687,7 @@ void TilesetView::applyTerrain()
 
     unsigned terrain = setTerrainCorner(tile->terrain(),
                                         mHoveredCorner,
-                                        mEraseTerrain ? 0xFF : mTerrainId);
+                                        mEraseTerrain ? 0xFF : terrainId());
 
     if (terrain == tile->terrain())
         return;

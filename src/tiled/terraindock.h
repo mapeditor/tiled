@@ -29,6 +29,7 @@
 
 class QModelIndex;
 class QPushButton;
+class QToolBar;
 
 namespace Tiled {
 
@@ -36,9 +37,10 @@ class Terrain;
 
 namespace Internal {
 
-class MapDocument;
+class Document;
 class TerrainFilterModel;
 class TerrainView;
+class TilesetDocument;
 
 /**
  * The dock widget that displays the terrains. Also keeps track of the
@@ -57,14 +59,17 @@ public:
     ~TerrainDock();
 
     /**
-     * Sets the map for which the tilesets should be displayed.
+     * Sets the document for which the terrains should be displayed. This can
+     * be either a MapDocument or a TilesetDocument.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
     /**
      * Returns the currently selected tile.
      */
     Terrain *currentTerrain() const { return mCurrentTerrain; }
+
+    void editTerrainName(Terrain *terrain);
 
 signals:
     /**
@@ -77,6 +82,9 @@ signals:
      */
     void selectTerrainBrush();
 
+    void addTerrainTypeRequested();
+    void removeTerrainTypeRequested();
+
 public slots:
     void setCurrentTerrain(Terrain *terrain);
 
@@ -84,7 +92,7 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private slots:
-    void currentRowChanged(const QModelIndex &index);
+    void refreshCurrentTerrain();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
     void eraseTerrainButtonClicked();
@@ -92,7 +100,13 @@ private slots:
 private:
     void retranslateUi();
 
-    MapDocument *mMapDocument;
+    QModelIndex terrainIndex(Terrain *terrain) const;
+
+    QToolBar *mToolBar;
+    QAction *mAddTerrainType;
+    QAction *mRemoveTerrainType;
+
+    Document *mDocument;
     TerrainView *mTerrainView;
     QPushButton *mEraseTerrainButton;
     Terrain *mCurrentTerrain;

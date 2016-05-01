@@ -30,7 +30,7 @@ class Tileset;
 namespace Internal {
 
 class TilesetDocument;
-class TerrainModel;
+class TilesetTerrainModel;
 
 class RenameTerrain : public QUndoCommand
 {
@@ -43,7 +43,7 @@ public:
     void redo() override;
 
 private:
-    TerrainModel *mTerrainModel;
+    TilesetTerrainModel *mTerrainModel;
     Tileset *mTileset;
     int mTerrainId;
     QString mOldName;

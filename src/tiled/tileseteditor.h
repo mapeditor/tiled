@@ -32,12 +32,14 @@ class QToolBar;
 
 namespace Tiled {
 
+class Terrain;
 class Tile;
 class Tileset;
 
 namespace Internal {
 
 class PropertiesDock;
+class TerrainDock;
 class TilesetDocument;
 class TilesetView;
 class TileAnimationEditor;
@@ -76,7 +78,14 @@ private slots:
     void addTiles();
     void removeTiles();
 
+    void setEditTerrain(bool editTerrain);
+    void currentTerrainChanged(const Terrain *terrain);
+
     void updateAddRemoveActions();
+
+    void addTerrainType();
+    void removeTerrainType();
+    void setTerrainImage(Tile *tile);
 
 private:
     void setCurrentTile(Tile *tile);
@@ -89,8 +98,10 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mEditTerrain;
 
     PropertiesDock *mPropertiesDock;
+    TerrainDock *mTerrainDock;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
 

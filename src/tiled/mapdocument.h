@@ -299,8 +299,6 @@ private slots:
     void onLayerAboutToBeRemoved(int index);
     void onLayerRemoved(int index);
 
-    void onTerrainRemoved(Terrain *terrain);
-
 private:
     void deselectObjects(const QList<MapObject*> &objects);
 

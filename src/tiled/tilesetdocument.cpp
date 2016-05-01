@@ -21,7 +21,9 @@
 #include "tilesetdocument.h"
 
 #include "mapdocument.h"
+#include "terrain.h"
 #include "tile.h"
+#include "tilesetterrainmodel.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -33,11 +35,15 @@ namespace Internal {
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
+    , mTerrainModel(new TilesetTerrainModel(this))
 {
     mCurrentObject = tileset.data();
 
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
+
+    connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
+            this, &TilesetDocument::onTerrainRemoved);
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -162,6 +168,12 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
 
     mTileset->removeTiles(tiles);
     emit tilesetChanged(mTileset.data());
+}
+
+void TilesetDocument::onTerrainRemoved(Terrain *terrain)
+{
+    if (terrain == mCurrentObject)
+        setCurrentObject(nullptr);
 }
 
 } // namespace Internal

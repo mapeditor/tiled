@@ -21,55 +21,56 @@
 #include "mapeditor.h"
 
 #include "brokenlinks.h"
-#include "createobjecttool.h"
-#include "createrectangleobjecttool.h"
+#include "bucketfilltool.h"
 #include "createellipseobjecttool.h"
-#include "createtileobjecttool.h"
+#include "createobjecttool.h"
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
-#include "layerdock.h"
-#include "mapscene.h"
-#include "mapview.h"
-#include "tilestamp.h"
-#include "layeroffsettool.h"
+#include "createrectangleobjecttool.h"
+#include "createtileobjecttool.h"
+#include "editpolygontool.h"
 #include "eraser.h"
+#include "filechangedwarning.h"
+#include "layerdock.h"
+#include "layermodel.h"
+#include "layeroffsettool.h"
+#include "magicwandtool.h"
+#include "maintoolbar.h"
+#include "mapscene.h"
+#include "mapsdock.h"
+#include "mapview.h"
+#include "minimapdock.h"
+#include "objectsdock.h"
+#include "objectselectiontool.h"
+#include "preferences.h"
+#include "propertiesdock.h"
+#include "selectsametiletool.h"
+#include "stampbrush.h"
+#include "terrain.h"
+#include "terrainbrush.h"
+#include "terraindock.h"
 #include "tile.h"
 #include "tileselectiontool.h"
-#include "magicwandtool.h"
-#include "selectsametiletool.h"
-#include "filechangedwarning.h"
-#include "toolmanager.h"
-#include "objectselectiontool.h"
-#include "editpolygontool.h"
-#include "stampbrush.h"
-#include "terrainbrush.h"
-#include "bucketfilltool.h"
-#include "mapsdock.h"
-#include "propertiesdock.h"
 #include "tilesetdock.h"
-#include "tilestampsdock.h"
-#include "terraindock.h"
-#include "objectsdock.h"
-#include "minimapdock.h"
+#include "tilestamp.h"
 #include "tilestampmanager.h"
+#include "tilestampsdock.h"
+#include "toolmanager.h"
 #include "zoomable.h"
-#include "layermodel.h"
-#include "preferences.h"
-#include "maintoolbar.h"
 
-#include <QShortcut>
+#include <QComboBox>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QStackedWidget>
-#include <QToolBar>
 #include <QIdentityProxyModel>
-#include <QComboBox>
+#include <QLabel>
+#include <QMainWindow>
 #include <QScrollBar>
 #include <QSettings>
-#include <QStatusBar>
+#include <QShortcut>
 #include <QSignalMapper>
-#include <QMainWindow>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QToolBar>
 
 static char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
@@ -293,6 +294,16 @@ MapEditor::MapEditor(QObject *parent)
     //    connect(mRandomButton, SIGNAL(toggled(bool)), mStampBrush, SLOT(setRandom(bool)));
     //    connect(mRandomButton, SIGNAL(toggled(bool)), mBucketFillTool, SLOT(setRandom(bool)));
 
+    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
+            mTerrainBrush, &TerrainBrush::setTerrain);
+    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
+            this, &MapEditor::selectTerrainBrush);
+    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
+            mTerrainDock, &TerrainDock::setCurrentTerrain);
+
+    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
+
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
@@ -412,7 +423,7 @@ void MapEditor::setCurrentDocument(Document *document)
     mPropertiesDock->setDocument(mapDocument);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setMapDocument(mapDocument);
+    mTerrainDock->setDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {

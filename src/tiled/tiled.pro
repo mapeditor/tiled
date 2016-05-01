@@ -109,7 +109,6 @@ SOURCES += aboutdialog.cpp \
     documentmanager.cpp \
     editor.cpp \
     editpolygontool.cpp \
-    editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
@@ -261,7 +260,6 @@ HEADERS += aboutdialog.h \
     documentmanager.h \
     editor.h \
     editpolygontool.h \
-    editterraindialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
@@ -365,7 +363,6 @@ HEADERS += aboutdialog.h \
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
-    editterraindialog.ui \
     exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \

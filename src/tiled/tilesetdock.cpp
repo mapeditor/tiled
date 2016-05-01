@@ -27,7 +27,6 @@
 #include "addremovetileset.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
-#include "editterraindialog.h"
 #include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -197,7 +196,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mPropertiesTileset(new QAction(this)),
     mEditTileset(new QAction(this)),
     mDeleteTileset(new QAction(this)),
-    mEditTerrain(new QAction(this)),
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
     mTilesetActionGroup(new QActionGroup(this)),
@@ -238,7 +236,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mEditTerrain->setIcon(QIcon(QLatin1String(":images/16x16/terrain.png")));
 
     Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mImportTileset, "document-import");
@@ -258,8 +255,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(editTileset()));
     connect(mDeleteTileset, SIGNAL(triggered()),
             SLOT(removeTileset()));
-    connect(mEditTerrain, SIGNAL(triggered()),
-            SLOT(editTerrain()));
 
     mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
@@ -268,7 +263,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mPropertiesTileset);
     mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
-    mToolBar->addAction(mEditTerrain);
 
     mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
@@ -516,7 +510,6 @@ void TilesetDock::updateActions()
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
     mPropertiesTileset->setEnabled(tilesetIsDisplayed);
     mDeleteTileset->setEnabled(tilesetIsDisplayed);
-    mEditTerrain->setEnabled(tilesetIsDisplayed && !external);
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -797,7 +790,6 @@ void TilesetDock::retranslateUi()
     mPropertiesTileset->setText(tr("Tile&set Properties"));
     mEditTileset->setText(tr("Edit..."));
     mDeleteTileset->setText(tr("&Remove Tileset"));
-    mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
 Tileset *TilesetDock::currentTileset() const
@@ -914,17 +906,6 @@ void TilesetDock::importTileset()
 //                                                   tileset,
 //                                                   QString());
 //    mMapDocument->undoStack()->push(command);
-}
-
-void TilesetDock::editTerrain()
-{
-    Tileset *tileset = currentTileset();
-    if (!tileset)
-        return;
-
-    // todo: Editing of terrain will have to be moved to the TilesetEditor
-    //EditTerrainDialog editTerrainDialog(mMapDocument, tileset, this);
-    //editTerrainDialog.exec();
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)
