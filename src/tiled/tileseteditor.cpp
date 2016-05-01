@@ -49,6 +49,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStackedWidget>
+#include <QAction>
 
 #include <functional>
 

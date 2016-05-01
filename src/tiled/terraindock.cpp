@@ -39,6 +39,7 @@
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QTreeView>
+#include <QAction>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
