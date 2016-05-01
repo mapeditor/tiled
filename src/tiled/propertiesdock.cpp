@@ -239,8 +239,11 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 void PropertiesDock::removeProperty()
 {
     QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+
     Object *object = mDocument->currentObject();
-    if (!item || !object)
+    if (!object)
         return;
 
     const QString name = item->property()->propertyName();
@@ -262,7 +265,7 @@ void PropertiesDock::removeProperty()
 void PropertiesDock::renameProperty()
 {
     QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!item)
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
         return;
 
     const QString oldName = item->property()->propertyName();

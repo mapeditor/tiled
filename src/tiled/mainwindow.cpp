@@ -31,7 +31,6 @@
 #include "addremovemapobject.h"
 #include "automappingmanager.h"
 #include "addremovetileset.h"
-#include "clipboardmanager.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
 #include "exportasimagedialog.h"
@@ -272,6 +271,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
+    connect(mUi->actionPasteInPlace, SIGNAL(triggered()), SLOT(pasteInPlace()));
     connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(delete_()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
@@ -1050,6 +1050,16 @@ void MainWindow::copy()
 
 void MainWindow::paste()
 {
+    paste(ClipboardManager::PasteDefault);
+}
+
+void MainWindow::pasteInPlace()
+{
+    paste(ClipboardManager::PasteInPlace);
+}
+
+void MainWindow::paste(ClipboardManager::PasteFlags flags)
+{
     if (!mMapDocument)
         return;
 
@@ -1081,7 +1091,7 @@ void MainWindow::paste()
 //        mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
-        clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
+        clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view, flags);
     }
 
     if (map)
@@ -1434,6 +1444,7 @@ void MainWindow::updateActions()
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
             || objectsSelected;
+    const bool clipboardHasMap = ClipboardManager::instance()->hasMap();
 
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
@@ -1448,7 +1459,8 @@ void MainWindow::updateActions()
 
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
-    mUi->actionPaste->setEnabled(ClipboardManager::instance()->hasMap());
+    mUi->actionPaste->setEnabled(clipboardHasMap);
+    mUi->actionPasteInPlace->setEnabled(clipboardHasMap);
     mUi->actionDelete->setEnabled(canCopy);
 
 //    mUi->actionNewTileset->setEnabled(mMapDocument);

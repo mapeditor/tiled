@@ -87,6 +87,12 @@ public:
     void setId(int id) { mId = id; }
 
     /**
+     * Sets the id back to 0. Mostly used when a new id should be assigned
+     * after the object has been cloned.
+     */
+    void resetId() { setId(0); }
+
+    /**
      * Returns the name of this object. The name is usually just used for
      * identification of the object in the editor.
      */
