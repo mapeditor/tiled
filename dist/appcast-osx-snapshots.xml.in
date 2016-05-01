@@ -9,7 +9,7 @@
       <pubDate>@VERSIONDATE@</pubDate>
       <sparkle:releaseNotesLink>https://github.com/bjorn/tiled/commits/snapshot</sparkle:releaseNotesLink>
       <sparkle:minimumSystemVersion>10.7.0</sparkle:minimumSystemVersion>
-      <enclosure url="https://tilemapkit.com/tiled/tiled-@VERSIONDATE@.dmg"
+      <enclosure url="@URL@"
                  sparkle:version="@VERSIONDATE@"
                  sparkle:shortVersionString="@VERSION@"
                  sparkle:dsaSignature="@DSASIGNATURE@"
