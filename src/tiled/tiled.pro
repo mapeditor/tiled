@@ -192,6 +192,7 @@ SOURCES += aboutdialog.cpp \
     tileseteditor.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
+    tilesetterrainmodel.cpp \
     tilesetview.cpp \
     tilestamp.cpp \
     tilestampmanager.cpp \
@@ -346,6 +347,7 @@ HEADERS += aboutdialog.h \
     tileseteditor.h \
     tilesetmodel.h \
     tilesetparametersedit.h \
+    tilesetterrainmodel.h \
     tilesetview.h \
     tilestamp.h \
     tilestampmanager.h \
