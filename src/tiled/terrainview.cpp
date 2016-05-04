@@ -44,7 +44,9 @@ TerrainView::TerrainView(QWidget *parent)
     , mZoomable(new Zoomable(this))
     , mTilesetDocument(nullptr)
 {
-    setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    // NOTE: QAbstractItemView::ScrollPerPixel is buggy
+    // makes the row expands thus the horizontal scrollbar appears
+    setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
     setRootIsDecorated(false);
     setIndentation(0);
     setItemsExpandable(false);
