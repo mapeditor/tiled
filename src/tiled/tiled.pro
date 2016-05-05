@@ -109,7 +109,6 @@ SOURCES += aboutdialog.cpp \
     documentmanager.cpp \
     editor.cpp \
     editpolygontool.cpp \
-    editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
@@ -193,6 +192,7 @@ SOURCES += aboutdialog.cpp \
     tileseteditor.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
+    tilesetterrainmodel.cpp \
     tilesetview.cpp \
     tilestamp.cpp \
     tilestampmanager.cpp \
@@ -261,7 +261,6 @@ HEADERS += aboutdialog.h \
     documentmanager.h \
     editor.h \
     editpolygontool.h \
-    editterraindialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
@@ -348,6 +347,7 @@ HEADERS += aboutdialog.h \
     tileseteditor.h \
     tilesetmodel.h \
     tilesetparametersedit.h \
+    tilesetterrainmodel.h \
     tilesetview.h \
     tilestamp.h \
     tilestampmanager.h \
@@ -365,7 +365,6 @@ HEADERS += aboutdialog.h \
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
-    editterraindialog.ui \
     exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \

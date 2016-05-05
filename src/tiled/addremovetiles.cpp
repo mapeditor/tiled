@@ -20,6 +20,7 @@
 
 #include "addremovetiles.h"
 
+#include "tile.h"
 #include "tilesetdocument.h"
 
 #include <QCoreApplication>

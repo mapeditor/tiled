@@ -354,17 +354,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 //    connect(mTilesetDock, SIGNAL(newTileset()),
 //            this, SLOT(newTileset()));
 
-//    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
-//            mTerrainBrush, &TerrainBrush::setTerrain);
-//    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
-//            this, &MainWindow::selectTerrainBrush);
-//    connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
-//            mTerrainDock, &TerrainDock::setCurrentTerrain);
-
-//    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
-//            this, SLOT(setStamp(TileStamp)));
-
-
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);

@@ -21,7 +21,9 @@
 #include "tilesetdocument.h"
 
 #include "mapdocument.h"
+#include "terrain.h"
 #include "tile.h"
+#include "tilesetterrainmodel.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -33,11 +35,21 @@ namespace Internal {
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
+    , mTerrainModel(new TilesetTerrainModel(this))
 {
     mCurrentObject = tileset.data();
 
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
+
+    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
+            this, &TilesetDocument::onTerrainAboutToBeAdded);
+    connect(mTerrainModel, &TilesetTerrainModel::terrainAdded,
+            this, &TilesetDocument::onTerrainAdded);
+    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeRemoved,
+            this, &TilesetDocument::onTerrainAboutToBeRemoved);
+    connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
+            this, &TilesetDocument::onTerrainRemoved);
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -134,6 +146,9 @@ void TilesetDocument::setTilesetName(const QString &name)
 {
     mTileset->setName(name);
     emit tilesetNameChanged(mTileset.data());
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetNameChanged(mTileset.data());
 }
 
 void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
@@ -162,6 +177,33 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
 
     mTileset->removeTiles(tiles);
     emit tilesetChanged(mTileset.data());
+}
+
+void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTerrainAboutToBeAdded(tileset, terrainId);
+}
+
+void TilesetDocument::onTerrainAdded(Tileset *tileset, int terrainId)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTerrainAdded(tileset, terrainId);
+}
+
+void TilesetDocument::onTerrainAboutToBeRemoved(Terrain *terrain)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTerrainAboutToBeRemoved(mTileset.data(), terrain);
+}
+
+void TilesetDocument::onTerrainRemoved(Terrain *terrain)
+{
+    if (terrain == mCurrentObject)
+        setCurrentObject(nullptr);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTerrainRemoved(mTileset.data(), terrain);
 }
 
 } // namespace Internal

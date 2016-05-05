@@ -58,6 +58,9 @@ ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
 
 void ChangeTileTerrain::undo()
 {
+    if (mChanges.isEmpty())
+        return;
+
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;
@@ -78,6 +81,9 @@ void ChangeTileTerrain::undo()
 
 void ChangeTileTerrain::redo()
 {
+    if (mChanges.isEmpty())
+        return;
+
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;

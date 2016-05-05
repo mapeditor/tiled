@@ -21,7 +21,9 @@
 #include "tileseteditor.h"
 
 #include "addremovemapobject.h"
+#include "addremoveterrain.h"
 #include "addremovetiles.h"
+#include "changetileterrain.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
@@ -29,15 +31,19 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "terrain.h"
+#include "terraindock.h"
 #include "tile.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
+#include "tilesetterrainmodel.h"
 #include "tilesetview.h"
 #include "utils.h"
 
+#include <QAction>
 #include <QCoreApplication>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -47,8 +53,47 @@
 
 #include <functional>
 
+#include <QDebug>
+
 namespace Tiled {
 namespace Internal {
+
+namespace {
+
+class SetTerrainImage : public QUndoCommand
+{
+public:
+    SetTerrainImage(TilesetDocument *tilesetDocument,
+                    int terrainId,
+                    int tileId)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                                   "Change Terrain Image"))
+        , mTerrainModel(tilesetDocument->terrainModel())
+        , mTerrainId(terrainId)
+        , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
+        , mNewImageTileId(tileId)
+    {}
+
+    void undo() override
+    {
+        mTerrainModel->setTerrainImage(mTerrainId, mOldImageTileId);
+    }
+
+    void redo() override
+    {
+        mTerrainModel->setTerrainImage(mTerrainId, mNewImageTileId);
+    }
+
+private:
+    TilesetTerrainModel *mTerrainModel;
+    int mTerrainId;
+    int mOldImageTileId;
+    int mNewImageTileId;
+};
+
+} // anonymous namespace
+
+
 
 TilesetEditor::TilesetEditor(QObject *parent)
     : Editor(parent)
@@ -56,18 +101,25 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
+    , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
+    , mTerrainDock(new TerrainDock(mMainWindow))
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
+    mTerrainDock->setVisible(false);
+
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(new MainToolBar(mMainWindow));
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
+    mEditTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    mEditTerrain->setCheckable(true);
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -75,11 +127,19 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar = mMainWindow->addToolBar(tr("Tileset"));
     mTilesetToolBar->addAction(mAddTiles);
     mTilesetToolBar->addAction(mRemoveTiles);
+    mTilesetToolBar->addSeparator();
+    mTilesetToolBar->addAction(mEditTerrain);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
+
+    connect(mEditTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
+
+    connect(mTerrainDock, &TerrainDock::currentTerrainChanged, this, &TilesetEditor::currentTerrainChanged);
+    connect(mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
+    connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
 
     retranslateUi();
 }
@@ -93,15 +153,19 @@ void TilesetEditor::addDocument(Document *document)
     view->setTilesetDocument(tilesetDocument);
 
     Tileset *tileset = tilesetDocument->tileset().data();
-    view->setModel(new TilesetModel(tileset, view));
+    TilesetModel *tilesetModel = new TilesetModel(tileset, view);
+    view->setModel(tilesetModel);
+
+    connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
+            tilesetModel, &TilesetModel::tilesChanged);
+
+    connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
+    connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
 
     QItemSelectionModel *s = view->selectionModel();
-    connect(s, &QItemSelectionModel::selectionChanged,
-            this, &TilesetEditor::selectionChanged);
-    connect(s, &QItemSelectionModel::currentChanged,
-            this, &TilesetEditor::currentChanged);
-    connect(view, &TilesetView::pressed,
-            this, &TilesetEditor::indexPressed);
+    connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
+    connect(s, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);
+    connect(view, &TilesetView::pressed, this, &TilesetEditor::indexPressed);
 
     // todo: Connect the TilesetView tile selection to these editors
     // maybe only connect to the currently visible view
@@ -139,13 +203,16 @@ void TilesetEditor::setCurrentDocument(Document *document)
         return;
 
     if (document) {
-        Q_ASSERT(mViewForTileset.contains(tilesetDocument));
-        mWidgetStack->setCurrentWidget(mViewForTileset.value(tilesetDocument));
+        TilesetView *tilesetView = mViewForTileset.value(tilesetDocument);
+        Q_ASSERT(tilesetView);
+        mWidgetStack->setCurrentWidget(tilesetView);
+        tilesetView->setEditTerrain(mEditTerrain->isChecked());
     }
 
     mPropertiesDock->setDocument(document);
     mTileAnimationEditor->setTilesetDocument(tilesetDocument);
     mTileCollisionEditor->setTilesetDocument(tilesetDocument);
+    mTerrainDock->setDocument(document);
 
     mCurrentTilesetDocument = tilesetDocument;
     updateAddRemoveActions();
@@ -246,6 +313,8 @@ void TilesetEditor::retranslateUi()
 
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
+
+    mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
 void TilesetEditor::addTiles()
@@ -392,6 +461,103 @@ void TilesetEditor::removeTiles()
 
     // todo: make sure any current brushes are no longer referring to removed tiles
     setCurrentTile(nullptr);
+}
+
+void TilesetEditor::setEditTerrain(bool editTerrain)
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    view->setEditTerrain(editTerrain);
+
+    mTerrainDock->setVisible(editTerrain);
+}
+
+void TilesetEditor::currentTerrainChanged(const Terrain *terrain)
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    if (terrain) {
+        view->setTerrain(terrain);
+        view->setEraseTerrain(false);
+    } else {
+        view->setEraseTerrain(true);
+    }
+}
+
+void TilesetEditor::addTerrainType()
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    Terrain *terrain = new Terrain(tileset->terrainCount(),
+                                   tileset,
+                                   QString(), mCurrentTile ? mCurrentTile->id() : -1);
+    terrain->setName(tr("New Terrain"));
+
+    mCurrentTilesetDocument->undoStack()->push(new AddTerrain(mCurrentTilesetDocument,
+                                                              terrain));
+
+    // Select the newly added terrain and edit its name
+    mTerrainDock->editTerrainName(terrain);
+}
+
+void TilesetEditor::removeTerrainType()
+{
+    Terrain *terrain = mTerrainDock->currentTerrain();
+    if (!terrain)
+        return;
+
+    RemoveTerrain *removeTerrain = new RemoveTerrain(mCurrentTilesetDocument,
+                                                     terrain);
+
+    /*
+     * Clear any references to the terrain that is about to be removed with
+     * an undo command, as a way of preserving them when undoing the removal
+     * of the terrain.
+     */
+    ChangeTileTerrain::Changes changes;
+
+    for (Tile *tile : terrain->tileset()->tiles()) {
+        unsigned tileTerrain = tile->terrain();
+
+        for (int corner = 0; corner < 4; ++corner) {
+            if (tile->cornerTerrainId(corner) == terrain->id())
+                tileTerrain = setTerrainCorner(tileTerrain, corner, 0xFF);
+        }
+
+        if (tileTerrain != tile->terrain()) {
+            changes.insert(tile, ChangeTileTerrain::Change(tile->terrain(),
+                                                           tileTerrain));
+        }
+    }
+
+    QUndoStack *undoStack = mCurrentTilesetDocument->undoStack();
+
+    if (!changes.isEmpty()) {
+        undoStack->beginMacro(removeTerrain->text());
+        undoStack->push(new ChangeTileTerrain(mCurrentTilesetDocument, changes));
+    }
+
+    mCurrentTilesetDocument->undoStack()->push(removeTerrain);
+
+    if (!changes.isEmpty())
+        undoStack->endMacro();
+}
+
+void TilesetEditor::setTerrainImage(Tile *tile)
+{
+    Terrain *terrain = mTerrainDock->currentTerrain();
+    if (!terrain)
+        return;
+
+    mCurrentTilesetDocument->undoStack()->push(new SetTerrainImage(mCurrentTilesetDocument,
+                                                                   terrain->id(),
+                                                                   tile->id()));
 }
 
 void TilesetEditor::updateAddRemoveActions()

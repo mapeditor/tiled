@@ -43,12 +43,12 @@
 #include "renameterrain.h"
 #include "rotatemapobject.h"
 #include "terrain.h"
-#include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
+#include "tilesetterrainmodel.h"
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -139,8 +139,8 @@ void PropertyBrowser::setDocument(Document *document)
 
     if (mDocument) {
         mDocument->disconnect(this);
-        if (mMapDocument)
-            mMapDocument->terrainModel()->disconnect(this);
+        if (mTilesetDocument)
+            mTilesetDocument->terrainModel()->disconnect(this);
     }
 
     mDocument = document;
@@ -161,10 +161,6 @@ void PropertyBrowser::setDocument(Document *document)
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 SLOT(imageLayerChanged(ImageLayer*)));
 
-        TerrainModel *terrainModel = mapDocument->terrainModel();
-        connect(terrainModel, SIGNAL(terrainChanged(Tileset*,int)),
-                SLOT(terrainChanged(Tileset*,int)));
-
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &PropertyBrowser::selectedObjectsChanged);
     }
@@ -183,6 +179,10 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::tileChanged);
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &PropertyBrowser::tileChanged);
+
+        TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
+        connect(terrainModel, &TilesetTerrainModel::terrainChanged,
+                this, &PropertyBrowser::terrainChanged);
     }
 
     if (document) {

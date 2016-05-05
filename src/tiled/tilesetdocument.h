@@ -34,6 +34,7 @@ class TilesetFormat;
 namespace Internal {
 
 class MapDocument;
+class TilesetTerrainModel;
 
 /**
  * Represents an editable tileset.
@@ -71,6 +72,8 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
 
+    TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
+
 signals:
     /**
      * This signal is currently used when adding or removing tiles from a tileset.
@@ -107,12 +110,20 @@ signals:
      */
     void tileAnimationChanged(Tile *tile);
 
+private slots:
+    void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
+    void onTerrainAdded(Tileset *tileset, int terrainId);
+    void onTerrainAboutToBeRemoved(Terrain *terrain);
+    void onTerrainRemoved(Terrain *terrain);
+
 private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
     QPointer<TilesetFormat> mReaderFormat;
     QPointer<TilesetFormat> mWriterFormat;
+
+    TilesetTerrainModel *mTerrainModel;
 };
 
 

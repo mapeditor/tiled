@@ -105,9 +105,6 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
     connect(mMapObjectModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(onObjectsMoved(QModelIndex,int,int,QModelIndex,int)));
 
-    connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
-            SLOT(onTerrainRemoved(Terrain*)));
-
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(mMap->tilesets());
@@ -827,12 +824,6 @@ void MapDocument::onLayerRemoved(int index)
     // of synchronizing before adapting to the newly selected index
     if (currentLayerAffected)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
-}
-
-void MapDocument::onTerrainRemoved(Terrain *terrain)
-{
-    if (terrain == mCurrentObject)
-        setCurrentObject(nullptr);
 }
 
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)

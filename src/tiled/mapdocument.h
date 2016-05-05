@@ -287,6 +287,13 @@ signals:
     void objectsTypeChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
+    // emitted from the TilesetDocument
+    void tilesetNameChanged(Tileset *tileset);
+    void tilesetTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
+    void tilesetTerrainAdded(Tileset *tileset, int terrainId);
+    void tilesetTerrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);
+    void tilesetTerrainRemoved(Tileset *tileset, Terrain *terrain);
+
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
 
@@ -298,8 +305,6 @@ private slots:
     void onLayerAdded(int index);
     void onLayerAboutToBeRemoved(int index);
     void onLayerRemoved(int index);
-
-    void onTerrainRemoved(Terrain *terrain);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);
