@@ -36,7 +36,6 @@ QtGuiApplication {
     consoleApplication: false
 
     files: [
-        "Info.plist",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",
@@ -361,6 +360,7 @@ QtGuiApplication {
         name: "OS X"
         condition: qbs.targetOS.contains("osx")
         files: [
+            "Info.plist",
             "macsupport.h",
             "macsupport.mm",
         ]
