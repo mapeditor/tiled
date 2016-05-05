@@ -39,6 +39,7 @@
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QTreeView>
+#include <QAction>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -104,7 +105,7 @@ TerrainDock::TerrainDock(QWidget *parent):
     mAddTerrainType(new QAction(this)),
     mRemoveTerrainType(new QAction(this)),
     mDocument(nullptr),
-    mTerrainView(new TerrainView),
+    mTerrainView(new TerrainView(this)),
     mCurrentTerrain(nullptr),
     mProxyModel(new TerrainFilterModel(this))
 {
