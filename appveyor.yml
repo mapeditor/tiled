@@ -35,13 +35,18 @@ build_script:
 
 after_build:
   - cd qt-release
-  - cd dist*
+  - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
   - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
+  - cd ..
+  - cd archive*
+  - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - name: Installer
     path: 'tiled-*.msi'
+  - name: Archive
+    path: 'tiled-*.7z'
   - name: AppCast
     path: 'appcast-win*-snapshots.xml'
 
@@ -57,12 +62,12 @@ deploy:
 
   - provider: FTP
     protocol: sftp
-    host: files.mapeditor.org
+    host: update.mapeditor.org
     username: bjorn
     password:
       secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: public_html/files.mapeditor.org/public/daily
-    artifact: /.*\.msi/
+    folder: sparkle/snapshots-win
+    artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
         appveyor_repo_tag: false

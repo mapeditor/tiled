@@ -12,7 +12,9 @@ Project {
     property bool release: qbs.getEnv("TILED_RELEASE")
 
     references: [
-        "dist/win/dist.qbs",
+        "dist/win/archive.qbs",
+        "dist/win/distribute.qbs",
+        "dist/win/installer.qbs",
         "src/automappingconverter",
         "src/libtiled",
         "src/plugins",
