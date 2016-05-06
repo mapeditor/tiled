@@ -10,6 +10,11 @@ include(tiled.pri)
     error("Use at least Qt 5.1.0.")
 }
 
+win* {
+    message("Building Tiled for Windows using qmake is no longer supported")
+    error("Use the tiled.qbs project file instead")
+}
+
 TEMPLATE  = subdirs
 CONFIG   += ordered
 
