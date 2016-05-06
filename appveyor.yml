@@ -16,12 +16,12 @@ install:
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
   - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
+  - set TILED_SPARKLE=true
   - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
   - if defined APPVEYOR_REPO_TAG_NAME set TILED_RELEASE=true
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
-  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SPARKLE=true
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
   - cp dist/win/WiXModule.qbs C:\Qt\Tools\QtCreator\share\qtcreator\qbs\share\qbs\modules\wix\WiXModule.qbs
   - qbs setup-toolchains --detect
