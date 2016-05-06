@@ -1,7 +1,9 @@
-0.16.1 (...)
+0.16.1 (6 May 2016)
+* Fixed auto-updater not enabled for Windows release
 * Fixed saving of object IDs assigned to tile collision shapes
 * Fixed crash when pressing Backspace with Custom Properties section selected
-* Fixed potential crash on exit when having Tile Collision Editor open
+* Fixed crash on exit when leaving the Tile Collision Editor open
+* Added Norwegian Bokmål translation (by Peter André Johansen)
 * Updated Turkish translation
 
 0.16.0 (28 March 2016)
