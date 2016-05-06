@@ -25,7 +25,11 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
-        var defs = ["TILED_VERSION=" + project.version];
+        var defs = [
+            "TILED_VERSION=" + project.version,
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII"
+        ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
