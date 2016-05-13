@@ -22,6 +22,7 @@
 #include "variantpropertymanager.h"
 
 #include "mapdocument.h"
+#include "textpropertyedit.h"
 
 #include <QFileInfo>
 
@@ -46,6 +47,7 @@ namespace Internal {
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
+    , mMultilineAttribute(QStringLiteral("multiline"))
     , mImageMissingIcon(QStringLiteral("://images/16x16/image-missing.png"))
 {
     mImageMissingIcon.addPixmap(QPixmap(QStringLiteral("://images/32x32/image-missing.png")));
@@ -105,8 +107,12 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
             return mValues[property].filter;
         return QVariant();
     }
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        return mSuggestions[property];
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute)
+            return mStringAttributes[property].suggestions;
+        if (attribute == mMultilineAttribute)
+            return mStringAttributes[property].multiline;
+    }
 
     return QtVariantPropertyManager::attributeValue(property, attribute);
 }
@@ -137,6 +143,12 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         }
 
         return value.toString();
+    }
+
+    auto stringAttributesIt = mStringAttributes.find(property);
+    if (stringAttributesIt != mStringAttributes.end()) {
+        if ((*stringAttributesIt).multiline)
+            return escapeNewlines(value(property).toString());
     }
 
     return QtVariantPropertyManager::valueText(property);
@@ -204,8 +216,16 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         return;
     }
 
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        mSuggestions[property] = val.toStringList();
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute) {
+            mStringAttributes[property].suggestions = val.toStringList();
+            return;
+        }
+        if (attribute == mMultilineAttribute) {
+            mStringAttributes[property].multiline = val.toBool();
+            return;
+        }
+    }
 
     QtVariantPropertyManager::setAttribute(property, attribute, val);
 }
@@ -218,7 +238,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     else if (type == tilesetParametersTypeId())
         mValues[property] = Data();
     else if (type == QVariant::String)
-        mSuggestions[property] = QStringList();
+        mStringAttributes[property] = StringAttributes();
 
     QtVariantPropertyManager::initializeProperty(property);
 }
@@ -226,7 +246,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
 void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
-    mSuggestions.remove(property);
+    mStringAttributes.remove(property);
     QtVariantPropertyManager::uninitializeProperty(property);
 }
 

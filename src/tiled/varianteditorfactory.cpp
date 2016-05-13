@@ -22,6 +22,7 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "textpropertyedit.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
@@ -80,6 +81,7 @@ VariantEditorFactory::~VariantEditorFactory()
 {
     qDeleteAll(mFileEditToProperty.keys());
     qDeleteAll(mTilesetEditToProperty.keys());
+    qDeleteAll(mTextPropertyEditToProperty.keys());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -122,6 +124,23 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, SLOT(slotEditorDestroyed(QObject *)));
 
         return editor;
+    }
+
+    if (type == QVariant::String) {
+        bool multiline = manager->attributeValue(property, QLatin1String("multiline")).toBool();
+        if (multiline) {
+            auto editor = new TextPropertyEdit(parent);
+            editor->setText(manager->value(property).toString());
+            mCreatedTextPropertyEdits[property].append(editor);
+            mTextPropertyEditToProperty[editor] = property;
+
+            connect(editor, &TextPropertyEdit::textChanged,
+                    this, &VariantEditorFactory::textPropertyEditTextChanged);
+            connect(editor, SIGNAL(destroyed(QObject *)),
+                    this, SLOT(slotEditorDestroyed(QObject *)));
+
+            return editor;
+        }
     }
 
     QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
@@ -169,6 +188,10 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
             edit->setTileset(value.value<EmbeddedTileset>());
     }
+    else if (mCreatedTextPropertyEdits.contains(property)) {
+        for (TextPropertyEdit *edit : mCreatedTextPropertyEdits[property])
+            edit->setText(value.toString());
+    }
 }
 
 void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
@@ -181,6 +204,7 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
                 edit->setFilter(value.toString());
         }
     }
+    // changing of "multiline" attribute currently not supported
 }
 
 void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
@@ -189,6 +213,19 @@ void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
     Q_ASSERT(fileEdit);
 
     if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, value);
+    }
+}
+
+void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
+{
+    auto textPropertyEdit = qobject_cast<TextPropertyEdit*>(sender());
+    Q_ASSERT(textPropertyEdit);
+
+    if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
@@ -220,6 +257,19 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
             mCreatedTilesetEdits[property].removeAll(tilesetEdit);
             if (mCreatedTilesetEdits[property].isEmpty())
                 mCreatedTilesetEdits.remove(property);
+            return;
+        }
+    }
+
+    // Check if it was a TextPropertyEdit
+    {
+        TextPropertyEdit *textPropertyEdit = static_cast<TextPropertyEdit*>(object);
+
+        if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
+            mTextPropertyEditToProperty.remove(textPropertyEdit);
+            mCreatedTextPropertyEdits[property].removeAll(textPropertyEdit);
+            if (mCreatedTextPropertyEdits[property].isEmpty())
+                mCreatedTextPropertyEdits.remove(property);
             return;
         }
     }

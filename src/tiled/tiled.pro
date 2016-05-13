@@ -175,6 +175,8 @@ SOURCES += aboutdialog.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
+    textpropertyedit.cpp \
+    texteditordialog.cpp \
     thumbnailrenderer.cpp \
     tileanimationdriver.cpp \
     tileanimationeditor.cpp \
@@ -326,6 +328,8 @@ HEADERS += aboutdialog.h \
     terraindock.h \
     terrainmodel.h \
     terrainview.h \
+    texteditordialog.h \
+    textpropertyedit.h \
     thumbnailrenderer.h \
     tileanimationdriver.h \
     tileanimationeditor.h \
@@ -367,6 +371,7 @@ FORMS += aboutdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
+    texteditordialog.ui \
     tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/

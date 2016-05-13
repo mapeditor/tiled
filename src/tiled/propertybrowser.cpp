@@ -979,6 +979,8 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
 
     if (type == QVariant::Bool)
         property->setAttribute(QLatin1String("textVisible"), false);
+    if (type == QVariant::String && id == CustomProperty)
+        property->setAttribute(QLatin1String("multiline"), true);
 
     parent->addSubProperty(property);
     mPropertyToId.insert(property, id);
