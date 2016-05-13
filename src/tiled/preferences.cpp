@@ -62,7 +62,6 @@ Preferences::Preferences()
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
-    mRemoveObjsOutsideMap = boolValue("RemoveObjsOutsideMap", true);
     mSettings->endGroup();
 
     // Retrieve interface settings
@@ -294,17 +293,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
     mMapRenderOrder = mapRenderOrder;
     mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
                         mMapRenderOrder);
-}
-
-bool Preferences::removeObjectsOutsideMap() const
-{
-    return mRemoveObjsOutsideMap;
-}
-
-void Preferences::setRemoveObjectsOutsideMap(bool remove)
-{
-    mRemoveObjsOutsideMap = remove;
-    mSettings->setValue(QLatin1String("Storage/RemoveObjsOutsideMap"), remove);
 }
 
 bool Preferences::dtdEnabled() const

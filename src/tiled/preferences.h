@@ -72,9 +72,6 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
-    bool removeObjectsOutsideMap() const;
-    void setRemoveObjectsOutsideMap(bool remove);
-
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
 
@@ -189,7 +186,6 @@ private:
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
     bool mOpenLastFilesOnStartup;
-    bool mRemoveObjsOutsideMap;
     ObjectLabelVisiblity mObjectLabelVisibility;
 
     Map::LayerDataFormat mLayerDataFormat;

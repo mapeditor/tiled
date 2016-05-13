@@ -19,13 +19,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "preferences.h"
 #include "resizedialog.h"
 #include "ui_resizedialog.h"
 
+#include "preferences.h"
 #include "utils.h"
 
+#include <QSettings>
+
 using namespace Tiled::Internal;
+
+static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
 
 ResizeDialog::ResizeDialog(QWidget *parent)
     : QDialog(parent)
@@ -34,11 +38,12 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    connect(mUi->buttonBox, SIGNAL(accepted()),
-                            SLOT(saveSettings()));
-
     Preferences *prefs = Preferences::instance();
-    mUi->removeObjsCheckBox->setChecked(prefs->removeObjectsOutsideMap());
+    QSettings *s = prefs->settings();
+    bool removeObjects = s->value(QLatin1String(REMOVE_OBJECTS_KEY), true).toBool();
+
+    mUi->removeObjectsCheckBox->setChecked(removeObjects);
+    connect(mUi->removeObjectsCheckBox, &QCheckBox::toggled, this, &ResizeDialog::removeObjectsToggled);
 
     // Initialize the new size of the resizeHelper to the default values of
     // the spin boxes. Otherwise, if the map width or height is default, then
@@ -78,17 +83,16 @@ const QPoint &ResizeDialog::offset() const
     return mUi->resizeHelper->offset();
 }
 
-bool ResizeDialog::removeObjsOutsideMap() const
+bool ResizeDialog::removeObjects() const
 {
-    return mUi->removeObjsCheckBox->isChecked();
+    return mUi->removeObjectsCheckBox->isChecked();
 }
 
-void ResizeDialog::saveSettings()
+void ResizeDialog::removeObjectsToggled(bool removeObjects)
 {
     Preferences *prefs = Preferences::instance();
-    prefs->setRemoveObjectsOutsideMap(mUi->removeObjsCheckBox->isChecked());
-    done(QDialog::Accepted);
-
+    QSettings *s = prefs->settings();
+    s->setValue(QLatin1String(REMOVE_OBJECTS_KEY), removeObjects);
 }
 
 void ResizeDialog::updateOffsetBounds(const QRect &bounds)

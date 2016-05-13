@@ -320,7 +320,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
     return intersects(area, boundingRect);
 }
 
-void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeOutsideObjs)
+void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
     const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
@@ -345,7 +345,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             // Remove objects that will fall outside of the map
-            if (removeOutsideObjs) {
+            if (removeObjects) {
                 foreach (MapObject *o, objectGroup->objects()) {
                     if (!visibleIn(visibleArea, o, mRenderer)) {
                         mUndoStack->push(new RemoveMapObject(this, o));

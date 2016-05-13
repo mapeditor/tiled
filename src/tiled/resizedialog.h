@@ -44,10 +44,10 @@ public:
     const QSize &newSize() const;
     const QPoint &offset() const;
 
-    bool removeObjsOutsideMap() const;
+    bool removeObjects() const;
 
 private slots:
-    void saveSettings();
+    void removeObjectsToggled(bool removeObjects);
     void updateOffsetBounds(const QRect &bounds);
 
 private:
