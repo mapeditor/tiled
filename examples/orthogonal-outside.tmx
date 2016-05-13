@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" nextobjectid="37">
+ <properties>
+  <property name="enemyTint" type="color" value="#ffa33636"/>
+ </properties>
  <tileset firstgid="1" name="outdoor" tilewidth="16" tileheight="16" tilecount="288" columns="24">
   <image source="buch-outdoor.png" width="384" height="192"/>
   <terraintypes>

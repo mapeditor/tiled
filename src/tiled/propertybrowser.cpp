@@ -300,6 +300,11 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
         mPropertyToId.insert(property, CustomProperty);
         mNameToProperty.insert(name, property);
+
+        // Collapse custom color properties, to save space
+        if (value.type() == QVariant::Color)
+            setExpanded(items(property).first(), false);
+
         mUpdating = false;
     }
     updatePropertyColor(name);
@@ -983,6 +988,10 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
         mIdToProperty.insert(id, property);
     } else {
         mNameToProperty.insert(name, property);
+
+        // Collapse custom color properties, to save space
+        if (type == QVariant::Color)
+            setExpanded(items(property).first(), false);
     }
 
     return property;

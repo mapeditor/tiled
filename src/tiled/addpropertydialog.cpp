@@ -41,18 +41,21 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
 
     mUi->setupUi(this);
 
+    QString stringType = typeToName(QVariant::String);
+
     // Add possible types from QVariant
-    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Bool)));
-    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Int)));
-    mUi->typeBox->addItem(QLatin1String("float"));
-    mUi->typeBox->addItem(QLatin1String("string"));
+    mUi->typeBox->addItem(typeToName(QVariant::Bool));
+    mUi->typeBox->addItem(typeToName(QVariant::Color));
+    mUi->typeBox->addItem(typeToName(QVariant::Double));
+    mUi->typeBox->addItem(typeToName(QVariant::Int));
+    mUi->typeBox->addItem(stringType);
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    QString lastType = s->value(QLatin1String(TYPE_KEY), QLatin1String("string")).toString();
+    QString lastType = s->value(QLatin1String(TYPE_KEY), stringType).toString();
 
     mUi->typeBox->setCurrentText(lastType);
 

@@ -28,6 +28,8 @@
 
 #include "properties.h"
 
+#include <QColor>
+
 namespace Tiled {
 
 void Properties::merge(const Properties &other)
@@ -62,12 +64,16 @@ void AggregatedProperties::aggregate(const Properties &properties)
 
 QString typeToName(QVariant::Type type)
 {
-    if (type == QVariant::String)
+    switch (type) {
+    case QVariant::String:
         return QStringLiteral("string");
-    if (type == QVariant::Double)
+    case QVariant::Double:
         return QStringLiteral("float");
-
-    return QLatin1String(QVariant::typeToName(type));
+    case QVariant::Color:
+        return QStringLiteral("color");
+    default:
+        return QLatin1String(QVariant::typeToName(type));
+    }
 }
 
 QVariant::Type nameToType(const QString &name)
@@ -76,8 +82,32 @@ QVariant::Type nameToType(const QString &name)
         return QVariant::String;
     if (name == QLatin1String("float"))
         return QVariant::Double;
+    if (name == QLatin1String("color"))
+        return QVariant::Color;
 
     return QVariant::nameToType(name.toLatin1().constData());
+}
+
+static QString colorToString(const QColor &color)
+{
+    if (!color.isValid())
+        return QString();
+
+#if QT_VERSION >= 0x050200
+    return color.name(QColor::HexArgb);
+#else
+    return color.name();
+#endif
+}
+
+QVariant toExportValue(const QVariant &value)
+{
+    switch (value.type()) {
+    case QVariant::Color:
+        return colorToString(value.value<QColor>());
+    default:
+        return value;
+    }
 }
 
 } // namespace Tiled

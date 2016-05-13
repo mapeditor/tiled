@@ -638,7 +638,7 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         if (typeName != QLatin1String("string"))
             w.writeAttribute(QLatin1String("type"), typeName);
 
-        const QString &value = it.value().toString();
+        const QString &value = toExportValue(it.value()).toString();
         if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);
         else

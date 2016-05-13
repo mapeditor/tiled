@@ -232,7 +232,7 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it)
-        variantMap[it.key()] = it.value();
+        variantMap[it.key()] = toExportValue(it.value());
 
     return variantMap;
 }
@@ -403,7 +403,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        propertiesMap[it.key()] = it.value();
+        propertiesMap[it.key()] = toExportValue(it.value());
         propertyTypesMap[it.key()] = typeToName(it.value().type());
     }
 
