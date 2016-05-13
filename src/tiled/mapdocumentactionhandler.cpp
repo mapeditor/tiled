@@ -252,7 +252,7 @@ void MapDocumentActionHandler::cropToSelection()
     if (bounds.isNull())
         return;
 
-    mMapDocument->resizeMap(bounds.size(), -bounds.topLeft());
+    mMapDocument->resizeMap(bounds.size(), -bounds.topLeft(), true);
 }
 
 void MapDocumentActionHandler::addTileLayer()

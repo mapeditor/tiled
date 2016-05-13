@@ -153,9 +153,10 @@ public:
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
-     * the contents by \a offset.
+     * the contents by \a offset. If \a removeOutsideObjs is true then all
+     * objects which are outside the map will be removed.
      */
-    void resizeMap(const QSize &size, const QPoint &offset);
+    void resizeMap(const QSize &size, const QPoint &offset, bool removeOutsideObjs);
 
     /**
      * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
