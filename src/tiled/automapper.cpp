@@ -712,8 +712,18 @@ static bool compareLayerTo(const TileLayer *setLayer,
                 bool matchListYes = false;
                 bool matchListNo  = false;
 
-                if (!setLayer->contains(x + offset.x(), y + offset.y()))
-                    return false;
+
+                if (!setLayer->contains(x + offset.x(), y + offset.y())) {
+                    foreach (const TileLayer *comparedTileLayer, listYes) {
+                        if (!comparedTileLayer->contains(x, y))
+                            return false;
+
+                        const Cell &c2 = comparedTileLayer->cellAt(x, y);
+                        if (!c2.isEmpty())
+                            return false;
+                    }
+                    continue;
+                }
 
                 const Cell &c1 = setLayer->cellAt(x + offset.x(),
                                                   y + offset.y());
