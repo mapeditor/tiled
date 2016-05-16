@@ -112,7 +112,8 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
 
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
-    foreach (QGraphicsItem *item, mMapScene->items(pos)) {
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+    for (QGraphicsItem *item : items) {
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
     }
@@ -204,7 +205,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        foreach (ObjectGroup *objectGroup, objectGroups) {
+        for (ObjectGroup *objectGroup : objectGroups) {
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
         }

@@ -32,9 +32,11 @@ class QGraphicsItem;
 namespace Tiled {
 namespace Internal {
 
-class RotateHandle;
-class ResizeHandle;
+class Handle;
 class MapObjectItem;
+class OriginIndicator;
+class ResizeHandle;
+class RotateHandle;
 class SelectionRectangle;
 
 class ObjectSelectionTool : public AbstractObjectTool
@@ -69,6 +71,7 @@ private:
         NoAction,
         Selecting,
         Moving,
+        MovingOrigin,
         Rotating,
         Resizing
     };
@@ -78,6 +81,7 @@ private:
         Rotate,
     };
 
+    void updateHover(const QPointF &pos);
     void updateSelection(const QPointF &pos,
                          Qt::KeyboardModifiers modifiers);
 
@@ -87,6 +91,10 @@ private:
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
+
+    void startMovingOrigin();
+    void updateMovingOrigin(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void finishMovingOrigin();
 
     void startRotating();
     void updateRotatingItems(const QPointF &pos,
@@ -127,12 +135,18 @@ private:
     RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
+
     MapObjectItem *mHoveredObjectItem;
+    Handle *mHoveredHandle;
+
     MapObjectItem *mClickedObjectItem;
+    OriginIndicator *mClickedOriginIndicator;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;
 
     QVector<MovingObject> mMovingObjects;
+
+    QPointF mOldOriginPosition;
 
     QPointF mAlignPosition;
     QPointF mOrigin;
