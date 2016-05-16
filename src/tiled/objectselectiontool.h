@@ -61,7 +61,7 @@ public:
     void languageChanged() override;
 
 private slots:
-    void updateHandles();
+    void updateHandles(bool resetOriginIndicator = true);
     void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
@@ -87,16 +87,16 @@ private:
 
     void startSelecting();
 
-    void startMoving(Qt::KeyboardModifiers modifiers);
+    void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
-    void startMovingOrigin();
+    void startMovingOrigin(const QPointF &pos);
     void updateMovingOrigin(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void finishMovingOrigin();
 
-    void startRotating();
+    void startRotating(const QPointF &pos);
     void updateRotatingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
     void finishRotating(const QPointF &pos);
@@ -155,6 +155,7 @@ private:
     Mode mMode;
     Action mAction;
     QPointF mStart;
+    QPointF mStartOffset;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };

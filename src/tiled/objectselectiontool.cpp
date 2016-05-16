@@ -447,18 +447,20 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     if (mAction == NoAction && mMousePressed) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
-        if (dragDistance >= QApplication::startDragDistance()) {
+
+        // Use a reduced start drag distance to increase the responsiveness
+        if (dragDistance >= QApplication::startDragDistance() / 2) {
             const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
 
             // Holding Alt forces moving current selection
             // Holding Shift forces selection rectangle
             if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
                     !(modifiers & Qt::ShiftModifier)) {
-                startMoving(modifiers);
+                startMoving(pos, modifiers);
             } else if (mClickedOriginIndicator) {
-                startMovingOrigin();
+                startMovingOrigin(pos);
             } else if (mClickedRotateHandle) {
-                startRotating();
+                startRotating(pos);
             } else if (mClickedResizeHandle) {
                 startResizing();
             } else {
@@ -552,6 +554,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                     selection.remove(mClickedObjectItem);
                 else
                     selection.insert(mClickedObjectItem);
+                mapScene()->setSelectedObjectItems(selection);
             } else if (selection.contains(mClickedObjectItem)) {
                 // Clicking one of the selected items changes the edit mode
                 setMode((mMode == Resize) ? Rotate : Resize);
@@ -559,8 +562,8 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 selection.clear();
                 selection.insert(mClickedObjectItem);
                 setMode(Resize);
+                mapScene()->setSelectedObjectItems(selection);
             }
-            mapScene()->setSelectedObjectItems(selection);
         } else if (!(modifiers & Qt::ShiftModifier)) {
             mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>());
         }
@@ -740,7 +743,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
     return transform;
 }
 
-void ObjectSelectionTool::updateHandles()
+void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 {
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
         return;
@@ -798,7 +801,8 @@ void ObjectSelectionTool::updateHandles()
             }
         }
 
-        mOriginIndicator->setPos(center);
+        if (resetOriginIndicator)
+            mOriginIndicator->setPos(center);
 
         mRotateHandles[TopLeftAnchor]->setPos(topLeft);
         mRotateHandles[TopRightAnchor]->setPos(topRight);
@@ -943,7 +947,8 @@ void ObjectSelectionTool::startSelecting()
     mapScene()->addItem(mSelectionRectangle);
 }
 
-void ObjectSelectionTool::startMoving(Qt::KeyboardModifiers modifiers)
+void ObjectSelectionTool::startMoving(const QPointF &pos,
+                                      Qt::KeyboardModifiers modifiers)
 {
     // Move only the clicked item, if it was not part of the selection
     if (mClickedObjectItem && !(modifiers & Qt::AltModifier)) {
@@ -953,8 +958,10 @@ void ObjectSelectionTool::startMoving(Qt::KeyboardModifiers modifiers)
 
     saveSelectionState();
 
+    mStart = pos;
     mAction = Moving;
     mAlignPosition = mMovingObjects.first().oldPosition;
+    mOldOriginPosition = mOriginIndicator->pos();
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF &pos = object.oldPosition;
@@ -982,13 +989,15 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     }
 
     mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+
+    mOriginIndicator->setPos(mOldOriginPosition + diff);
 }
 
 void ObjectSelectionTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mAction == Moving);
     mAction = NoAction;
-    updateHandles();
+    updateHandles(false);
 
     if (mStart == pos) // Move is a no-op
         return;
@@ -1005,14 +1014,15 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
     mMovingObjects.clear();
 }
 
-void ObjectSelectionTool::startMovingOrigin()
+void ObjectSelectionTool::startMovingOrigin(const QPointF &pos)
 {
+    mStart = pos;
     mAction = MovingOrigin;
     mOldOriginPosition = mOriginIndicator->pos();
 }
 
 void ObjectSelectionTool::updateMovingOrigin(const QPointF &pos,
-                                           Qt::KeyboardModifiers)
+                                             Qt::KeyboardModifiers)
 {
     mOriginIndicator->setPos(mOldOriginPosition + (pos - mStart));
 }
@@ -1023,8 +1033,9 @@ void ObjectSelectionTool::finishMovingOrigin()
     mAction = NoAction;
 }
 
-void ObjectSelectionTool::startRotating()
+void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
+    mStart = pos;
     mAction = Rotating;
     mOrigin = mOriginIndicator->pos();
 
@@ -1073,7 +1084,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 {
     Q_ASSERT(mAction == Rotating);
     mAction = NoAction;
-    updateHandles();
+    updateHandles(false);
 
     if (mStart == pos) // No rotation at all
         return;
@@ -1099,7 +1110,7 @@ void ObjectSelectionTool::startResizing()
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
     mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
 
-    mStart = mClickedResizeHandle->pos();
+    mStartOffset = mStart - mClickedResizeHandle->pos();
 
     saveSelectionState();
     updateHandleVisibility();
@@ -1122,12 +1133,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     SnapHelper snapHelper(renderer);
     if (modifiers & Qt::AltModifier)
         snapHelper.toggleSnap();
-    QPointF pixelPos = renderer->screenToPixelCoords(pos);
+    QPointF pixelPos = renderer->screenToPixelCoords(pos - mStartOffset);
     snapHelper.snap(pixelPos);
     QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos);
-
-    QPointF diff = snappedScreenPos - resizingOrigin;
-    QPointF startDiff = mStart - resizingOrigin;
 
     if (mMovingObjects.size() == 1) {
         /* For single items the resizing is performed in object space in order
@@ -1137,6 +1145,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         updateResizingSingleItem(resizingOrigin, snappedScreenPos, modifiers);
         return;
     }
+
+    QPointF diff = snappedScreenPos - resizingOrigin;
+    QPointF startDiff = (mStart - mStartOffset) - resizingOrigin;
 
     /* Calculate the scaling factor. Minimum is 1% to protect against making
      * everything 0-sized and non-recoverable (it's still possibly to run into
@@ -1217,7 +1228,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     QPointF origin = (resizingOrigin - offset) * unrotate;
     QPointF pos = (screenPos - offset) * unrotate;
-    QPointF start = (mStart - offset) * unrotate;
+    QPointF start = (mStart - mStartOffset - offset) * unrotate;
     QPointF oldPos = object.oldItemPosition;
 
     /* In order for the resizing to work somewhat sanely in isometric mode,
@@ -1363,7 +1374,7 @@ void ObjectSelectionTool::setMode(Mode mode)
 {
     if (mMode != mode) {
         mMode = mode;
-        updateHandles();
+        updateHandles(false);
     }
 }
 
@@ -1372,7 +1383,7 @@ void ObjectSelectionTool::saveSelectionState()
     mMovingObjects.clear();
 
     // Remember the initial state before moving, resizing or rotating
-    foreach (MapObjectItem *item, mapScene()->selectedObjectItems()) {
+    for (MapObjectItem *item : mapScene()->selectedObjectItems()) {
         MapObject *mapObject = item->mapObject();
         MovingObject object = {
             item,
