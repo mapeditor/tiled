@@ -65,7 +65,7 @@
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation>Kon geen exporter vinden voor doelbestand. </translation>
+        <translation>Kon geen exporter vinden voor doelbestand.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1491,17 +1491,17 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation type="unfinished"></translation>
+        <translation>IBeam</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale grootte</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale grootte</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1521,22 +1521,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+2"/>
         <source>Blank</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leeg</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale scheiding</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale scheiding</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzende Hand</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1687,7 +1687,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet ingesteld</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1795,12 +1795,12 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Uitrekking</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale Uitrekking</translation>
     </message>
 </context>
 <context>
