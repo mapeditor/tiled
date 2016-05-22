@@ -132,7 +132,7 @@ fi
 
 
 %files -f %{name}.lang
-%doc AUTHORS NEWS README.md COPYING LICENSE.GPL LICENSE.BSD
+%doc AUTHORS NEWS.md README.md COPYING LICENSE.GPL LICENSE.BSD
 %{_bindir}/automappingconverter
 %{_bindir}/%{name}
 %{_bindir}/terraingenerator

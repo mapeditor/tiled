@@ -255,7 +255,7 @@ Product {
                 "COPYING",
                 "AUTHORS",
                 "README.md",
-                "NEWS",
+                "NEWS.md",
                 "LICENSE.APACHE",
                 "LICENSE.BSD",
                 "LICENSE.GPL",
