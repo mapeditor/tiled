@@ -29,16 +29,25 @@ macx {
     OBJECTIVE_SOURCES += macsupport.mm
 
     sparkle {
+        SPARKLE_DIR = /Library/Frameworks
+
+        !exists($${SPARKLE_DIR}/Sparkle.framework) {
+            error("Sparkle.framework not found at $${SPARKLE_DIR}")
+        }
+
+        DEFINES += TILED_SPARKLE
         LIBS += -framework Sparkle -framework AppKit
-        QMAKE_POST_LINK = \
-            mkdir -p $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks && \
-            test -d $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/Sparkle.framework || \
-            cp -a /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
+        LIBS += -F$${SPARKLE_DIR}
+        QMAKE_OBJECTIVE_CFLAGS += -F$${SPARKLE_DIR}
+        OBJECTIVE_SOURCES += sparkleautoupdater.mm
+
         APP_RESOURCES.path = Contents/Resources
         APP_RESOURCES.files = ../../dist/dsa_pub.pem
-        QMAKE_BUNDLE_DATA += APP_RESOURCES
-        DEFINES += TILED_SPARKLE
-        OBJECTIVE_SOURCES += sparkleautoupdater.mm
+
+        SPARKLE_FRAMEWORK.path = Contents/Frameworks
+        SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
+
+        QMAKE_BUNDLE_DATA += APP_RESOURCES SPARKLE_FRAMEWORK
     }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
