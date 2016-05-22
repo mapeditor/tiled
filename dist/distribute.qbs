@@ -72,8 +72,9 @@ Product {
                 "Qt5Core" + postfix,
                 "Qt5Gui" + postfix,
                 "Qt5Network" + postfix,
-                "Qt5Widgets" + postfix,
                 "Qt5OpenGL" + postfix,
+                "Qt5Svg" + postfix,
+                "Qt5Widgets" + postfix,
             ];
 
             if (qbs.targetOS.contains("windows")) {
@@ -82,6 +83,10 @@ Product {
                           "icudt54.dll");
             } else if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
+                list = list.concat(addQtVersions([
+                    "Qt5DBus.so",
+                    "Qt5XcbQpa.so",
+                ]))
                 list.push("icudata.so.56", "icudata.so.56.1");
                 list.push("icui18n.so.56", "icui18n.so.56.1");
                 list.push("icuuc.so.56", "icuuc.so.56.1");
@@ -122,18 +127,7 @@ Product {
     Group {
         name: "Qt Image Format Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
-        files: {
-            if (qbs.targetOS.contains("windows")) {
-                return [
-                    "qgif.dll",
-                    "qjpeg.dll",
-                    "qtiff.dll",
-                ];
-            } else {
-                return ["*.so"];
-            }
-        }
-
+        files: ["*"]
         qbs.install: true
         qbs.installDir: "plugins/imageformats"
     }
