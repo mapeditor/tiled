@@ -28,7 +28,7 @@ puts "Version is #{version}"
 Dir.mktmpdir do |tempDir|
     # Copy things to temp directory
     puts "Copying files"
-    ['LICENSE.GPL', 'LICENSE.BSD', 'AUTHORS', 'COPYING', 'NEWS', 'README.md'].each do |file|
+    ['LICENSE.GPL', 'LICENSE.BSD', 'AUTHORS', 'COPYING', 'NEWS.md', 'README.md'].each do |file|
         FileUtils.cp File.join(baseDir, file), tempDir
     end
     FileUtils.cp_r File.join(baseDir, 'examples'), tempDir

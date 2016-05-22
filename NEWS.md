@@ -1,4 +1,5 @@
-0.16.1 (6 May 2016)
+### 0.16.1 (6 May 2016)
+
 * Fixed auto-updater not enabled for Windows release
 * Fixed saving of object IDs assigned to tile collision shapes
 * Fixed crash when pressing Backspace with Custom Properties section selected
@@ -6,7 +7,8 @@
 * Added Norwegian Bokmål translation (by Peter André Johansen)
 * Updated Turkish translation
 
-0.16.0 (28 March 2016)
+### 0.16.0 (28 March 2016)
+
 * Added checking for updates, based on Sparkle and WinSparkle
 * Added default property definitions to object types (with Michael Bickel)
 * Added types to custom properties: string, float, int, boolean (with CaptainFrog)
@@ -21,21 +23,24 @@
 * Fixed potential crash when having Terrain Brush selected and switching maps
 * Updated Dutch, French, German, Japanese, Russian and Spanish translations
 
-0.15.2 (6 March 2016)
+### 0.15.2 (6 March 2016)
+
 * Added Turkish translation (by Nuri Uzunoğlu)
 * Fixed hiding of object labels when deleting an object layer
 * Fixed updating of object label colors when changing object types
 * TMX: Added image size attributes to image layer images
 * Updated Brazilian Portuguese translation
 
-0.15.1 (30 January 2016)
+### 0.15.1 (30 January 2016)
+
 * Fixed adding/removing object name labels when set to always visible
 * Fixed a problem with 'Execute in Terminal' on OS X
 * Fixed mouse coordinate conversion for hexagonal renderer
 * Fixed image layer offset handling
 * Update Czech translation
 
-0.15.0 (4 January 2016)
+### 0.15.0 (4 January 2016)
+
 * Allow loading maps with broken external references
 * Allow plugins to be enabled/disabled
 * Allow changing tileset image parameters
@@ -57,7 +62,8 @@
 * Fixed isometric rendering bug with odd tile heights (by Ryan Schmitt)
 * Updated Bulgarian, Dutch, French, German, Japanese, Russian and Spanish translations
 
-0.14.2 (12 October 2015)
+### 0.14.2 (12 October 2015)
+
 * Added Polish translation (by Tomasz Kubiak)
 * Fixed layer offsets missing in the Lua export
 * Fixed JSON tileset format missing in 'Add External Tileset' action
@@ -65,11 +71,13 @@
 * Fixed an issue with copy/pasting when using image collection tilesets
 * Updated Brazilian Portuguese translation
 
-0.14.1 (28 September 2015)
+### 0.14.1 (28 September 2015)
+
 * Added missing 'renderorder' property to the Lua export
 * Fixed editing of properties of tiles captured from the map
 
-0.14.0 (21 September 2015)
+### 0.14.0 (21 September 2015)
+
 * Added support for custom external tileset formats (JSON format added)
 * Added support for shifting layers by some distance in pixels
 * Added back object name labels in a much improved form
@@ -84,11 +92,13 @@
 * Fixed tilesets view collapsing when switching maps on OS X
 * Updated Russian, Spanish, Czech, French, Japanese, German, Dutch and Bulgarian translations
 
-0.13.1 (6 September 2015)
+### 0.13.1 (6 September 2015)
+
 * Added Bulgarian translation (by Lyubomir Vasilev)
 * Updated Spanish, French and Dutch translations
 
-0.13.0 (10 August 2015)
+### 0.13.0 (10 August 2015)
+
 * Added persistent Tile Stamps with support for variations (#969)
 * Added Select Same Tile tool (by Mamed Ibrahimov)
 * Added option to disable opening of last files on startup (by Mamed Ibrahimov)
@@ -114,23 +124,27 @@
 * Require compiler support for C++11
 * Updated Russian, German, Czech and Italian translations
 
-0.12.3 (1 June 2015)
+### 0.12.3 (1 June 2015)
+
 * Fixed updating of map view when rotating objects with Z key
 * Fixed updating of map view when joining, splitting or deleting polygon nodes
 * Fixed a crash when reading an invalid TMX file
 * Fixed live automapping updates when moving the mouse fast
 * Made Backspace work for deleting collision objects and animation frames
 
-0.12.2 (22 May 2015)
+### 0.12.2 (22 May 2015)
+
 * Fixed updating of map view when moving objects with arrow keys
 * Fixed compatibility issue with tile objects affecting the JSON format
 
-0.12.1 (19 May 2015)
+### 0.12.1 (19 May 2015)
+
 * Fixed updating of map view when changing objects from properties view
 * Fixed updating of Properties view while objects are moved/resized
 * Fixed terrain information getting lost when reading JSON maps
 
-0.12.0 (14 May 2015)
+### 0.12.0 (14 May 2015)
+
 * Added support for resizing any object as well as multiselection (with mauve)
 * Added Control modifier for preserving aspect ratio while resizing
 * Added Shift modifier for resizing with origin in the middle
@@ -156,7 +170,8 @@
 * Added Arabic (Algeria) translation (by Damene Abdelkader)
 * Updated, Czech, Dutch, French, German, Italian, Japanese, Portuguese, Russian and Spanish translations
 
-0.11.0 (11 January 2015)
+### 0.11.0 (11 January 2015)
+
 * Added support for hexagonal maps (offset coordinates)
 * Added 'Export' action to repeat the last export
 * Added a shortcut for the Reload action (Ctrl+R)
@@ -174,7 +189,8 @@
 * Fully support building and running Tiled with Qbs
 * Updated Czech, Dutch, French, German, Italian, Japanese, Portuguese and Spanish translations
 
-0.10.2 (23 October 2014)
+### 0.10.2 (23 October 2014)
+
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
 * Fixed another possible crash in the orthogonal renderer
 * Fixed Select All action to work for object layers
@@ -186,12 +202,14 @@
 * Lua plugin: Write out Image layer position
 * Small updates to the Italian translation (by Omnomnobot)
 
-0.10.1 (21 September 2014)
+### 0.10.1 (21 September 2014)
+
 * Fixed a crash that could happen when using the terrain tool
 * Fixed missing background color information from Lua export
 * Allow using up to 3 or 4 GB RAM on 32 or 64 bit Windows systems respectively
 
-0.10.0 (14 September 2014)
+### 0.10.0 (14 September 2014)
+
 * Added object rotation (sponsored by Ben Wales)
 * Added support for explicit object ordering (sponsored by Ben Wales)
 * Added new Properties window with a rewritten properties editor
@@ -236,7 +254,8 @@
 * Added Traditional Chinese translation (by Yehnan Chiang)
 * Updated Czech, Dutch, French, German, Russian and Spanish translations
 
-0.9.1 (27 July 2013)
+### 0.9.1 (27 July 2013)
+
 * Added saving of map background to JSON format (by Petr Viktorin)
 * Added saving of terrain information to JSON format (by Petr Viktorin)
 * Object Selection tool now always start selecting objects when holding Shift
@@ -258,7 +277,8 @@
 * Fixed escaping of special characters in the Lua format
 * Fixed handling of relative paths for image layers in the JSON plugin
 
-0.9.0 (27 January 2013)
+### 0.9.0 (27 January 2013)
+
 * Added objects dock and per-object visibility toggle (by Tim Baker)
 * Added maps dock (by Tim Baker)
 * Added terrain tool for automatic terrain transitions (by Manu Evans)
@@ -300,7 +320,8 @@
 * Updated Portuguese, Dutch, German, Spanish, Russian, French, Japanese,
   Chinese, Brazilian Portuguese, Hebrew and Czech translations
 
-0.8.1 (7 May 2012)
+### 0.8.1 (7 May 2012)
+
 * Added MacOS X Lion full screen support
 * Fixed crash that could happen when painting with a pasted stamp
 * Fixed zoom sensitivity for finer-resolution mouse wheels
@@ -312,7 +333,8 @@
 * Changed the license of libtiled-java from LGPL to BSD
 * Updated Italian and Hebrew translations
 
-0.8.0 (11 December 2011)
+### 0.8.0 (11 December 2011)
+
 * Added support for polygon and polyline objects
 * Added support for tile rotation
 * Added support for defining the color of custom object types
@@ -336,7 +358,8 @@
 * Updated the German, Japanese, Spanish, Chinese, Czech, Dutch, French and
   Brazilian Portuguese translations
 
-0.7.1 (27 September 2011)
+### 0.7.1 (27 September 2011)
+
 * Select stamp tool when selecting tiles in tileset view
 * Enable anti-aliasing for OpenGL mode
 * Small improvement to the Lua export plugin (incompatible!)
@@ -345,7 +368,8 @@
 * Fixed position of tile objects to center on the mouse on insertion
 * Updated the Czech translation
 
-0.7.0 (20 July 2011)
+### 0.7.0 (20 July 2011)
+
 * Added support for horizontal and vertical flipping of tiles
 * Added copy/paste support for objects
 * Added merge layer down action
@@ -366,12 +390,14 @@
 * Updated Brazilian Portuguese, Chinese, German, Spanish, Japanese, Hebrew,
   Portuguese, Dutch and French translations
 
-0.6.2 (2 May 2011)
+### 0.6.2 (2 May 2011)
+
 * Fixed object layers losing their color when resizing the map
 * Fixed the tabs in the Tilesets dock to use scroll buttons on MacOS X
 * Fixed window title to update when saving a map with a different name
 
-0.6.1 (3 April 2011)
+### 0.6.1 (3 April 2011)
+
 * Added ability to open multiple files at once
 * Added Ctrl+PageUp/PageDown shortcuts to switch documents
 * Added an example to show how automatic mapping works
@@ -384,7 +410,8 @@
 * Fixed problems with the tileset view after switching documents
 * Fixed tile objects to be removed when their tileset is removed
 
-0.6.0 (26 January 2011)
+### 0.6.0 (26 January 2011)
+
 * Added support for opening multiple maps in one session
 * Added support for placing tiles as objects
 * Added automatic mapping feature, allowing placing of tiles based on rules
@@ -417,11 +444,13 @@
 * Updated Czech, Spanish, German, Brazilian Portuguese, Dutch and French
   translations
 
-0.5.1 (2 September 2010)
+### 0.5.1 (2 September 2010)
+
 * Fixed saving of objects when tile width is different from tile height
 * Updated Czech translation
 
-0.5.0 (30 June 2010)
+### 0.5.0 (30 June 2010)
+
 * Added support for import and export plugins
 * Added support for external tilesets
 * Added undo for adding tilesets and ability to remove tilesets
@@ -441,7 +470,8 @@
 * Updated Japanese, Dutch, German, Brazilian Portuguese, French, Portuguese
   and Spanish translations
 
-0.4.1 (14 April 2010)
+### 0.4.1 (14 April 2010)
+
 * Added support for saving tile layer data as CSV
 * Added shift modifier to bucket fill tool for filling the selection
 * Added Brazilian Portugese, Japanese, French, Italian and Czech translations
@@ -449,7 +479,8 @@
 * Fixed drawing selection highlight where brush is not painting
 * Fixed an incompatibility with Tiled Java in 'trans' attribute
 
-0.4.0 (30 January 2010)
+### 0.4.0 (30 January 2010)
+
 * Added support for isometric maps
 * Added automatic reloading of tileset images when they change
 * Added Offset Map action that can shift a set of layers by a certain amount
@@ -463,14 +494,16 @@
 * Made translations functional
 * Updated Dutch, Portuguese, Spanish and German translations
 
-0.3.1 (22 November 2009)
+### 0.3.1 (22 November 2009)
+
 * Enabled undo command compression for stamp brush and eraser
 * Fixed reading of maps with non-binary-encoded layer data
 * Fixed a compile issue on Mac OS X related to QXmlStreamWriter
 * Fixed a crash when loading a map while holding Ctrl
 * Confirm overwrite on the right moment for 'Save as Image' dialog
 
-0.3.0 (13 November 2009)
+### 0.3.0 (13 November 2009)
+
 * Added a tile selection tool
 * Added support for cut, copy and paste
 * Added current cursor position to the status bar
@@ -478,7 +511,8 @@
 * Added scrolling the map view with middle mouse button
 * Snap objects to the grid when Ctrl is pressed
 
-0.2.0 (1 October 2009)
+### 0.2.0 (1 October 2009)
+
 * Added support for zooming the map view
 * Added an eraser tool that allows you to erase tiles
 * Added ability to save a map as an image
@@ -487,4 +521,4 @@
 * Fixed the minimum row and column size in the tileset view
 * Fixed stamp creation when not dragging topleft to bottomright
 
-0.1.0 (1 September 2009)
+### 0.1.0 (1 September 2009)
