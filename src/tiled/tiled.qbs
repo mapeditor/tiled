@@ -20,7 +20,14 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
+    cpp.rpaths: {
+        if (qbs.targetOS.contains("darwin"))
+            return ["@loader_path/../Frameworks"];
+        else if (project.linuxArchive)
+            return ["$ORIGIN/lib"]
+        else
+            return ["$ORIGIN/../lib"];
+    }
     cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 
@@ -34,6 +41,8 @@ QtGuiApplication {
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
+        if (project.linuxArchive)
+            defs.push("TILED_LINUX_ARCHIVE")
         return defs;
     }
 
@@ -378,7 +387,9 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
+            if (qbs.targetOS.contains("windows")
+                    || qbs.targetOS.contains("osx")
+                    || project.linuxArchive)
                 return ""
             else
                 return "bin"

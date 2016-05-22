@@ -11,7 +11,7 @@ Product {
         fileTagsFilter: product.type
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || project.linuxArchive)
                 return "translations"
             else if (qbs.targetOS.contains("osx"))
                 return "Tiled.app/Contents/Translations"

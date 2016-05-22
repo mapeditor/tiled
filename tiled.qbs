@@ -10,10 +10,11 @@ Project {
     property bool sparkleEnabled: qbs.getEnv("TILED_SPARKLE")
     property bool snapshot: qbs.getEnv("TILED_SNAPSHOT")
     property bool release: qbs.getEnv("TILED_RELEASE")
+    property bool linuxArchive: qbs.getEnv("TILED_LINUX_ARCHIVE")
 
     references: [
-        "dist/win/archive.qbs",
-        "dist/win/distribute.qbs",
+        "dist/archive.qbs",
+        "dist/distribute.qbs",
         "dist/win/installer.qbs",
         "src/automappingconverter",
         "src/libtiled",
