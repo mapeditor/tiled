@@ -42,7 +42,7 @@ QtGuiApplication {
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
         if (project.linuxArchive)
-            defs.push("TILED_LINUX_ARCHIVE")
+            defs.push("TILED_LINUX_ARCHIVE");
         return defs;
     }
 
