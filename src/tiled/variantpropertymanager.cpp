@@ -29,7 +29,6 @@
 namespace Tiled {
 namespace Internal {
 
-class FilePathPropertyType {};
 class TilesetParametersPropertyType {};
 
 } // namespace Tiled
@@ -37,7 +36,6 @@ class TilesetParametersPropertyType {};
 
 // Needs to be up here rather than at the bottom of the file to make a
 // static_assert in qMetaTypeId work (as of C++11)
-Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)
 Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
 
 
@@ -117,11 +115,6 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
     return QtVariantPropertyManager::attributeValue(property, attribute);
 }
 
-int VariantPropertyManager::filePathTypeId()
-{
-    return qMetaTypeId<FilePathPropertyType>();
-}
-
 int VariantPropertyManager::tilesetParametersTypeId()
 {
     return qMetaTypeId<TilesetParametersPropertyType>();
@@ -133,8 +126,10 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         QVariant value = mValues[property].value;
         int typeId = propertyType(property);
 
-        if (typeId == filePathTypeId())
-            return QFileInfo(value.toString()).fileName();
+        if (typeId == filePathTypeId()) {
+            FilePath filePath = value.value<FilePath>();
+            return QFileInfo(filePath.absolutePath).fileName();
+        }
 
         if (typeId == tilesetParametersTypeId()) {
             EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
@@ -162,7 +157,7 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         int typeId = propertyType(property);
 
         if (typeId == filePathTypeId())
-            filePath = value.toString();
+            filePath = value.value<FilePath>().absolutePath;
 
         if (typeId == tilesetParametersTypeId()) {
             EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
@@ -170,9 +165,8 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
                 filePath = embeddedTileset.tileset()->imageSource();
         }
 
-        // This assumes the file path is an image reference, which is currently
-        // always the case, but it won't be when external tileset references
-        // are added to the property browser.
+        // TODO: This assumes the file path is an image reference. It should be
+        // replaced with a more generic icon.
         if (filePath.isEmpty() || !QFile::exists(filePath))
             return QIcon::fromTheme(QLatin1String("image-missing"), mImageMissingIcon);
         else

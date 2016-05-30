@@ -62,7 +62,7 @@ void AggregatedProperties::aggregate(const Properties &properties)
     ++mAggregatedCount;
 }
 
-QString typeToName(QVariant::Type type)
+QString typeToName(int type)
 {
     switch (type) {
     case QVariant::String:
@@ -72,11 +72,13 @@ QString typeToName(QVariant::Type type)
     case QVariant::Color:
         return QStringLiteral("color");
     default:
-        return QLatin1String(QVariant::typeToName(type));
+        if (type == filePathTypeId())
+            return QStringLiteral("file");
     }
+    return QLatin1String(QVariant::typeToName(type));
 }
 
-QVariant::Type nameToType(const QString &name)
+int nameToType(const QString &name)
 {
     if (name == QLatin1String("string"))
         return QVariant::String;
@@ -84,6 +86,8 @@ QVariant::Type nameToType(const QString &name)
         return QVariant::Double;
     if (name == QLatin1String("color"))
         return QVariant::Color;
+    if (name == QLatin1String("file"))
+        return filePathTypeId();
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -102,12 +106,35 @@ static QString colorToString(const QColor &color)
 
 QVariant toExportValue(const QVariant &value)
 {
-    switch (value.type()) {
-    case QVariant::Color:
+    int type = value.userType();
+
+    if (type == QVariant::Color)
         return colorToString(value.value<QColor>());
-    default:
+    if (type == filePathTypeId())
+        return value.value<FilePath>().absolutePath;
+
+    return value;
+}
+
+int filePathTypeId()
+{
+    return qMetaTypeId<FilePath>();
+}
+
+QVariant fromExportValue(const QVariant &value, int type)
+{
+    if (type == QVariant::Invalid)
         return value;
-    }
+
+    if (value.userType() == type)
+        return value;
+
+    if (type == filePathTypeId())
+        return QVariant::fromValue(FilePath { value.toString() });
+
+    QVariant variant(value);
+    variant.convert(type);
+    return variant;
 }
 
 } // namespace Tiled

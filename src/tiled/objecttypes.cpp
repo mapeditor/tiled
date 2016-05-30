@@ -62,7 +62,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
             it.next();
             writer.writeStartElement(QLatin1String("property"));
             writer.writeAttribute(QLatin1String("name"), it.key());
-            writer.writeAttribute(QLatin1String("type"), typeToName(it.value().type()));
+            writer.writeAttribute(QLatin1String("type"), typeToName(it.value().userType()));
 
             if (!it.value().isNull())
                 writer.writeAttribute(QLatin1String("default"), it.value().toString());
@@ -148,7 +148,7 @@ void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml, Properties
     QVariant defaultValue(atts.value(QLatin1String("default")).toString());
 
     if (!typeName.isEmpty()) {
-        QVariant::Type type = nameToType(typeName);
+        int type = nameToType(typeName);
         if (type != QVariant::Invalid)
             defaultValue.convert(type);
     }

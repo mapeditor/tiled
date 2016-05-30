@@ -295,11 +295,9 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 
         mUpdating = true;
         QVariant value = object->property(name);
-        QtVariantProperty *property = mVariantManager->addProperty(value.type(), name);
+        QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
         property->setValue(value);
         mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
-        mPropertyToId.insert(property, CustomProperty);
-        mNameToProperty.insert(name, property);
 
         // Collapse custom color properties, to save space
         if (value.type() == QVariant::Color)
@@ -416,53 +414,53 @@ void PropertyBrowser::addMapProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
     QtVariantProperty *orientationProperty =
-            createProperty(OrientationProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Orientation"),
-                           groupProperty);
+            addProperty(OrientationProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Orientation"),
+                        groupProperty);
 
     orientationProperty->setAttribute(QLatin1String("enumNames"), mOrientationNames);
 
-    createProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
-    createProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
-    createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
-    createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
+    addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
+    addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
+    addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
+    addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
 
-    createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
+    addProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
     QtVariantProperty *staggerAxisProperty =
-            createProperty(StaggerAxisProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Stagger Axis"),
-                           groupProperty);
+            addProperty(StaggerAxisProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Stagger Axis"),
+                        groupProperty);
 
     staggerAxisProperty->setAttribute(QLatin1String("enumNames"), mStaggerAxisNames);
 
     QtVariantProperty *staggerIndexProperty =
-            createProperty(StaggerIndexProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Stagger Index"),
-                           groupProperty);
+            addProperty(StaggerIndexProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Stagger Index"),
+                        groupProperty);
 
     staggerIndexProperty->setAttribute(QLatin1String("enumNames"), mStaggerIndexNames);
 
     QtVariantProperty *layerFormatProperty =
-            createProperty(LayerFormatProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Tile Layer Format"),
-                           groupProperty);
+            addProperty(LayerFormatProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Tile Layer Format"),
+                        groupProperty);
 
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
     QtVariantProperty *renderOrderProperty =
-            createProperty(RenderOrderProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Tile Render Order"),
-                           groupProperty);
+            addProperty(RenderOrderProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Tile Render Order"),
+                        groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
 
-    createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
+    addProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -479,23 +477,23 @@ void PropertyBrowser::addMapObjectProperties()
     // DEFAULT MAP OBJECT PROPERTIES
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
-    createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
-    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
+    addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
     QtVariantProperty *typeProperty =
-            createProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
+            addProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
 
-    createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
-    createProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
-    createProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
-    createProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
-    createProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
-    createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+    addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
+    addProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
+    addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
+    addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
+    addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
+    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
 
     if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
-                createProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
+                addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
                                tr("Flipping"), groupProperty);
 
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
@@ -506,11 +504,11 @@ void PropertyBrowser::addMapObjectProperties()
 
 void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
-    createProperty(NameProperty, QVariant::String, tr("Name"), parent);
-    createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
+    addProperty(NameProperty, QVariant::String, tr("Name"), parent);
+    addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
 
     QtVariantProperty *opacityProperty =
-            createProperty(OpacityProperty, QVariant::Double, tr("Opacity"), parent);
+            addProperty(OpacityProperty, QVariant::Double, tr("Opacity"), parent);
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
@@ -520,8 +518,8 @@ void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
-    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -529,16 +527,16 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
-    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
 
-    createProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
+    addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
 
     QtVariantProperty *drawOrderProperty =
-            createProperty(DrawOrderProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Drawing Order"),
-                           groupProperty);
+            addProperty(DrawOrderProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Drawing Order"),
+                        groupProperty);
 
     drawOrderProperty->setAttribute(QLatin1String("enumNames"), mDrawOrderNames);
 
@@ -550,16 +548,16 @@ void PropertyBrowser::addImageLayerProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Image Layer"));
     addLayerProperties(groupProperty);
 
-    QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty,
-                                                            VariantPropertyManager::filePathTypeId(),
-                                                            tr("Image"), groupProperty);
+    QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
+                                                         filePathTypeId(),
+                                                         tr("Image"), groupProperty);
 
     imageSourceProperty->setAttribute(QLatin1String("filter"),
                                       Utils::readableImageFormatsFilter());
 
-    createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+    addProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -570,7 +568,7 @@ void PropertyBrowser::addTilesetProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
 
     if (tileset->isExternal()) {
-        auto property = createProperty(FileNameProperty, VariantPropertyManager::filePathTypeId(), tr("Filename"), groupProperty);
+        auto property = addProperty(FileNameProperty, filePathTypeId(), tr("Filename"), groupProperty);
 
         QString filter = QCoreApplication::translate("MainWindow", "All Files (*)");
         filter += QLatin1String(";;");
@@ -580,23 +578,23 @@ void PropertyBrowser::addTilesetProperties()
         property->setAttribute(QStringLiteral("filter"), helper.filter());
     }
 
-    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+    addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    addProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
 
-    QtVariantProperty *columnsProperty = createProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
+    QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
     // Next properties we should add only for non 'Collection of Images' tilesets
     if (!tileset->isCollection()) {
         QtVariantProperty *parametersProperty =
-                createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
+                addProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
 
-        QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
-        QtVariantProperty *tileWidthProperty = createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
-        QtVariantProperty *tileHeightProperty = createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parametersProperty);
-        QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), parametersProperty);
-        QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), parametersProperty);
-        QtVariantProperty *colorProperty = createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), parametersProperty);
+        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
+        QtVariantProperty *tileWidthProperty = addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
+        QtVariantProperty *tileHeightProperty = addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parametersProperty);
+        QtVariantProperty *marginProperty = addProperty(MarginProperty, QVariant::Int, tr("Margin"), parametersProperty);
+        QtVariantProperty *spacingProperty = addProperty(SpacingProperty, QVariant::Int, tr("Spacing"), parametersProperty);
+        QtVariantProperty *colorProperty = addProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), parametersProperty);
 
         // These properties can't be directly edited. To change the parameters,
         // the TilesetParametersEdit is used.
@@ -613,22 +611,22 @@ void PropertyBrowser::addTilesetProperties()
 void PropertyBrowser::addTileProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
-    createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
-    createProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
-    createProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
+    addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
+    addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
+    addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
 
-    QtVariantProperty *probabilityProperty = createProperty(TileProbabilityProperty,
-                                                            QVariant::Double,
-                                                            tr("Probability"),
-                                                            groupProperty);
+    QtVariantProperty *probabilityProperty = addProperty(TileProbabilityProperty,
+                                                         QVariant::Double,
+                                                         tr("Probability"),
+                                                         groupProperty);
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
 
     const Tile *tile = static_cast<const Tile*>(mObject);
     if (!tile->imageSource().isEmpty()) {
-        QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty,
-                                                                VariantPropertyManager::filePathTypeId(),
-                                                                tr("Image"), groupProperty);
+        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
+                                                             filePathTypeId(),
+                                                             tr("Image"), groupProperty);
 
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
@@ -640,7 +638,7 @@ void PropertyBrowser::addTileProperties()
 void PropertyBrowser::addTerrainProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
-    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -871,12 +869,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case ImageSourceProperty: {
-        const QString imageSource = val.toString();
+        const FilePath imageSource = val.value<FilePath>();
         const QColor &color = imageLayer->transparentColor();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource));
+                                                       imageSource.absolutePath));
         break;
     }
     case ColorProperty: {
@@ -900,9 +898,9 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
 
     switch (id) {
     case FileNameProperty: {
-        QString fileName = val.toString();
+        FilePath filePath = val.value<FilePath>();
         QString error;
-        SharedTileset newTileset = Tiled::readTileset(fileName, &error);
+        SharedTileset newTileset = Tiled::readTileset(filePath.absolutePath, &error);
         if (!newTileset) {
             QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
             return;
@@ -945,10 +943,12 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   mMapDocument->selectedTiles(),
                                                   val.toFloat()));
         break;
-    case ImageSourceProperty:
+    case ImageSourceProperty: {
+        const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mMapDocument,
-                                                  tile, val.toString()));
+                                                  tile, filePath.absolutePath));
         break;
+    }
     default:
         break;
     }
@@ -967,9 +967,11 @@ void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
     }
 }
 
+/**
+ * @warning This function does not add the property to the view.
+ */
 QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
-                                                   const QString &name,
-                                                   QtProperty *parent)
+                                                   const QString &name)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
@@ -982,15 +984,28 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
     if (type == QVariant::String && id == CustomProperty)
         property->setAttribute(QLatin1String("multiline"), true);
 
-    parent->addSubProperty(property);
     mPropertyToId.insert(property, id);
 
     if (id != CustomProperty) {
         Q_ASSERT(!mIdToProperty.contains(id));
         mIdToProperty.insert(id, property);
     } else {
+        Q_ASSERT(!mNameToProperty.contains(name));
         mNameToProperty.insert(name, property);
+    }
 
+    return property;
+}
+
+QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
+                                                const QString &name,
+                                                QtProperty *parent)
+{
+    QtVariantProperty *property = createProperty(id, type, name);
+
+    parent->addSubProperty(property);
+
+    if (id == CustomProperty) {
         // Collapse custom color properties, to save space
         if (type == QVariant::Color)
             setExpanded(items(property).first(), false);
@@ -1111,7 +1126,7 @@ void PropertyBrowser::updateProperties()
         }
         case Layer::ImageLayerType:
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
-            mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
+            mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { imageLayer->imageSource() }));
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
             break;
         }
@@ -1122,7 +1137,7 @@ void PropertyBrowser::updateProperties()
         const bool external = tileset->isExternal();
 
         if (QtVariantProperty *fileNameProperty = mIdToProperty.value(FileNameProperty))
-            fileNameProperty->setValue(tileset->fileName());
+            fileNameProperty->setValue(QVariant::fromValue(FilePath { tileset->fileName() }));
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
@@ -1136,7 +1151,7 @@ void PropertyBrowser::updateProperties()
             EmbeddedTileset embeddedTileset(mMapDocument, tileset);
 
             mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));
-            mIdToProperty[ImageSourceProperty]->setValue(tileset->imageSource());
+            mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { tileset->imageSource() }));
             mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
             mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());
             mIdToProperty[MarginProperty]->setValue(tileset->margin());
@@ -1214,10 +1229,10 @@ void PropertyBrowser::updateCustomProperties()
 
     while (it.hasNext()) {
         it.next();
-        QtVariantProperty *property = createProperty(CustomProperty,
-                                                     it.value().type(),
-                                                     it.key(),
-                                                     mCustomPropertiesGroup);
+        QtVariantProperty *property = addProperty(CustomProperty,
+                                                  it.value().userType(),
+                                                  it.key(),
+                                                  mCustomPropertiesGroup);
 
         property->setValue(it.value());
         updatePropertyColor(it.key());

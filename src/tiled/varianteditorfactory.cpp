@@ -99,15 +99,16 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 {
     const int type = manager->propertyType(property);
 
-    if (type == VariantPropertyManager::filePathTypeId()) {
+    if (type == filePathTypeId()) {
         FileEdit *editor = new FileEdit(parent);
-        editor->setFilePath(manager->value(property).toString());
+        FilePath filePath = manager->value(property).value<FilePath>();
+        editor->setFilePath(filePath.absolutePath);
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
-        connect(editor, SIGNAL(filePathChanged(const QString &)),
-                this, SLOT(fileEditFilePathChanged(const QString &)));
+        connect(editor, &FileEdit::filePathChanged,
+                this, &VariantEditorFactory::fileEditFilePathChanged);
         connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
 
@@ -181,8 +182,10 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
                                                const QVariant &value)
 {
     if (mCreatedFileEdits.contains(property)) {
-        for (FileEdit *edit : mCreatedFileEdits[property])
-            edit->setFilePath(value.toString());
+        for (FileEdit *edit : mCreatedFileEdits[property]) {
+            FilePath filePath = value.value<FilePath>();
+            edit->setFilePath(filePath.absolutePath);
+        }
     }
     else if (mCreatedTilesetEdits.contains(property)) {
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
@@ -216,7 +219,7 @@ void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
-        manager->setValue(property, value);
+        manager->setValue(property, QVariant::fromValue(FilePath { value }));
     }
 }
 

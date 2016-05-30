@@ -231,8 +231,14 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it)
-        variantMap[it.key()] = toExportValue(it.value());
+    for (; it != it_end; ++it) {
+        QVariant value = toExportValue(it.value());
+
+        if (it.value().userType() == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        variantMap[it.key()] = value;
+    }
 
     return variantMap;
 }
@@ -244,7 +250,7 @@ QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &propert
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it)
-        variantMap[it.key()] = typeToName(it.value().type());
+        variantMap[it.key()] = typeToName(it.value().userType());
 
     return variantMap;
 }
@@ -403,8 +409,14 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        propertiesMap[it.key()] = toExportValue(it.value());
-        propertyTypesMap[it.key()] = typeToName(it.value().type());
+        int type = it.value().userType();
+        QVariant value = toExportValue(it.value());
+
+        if (type == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        propertiesMap[it.key()] = value;
+        propertyTypesMap[it.key()] = typeToName(type);
     }
 
     variantMap[QLatin1String("properties")] = propertiesMap;

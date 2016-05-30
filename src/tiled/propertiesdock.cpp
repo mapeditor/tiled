@@ -213,10 +213,10 @@ void PropertiesDock::addProperty()
 {
     AddPropertyDialog dialog(mPropertyBrowser);
     if (dialog.exec() == AddPropertyDialog::Accepted)
-        addProperty(dialog.propertyName(), dialog.propertyType());
+        addProperty(dialog.propertyName(), dialog.propertyValue());
 }
 
-void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
+void PropertiesDock::addProperty(const QString &name, const QVariant &value)
 {
     if (name.isEmpty())
         return;
@@ -228,7 +228,7 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
-                                        name, QVariant(type)));
+                                        name, value));
     }
 
     mPropertyBrowser->editCustomProperty(name);

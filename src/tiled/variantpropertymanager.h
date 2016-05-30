@@ -49,7 +49,6 @@ public:
     QVariant attributeValue(const QtProperty *property,
                             const QString &attribute) const override;
 
-    static int filePathTypeId();
     static int tilesetParametersTypeId();
 
 public slots:

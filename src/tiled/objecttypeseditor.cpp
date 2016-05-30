@@ -445,7 +445,7 @@ void ObjectTypesEditor::updateProperties()
         const QString &name = it.key();
         const AggregatedPropertyData &data = it.value();
 
-        QtVariantProperty *property = createProperty(data.value().type(), name);
+        QtVariantProperty *property = createProperty(data.value().userType(), name);
         property->setValue(data.value());
 
         bool everywhere = data.presenceCount() == selectedRows.size();
@@ -490,7 +490,7 @@ void ObjectTypesEditor::addProperty()
 {
     AddPropertyDialog dialog(window());
     if (dialog.exec() == AddPropertyDialog::Accepted)
-        addProperty(dialog.propertyName(), QVariant(dialog.propertyType()));
+        addProperty(dialog.propertyName(), QVariant(dialog.propertyValue()));
 }
 
 void ObjectTypesEditor::addProperty(const QString &name, const QVariant &value)

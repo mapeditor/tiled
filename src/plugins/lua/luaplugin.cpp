@@ -173,8 +173,14 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it)
-        writer.writeQuotedKeyAndValue(it.key(), toExportValue(it.value()));
+    for (; it != it_end; ++it) {
+        QVariant value = toExportValue(it.value());
+
+        if (it.value().userType() == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        writer.writeQuotedKeyAndValue(it.key(), value);
+    }
 
     writer.writeEndTable();
 }
