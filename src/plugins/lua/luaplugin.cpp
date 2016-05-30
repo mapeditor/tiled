@@ -390,6 +390,8 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeKeyAndValue("offsetx", offset.x());
     writer.writeKeyAndValue("offsety", offset.y());
 
+    writer.writeKeyAndValue("draworder", drawOrderToString(objectGroup->drawOrder()));
+
     writeProperties(writer, objectGroup->properties());
 
     writer.writeStartTable("objects");

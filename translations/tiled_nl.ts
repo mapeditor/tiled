@@ -2250,7 +2250,7 @@ Regel %1, colom %2</translation>
         <location line="-191"/>
         <location line="+192"/>
         <source>F</source>
-        <translation>V</translation>
+        <translation>F</translation>
     </message>
 </context>
 <context>
@@ -2596,7 +2596,7 @@ Regel %1, colom %2</translation>
         <location line="-33"/>
         <location line="+34"/>
         <source>E</source>
-        <translation>W</translation>
+        <translation>E</translation>
     </message>
 </context>
 <context>
@@ -2718,7 +2718,7 @@ Moet het bestand vervangen worden?</translation>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3877,7 +3877,7 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="-125"/>
         <location line="+126"/>
         <source>B</source>
-        <translation>S</translation>
+        <translation>B</translation>
     </message>
 </context>
 <context>
