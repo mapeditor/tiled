@@ -1,0 +1,12 @@
+#ifndef DEFOLD_GLOBAL_H
+#define DEFOLD_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(DEFOLD_LIBRARY)
+#  define DEFOLDPLUGINSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define DEFOLDPLUGINSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // DEFOLD_GLOBAL_H
