@@ -11,5 +11,6 @@ Project {
         "replicaisland",
         "tengine",
         "tmw",
+        "defold"
     ]
 }

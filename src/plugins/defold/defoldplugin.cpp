@@ -1,5 +1,6 @@
 #include "defoldplugin.h"
 
+#include "tokendefines.h"
 
 
 #include <QDir>
@@ -39,53 +40,57 @@ Defold::DefoldPlugin::DefoldPlugin()
 
 bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    QJsonObject mapJson;
-    mapJson["tile_set"] = map->tilesets()[0]->fileName();
+    QVariantHash map_h;
+    map_h["tile_set"] = map->tilesets()[0]->fileName();
     int layerZ = 0;
+    QString layers;
     foreach (const Tiled::Layer *layer, map->layers())
     {
         if (layer->layerType() != Tiled::Layer::TileLayerType)
             continue;
 
         const Tiled::TileLayer *tileLayer = static_cast<const Tiled::TileLayer*>(layer);
-        QJsonObject  layerJson;
-        layerJson["id"] = tileLayer->name();
-        layerJson["z"] = layerZ++;
-        layerJson["isVisible"] = tileLayer->isVisible();
-        QJsonArray cellsArrayJson;
+        QVariantHash  layer_h;
+        layer_h["id"] = tileLayer->name();
+        layer_h["z"] = layerZ++;
+        layer_h["isVisible"] = tileLayer->isVisible();
+        QString cells;
         for (int y = 0; y < tileLayer->height(); ++y)
         {
             for (int x = 0; x < tileLayer->width(); ++x)
             {
                 const Tiled::Cell &cell = tileLayer->cellAt(x, y);
                 if (cell.tile == nullptr) continue;
-                QJsonObject cellJson;
-                cellJson["x"] = x;
-                cellJson["y"] = y;
-                cellJson["tile"] = cell.tile->id();
-                cellJson["h_flip"] = cell.flippedHorizontally;
-                cellJson["v_flip"] = cell.flippedVertically;
-                cellsArrayJson.append(cellJson);
+                QVariantHash cell_h;
+                cell_h["x"] = x;
+                cell_h["y"] = y;
+                cell_h["tile"] = cell.tile->id();
+                cell_h["h_flip"] = cell.flippedHorizontally;
+                cell_h["v_flip"] = cell.flippedVertically;
+
+                Mustache::QtVariantContext context_cell(cell_h);
+                cells.append(renderer.render(cell_t, &context_cell));
             }
         }
-        layerJson["cell"] = cellsArrayJson;
-
-        mapJson["layer"] = layerJson;
+        layer_h["cell"] = cells;
+        Mustache::QtVariantContext context_layer(layer_h);
+        layers.append(renderer.render(layers_t, &context_layer);
     }
+    Mustache::QtVariantContext context_map(map_h);
 
-    QFile jsonFile(fileName);
-    if (!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
+
+    QFile writeFile(fileName);
+    if (!writeFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    QJsonDocument saveDoc(mapJson);
-    jsonFile.write(saveDoc.toJson());
+    writeFile.write(renderer.render(map_t, &context_map));
 
-    if (jsonFile.error() != QFile::NoError)
+    if (writeFile.error() != QFile::NoError)
     {
-        mError = jsonFile.errorString();
+        mError = writeFile.errorString();
         return false;
     }
 

@@ -31,7 +31,7 @@
 #if defined(Q_OS_WIN) && QT_VERSION < 0x050600
 #include "QtZlib/zlib.h"
 #else
-#include <zlib.h>
+#include <zlibs.h>
 #endif
 
 #include <QByteArray>

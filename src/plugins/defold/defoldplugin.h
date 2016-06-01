@@ -28,6 +28,7 @@
 #include "tiled.h"
 
 #include "mapformat.h"
+#include "mustache/mustache.h"
 
 namespace Defold
 {
@@ -49,6 +50,9 @@ protected:
 
 private:
     QString mError;
+
+    Mustache::Renderer renderer;
+
 };
 }
 
