@@ -28,7 +28,6 @@
 #include "tiled.h"
 
 #include "mapformat.h"
-#include "mustache/mustache.h"
 
 namespace Defold
 {
@@ -45,13 +44,12 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
     QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
+    QString ReplaceTags (QString context, QVariantHash map);
 protected:
     QString nameFilter() const override;
 
 private:
     QString mError;
-
-    Mustache::Renderer renderer;
 
 };
 }

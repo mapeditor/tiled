@@ -9,7 +9,5 @@ TiledPlugin {
         "defoldplugin.h",
         "plugin.json",
         "tokendefines.h",
-        "mustache/mustache.cpp",
-        "mustache/mustache.h"
     ]
 }
