@@ -58,8 +58,10 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     QVariantHash map_h;
     //map_h["tile_set"] = map->tilesets()[0]->fileName().utf16();
     QString layers;
+    int layer_z = 0;
     foreach (const Tiled::Layer *layer, map->layers())
     {
+        layer_z++;
         if (layer->layerType() != Tiled::Layer::TileLayerType)
             continue;
 
@@ -69,11 +71,11 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
         layer_h["z"] = 0;
         layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
         QString cells = "";
-        for (int y = 0; y < tileLayer->height(); ++y)
+        for (int x = 0; x < tileLayer->width(); ++x)
         {
-            for (int x = 0; x < tileLayer->width(); ++x)
+            for (int y = 0; y < tileLayer->height(); ++y)
             {
-                const Tiled::Cell &cell = tileLayer->cellAt(x, y);
+             const Tiled::Cell &cell = tileLayer->cellAt(x, y);
                 if (cell.tile == nullptr) continue;
                 QVariantHash cell_h;
                 cell_h["x"] = x;
@@ -81,6 +83,8 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 cell_h["tile"] = cell.tile->id();
                 cell_h["h_flip"] = cell.flippedHorizontally ? 1 : 0;
                 cell_h["v_flip"] = cell.flippedVertically ? 1 : 0;
+
+                if (layer_z == 3) cell_h["y"] = y+ 2;
 
                 cells.append(ReplaceTags(cell_t, cell_h));
             }
@@ -93,7 +97,7 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     map_h["layers"] = layers;
     map_h["material"] = "/builtins/materials/tile_map.material";
     map_h["blend_mode"] = "BLEND_MODE_ALPHA";
-    map_h["tile_set"] = "/assets/Terrain/grass/grass.tilesource";
+    map_h["tile_set"] = "";
 
     QString result = ReplaceTags(map_t, map_h);
 
