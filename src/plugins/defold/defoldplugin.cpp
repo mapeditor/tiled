@@ -57,7 +57,6 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     QVariantHash map_h;
     //map_h["tile_set"] = map->tilesets()[0]->fileName().utf16();
-    int layerZ = 0;
     QString layers;
     foreach (const Tiled::Layer *layer, map->layers())
     {
@@ -67,7 +66,7 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
         const Tiled::TileLayer *tileLayer = static_cast<const Tiled::TileLayer*>(layer);
         QVariantHash  layer_h;
         layer_h["id"] = tileLayer->name();
-        layer_h["z"] = layerZ++;
+        layer_h["z"] = 0;
         layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
         QString cells = "";
         for (int y = 0; y < tileLayer->height(); ++y)
