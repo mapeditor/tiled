@@ -27,23 +27,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="csvplugin.cpp">
+    <ClCompile Include="defoldplugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="csv_global.h">
+    <ClInclude Include="defold_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="csvplugin.h">
+    <CustomBuild Include="defoldplugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="debug\moc_csvplugin.cpp">
+    <ClCompile Include="debug\moc_defoldplugin.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="release\moc_csvplugin.cpp">
+    <ClCompile Include="release\moc_defoldplugin.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>

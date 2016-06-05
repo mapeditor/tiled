@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|x64">
@@ -16,7 +16,7 @@
     <Keyword>Qt4VSv1.0</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <PlatformToolSet>v140</PlatformToolSet>
     <OutputDirectory>..\..\lib\</OutputDirectory>
     <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
@@ -25,7 +25,7 @@
     <IntermediateDirectory>release\</IntermediateDirectory>
     <PrimaryOutput>tiled</PrimaryOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <PlatformToolSet>v140</PlatformToolSet>
     <OutputDirectory>..\..\lib\</OutputDirectory>
     <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
@@ -36,27 +36,27 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
-  <ImportGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(&apos;$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props&apos;)" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
-  <ImportGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(&apos;$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props&apos;)" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">..\..\lib\</OutDir>
-    <IntDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\</IntDir>
-    <TargetName Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">tiled</TargetName>
-    <IgnoreImportLibrary Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">false</LinkIncremental>
-    <PostBuildEventUseInBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</PostBuildEventUseInBuild>
-    <OutDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">..\..\lib\</OutDir>
-    <IntDir Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\</IntDir>
-    <TargetName Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">tiled</TargetName>
-    <IgnoreImportLibrary Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</IgnoreImportLibrary>
-    <PostBuildEventUseInBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tiled</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tiled</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</PostBuildEventUseInBuild>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;release;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
@@ -69,7 +69,8 @@
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_CAST_FROM_ASCII;QT_NO_CAST_TO_ASCII;TILED_LIBRARY;QT_NO_DEBUG;QT_GUI_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
-      <ProgramDataBaseFileName></ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -99,11 +100,11 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_CAST_FROM_ASCII;QT_NO_CAST_TO_ASCII;TILED_LIBRARY;QT_NO_DEBUG;QT_GUI_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy &quot;$(TargetPath)&quot; ..\..</Command>
+      <Command>copy "$(TargetPath)" ..\..</Command>
       <Message>Copy tiled.dll to ..\..</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;debug;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
@@ -144,7 +145,7 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_CAST_FROM_ASCII;QT_NO_CAST_TO_ASCII;TILED_LIBRARY;QT_GUI_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy &quot;$(TargetPath)&quot; ..\..</Command>
+      <Command>copy "$(TargetPath)" ..\..</Command>
       <Message>Copy tiled.dll to ..\..</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -183,25 +184,25 @@
     <ClInclude Include="isometricrenderer.h" />
     <ClInclude Include="layer.h" />
     <CustomBuild Include="logginginterface.h">
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">logginginterface.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore logginginterface.h -o release\moc_logginginterface.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC logginginterface.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_logginginterface.cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">logginginterface.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore logginginterface.h -o debug\moc_logginginterface.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC logginginterface.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_logginginterface.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">logginginterface.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore logginginterface.h -o release\moc_logginginterface.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC logginginterface.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_logginginterface.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">logginginterface.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore logginginterface.h -o debug\moc_logginginterface.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC logginginterface.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_logginginterface.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="map.h" />
     <CustomBuild Include="mapformat.h">
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">mapformat.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore mapformat.h -o release\moc_mapformat.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC mapformat.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_mapformat.cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">mapformat.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore mapformat.h -o debug\moc_mapformat.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC mapformat.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_mapformat.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mapformat.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore mapformat.h -o release\moc_mapformat.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC mapformat.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_mapformat.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mapformat.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore mapformat.h -o debug\moc_mapformat.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC mapformat.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_mapformat.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="mapobject.h" />
     <ClInclude Include="mapreader.h" />
@@ -212,24 +213,24 @@
     <ClInclude Include="objectgroup.h" />
     <ClInclude Include="orthogonalrenderer.h" />
     <CustomBuild Include="plugin.h">
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">plugin.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore plugin.h -o release\moc_plugin.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC plugin.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_plugin.cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">plugin.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore plugin.h -o debug\moc_plugin.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC plugin.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_plugin.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">plugin.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore plugin.h -o release\moc_plugin.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC plugin.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_plugin.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">plugin.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore plugin.h -o debug\moc_plugin.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC plugin.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_plugin.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="pluginmanager.h">
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">pluginmanager.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore pluginmanager.h -o release\moc_pluginmanager.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">MOC pluginmanager.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">release\moc_pluginmanager.cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">pluginmanager.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore pluginmanager.h -o debug\moc_pluginmanager.cpp</Command>
-      <Message Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">MOC pluginmanager.h</Message>
-      <Outputs Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">debug\moc_pluginmanager.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pluginmanager.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore pluginmanager.h -o release\moc_pluginmanager.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC pluginmanager.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_pluginmanager.cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pluginmanager.h;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Qt\5.6\msvc2015_64\bin\moc.exe  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DTILED_LIBRARY -DQT_GUI_LIB -DQT_CORE_LIB -D_MSC_VER=1900 -D_WIN32 -D_WIN64 -IC:/Qt/5.6/msvc2015_64/mkspecs/win32-msvc2015 -ID:/Projects/tiled/src/libtiled -IC:/Qt/5.6/msvc2015_64/include -IC:/Qt/5.6/msvc2015_64/include/QtGui -IC:/Qt/5.6/msvc2015_64/include/QtANGLE -IC:/Qt/5.6/msvc2015_64/include/QtCore pluginmanager.h -o debug\moc_pluginmanager.cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC pluginmanager.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_pluginmanager.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="properties.h" />
     <ClInclude Include="staggeredrenderer.h" />
@@ -244,28 +245,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug\moc_logginginterface.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="release\moc_logginginterface.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="debug\moc_mapformat.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="release\moc_mapformat.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="debug\moc_plugin.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="release\moc_plugin.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="debug\moc_pluginmanager.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Release|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="release\moc_pluginmanager.cpp">
-      <ExcludedFromBuild Condition="&apos;$(Configuration)|$(Platform)&apos;==&apos;Debug|x64&apos;">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

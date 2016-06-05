@@ -5,17 +5,14 @@ rem The following assumes US date format!
 
 set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
 
-set TILED_SOURCE_DIR=E:\Projects\tiled
-set TILED_BUILD_DIR=E:\Builds\tiled-daily-qt5
-set QTDIR=E:\Qt\5.3\msvc2013_opengl
+set TILED_SOURCE_DIR=D:\Projects\tiled
+set TILED_BUILD_DIR=D:\Builds\
+set QTDIR=C:\Qt\5.5\msvc2013_64
 set ARCH=32
-set MAKE=E:\Qt\Tools\QtCreator\bin\jom.exe
-set GIT="C:\Program Files (x86)\Git\cmd\git.exe"
-set SCP="C:\Program Files (x86)\Git\bin\scp.exe"
+set MAKE=C:\Qt\Tools\QtCreator\bin\jom.exe
+set GIT="C:\Users\Zo0MER\AppData\Local\Programs\Git\bin\git.exe"
+set SCP="C:\Users\Zo0MER\AppData\Local\Programs\Git\usr\bin\scp.exe"
 set DESTINATION=bjorn@files.mapeditor.org:public_html/files.mapeditor.org/public/daily/
-
-echo Waiting a bit for the network to come up...
-ping -n 3 127.0.0.1 > nul
 
 pushd %TILED_SOURCE_DIR%
 %GIT% fetch
@@ -25,7 +22,7 @@ if %ERRORLEVEL% == 0 (
     popd
     goto done
 ) else if %ERRORLEVEL% == 1 (
-   %GIT% reset --hard origin/master
+   %GIT% reset --soft origin/master
 )
 popd
 
@@ -47,15 +44,4 @@ popd
 
 echo Building Installer...
 pushd %TILED_SOURCE_DIR%\dist\win
-makensis.exe tiled-vs2013.nsi
-
-echo Uploading installer...
-%SCP% -B tiled-%VERSION%-win32-setup.exe %DESTINATION%
-
-popd
-
-:done
-
-echo Shutting down in 30 seconds...
-ping -n 31 127.0.0.1 > nul
-shutdown -s
+C:\PROGRA~1\NSIS\NSISmakensis.exe tiled-vs2013.nsi
