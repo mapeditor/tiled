@@ -362,6 +362,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mTerrainId(-1)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
+    , mHandScrolling(false)
     , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
