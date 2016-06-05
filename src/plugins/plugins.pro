@@ -6,7 +6,8 @@ SUBDIRS = csv \
           lua \
           replicaisland \
           tengine \
-          tmw
+          tmw \
+          defold 
 
 include(python/find_python.pri)
 
@@ -16,4 +17,3 @@ contains(HAVE_PYTHON, yes) {
 } else {
     !build_pass:message("No Python support")
 }
-

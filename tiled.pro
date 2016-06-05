@@ -19,3 +19,9 @@ TEMPLATE  = subdirs
 CONFIG   += ordered
 
 SUBDIRS = src translations
+
+INCLUDEPATH +=
+INCLUDEPATH += C:\Program Files (x86)\GnuWin32\lib
+INCLUDEPATH += C:\Program Files (x86)\GnuWin32\include
+
+
