@@ -1,5 +1,5 @@
 Tiled Map Editor - http://www.mapeditor.org/
 
-Frok https://github.com/burnash/gspread
+Fork https://github.com/burnash/gspread
 
-With export maps to defold format
+With export Tiled maps to defold format
