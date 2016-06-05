@@ -152,6 +152,9 @@ QString TextPropertyEdit::text() const
 
 void TextPropertyEdit::setText(const QString &text)
 {
+    if (mCachedText == text)
+        return;
+
     mCachedText = text;
     mLineEdit->setText(escapeNewlines(text));
 }
