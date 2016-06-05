@@ -38,6 +38,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPinchGesture>
+#include <QScrollBar>
 #include <QUndoCommand>
 #include <QWheelEvent>
 #include <QtCore/qmath.h>
@@ -490,6 +491,12 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::MidButton && isActiveWindow()) {
+        mLastMousePos = event->globalPos();
+        setHandScrolling(true);
+        return;
+    }
+
     if (!mEditTerrain) {
         QTableView::mousePressEvent(event);
         return;
@@ -501,6 +508,21 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
+    if (mHandScrolling) {
+        auto *hBar = horizontalScrollBar();
+        auto *vBar = verticalScrollBar();
+        const QPoint d = event->globalPos() - mLastMousePos;
+
+        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
+        int verticalValue = vBar->value() - d.y();
+
+        hBar->setValue(horizontalValue);
+        vBar->setValue(verticalValue);
+
+        mLastMousePos = event->globalPos();
+        return;
+    }
+
     if (!mEditTerrain) {
         QTableView::mouseMoveEvent(event);
         return;
@@ -536,6 +558,11 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::MidButton) {
+        setHandScrolling(false);
+        return;
+    }
+
     if (!mEditTerrain) {
         QTableView::mouseReleaseEvent(event);
         return;
@@ -699,4 +726,17 @@ Tile *TilesetView::currentTile() const
 {
     const TilesetModel *model = tilesetModel();
     return model ? model->tileAt(currentIndex()) : nullptr;
+}
+
+void TilesetView::setHandScrolling(bool handScrolling)
+{
+    if (mHandScrolling == handScrolling)
+        return;
+
+    mHandScrolling = handScrolling;
+
+    if (mHandScrolling)
+        setCursor(QCursor(Qt::ClosedHandCursor));
+    else
+        unsetCursor();
 }
