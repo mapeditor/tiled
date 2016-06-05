@@ -55,7 +55,7 @@ deploy:
   - provider: GitHub
     release: Tiled $(TILED_VERSION)
     auth_token:
-      secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
+      secure: a9f42f788a4976e96662b454baed7e16558bf5aa
     artifact: /.*\.msi/
     draft: true
 
