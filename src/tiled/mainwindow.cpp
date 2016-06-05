@@ -205,6 +205,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
+#if QT_VERSION >= 0x050600
+    setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
+#endif
+
     Preferences *preferences = Preferences::instance();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
