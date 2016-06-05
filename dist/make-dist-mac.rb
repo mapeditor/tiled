@@ -35,7 +35,6 @@ Dir.mktmpdir do |tempDir|
     FileUtils.cp_r binAppDir, tempDir
     FileUtils.cp   File.join(binDir,'tmxrasterizer'), File.join(tempDir, 'Tiled.app/Contents/MacOS')
     FileUtils.ln_s '/Applications', File.join(tempDir, 'Applications') #Symlink to Applications for easy install
-    FileUtils.cp File.join(baseDir, 'src/tiled/images/tmx-icon-mac.icns'), File.join(tempDir, 'Tiled.app/Contents/Resources')
 
     # Use macdeployqt to copy Qt frameworks to the app
     puts "Running macdeployqt"

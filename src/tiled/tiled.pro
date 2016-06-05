@@ -42,7 +42,9 @@ macx {
         OBJECTIVE_SOURCES += sparkleautoupdater.mm
 
         APP_RESOURCES.path = Contents/Resources
-        APP_RESOURCES.files = ../../dist/dsa_pub.pem
+        APP_RESOURCES.files = \
+            ../../dist/dsa_pub.pem \
+            images/tmx-icon-mac.icns
 
         SPARKLE_FRAMEWORK.path = Contents/Frameworks
         SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
