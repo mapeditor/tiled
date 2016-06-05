@@ -25,11 +25,7 @@
 #include "tile.h"
 #include "tileset.h"
 
-#if QT_VERSION >= 0x050000
 #include <QGuiApplication>
-#else
-#include <QApplication>
-#endif
 
 #include <QDebug>
 #include <QFile>
@@ -332,11 +328,7 @@ static bool isEmpty(const QImage &image)
 
 int main(int argc, char *argv[])
 {
-#if QT_VERSION >= 0x050000
     QGuiApplication a(argc, argv);
-#else
-    QApplication a(argc, argv);
-#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("TerrainGenerator"));

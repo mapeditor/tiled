@@ -5,9 +5,9 @@ isEmpty(QT_VERSION) {
 
 include(tiled.pri)
 
-!minQtVersion(5, 1, 0) {
+!minQtVersion(5, 2, 0) {
     message("Cannot build Tiled with Qt version $${QT_VERSION}")
-    error("Use at least Qt 5.1.0.")
+    error("Use at least Qt 5.2.0.")
 }
 
 win* {

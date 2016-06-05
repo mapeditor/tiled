@@ -669,12 +669,8 @@ void TilesetDock::tilesetMoved(int from, int to)
 {
 #if QT_VERSION >= 0x050600
     mTilesets.move(from, to);
-#elif QT_VERSION >= 0x050200
-    mTilesets.insert(to, mTilesets.takeAt(from));
 #else
-    SharedTileset tileset = mTilesets.at(from);
-    mTilesets.remove(from);
-    mTilesets.insert(to, tileset);
+    mTilesets.insert(to, mTilesets.takeAt(from));
 #endif
 
     // Move the related tileset views

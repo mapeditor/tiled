@@ -82,9 +82,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     Utils::setThemeIcon(mDelete, "edit-delete");
     Utils::setThemeIcon(mChooseFolder, "document-open");
 
-#if QT_VERSION >= 0x050200
     mFilterEdit->setClearButtonEnabled(true);
-#endif
 
     connect(mFilterEdit, &QLineEdit::textChanged,
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);

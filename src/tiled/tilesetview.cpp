@@ -406,10 +406,8 @@ int TilesetView::sizeHintForColumn(int column) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
-#if QT_VERSION >= 0x050200
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForColumn(column);
-#endif
 
     const int tileWidth = model->tileset()->tileWidth();
     return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
@@ -421,10 +419,8 @@ int TilesetView::sizeHintForRow(int row) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
-#if QT_VERSION >= 0x050200
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForRow(row);
-#endif
 
     const int tileHeight = model->tileset()->tileHeight();
     return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);

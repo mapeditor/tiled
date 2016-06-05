@@ -78,12 +78,7 @@ QString AddPropertyDialog::propertyName() const
 
 QVariant AddPropertyDialog::propertyValue() const
 {
-#if QT_VERSION >= 0x050200
     return mUi->typeBox->currentData();
-#else
-    const int currentIndex = mUi->typeBox->currentIndex();
-    return mUi->typeBox->itemData(currentIndex);
-#endif
 }
 
 void AddPropertyDialog::nameChanged(const QString &text)
