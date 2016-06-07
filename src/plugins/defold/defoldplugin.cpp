@@ -58,10 +58,8 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     QVariantHash map_h;
     //map_h["tile_set"] = map->tilesets()[0]->fileName().utf16();
     QString layers;
-    int layer_z = 0;
     foreach (const Tiled::Layer *layer, map->layers())
     {
-        layer_z++;
         if (layer->layerType() != Tiled::Layer::TileLayerType)
             continue;
 
@@ -79,12 +77,10 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 if (cell.tile == nullptr) continue;
                 QVariantHash cell_h;
                 cell_h["x"] = x;
-                cell_h["y"] = y;
+                cell_h["y"] = tileLayer->height() - y - 1;
                 cell_h["tile"] = cell.tile->id();
                 cell_h["h_flip"] = cell.flippedHorizontally ? 1 : 0;
                 cell_h["v_flip"] = cell.flippedVertically ? 1 : 0;
-
-                if (layer_z == 3) cell_h["y"] = y+ 2;
 
                 cells.append(ReplaceTags(cell_t, cell_h));
             }
