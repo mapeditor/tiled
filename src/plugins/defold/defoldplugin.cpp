@@ -81,7 +81,10 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 cell_h["tile"] = cell.tile->id();
                 cell_h["h_flip"] = cell.flippedHorizontally ? 1 : 0;
                 cell_h["v_flip"] = cell.flippedVertically ? 1 : 0;
-
+                if (cell.tile->hasProperty("Type"))
+                {
+                    QString prop = cell.tile->property("Type").toString();
+                }
                 cells.append(ReplaceTags(cell_t, cell_h));
             }
         }
