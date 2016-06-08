@@ -166,6 +166,7 @@ Following entries are integrated solutions for specific game engines. They are t
 * [Slick2D](http://slick.ninjacave.com) supports loading TMX maps through [TiledMap](http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html).
 
 ### Sprite Kit Framework
+* [SKTilemap](https://github.com/TomLinthwaite/SKTilemap) is built from the ground up in Swift. It's up to date, full of features and easy to integrate into any Sprite Kit project. Supports iOS and OSX.
 * [TilemapKit](http://tilemapkit.com) is an actively maintained tilemapping framework for Sprite Kit. It supports all TMX tilemap types, including staggered iso and all hex variations.
 * [JSTileMap](https://github.com/slycrel/JSTileMap) is a lightweight SpriteKit implementation of the TMX format supporting iOS 7 and OS X 10.9 and above.
 
