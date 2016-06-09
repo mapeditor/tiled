@@ -50,7 +50,6 @@ protected:
 
 private:
     QString mError;
-
 };
 }
 
