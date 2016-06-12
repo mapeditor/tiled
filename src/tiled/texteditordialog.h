@@ -1,6 +1,6 @@
 /*
- * resizedialog.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * texteditordialog.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,43 +18,37 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#ifndef TILED_INTERNAL_TEXTEDITORDIALOG_H
+#define TILED_INTERNAL_TEXTEDITORDIALOG_H
 
 #include <QDialog>
 
 namespace Ui {
-class ResizeDialog;
+class TextEditorDialog;
 }
 
 namespace Tiled {
 namespace Internal {
 
-class ResizeDialog : public QDialog
+class TextEditorDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    ResizeDialog(QWidget *parent = nullptr);
+    explicit TextEditorDialog(QWidget *parent = nullptr);
+    ~TextEditorDialog();
 
-    ~ResizeDialog();
+    void setText(const QString &text);
+    QString text() const;
 
-    void setOldSize(const QSize &size);
-
-    const QSize &newSize() const;
-    const QPoint &offset() const;
-
-    bool removeObjects() const;
-
-private slots:
-    void removeObjectsToggled(bool removeObjects);
-    void updateOffsetBounds(const QRect &bounds);
+protected:
+    void changeEvent(QEvent *e);
 
 private:
-    Ui::ResizeDialog *mUi;
+    Ui::TextEditorDialog *mUi;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // RESIZEDIALOG_H
+#endif // TILED_INTERNAL_TEXTEDITORDIALOG_H

@@ -945,9 +945,12 @@ void MapReaderPrivate::readProperty(Properties *properties)
     QVariant variant(propertyValue);
 
     if (!propertyType.isEmpty()) {
-        QVariant::Type type = nameToType(propertyType);
-        if (type != QVariant::Invalid)
-            variant.convert(nameToType(propertyType));
+        int type = nameToType(propertyType);
+
+        if (type == filePathTypeId())
+            variant = p->resolveReference(variant.toString(), mPath);
+
+        variant = fromExportValue(variant, type);
     }
 
     properties->insert(propertyName, variant);

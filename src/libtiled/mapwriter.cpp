@@ -52,10 +52,8 @@ using namespace Tiled::Internal;
 
 static QString colorToString(const QColor &color)
 {
-#if QT_VERSION >= 0x050200
     if (color.alpha() != 255)
         return color.name(QColor::HexArgb);
-#endif
     return color.name();
 }
 
@@ -634,11 +632,16 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());
 
-        QString typeName = typeToName(it.value().type());
+        int type = it.value().userType();
+        QString typeName = typeToName(type);
         if (typeName != QLatin1String("string"))
             w.writeAttribute(QLatin1String("type"), typeName);
 
-        const QString &value = it.value().toString();
+        QString value = toExportValue(it.value()).toString();
+
+        if (type == filePathTypeId() && !mUseAbsolutePaths)
+            value = mMapDir.relativeFilePath(value);
+
         if (value.contains(QLatin1Char('\n')))
             w.writeCharacters(value);
         else

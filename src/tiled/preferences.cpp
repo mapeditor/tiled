@@ -295,7 +295,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-
 bool Preferences::dtdEnabled() const
 {
     return mDtdEnabled;

@@ -1,7 +1,14 @@
 import qbs
 
 QtGuiApplication {
-    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
+    cpp.rpaths: {
+        if (qbs.targetOS.contains("darwin"))
+            return ["@loader_path/../Frameworks"];
+        else if (project.linuxArchive)
+            return ["$ORIGIN/lib"]
+        else
+            return ["$ORIGIN/../lib"];
+    }
     cpp.cxxLanguageVersion: "c++11"
 
     Properties {
@@ -12,7 +19,7 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || project.linuxArchive)
                 return "";
             else if (qbs.targetOS.contains("darwin"))
                 return "Tiled.app/Contents/MacOS";

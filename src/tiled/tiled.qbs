@@ -20,23 +20,35 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
+    cpp.rpaths: {
+        if (qbs.targetOS.contains("darwin"))
+            return ["@loader_path/../Frameworks"];
+        else if (project.linuxArchive)
+            return ["$ORIGIN/lib"]
+        else
+            return ["$ORIGIN/../lib"];
+    }
 //    cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
-        var defs = ["TILED_VERSION=" + project.version];
+        var defs = [
+            "TILED_VERSION=" + project.version,
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII"
+        ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
+        if (project.linuxArchive)
+            defs.push("TILED_LINUX_ARCHIVE");
         return defs;
     }
 
     consoleApplication: false
 
     files: [
-        "Info.plist",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",
@@ -298,6 +310,11 @@ QtGuiApplication {
         "terrainmodel.h",
         "terrainview.cpp",
         "terrainview.h",
+        "texteditordialog.cpp",
+        "texteditordialog.h",
+        "texteditordialog.ui",
+        "textpropertyedit.cpp",
+        "textpropertyedit.h",
         "thumbnailrenderer.cpp",
         "thumbnailrenderer.h",
         "tileanimationeditor.cpp",
@@ -368,6 +385,7 @@ QtGuiApplication {
         name: "OS X"
         condition: qbs.targetOS.contains("osx")
         files: [
+            "Info.plist",
             "macsupport.h",
             "macsupport.mm",
         ]
@@ -376,7 +394,9 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
+            if (qbs.targetOS.contains("windows")
+                    || qbs.targetOS.contains("osx")
+                    || project.linuxArchive)
                 return ""
             else
                 return "bin"

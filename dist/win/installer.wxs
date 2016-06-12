@@ -109,7 +109,7 @@
             <File Id="COPYING" Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>
             <File Id="AUTHORS" Name="AUTHORS.txt" Source="$(var.RootDir)\AUTHORS"/>
             <File Id="README" Name="README.txt" Source="$(var.RootDir)\README.md"/>
-            <File Id="NEWS" Name="NEWS.txt" Source="$(var.RootDir)\NEWS"/>
+            <File Id="NEWS" Name="NEWS.txt" Source="$(var.RootDir)\NEWS.md"/>
             <File Id="LICENSE_APACHE" Name="LICENSE.APACHE.txt" Source="$(var.RootDir)\LICENSE.APACHE"/>
             <File Id="LICENSE_BSD" Name="LICENSE.BSD.txt" Source="$(var.RootDir)\LICENSE.BSD"/>
             <File Id="LICENSE_GPL" Name="LICENSE.GPL.txt" Source="$(var.RootDir)\LICENSE.GPL"/>

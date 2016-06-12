@@ -45,13 +45,7 @@ using namespace Tiled::Internal;
 template<typename Type>
 static Type comboBoxValue(QComboBox *comboBox)
 {
-#if QT_VERSION >= 0x050200
-    const QVariant currentData = comboBox->currentData();
-#else
-    const int currentIndex = comboBox->currentIndex();
-    const QVariant currentData = comboBox->itemData(currentIndex);
-#endif
-    return currentData.value<Type>();
+    return comboBox->currentData().value<Type>();
 }
 
 template<typename Type>

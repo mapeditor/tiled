@@ -168,8 +168,13 @@ private:
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,
-                                      const QString &name,
-                                      QtProperty *parent);
+                                      const QString &name);
+
+    using QtTreePropertyBrowser::addProperty;
+    QtVariantProperty *addProperty(PropertyId id,
+                                   int type,
+                                   const QString &name,
+                                   QtProperty *parent);
 
     void addProperties();
     void removeProperties();
