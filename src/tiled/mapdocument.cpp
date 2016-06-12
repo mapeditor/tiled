@@ -384,7 +384,7 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
                                          bounds, wrapX, wrapY));
     } else {
         mUndoStack->beginMacro(tr("Offset Map"));
-        foreach (const int layerIndex, layerIndexes) {
+        for (const int layerIndex : layerIndexes) {
             mUndoStack->push(new OffsetLayer(this, layerIndex, offset,
                                              bounds, wrapX, wrapY));
         }
