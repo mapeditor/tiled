@@ -42,20 +42,19 @@ QString Command::finalCommand() const
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
 
-        // todo: consider moving currentObject up into Document
-        /*
-        if (const Layer *layer = mapDocument->currentLayer()) {
-            finalCommand.replace(QLatin1String("%layername"),
-                                 QString(QLatin1String("\"%1\"")).arg(layer->name()));
+        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+            if (const Layer *layer = mapDocument->currentLayer()) {
+                finalCommand.replace(QLatin1String("%layername"),
+                                     QString(QLatin1String("\"%1\"")).arg(layer->name()));
+            }
         }
 
-        if (MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject())) {
+        if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
             finalCommand.replace(QLatin1String("%objecttype"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
             finalCommand.replace(QLatin1String("%objectid"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
         }
-        */
     }
 
     return finalCommand;
@@ -67,10 +66,9 @@ void Command::execute(bool inTerminal) const
     QSettings settings;
     QVariant variant = settings.value(QLatin1String("saveBeforeExecute"), true);
     if (variant.toBool()) {
-        // todo: Move the 'save' function up into Document
-//        Document *document = DocumentManager::instance()->currentDocument();
-//        if (document)
-//            document->save();
+        Document *document = DocumentManager::instance()->currentDocument();
+        if (document)
+            document->save(document->fileName());
     }
 
     // Start the process
