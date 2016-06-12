@@ -276,6 +276,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     w.writeAttribute(QLatin1String("columns"),
                      QString::number(tileset.columnCount()));
 
+    if (tileset.backgroundColor().isValid()) {
+        w.writeAttribute(QLatin1String("backgroundcolor"),
+                         colorToString(tileset.backgroundColor()));
+    }
+
     const QPoint offset = tileset.tileOffset();
     if (!offset.isNull()) {
         w.writeStartElement(QLatin1String("tileoffset"));

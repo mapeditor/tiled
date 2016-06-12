@@ -123,6 +123,22 @@ private:
     int mColumnCount;
 };
 
+class ChangeTilesetBackgroundColor : public QUndoCommand
+{
+public:
+    ChangeTilesetBackgroundColor(TilesetDocument *tilesetDocument,
+                                 const QColor &color);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    TilesetDocument *mTilesetDocument;
+    QColor mColor;
+};
+
 } // namespace Internal
 } // namespace Tiled
 

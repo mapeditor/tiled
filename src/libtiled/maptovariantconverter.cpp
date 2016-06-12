@@ -138,6 +138,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     tilesetVariant[QLatin1String("tilecount")] = tileset->tileCount();
     tilesetVariant[QLatin1String("columns")] = tileset->columnCount();
 
+    const QColor bgColor = tileset->backgroundColor();
+    if (bgColor.isValid())
+        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
+
     addProperties(tilesetVariant, tileset->properties());
 
     const QPoint offset = tileset->tileOffset();

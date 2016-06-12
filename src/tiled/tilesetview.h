@@ -66,6 +66,8 @@ public:
 
     bool drawGrid() const { return mDrawGrid; }
 
+    void setModel(QAbstractItemModel *model) override;
+
     /**
      * Convenience method that returns the model as a TilesetModel.
      */
@@ -109,6 +111,8 @@ public:
     int hoveredCorner() const { return mHoveredCorner; }
 
     QIcon imageMissingIcon() const;
+
+    void updateBackgroundColor();
 
 signals:
     void createNewTerrain(Tile *tile);

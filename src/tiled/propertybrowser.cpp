@@ -467,7 +467,7 @@ void PropertyBrowser::addMapProperties()
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
 
-    addProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
+    addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -591,6 +591,9 @@ void PropertyBrowser::addTilesetProperties()
     QtVariantProperty *tileOffsetProperty = addProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
     tileOffsetProperty->setEnabled(mTilesetDocument);
 
+    QtVariantProperty *backgroundProperty = addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
+    backgroundProperty->setEnabled(mTilesetDocument);
+
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
 
@@ -700,7 +703,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperty(mMapDocument, renderOrder);
         break;
     }
-    case ColorProperty:
+    case BackgroundColorProperty:
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
     default:
@@ -941,6 +944,11 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
         undoStack->push(new ChangeTilesetColumnCount(mTilesetDocument,
                                                      val.toInt()));
         break;
+    case BackgroundColorProperty:
+        Q_ASSERT(mTilesetDocument);
+        undoStack->push(new ChangeTilesetBackgroundColor(mTilesetDocument,
+                                                         val.value<QColor>()));
+        break;
     default:
         break;
     }
@@ -1054,8 +1062,10 @@ void PropertyBrowser::addProperties()
     case Object::TerrainType:           addTerrainProperties(); break;
     }
 
-    // Make sure the color property is collapsed, to save space
+    // Make sure the color properties are collapsed, to save space
     if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
+        setExpanded(items(colorProperty).first(), false);
+    if (QtProperty *colorProperty = mIdToProperty.value(BackgroundColorProperty))
         setExpanded(items(colorProperty).first(), false);
 
     // Add a node for the custom properties
@@ -1097,7 +1107,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
-        mIdToProperty[ColorProperty]->setValue(map->backgroundColor());
+        mIdToProperty[BackgroundColorProperty]->setValue(map->backgroundColor());
         break;
     }
     case Object::MapObjectType: {
@@ -1154,6 +1164,8 @@ void PropertyBrowser::updateProperties()
 
         if (QtVariantProperty *fileNameProperty = mIdToProperty.value(FileNameProperty))
             fileNameProperty->setValue(QVariant::fromValue(FilePath { tileset->fileName() }));
+
+        mIdToProperty[BackgroundColorProperty]->setValue(tileset->backgroundColor());
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());

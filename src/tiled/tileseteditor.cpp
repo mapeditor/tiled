@@ -291,6 +291,7 @@ void TilesetEditor::tilesetChanged()
     auto *tilesetView = mViewForTileset.value(tilesetDocument);
     auto *model = tilesetView->tilesetModel();
 
+    tilesetView->updateBackgroundColor();
     model->tilesetChanged();
 }
 

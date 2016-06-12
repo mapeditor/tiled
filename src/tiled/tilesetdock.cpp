@@ -599,8 +599,12 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
     if (index < 0)
         return;
 
-    if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
+    TilesetView *view = tilesetViewAt(index);
+
+    if (TilesetModel *model = view->tilesetModel()) {
+        view->updateBackgroundColor();
         model->tilesetChanged();
+    }
 }
 
 void TilesetDock::tilesetRemoved(Tileset *tileset)

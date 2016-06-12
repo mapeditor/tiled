@@ -157,5 +157,24 @@ void ChangeTilesetColumnCount::swap()
     emit mTilesetDocument->tilesetChanged(&mTileset);
 }
 
+ChangeTilesetBackgroundColor::ChangeTilesetBackgroundColor(TilesetDocument *tilesetDocument,
+                                                           const QColor &color)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Background Color"))
+    , mTilesetDocument(tilesetDocument)
+    , mColor(color)
+{
+}
+
+void ChangeTilesetBackgroundColor::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    QColor color = tileset.backgroundColor();
+    tileset.setBackgroundColor(mColor);
+    mColor = color;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
 } // namespace Internal
 } // namespace Tiled

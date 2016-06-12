@@ -191,6 +191,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
     const int columns = tileOffset[QLatin1String("columns")].toInt();
+    const QString bgColor = variantMap[QLatin1String("backgroundcolor")].toString();
 
     if (tileWidth <= 0 || tileHeight <= 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
@@ -204,6 +205,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
+
+    if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
+        tileset->setBackgroundColor(QColor(bgColor));
 
     QVariant imageVariant = variantMap[QLatin1String("image")];
 

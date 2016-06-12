@@ -123,6 +123,7 @@ private:
         OffsetXProperty,
         OffsetYProperty,
         ColorProperty,
+        BackgroundColorProperty,
         TileWidthProperty,
         TileHeightProperty,
         OrientationProperty,

@@ -311,6 +311,7 @@ SharedTileset MapReaderPrivate::readTileset()
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
+        QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -321,6 +322,9 @@ SharedTileset MapReaderPrivate::readTileset()
                                       tileSpacing, margin);
 
             tileset->setColumnCount(columns);
+
+            if (!bgColorString.isEmpty())
+                tileset->setBackgroundColor(QColor(bgColorString.toString()));
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {

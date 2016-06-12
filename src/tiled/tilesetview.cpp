@@ -446,6 +446,12 @@ qreal TilesetView::scale() const
     return mZoomable ? mZoomable->scale() : 1;
 }
 
+void TilesetView::setModel(QAbstractItemModel *model)
+{
+    QTableView::setModel(model);
+    updateBackgroundColor();
+}
+
 void TilesetView::setMarkAnimatedTiles(bool enabled)
 {
     if (mMarkAnimatedTiles == enabled)
@@ -748,4 +754,19 @@ void TilesetView::setHandScrolling(bool handScrolling)
         setCursor(QCursor(Qt::ClosedHandCursor));
     else
         unsetCursor();
+}
+
+void TilesetView::updateBackgroundColor()
+{
+    QColor base = Qt::darkGray;
+
+    if (TilesetModel *model = tilesetModel()) {
+        Tileset *tileset = model->tileset();
+        if (tileset->backgroundColor().isValid())
+            base = tileset->backgroundColor();
+    }
+
+    QPalette p = palette();
+    p.setColor(QPalette::Base, base);
+    setPalette(p);
 }

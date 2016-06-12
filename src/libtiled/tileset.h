@@ -134,6 +134,9 @@ public:
     QColor transparentColor() const;
     void setTransparentColor(const QColor &c);
 
+    const QColor &backgroundColor() const;
+    void setBackgroundColor(QColor color);
+
     void setImageReference(const ImageReference &reference);
 
     bool loadFromImage(const QImage &image, const QString &fileName);
@@ -198,6 +201,7 @@ private:
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
     bool mLoaded;
+    QColor mBackgroundColor;
 
     QWeakPointer<Tileset> mWeakPointer;
 };
@@ -388,6 +392,22 @@ inline int Tileset::imageHeight() const
 inline QColor Tileset::transparentColor() const
 {
     return mImageReference.transparentColor;
+}
+
+/**
+ * Returns the background color of this tileset.
+ */
+inline const QColor &Tileset::backgroundColor() const
+{
+    return mBackgroundColor;
+}
+
+/**
+ * Sets the background color of this tileset.
+ */
+inline void Tileset::setBackgroundColor(QColor color)
+{
+    mBackgroundColor = color;
 }
 
 /**
