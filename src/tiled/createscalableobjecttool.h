@@ -34,10 +34,15 @@ public:
     CreateScalableObjectTool(QObject *parent);
 
 protected:
+    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+
+private:
+    QPointF mStartPos;
 };
 
 } // namespace Internal

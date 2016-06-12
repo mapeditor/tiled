@@ -178,6 +178,11 @@ public:
     void setHeight(qreal height) { mSize.setHeight(height); }
 
     /**
+     * Sets the position and size of this object.
+     */
+    void setBounds(const QRectF &bounds);
+
+    /**
      * Sets the polygon associated with this object. The polygon is only used
      * when the object shape is set to either Polygon or Polyline.
      *
@@ -276,6 +281,12 @@ private:
     qreal mRotation;
     bool mVisible;
 };
+
+inline void MapObject::setBounds(const QRectF &bounds)
+{
+    mPos = bounds.topLeft();
+    mSize = bounds.size();
+}
 
 } // namespace Tiled
 
