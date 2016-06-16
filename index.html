@@ -491,11 +491,11 @@
       .done(function(data) {
         var earnings = data.earnings;
         var firstGoal = 500;
-        var secondGoal = 1100;
-        var firstPercentage = Math.min(100, Math.round(500 / secondGoal * 100));
-        var secondPercentage = Math.min(100, Math.round(earnings / secondGoal * 100) - firstPercentage);
+        var nextGoal = data.next_goal;
+        var firstPercentage = Math.min(100, Math.round(500 / nextGoal * 100));
+        var secondPercentage = Math.min(100, Math.round(earnings / nextGoal * 100) - firstPercentage);
 
-        $("#patreon-status").text("$" + earnings + " / $" + secondGoal);
+        $("#patreon-status").text("$" + earnings + " / $" + nextGoal);
         $("#goal-percentage").text((firstPercentage + secondPercentage) + "%");
         $("#first-goal-progressbar").css("width", firstPercentage + "%");
         $("#second-goal-progressbar").css("width", secondPercentage + "%");
