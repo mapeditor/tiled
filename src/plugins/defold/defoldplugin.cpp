@@ -66,6 +66,9 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     int layerWidth = 0;
     int layerHeight = 0;
 
+    int cellWidth = 0;
+    int cellHeight = 0;
+
     QString layers = "";
     foreach (Tiled::TileLayer *tileLayer, map->tileLayers())
     {
@@ -97,6 +100,8 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                     types[x].append(cell.tile->property("Type").toString());
                 else if (!cell.tile->property("Type").toString().isEmpty())
                     types[x][tileLayer->height() - y - 1] = cell.tile->property("Type").toString();
+                cellWidth = std::max(cell.tile->width(), cellWidth);
+                cellHeight = std::max(cell.tile->height(), cellHeight);
             }
         }
         layer_h["cells"] = cells;
@@ -131,22 +136,23 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream  unitsFileStream (&saveFile);
-    unitsFileStream << "return{" << endl;
-    unitsFileStream << "Types{" << endl;
+    unitsFileStream << "map_nodes ={" << endl;
 
-    for (int x = 0; x < layerWidth; ++x)
+    for (int y = 0; y < layerHeight; ++y)
     {
-        for (int y = 0; y < layerHeight; ++y)
+
+        unitsFileStream <<"{";
+        for (int x = 0; x < layerWidth; ++x)
         {
             unitsFileStream << "\t" << types[x][y] << ",";
         }
-        unitsFileStream <<"\t" << endl;
+        unitsFileStream <<"}," << endl;
     }
 
 
-    unitsFileStream << "}," << endl;
+    unitsFileStream << "}" << endl;
 
-    unitsFileStream << "Objects{" << endl;
+    unitsFileStream << "Objects={" << endl;
     foreach (Tiled::ObjectGroup *group, map->objectGroups())
     {
         foreach (Tiled::MapObject *object, group->objects())
@@ -155,12 +161,11 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
             QString name = object->name();
             QPointF pos = object->position();
             unitsFileStream << "\tname=\"" <<  name << "\"," << endl;
-            unitsFileStream << "\tx="  << pos.x() << "," << endl;
-            unitsFileStream << "\ty=" << pos.y() << "," << endl;
+            unitsFileStream << "\tx="  << floor((float)pos.x() / (cellWidth / 2.0f)) * cellWidth / 2 << "," << endl;
+            unitsFileStream << "\ty=" <<  floor((float)pos.y() / (cellHeight / 2.0f)) * cellHeight / 2 << "," << endl;
             unitsFileStream << "\t}," << endl;
         }
     }
-    unitsFileStream << "}" << endl;
     unitsFileStream << "}" << endl;
     return true;
 }
