@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
+                if (filter->contains(format->nameFilter(), Qt::CaseInsensitive)) {
                     chosenFormat = format;
                     break;
                 }
