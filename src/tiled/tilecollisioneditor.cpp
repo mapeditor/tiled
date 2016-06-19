@@ -120,7 +120,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     statusBar()->addPermanentWidget(zoomComboBox);
 
     Zoomable *zoomable = mMapView->zoomable();
-    zoomable->connectToComboBox(zoomComboBox);
+    zoomable->setComboBox(zoomComboBox);
 
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);

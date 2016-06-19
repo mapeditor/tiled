@@ -42,14 +42,17 @@
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
 #include "utils.h"
+#include "zoomable.h"
 
 #include <QAction>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStackedWidget>
+#include <QStatusBar>
 
 #include <functional>
 
@@ -104,6 +107,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
+    , mZoomable(nullptr)
+    , mZoomComboBox(new QComboBox)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
     , mCurrentTilesetDocument(nullptr)
@@ -130,6 +135,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addSeparator();
     mTilesetToolBar->addAction(mEditTerrain);
 
+    mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
+
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
@@ -151,6 +158,7 @@ void TilesetEditor::addDocument(Document *document)
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
+    view->setZoomable(new Zoomable(this));
 
     Tileset *tileset = tilesetDocument->tileset().data();
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
@@ -202,11 +210,19 @@ void TilesetEditor::setCurrentDocument(Document *document)
     if (mCurrentTilesetDocument == tilesetDocument)
         return;
 
+    if (mZoomable) {
+        mZoomable->setComboBox(nullptr);
+        mZoomable = nullptr;
+    }
+
     if (document) {
         TilesetView *tilesetView = mViewForTileset.value(tilesetDocument);
         Q_ASSERT(tilesetView);
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditTerrain(mEditTerrain->isChecked());
+
+        mZoomable = tilesetView->zoomable();
+        mZoomable->setComboBox(mZoomComboBox);
     }
 
     mPropertiesDock->setDocument(document);

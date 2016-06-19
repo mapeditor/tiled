@@ -140,7 +140,7 @@ private slots:
 
     void updateWindowTitle();
     void updateActions();
-    void updateZoomLabel();
+    void updateZoomActions();
     void openDocumentation();
     void becomePatron();
     void aboutTiled();

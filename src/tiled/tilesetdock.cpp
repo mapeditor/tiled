@@ -266,7 +266,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
-    mZoomable->connectToComboBox(mZoomComboBox);
+    mZoomable->setComboBox(mZoomComboBox);
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, &QStackedWidget::currentChanged,

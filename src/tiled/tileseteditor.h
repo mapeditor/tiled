@@ -26,6 +26,7 @@
 #include <QHash>
 
 class QAction;
+class QComboBox;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
@@ -44,6 +45,7 @@ class TilesetDocument;
 class TilesetView;
 class TileAnimationEditor;
 class TileCollisionEditor;
+class Zoomable;
 
 class TilesetEditor : public Editor
 {
@@ -102,6 +104,8 @@ private:
 
     PropertiesDock *mPropertiesDock;
     TerrainDock *mTerrainDock;
+    Zoomable *mZoomable;
+    QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
 

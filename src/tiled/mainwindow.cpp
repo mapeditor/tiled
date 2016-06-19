@@ -1465,10 +1465,10 @@ void MainWindow::updateActions()
 
 //    mCommandButton->setEnabled(mMapDocument);
 
-    updateZoomLabel(); // for the zoom actions
+    updateZoomActions();
 }
 
-void MainWindow::updateZoomLabel()
+void MainWindow::updateZoomActions()
 {
     MapView *mapView = mDocumentManager->currentMapView();
 

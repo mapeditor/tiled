@@ -106,8 +106,6 @@ private slots:
 
     void updateStatusInfoLabel(const QString &statusInfo);
 
-    void updateZoomLabel();
-
     void layerComboActivated(int index);
     void updateLayerComboIndex();
 

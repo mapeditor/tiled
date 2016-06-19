@@ -413,12 +413,9 @@ void MapEditor::setCurrentDocument(Document *document)
     mToolManager->setMapDocument(mapDocument);
 
     if (mZoomable) {
-        mZoomable->connectToComboBox(nullptr);
-
-        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                   this, SLOT(updateZoomLabel()));
+        mZoomable->setComboBox(nullptr);
+        mZoomable = nullptr;
     }
-    mZoomable = nullptr;
 
     mPropertiesDock->setDocument(mapDocument);
     mObjectsDock->setMapDocument(mapDocument);
@@ -436,10 +433,7 @@ void MapEditor::setCurrentDocument(Document *document)
 
         if (MapView *mapView = currentMapView()) {
             mZoomable = mapView->zoomable();
-            mZoomable->connectToComboBox(mZoomComboBox);
-
-            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
-                    this, SLOT(updateZoomLabel()));
+            mZoomable->setComboBox(mZoomComboBox);
         }
 
         uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
@@ -600,20 +594,6 @@ void MapEditor::cursorChanged(const QCursor &cursor)
 void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
-}
-
-void MapEditor::updateZoomLabel()
-{
-    MapView *mapView = currentMapView();
-    Zoomable *zoomable = mapView ? mapView->zoomable() : nullptr;
-
-    if (zoomable) {
-        mZoomComboBox->setEnabled(true);
-    } else {
-        int index = mZoomComboBox->findData((qreal)1.0);
-        mZoomComboBox->setCurrentIndex(index);
-        mZoomComboBox->setEnabled(false);
-    }
 }
 
 void MapEditor::layerComboActivated(int index)

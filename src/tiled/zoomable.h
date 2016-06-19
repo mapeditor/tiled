@@ -75,7 +75,7 @@ public:
     { return mScale != qreal(1) && mScale < qreal(2); }
 
     void setZoomFactors(const QVector<qreal>& factors);
-    void connectToComboBox(QComboBox *comboBox);
+    void setComboBox(QComboBox *comboBox);
 
 public slots:
     void zoomIn();
