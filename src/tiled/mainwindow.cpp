@@ -603,6 +603,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
     new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
     new QShortcut(tr("Y"), this, SLOT(flipVertically()));

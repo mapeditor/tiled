@@ -171,6 +171,10 @@ void CommandLineHandler::startNewInstance()
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION >= 0x050600
+    QGuiApplication::setFallbackSessionManagementEnabled(false);
+#endif
+
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
