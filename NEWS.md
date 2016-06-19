@@ -1,7 +1,8 @@
-### 0.16.2 (...)
+### 0.16.2 (19 June 2016)
 
 * JSON plugin: Fixed loading of custom properties on terrains
 * Lua plugin: Fixed missing export of object layer drawing order
+* Fixed --export-map [format] option
 * Fixed shortcuts for some tools when language is set to Dutch
 * Fixed issues when compiling against Qt 5.6 on OS X and Windows
 * Fixed crash on maximizing with Maps view open on Windows (Qt 5.6.1)

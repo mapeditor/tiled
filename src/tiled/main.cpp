@@ -294,7 +294,12 @@ int main(int argc, char *argv[])
     }
 
     if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
-        QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
+        // Convert files to absolute paths because the already running Tiled
+        // instance likely does not have the same working directory.
+        QStringList absolutePaths;
+        for (const QString &fileName : commandLine.filesToOpen())
+            absolutePaths.append(QFileInfo(fileName).absoluteFilePath());
+        QJsonDocument doc(QJsonArray::fromStringList(absolutePaths));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
@@ -317,7 +322,7 @@ int main(int argc, char *argv[])
                      &w, SLOT(openFile(QString)));
 
     if (!commandLine.filesToOpen().isEmpty()) {
-        foreach (const QString &fileName, commandLine.filesToOpen())
+        for (const QString &fileName : commandLine.filesToOpen())
             w.openFile(fileName);
     } else if (Preferences::instance()->openLastFilesOnStartup()) {
         w.openLastFiles();
