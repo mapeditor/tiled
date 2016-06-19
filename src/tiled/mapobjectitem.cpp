@@ -118,11 +118,11 @@ void MapObjectItem::paint(QPainter *painter,
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
 }
 
-void MapObjectItem::resizeObject(const QSizeF &size)
+void MapObjectItem::resizeObject(const QRectF &bounds)
 {
-    // Not using the MapObjectModel because it is also used during object
-    // creation, when the object is not actually part of the map yet.
-    mObject->setSize(size);
+    // Not using the MapObjectModel because it is used during object creation,
+    // when the object is not actually part of the map yet.
+    mObject->setBounds(bounds);
     syncWithMapObject();
 }
 

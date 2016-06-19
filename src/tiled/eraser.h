@@ -46,9 +46,17 @@ protected:
 
 private:
     void doErase(bool continuation);
+    QRect eraseArea() const;
 
-    bool mErasing;
+    enum Mode {
+        Nothing,
+        Erase,
+        RectangleErase
+    };
+
+    Mode mMode;
     QPoint mLastTilePos;
+    QPoint mStart;
 };
 
 } // namespace Internal
