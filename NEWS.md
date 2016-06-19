@@ -4,6 +4,7 @@
 * Lua plugin: Fixed missing export of object layer drawing order
 * Fixed --export-map [format] option
 * Fixed shortcuts for some tools when language is set to Dutch
+* Fixed a painting related bug affecting the top edge after AutoMapping
 * Fixed issues when compiling against Qt 5.6 on OS X and Windows
 * Fixed crash on maximizing with Maps view open on Windows (Qt 5.6.1)
 * Fixed focus issue while typing predefined object types (Qt 5.6)
