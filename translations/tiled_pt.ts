@@ -37,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">Adicionar Propriedade</translation>
+        <translation>Adicionar Propriedade</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nome da propriedade</translation>
     </message>
 </context>
 <context>
@@ -1083,7 +1083,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editor de Tipos de Objetos</translation>
     </message>
     <message>
         <location line="+67"/>
@@ -1321,7 +1321,7 @@ Linha %1, coluna %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Atualizações</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1331,7 +1331,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar automaticamente por atualizações</translation>
     </message>
     <message>
         <location line="+47"/>
