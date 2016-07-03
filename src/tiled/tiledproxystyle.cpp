@@ -36,7 +36,7 @@
  * Used under the terms of the GNU Lesser General Public License version 2.1
  */
 
-static Q_DECL_CONSTEXPR Q_ALWAYS_INLINE int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
+static Q_DECL_CONSTEXPR inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
 
 // internal helper. Converts an integer value to an unique string token
 template <typename T>
