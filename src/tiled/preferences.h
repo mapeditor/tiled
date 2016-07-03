@@ -68,7 +68,8 @@ public:
 
     enum ApplicationStyle {
         SystemDefaultStyle,
-        FusionStyle
+        FusionStyle,
+        TiledStyle
     };
 
     ApplicationStyle applicationStyle() const;

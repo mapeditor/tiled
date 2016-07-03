@@ -156,11 +156,11 @@ void PreferencesDialog::fromPreferences()
     mUi->styleCombo->setCurrentIndex(prefs->applicationStyle());
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
-    bool isFusionStyle = prefs->applicationStyle() == Preferences::FusionStyle;
-    mUi->baseColor->setEnabled(isFusionStyle);
-    mUi->baseColorLabel->setEnabled(isFusionStyle);
-    mUi->selectionColor->setEnabled(isFusionStyle);
-    mUi->selectionColorLabel->setEnabled(isFusionStyle);
+    bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
+    mUi->baseColor->setEnabled(!systemStyle);
+    mUi->baseColorLabel->setEnabled(!systemStyle);
+    mUi->selectionColor->setEnabled(!systemStyle);
+    mUi->selectionColorLabel->setEnabled(!systemStyle);
 
     // Auto-updater settings
     auto updater = AutoUpdater::instance();
@@ -186,11 +186,11 @@ void PreferencesDialog::styleComboChanged(int index)
 
     prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(index));
 
-    bool isFusionStyle = prefs->applicationStyle() == Preferences::FusionStyle;
-    mUi->baseColor->setEnabled(isFusionStyle);
-    mUi->baseColorLabel->setEnabled(isFusionStyle);
-    mUi->selectionColor->setEnabled(isFusionStyle);
-    mUi->selectionColorLabel->setEnabled(isFusionStyle);
+    bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
+    mUi->baseColor->setEnabled(!systemStyle);
+    mUi->baseColorLabel->setEnabled(!systemStyle);
+    mUi->selectionColor->setEnabled(!systemStyle);
+    mUi->selectionColorLabel->setEnabled(!systemStyle);
 }
 
 void PreferencesDialog::autoUpdateToggled(bool checked)

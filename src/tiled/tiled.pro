@@ -194,6 +194,7 @@ SOURCES += aboutdialog.cpp \
     tileanimationeditor.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
+    tiledproxystyle.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
@@ -348,6 +349,7 @@ HEADERS += aboutdialog.h \
     tileanimationeditor.h \
     tilecollisioneditor.h \
     tiledapplication.h \
+    tiledproxystyle.h \
     tilelayeritem.h \
     tilepainter.h \
     tileselectionitem.h \

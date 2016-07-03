@@ -324,6 +324,8 @@ QtGuiApplication {
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
+        "tiledproxystyle.cpp",
+        "tiledproxystyle.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
         "tilepainter.cpp",

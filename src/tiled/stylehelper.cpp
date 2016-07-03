@@ -21,6 +21,7 @@
 #include "stylehelper.h"
 
 #include "preferences.h"
+#include "tiledproxystyle.h"
 
 #include <QApplication>
 #include <QStyle>
@@ -98,10 +99,25 @@ void StyleHelper::initialize()
             desiredPalette = createPalette(preferences->baseColor(),
                                            preferences->selectionColor());
             break;
+        case Preferences::TiledStyle:
+            desiredStyle = QLatin1String("tiled");
+            desiredPalette = createPalette(preferences->baseColor(),
+                                           preferences->selectionColor());
+            break;
         }
 
-        if (QApplication::style()->objectName() != desiredStyle)
-            QApplication::setStyle(QStyleFactory::create(desiredStyle));
+        if (QApplication::style()->objectName() != desiredStyle) {
+            QStyle *style;
+
+            if (desiredStyle == QLatin1String("tiled")) {
+                style = QStyleFactory::create(QLatin1String("fusion"));
+                style = new TiledProxyStyle(style);
+            } else {
+                style = QStyleFactory::create(desiredStyle);
+            }
+
+            QApplication::setStyle(style);
+        }
 
         if (QApplication::palette() != desiredPalette)
             QApplication::setPalette(desiredPalette);
