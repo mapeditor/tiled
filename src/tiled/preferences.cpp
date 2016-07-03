@@ -26,8 +26,10 @@
 #include "pluginmanager.h"
 #include "tilesetmanager.h"
 
+#include <QApplication>
 #include <QDebug>
 #include <QFileInfo>
+#include <QPalette>
 #include <QSettings>
 #include <QStandardPaths>
 
