@@ -40,13 +40,15 @@
 #include "tileselectionitem.h"
 #include "imagelayer.h"
 #include "imagelayeritem.h"
+#include "stylehelper.h"
 #include "toolmanager.h"
 #include "tilesetmanager.h"
 
+#include <QApplication>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QKeyEvent>
-#include <QApplication>
+#include <QPalette>
 
 #include <cmath>
 
@@ -64,10 +66,12 @@ MapScene::MapScene(QObject *parent):
     mUnderMouse(false),
     mCurrentModifiers(Qt::NoModifier),
     mDarkRectangle(new QGraphicsRectItem),
-    mDefaultBackgroundColor(Qt::darkGray),
     mObjectSelectionItem(nullptr)
 {
-    setBackgroundBrush(mDefaultBackgroundColor);
+    updateDefaultBackgroundColor();
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &MapScene::updateDefaultBackgroundColor);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
@@ -254,6 +258,14 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 
     layerItem->setVisible(layer->isVisible());
     return layerItem;
+}
+
+void MapScene::updateDefaultBackgroundColor()
+{
+    mDefaultBackgroundColor = QGuiApplication::palette().dark().color();
+
+    if (!mMapDocument || !mMapDocument->map()->backgroundColor().isValid())
+        setBackgroundBrush(mDefaultBackgroundColor);
 }
 
 void MapScene::updateSceneRect()

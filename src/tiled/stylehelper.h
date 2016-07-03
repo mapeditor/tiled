@@ -27,17 +27,29 @@
 namespace Tiled {
 namespace Internal {
 
-class StyleHelper
+class StyleHelper : public QObject
 {
+    Q_OBJECT
+
 public:
     static void initialize();
+    static StyleHelper *instance() { Q_ASSERT(mInstance); return mInstance; }
 
-    static const QString &defaultStyle() { return mDefaultStyle; }
-    static const QPalette &defaultPalette() { return mDefaultPalette; }
+    const QString &defaultStyle() { return mDefaultStyle; }
+    const QPalette &defaultPalette() { return mDefaultPalette; }
+
+signals:
+    void styleApplied();
 
 private:
-    static QString mDefaultStyle;
-    static QPalette mDefaultPalette;
+    StyleHelper();
+
+    void apply();
+
+    QString mDefaultStyle;
+    QPalette mDefaultPalette;
+
+    static StyleHelper *mInstance;
 };
 
 } // namespace Internal

@@ -181,6 +181,7 @@ private slots:
 private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
+    void updateDefaultBackgroundColor();
     void updateSceneRect();
     void updateCurrentLayerHighlight();
 

@@ -30,8 +30,7 @@
 namespace Tiled {
 namespace Internal {
 
-QString StyleHelper::mDefaultStyle;
-QPalette StyleHelper::mDefaultPalette;
+StyleHelper *StyleHelper::mInstance;
 
 static QPalette createPalette(const QColor &windowColor,
                               const QColor &highlightColor)
@@ -79,55 +78,64 @@ static QPalette createPalette(const QColor &windowColor,
 
 void StyleHelper::initialize()
 {
-    mDefaultStyle = QApplication::style()->objectName();
-    mDefaultPalette = QApplication::palette();
+    Q_ASSERT(!mInstance);
+    mInstance = new StyleHelper;
+}
 
-    Preferences *preferences = Preferences::instance();
-
-    auto apply = [=]() {
-        QString desiredStyle;
-        QPalette desiredPalette;
-
-        switch (preferences->applicationStyle()) {
-        default:
-        case Preferences::SystemDefaultStyle:
-            desiredStyle = defaultStyle();
-            desiredPalette = defaultPalette();
-            break;
-        case Preferences::FusionStyle:
-            desiredStyle = QLatin1String("fusion");
-            desiredPalette = createPalette(preferences->baseColor(),
-                                           preferences->selectionColor());
-            break;
-        case Preferences::TiledStyle:
-            desiredStyle = QLatin1String("tiled");
-            desiredPalette = createPalette(preferences->baseColor(),
-                                           preferences->selectionColor());
-            break;
-        }
-
-        if (QApplication::style()->objectName() != desiredStyle) {
-            QStyle *style;
-
-            if (desiredStyle == QLatin1String("tiled")) {
-                style = QStyleFactory::create(QLatin1String("fusion"));
-                style = new TiledProxyStyle(style);
-            } else {
-                style = QStyleFactory::create(desiredStyle);
-            }
-
-            QApplication::setStyle(style);
-        }
-
-        if (QApplication::palette() != desiredPalette)
-            QApplication::setPalette(desiredPalette);
-    };
-
+StyleHelper::StyleHelper()
+    : mDefaultStyle(QApplication::style()->objectName())
+    , mDefaultPalette(QApplication::palette())
+{
     apply();
 
-    QObject::connect(preferences, &Preferences::applicationStyleChanged, apply);
-    QObject::connect(preferences, &Preferences::baseColorChanged, apply);
-    QObject::connect(preferences, &Preferences::selectionColorChanged, apply);
+    Preferences *preferences = Preferences::instance();
+    QObject::connect(preferences, &Preferences::applicationStyleChanged, this, &StyleHelper::apply);
+    QObject::connect(preferences, &Preferences::baseColorChanged, this, &StyleHelper::apply);
+    QObject::connect(preferences, &Preferences::selectionColorChanged, this, &StyleHelper::apply);
+}
+
+void StyleHelper::apply()
+{
+    Preferences *preferences = Preferences::instance();
+
+    QString desiredStyle;
+    QPalette desiredPalette;
+
+    switch (preferences->applicationStyle()) {
+    default:
+    case Preferences::SystemDefaultStyle:
+        desiredStyle = defaultStyle();
+        desiredPalette = defaultPalette();
+        break;
+    case Preferences::FusionStyle:
+        desiredStyle = QLatin1String("fusion");
+        desiredPalette = createPalette(preferences->baseColor(),
+                                       preferences->selectionColor());
+        break;
+    case Preferences::TiledStyle:
+        desiredStyle = QLatin1String("tiled");
+        desiredPalette = createPalette(preferences->baseColor(),
+                                       preferences->selectionColor());
+        break;
+    }
+
+    if (QApplication::style()->objectName() != desiredStyle) {
+        QStyle *style;
+
+        if (desiredStyle == QLatin1String("tiled")) {
+            style = QStyleFactory::create(QLatin1String("fusion"));
+            style = new TiledProxyStyle(style);
+        } else {
+            style = QStyleFactory::create(desiredStyle);
+        }
+
+        QApplication::setStyle(style);
+    }
+
+    if (QApplication::palette() != desiredPalette)
+        QApplication::setPalette(desiredPalette);
+
+    emit styleApplied();
 }
 
 } // namespace Internal
