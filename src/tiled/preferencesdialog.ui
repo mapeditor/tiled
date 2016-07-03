@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -207,7 +207,7 @@
            <widget class="QComboBox" name="styleCombo">
             <item>
              <property name="text">
-              <string>System default</string>
+              <string>Native (default)</string>
              </property>
             </item>
             <item>
