@@ -66,6 +66,20 @@ public:
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
 
+    enum ApplicationStyle {
+        SystemDefaultStyle,
+        FusionStyle
+    };
+
+    ApplicationStyle applicationStyle() const;
+    void setApplicationStyle(ApplicationStyle style);
+
+    QColor baseColor() const;
+    void setBaseColor(const QColor &color);
+
+    QColor selectionColor() const;
+    void setSelectionColor(const QColor &color);
+
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
 
@@ -153,6 +167,10 @@ signals:
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
 
+    void applicationStyleChanged(ApplicationStyle);
+    void baseColorChanged(const QColor &baseColor);
+    void selectionColorChanged(const QColor &selectionColor);
+
     void useOpenGLChanged(bool useOpenGL);
 
     void objectTypesChanged();
@@ -187,6 +205,9 @@ private:
     bool mShowTilesetGrid;
     bool mOpenLastFilesOnStartup;
     ObjectLabelVisiblity mObjectLabelVisibility;
+    ApplicationStyle mApplicationStyle;
+    QColor mBaseColor;
+    QColor mSelectionColor;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
@@ -210,6 +231,21 @@ private:
     static Preferences *mInstance;
 };
 
+
+inline Preferences::ApplicationStyle Preferences::applicationStyle() const
+{
+    return mApplicationStyle;
+}
+
+inline QColor Preferences::baseColor() const
+{
+    return mBaseColor;
+}
+
+inline QColor Preferences::selectionColor() const
+{
+    return mSelectionColor;
+}
 
 inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
 {

@@ -55,6 +55,8 @@ private:
 
     void retranslateUi();
 
+    void styleComboChanged(int index);
+
     void autoUpdateToggled(bool checked);
     void checkForUpdates();
 

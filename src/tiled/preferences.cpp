@@ -80,6 +80,10 @@ Preferences::Preferences()
     mUseOpenGL = boolValue("OpenGL");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", SystemDefaultStyle));
+    mBaseColor = colorValue("BaseColor", Qt::lightGray);
+    mSelectionColor = colorValue("SelectionColor", QApplication::palette().highlight().color());
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -156,6 +160,36 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     mObjectLabelVisibility = visibility;
     mSettings->setValue(QLatin1String("Interface/ObjectLabelVisibility"), visibility);
     emit objectLabelVisibilityChanged(visibility);
+}
+
+void Preferences::setApplicationStyle(ApplicationStyle style)
+{
+    if (mApplicationStyle == style)
+        return;
+
+    mApplicationStyle = style;
+    mSettings->setValue(QLatin1String("Interface/ApplicationStyle"), style);
+    emit applicationStyleChanged(style);
+}
+
+void Preferences::setBaseColor(const QColor &color)
+{
+    if (mBaseColor == color)
+        return;
+
+    mBaseColor = color;
+    mSettings->setValue(QLatin1String("Interface/BaseColor"), color.name());
+    emit baseColorChanged(color);
+}
+
+void Preferences::setSelectionColor(const QColor &color)
+{
+    if (mSelectionColor == color)
+        return;
+
+    mSelectionColor = color;
+    mSettings->setValue(QLatin1String("Interface/SelectionColor"), color.name());
+    emit selectionColorChanged(color);
 }
 
 void Preferences::setShowGrid(bool showGrid)

@@ -169,6 +169,50 @@ void CommandLineHandler::startNewInstance()
     newInstance = true;
 }
 
+
+static void applyStyle()
+{
+    QString defaultStyle = QApplication::style()->objectName();
+    QPalette defaultPalette = QApplication::palette();
+
+    Preferences *preferences = Preferences::instance();
+
+    auto apply = [=]() {
+        QString desiredStyle;
+        QPalette desiredPalette;
+
+        switch (preferences->applicationStyle()) {
+        default:
+        case Preferences::SystemDefaultStyle:
+            desiredStyle = defaultStyle;
+            desiredPalette = defaultPalette;
+            break;
+        case Preferences::FusionStyle:
+            desiredStyle = QLatin1String("fusion");
+            desiredPalette = QPalette(preferences->baseColor());
+
+            QColor selectionColor = preferences->selectionColor();
+            bool selectionIsDark = qGray(selectionColor.rgb()) < 110;
+            desiredPalette.setColor(QPalette::Highlight, selectionColor);
+            desiredPalette.setColor(QPalette::HighlightedText, selectionIsDark ? Qt::white : Qt::black);
+            break;
+        }
+
+        if (QApplication::style()->objectName() != desiredStyle)
+            QApplication::setStyle(QStyleFactory::create(desiredStyle));
+
+        if (QApplication::palette() != desiredPalette)
+            QApplication::setPalette(desiredPalette);
+    };
+
+    apply();
+
+    QObject::connect(preferences, &Preferences::applicationStyleChanged, apply);
+    QObject::connect(preferences, &Preferences::baseColorChanged, apply);
+    QObject::connect(preferences, &Preferences::selectionColorChanged, apply);
+}
+
+
 int main(int argc, char *argv[])
 {
 #if QT_VERSION >= 0x050600
@@ -193,23 +237,7 @@ int main(int argc, char *argv[])
     // Enable support for highres images (added in Qt 5.1, but off by default)
     a.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-#ifndef Q_OS_WIN
-    QString baseName = QApplication::style()->objectName();
-    if (baseName == QLatin1String("windows")) {
-        // Avoid Windows 95 style at all cost
-        if (QStyleFactory::keys().contains(QLatin1String("Fusion"))) {
-            baseName = QLatin1String("fusion"); // Qt5
-        } else { // Qt4
-            // e.g. if we are running on a KDE4 desktop
-            QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
-            if (desktopEnvironment == "kde")
-                baseName = QLatin1String("plastique");
-            else
-                baseName = QLatin1String("cleanlooks");
-        }
-        a.setStyle(QStyleFactory::create(baseName));
-    }
-#endif
+    applyStyle();
 
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
