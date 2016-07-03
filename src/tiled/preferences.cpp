@@ -26,10 +26,8 @@
 #include "pluginmanager.h"
 #include "tilesetmanager.h"
 
-#include <QApplication>
 #include <QDebug>
 #include <QFileInfo>
-#include <QPalette>
 #include <QSettings>
 #include <QStandardPaths>
 
@@ -85,7 +83,7 @@ Preferences::Preferences()
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", SystemDefaultStyle));
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
-    mSelectionColor = colorValue("SelectionColor", QApplication::palette().highlight().color());
+    mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();
 
     // Retrieve defined object types

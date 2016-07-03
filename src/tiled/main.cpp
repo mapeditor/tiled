@@ -30,6 +30,7 @@
 #include "preferences.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"
+#include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "winsparkleautoupdater.h"
@@ -39,8 +40,6 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtPlugin>
-#include <QStyle>
-#include <QStyleFactory>
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -170,49 +169,6 @@ void CommandLineHandler::startNewInstance()
 }
 
 
-static void applyStyle()
-{
-    QString defaultStyle = QApplication::style()->objectName();
-    QPalette defaultPalette = QApplication::palette();
-
-    Preferences *preferences = Preferences::instance();
-
-    auto apply = [=]() {
-        QString desiredStyle;
-        QPalette desiredPalette;
-
-        switch (preferences->applicationStyle()) {
-        default:
-        case Preferences::SystemDefaultStyle:
-            desiredStyle = defaultStyle;
-            desiredPalette = defaultPalette;
-            break;
-        case Preferences::FusionStyle:
-            desiredStyle = QLatin1String("fusion");
-            desiredPalette = QPalette(preferences->baseColor());
-
-            QColor selectionColor = preferences->selectionColor();
-            bool selectionIsDark = qGray(selectionColor.rgb()) < 110;
-            desiredPalette.setColor(QPalette::Highlight, selectionColor);
-            desiredPalette.setColor(QPalette::HighlightedText, selectionIsDark ? Qt::white : Qt::black);
-            break;
-        }
-
-        if (QApplication::style()->objectName() != desiredStyle)
-            QApplication::setStyle(QStyleFactory::create(desiredStyle));
-
-        if (QApplication::palette() != desiredPalette)
-            QApplication::setPalette(desiredPalette);
-    };
-
-    apply();
-
-    QObject::connect(preferences, &Preferences::applicationStyleChanged, apply);
-    QObject::connect(preferences, &Preferences::baseColorChanged, apply);
-    QObject::connect(preferences, &Preferences::selectionColorChanged, apply);
-}
-
-
 int main(int argc, char *argv[])
 {
 #if QT_VERSION >= 0x050600
@@ -237,7 +193,7 @@ int main(int argc, char *argv[])
     // Enable support for highres images (added in Qt 5.1, but off by default)
     a.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    applyStyle();
+    StyleHelper::initialize();
 
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();

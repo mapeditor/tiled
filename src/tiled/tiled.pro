@@ -182,6 +182,7 @@ SOURCES += aboutdialog.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
+    stylehelper.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -335,6 +336,7 @@ HEADERS += aboutdialog.h \
     sparkleautoupdater.h \
     stampbrush.h \
     standardautoupdater.h \
+    stylehelper.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

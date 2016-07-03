@@ -297,6 +297,8 @@ QtGuiApplication {
         "stampbrush.h",
         "standardautoupdater.cpp",
         "standardautoupdater.h",
+        "stylehelper.cpp",
+        "stylehelper.h",
         "terrainbrush.cpp",
         "terrainbrush.h",
         "terraindock.cpp",

@@ -140,6 +140,11 @@ protected:
 };
 
 
+/**
+ * Qt excludes OS X when implementing mouse wheel for switching tabs. However,
+ * we explicitly want this feature on the tileset tab bar as a possible means
+ * of navigation.
+ */
 class WheelEnabledTabBar : public QTabBar
 {
 public:
