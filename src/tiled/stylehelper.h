@@ -1,6 +1,6 @@
 /*
- * colorbutton.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * stylehelper.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,43 +18,41 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COLORBUTTON_H
-#define COLORBUTTON_H
+#ifndef TILED_INTERNAL_STYLEHELPER_H
+#define TILED_INTERNAL_STYLEHELPER_H
 
-#include <QColor>
-#include <QToolButton>
+#include <QPalette>
+#include <QString>
 
 namespace Tiled {
 namespace Internal {
 
-/**
- * A tool button for letting the user pick a color. When clicked it shows a
- * color dialog and it has an icon to represent the currently chosen color.
- */
-class ColorButton : public QToolButton
+class StyleHelper : public QObject
 {
     Q_OBJECT
 
 public:
-    ColorButton(QWidget *parent = nullptr);
+    static void initialize();
+    static StyleHelper *instance() { Q_ASSERT(mInstance); return mInstance; }
 
-    QColor color() const { return mColor; }
-    void setColor(const QColor &color);
+    const QString &defaultStyle() { return mDefaultStyle; }
+    const QPalette &defaultPalette() { return mDefaultPalette; }
 
 signals:
-    void colorChanged(const QColor &color);
-
-protected:
-    void changeEvent(QEvent *e) override;
+    void styleApplied();
 
 private:
-    void pickColor();
-    void updateIcon();
+    StyleHelper();
 
-    QColor mColor;
+    void apply();
+
+    QString mDefaultStyle;
+    QPalette mDefaultPalette;
+
+    static StyleHelper *mInstance;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // COLORBUTTON_H
+#endif // TILED_INTERNAL_STYLEHELPER_H

@@ -419,6 +419,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),

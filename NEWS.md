@@ -1,13 +1,31 @@
-### 0.16.2 (19 June 2016)
+### ...
+
+* Added option of using a platform-independent theme, which can be dark (#786)
+* Added Paste in Place action for objects (#1257)
+* Added custom property type 'color' (#1275)
+* Added custom property type 'file' (#1278)
+* Added option for removing invisible objects in resize dialog (#1032, by Mamed Ibrahimov)
+* Added support for editing multi-line string properties (#205)
+* Added %layername and %objectid to available command variables
+* Added support for scrolling in tileset view with middle mouse button (#1050, with Will Luongo)
+* Added a rectangle erase mode to the eraser (#1297)
+* Various object selection tool improvements
+* Allow creating rectangle/ellipse objects in any direction (#1300)
+* Enabled nested views and grouped dragging for stacked views (#1291)
+* Fixed updating object drag cursor when exiting resize handles (#1277)
+
+### 0.16.2 (7 July 2016)
 
 * JSON plugin: Fixed loading of custom properties on terrains
 * Lua plugin: Fixed missing export of object layer drawing order
+* Fixed tile index adjustment when tileset image changes width
 * Fixed --export-map [format] option
 * Fixed shortcuts for some tools when language is set to Dutch
 * Fixed a painting related bug affecting the top edge after AutoMapping
 * Fixed issues when compiling against Qt 5.6 on OS X and Windows
 * Fixed crash on maximizing with Maps view open on Windows (Qt 5.6.1)
 * Fixed focus issue while typing predefined object types (Qt 5.6)
+* Fixed silent fail when saving to restricted location on Windows (Qt 5.6)
 
 ### 0.16.1 (6 May 2016)
 

@@ -185,6 +185,7 @@ SOURCES += aboutdialog.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
+    stylehelper.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -195,6 +196,7 @@ SOURCES += aboutdialog.cpp \
     tileanimationeditor.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
+    tiledproxystyle.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
@@ -342,6 +344,7 @@ HEADERS += aboutdialog.h \
     sparkleautoupdater.h \
     stampbrush.h \
     standardautoupdater.h \
+    stylehelper.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
@@ -352,6 +355,7 @@ HEADERS += aboutdialog.h \
     tileanimationeditor.h \
     tilecollisioneditor.h \
     tiledapplication.h \
+    tiledproxystyle.h \
     tilelayeritem.h \
     tilepainter.h \
     tileselectionitem.h \
