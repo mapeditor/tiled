@@ -1,3 +1,19 @@
+### ...
+
+* Added option of using a platform-independent theme, which can be dark (#786)
+* Added Paste in Place action for objects (#1257)
+* Added custom property type 'color' (#1275)
+* Added custom property type 'file' (#1278)
+* Added option for removing invisible objects in resize dialog (#1032, by Mamed Ibrahimov)
+* Added support for editing multi-line string properties (#205)
+* Added %layername and %objectid to available command variables
+* Added support for scrolling in tileset view with middle mouse button (#1050, with Will Luongo)
+* Added a rectangle erase mode to the eraser (#1297)
+* Various object selection tool improvements
+* Allow creating rectangle/ellipse objects in any direction (#1300)
+* Enabled nested views and grouped dragging for stacked views (#1291)
+* Fixed updating object drag cursor when exiting resize handles (#1277)
+
 ### 0.16.2 (7 July 2016)
 
 * JSON plugin: Fixed loading of custom properties on terrains
