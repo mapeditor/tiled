@@ -428,8 +428,8 @@ void MapEditor::setCurrentDocument(Document *document)
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {
-        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                SLOT(updateLayerComboIndex()));
+        connect(mapDocument, &MapDocument::currentLayerIndexChanged,
+                this, &MapEditor::updateLayerComboIndex);
 //        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
 //                SLOT(updateActions()));
 //        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
@@ -447,6 +447,7 @@ void MapEditor::setCurrentDocument(Document *document)
     }
 
     mLayerComboBox->setEnabled(mapDocument);
+    updateLayerComboIndex();
 
     // Take the currently active tool to the new map view
     if (mViewWithTool) {
