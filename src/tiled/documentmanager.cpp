@@ -124,6 +124,11 @@ void DocumentManager::setEditor(Document::DocumentType documentType, Editor *edi
         mMapEditor = mapEditor;
 }
 
+Editor *DocumentManager::editor(Document::DocumentType documentType) const
+{
+    return mEditorForType.value(documentType);
+}
+
 void DocumentManager::deleteEditor(Document::DocumentType documentType)
 {
     Q_ASSERT(mEditorForType.contains(documentType));

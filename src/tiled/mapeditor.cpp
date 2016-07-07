@@ -507,6 +507,11 @@ MapView *MapEditor::currentMapView() const
     return container ? container->mapView() : nullptr;
 }
 
+void MapEditor::showMessage(const QString &text, int timeout)
+{
+    mMainWindow->statusBar()->showMessage(text, timeout);
+}
+
 void MapEditor::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)

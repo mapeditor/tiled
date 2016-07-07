@@ -82,7 +82,7 @@ public:
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
 
-signals:
+    void showMessage(const QString &text, int timeout = 0);
 
 public slots:
     void setSelectedTool(AbstractTool *tool);

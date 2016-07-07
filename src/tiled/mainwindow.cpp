@@ -847,8 +847,8 @@ void MainWindow::export_()
             exportFormat = &tmxFormat;
 
         if (exportFormat->write(mMapDocument->map(), exportFileName)) {
-//            statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
-//                                     3000);
+            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+            editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
         }
 
@@ -1313,25 +1313,27 @@ void MainWindow::editMapProperties()
 
 void MainWindow::autoMappingError(bool automatic)
 {
-    const QString title = tr("Automatic Mapping Error");
     QString error = mAutomappingManager->errorString();
     if (!error.isEmpty()) {
-        if (automatic)
-            ;//statusBar()->showMessage(error, 3000);
-        else
-            QMessageBox::critical(this, title, error);
+        if (automatic) {
+            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+            editor->showMessage(error, 3000);
+        } else {
+            QMessageBox::critical(this, tr("Automatic Mapping Error"), error);
+        }
     }
 }
 
 void MainWindow::autoMappingWarning(bool automatic)
 {
-    const QString title = tr("Automatic Mapping Warning");
     QString warning = mAutomappingManager->warningString();
     if (!warning.isEmpty()) {
-        if (automatic)
-            ;//statusBar()->showMessage(warning, 3000);
-        else
-            QMessageBox::warning(this, title, warning);
+        if (automatic) {
+            auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+            editor->showMessage(warning, 3000);
+        } else {
+            QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
+        }
     }
 }
 
