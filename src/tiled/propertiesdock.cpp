@@ -162,7 +162,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = isPartOfTileset(object);
-    bool enabled = object && (isTileset && editingTileset);
+    bool enabled = object && (!isTileset || editingTileset);
 
     mPropertyBrowser->setEnabled(enabled || isTileset);
     mActionAddProperty->setEnabled(enabled);
