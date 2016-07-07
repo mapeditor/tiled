@@ -116,6 +116,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
 {
     mTerrainDock->setVisible(false);
 
+#if QT_VERSION >= 0x050600
+    mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
+#endif
+    mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(new MainToolBar(mMainWindow));
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
