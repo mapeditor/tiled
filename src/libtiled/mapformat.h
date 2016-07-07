@@ -69,7 +69,9 @@ public:
 
     /**
      * Returns the absolute paths for the files that will be written by
-     * the map writer.
+     * this format for a given map.
+     *
+     * This is supported for Export formats only!
      */
     virtual QStringList outputFiles(const Map *, const QString &fileName) const
     { return QStringList(fileName); }

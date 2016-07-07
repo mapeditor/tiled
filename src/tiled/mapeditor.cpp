@@ -72,7 +72,9 @@
 #include <QStatusBar>
 #include <QToolBar>
 
-static char MAPSTATES_KEY[] = "MapEditor/MapStates";
+static const char SIZE_KEY[] = "MapEditor/Size";
+static const char STATE_KEY[] = "MapEditor/State";
+static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
 namespace Internal {
@@ -325,13 +327,29 @@ MapEditor::MapEditor(QObject *parent)
     setupQuickStamps();
     retranslateUi();
 
-    Preferences *prefs = Preferences::instance();
-    QSettings *settings = prefs->settings();
+    QSettings *settings = Preferences::instance()->settings();
     mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
 }
 
 MapEditor::~MapEditor()
 {
+}
+
+void MapEditor::saveState()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
+    settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+}
+
+void MapEditor::restoreState()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    QSize size = settings->value(QLatin1String(SIZE_KEY)).toSize();
+    if (!size.isEmpty()) {
+        mMainWindow->resize(size.width(), size.height());
+        mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
+    }
 }
 
 void MapEditor::addDocument(Document *document)

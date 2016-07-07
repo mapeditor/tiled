@@ -33,6 +33,7 @@ namespace Internal {
 MainToolBar::MainToolBar(QWidget *parent)
     : QToolBar(parent)
 {
+    setObjectName(QLatin1String("MainToolBar"));
     setWindowTitle(tr("Main Toolbar"));
     setToolButtonStyle(Qt::ToolButtonFollowStyle);
 

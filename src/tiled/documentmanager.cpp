@@ -133,6 +133,20 @@ void DocumentManager::deleteEditor(Document::DocumentType documentType)
     delete editor;
 }
 
+void DocumentManager::saveState()
+{
+    QHashIterator<Document::DocumentType, Editor*> iterator(mEditorForType);
+    while (iterator.hasNext())
+        iterator.next().value()->saveState();
+}
+
+void DocumentManager::restoreState()
+{
+    QHashIterator<Document::DocumentType, Editor*> iterator(mEditorForType);
+    while (iterator.hasNext())
+        iterator.next().value()->restoreState();
+}
+
 Document *DocumentManager::currentDocument() const
 {
     const int index = mTabBar->currentIndex();

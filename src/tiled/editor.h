@@ -35,6 +35,9 @@ class Editor : public QObject
 public:
     explicit Editor(QObject *parent = nullptr);
 
+    virtual void saveState() = 0;
+    virtual void restoreState() = 0;
+
     virtual void addDocument(Document *document) = 0;
     virtual void removeDocument(Document *document) = 0;
 
@@ -42,10 +45,6 @@ public:
     virtual Document *currentDocument() const = 0;
 
     virtual QWidget *editorWidget() const = 0;
-
-signals:
-
-public slots:
 };
 
 } // namespace Internal

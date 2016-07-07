@@ -1504,6 +1504,8 @@ void MainWindow::writeSettings()
     }
     mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
     mSettings.endGroup();
+
+    mDocumentManager->saveState();
 }
 
 void MainWindow::readSettings()
@@ -1518,6 +1520,8 @@ void MainWindow::readSettings()
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
     updateRecentFiles();
+
+    mDocumentManager->restoreState();
 }
 
 void MainWindow::updateWindowTitle()

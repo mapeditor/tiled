@@ -54,6 +54,9 @@ class TilesetEditor : public Editor
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
 
+    void saveState() override;
+    void restoreState() override;
+
     void addDocument(Document *document) override;
     void removeDocument(Document *document) override;
 

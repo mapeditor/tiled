@@ -68,6 +68,9 @@ public:
     explicit MapEditor(QObject *parent = nullptr);
     ~MapEditor();
 
+    void saveState() override;
+    void restoreState() override;
+
     void addDocument(Document *document) override;
     void removeDocument(Document *document) override;
 

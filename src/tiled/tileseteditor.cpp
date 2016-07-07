@@ -51,12 +51,16 @@
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QSettings>
 #include <QStackedWidget>
 #include <QStatusBar>
 
 #include <functional>
 
 #include <QDebug>
+
+static const char SIZE_KEY[] = "TilesetEditor/Size";
+static const char STATE_KEY[] = "TilesetEditor/State";
 
 namespace Tiled {
 namespace Internal {
@@ -134,6 +138,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     Utils::setThemeIcon(mRemoveTiles, "remove");
 
     mTilesetToolBar = mMainWindow->addToolBar(tr("Tileset"));
+    mTilesetToolBar->setObjectName(QLatin1String("TilesetToolBar"));
     mTilesetToolBar->addAction(mAddTiles);
     mTilesetToolBar->addAction(mRemoveTiles);
     mTilesetToolBar->addSeparator();
@@ -153,6 +158,23 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
 
     retranslateUi();
+}
+
+void TilesetEditor::saveState()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    settings->setValue(QLatin1String(SIZE_KEY), mMainWindow->size());
+    settings->setValue(QLatin1String(STATE_KEY), mMainWindow->saveState());
+}
+
+void TilesetEditor::restoreState()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    QSize size = settings->value(QLatin1String(SIZE_KEY)).toSize();
+    if (!size.isEmpty()) {
+        mMainWindow->resize(size.width(), size.height());
+        mMainWindow->restoreState(settings->value(QLatin1String(STATE_KEY)).toByteArray());
+    }
 }
 
 void TilesetEditor::addDocument(Document *document)
