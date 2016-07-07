@@ -23,6 +23,7 @@
 #include "changetileterrain.h"
 #include "map.h"
 #include "preferences.h"
+#include "stylehelper.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
@@ -32,6 +33,7 @@
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
+#include <QApplication>
 #include <QCoreApplication>
 #include <QGesture>
 #include <QGestureEvent>
@@ -389,8 +391,11 @@ TilesetView::TilesetView(QWidget *parent)
 
     grabGesture(Qt::PinchGesture);
 
-    connect(prefs, SIGNAL(showTilesetGridChanged(bool)),
-            SLOT(setDrawGrid(bool)));
+    connect(prefs, &Preferences::showTilesetGridChanged,
+            this, &TilesetView::setDrawGrid);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &TilesetView::updateBackgroundColor);
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -758,7 +763,7 @@ void TilesetView::setHandScrolling(bool handScrolling)
 
 void TilesetView::updateBackgroundColor()
 {
-    QColor base = Qt::darkGray;
+    QColor base = QApplication::palette().dark().color();
 
     if (TilesetModel *model = tilesetModel()) {
         Tileset *tileset = model->tileset();
