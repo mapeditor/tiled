@@ -1,3 +1,5 @@
+source: reference/tmx-map-format.md
+---
 # TMX Map Format #
 
 The TMX (Tile Map XML) map format used by [Tiled](http://www.mapeditor.org) is a flexible way to describe a tile based map. It can describe maps with any tile size, any amount of layers, any number of tile sets and it allows custom properties to be set on most elements. Beside tile layers, it can also contain groups of objects that can be placed freely.
