@@ -147,9 +147,26 @@ ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
  */
 void Tile::setFrames(const QVector<Frame> &frames)
 {
+    resetAnimation();
     mFrames = frames;
+}
+
+/**
+ * Resets the tile animation. Returns whether this caused the current tileId to
+ * change.
+ */
+bool Tile::resetAnimation()
+{
+    if (!isAnimated())
+        return false;
+
+    Frame previousFrame = mFrames.at(mCurrentFrameIndex);
+    Frame currentFrame = mFrames.at(0);
+
     mCurrentFrameIndex = 0;
     mUnusedTime = 0;
+
+    return previousFrame.tileId != currentFrame.tileId;
 }
 
 /**

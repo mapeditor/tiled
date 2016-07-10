@@ -21,6 +21,7 @@
 #include "changetileanimation.h"
 
 #include "mapdocument.h"
+#include "tilesetmanager.h"
 
 #include <QCoreApplication>
 
@@ -44,6 +45,7 @@ void ChangeTileAnimation::swap()
     mTile->setFrames(mFrames);
     mFrames = frames;
 
+    TilesetManager::instance()->resetTileAnimations();
     mMapDocument->emitTileAnimationChanged(mTile);
 }
 
