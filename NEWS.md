@@ -1,6 +1,6 @@
 ### ...
 
-* Added option of using a platform-independent theme, which can be dark (#786)
+* Added a platform-independent theme, which can be dark (#786)
 * Added Paste in Place action for objects (#1257)
 * Added custom property type 'color' (#1275)
 * Added custom property type 'file' (#1278)
