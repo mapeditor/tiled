@@ -24,19 +24,21 @@
 
   <?if $(var.Platform) = x64 ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?define SystemDir = "C:\windows\SysWOW64" ?>
+  <?define RedistributableMergeModule = "C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x86.msm" ?>
   <?else ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?define SystemDir = "C:\windows\system32" ?>
+  <?define RedistributableMergeModule = "C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x64.msm" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
            UpgradeCode="$(var.UpgradeCode)" 
            Language='1033' Codepage='1252' Version='$(var.Version)' Manufacturer='$(var.Manufacturer)'>
 
+    <!-- InstallerVersion is set to 405, which is required to use the Visual C++ 12.0 runtime merge modules -->
     <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
              Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
-             Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+             Languages='1033' Compressed='yes' SummaryCodepage='1252'
+             InstallerVersion='405'/>
 
     <MajorUpgrade AllowDowngrades="yes" />
 
@@ -72,6 +74,9 @@
     <Directory Id='TARGETDIR' Name='SourceDir'>
       <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
         <Directory Id='INSTALLDIR' Name='Tiled'>
+          <?ifndef MingwDir ?>
+          <Merge Id="VCRedist" SourceFile="$(var.RedistributableMergeModule)" DiskId="1" Language="0"/>
+          <?endif?>
 
           <Component Id='MainExecutable' Guid='{4DC82B82-E1A7-4829-92CC-2BEB40E361BD}'>
             <File Id='TiledEXE' Source='$(var.InstallRoot)\tiled.exe' KeyPath='yes'>
@@ -97,9 +102,6 @@
             <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
-            <?else?>
-            <File Id="MSVCP120" Source="$(var.SystemDir)\MSVCP120.DLL"/>
-            <File Id="MSVCR120" Source="$(var.SystemDir)\MSVCR120.DLL"/>
             <?endif?>
 
             <?ifdef Sparkle ?>
@@ -172,6 +174,7 @@
               <File Id="fil4F6A21C501F8FD2F62A48F9F675562F0" Source="$(var.InstallRoot)\translations\tiled_it.qm" />
               <File Id="fil474CB8EA4ACE7F46CDE67A76BD4C7898" Source="$(var.InstallRoot)\translations\tiled_ja.qm" />
               <File Id="fil0A08E9AD349EA1E74DB7693B48EA6223" Source="$(var.InstallRoot)\translations\tiled_lv.qm" />
+              <File Id="filDDBD0C2E6E5940978A44EC8B522C9C61" Source="$(var.InstallRoot)\translations\tiled_nb.qm" />
               <File Id="fil3D78804A5164D3A538A69CC410748489" Source="$(var.InstallRoot)\translations\tiled_nl.qm" />
               <File Id="fil2093FF1FA956B072F088284F7E8D9EB0" Source="$(var.InstallRoot)\translations\tiled_pl.qm" />
               <File Id="filE804DB50B5E2D66789D32FE2DAC6B890" Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
@@ -246,6 +249,9 @@
       <ComponentRef Id='PlatformPlugins' />
       <ComponentRef Id='ImageFormatPlugins' />
       <ComponentRef Id='ProgramMenuDir' />
+      <?ifndef MingwDir ?>
+      <MergeRef Id="VCRedist"/>
+      <?endif?>
     </Feature>
 
     <!-- Set up ARPINSTALLLOCATION property (http://blogs.technet.com/b/alexshev/archive/2008/02/09/from-msi-to-wix-part-2.aspx) -->
