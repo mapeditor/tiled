@@ -97,11 +97,7 @@ static QString colorToString(const QColor &color)
     if (!color.isValid())
         return QString();
 
-#if QT_VERSION >= 0x050200
     return color.name(QColor::HexArgb);
-#else
-    return color.name();
-#endif
 }
 
 QVariant toExportValue(const QVariant &value)

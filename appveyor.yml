@@ -5,8 +5,8 @@ environment:
   global:
     MINGW: C:\Qt\Tools\mingw492_32
   matrix:
-    - QTDIR: C:\Qt\5.5\mingw492_32
-    - QTDIR: C:\Qt\5.5\msvc2013_64
+    - QTDIR: C:\Qt\5.6\mingw49_32
+    - QTDIR: C:\Qt\5.6\msvc2013_64
 
 configuration: Release
 
@@ -23,7 +23,6 @@ build_script:
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
-  - cp dist/win/WiXModule.qbs C:\Qt\Tools\QtCreator\share\qtcreator\qbs\share\qbs\modules\wix\WiXModule.qbs
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
@@ -55,7 +54,36 @@ deploy:
   - provider: GitHub
     release: Tiled $(TILED_VERSION)
     auth_token:
-      secure: 14e8c76536d8c8ea67aca8c1d6fbd7b553181618
+      secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
     artifact: /.*\.msi/
     draft: true
+    on:
+        appveyor_repo_tag: true
 
+  - provider: FTP
+    protocol: sftp
+    host: update.mapeditor.org
+    username: bjorn
+    password:
+      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
+    folder: sparkle/snapshots-win
+    artifact: /.*\.(msi|7z)/
+    on:
+        branch: snapshot
+        appveyor_repo_tag: false
+
+  - provider: FTP
+    protocol: sftp
+    host: update.mapeditor.org
+    username: bjorn
+    password:
+      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
+    folder: sparkle
+    artifact: /appcast-win.*-snapshots\.xml/
+    on:
+        branch: snapshot
+        appveyor_repo_tag: false
+
+notifications:
+  - provider: Webhook
+    url: https://webhooks.gitter.im/e/6e48d432e0e0dd1b2d22

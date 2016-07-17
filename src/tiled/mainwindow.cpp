@@ -205,6 +205,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
+#if QT_VERSION >= 0x050600
+    setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
+#endif
+
     Preferences *preferences = Preferences::instance();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
@@ -234,7 +238,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
-#if QT_VERSION >= 0x050500
+#if QT_VERSION == 0x050500
     undoAction->setPriority(QAction::LowPriority);
 #endif
     redoAction->setPriority(QAction::LowPriority);
@@ -599,6 +603,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
     new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
     new QShortcut(tr("Y"), this, SLOT(flipVertically()));

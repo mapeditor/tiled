@@ -35,11 +35,10 @@ Dir.mktmpdir do |tempDir|
     FileUtils.cp_r binAppDir, tempDir
     FileUtils.cp   File.join(binDir,'tmxrasterizer'), File.join(tempDir, 'Tiled.app/Contents/MacOS')
     FileUtils.ln_s '/Applications', File.join(tempDir, 'Applications') #Symlink to Applications for easy install
-    FileUtils.cp File.join(baseDir, 'src/tiled/images/tmx-icon-mac.icns'), File.join(tempDir, 'Tiled.app/Contents/Resources')
 
     # Use macdeployqt to copy Qt frameworks to the app
     puts "Running macdeployqt"
-    `#{ENV['HOME']}/Qt/5.5/clang_64/bin/macdeployqt "#{tempDir}/Tiled.app"`
+    `#{ENV['HOME']}/Qt/5.6/clang_64/bin/macdeployqt "#{tempDir}/Tiled.app"`
     raise "macdeployqt error #{$?}" unless $? == 0
 
     # Modify plugins to use Qt frameworks contained within the app bundle (is there some way to get macdeployqt to do this?)

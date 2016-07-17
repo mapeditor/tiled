@@ -5,5 +5,4 @@ SUBDIRS = libtiled tiled plugins \
     tmxviewer \
     tmxrasterizer \
     automappingconverter \
-    terraingenerator \
-    defold
+    terraingenerator

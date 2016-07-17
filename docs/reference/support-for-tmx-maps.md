@@ -63,6 +63,9 @@ These libraries typically include only a TMX parser, but no rendering support. T
 ### Pike
 * [TMX parser](https://gitlab.com/tmx-parser/tmx-parser): a simple loader for TMX maps (CSV format only).
 
+### Processing
+* [linux-man/ptmx](https://github.com/linux-man/ptmx): Add Tiled maps to your Processing sketch.
+
 ### Python
 * [pytmxlib](http://pytmxlib.readthedocs.org/en/latest/): library for programmatic manipulation of TMX maps
 * [python-tmx](http://python-tmx.nongnu.org): a simple library for reading and writing TMX files.
@@ -120,6 +123,7 @@ Following entries are integrated solutions for specific game engines. They are t
 * [GameJs](http://gamejs.org) JavaScript library for game programming; a thin wrapper to draw on HTML5 canvas and other useful modules for game development
 * [Crafty](http://craftyjs.com) JavaScript HTML5 Game Engine; supports loading Tiled maps through an external component [TiledMapBuilder](https://github.com/Kibo/TiledMapBuilder).
 * [Phaser](http://www.phaser.io) A fast, free and fun open source framework supporting both JavaScript and TypeScript ([Tiled tutorial](http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/))
+* [linux-man/p5.tiledmap](https://github.com/linux-man/p5.tiledmap) adds Tiled maps to [p5.js](http://p5js.org/).
 
 ### indielib-crossplatform
 * [indielib cross-platform](http://www.indielib.com) supports loading TMX maps through the [C++/TinyXML based tmx-parser](http://code.google.com/p/tmx-parser/) by KonoM (BSD)
@@ -166,6 +170,7 @@ Following entries are integrated solutions for specific game engines. They are t
 * [Slick2D](http://slick.ninjacave.com) supports loading TMX maps through [TiledMap](http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html).
 
 ### Sprite Kit Framework
+* [SKTilemap](https://github.com/TomLinthwaite/SKTilemap) is built from the ground up in Swift. It's up to date, full of features and easy to integrate into any Sprite Kit project. Supports iOS and OSX.
 * [TilemapKit](http://tilemapkit.com) is an actively maintained tilemapping framework for Sprite Kit. It supports all TMX tilemap types, including staggered iso and all hex variations.
 * [JSTileMap](https://github.com/slycrel/JSTileMap) is a lightweight SpriteKit implementation of the TMX format supporting iOS 7 and OS X 10.9 and above.
 

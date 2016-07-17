@@ -21,7 +21,9 @@
 #include "colorbutton.h"
 
 #include <QColorDialog>
+#include <QEvent>
 #include <QPainter>
+#include <QStyle>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -29,9 +31,11 @@ using namespace Tiled::Internal;
 ColorButton::ColorButton(QWidget *parent)
     : QToolButton(parent)
 {
+    int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
+    setIconSize(QSize(defaultIconSize * 2, defaultIconSize));
     setColor(Qt::white);
 
-    connect(this, SIGNAL(clicked()), this, SLOT(pickColor()));
+    connect(this, &QToolButton::clicked, this, &ColorButton::pickColor);
 }
 
 void ColorButton::setColor(const QColor &color)
@@ -41,6 +45,36 @@ void ColorButton::setColor(const QColor &color)
 
     mColor = color;
 
+    updateIcon();
+
+    emit colorChanged(color);
+}
+
+void ColorButton::changeEvent(QEvent *e)
+{
+    QToolButton::changeEvent(e);
+
+    switch (e->type()) {
+    case QEvent::StyleChange: {
+        int defaultIconSize = style()->pixelMetric(QStyle::PM_ButtonIconSize);
+        setIconSize(QSize(defaultIconSize * 2, defaultIconSize));
+        updateIcon();
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void ColorButton::pickColor()
+{
+    QColor newColor = QColorDialog::getColor(mColor, this);
+    if (newColor.isValid())
+        setColor(newColor);
+}
+
+void ColorButton::updateIcon()
+{
     QSize size(iconSize());
     size.rwidth() -= 2;
     size.rheight() -= 2;
@@ -55,13 +89,4 @@ void ColorButton::setColor(const QColor &color)
     painter.drawRect(0, 0, pixmap.width() - 1, pixmap.height() - 1);
 
     setIcon(QIcon(pixmap));
-
-    emit colorChanged(color);
-}
-
-void ColorButton::pickColor()
-{
-    QColor newColor = QColorDialog::getColor(mColor, this);
-    if (newColor.isValid())
-        setColor(newColor);
 }

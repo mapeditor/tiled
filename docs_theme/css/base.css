@@ -19,6 +19,14 @@ div.col-md-9 {
 
 div.source-links {
     float: right;
+    margin-top: 20px;
+}
+div.source-links a {
+    color: white;
+    text-decoration: none;
+}
+div.source-links span.label-primary:hover {
+    background-color: #178acc;;
 }
 
 /*

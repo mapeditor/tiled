@@ -1,38 +1,43 @@
-# C++ objects and libs
-
-*.slo
-*.lo
+# General build artifacts
+build/
+bin/
+lib/tiled/plugins/*
+lib/*.so*
+Makefile*
 *.o
-*.a
-*.la
-*.lai
-*.so
-*.dll
-*.dylib
-
-# Qt-es
-
-/.qmake.cache
-/.qmake.stash
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
+*.qm
 *.moc
 moc_*.cpp
-qrc_*.cpp
 ui_*.h
-Makefile*
-*build-*
+qrc_*
 
-# QtCreator
+# Build artifacts on Windows
+tiled.exe
+tmxrasterizer.exe
+tmxviewer.exe
+automappingconverter.exe
+*.dll
+*.obj
+*.a
+*.lib
+*.exp
+*.intermediate.manifest
 
-*.autosave
+# Build artifacts on Mac
+translations/phony_target.app
 
-# QtCtreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
+# IDE files
+*.pro.user*
+*.qbs.user*
 
-# QtCtreator CMake
-CMakeLists.txt.user
+tests/test_mapreader
 
+# Ronn html outputs
+man/*.1.html
+
+# mkdocs and Doxygen
+site/
+html/
+
+# Work-in-progress worktrees
+wip/

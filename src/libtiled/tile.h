@@ -129,6 +129,7 @@ public:
     void setFrames(const QVector<Frame> &frames);
     bool isAnimated() const;
     int currentFrameIndex() const;
+    bool resetAnimation();
     bool advanceAnimation(int ms);
 
     bool imageLoaded() const;
