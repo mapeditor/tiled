@@ -1,6 +1,7 @@
 /*
  * Defold Tiled Plugin
  * Copyright 2016, Nikita Razdobreev <exzo0mex@gmail.com>
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -22,62 +23,52 @@
 
 #include "tokendefines.h"
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QSaveFile>
 #include <QTextStream>
-#include <QDebug>
-#include <tilelayer.h>
-#include <mapobject.h>
-#include <objectgroup.h>
 
-#include <algorithm>
-#include <cmath>
-
+#include "layer.h"
 #include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "layer.h"
 
-QStringList Defold::DefoldPlugin::outputFiles(const Tiled::Map *map, const QString &fileName) const
-{
-    QFileInfo fileInfo(fileName);
-    const QString base = fileInfo.completeBaseName() + QLatin1String("_");
-    QString path = fileName;
-    return QStringList(path);
-}
+#include <cmath>
 
-QString Defold::DefoldPlugin::ReplaceTags(QString context, QVariantHash map)
+namespace Defold {
+
+static QString replaceTags(QString context, const QVariantHash &map)
 {
-    QString str = context;
-    foreach(QString key, map.keys())
-    {
-        QStringList str_list = str.split("{{" + key +"}}");
-        if (str_list.length() == 1)  str = str_list[0];
-        if (str_list.length() == 2)  str = str_list[0] + map[key].toString() + str_list[1];
+    QHashIterator<QString,QVariant> it{map};
+    while (it.hasNext()) {
+        it.next();
+        context.replace(QLatin1String("{{") + it.key() + QLatin1String("}}"),
+                        it.value().toString());
     }
-    return str;
+    return context;
 }
 
-QString Defold::DefoldPlugin::nameFilter() const
+QStringList DefoldPlugin::outputFiles(const Tiled::Map *, const QString &fileName) const
+{
+    return QStringList() << fileName
+                         << fileName + QLatin1String(".script");
+}
+
+QString DefoldPlugin::nameFilter() const
 {
     return tr("Defold files (*.tilemap)");
 }
-QString Defold::DefoldPlugin::errorString() const
+
+QString DefoldPlugin::errorString() const
 {
     return mError;
 }
 
-Defold::DefoldPlugin::DefoldPlugin()
+DefoldPlugin::DefoldPlugin()
 {
-
 }
 
-bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     QVariantHash map_h;
 
@@ -90,9 +81,8 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     int cellHeight = 0;
 
     QString layers = "";
-    foreach (Tiled::TileLayer *tileLayer, map->tileLayers())
-    {
-        QVariantHash  layer_h;
+    foreach (Tiled::TileLayer *tileLayer, map->tileLayers()) {
+        QVariantHash layer_h;
         layer_h["id"] = tileLayer->name();
         layer_h["z"] = 0;
         layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
@@ -101,21 +91,21 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
         layerWidth = std::max(tileLayer->width(), layerWidth);
         layerHeight = std::max(tileLayer->height(), layerHeight);
 
-        for (int x = 0; x < tileLayer->width(); ++x)
-        {
+        for (int x = 0; x < tileLayer->width(); ++x) {
             QList<QString> t;
-            if (types.size() < tileLayer->width()) types.append(t);
-            for (int y = 0; y < tileLayer->height(); ++y)
-            {
-             const Tiled::Cell &cell = tileLayer->cellAt(x, y);
-                if (cell.tile == nullptr) continue;
+            if (types.size() < tileLayer->width())
+                types.append(t);
+            for (int y = 0; y < tileLayer->height(); ++y) {
+                const Tiled::Cell &cell = tileLayer->cellAt(x, y);
+                if (cell.isEmpty())
+                    continue;
                 QVariantHash cell_h;
                 cell_h["x"] = x;
                 cell_h["y"] = tileLayer->height() - y - 1;
                 cell_h["tile"] = cell.tile->id();
                 cell_h["h_flip"] = cell.flippedHorizontally ? 1 : 0;
                 cell_h["v_flip"] = cell.flippedVertically ? 1 : 0;
-                cells.append(ReplaceTags(cell_t, cell_h));
+                cells.append(replaceTags(QLatin1String(cell_t), cell_h));
                 if (types[x].size() < tileLayer->height())
                     types[x].append(cell.tile->property("Type").toString());
                 else if (!cell.tile->property("Type").toString().isEmpty())
@@ -125,67 +115,76 @@ bool Defold::DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
             }
         }
         layer_h["cells"] = cells;
-        layers.append(ReplaceTags(layer_t, layer_h));
+        layers.append(replaceTags(QLatin1String(layer_t), layer_h));
     }
     map_h["layers"] = layers;
     map_h["material"] = "/builtins/materials/tile_map.material";
     map_h["blend_mode"] = "BLEND_MODE_ALPHA";
     map_h["tile_set"] = "";
 
-    QString result = ReplaceTags(map_t, map_h);
-    QFile writeFile(fileName);
-    if (!writeFile.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
+    QString result = replaceTags(QLatin1String(map_t), map_h);
+    QSaveFile mapFile(fileName);
+    if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
-    QTextStream  stream (&writeFile);
+    QTextStream stream(&mapFile);
     stream << result;
 
-    if (writeFile.error() != QFile::NoError)
-    {
-        mError = writeFile.errorString();
+    if (mapFile.error() != QSaveFile::NoError) {
+        mError = mapFile.errorString();
         return false;
     }
 
-    QFile saveFile(fileName + ".script");
-    if (!saveFile.open(QIODevice::WriteOnly))
-    {
-            qWarning("Couldn't open save file.");
-            return false;
+    if (!mapFile.commit()) {
+        mError = mapFile.errorString();
+        return false;
     }
 
-    QTextStream  unitsFileStream (&saveFile);
-    unitsFileStream << "map_nodes ={" << endl;
+    QSaveFile scriptFile(fileName + QLatin1String(".script"));
+    if (!scriptFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
 
-    for (int y = 0; y < layerHeight; ++y)
-    {
+    QTextStream  unitsFileStream(&scriptFile);
+    unitsFileStream << "map_nodes = {" << endl;
 
+    for (int y = 0; y < layerHeight; ++y) {
         unitsFileStream <<"{";
-        for (int x = 0; x < layerWidth; ++x)
-        {
+        for (int x = 0; x < layerWidth; ++x) {
             unitsFileStream << "\t" << types[x][y] << ",";
         }
         unitsFileStream <<"}," << endl;
     }
 
-
     unitsFileStream << "}" << endl;
-
-    unitsFileStream << "Objects={" << endl;
-    foreach (Tiled::ObjectGroup *group, map->objectGroups())
-    {
-        foreach (Tiled::MapObject *object, group->objects())
-        {
+    unitsFileStream << endl;
+    unitsFileStream << "Objects = {" << endl;
+    foreach (Tiled::ObjectGroup *group, map->objectGroups()) {
+        for (Tiled::MapObject *object : group->objects()) {
             unitsFileStream << "\t{" << endl;
             QString name = object->name();
             QPointF pos = object->position();
-            unitsFileStream << "\tname=\"" <<  name << "\"," << endl;
-            unitsFileStream << "\tx="  << std::floor((float)pos.x() / (cellWidth / 2.0f)) * cellWidth / 2 << "," << endl;
-            unitsFileStream << "\ty=" <<  std::floor((float)pos.y() / (cellHeight / 2.0f)) * cellHeight / 2 << "," << endl;
+            unitsFileStream << "\tname = \"" <<  name << "\"," << endl;
+            unitsFileStream << "\tx = "  << std::floor((float)pos.x() / (cellWidth / 2.0f)) * cellWidth / 2 << "," << endl;
+            unitsFileStream << "\ty = " <<  std::floor((float)pos.y() / (cellHeight / 2.0f)) * cellHeight / 2 << "," << endl;
             unitsFileStream << "\t}," << endl;
         }
     }
     unitsFileStream << "}" << endl;
+
+    if (scriptFile.error() != QSaveFile::NoError) {
+        mError = scriptFile.errorString();
+        return false;
+    }
+
+    if (!scriptFile.commit()) {
+        mError = scriptFile.errorString();
+        return false;
+    }
+
     return true;
 }
+
+} // namespace Defold

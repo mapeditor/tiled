@@ -1,6 +1,7 @@
 /*
  * Defold Tiled Plugin
  * Copyright 2016, Nikita Razdobreev <exzo0mex@gmail.com>
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -38,8 +39,8 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
-    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
-    QString ReplaceTags (QString context, QVariantHash map);
+    QStringList outputFiles(const Tiled::Map *, const QString &fileName) const override;
+
 protected:
     QString nameFilter() const override;
 
@@ -47,6 +48,6 @@ private:
     QString mError;
 };
 
-}
+} // namespace Defold
 
 #endif
