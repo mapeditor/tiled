@@ -28,6 +28,11 @@ class TiledProxyStyle : public QProxyStyle
 public:
     TiledProxyStyle(QStyle *style = nullptr);
 
+    void drawControl(ControlElement element,
+                     const QStyleOption *option,
+                     QPainter *painter,
+                     const QWidget *widget) const override;
+
     void drawComplexControl(ComplexControl control,
                             const QStyleOptionComplex *option,
                             QPainter *painter,
@@ -41,6 +46,11 @@ public:
                            const QStyleOption *opt,
                            const QSize &contentsSize,
                            const QWidget *w) const override;
+
+    QRect subElementRect(SubElement subElement,
+                         const QStyleOption *option,
+                         const QWidget *widget) const override;
+
 };
 
 #endif // TILEDPROXYSTYLE_H

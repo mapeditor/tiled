@@ -26,6 +26,9 @@
 #include <QScrollBar>
 #include <QStringBuilder>
 #include <QStyleOptionComplex>
+#include <QtMath>
+
+Q_GUI_EXPORT int qt_defaultDpiX();
 
 /*
  * Below there are a lot of helper functions which are copied from various
@@ -122,6 +125,17 @@ static QColor backgroundColor(const QPalette &pal, const QWidget* widget)
     return pal.color(QPalette::Base);
 }
 
+static qreal dpiScaled(qreal value)
+{
+#ifdef Q_OS_MAC
+    // On mac the DPI is always 72 so we should not scale it
+    return value;
+#else
+    static const qreal scale = qreal(qt_defaultDpiX()) / 96.0;
+    return value * scale;
+#endif
+}
+
 } // namespace QStyleHelper
 
 static QColor getOutlineColor(const QPalette &pal)
@@ -153,10 +167,152 @@ static QColor innerContrastLine()
     return QColor(255, 255, 255, 30);
 }
 
+static QColor darkShade()
+{
+    return QColor(0, 0, 0, 60);
+}
+
+static QColor getTabFrameColor(const QPalette &pal)
+{
+    return getButtonColor(pal).lighter(104);
+}
+
+
 TiledProxyStyle::TiledProxyStyle(QStyle *style)
     : QProxyStyle(style)
 {
     setObjectName(QLatin1String("tiled"));
+}
+
+void TiledProxyStyle::drawControl(QStyle::ControlElement element,
+                                  const QStyleOption *option,
+                                  QPainter *painter,
+                                  const QWidget *widget) const
+{
+    QRect rect = option->rect;
+    QColor outline = getOutlineColor(option->palette);
+    QColor shadow = darkShade();
+
+    switch (element) {
+    case CE_TabBarTabShape:
+        painter->save();
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+
+            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
+                               && (tab->shape == QTabBar::RoundedNorth
+                                   || tab->shape == QTabBar::RoundedSouth));
+            bool selected = tab->state & State_Selected;
+            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
+                            || (rtlHorTabs
+                                && tab->position == QStyleOptionTab::Beginning));
+            bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
+            int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
+            rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
+
+            QRect r2(rect);
+            int x1 = r2.left();
+            int x2 = r2.right();
+            int y1 = r2.top();
+            int y2 = r2.bottom();
+
+            painter->setPen(innerContrastLine());
+
+            QTransform rotMatrix;
+            bool flip = false;
+            painter->setPen(shadow);
+
+            switch (tab->shape) {
+            case QTabBar::RoundedNorth:
+                break;
+            case QTabBar::RoundedSouth:
+                rotMatrix.rotate(180);
+                rotMatrix.translate(0, -rect.height() + 1);
+                rotMatrix.scale(-1, 1);
+                painter->setTransform(rotMatrix, true);
+                break;
+            case QTabBar::RoundedWest:
+                rotMatrix.rotate(180 + 90);
+                rotMatrix.scale(-1, 1);
+                flip = true;
+                painter->setTransform(rotMatrix, true);
+                break;
+            case QTabBar::RoundedEast:
+                rotMatrix.rotate(90);
+                rotMatrix.translate(0, - rect.width() + 1);
+                flip = true;
+                painter->setTransform(rotMatrix, true);
+                break;
+            default:
+                painter->restore();
+                QCommonStyle::drawControl(element, tab, painter, widget);
+                return;
+            }
+
+            if (flip) {
+                QRect tmp = rect;
+                rect = QRect(tmp.y(), tmp.x(), tmp.height(), tmp.width());
+                int temp = x1;
+                x1 = y1;
+                y1 = temp;
+                temp = x2;
+                x2 = y2;
+                y2 = temp;
+            }
+
+            painter->setRenderHint(QPainter::Antialiasing, true);
+            painter->translate(0.5, 0.5);
+
+            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
+                        getTabFrameColor(option->palette) :
+                        option->palette.window().color();
+
+            QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
+            QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
+            QPen outlinePen = outline.lighter(110);
+            if (selected) {
+                fillGradient.setColorAt(0, tabFrameColor.lighter(104));
+                //                QColor highlight = option->palette.highlight().color();
+                //                if (option->state & State_HasFocus && option->state & State_KeyboardFocusChange) {
+                //                    fillGradient.setColorAt(0, highlight.lighter(130));
+                //                    outlineGradient.setColorAt(0, highlight.darker(130));
+                //                    fillGradient.setColorAt(0.14, highlight);
+                //                    outlineGradient.setColorAt(0.14, highlight.darker(130));
+                //                    fillGradient.setColorAt(0.1401, tabFrameColor);
+                //                    outlineGradient.setColorAt(0.1401, highlight.darker(130));
+                //                }
+                fillGradient.setColorAt(1, tabFrameColor);
+                outlineGradient.setColorAt(1, outline);
+                outlinePen = QPen(outlineGradient, 1);
+            } else {
+                fillGradient.setColorAt(0, tabFrameColor.darker(108));
+                fillGradient.setColorAt(0.85, tabFrameColor.darker(108));
+                fillGradient.setColorAt(1, tabFrameColor.darker(116));
+            }
+
+            QRect drawRect = rect.adjusted(0, selected ? 0 : 2, 0, 3);
+            painter->setPen(outlinePen);
+            painter->save();
+            painter->setClipRect(rect.adjusted(-1, -1, 1, selected ? -2 : -3));
+            painter->setBrush(fillGradient);
+            painter->drawRoundedRect(drawRect.adjusted(0, 0, -1, -1), 2.0, 2.0);
+            painter->setBrush(Qt::NoBrush);
+            painter->setPen(innerContrastLine());
+            painter->drawRoundedRect(drawRect.adjusted(1, 1, -2, -1), 2.0, 2.0);
+            painter->restore();
+
+            if (selected) {
+                painter->fillRect(rect.left() + 1, rect.bottom() - 1, rect.width() - 2, rect.bottom() - 1, tabFrameColor);
+                painter->fillRect(QRect(rect.bottomRight() + QPoint(-2, -1), QSize(1, 1)), innerContrastLine());
+                painter->fillRect(QRect(rect.bottomLeft() + QPoint(0, -1), QSize(1, 1)), innerContrastLine());
+                painter->fillRect(QRect(rect.bottomRight() + QPoint(-1, -1), QSize(1, 1)), innerContrastLine());
+            }
+        }
+        painter->restore();
+        break;
+    default:
+        QProxyStyle::drawControl(element, option, painter, widget);
+        break;
+    }
 }
 
 void TiledProxyStyle::drawComplexControl(ComplexControl control,
@@ -380,4 +536,77 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     }
 
     return size;
+}
+
+QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyleOption *option, const QWidget *widget) const
+{
+    QRect r;
+
+    switch (subElement) {
+    case SE_TabBarTabLeftButton:    // moving the tab buttons closer to the corners
+    case SE_TabBarTabRightButton:
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+            bool selected = tab->state & State_Selected;
+            int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
+            int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
+            int hpadding = proxy()->pixelMetric(QStyle::PM_TabBarTabHSpace, option, widget) / 2;
+            hpadding = qMax(hpadding, 4); //workaround KStyle returning 0 because they workaround an old bug in Qt
+
+            bool verticalTabs = tab->shape == QTabBar::RoundedEast
+                    || tab->shape == QTabBar::RoundedWest
+                    || tab->shape == QTabBar::TriangularEast
+                    || tab->shape == QTabBar::TriangularWest;
+            QRect tr = tab->rect;
+            if (tab->shape == QTabBar::RoundedSouth || tab->shape == QTabBar::TriangularSouth)
+                verticalShift = -verticalShift;
+            if (verticalTabs) {
+                qSwap(horizontalShift, verticalShift);
+                horizontalShift *= -1;
+                verticalShift *= -1;
+            }
+            if (tab->shape == QTabBar::RoundedWest || tab->shape == QTabBar::TriangularWest)
+                horizontalShift = -horizontalShift;
+            tr.adjust(0, 0, horizontalShift, verticalShift);
+            if (selected)
+            {
+                tr.setBottom(tr.bottom() - verticalShift);
+                tr.setRight(tr.right() - horizontalShift);
+            }
+            QSize size = (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
+            int w = size.width();
+            int h = size.height();
+            int midHeight = static_cast<int>(qCeil(float(tr.height() - h) / 2));
+            int midWidth = ((tr.width() - w) / 2);
+            bool atTheTop = true;
+            switch (tab->shape) {
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+                atTheTop = (subElement == SE_TabBarTabLeftButton);
+                break;
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+                atTheTop = (subElement == SE_TabBarTabRightButton);
+                break;
+            default:
+                if (subElement == SE_TabBarTabLeftButton)
+                    r = QRect(tab->rect.x() + hpadding, midHeight, w, h);
+                else
+                    r = QRect(tab->rect.right() - w - hpadding, midHeight, w, h);
+                r = visualRect(tab->direction, tab->rect, r);
+            }
+            if (verticalTabs) {
+                if (atTheTop)
+                    r = QRect(midWidth, tr.y() + tab->rect.height() - hpadding - h, w, h);
+                else
+                    r = QRect(midWidth, tr.y() + hpadding, w, h);
+            }
+        }
+        break;
+
+    default:
+        r = QProxyStyle::subElementRect(subElement, option, widget);
+        break;
+    }
+
+    return r;
 }
