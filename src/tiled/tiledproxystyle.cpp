@@ -370,6 +370,10 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
         if (!size.isEmpty())
             size += QSize(16, 5);   // make the menu bar items itself wider
         break;
+    case CT_ItemViewItem:           // give item view items a little more space
+        size = QCommonStyle::sizeFromContents(type, opt, contentsSize, w);
+        size += QSize(0, QStyleHelper::dpiScaled(2.));
+        break;
     default:
         size = QProxyStyle::sizeFromContents(type, opt, contentsSize, w);
         break;
