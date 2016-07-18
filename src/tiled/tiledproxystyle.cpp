@@ -345,3 +345,35 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
         break;
     }
 }
+
+int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
+                                 const QStyleOption *option,
+                                 const QWidget *widget) const
+{
+    switch (metric) {
+    case PM_MenuBarItemSpacing:
+        return 0;                   // no space between menu bar items
+    default:
+        return QProxyStyle::pixelMetric(metric, option, widget);
+    }
+}
+
+QSize TiledProxyStyle::sizeFromContents(ContentsType type,
+                                        const QStyleOption *opt,
+                                        const QSize &contentsSize,
+                                        const QWidget *w) const
+{
+    QSize size(contentsSize);
+
+    switch (type) {
+    case CT_MenuBarItem:
+        if (!size.isEmpty())
+            size += QSize(16, 5);   // make the menu bar items itself wider
+        break;
+    default:
+        size = QProxyStyle::sizeFromContents(type, opt, contentsSize, w);
+        break;
+    }
+
+    return size;
+}

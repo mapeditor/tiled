@@ -32,6 +32,15 @@ public:
                             const QStyleOptionComplex *option,
                             QPainter *painter,
                             const QWidget *widget = nullptr) const override;
+
+    int pixelMetric(PixelMetric metric,
+                    const QStyleOption *option,
+                    const QWidget *widget) const override;
+
+    QSize sizeFromContents(ContentsType type,
+                           const QStyleOption *opt,
+                           const QSize &contentsSize,
+                           const QWidget *w) const override;
 };
 
 #endif // TILEDPROXYSTYLE_H
