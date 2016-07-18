@@ -21,12 +21,16 @@
 #include "tiledproxystyle.h"
 
 #include <QAbstractScrollArea>
+#include <QMainWindow>
 #include <QPainter>
 #include <QPixmapCache>
 #include <QScrollBar>
 #include <QStringBuilder>
 #include <QStyleOptionComplex>
 #include <QtMath>
+
+using namespace Tiled;
+using namespace Tiled::Internal;
 
 Q_GUI_EXPORT int qt_defaultDpiX();
 
@@ -178,13 +182,90 @@ static QColor getTabFrameColor(const QPalette &pal)
 }
 
 
-TiledProxyStyle::TiledProxyStyle(QStyle *style)
+TiledProxyStyle::TiledProxyStyle(const QPalette &palette, QStyle *style)
     : QProxyStyle(style)
+    , mPalette(palette)
+    , mIsDark(palette.window().color().value() <= 128)
 {
     setObjectName(QLatin1String("tiled"));
 }
 
-void TiledProxyStyle::drawControl(QStyle::ControlElement element,
+void TiledProxyStyle::setPalette(const QPalette &palette)
+{
+    mPalette = palette;
+    mIsDark = palette.window().color().value() <= 128;
+}
+
+void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
+                                    const QStyleOption *option,
+                                    QPainter *painter,
+                                    const QWidget *widget) const
+{
+    switch (element) {
+    case PE_FrameTabBarBase:
+        if (const QStyleOptionTabBarBase *tbb
+                = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
+            painter->save();
+            painter->setPen(QPen(getOutlineColor(option->palette)));
+
+            QStyleOptionTab tabOverlap;
+            tabOverlap.shape = tbb->shape;
+            int overlap = proxy()->pixelMetric(QStyle::PM_TabBarBaseOverlap, &tabOverlap, widget);
+            QColor tabFrameColor = option->palette.button().color().darker(116);
+            QLinearGradient fillGradient;
+            fillGradient.setColorAt(0, tabFrameColor.darker(108));
+            fillGradient.setColorAt(0.2, tabFrameColor);
+            fillGradient.setColorAt(1, tabFrameColor);
+
+            switch (tbb->shape) {
+            case QTabBar::RoundedNorth: {
+                QRect backgroundRect(tbb->rect.left(), tbb->tabBarRect.top(),
+                                     tbb->rect.width(), tbb->tabBarRect.height() - overlap);
+
+                fillGradient.setStart(backgroundRect.topLeft());
+                fillGradient.setFinalStop(backgroundRect.bottomLeft() + QPoint(0, overlap));
+
+                painter->fillRect(backgroundRect, fillGradient);
+                painter->drawLine(tbb->rect.topLeft(), tbb->rect.topRight());
+            }
+                break;
+            case QTabBar::RoundedWest:
+                painter->drawLine(tbb->rect.left(), tbb->rect.top(),
+                                  tbb->rect.left(), tbb->rect.bottom());
+                break;
+            case QTabBar::RoundedSouth: {
+                QRect backgroundRect(tbb->rect.left(), tbb->tabBarRect.top() + overlap,
+                                     tbb->rect.width(), tbb->tabBarRect.height() - overlap - 1);
+
+                fillGradient.setStart(backgroundRect.topLeft());
+                fillGradient.setFinalStop(backgroundRect.bottomLeft() + QPoint(0, overlap));
+
+                painter->fillRect(backgroundRect, fillGradient);
+                painter->drawLine(tbb->rect.left(), tbb->rect.bottom(),
+                                  tbb->rect.right(), tbb->rect.bottom());
+                break;
+            }
+            case QTabBar::RoundedEast:
+                painter->drawLine(tbb->rect.topRight(), tbb->rect.bottomRight());
+                break;
+            case QTabBar::TriangularNorth:
+            case QTabBar::TriangularEast:
+            case QTabBar::TriangularWest:
+            case QTabBar::TriangularSouth:
+                painter->restore();
+                QCommonStyle::drawPrimitive(element, option, painter, widget);
+                return;
+            }
+            painter->restore();
+        }
+        return;
+    default:
+        QProxyStyle::drawPrimitive(element, option, painter, widget);
+        break;
+    }
+}
+
+void TiledProxyStyle::drawControl(ControlElement element,
                                   const QStyleOption *option,
                                   QPainter *painter,
                                   const QWidget *widget) const
@@ -194,10 +275,140 @@ void TiledProxyStyle::drawControl(QStyle::ControlElement element,
     QColor shadow = darkShade();
 
     switch (element) {
+    case CE_MenuBarEmptyArea:       // Copied to change bottom line color
+        painter->save();
+    {
+        painter->fillRect(rect, option->palette.window());
+        painter->setPen(option->palette.mid().color());
+        painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+    }
+        painter->restore();
+        break;
+
+    case CE_ToolBar:                // A lot of code copied from Fusion style, just to tweak the colors
+        if (const QStyleOptionToolBar *toolBar = qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
+            // Reserve the beveled appearance only for mainwindow toolbars
+            if (widget && !(qobject_cast<const QMainWindow*> (widget->parentWidget())))
+                break;
+
+            // Draws the light line above and the dark line below menu bars and
+            // tool bars.
+            QLinearGradient gradient(option->rect.topLeft(), option->rect.bottomLeft());
+            if (!(option->state & State_Horizontal))
+                gradient = QLinearGradient(rect.left(), rect.center().y(),
+                                           rect.right(), rect.center().y());
+            gradient.setColorAt(0, option->palette.window().color().lighter(104));
+            gradient.setColorAt(1, option->palette.window().color().darker(104));
+            painter->fillRect(option->rect, gradient);
+
+            QColor light = option->palette.midlight().color();
+            QColor shadow = option->palette.mid().color();
+
+            QPen oldPen = painter->pen();
+            if (toolBar->toolBarArea == Qt::TopToolBarArea) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End
+                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                    // The end and onlyone top toolbar lines draw a double
+                    // line at the bottom to blend with the central
+                    // widget.
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.left(), option->rect.bottom() - 1,
+                                      option->rect.right(), option->rect.bottom() - 1);
+                } else {
+                    // All others draw a single dark line at the bottom.
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+                }
+                // All top toolbar lines draw a light line at the top.
+                painter->setPen(light);
+                painter->drawLine(option->rect.topLeft(), option->rect.topRight());
+            } else if (toolBar->toolBarArea == Qt::BottomToolBarArea) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End
+                        || toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
+                    // The end and middle bottom tool bar lines draw a dark
+                    // line at the bottom.
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+                }
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Beginning
+                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                    // The beginning and only one tool bar lines draw a
+                    // double line at the bottom to blend with the
+                    // status bar.
+                    // ### The styleoption could contain whether the
+                    // main window has a menu bar and a status bar, and
+                    // possibly dock widgets.
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.left(), option->rect.bottom() - 1,
+                                      option->rect.right(), option->rect.bottom() - 1);
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+                }
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.topLeft(), option->rect.topRight());
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.left(), option->rect.top() + 1,
+                                      option->rect.right(), option->rect.top() + 1);
+
+                } else {
+                    // All other bottom toolbars draw a light line at the top.
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.topLeft(), option->rect.topRight());
+                }
+            }
+            if (toolBar->toolBarArea == Qt::LeftToolBarArea) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
+                        || toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                    // The middle and left end toolbar lines draw a light
+                    // line to the left.
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.topLeft(), option->rect.bottomLeft());
+                }
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                    // All other left toolbar lines draw a dark line to the right
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.right() - 1, option->rect.top(),
+                                      option->rect.right() - 1, option->rect.bottom());
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
+                } else {
+                    // All other left toolbar lines draw a dark line to the right
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
+                }
+            } else if (toolBar->toolBarArea == Qt::RightToolBarArea) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
+                        || toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                    // Right middle and end toolbar lines draw the dark right line
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
+                }
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End
+                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                    // The right end and single toolbar draws the dark
+                    // line on its left edge
+                    painter->setPen(shadow);
+                    painter->drawLine(option->rect.topLeft(), option->rect.bottomLeft());
+                    // And a light line next to it
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.left() + 1, option->rect.top(),
+                                      option->rect.left() + 1, option->rect.bottom());
+                } else {
+                    // Other right toolbars draw a light line on its left edge
+                    painter->setPen(light);
+                    painter->drawLine(option->rect.topLeft(), option->rect.bottomLeft());
+                }
+            }
+            painter->setPen(oldPen);
+        }
+        break;
+
     case CE_TabBarTabShape:
         painter->save();
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
-
             bool rtlHorTabs = (tab->direction == Qt::RightToLeft
                                && (tab->shape == QTabBar::RoundedNorth
                                    || tab->shape == QTabBar::RoundedSouth));
@@ -266,38 +477,43 @@ void TiledProxyStyle::drawControl(QStyle::ControlElement element,
                         getTabFrameColor(option->palette) :
                         option->palette.window().color();
 
+            if (!selected) {
+                tabFrameColor = option->palette.button().color().darker(116);
+            }
+
             QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
-            QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
-            QPen outlinePen = outline.lighter(110);
+            QPen outlinePen = outline;
             if (selected) {
                 fillGradient.setColorAt(0, tabFrameColor.lighter(104));
-                //                QColor highlight = option->palette.highlight().color();
-                //                if (option->state & State_HasFocus && option->state & State_KeyboardFocusChange) {
-                //                    fillGradient.setColorAt(0, highlight.lighter(130));
-                //                    outlineGradient.setColorAt(0, highlight.darker(130));
-                //                    fillGradient.setColorAt(0.14, highlight);
-                //                    outlineGradient.setColorAt(0.14, highlight.darker(130));
-                //                    fillGradient.setColorAt(0.1401, tabFrameColor);
-                //                    outlineGradient.setColorAt(0.1401, highlight.darker(130));
-                //                }
+
+                // colorful selected tab
+//                QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
+//                QColor highlight = option->palette.highlight().color();
+//                fillGradient.setColorAt(0, highlight.lighter(130));
+//                outlineGradient.setColorAt(0, highlight.darker(130));
+//                fillGradient.setColorAt(0.10, highlight);
+//                outlineGradient.setColorAt(0.10, highlight.darker(130));
+//                fillGradient.setColorAt(0.1001, tabFrameColor);
+//                outlineGradient.setColorAt(0.1001, highlight.darker(130));
+//                outlineGradient.setColorAt(1, outline);
+//                outlinePen = QPen(outlineGradient, 1);
+
                 fillGradient.setColorAt(1, tabFrameColor);
-                outlineGradient.setColorAt(1, outline);
-                outlinePen = QPen(outlineGradient, 1);
             } else {
-                fillGradient.setColorAt(0, tabFrameColor.darker(108));
-                fillGradient.setColorAt(0.85, tabFrameColor.darker(108));
+                fillGradient.setColorAt(0, tabFrameColor);
+                fillGradient.setColorAt(0.85, tabFrameColor);
                 fillGradient.setColorAt(1, tabFrameColor.darker(116));
             }
 
-            QRect drawRect = rect.adjusted(0, selected ? 0 : 2, 0, 3);
+            QRect drawRect = rect.adjusted(0, 0, 0, 3);
             painter->setPen(outlinePen);
             painter->save();
             painter->setClipRect(rect.adjusted(-1, -1, 1, selected ? -2 : -3));
             painter->setBrush(fillGradient);
-            painter->drawRoundedRect(drawRect.adjusted(0, 0, -1, -1), 2.0, 2.0);
+            painter->drawRect(drawRect.adjusted(0, 0, -1, -1));
             painter->setBrush(Qt::NoBrush);
             painter->setPen(innerContrastLine());
-            painter->drawRoundedRect(drawRect.adjusted(1, 1, -2, -1), 2.0, 2.0);
+            painter->drawRect(drawRect.adjusted(1, 1, -2, -1));
             painter->restore();
 
             if (selected) {
@@ -316,9 +532,9 @@ void TiledProxyStyle::drawControl(QStyle::ControlElement element,
 }
 
 void TiledProxyStyle::drawComplexControl(ComplexControl control,
-                                    const QStyleOptionComplex *option,
-                                    QPainter *painter,
-                                    const QWidget *widget) const
+                                         const QStyleOptionComplex *option,
+                                         QPainter *painter,
+                                         const QWidget *widget) const
 {
     QColor buttonColor = getButtonColor(option->palette);
     QColor gradientStartColor = buttonColor.lighter(118);
@@ -326,7 +542,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
     QColor outline = getOutlineColor(option->palette);
 
     switch (control) {
-    case CC_ScrollBar:
+    case CC_ScrollBar:              // replaced for higher contrast and thinner slider
         painter->save();
         if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
             bool horizontal = scrollBar->orientation == Qt::Horizontal;
@@ -509,6 +725,9 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     switch (metric) {
     case PM_MenuBarItemSpacing:
         return 0;                   // no space between menu bar items
+    case PM_TabBarTabShiftHorizontal:
+    case PM_TabBarTabShiftVertical:
+        return 0;                   // no shifting of tabs
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
@@ -549,8 +768,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             bool selected = tab->state & State_Selected;
             int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
             int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = proxy()->pixelMetric(QStyle::PM_TabBarTabHSpace, option, widget) / 2;
-            hpadding = qMax(hpadding, 4); //workaround KStyle returning 0 because they workaround an old bug in Qt
+            int hpadding = QStyleHelper::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
 
             bool verticalTabs = tab->shape == QTabBar::RoundedEast
                     || tab->shape == QTabBar::RoundedWest
@@ -609,4 +827,17 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
     }
 
     return r;
+}
+
+int TiledProxyStyle::styleHint(StyleHint styleHint,
+                               const QStyleOption *option,
+                               const QWidget *widget,
+                               QStyleHintReturn *returnData) const
+{
+    switch (styleHint) {
+    case SH_EtchDisabledText:
+        return !mIsDark;    // etch only when bright
+    default:
+        return QProxyStyle::styleHint(styleHint, option, widget, returnData);
+    }
 }

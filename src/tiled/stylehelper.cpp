@@ -39,16 +39,16 @@ static QPalette createPalette(const QColor &windowColor,
     windowColor.getHsv(&hue, &sat, &windowValue);
 
     auto fromValue = [=](int value) {
-        return QColor::fromHsv(hue, sat, qMin(255, qMax(0, value)));
+        return QColor::fromHsv(hue, sat, qBound(0, value, 255));
     };
 
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
 
-    const int lightTextValue = qMin(255, baseValue + 192);
-    const int darkTextValue = qMax(0, baseValue - 192);
-    const int lightTextDisabledValue = (baseValue + lightTextValue) / 2;
-    const int darkTextDisabledValue = (baseValue + darkTextValue) / 2;
+    const int lightTextValue = qMin(255, windowValue + 160);
+    const int darkTextValue = qMax(0, windowValue - 160);
+    const int lightTextDisabledValue = (windowValue + lightTextValue) / 2;
+    const int darkTextDisabledValue = (windowValue + darkTextValue) / 2;
 
     const QColor lightText = fromValue(lightTextValue);
     const QColor darkText = fromValue(darkTextValue);
@@ -62,8 +62,10 @@ static QPalette createPalette(const QColor &windowColor,
     palette.setColor(QPalette::WindowText, isLight ? darkText : lightText);
     palette.setColor(QPalette::ButtonText, isLight ? darkText : lightText);
     palette.setColor(QPalette::Text, isLight ? darkText : lightText);
-    palette.setColor(QPalette::Light, QColor(255, 255, 255, 55));
+    palette.setColor(QPalette::Light, fromValue(windowValue + 55));
     palette.setColor(QPalette::Dark, fromValue(windowValue - 55));
+    palette.setColor(QPalette::Mid, fromValue(windowValue - 27));
+    palette.setColor(QPalette::Midlight, fromValue(windowValue + 27));
 
     palette.setColor(QPalette::Disabled, QPalette::WindowText, isLight ? darkDisabledText : lightDisabledText);
     palette.setColor(QPalette::Disabled, QPalette::ButtonText, isLight ? darkDisabledText : lightDisabledText);
@@ -124,7 +126,7 @@ void StyleHelper::apply()
 
         if (desiredStyle == QLatin1String("tiled")) {
             style = QStyleFactory::create(QLatin1String("fusion"));
-            style = new TiledProxyStyle(style);
+            style = new TiledProxyStyle(desiredPalette, style);
         } else {
             style = QStyleFactory::create(desiredStyle);
         }
@@ -132,8 +134,12 @@ void StyleHelper::apply()
         QApplication::setStyle(style);
     }
 
-    if (QApplication::palette() != desiredPalette)
+    if (QApplication::palette() != desiredPalette) {
         QApplication::setPalette(desiredPalette);
+
+        if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
+            style->setPalette(desiredPalette);
+    }
 
     emit styleApplied();
 }
