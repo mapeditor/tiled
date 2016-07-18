@@ -232,6 +232,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     mTabBar->setMovable(true);
     mTabBar->setUsesScrollButtons(true);
+    mTabBar->setExpanding(false);
 
     connect(mTabBar, SIGNAL(currentChanged(int)),
             SLOT(updateActions()));
