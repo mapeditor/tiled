@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+97"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>تبرع</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -42,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>تسمية الخاصية</translation>
     </message>
 </context>
 <context>
@@ -96,7 +96,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-189"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عرض النسخة</translation>
     </message>
     <message>
         <location line="+5"/>
