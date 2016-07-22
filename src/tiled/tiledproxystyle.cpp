@@ -733,24 +733,69 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     }
 }
 
+inline static bool verticalTabs(QTabBar::Shape shape)
+{
+    return shape == QTabBar::RoundedWest
+           || shape == QTabBar::RoundedEast
+           || shape == QTabBar::TriangularWest
+           || shape == QTabBar::TriangularEast;
+}
+
 QSize TiledProxyStyle::sizeFromContents(ContentsType type,
-                                        const QStyleOption *opt,
+                                        const QStyleOption *option,
                                         const QSize &contentsSize,
-                                        const QWidget *w) const
+                                        const QWidget *widget) const
 {
     QSize size(contentsSize);
 
     switch (type) {
-    case CT_MenuBarItem:
+    case CT_MenuBarItem:            // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(16, 5);   // make the menu bar items itself wider
+            size += QSize(QStyleHelper::dpiScaled(16.),
+                          QStyleHelper::dpiScaled(5.));
         break;
     case CT_ItemViewItem:           // give item view items a little more space
-        size = QCommonStyle::sizeFromContents(type, opt, contentsSize, w);
+        size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
         size += QSize(0, QStyleHelper::dpiScaled(2.));
         break;
+    case CT_TabBarTab:
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+            // This code is mostly taken from QTabBar::sizeHint, adjusted only
+            // to not add the PM_TabBarTabVSpace to the height of the buttons
+            // when calculating the tab height.
+            QSize iconSize = tab->icon.isNull() ? QSize(0, 0) : tab->iconSize;
+            int hframe = proxy()->pixelMetric(PM_TabBarTabHSpace, tab, widget);
+            int vframe = proxy()->pixelMetric(PM_TabBarTabVSpace, tab, widget);
+            const QFontMetrics &fm = option->fontMetrics;
+            int maxWidgetHeight = qMax(tab->leftButtonSize.height(), tab->rightButtonSize.height());
+            int maxWidgetWidth = qMax(tab->leftButtonSize.width(), tab->rightButtonSize.width());
+            int widgetWidth = 0;
+            int widgetHeight = 0;
+            int padding = 0;
+            if (!tab->leftButtonSize.isEmpty()) {
+                padding += 4;
+                widgetWidth += tab->leftButtonSize.width();
+                widgetHeight += tab->leftButtonSize.height();
+            }
+            if (!tab->rightButtonSize.isEmpty()) {
+                padding += 4;
+                widgetWidth += tab->rightButtonSize.width();
+                widgetHeight += tab->rightButtonSize.height();
+            }
+            if (!tab->icon.isNull())
+                padding += 4;
+            if (verticalTabs(tab->shape)) {
+                size = QSize(qMax(maxWidgetWidth, qMax(fm.height(), iconSize.height()) + vframe),
+                        fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe + widgetHeight + padding);
+            } else {
+                size = QSize(fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe
+                      + widgetWidth + padding,
+                      qMax(maxWidgetHeight, qMax(fm.height(), iconSize.height()) + vframe));
+            }
+        }
+        break;
     default:
-        size = QProxyStyle::sizeFromContents(type, opt, contentsSize, w);
+        size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
         break;
     }
 

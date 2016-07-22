@@ -55,9 +55,9 @@ public:
                     const QWidget *widget) const override;
 
     QSize sizeFromContents(ContentsType type,
-                           const QStyleOption *opt,
+                           const QStyleOption *option,
                            const QSize &contentsSize,
-                           const QWidget *w) const override;
+                           const QWidget *widget) const override;
 
     QRect subElementRect(SubElement subElement,
                          const QStyleOption *option,
