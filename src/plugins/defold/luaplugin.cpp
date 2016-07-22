@@ -134,13 +134,24 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writeProperties(writer, map->properties());
 
+    writer.writeStartTable("tilesets");
+
+    mGidMapper.clear();
+    unsigned firstGid = 1;
+    for (const SharedTileset &tileset : map->tilesets()) {
+        writeTileset(writer, tileset.data(), firstGid);
+        mGidMapper.insert(firstGid, tileset.data());
+        firstGid += tileset->nextTileId();
+    }
+    writer.writeEndTable();
+
     writer.writeStartTable("layers");
     for (const Layer *layer : map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
             break;
         case Layer::ObjectGroupType:
-            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer), "objectGroup");
+            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
             break;
         case Layer::ImageLayerType:
             writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
@@ -151,7 +162,6 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writer.writeEndTable();
 }
-
 void LuaPlugin::writeProperties(LuaTableWriter &writer,
                                 const Properties &properties)
 {
