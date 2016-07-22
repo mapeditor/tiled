@@ -9,5 +9,9 @@ TiledPlugin {
         "defoldplugin.h",
         "plugin.json",
         "tokendefines.h",
+        "luaplugin.cpp",
+        "luaplugin.h",
+        "luatablewriter.cpp",
+        "luatablewriter.h",
     ]
 }

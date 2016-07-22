@@ -25,6 +25,9 @@
 #include "defoldplugin_global.h"
 #include "tiled.h"
 
+#include "luaplugin.h"
+#include "luatablewriter.h"
+
 #include "mapformat.h"
 
 namespace Defold {
@@ -46,6 +49,7 @@ protected:
 
 private:
     QString mError;
+    Lua::LuaPlugin luaExport;
 };
 
 } // namespace Defold
