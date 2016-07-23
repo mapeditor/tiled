@@ -525,6 +525,21 @@ void TiledProxyStyle::drawControl(ControlElement element,
         }
         painter->restore();
         break;
+    case CE_TabBarTabLabel:
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+            // A small hack to change the color for non-selected tabs when using a dark theme.
+            // This is done in order to reduce the contrast of the text on the darker tabs.
+            if (mIsDark && !(tab->state & State_Selected)) {
+                QStyleOptionTab unselectedTab{*tab};
+                QColor textColor = unselectedTab.palette.color(QPalette::WindowText);
+                textColor.setAlpha(192);
+                unselectedTab.palette.setColor(QPalette::WindowText, textColor);
+                QProxyStyle::drawControl(element, &unselectedTab, painter, widget);
+            } else {
+                QProxyStyle::drawControl(element, option, painter, widget);
+            }
+        }
+        break;
     default:
         QProxyStyle::drawControl(element, option, painter, widget);
         break;
