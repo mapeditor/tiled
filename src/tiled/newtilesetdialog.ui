@@ -94,6 +94,13 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="5">
+       <widget class="QPushButton" name="browseButton">
+        <property name="text">
+         <string>&amp;Browse...</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="sourceLabel">
         <property name="sizePolicy">
@@ -104,13 +111,6 @@
         </property>
         <property name="text">
          <string>Source:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="browseButton">
-        <property name="text">
-         <string>&amp;Browse...</string>
         </property>
        </widget>
       </item>
@@ -128,7 +128,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="1" column="4">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -141,7 +141,7 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="0" colspan="5">
+      <item row="2" column="0" colspan="6">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="1">
          <widget class="QSpinBox" name="tileHeight">
@@ -275,8 +275,22 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1" colspan="3">
+      <item row="0" column="1" colspan="4">
        <widget class="QLineEdit" name="image"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="QToolButton" name="dropperButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="tiled.qrc">
+          <normaloff>:/images/22x22/stock-tool-by-color-select.png</normaloff>:/images/22x22/stock-tool-by-color-select.png</iconset>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -313,7 +327,9 @@
   <tabstop>spacing</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="tiled.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -360,6 +376,22 @@
     <hint type="destinationlabel">
      <x>235</x>
      <y>196</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useTransparentColor</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dropperButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>84</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>196</x>
+     <y>178</y>
     </hint>
    </hints>
   </connection>

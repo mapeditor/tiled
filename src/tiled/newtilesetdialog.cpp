@@ -23,6 +23,7 @@
 
 #include "preferences.h"
 #include "utils.h"
+#include "imagecolorpickerwidget.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -62,6 +63,8 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mNameWasEdited(false)
 {
     mUi->setupUi(this);
+    popup = new ImageColorPickerWidget(mUi->dropperButton);
+    popup->setWindowFlags(Qt::Popup);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Restore previously used settings
@@ -86,7 +89,8 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
             SLOT(tilesetTypeChanged(int)));
-
+    connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
+    connect(popup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -94,6 +98,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
 NewTilesetDialog::~NewTilesetDialog()
 {
     delete mUi;
+    delete popup;
 }
 
 /**
@@ -271,4 +276,14 @@ void NewTilesetDialog::updateOkButton()
         enabled &= !mUi->image->text().isEmpty();
 
     okButton->setEnabled(enabled);
+}
+
+void NewTilesetDialog::pickColorFromImage()
+{
+    popup->selectColor(mPath);
+}
+
+void NewTilesetDialog::colorSelected(QColor color)
+{
+    mUi->colorButton->setColor(color);
 }
