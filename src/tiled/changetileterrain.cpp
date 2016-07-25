@@ -47,8 +47,10 @@ ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
 }
 
 ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
-                                     const Changes &changes)
-    : mMapDocument(mapDocument)
+                                     const Changes &changes,
+                                     QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mTileset(changes.begin().key()->tileset())
     , mChanges(changes)
     , mMergeable(true)

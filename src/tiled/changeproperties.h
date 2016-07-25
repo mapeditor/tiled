@@ -46,7 +46,9 @@ public:
     ChangeProperties(MapDocument *mapDocument,
                      const QString &kind,
                      Object *object,
-                     const Properties &newProperties);
+                     const Properties &newProperties,
+                     QUndoCommand *parent = nullptr);
+
     void undo() override;
     void redo() override;
 

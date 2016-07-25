@@ -35,9 +35,23 @@ ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
     , mTiles(tiles)
 {
     mProbabilities.reserve(tiles.size());
-    for (int i = 0; i < tiles.size(); ++ i) {
+    for (int i = 0; i < tiles.size(); ++ i)
         mProbabilities.append(probability);
-    }
+
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
+
+ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+                                             const QList<Tile *> &tiles,
+                                             const QList<float> &probabilities,
+                                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mTiles(tiles)
+    , mProbabilities(probabilities)
+{
+    Q_ASSERT(mTiles.size() == mProbabilities.size());
     setText(QCoreApplication::translate("Undo Commands",
                                         "Change Tile Probability"));
 }

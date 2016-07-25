@@ -30,9 +30,11 @@ namespace Internal {
 
 ChangeTileAnimation::ChangeTileAnimation(MapDocument *mapDocument,
                                          Tile *tile,
-                                         const QVector<Frame> &frames)
+                                         const QVector<Frame> &frames,
+                                         QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate(
-                       "Undo Commands", "Change Tile Animation"))
+                       "Undo Commands", "Change Tile Animation"),
+                   parent)
     , mMapDocument(mapDocument)
     , mTile(tile)
     , mFrames(frames)

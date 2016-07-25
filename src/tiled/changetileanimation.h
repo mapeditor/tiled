@@ -35,7 +35,8 @@ class ChangeTileAnimation : public QUndoCommand
 public:
     ChangeTileAnimation(MapDocument *mapDocument,
                         Tile *tile,
-                        const QVector<Frame> &frames);
+                        const QVector<Frame> &frames,
+                        QUndoCommand *parent = nullptr);
 
     void undo() override { swap(); }
     void redo() override { swap(); }

@@ -30,8 +30,10 @@ using namespace Tiled::Internal;
 ChangeProperties::ChangeProperties(MapDocument *mapDocument,
                                    const QString &kind,
                                    Object *object,
-                                   const Properties &newProperties)
-    : mMapDocument(mapDocument)
+                                   const Properties &newProperties,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mObject(object)
     , mNewProperties(newProperties)
 {

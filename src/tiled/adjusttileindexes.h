@@ -38,7 +38,17 @@ class MapDocument;
 class AdjustTileIndexes : public QUndoCommand
 {
 public:
-    AdjustTileIndexes(MapDocument *mapDocument, Tileset *tileset);
+    AdjustTileIndexes(MapDocument *mapDocument, const Tileset &tileset);
+};
+
+/**
+ * Adjusts tile meta-data based on a change in the number of columns in a
+ * tileset image.
+ */
+class AdjustTileMetaData : public QUndoCommand
+{
+public:
+    AdjustTileMetaData(MapDocument *mapDocument, const Tileset &tileset);
 };
 
 } // namespace Internal
