@@ -85,21 +85,21 @@ static QPixmap colorizedImage(const QString &fileName, const QColor &color, int 
             image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied);
         int width = image.width();
         int height = image.height();
-        int source = color.rgba();
-        unsigned char sourceRed = qRed(source);
-        unsigned char sourceGreen = qGreen(source);
-        unsigned char sourceBlue = qBlue(source);
+        QRgb source = color.rgba();
+        int sourceRed = qRed(source);
+        int sourceGreen = qGreen(source);
+        int sourceBlue = qBlue(source);
         for (int y = 0; y < height; ++y)
         {
-            QRgb *data = (QRgb*) image.scanLine(y);
+            QRgb *data = reinterpret_cast<QRgb*>(image.scanLine(y));
             for (int x = 0 ; x < width ; x++) {
                 QRgb col = data[x];
-                unsigned int colorDiff = (qBlue(col) - qRed(col));
-                unsigned char gray = qGreen(col);
-                unsigned char red = gray + qt_div_255(sourceRed * colorDiff);
-                unsigned char green = gray + qt_div_255(sourceGreen * colorDiff);
-                unsigned char blue = gray + qt_div_255(sourceBlue * colorDiff);
-                unsigned char alpha = qt_div_255(qAlpha(col) * qAlpha(source));
+                int colorDiff = (qBlue(col) - qRed(col));
+                int gray = qGreen(col);
+                int red = gray + qt_div_255(sourceRed * colorDiff);
+                int green = gray + qt_div_255(sourceGreen * colorDiff);
+                int blue = gray + qt_div_255(sourceBlue * colorDiff);
+                int alpha = qt_div_255(qAlpha(col) * qAlpha(source));
                 data[x] = qRgba(std::min(alpha, red),
                                 std::min(alpha, green),
                                 std::min(alpha, blue),
