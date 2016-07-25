@@ -41,9 +41,6 @@ static QPalette createPalette(const QColor &windowColor,
     auto fromValue = [=](int value) {
         return QColor::fromHsv(hue, sat, qBound(0, value, 255));
     };
-    auto gray = [](int value, int a = 255) {
-        return QColor(value, value, value, a);
-    };
 
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
@@ -51,10 +48,10 @@ static QPalette createPalette(const QColor &windowColor,
     const int lightTextValue = qMin(255, windowValue + 160);
     const int darkTextValue = qMax(0, windowValue - 160);
 
-    const QColor lightText = gray(lightTextValue);
-    const QColor darkText = gray(darkTextValue);
-    const QColor lightDisabledText = gray(lightTextValue, 128);
-    const QColor darkDisabledText = gray(darkTextValue, 128);
+    const QColor lightText = QColor(lightTextValue, lightTextValue, lightTextValue);
+    const QColor darkText = QColor(darkTextValue, darkTextValue, darkTextValue);
+    const QColor lightDisabledText = QColor(lightTextValue, lightTextValue, lightTextValue, 128);
+    const QColor darkDisabledText = QColor(darkTextValue, darkTextValue, darkTextValue, 128);
 
     QPalette palette(fromValue(windowValue));
     palette.setColor(QPalette::Base, fromValue(baseValue));
