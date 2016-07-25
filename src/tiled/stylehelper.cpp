@@ -41,24 +41,24 @@ static QPalette createPalette(const QColor &windowColor,
     auto fromValue = [=](int value) {
         return QColor::fromHsv(hue, sat, qBound(0, value, 255));
     };
+    auto gray = [](int value, int a = 255) {
+        return QColor(value, value, value, a);
+    };
 
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
 
     const int lightTextValue = qMin(255, windowValue + 160);
     const int darkTextValue = qMax(0, windowValue - 160);
-    const int lightTextDisabledValue = (windowValue + lightTextValue) / 2;
-    const int darkTextDisabledValue = (windowValue + darkTextValue) / 2;
 
-    const QColor lightText = fromValue(lightTextValue);
-    const QColor darkText = fromValue(darkTextValue);
-    const QColor lightDisabledText = fromValue(lightTextDisabledValue);
-    const QColor darkDisabledText = fromValue(darkTextDisabledValue);
+    const QColor lightText = gray(lightTextValue);
+    const QColor darkText = gray(darkTextValue);
+    const QColor lightDisabledText = gray(lightTextValue, 128);
+    const QColor darkDisabledText = gray(darkTextValue, 128);
 
     QPalette palette(fromValue(windowValue));
     palette.setColor(QPalette::Base, fromValue(baseValue));
     palette.setColor(QPalette::AlternateBase, fromValue(baseValue - 10));
-    palette.setColor(QPalette::Window, fromValue(windowValue));
     palette.setColor(QPalette::WindowText, isLight ? darkText : lightText);
     palette.setColor(QPalette::ButtonText, isLight ? darkText : lightText);
     palette.setColor(QPalette::Text, isLight ? darkText : lightText);
