@@ -429,6 +429,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
+    connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
@@ -680,6 +681,9 @@ void MainWindow::changeEvent(QEvent *event)
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
         retranslateUi();
+        break;
+    case QEvent::WindowStateChange:
+        mUi->actionFullScreen->setChecked(isFullScreen());
         break;
     default:
         break;
@@ -1306,6 +1310,17 @@ void MainWindow::zoomNormal()
         mapView->zoomable()->resetZoom();
 }
 
+void MainWindow::setFullScreen(bool fullScreen)
+{
+    if (isFullScreen() == fullScreen)
+        return;
+
+    if (fullScreen)
+        setWindowState(windowState() | Qt::WindowFullScreen);
+    else
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
+}
+
 bool MainWindow::newTileset(const QString &path)
 {
     if (!mMapDocument)
@@ -1715,6 +1730,12 @@ void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 
 void MainWindow::writeSettings()
 {
+#ifdef Q_OS_MAC
+    // See QTBUG-45241
+    if (isFullScreen())
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
+#endif
+
     mSettings.beginGroup(QLatin1String("mainwindow"));
     mSettings.setValue(QLatin1String("geometry"), saveGeometry());
     mSettings.setValue(QLatin1String("state"), saveState());
