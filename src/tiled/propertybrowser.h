@@ -115,6 +115,7 @@ private:
         YProperty,
         WidthProperty,
         HeightProperty,
+        TileOffsetXYProperty,
         RotationProperty,
         VisibleProperty,
         OpacityProperty,
