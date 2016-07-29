@@ -63,7 +63,6 @@ private:
 
 private slots:
     void onMouseMove(QMouseEvent*);
-    void onMousePress(QMouseEvent*);
     void onMouseRelease(QMouseEvent*);
     QRect findScreen() const;
 };

@@ -75,11 +75,6 @@ void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
     event->accept();
 }
 
-void ImageColorPickerWidget::onMousePress(QMouseEvent * event)
-{
-
-}
-
 void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
 {
     if(event->button() == Qt::MouseButton::LeftButton)
@@ -97,7 +92,7 @@ void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
     }
 }
 
-void ImageColorPickerWidget::resizeEvent(QResizeEvent *event)
+void ImageColorPickerWidget::resizeEvent(QResizeEvent *)
 {
     move(
            findScreen().center() - rect().center()
