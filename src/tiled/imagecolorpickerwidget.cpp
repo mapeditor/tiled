@@ -34,7 +34,7 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
         mScaleX = 1;
         mScaleY = 1;
 
-        QRectF rct = getScreen();
+        QRectF rct = findScreen();
         double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
 
         if (mImage.width() > maxW || mImage.height() > maxH)

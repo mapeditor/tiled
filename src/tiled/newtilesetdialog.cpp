@@ -284,7 +284,7 @@ void NewTilesetDialog::updateOkButton()
  */
 void NewTilesetDialog::pickColorFromImage()
 {
-    popup->selectColor(mPath);
+    mPopup->selectColor(mPath);
 }
 
 void NewTilesetDialog::colorSelected(QColor color)
