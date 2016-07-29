@@ -63,8 +63,8 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mNameWasEdited(false)
 {
     mUi->setupUi(this);
-    popup = new ImageColorPickerWidget(mUi->dropperButton);
-    popup->setWindowFlags(Qt::Popup);
+    mPopup = new ImageColorPickerWidget(mUi->dropperButton);
+    mPopup->setWindowFlags(Qt::Popup);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Restore previously used settings
@@ -90,7 +90,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
             SLOT(tilesetTypeChanged(int)));
     connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
-    connect(popup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
+    connect(mPopup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -98,7 +98,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
 NewTilesetDialog::~NewTilesetDialog()
 {
     delete mUi;
-    delete popup;
+    delete mPopup;
 }
 
 /**
@@ -278,6 +278,10 @@ void NewTilesetDialog::updateOkButton()
     okButton->setEnabled(enabled);
 }
 
+/**
+ * Shows the popup window used to select the colour from the
+ * chosen image.
+ */
 void NewTilesetDialog::pickColorFromImage()
 {
     popup->selectColor(mPath);

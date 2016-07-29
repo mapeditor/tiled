@@ -74,7 +74,7 @@ private:
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;
     SharedTileset mNewTileset;
-    ImageColorPickerWidget *popup;
+    ImageColorPickerWidget *mPopup;
 };
 
 } // namespace Internal

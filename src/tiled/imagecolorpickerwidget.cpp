@@ -27,23 +27,23 @@ ImageColorPickerWidget::~ImageColorPickerWidget()
 bool ImageColorPickerWidget::selectColor(const QString &image)
 {
     QPixmap pix(image);
-    if(!pix.isNull())
+    if (!pix.isNull())
     {
-        QString labelText = title;
+        QString labelText = mTitle;
         mImage = pix.toImage();
-        scaleX = 1;
-        scaleY = 1;
+        mScaleX = 1;
+        mScaleY = 1;
 
         QRectF rct = getScreen();
         double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
 
-        if(mImage.width() > maxW || mImage.height() > maxH)
+        if (mImage.width() > maxW || mImage.height() > maxH)
         {
             pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio, Qt::FastTransformation);
-            scaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
-            scaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
+            mScaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
+            mScaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
             labelText = QLatin1String("%1 (%2X)");
-            labelText = labelText.arg(title).arg(QString::number(qMin(scaleX,scaleY), 'f', 1));
+            labelText = labelText.arg(mTitle).arg(QString::number(qMin(mScaleX, mScaleY), 'f', 1));
         }
 
         mUi->imageArea->setPixmap(pix);
@@ -58,9 +58,9 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
 
 void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
 {
-    if(!mImage.isNull())
+    if (!mImage.isNull())
     {
-        mPreviewColor = mImage.pixelColor(event->pos().x() / scaleX, event->pos().y() / scaleY);
+        mPreviewColor = mImage.pixelColor(event->pos().x() / mScaleX, event->pos().y() / mScaleY);
         if(!mPreviewColor.isValid())
             mPreviewColor = mSelectedColor;
 
@@ -100,11 +100,11 @@ void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
 void ImageColorPickerWidget::resizeEvent(QResizeEvent *event)
 {
     move(
-           getScreen().center() - rect().center()
+           findScreen().center() - rect().center()
         );
 }
 
-QRect ImageColorPickerWidget::getScreen() const
+QRect ImageColorPickerWidget::findScreen() const
 {
     QDesktopWidget wind;
     return wind.availableGeometry(wind.screenNumber(this));

@@ -54,18 +54,18 @@ protected:
     void resizeEvent(QResizeEvent*) override;
 
 private:
-    const QString title = tr("Tileset Image");
+    const QString mTitle = tr("Tileset Image");
     Ui::imageColorPickerWidget *mUi;
     QColor mPreviewColor;
     QImage mImage;
     QPixmap mPreviewIcon;
-    double scaleX, scaleY;
+    double mScaleX, mScaleY;
 
 private slots:
     void onMouseMove(QMouseEvent*);
     void onMousePress(QMouseEvent*);
     void onMouseRelease(QMouseEvent*);
-    QRect getScreen() const;
+    QRect findScreen() const;
 };
 
 } // namespace Internal
