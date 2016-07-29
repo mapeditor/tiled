@@ -581,12 +581,23 @@ void DocumentManager::tilesetChanged(Tileset *tileset)
     }
 
     if (anyRelevantMap && askForAdjustment(*tileset)) {
+        bool tilesetAdjusted = false;
+
         for (MapDocument *mapDocument : mDocuments) {
             Map *map = mapDocument->map();
 
             if (map->tilesets().contains(sharedTileset)) {
-                auto command = new AdjustTileIndexes(mapDocument, tileset);
-                mapDocument->undoStack()->push(command);
+                auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
+                mapDocument->undoStack()->beginMacro(command1->text());
+                mapDocument->undoStack()->push(command1);
+
+                if (!tilesetAdjusted) {
+                    auto command2 = new AdjustTileMetaData(mapDocument, *tileset);
+                    tilesetAdjusted = true;
+                    mapDocument->undoStack()->push(command2);
+                }
+
+                mapDocument->undoStack()->endMacro();
             }
         }
     }
@@ -605,8 +616,13 @@ void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
             continue;
 
         if (askForAdjustment(*tileset)) {
-            auto command = new AdjustTileIndexes(mapDocument, tileset.data());
-            mapDocument->undoStack()->push(command);
+            auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
+            auto command2 = new AdjustTileMetaData(mapDocument, *tileset);
+
+            mapDocument->undoStack()->beginMacro(command1->text());
+            mapDocument->undoStack()->push(command1);
+            mapDocument->undoStack()->push(command2);
+            mapDocument->undoStack()->endMacro();
         }
 
         tileset.data()->syncExpectedColumnCount();

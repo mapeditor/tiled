@@ -64,7 +64,8 @@ public:
     /**
      * Applies the given terrain \a changes.
      */
-    ChangeTileTerrain(MapDocument *mapDocument, const Changes &changes);
+    ChangeTileTerrain(MapDocument *mapDocument, const Changes &changes,
+                      QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

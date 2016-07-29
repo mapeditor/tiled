@@ -117,7 +117,7 @@ void MiniMap::paintEvent(QPaintEvent *pe)
     QPainter p(this);
     p.setRenderHints(QPainter::SmoothPixmapTransform);
 
-    QColor backgroundColor(Qt::darkGray);
+    QColor backgroundColor(palette().dark().color());
     if (mMapDocument && mMapDocument->map()->backgroundColor().isValid())
         backgroundColor = mMapDocument->map()->backgroundColor();
     p.setBrush(backgroundColor);

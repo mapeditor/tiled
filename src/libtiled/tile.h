@@ -79,6 +79,12 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
  */
 struct Frame
 {
+    bool operator == (const Frame &frame) const
+    {
+        return tileId == frame.tileId &&
+                duration == frame.duration;
+    }
+
     int tileId;
     int duration;
 };

@@ -23,10 +23,22 @@
 
 #include <QProxyStyle>
 
+namespace Tiled {
+namespace Internal {
+
 class TiledProxyStyle : public QProxyStyle
 {
+    Q_OBJECT
+
 public:
-    TiledProxyStyle(QStyle *style = nullptr);
+    TiledProxyStyle(const QPalette &palette, QStyle *style = nullptr);
+
+    void setPalette(const QPalette &palette);
+
+    void drawPrimitive(PrimitiveElement element,
+                       const QStyleOption *option,
+                       QPainter *painter,
+                       const QWidget *widget) const override;
 
     void drawControl(ControlElement element,
                      const QStyleOption *option,
@@ -43,14 +55,25 @@ public:
                     const QWidget *widget) const override;
 
     QSize sizeFromContents(ContentsType type,
-                           const QStyleOption *opt,
+                           const QStyleOption *option,
                            const QSize &contentsSize,
-                           const QWidget *w) const override;
+                           const QWidget *widget) const override;
 
     QRect subElementRect(SubElement subElement,
                          const QStyleOption *option,
                          const QWidget *widget) const override;
 
+    int styleHint(StyleHint styleHint,
+                  const QStyleOption *option,
+                  const QWidget *widget,
+                  QStyleHintReturn *returnData) const override;
+
+private:
+    QPalette mPalette;
+    bool mIsDark;
 };
+
+} // namespace Internal
+} // namespace Tiled
 
 #endif // TILEDPROXYSTYLE_H
