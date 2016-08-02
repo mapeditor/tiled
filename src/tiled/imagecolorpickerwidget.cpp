@@ -60,7 +60,7 @@ void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
 {
     if (!mImage.isNull())
     {
-        mPreviewColor = mImage.pixelColor(event->pos().x() / mScaleX, event->pos().y() / mScaleY);
+        mPreviewColor = mImage.pixel(event->pos().x() / mScaleX, event->pos().y() / mScaleY);
         if(!mPreviewColor.isValid())
             mPreviewColor = mSelectedColor;
 
