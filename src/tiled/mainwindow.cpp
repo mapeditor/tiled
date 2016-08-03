@@ -916,6 +916,16 @@ bool MainWindow::saveFileAs()
         return false;
 
     MapFormat *format = helper.formatByNameFilter(selectedFilter);
+
+    if ((!format && !TmxMapFormat().supportsFile(fileName)) || (format && !format->supportsFile(fileName))) {
+        QMessageBox::StandardButton answer = QMessageBox::question(this, tr("Wrong extension"),
+            tr("The file extension does not match the chosen file type. "
+               "Tiled may not automatically recognize your file when loading. "
+               "Are you sure you want to save with this extension?"));
+        if (answer == QMessageBox::No)
+            return false;
+    }
+
     mMapDocument->setWriterFormat(format);
 
     return saveFile(fileName);
