@@ -192,6 +192,7 @@ private slots:
     void updateDocumentTab();
     void documentSaved();
     void documentTabMoved(int from, int to);
+    void tabContextMenuRequested(const QPoint &pos);
 
     void fileChanged(const QString &fileName);
 

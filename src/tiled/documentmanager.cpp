@@ -36,9 +36,12 @@
 #include <QFileInfo>
 #include <QUndoGroup>
 
+#include <QApplication>
+#include <QClipboard>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QTabBar>
@@ -184,6 +187,7 @@ DocumentManager::DocumentManager(QObject *parent)
     mTabWidget->setDocumentMode(true);
     mTabWidget->setTabsClosable(true);
     mTabWidget->setMovable(true);
+    mTabWidget->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(mTabWidget, SIGNAL(currentChanged(int)),
             SLOT(currentIndexChanged()));
@@ -191,6 +195,8 @@ DocumentManager::DocumentManager(QObject *parent)
             SIGNAL(documentCloseRequested(int)));
     connect(mTabWidget->tabBar(), SIGNAL(tabMoved(int,int)),
             SLOT(documentTabMoved(int,int)));
+    connect(mTabWidget->tabBar(), SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(tabContextMenuRequested(QPoint)));
 
     connect(mFileSystemWatcher, SIGNAL(fileChanged(QString)),
             SLOT(fileChanged(QString)));
@@ -501,6 +507,26 @@ void DocumentManager::documentSaved()
 void DocumentManager::documentTabMoved(int from, int to)
 {
     mDocuments.move(from, to);
+}
+
+void DocumentManager::tabContextMenuRequested(const QPoint &pos)
+{
+    QTabBar *tabBar = mTabWidget->tabBar();
+    int index = tabBar->tabAt(pos);
+    if (index == -1)
+        return;
+
+    QMenu menu(mTabWidget->window());
+
+    QString fileName = mDocuments.at(index)->fileName();
+
+    QAction *copyPath = menu.addAction(tr("Copy File Path"));
+    connect(copyPath, &QAction::triggered, [fileName] {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(fileName);
+    });
+
+    menu.exec(tabBar->mapToGlobal(pos));
 }
 
 void DocumentManager::fileChanged(const QString &fileName)
