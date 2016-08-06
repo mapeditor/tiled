@@ -27,6 +27,7 @@
 #include <QPair>
 #include <QPointF>
 
+class QTabWidget;
 class QUndoGroup;
 
 namespace Tiled {
@@ -40,7 +41,6 @@ class FileSystemWatcher;
 class MapDocument;
 class MapScene;
 class MapView;
-class MovableTabWidget;
 
 /**
  * This class controls the open documents.
@@ -209,7 +209,7 @@ private:
 
     QList<MapDocument*> mDocuments;
 
-    MovableTabWidget *mTabWidget;
+    QTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;

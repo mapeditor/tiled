@@ -30,7 +30,6 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
-#include "movabletabwidget.h"
 #include "tilesetmanager.h"
 #include "zoomable.h"
 
@@ -42,6 +41,8 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QTabBar>
+#include <QTabWidget>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
@@ -174,7 +175,7 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
-    , mTabWidget(new MovableTabWidget)
+    , mTabWidget(new QTabWidget)
     , mUndoGroup(new QUndoGroup(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
@@ -182,12 +183,13 @@ DocumentManager::DocumentManager(QObject *parent)
 {
     mTabWidget->setDocumentMode(true);
     mTabWidget->setTabsClosable(true);
+    mTabWidget->setMovable(true);
 
     connect(mTabWidget, SIGNAL(currentChanged(int)),
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
-    connect(mTabWidget, SIGNAL(tabMoved(int,int)),
+    connect(mTabWidget->tabBar(), SIGNAL(tabMoved(int,int)),
             SLOT(documentTabMoved(int,int)));
 
     connect(mFileSystemWatcher, SIGNAL(fileChanged(QString)),
@@ -380,7 +382,7 @@ bool DocumentManager::reloadDocumentAt(int index)
     // Replace old tab
     addDocument(newDocument);
     closeDocumentAt(index);
-    mTabWidget->moveTab(mDocuments.size() - 1, index);
+    mTabWidget->tabBar()->moveTab(mDocuments.size() - 1, index);
 
     // Restore previous view state
     mapView = currentMapView();
