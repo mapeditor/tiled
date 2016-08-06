@@ -39,6 +39,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
@@ -523,7 +524,7 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     QAction *copyPath = menu.addAction(tr("Copy File Path"));
     connect(copyPath, &QAction::triggered, [fileName] {
         QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(fileName);
+        clipboard->setText(QDir::toNativeSeparators(fileName));
     });
 
     menu.exec(tabBar->mapToGlobal(pos));
