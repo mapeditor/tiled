@@ -207,7 +207,7 @@
            <widget class="QComboBox" name="styleCombo">
             <item>
              <property name="text">
-              <string>Native (default)</string>
+              <string>Native</string>
              </property>
             </item>
             <item>
@@ -395,7 +395,7 @@
   <customwidget>
    <class>Tiled::Internal::ColorButton</class>
    <extends>QToolButton</extends>
-   <header location="global">colorbutton.h</header>
+   <header>colorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
