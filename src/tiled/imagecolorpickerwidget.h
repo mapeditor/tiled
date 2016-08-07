@@ -25,6 +25,7 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QDialog>
+#include <QFrame>
 
 namespace Ui {
 class imageColorPickerWidget;
@@ -36,7 +37,7 @@ namespace Internal {
 /**
  * A popup widget for selecting a colour from an image.
  */
-class ImageColorPickerWidget : public QWidget
+class ImageColorPickerWidget : public QFrame
 {
     Q_OBJECT
 

@@ -29,10 +29,11 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
-    QWidget(parent),
+    QFrame(parent),
     mUi(new Ui::imageColorPickerWidget)
 {
     setWindowFlags(Qt::Popup);
+    setFrameStyle(QFrame::Plain | QFrame::Panel);
     mUi->setupUi(this);
     connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
     connect(mUi->imageArea, SIGNAL(mousePressed(QMouseEvent*)), SLOT(onMousePress(QMouseEvent*)));
