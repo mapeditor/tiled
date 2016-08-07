@@ -1661,6 +1661,7 @@ void MainWindow::updateActions()
 
     updateZoomLabel(); // for the zoom actions
 
+    mLayerComboBox->setEnabled(mMapDocument);
     mLayerComboBox->setCurrentIndex(layerComboIndex);
 }
 
@@ -1888,8 +1889,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     } else {
         mLayerComboBox->setModel(&emptyModel);
     }
-
-    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();
