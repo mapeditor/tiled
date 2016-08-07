@@ -211,7 +211,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             QStyleOptionTab tabOverlap;
             tabOverlap.shape = tbb->shape;
             int overlap = proxy()->pixelMetric(QStyle::PM_TabBarBaseOverlap, &tabOverlap, widget);
-            QColor tabFrameColor = option->palette.button().color().darker(116);
+            QColor tabFrameColor = option->palette.button().color().darker(mIsDark ? 128 : 116);
             QLinearGradient fillGradient;
             fillGradient.setColorAt(0, tabFrameColor.darker(108));
             fillGradient.setColorAt(0.2, tabFrameColor);
@@ -478,7 +478,8 @@ void TiledProxyStyle::drawControl(ControlElement element,
                         option->palette.window().color();
 
             if (!selected) {
-                tabFrameColor = option->palette.button().color().darker(116);
+                int f = mIsDark ? 128 : 116;
+                tabFrameColor = option->palette.button().color().darker(f);
             }
 
             QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());

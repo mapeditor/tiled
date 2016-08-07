@@ -90,5 +90,7 @@
         <file>images/16x16/error.png</file>
         <file>images/22x22/error.png</file>
         <file>images/32x32/error.png</file>
+        <file>images/16x16/stock-tool-color-picker-16.png</file>
+        <file>images/22x22/stock-tool-color-picker-22.png</file>
     </qresource>
 </RCC>

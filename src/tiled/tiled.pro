@@ -144,7 +144,6 @@ SOURCES += aboutdialog.cpp \
     mapview.cpp \
     minimap.cpp \
     minimapdock.cpp \
-    movabletabwidget.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
@@ -298,7 +297,6 @@ HEADERS += aboutdialog.h \
     mapview.h \
     minimap.h \
     minimapdock.h \
-    movabletabwidget.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
