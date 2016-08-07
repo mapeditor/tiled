@@ -216,7 +216,8 @@ SOURCES += aboutdialog.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
     clickablelabel.cpp \
-    imagecolorpickerwidget.cpp
+    imagecolorpickerwidget.cpp \
+    editframedurationsdialog.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -373,7 +374,8 @@ HEADERS += aboutdialog.h \
     variantpropertymanager.h \
     zoomable.h \
     clickablelabel.h \
-    imagecolorpickerwidget.h
+    imagecolorpickerwidget.h \
+    editframedurationsdialog.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
@@ -390,7 +392,8 @@ FORMS += aboutdialog.ui \
     resizedialog.ui \
     texteditordialog.ui \
     tileanimationeditor.ui \
-    imagecolorpickerwidget.ui
+    imagecolorpickerwidget.ui \
+    editframedurationsdialog.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
 icon32.files += images/32x32/tiled.png

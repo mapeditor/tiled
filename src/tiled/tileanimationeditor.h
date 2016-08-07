@@ -70,8 +70,10 @@ private slots:
     void tileAnimationChanged(Tile *tile);
     void tilesetFileNameChanged(Tileset *);
     void currentObjectChanged(Object *object);
+    void selectionChanged(QItemSelection, QItemSelection);
 
     void addFrameForTileAt(const QModelIndex &index);
+    void editFrameDurations();
 
     void undo();
     void redo();
