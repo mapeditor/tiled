@@ -60,8 +60,7 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
 NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false),
-    mPopup(nullptr)
+    mNameWasEdited(false)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -86,8 +85,9 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
     connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
-    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
-            SLOT(tilesetTypeChanged(int)));
+    connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->useTransparentColor, &QCheckBox::toggled, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)), SLOT(tilesetTypeChanged(int)));
     connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
@@ -96,7 +96,6 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
 NewTilesetDialog::~NewTilesetDialog()
 {
     delete mUi;
-    delete mPopup;
 }
 
 /**
@@ -276,18 +275,24 @@ void NewTilesetDialog::updateOkButton()
     okButton->setEnabled(enabled);
 }
 
+void NewTilesetDialog::updateColorPickerButton()
+{
+    mUi->dropperButton->setEnabled(mUi->useTransparentColor->isChecked() &&
+                                   !mUi->image->text().isEmpty());
+}
+
 /**
- * Shows the popup window used to select the colour from the
- * chosen image.
+ * Shows the popup window used to select the color from the chosen image.
  */
 void NewTilesetDialog::pickColorFromImage()
 {
-    if (!mPopup) {
-        mPopup = new ImageColorPickerWidget(mUi->dropperButton);
-        connect(mPopup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
-    }
+    auto *popup = new ImageColorPickerWidget(mUi->dropperButton);
+    popup->setAttribute(Qt::WA_DeleteOnClose);
 
-    mPopup->selectColor(mPath);
+    connect(popup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
+
+    if (!popup->selectColor(mUi->image->text()))
+        delete popup;
 }
 
 void NewTilesetDialog::colorSelected(QColor color)

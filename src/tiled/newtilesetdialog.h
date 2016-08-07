@@ -23,7 +23,7 @@
 
 #include "tileset.h"
 #include "tilesetchanges.h"
-#include "imagecolorpickerwidget.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -62,6 +62,7 @@ private slots:
     void nameEdited(const QString &name);
     void tilesetTypeChanged(int index);
     void updateOkButton();
+    void updateColorPickerButton();
     void tryAccept();
     void pickColorFromImage();
     void colorSelected(QColor);
@@ -74,7 +75,6 @@ private:
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;
     SharedTileset mNewTileset;
-    ImageColorPickerWidget *mPopup;
 };
 
 } // namespace Internal

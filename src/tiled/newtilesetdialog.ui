@@ -341,8 +341,8 @@
    <slot>tryAccept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>266</x>
-     <y>304</y>
+     <x>275</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -357,8 +357,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>334</x>
-     <y>304</y>
+     <x>343</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -373,28 +373,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
-     <y>190</y>
+     <x>179</x>
+     <y>191</y>
     </hint>
     <hint type="destinationlabel">
-     <x>235</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useTransparentColor</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dropperButton</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>84</x>
-     <y>178</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>196</x>
-     <y>178</y>
+     <x>209</x>
+     <y>193</y>
     </hint>
    </hints>
   </connection>

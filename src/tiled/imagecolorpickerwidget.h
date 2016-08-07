@@ -53,7 +53,6 @@ protected:
     void resizeEvent(QResizeEvent*) override;
 
 private:
-    const QString mTitle = tr("Tileset Image");
     Ui::ImageColorPickerWidget *mUi;
     QColor mPreviewColor;
     QColor mSelectedColor;

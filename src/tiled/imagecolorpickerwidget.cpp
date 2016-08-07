@@ -29,15 +29,17 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
-    QFrame(parent),
+    QFrame(parent, Qt::Popup),
     mUi(new Ui::ImageColorPickerWidget)
 {
-    setWindowFlags(Qt::Popup);
-    setFrameStyle(QFrame::Plain | QFrame::Panel);
     mUi->setupUi(this);
+
     connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
     connect(mUi->imageArea, SIGNAL(mouseReleased(QMouseEvent*)), SLOT(onMouseRelease(QMouseEvent*)));
-    mPreviewIcon = QPixmap(128, 32);
+
+    mPreviewIcon = QPixmap(96, 24);
+    mPreviewIcon.fill(Qt::transparent);
+    mUi->preview->setPixmap(mPreviewIcon);
 }
 
 ImageColorPickerWidget::~ImageColorPickerWidget()
@@ -51,7 +53,6 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     if (pix.isNull())
         return false;
 
-    QString labelText = mTitle;
     mImage = pix.toImage();
     mScaleX = 1;
     mScaleY = 1;
@@ -60,16 +61,13 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
 
     if (mImage.width() > maxW || mImage.height() > maxH) {
-        pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio, Qt::FastTransformation);
+        pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio);
         mScaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
         mScaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
-        labelText = QLatin1String("%1 (%2X)");
-        labelText = labelText.arg(mTitle).arg(QString::number(qMin(mScaleX, mScaleY), 'f', 1));
     }
 
     mUi->imageArea->setPixmap(pix);
     mUi->imageArea->adjustSize();
-    mUi->imageBox->setTitle(labelText);
 
     show();
 
@@ -86,6 +84,7 @@ void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
 
         mPreviewIcon.fill(mPreviewColor);
         mUi->preview->setPixmap(mPreviewIcon);
+        mUi->colorName->setText(mPreviewColor.name());
     } else {
         mPreviewColor = mSelectedColor;
     }
