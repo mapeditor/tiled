@@ -1,7 +1,7 @@
 /*
  * documentmanager.cpp
  * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -44,6 +44,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QProcess>
 #include <QScrollBar>
 #include <QTabBar>
 #include <QTabWidget>
@@ -52,6 +53,39 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+/*
+ * Code based on FileUtils::showInGraphicalShell from Qt Creator
+ * Copyright (C) 2016 The Qt Company Ltd.
+ * Used under the terms of the GNU General Public License version 3
+ */
+static void showInFileManager(const QString &fileName)
+{
+    // Mac, Windows support folder or file.
+#if defined(Q_OS_WIN)
+    QStringList param;
+    if (!QFileInfo(fileName).isDir())
+        param += QLatin1String("/select,");
+    param += QDir::toNativeSeparators(fileName);
+    QProcess::startDetached(QLatin1String("explorer.exe"), param);
+#elif defined(Q_OS_MAC)
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+                                     .arg(fileName);
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+#else
+    // We cannot select a file here, because xdg-open would open the file
+    // instead of the file browser...
+    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
+                            .arg(QFileInfo(fileName).absolutePath()));
+#endif
+}
+
 
 namespace Tiled {
 namespace Internal {
@@ -525,6 +559,11 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     connect(copyPath, &QAction::triggered, [fileName] {
         QClipboard *clipboard = QApplication::clipboard();
         clipboard->setText(QDir::toNativeSeparators(fileName));
+    });
+
+    QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
+    connect(openFolder, &QAction::triggered, [fileName] {
+        showInFileManager(fileName);
     });
 
     menu.exec(tabBar->mapToGlobal(pos));
