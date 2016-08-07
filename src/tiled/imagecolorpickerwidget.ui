@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>imageColorPickerWidget</class>
- <widget class="QWidget" name="imageColorPickerWidget">
+ <class>ImageColorPickerWidget</class>
+ <widget class="QWidget" name="ImageColorPickerWidget">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>

@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>捐贈</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -42,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性</translation>
     </message>
 </context>
 <context>
@@ -96,7 +96,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-189"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示版本</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -150,12 +150,13 @@
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>使用方法：
+  %1 [選項] [文件]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>選項：</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -186,7 +187,7 @@
     <message>
         <location line="+21"/>
         <source>All Files (*)</source>
-        <translation>全部的檔案 (*)</translation>
+        <translation>全部檔案 (*)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -204,12 +205,12 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法打開要寫入的檔案</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV 檔案 (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -387,7 +388,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法打開要寫入的檔案。</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -422,7 +423,7 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法打開要寫入的檔案。</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -485,7 +486,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示物件名稱 (&amp;N)</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -575,7 +576,7 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部儲存</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -585,7 +586,7 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>決不</translation>
     </message>
     <message>
         <location line="+11"/>

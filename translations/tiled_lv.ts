@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Ziedot</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -25,7 +25,11 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled karšu redaktors&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versija %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Autortiesības 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(pilns sarakts ar cilvēkiem, kas ir devuši sniegumu Tiled izstrādē, atrodams failā &quot;AUTHORS&quot;)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Jūst drīkstat modificēt un izplatīt šo programmu atbilstošu GPL (2. vai vēlākas versijas) nosacījumiem. GPL kopija, kas ir izplatīta kopā ar Tiled, ir atrodama failā &quot;COPYING&quot;.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -33,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot īpašību</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Īpašības nosaukums</translation>
     </message>
 </context>
 <context>
@@ -46,32 +50,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+227"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksporta sintakse ir --export-map [formāts] &lt;tmx fails&gt; &lt;mērķa fails&gt;</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Formāts nav atpazīts (skatīt --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Faila paplašinājums nav unikāls. Nav iespējams noteikt pareizo eksporta formātu.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atbilstošs eksportētājs šim failam nav atrasts.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neizdevās ielādēt karti.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neizdevās eksportēt karti uz izvēlēto failu.</translation>
     </message>
 </context>
 <context>
@@ -79,12 +83,12 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Properties</source>
-        <translation type="unfinished">Rekvizīti</translation>
+        <translation>Īpašības</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Saglabāt karti pirms izpildes</translation>
     </message>
 </context>
 <context>
@@ -92,37 +96,37 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-189"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Parādīt versiju</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pārbaudīt argumentu pareizību un beigt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nepaātrināt zīmēšanu ar aparatūru</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eksportēt norādīto tmx failu uz mērķi</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdrukāt sarakstu ar atbalstītajiem ekspota formātiem</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzsākt jaunu instanci pat, ja kāda instance jau darbojas</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksporta formāti:</translation>
     </message>
 </context>
 <context>
@@ -130,33 +134,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nepareizs arguments %1: domu zīme bez nekā</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nezināms garš arguments %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nezināms īss arguments %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Pielietojums:
+  %1 [uzstādījumi] [faili...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzstādījumi:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>Attēlot šo palīdzību</translation>
     </message>
 </context>
 <context>
@@ -164,12 +169,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fails</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versija</translation>
     </message>
 </context>
 <context>
@@ -177,22 +182,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt visu kā %1</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Visas datnes (*)</translation>
+        <translation>Visi faili (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Lietojumprogrammas Tiled karšu formāts (*.tmx)</translation>
+        <translation>Tiled karšu formāts (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation type="unfinished">Atvērt karti</translation>
+        <translation>Atvērt karti</translation>
     </message>
 </context>
 <context>
@@ -200,12 +205,12 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
+        <translation>Neizdevās atvērt failu rakstīšanai.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV faili (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -213,27 +218,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+57"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Šis nav derīgs Droidcraft karšu fails!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartei jābūt tieši vienam lauciņu slānim!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>Slānim jābūt 48 x 48 lauciņus lielam!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
+        <translation>Failu neizdevās atvērt rakstīšanai.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidcraft karšu faili (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -241,7 +246,7 @@
     <message>
         <location filename="../src/tiled/editterraindialog.ui" line="+14"/>
         <source>Edit Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rediģēt reljefa informāciju</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -253,32 +258,32 @@
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">Atatsaukt darbību</translation>
+        <translation type="unfinished">Atkārtot darbību</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation type="unfinished">Dzest</translation>
+        <translation>Dzēst</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pievienot reljefa tipu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aizvākt reljefa tipu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aizvākt</translation>
     </message>
 </context>
 <context>
@@ -286,7 +291,7 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt kā attēlu</translation>
     </message>
     <message>
         <location line="+6"/>

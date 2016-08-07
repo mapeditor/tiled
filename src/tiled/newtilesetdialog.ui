@@ -283,12 +283,22 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+<<<<<<< HEAD
+=======
+        <property name="toolTip">
+         <string>Pick color from image</string>
+        </property>
+>>>>>>> 3cfb8c626f846f14fc6e37c2f241d99753f619e8
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="tiled.qrc">
+<<<<<<< HEAD
           <normaloff>:/images/22x22/stock-tool-by-color-select.png</normaloff>:/images/22x22/stock-tool-by-color-select.png</iconset>
+=======
+          <normaloff>:/images/16x16/stock-tool-color-picker-16.png</normaloff>:/images/16x16/stock-tool-color-picker-16.png</iconset>
+>>>>>>> 3cfb8c626f846f14fc6e37c2f241d99753f619e8
         </property>
        </widget>
       </item>

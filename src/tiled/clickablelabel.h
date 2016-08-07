@@ -1,6 +1,6 @@
 /*
  * clickablelabel.h
- * Copyright 2010-2012, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2016, Ava Brumfield <alturos@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -32,7 +32,7 @@ class ClickableLabel : public QLabel
 
 public:
     ClickableLabel(QWidget *parent = nullptr);
-    ~ClickableLabel();
+
 signals:
     void mouseMoved(QMouseEvent *);
     void mousePressed(QMouseEvent *);
@@ -44,12 +44,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *) override;
 };
 
-
-
-
-} //Tiled
-} //Internal
+} // namespace Tiled
+} // namespace Internal
 
 #endif // CLICKABLELABEL_H
-
-
