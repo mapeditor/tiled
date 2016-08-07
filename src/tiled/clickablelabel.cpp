@@ -1,6 +1,6 @@
 /*
  * clickablelabel.cpp
- * Copyright 2009-2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Ava Brumfield <alturos@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,14 +24,8 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ClickableLabel::ClickableLabel(QWidget *parent) :
-QLabel(parent)
+    QLabel(parent)
 {
-
-}
-
-ClickableLabel::~ClickableLabel()
-{
-
 }
 
 void ClickableLabel::mouseMoveEvent(QMouseEvent *event)

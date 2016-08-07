@@ -60,7 +60,8 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
 NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false)
+    mNameWasEdited(false),
+    mPopup(nullptr)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -95,8 +96,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
 NewTilesetDialog::~NewTilesetDialog()
 {
     delete mUi;
-    if (mPopup != nullptr)
-        delete mPopup;
+    delete mPopup;
 }
 
 /**
@@ -282,7 +282,7 @@ void NewTilesetDialog::updateOkButton()
  */
 void NewTilesetDialog::pickColorFromImage()
 {
-    if (mPopup != nullptr) {
+    if (!mPopup) {
         mPopup = new ImageColorPickerWidget(mUi->dropperButton);
         connect(mPopup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
     }

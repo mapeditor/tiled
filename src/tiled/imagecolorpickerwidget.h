@@ -1,6 +1,7 @@
 /*
  * imagecolorpickerwidget.h
- * Copyright 2009-2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Ava Brumfield <alturos@gmail.com>
+ * Copyright 2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,12 +24,10 @@
 
 #include <QColor>
 #include <QPixmap>
-#include <QMouseEvent>
-#include <QDialog>
 #include <QFrame>
 
 namespace Ui {
-class imageColorPickerWidget;
+class ImageColorPickerWidget;
 }
 
 namespace Tiled {
@@ -55,7 +54,7 @@ protected:
 
 private:
     const QString mTitle = tr("Tileset Image");
-    Ui::imageColorPickerWidget *mUi;
+    Ui::ImageColorPickerWidget *mUi;
     QColor mPreviewColor;
     QColor mSelectedColor;
     QImage mImage;

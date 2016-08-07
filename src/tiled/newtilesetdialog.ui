@@ -283,6 +283,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="toolTip">
+         <string>Pick color from image</string>
+        </property>
         <property name="text">
          <string/>
         </property>
