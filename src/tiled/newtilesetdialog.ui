@@ -288,7 +288,7 @@
         </property>
         <property name="icon">
          <iconset resource="tiled.qrc">
-          <normaloff>:/images/22x22/stock-tool-by-color-select.png</normaloff>:/images/22x22/stock-tool-by-color-select.png</iconset>
+          <normaloff>:/images/16x16/stock-tool-color-picker-16.png</normaloff>:/images/16x16/stock-tool-color-picker-16.png</iconset>
         </property>
        </widget>
       </item>
