@@ -1,3 +1,23 @@
+/*
+ * imagecolorpickerwidget.cpp
+ * Copyright 2009-2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "imagecolorpickerwidget.h"
 #include "ui_imagecolorpickerwidget.h"
 
@@ -12,6 +32,7 @@ ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
     QWidget(parent),
     mUi(new Ui::imageColorPickerWidget)
 {
+    setWindowFlags(Qt::Popup);
     mUi->setupUi(this);
     connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
     connect(mUi->imageArea, SIGNAL(mousePressed(QMouseEvent*)), SLOT(onMousePress(QMouseEvent*)));
@@ -27,18 +48,16 @@ ImageColorPickerWidget::~ImageColorPickerWidget()
 bool ImageColorPickerWidget::selectColor(const QString &image)
 {
     QPixmap pix(image);
-    if (!pix.isNull())
-    {
+    if (!pix.isNull()) {
         QString labelText = mTitle;
         mImage = pix.toImage();
         mScaleX = 1;
         mScaleY = 1;
 
-        QRectF rct = findScreen();
+        QRectF rct = QApplication::desktop()->availableGeometry(this);
         double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
 
-        if (mImage.width() > maxW || mImage.height() > maxH)
-        {
+        if (mImage.width() > maxW || mImage.height() > maxH) {
             pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio, Qt::FastTransformation);
             mScaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
             mScaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
@@ -58,49 +77,35 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
 
 void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
 {
-    if (!mImage.isNull())
-    {
+
+    if (!mImage.isNull()) {
         mPreviewColor = mImage.pixel(event->pos().x() / mScaleX, event->pos().y() / mScaleY);
-        if(!mPreviewColor.isValid())
+        if (!mPreviewColor.isValid())
             mPreviewColor = mSelectedColor;
 
         mPreviewIcon.fill(mPreviewColor);
         mUi->preview->setPixmap(mPreviewIcon);
     }
-    else
-    {
+    else {
         mPreviewColor = mSelectedColor;
     }
-
-    event->accept();
 }
 
 void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
 {
-    if(event->button() == Qt::MouseButton::LeftButton)
-    {
-        if(!mImage.isNull())
-        {
+    if (event->button() == Qt::MouseButton::LeftButton) {
+        if (!mImage.isNull()) {
             mSelectedColor = mPreviewColor;
             emit colorSelected(mSelectedColor);
-            this->close();
+            close();
         }
     }
-    else if(event->button() == Qt::RightButton)
-    {
-        this->close();
+    else if (event->button() == Qt::RightButton) {
+        close();
     }
 }
 
 void ImageColorPickerWidget::resizeEvent(QResizeEvent *)
 {
-    move(
-           findScreen().center() - rect().center()
-        );
-}
-
-QRect ImageColorPickerWidget::findScreen() const
-{
-    QDesktopWidget wind;
-    return wind.availableGeometry(wind.screenNumber(this));
+    move(QApplication::desktop()->availableGeometry(this).center() - rect().center());
 }

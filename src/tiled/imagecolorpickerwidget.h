@@ -41,11 +41,10 @@ class ImageColorPickerWidget : public QWidget
     Q_OBJECT
 
 public:
-    ImageColorPickerWidget(QWidget *parent = 0);
+    ImageColorPickerWidget(QWidget *parent = nullptr);
     ~ImageColorPickerWidget();
 
     bool selectColor(const QString &image);
-    QColor mSelectedColor;
 
 signals:
     void colorSelected(QColor);
@@ -57,6 +56,7 @@ private:
     const QString mTitle = tr("Tileset Image");
     Ui::imageColorPickerWidget *mUi;
     QColor mPreviewColor;
+    QColor mSelectedColor;
     QImage mImage;
     QPixmap mPreviewIcon;
     double mScaleX, mScaleY;
@@ -64,7 +64,6 @@ private:
 private slots:
     void onMouseMove(QMouseEvent*);
     void onMouseRelease(QMouseEvent*);
-    QRect findScreen() const;
 };
 
 } // namespace Internal
