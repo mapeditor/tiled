@@ -30,15 +30,11 @@ class QMenu;
 namespace Tiled {
 namespace Utils {
 
-/**
- * Returns a file dialog filter that matches all readable image formats.
- */
 QString readableImageFormatsFilter();
-
-/**
- * Returns a file dialog filter that matches all writable image formats.
- */
 QString writableImageFormatsFilter();
+
+bool fileNameMatchesNameFilter(const QString &fileName,
+                               const QString &nameFilter);
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set

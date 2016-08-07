@@ -915,6 +915,21 @@ bool MainWindow::saveFileAs()
     if (fileName.isEmpty())
         return false;
 
+    if (!fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter)) {
+        QMessageBox messageBox(QMessageBox::Warning,
+                               tr("Extension Mismatch"),
+                               tr("The file extension does not match the chosen file type."),
+                               QMessageBox::Yes | QMessageBox::No,
+                               window());
+
+        messageBox.setInformativeText(tr("Tiled may not automatically recognize your file when loading. "
+                                         "Are you sure you want to save with this extension?"));
+
+        int answer = messageBox.exec();
+        if (answer != QMessageBox::Yes)
+            return false;
+    }
+
     MapFormat *format = helper.formatByNameFilter(selectedFilter);
     mMapDocument->setWriterFormat(format);
 
