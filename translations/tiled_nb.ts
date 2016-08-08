@@ -217,7 +217,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+59"/>
         <source>Defold files (*.tilemap)</source>
-        <translation>Brett ut filer (*.tilemap)</translation>
+        <translation>Defold-filer (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -4718,7 +4718,7 @@ Vennligst velgt et spesifikt format.</translation>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Vend %n Objekt</numerusform>
+            <numerusform>Vend Objekt</numerusform>
             <numerusform>Vend %n Objekter</numerusform>
         </translation>
     </message>
