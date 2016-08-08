@@ -217,12 +217,12 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+59"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Brett ut filer (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunne ikke åpne fil for skriving.</translation>
     </message>
 </context>
 <context>
@@ -653,23 +653,23 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Lim &amp;inn på samme plass</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+129"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullskjerm</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -807,7 +807,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation type="unfinished">Rute</translation>
+        <translation>Rute</translation>
     </message>
 </context>
 <context>
@@ -1046,7 +1046,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg farge fra bilde</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1174,7 +1174,7 @@ Linje %1, kolonne %2</translation>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation type="unfinished"> ruter</translation>
+        <translation> ruter</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -1374,37 +1374,37 @@ Linje %1, kolonne %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Native</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokal</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tiled Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Fusion</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Selection color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Utvalgsfarge:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil:</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grunnfarge:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2009,7 +2009,7 @@ Linje %1, kolonne %2</translation>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"> ruter</translation>
+        <translation> ruter</translation>
     </message>
     <message>
         <location line="-75"/>
@@ -2039,7 +2039,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+47"/>
         <source>Remove objects outside of the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern objekter utenfor kartet</translation>
     </message>
 </context>
 <context>
@@ -2060,7 +2060,7 @@ Linje %1, kolonne %2</translation>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger Tekst</translation>
     </message>
 </context>
 <context>
@@ -2629,12 +2629,12 @@ Linje %1, kolonne %2</translation>
     <message>
         <location line="+146"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopier Filbane</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne Innholdene Mappe...</translation>
     </message>
     <message>
         <location line="+139"/>
@@ -2967,17 +2967,17 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Extension Mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Uforventet Filtype</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Filetternavnet passer ikke med valgt filtype.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished"></translation>
+        <translation>Det er ikke sikkert Tiled kan gjenkjenne filen din under lasting. Er du sikker på at du vil lagre med dette filetternavnet?</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -4054,7 +4054,7 @@ Vennligst velgt et spesifikt format.</translation>
     <message>
         <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4717,9 +4717,9 @@ Vennligst velgt et spesifikt format.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Vend %n Objekt</numerusform>
+            <numerusform>Vend %n Objekter</numerusform>
         </translation>
     </message>
 </context>
