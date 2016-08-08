@@ -118,8 +118,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
     const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
 
     QPainter::PixmapFragment fragment;
-    fragment.x = pos.x() + cell.tile->tileOffsetXY().x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + cell.tile->tileOffsetXY().y() + (offset.y() * scale.height()) + sizeHalf.y() - objectSize.height();
+    fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - objectSize.height();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = size.width();

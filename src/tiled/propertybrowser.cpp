@@ -1177,7 +1177,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[IdProperty]->setValue(tile->id());
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
-        mIdToProperty[TileOffsetXYProperty]->setValue(tile->tileOffsetXY());
+        mIdToProperty[TileOffsetXYProperty]->setValue(tile->offset());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(tile->imageSource());

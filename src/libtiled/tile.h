@@ -114,10 +114,10 @@ public:
     int height() const;
     QSize size() const;
 
-    QPoint offset() const;
+    QPoint totalOffset() const;
 
-    QPoint tileOffsetXY() const;
-    void setTileOffsetXY(QPoint offset);
+    QPoint offset() const;
+    void setOffset(QPoint offset);
 
     Terrain *terrainAtCorner(int corner) const;
 
@@ -259,7 +259,7 @@ inline unsigned Tile::terrain() const
  * Returns the offset that is applied when drawing the tiles in this
  * tileset.
  */
-inline QPoint Tile::tileOffsetXY() const
+inline QPoint Tile::offset() const
 {
     return mTileOffsetXY;
 }
@@ -267,7 +267,7 @@ inline QPoint Tile::tileOffsetXY() const
 /**
  * @see tileOffset
  */
-inline void Tile::setTileOffsetXY(QPoint offset)
+inline void Tile::setOffset(QPoint offset)
 {
     mTileOffsetXY = offset;
 }

@@ -60,8 +60,8 @@ void ChangeTileOffsetXY::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {
         Tile* tile = mTiles[i];
-        QPoint offset = tile->tileOffsetXY();
-        tile->setTileOffsetXY(mOffsets[i]);
+        QPoint offset = tile->offset();
+        tile->setOffset(mOffsets[i]);
         mOffsets[i] = offset;
         mMapDocument->emitTileOffsetXYChanged(tile);
     }

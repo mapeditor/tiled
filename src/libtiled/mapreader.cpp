@@ -405,9 +405,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     QStringRef tileoffsetx = atts.value(QLatin1String("offsetx"));
     QStringRef tileoffsety = atts.value(QLatin1String("offsety"));
     if (!tileoffsetx.isEmpty())
-        tile->setTileOffsetXY(QPoint(tileoffsetx.toInt(), tile->tileOffsetXY().y()));
+        tile->setOffset(QPoint(tileoffsetx.toInt(), tile->offset().y()));
     if (!tileoffsety.isEmpty())
-        tile->setTileOffsetXY(QPoint(tile->tileOffsetXY().x(), tileoffsety.toInt()));
+        tile->setOffset(QPoint(tile->offset().x(), tileoffsety.toInt()));
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
