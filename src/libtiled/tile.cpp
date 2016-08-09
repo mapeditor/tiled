@@ -41,7 +41,6 @@ Tile::Tile(int id, Tileset *tileset):
     mProbability(1.f),
     mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
-    mTileOffsetXY(0,0),
     mUnusedTime(0)
 {}
 
@@ -54,7 +53,6 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mProbability(1.f),
     mObjectGroup(nullptr),
     mCurrentFrameIndex(0),
-    mTileOffsetXY(0,0),
     mUnusedTime(0)
 {}
 
@@ -90,7 +88,7 @@ const QPixmap &Tile::currentFrameImage() const
  */
 QPoint Tile::totalOffset() const
 {
-    return mTileset->tileOffset() + mTileOffsetXY;
+    return mTileset->tileOffset() + mOffset;
 }
 
 /**

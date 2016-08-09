@@ -28,7 +28,7 @@
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
 #include "changetileimagesource.h"
-#include "changetileoffsetxy.h"
+#include "changetileoffset.h"
 #include "changetileprobability.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
@@ -160,7 +160,7 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::tilesetChanged,
                 this, &PropertyBrowser::tilesetChanged);
 
-        connect(mapDocument, &MapDocument::tileOffsetXYChanged,
+        connect(mapDocument, &MapDocument::tileOffsetChanged,
                 this, &PropertyBrowser::tileChanged);
         connect(mapDocument, &MapDocument::tileProbabilityChanged,
                 this, &PropertyBrowser::tileChanged);
@@ -617,7 +617,7 @@ void PropertyBrowser::addTileProperties()
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
-    addProperty(TileOffsetXYProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+    addProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
 
     QtVariantProperty *probabilityProperty = addProperty(TileProbabilityProperty,
                                                          QVariant::Double,
@@ -942,8 +942,8 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     switch (id) {
-    case TileOffsetXYProperty:
-        undoStack->push(new ChangeTileOffsetXY(mMapDocument,
+    case TileOffsetProperty:
+        undoStack->push(new ChangeTileOffset(mMapDocument,
                                                   mMapDocument->selectedTiles(),
                                                   val.toPoint()));
         break;
@@ -1177,7 +1177,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[IdProperty]->setValue(tile->id());
         mIdToProperty[WidthProperty]->setValue(tileSize.width());
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
-        mIdToProperty[TileOffsetXYProperty]->setValue(tile->offset());
+        mIdToProperty[TileOffsetProperty]->setValue(tile->offset());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(tile->imageSource());

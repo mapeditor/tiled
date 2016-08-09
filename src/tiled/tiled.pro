@@ -97,7 +97,7 @@ SOURCES += aboutdialog.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
     changetileobjectgroup.cpp \
-    changetileoffsetxy.cpp \
+    changetileoffset.cpp \
     changetileprobability.cpp \
     changeselectedarea.cpp \
     changetileterrain.cpp \
@@ -249,7 +249,7 @@ HEADERS += aboutdialog.h \
     changetileanimation.h \
     changetileimagesource.h \
     changetileobjectgroup.h \
-    changetileoffsetxy.h \
+    changetileoffset.h \
     changetileprobability.h \
     changeselectedarea.h \
     changetileterrain.h \

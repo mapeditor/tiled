@@ -1,6 +1,6 @@
 /*
- * changetileoffsetXY.cpp
- * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * changetileoffset.cpp
+ * Copyright 2015, Ryan Gumbs <githubcontrib666@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changetileoffsetxy.h"
+#include "changetileoffset.h"
 
 #include "mapdocument.h"
 #include "tile.h"
@@ -28,7 +28,7 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileOffsetXY::ChangeTileOffsetXY(MapDocument *mapDocument,
+ChangeTileOffset::ChangeTileOffset(MapDocument *mapDocument,
                                              const QList<Tile*>& tiles,
                                              QPoint offset)
     : mMapDocument(mapDocument)
@@ -42,7 +42,7 @@ ChangeTileOffsetXY::ChangeTileOffsetXY(MapDocument *mapDocument,
                                         "Change Drawing Offset"));
 }
 
-ChangeTileOffsetXY::ChangeTileOffsetXY(MapDocument *mapDocument,
+ChangeTileOffset::ChangeTileOffset(MapDocument *mapDocument,
                                              const QList<Tile *> &tiles,
                                              const QList<QPoint> &offsets,
                                              QUndoCommand *parent)
@@ -56,14 +56,14 @@ ChangeTileOffsetXY::ChangeTileOffsetXY(MapDocument *mapDocument,
                                         "Change Drawing Offset"));
 }
 
-void ChangeTileOffsetXY::swap()
+void ChangeTileOffset::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {
         Tile* tile = mTiles[i];
         QPoint offset = tile->offset();
         tile->setOffset(mOffsets[i]);
         mOffsets[i] = offset;
-        mMapDocument->emitTileOffsetXYChanged(tile);
+        mMapDocument->emitTileOffsetChanged(tile);
     }
 }
 

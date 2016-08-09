@@ -1,6 +1,6 @@
 /*
- * ChangeTileOffsetXY.h
- * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * ChangeTileOffset.h
+ * Copyright 2015, Ryan Gumbs <githubcontrib666@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILEOFFSETXY_H
-#define CHANGETILEOFFSETXY_H
+#ifndef CHANGETILEOFFSET_H
+#define CHANGETILEOFFSET_H
 
 #include <QUndoCommand>
 
@@ -31,14 +31,14 @@ namespace Internal {
 
 class MapDocument;
 
-class ChangeTileOffsetXY : public QUndoCommand
+class ChangeTileOffset : public QUndoCommand
 {
 public:
-    ChangeTileOffsetXY(MapDocument *mapDocument,
+    ChangeTileOffset(MapDocument *mapDocument,
                           const QList<Tile*> &tiles,
                           QPoint offset);
 
-    ChangeTileOffsetXY(MapDocument *mapDocument,
+    ChangeTileOffset(MapDocument *mapDocument,
                           const QList<Tile*> &tiles,
                           const QList<QPoint> &offsets,
                           QUndoCommand *parent = nullptr);
@@ -57,4 +57,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CHANGETILEOFFSETXY_H
+#endif // CHANGETILEOFFSET_H

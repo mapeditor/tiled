@@ -155,7 +155,7 @@ private:
     QVector<Frame> mFrames;
     int mCurrentFrameIndex;
     int mUnusedTime;
-    QPoint mTileOffsetXY;
+    QPoint mOffset;
 
     friend class Tileset; // To allow changing the tile id
 };
@@ -256,12 +256,11 @@ inline unsigned Tile::terrain() const
 }
 
 /**
- * Returns the offset that is applied when drawing the tiles in this
- * tileset.
+ * Returns the offset that is applied when drawing the tile.
  */
 inline QPoint Tile::offset() const
 {
-    return mTileOffsetXY;
+    return mOffset;
 }
 
 /**
@@ -269,7 +268,7 @@ inline QPoint Tile::offset() const
  */
 inline void Tile::setOffset(QPoint offset)
 {
-    mTileOffsetXY = offset;
+    mOffset = offset;
 }
 
 /**

@@ -402,12 +402,8 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
         tile->setProbability(probability.toFloat());
 
     // Read tile xy-offset
-    QStringRef tileoffsetx = atts.value(QLatin1String("offsetx"));
-    QStringRef tileoffsety = atts.value(QLatin1String("offsety"));
-    if (!tileoffsetx.isEmpty())
-        tile->setOffset(QPoint(tileoffsetx.toInt(), tile->offset().y()));
-    if (!tileoffsety.isEmpty())
-        tile->setOffset(QPoint(tile->offset().x(), tileoffsety.toInt()));
+    QPoint tileOffset(atts.value(QLatin1String("offsetx")).toInt(), atts.value(QLatin1String("offsety")).toInt());
+    tile->setOffset(tileOffset);
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {

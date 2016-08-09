@@ -268,7 +268,7 @@ public:
     void emitTileLayerDrawMarginsChanged(TileLayer *layer);
     void emitTilesetChanged(Tileset *tileset);
 
-    void emitTileOffsetXYChanged(Tile *tile);
+    void emitTileOffsetChanged(Tile *tile);
     void emitTileProbabilityChanged(Tile *tile);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
@@ -347,7 +347,7 @@ signals:
 
     void tileImageSourceChanged(Tile *tile);
     void tileTerrainChanged(const QList<Tile*> &tiles);
-    void tileOffsetXYChanged(Tile *tile);
+    void tileOffsetChanged(Tile *tile);
     void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
@@ -496,9 +496,9 @@ inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
 /**
  * Emits the signal notifying about the xy-offset of a tile changing.
  */
-inline void MapDocument::emitTileOffsetXYChanged(Tile *tile)
+inline void MapDocument::emitTileOffsetChanged(Tile *tile)
 {
-    emit tileOffsetXYChanged(tile);
+    emit tileOffsetChanged(tile);
     emit mapChanged();
 }
 
