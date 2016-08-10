@@ -648,7 +648,7 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished">An Position e&amp;infügen</translation>
+        <translation>An gleicher Position e&amp;infügen</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1046,7 +1046,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished">Farbe aus Bild wählen</translation>
+        <translation>Farbe aus Bild wählen</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1358,7 +1358,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+29"/>
         <source>Fine grid divisions:</source>
-        <translation>Feine Rastereinteilung</translation>
+        <translation>Feine Rastereinteilung:</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1379,7 +1379,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+20"/>
         <source>Native</source>
-        <translation type="unfinished">Nativ</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2320,7 +2320,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation>Datei lokalisieren</translation>
+        <translation>Datei lokalisieren...</translation>
     </message>
     <message>
         <location line="+81"/>
@@ -2968,7 +2968,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="+12"/>
         <source>Extension Mismatch</source>
-        <translation type="unfinished">Dateiendungs-Abweichung</translation>
+        <translation>Dateiendungs-Abweichung</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2978,7 +2978,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished">Tiled wird diese Datei beim Laden möglicherweise nicht automatisch erkennen. Dennoch mit dieser Dateiendung speichern?</translation>
+        <translation>Tiled wird diese Datei beim Laden möglicherweise nicht automatisch erkennen. Dennoch mit dieser Dateiendung speichern?</translation>
     </message>
     <message>
         <location line="+45"/>
