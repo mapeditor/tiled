@@ -653,7 +653,7 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation>Вставить &amp;в месте</translation>
+        <translation>Вставить на &amp;место</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1374,7 +1374,7 @@ Line %1, column %2</source>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation>Оформление</translation>
+        <translation>Тема</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1384,7 +1384,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1394,7 +1394,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Selection color:</source>
-        <translation>Выбор цвета:</translation>
+        <translation>Цвет выделения:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2636,7 +2636,7 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation>Открыть содержащую папку...</translation>
+        <translation>Открыть папку, содержащую карту...</translation>
     </message>
     <message>
         <location line="+139"/>
@@ -4734,9 +4734,9 @@ Please select specific format.</source>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Отразить %n Объект</numerusform>
-            <numerusform>Отразить %n Объекта</numerusform>
-            <numerusform>Отразить %n Объектов</numerusform>
+            <numerusform>Отразить %n объект</numerusform>
+            <numerusform>Отразить %n объекта</numerusform>
+            <numerusform>Отразить %n объектов</numerusform>
         </translation>
     </message>
 </context>
