@@ -51,8 +51,8 @@ public:
                             const QWidget *widget = nullptr) const override;
 
     int pixelMetric(PixelMetric metric,
-                    const QStyleOption *option,
-                    const QWidget *widget) const override;
+                    const QStyleOption *option = nullptr,
+                    const QWidget *widget = nullptr) const override;
 
     QSize sizeFromContents(ContentsType type,
                            const QStyleOption *option,

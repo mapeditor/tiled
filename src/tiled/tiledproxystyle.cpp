@@ -264,6 +264,21 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                                     const QWidget *widget) const
 {
     switch (element) {
+    case PE_FrameGroupBox:
+    {
+        int topMargin = qMax(pixelMetric(PM_ExclusiveIndicatorHeight), option->fontMetrics.height()) + 3;
+        QRect frame = option->rect.adjusted(0, topMargin, -1, -1);
+        QColor tabFrameColor = getTabFrameColor(option->palette);
+
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->translate(0.5, 0.5);
+        painter->setPen(mergedColors(getOutlineColor(option->palette), tabFrameColor));
+        painter->setBrush(mergedColors(option->palette.window().color(), tabFrameColor));
+        painter->drawRoundedRect(frame, 2.0, 2.0);
+        painter->restore();
+        break;
+    }
     case PE_FrameTabBarBase:
         if (const QStyleOptionTabBarBase *tbb
                 = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
