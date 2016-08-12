@@ -75,6 +75,16 @@ template <typename T>
     typedef QString ConvertTo;
 };
 
+static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
+{
+    const int maxFactor = 100;
+    QColor tmp = colorA;
+    tmp.setRed((tmp.red() * factor) / maxFactor + (colorB.red() * (maxFactor - factor)) / maxFactor);
+    tmp.setGreen((tmp.green() * factor) / maxFactor + (colorB.green() * (maxFactor - factor)) / maxFactor);
+    tmp.setBlue((tmp.blue() * factor) / maxFactor + (colorB.blue() * (maxFactor - factor)) / maxFactor);
+    return tmp;
+}
+
 static QPixmap colorizedImage(const QString &fileName, const QColor &color, int rotation = 0)
 {
     QString pixmapName = QLatin1String("$qt_ia-") % fileName % HexString<uint>(color.rgba()) % QString::number(rotation);
@@ -145,6 +155,19 @@ static qreal dpiScaled(qreal value)
 static QColor getOutlineColor(const QPalette &pal)
 {
     return pal.window().color().darker(140);
+}
+
+static QColor getLightOutlineColor(const QPalette &pal)
+{
+    return pal.window().color().lighter(140);
+}
+
+static QColor getHighlightedOutline(const QPalette &pal)
+{
+    QColor highlightedOutline = pal.highlight().color().darker(125);
+    if (highlightedOutline.value() > 160)
+        highlightedOutline.setHsl(highlightedOutline.hue(), highlightedOutline.saturation(), 160);
+    return highlightedOutline;
 }
 
 static QColor getSliderColor(const QPalette &pal, bool isDarkBg)
@@ -259,6 +282,67 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             painter->restore();
         }
         return;
+    case PE_IndicatorCheckBox:
+        painter->save();
+        if (const QStyleOptionButton *checkbox = qstyleoption_cast<const QStyleOptionButton*>(option)) {
+            painter->setRenderHint(QPainter::Antialiasing, true);
+            painter->translate(0.5, 0.5);
+            QRect rect = option->rect.adjusted(0, 0, -1, -1);
+            int state = option->state;
+
+            QColor pressedColor = mergedColors(option->palette.base().color(),
+                                               option->palette.foreground().color(), 85);
+            painter->setBrush(Qt::NoBrush);
+
+            // Gradient fill
+            QLinearGradient gradient(rect.topLeft(), rect.bottomLeft());
+            gradient.setColorAt(0, (state & State_Sunken) ? pressedColor : option->palette.base().color().darker(115));
+            gradient.setColorAt(0.15, (state & State_Sunken) ? pressedColor : option->palette.base().color());
+            gradient.setColorAt(1, (state & State_Sunken) ? pressedColor : option->palette.base().color());
+
+            painter->setBrush((state & State_Sunken) ? QBrush(pressedColor) : gradient);
+
+            QColor boxOutline(mIsDark ? getLightOutlineColor(option->palette) :
+                                        getOutlineColor(option->palette));
+            boxOutline.setAlpha(200);
+            painter->setPen(boxOutline);
+
+            if (option->state & State_HasFocus && option->state & State_KeyboardFocusChange)
+                painter->setPen(QPen(getHighlightedOutline(option->palette)));
+            painter->drawRect(rect);
+
+            QColor checkMarkColor = option->palette.text().color().darker(120);
+            const int checkMarkPadding = QStyleHelper::dpiScaled(3);
+
+            if (checkbox->state & State_NoChange) {
+                gradient = QLinearGradient(rect.topLeft(), rect.bottomLeft());
+                checkMarkColor.setAlpha(80);
+                gradient.setColorAt(0, checkMarkColor);
+                checkMarkColor.setAlpha(140);
+                gradient.setColorAt(1, checkMarkColor);
+                checkMarkColor.setAlpha(180);
+                painter->setPen(QPen(checkMarkColor, 1));
+                painter->setBrush(gradient);
+                painter->drawRect(rect.adjusted(checkMarkPadding, checkMarkPadding, -checkMarkPadding, -checkMarkPadding));
+
+            } else if (checkbox->state & (State_On)) {
+                QPen checkPen = QPen(checkMarkColor, QStyleHelper::dpiScaled(1.8));
+                checkMarkColor.setAlpha(210);
+                painter->translate(-1, 0.5);
+                painter->setPen(checkPen);
+                painter->setBrush(Qt::NoBrush);
+                painter->translate(0.2, 0.0);
+
+                // Draw checkmark
+                QPainterPath path;
+                path.moveTo(2 + checkMarkPadding, rect.height() / 2.0);
+                path.lineTo(rect.width() / 2.0, rect.height() - checkMarkPadding);
+                path.lineTo(rect.width() - checkMarkPadding, checkMarkPadding);
+                painter->drawPath(path.translated(rect.topLeft()));
+            }
+        }
+        painter->restore();
+        break;
     default:
         QProxyStyle::drawPrimitive(element, option, painter, widget);
         break;
