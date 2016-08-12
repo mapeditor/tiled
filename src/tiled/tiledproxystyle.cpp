@@ -129,6 +129,45 @@ static QPixmap colorizedImage(const QString &fileName, const QColor &color, int 
     return pixmap;
 }
 
+enum Direction {
+    TopDown,
+    FromLeft,
+    BottomUp,
+    FromRight
+};
+
+// The default button and handle gradient
+static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseColor, Direction direction = TopDown)
+{
+    int x = rect.center().x();
+    int y = rect.center().y();
+    QLinearGradient gradient;
+    switch (direction) {
+    case FromLeft:
+        gradient = QLinearGradient(rect.left(), y, rect.right(), y);
+        break;
+    case FromRight:
+        gradient = QLinearGradient(rect.right(), y, rect.left(), y);
+        break;
+    case BottomUp:
+        gradient = QLinearGradient(x, rect.bottom(), x, rect.top());
+        break;
+    case TopDown:
+    default:
+        gradient = QLinearGradient(x, rect.top(), x, rect.bottom());
+        break;
+    }
+    if (baseColor.gradient())
+        gradient.setStops(baseColor.gradient()->stops());
+    else {
+        QColor gradientStartColor = baseColor.color().lighter(124);
+        QColor gradientStopColor = baseColor.color().lighter(102);
+        gradient.setColorAt(0, gradientStartColor);
+        gradient.setColorAt(1, gradientStopColor);
+    }
+    return gradient;
+}
+
 namespace QStyleHelper {
 
 static QColor backgroundColor(const QPalette &pal, const QWidget* widget)
@@ -343,6 +382,84 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         }
         painter->restore();
         break;
+    case PE_PanelButtonCommand:
+    {
+        painter->save();
+
+        bool isDefault = false;
+        bool isFlat = false;
+        bool isDown = (option->state & State_Sunken) || (option->state & State_On);
+        QRect r;
+
+        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton*>(option)) {
+            isDefault = (button->features & QStyleOptionButton::DefaultButton) && (button->state & State_Enabled);
+            isFlat = (button->features & QStyleOptionButton::Flat);
+        }
+
+        if (isFlat && !isDown) {
+            if (isDefault) {
+                r = option->rect.adjusted(0, 1, 0, -1);
+                painter->setPen(QPen(Qt::black));
+                const QLine lines[4] = {
+                    QLine(QPoint(r.left() + 2, r.top()),
+                    QPoint(r.right() - 2, r.top())),
+                    QLine(QPoint(r.left(), r.top() + 2),
+                    QPoint(r.left(), r.bottom() - 2)),
+                    QLine(QPoint(r.right(), r.top() + 2),
+                    QPoint(r.right(), r.bottom() - 2)),
+                    QLine(QPoint(r.left() + 2, r.bottom()),
+                    QPoint(r.right() - 2, r.bottom()))
+                };
+                painter->drawLines(lines, 4);
+                const QPoint points[4] = {
+                    QPoint(r.right() - 1, r.bottom() - 1),
+                    QPoint(r.right() - 1, r.top() + 1),
+                    QPoint(r.left() + 1, r.bottom() - 1),
+                    QPoint(r.left() + 1, r.top() + 1)
+                };
+                painter->drawPoints(points, 4);
+            }
+            return;
+        }
+
+        r = option->rect.adjusted(0, 1, -1, 0);
+
+        bool isEnabled = option->state & State_Enabled;
+        bool hasFocus = (option->state & State_HasFocus && option->state & State_KeyboardFocusChange);
+        QColor buttonColor = getButtonColor(option->palette);
+
+        QColor darkOutline = getOutlineColor(option->palette);
+        if (hasFocus | isDefault) {
+            darkOutline = getHighlightedOutline(option->palette);
+        }
+
+        if (isDefault)
+            buttonColor = mergedColors(buttonColor, getHighlightedOutline(option->palette).lighter(130), 90);
+
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->translate(0.5, -0.5);
+
+        QColor downColor = buttonColor.darker(110);
+
+        if (option->state & State_On)
+            downColor = option->palette.button().color().darker(mIsDark ? 128 : 116);
+
+        QLinearGradient gradient = qt_fusion_gradient(option->rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
+        painter->setPen(Qt::transparent);
+        painter->setBrush(isDown ? QBrush(downColor) : gradient);
+        painter->drawRoundedRect(r, 2.0, 2.0);
+        painter->setBrush(Qt::NoBrush);
+
+        // Outline
+        painter->setPen(!isEnabled ? QPen(darkOutline.lighter(115)) : QPen(darkOutline));
+        painter->drawRoundedRect(r, 2.0, 2.0);
+
+        painter->setPen(innerContrastLine());
+        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), 2.0, 2.0);
+
+        painter->restore();
+        break;
+    }
     default:
         QProxyStyle::drawPrimitive(element, option, painter, widget);
         break;
