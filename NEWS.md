@@ -1,4 +1,4 @@
-### ...
+### 0.17.0 (15 August 2016)
 
 * Added a platform-independent theme, which can be dark (#786)
 * Added Paste in Place action for objects (#1257)
@@ -13,13 +13,14 @@
 * Added simple full screen mode
 * Added "Copy File Path" and "Open Containing Folder" actions to tab context menu
 * Added warning when saving with the wrong file extension
-* Added color picker for setting transparent color of a tileset (#1173)
+* Added color picker for setting transparent color of a tileset (#1173, by Ava Brumfield)
 * Various object selection tool improvements
 * Allow creating rectangle/ellipse objects in any direction (#1300)
 * Enabled nested views and grouped dragging for stacked views (#1291)
 * Fixed updating object drag cursor when exiting resize handles (#1277)
 * Fixed tile animations to stay in sync when changing them (#1288)
 * Fixed preservation of tile meta-data when tileset width is changed (#1315)
+* Updated Bulgarian, Dutch, German, Norwegian Bokmål, Russian, Spanish and Turkish translations
 
 ### 0.16.2 (7 July 2016)
 
