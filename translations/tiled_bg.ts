@@ -1175,7 +1175,7 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation>плочки</translation>
+        <translation> плочки</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -2010,7 +2010,7 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation>плочки</translation>
+        <translation> плочки</translation>
     </message>
     <message>
         <location line="-75"/>
@@ -4720,7 +4720,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Обръщане на %n обект</numerusform>
+            <numerusform>Обръщане на обект</numerusform>
             <numerusform>Обръщане на %n обекта</numerusform>
         </translation>
     </message>
