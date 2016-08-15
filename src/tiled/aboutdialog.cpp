@@ -21,7 +21,9 @@
 
 #include "aboutdialog.h"
 
-#include <QCoreApplication>
+#include "tiledproxystyle.h"
+
+#include <QApplication>
 #include <QDesktopServices>
 
 using namespace Tiled::Internal;
@@ -30,8 +32,6 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
-    setMaximumSize(432, 460);
 
     const QString html = QCoreApplication::translate(
             "AboutDialog",
@@ -43,6 +43,10 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
             .arg(QApplication::applicationVersion());
 
     textBrowser->setHtml(html);
+
+    if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
+        if (style->isDark())
+            logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo-white.png")));
 
     connect(donateButton, SIGNAL(clicked()), SLOT(donate()));
 }

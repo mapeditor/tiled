@@ -34,6 +34,7 @@ public:
     TiledProxyStyle(const QPalette &palette, QStyle *style = nullptr);
 
     void setPalette(const QPalette &palette);
+    bool isDark() const;
 
     void drawPrimitive(PrimitiveElement element,
                        const QStyleOption *option,
@@ -79,6 +80,12 @@ private:
     QIcon mDockClose;
     QIcon mDockRestore;
 };
+
+
+inline bool TiledProxyStyle::isDark() const
+{
+    return mIsDark;
+}
 
 } // namespace Internal
 } // namespace Tiled
