@@ -141,49 +141,6 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-    QSaveFile scriptFile(fileName + QLatin1String(".script"));
-    if (!scriptFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning("Couldn't open save file.");
-        return false;
-    }
-
-    QTextStream  unitsFileStream(&scriptFile);
-    unitsFileStream << "map_nodes = {" << endl;
-
-    for (int y = 0; y < layerHeight; ++y) {
-        unitsFileStream <<"{";
-        for (int x = 0; x < layerWidth; ++x) {
-            unitsFileStream << "\t" << types[x][y] << ",";
-        }
-        unitsFileStream <<"}," << endl;
-    }
-
-    unitsFileStream << "}" << endl;
-    unitsFileStream << endl;
-    unitsFileStream << "Objects = {" << endl;
-    foreach (Tiled::ObjectGroup *group, map->objectGroups()) {
-        for (Tiled::MapObject *object : group->objects()) {
-            unitsFileStream << "\t{" << endl;
-            QString name = object->name();
-            QPointF pos = object->position();
-            unitsFileStream << "\tname = \"" <<  name << "\"," << endl;
-            unitsFileStream << "\tx = "  << std::floor((float)pos.x() / (cellWidth / 2.0f)) * cellWidth / 2 << "," << endl;
-            unitsFileStream << "\ty = " <<  std::floor((float)pos.y() / (cellHeight / 2.0f)) * cellHeight / 2 << "," << endl;
-            unitsFileStream << "\t}," << endl;
-        }
-    }
-    unitsFileStream << "}" << endl;
-
-    if (scriptFile.error() != QSaveFile::NoError) {
-        mError = scriptFile.errorString();
-        return false;
-    }
-
-    if (!scriptFile.commit()) {
-        mError = scriptFile.errorString();
-        return false;
-    }
-
     return true;
 }
 
