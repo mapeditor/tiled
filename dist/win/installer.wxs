@@ -168,15 +168,15 @@
               <File Id="fil5D0F7497E05278ABCA30DE9CE4F56E77" Source="$(var.InstallRoot)\translations\tiled_en.qm" />
               <File Id="filC018335544F53B73675E2FB664EC5FD3" Source="$(var.InstallRoot)\translations\tiled_es.qm" />
               <File Id="fil594E5E839EC4145E8B4B931A2C493B0A" Source="$(var.InstallRoot)\translations\tiled_fr.qm" />
-              <File Id="filDAF5806F37158DE1542D5AC722DE9888" Source="$(var.InstallRoot)\translations\tiled_he.qm" />
               <File Id="fil4F6A21C501F8FD2F62A48F9F675562F0" Source="$(var.InstallRoot)\translations\tiled_it.qm" />
               <File Id="fil474CB8EA4ACE7F46CDE67A76BD4C7898" Source="$(var.InstallRoot)\translations\tiled_ja.qm" />
-              <File Id="fil0A08E9AD349EA1E74DB7693B48EA6223" Source="$(var.InstallRoot)\translations\tiled_lv.qm" />
+              <File Id="filB8359F4627FE4AF698E2DECFCB44C230" Source="$(var.InstallRoot)\translations\tiled_nb.qm" />
               <File Id="fil3D78804A5164D3A538A69CC410748489" Source="$(var.InstallRoot)\translations\tiled_nl.qm" />
               <File Id="fil2093FF1FA956B072F088284F7E8D9EB0" Source="$(var.InstallRoot)\translations\tiled_pl.qm" />
               <File Id="filE804DB50B5E2D66789D32FE2DAC6B890" Source="$(var.InstallRoot)\translations\tiled_pt.qm" />
               <File Id="fil3C89A9D825948C24FA8369978AFFA7A8" Source="$(var.InstallRoot)\translations\tiled_pt_PT.qm" />
               <File Id="fil0EAEEC884057A18ABC38BE695E59BEF9" Source="$(var.InstallRoot)\translations\tiled_ru.qm" />
+              <File Id="filD4EFD29BBA084142AFB9E6486027D04C" Source="$(var.InstallRoot)\translations\tiled_tr.qm" />
               <File Id="fil69C6C852D465D530C36403B014136302" Source="$(var.InstallRoot)\translations\tiled_zh.qm" />
               <File Id="fil36A85C97B3C872B1AF9E53D0F5DC0FE6" Source="$(var.InstallRoot)\translations\tiled_zh_TW.qm" />
 
@@ -195,12 +195,14 @@
           </Directory>
           <Directory Id="examples" Name="examples">
             <Component Id="Examples" Guid="{AC8FD854-A03C-475D-AE66-64428B43C8D7}">
+              <File Id="fil600B2FA3CAF7422D8DC8E0FE4297692C" Source="$(var.RootDir)\examples\buch-outdoor.png" />
               <File Id="fil01FBB3D103DB1755CCB8215D90DCD886" Source="$(var.RootDir)\examples\desert.tmx" />
               <File Id="fil40BD750BCC31DCB35695B0715B5B9688" Source="$(var.RootDir)\examples\desert.tsx" />
               <File Id="fil3080562A01DBC7B7F1041145306559D2" Source="$(var.RootDir)\examples\hexagonal-mini.tmx" />
               <File Id="fil6E9588C95E7516578817E1B1E11FF260" Source="$(var.RootDir)\examples\hexmini.png" />
               <File Id="fil7E331997A1A47660DD7769FC2ABFCD81" Source="$(var.RootDir)\examples\isometric_grass_and_water.png" />
               <File Id="filF81CC1893F020E84515A015FED263C36" Source="$(var.RootDir)\examples\isometric_grass_and_water.tmx" />
+              <File Id="fil56CA98DE78EB45C98C087E4249084809" Source="$(var.RootDir)\examples\orthogonal-outside.tmx" />
               <File Id="fil85474E8AA51CEEF46A271B3332327D1A" Source="$(var.RootDir)\examples\perspective_walls.png" />
               <File Id="fil0D4F93797A8DA4A03B4E76C7CD236FD2" Source="$(var.RootDir)\examples\perspective_walls.tmx" />
               <File Id="filFA44B0BCF546E4834A2F0E55BDCB5170" Source="$(var.RootDir)\examples\perspective_walls.tsx" />
