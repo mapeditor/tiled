@@ -248,8 +248,8 @@ TiledProxyStyle::TiledProxyStyle(const QPalette &palette, QStyle *style)
     : QProxyStyle(style)
     , mPalette(palette)
     , mIsDark(palette.window().color().value() <= 128)
-    , mDockClose(QLatin1String("://images/16x16/dock-close.png"))
-    , mDockRestore(QLatin1String("://images/16x16/dock-restore.png"))
+    , mDockClose(QLatin1String("://images/dock-close.png"))
+    , mDockRestore(QLatin1String("://images/dock-restore.png"))
 {
     setObjectName(QLatin1String("tiled"));
 }
