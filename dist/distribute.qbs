@@ -78,9 +78,11 @@ Product {
             ];
 
             if (qbs.targetOS.contains("windows")) {
-                list.push("icuin54.dll",
-                          "icuuc54.dll",
-                          "icudt54.dll");
+                if (Qt.core.versionMinor < 7) {
+                    list.push("icuin54.dll",
+                              "icuuc54.dll",
+                              "icudt54.dll");
+                }
             } else if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
                 list = list.concat(addQtVersions([
