@@ -1,5 +1,6 @@
 clone_depth: 200
 version: '0.16.{build}'
+os: Previous Visual Studio 2013
 
 environment:
   global:
