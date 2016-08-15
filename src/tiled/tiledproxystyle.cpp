@@ -397,6 +397,49 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         }
         painter->restore();
         break;
+    case PE_IndicatorTabClose:
+    {
+        bool hovered = (option->state & State_Enabled) && (option->state & State_MouseOver);
+        if (hovered)
+            proxy()->drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
+
+        QColor textColor = option->palette.text().color();
+        QPen foregroundPen(textColor, 1.25, Qt::SolidLine, Qt::RoundCap);
+        QPen shadowPen(QColor(0, 0, 0, 200), 1.25, Qt::SolidLine, Qt::RoundCap);
+
+        if (!mIsDark) {
+            if (!hovered && !(option->state & State_Selected))
+                shadowPen.setColor(QColor(255, 255, 255, 200));
+            else
+                shadowPen.setColor(QColor(255, 255, 255, 255));
+        } else {
+            if (!hovered && !(option->state & State_Selected)) {
+                textColor.setAlpha(192);
+                foregroundPen.setColor(textColor);
+            }
+        }
+
+        QRect iconRect(0, 0, 8, 8);
+        iconRect.moveCenter(option->rect.center());
+
+        const QPoint lines[] = {
+            iconRect.topLeft(), iconRect.bottomRight(),
+            iconRect.topRight(), iconRect.bottomLeft(),
+        };
+
+        painter->save();
+
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->translate(0.5, 1.5);
+        painter->setPen(shadowPen);
+        painter->drawLines(lines, 2);
+        painter->translate(0.0, -1.0);
+        painter->setPen(foregroundPen);
+        painter->drawLines(lines, 2);
+
+        painter->restore();
+        break;
+    }
     case PE_PanelButtonCommand:
     {
         painter->save();
