@@ -68,9 +68,16 @@ public:
                   const QWidget *widget,
                   QStyleHintReturn *returnData) const override;
 
+    QIcon standardIcon(StandardPixmap standardIcon,
+                       const QStyleOption *opt = nullptr,
+                       const QWidget *widget = nullptr) const override;
+
 private:
     QPalette mPalette;
     bool mIsDark;
+
+    QIcon mDockClose;
+    QIcon mDockRestore;
 };
 
 } // namespace Internal

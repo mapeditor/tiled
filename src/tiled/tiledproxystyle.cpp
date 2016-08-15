@@ -248,6 +248,8 @@ TiledProxyStyle::TiledProxyStyle(const QPalette &palette, QStyle *style)
     : QProxyStyle(style)
     , mPalette(palette)
     , mIsDark(palette.window().color().value() <= 128)
+    , mDockClose(QLatin1String("://images/16x16/dock-close.png"))
+    , mDockRestore(QLatin1String("://images/16x16/dock-restore.png"))
 {
     setObjectName(QLatin1String("tiled"));
 }
@@ -1159,5 +1161,23 @@ int TiledProxyStyle::styleHint(StyleHint styleHint,
         return !mIsDark;    // etch only when bright
     default:
         return QProxyStyle::styleHint(styleHint, option, widget, returnData);
+    }
+}
+
+QIcon TiledProxyStyle::standardIcon(QStyle::StandardPixmap standardIcon,
+                                    const QStyleOption *option,
+                                    const QWidget *widget) const
+{
+    switch (standardIcon) {
+    // TODO: Look into overriding drawComplexControl(QStyle::CC_ToolButton) and
+    // checking for "qt_dockwidget_floatbutton" and "qt_dockwidget_closebutton"
+    // object names to draw better integrated buttons.
+    case SP_DockWidgetCloseButton:
+    case SP_TitleBarCloseButton:
+        return mDockClose;
+    case SP_TitleBarNormalButton:
+        return mDockRestore;
+    default:
+        return QProxyStyle::standardIcon(standardIcon, option, widget);
     }
 }
