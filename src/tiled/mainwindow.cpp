@@ -313,6 +313,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
+#ifdef Q_OS_MAC
+    mUi->actionFullScreen->setShortcuts(QKeySequence::FullScreen);
+#endif
+
     QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
     mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
     mUi->actionLabelsForSelectedObjects->setActionGroup(objectLabelVisibilityGroup);
