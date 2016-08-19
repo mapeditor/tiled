@@ -89,9 +89,6 @@
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
             <File Id="Qt5OpenGL_dll" Source="$(var.QtDir)\bin\Qt5OpenGL.dll"/>
-            <File Id="icuin54_dll" Source="$(var.QtDir)\bin\icuin54.dll"/>
-            <File Id="icuuc54_dll" Source="$(var.QtDir)\bin\icuuc54.dll"/>
-            <File Id="icudt54_dll" Source="$(var.QtDir)\bin\icudt54.dll"/>
 
             <?ifdef MingwDir ?>
             <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
@@ -151,9 +148,13 @@
             </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
+                <File Id="qdds_dll" Source="$(var.QtDir)\plugins\imageformats\qdds.dll"/>
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
+                <File Id="qtga_dll" Source="$(var.QtDir)\plugins\imageformats\qtga.dll"/>
                 <File Id="qtiff_dll" Source="$(var.QtDir)\plugins\imageformats\qtiff.dll"/>
+                <File Id="qwbmp_dll" Source="$(var.QtDir)\plugins\imageformats\qwbmp.dll"/>
+                <File Id="qwebp_dll" Source="$(var.QtDir)\plugins\imageformats\qwebp.dll"/>
               </Component>
             </Directory>
           </Directory>
