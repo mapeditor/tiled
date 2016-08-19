@@ -84,6 +84,16 @@ A plugin for tiled which allows to export maps as .lua T-Engine4 maps.
 
 %{pluginwarning}
 
+%package plugin-defold
+Summary:        Defold plugin for Tiled
+License:        GPLv2+
+URL:            http://www.mapeditor.org
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+%description plugin-defold
+A plugin for tiled which allows to export maps as .tilemap Defold maps.
+
+%{pluginwarning}
+
 %prep
 %setup -q
 # Remove copy of zlib
@@ -178,7 +188,13 @@ fi
 %files plugin-t-engine4
 %{_libdir}/%{name}/plugins/libtengine.so
 
+%files plugin-defold
+%{_libdir}/%{name}/plugins/libdefold.so
+
 %changelog
+* Sun Jul 24 2016 Erik Schilling <ablu.erikschilling@googlemail.com> - 0.17.0-1
+- Added subpackage for defold plugin
+
 * Tue Apr 19 2016 Erik Schilling <ablu.erikschilling@googlemail.com> - 0.16.0-1
 - New upstream release 0.16.0
 

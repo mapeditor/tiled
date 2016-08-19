@@ -31,9 +31,11 @@ namespace Internal {
 
 ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                                              Tile *tile,
-                                             ObjectGroup *objectGroup)
+                                             ObjectGroup *objectGroup,
+                                             QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate(
-                       "Undo Commands", "Change Tile Collision"))
+                       "Undo Commands", "Change Tile Collision"),
+                   parent)
     , mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mObjectGroup(objectGroup)

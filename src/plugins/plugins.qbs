@@ -3,6 +3,7 @@ Project {
 
     references: [
         "csv",
+        "defold",
         "droidcraft",
         "flare",
         "json",

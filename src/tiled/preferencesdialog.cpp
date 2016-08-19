@@ -61,6 +61,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->languageCombo->model()->sort(0);
     mUi->languageCombo->insertItem(0, tr("System default"));
 
+    mUi->styleCombo->addItems(QStringList()
+                              << QApplication::translate("PreferencesDialog", "Native")
+                              << QApplication::translate("PreferencesDialog", "Fusion")
+                              << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
     pluginProxyModel->setSortLocaleAware(true);
@@ -178,6 +183,10 @@ void PreferencesDialog::fromPreferences()
 void PreferencesDialog::retranslateUi()
 {
     mUi->languageCombo->setItemText(0, tr("System default"));
+
+    mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
+    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Fusion"));
+    mUi->styleCombo->setItemText(2, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
 }
 
 void PreferencesDialog::styleComboChanged(int index)

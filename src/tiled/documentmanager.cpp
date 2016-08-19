@@ -1,7 +1,7 @@
 /*
  * documentmanager.cpp
  * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2016, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -30,7 +30,6 @@
 #include "mapeditor.h"
 #include "maprenderer.h"
 #include "mapview.h"
-#include "movabletabwidget.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "zoomable.h"
@@ -38,15 +37,57 @@
 #include <QFileInfo>
 #include <QUndoGroup>
 
+#include <QApplication>
+#include <QClipboard>
+#include <QDialogButtonBox>
+#include <QDir>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMenu>
 #include <QMessageBox>
+#include <QProcess>
 #include <QScrollBar>
 #include <QTabBar>
+#include <QTabWidget>
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+/*
+ * Code based on FileUtils::showInGraphicalShell from Qt Creator
+ * Copyright (C) 2016 The Qt Company Ltd.
+ * Used under the terms of the GNU General Public License version 3
+ */
+static void showInFileManager(const QString &fileName)
+{
+    // Mac, Windows support folder or file.
+#if defined(Q_OS_WIN)
+    QStringList param;
+    if (!QFileInfo(fileName).isDir())
+        param += QLatin1String("/select,");
+    param += QDir::toNativeSeparators(fileName);
+    QProcess::startDetached(QLatin1String("explorer.exe"), param);
+#elif defined(Q_OS_MAC)
+    QStringList scriptArgs;
+    scriptArgs << QLatin1String("-e")
+               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+                                     .arg(fileName);
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+    scriptArgs.clear();
+    scriptArgs << QLatin1String("-e")
+               << QLatin1String("tell application \"Finder\" to activate");
+    QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
+#else
+    // We cannot select a file here, because xdg-open would open the file
+    // instead of the file browser...
+    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
+                            .arg(QFileInfo(fileName).absolutePath()));
+#endif
+}
+
 
 
 DocumentManager *DocumentManager::mInstance;
@@ -77,6 +118,7 @@ DocumentManager::DocumentManager(QObject *parent)
     mTabBar->setDocumentMode(true);
     mTabBar->setTabsClosable(true);
     mTabBar->setMovable(true);
+    mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
@@ -93,6 +135,8 @@ DocumentManager::DocumentManager(QObject *parent)
             this, &DocumentManager::documentCloseRequested);
     connect(mTabBar, &QTabBar::tabMoved,
             this, &DocumentManager::documentTabMoved);
+    connect(mTabBar, SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(tabContextMenuRequested(QPoint)));
 
     connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
             this, &DocumentManager::fileChanged);
@@ -398,7 +442,7 @@ bool DocumentManager::reloadDocumentAt(int index)
     // Replace old tab
     addDocument(newDocument);
     closeDocumentAt(index);
-    mTabWidget->moveTab(mDocuments.size() - 1, index);
+    mTabBar->moveTab(mDocuments.size() - 1, index);
 
     // Restore previous view state
     mapView = currentMapView();
@@ -499,6 +543,30 @@ void DocumentManager::documentSaved()
 void DocumentManager::documentTabMoved(int from, int to)
 {
     mDocuments.move(from, to);
+}
+
+void DocumentManager::tabContextMenuRequested(const QPoint &pos)
+{
+    int index = mTabBar->tabAt(pos);
+    if (index == -1)
+        return;
+
+    QMenu menu(mTabBar->window());
+
+    QString fileName = mDocuments.at(index)->fileName();
+
+    QAction *copyPath = menu.addAction(tr("Copy File Path"));
+    connect(copyPath, &QAction::triggered, [fileName] {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(QDir::toNativeSeparators(fileName));
+    });
+
+    QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
+    connect(openFolder, &QAction::triggered, [fileName] {
+        showInFileManager(fileName);
+    });
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 void DocumentManager::tilesetAdded(int index, Tileset *tileset)
@@ -665,13 +733,27 @@ void DocumentManager::tilesetChanged(Tileset *tileset)
     }
 
     if (anyRelevantMap && askForAdjustment(*tileset)) {
+        bool tilesetAdjusted = false;
+
         for (Document *document : mDocuments) {
             if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
                 Map *map = mapDocument->map();
 
                 if (map->tilesets().contains(sharedTileset)) {
-                    auto command = new AdjustTileIndexes(mapDocument, tileset);
-                    mapDocument->undoStack()->push(command);
+                    auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
+                    mapDocument->undoStack()->beginMacro(command1->text());
+                    mapDocument->undoStack()->push(command1);
+
+                    if (!tilesetAdjusted) {
+                        TilesetDocument *tilesetDocument = findTilesetDocument(sharedTileset);
+                        Q_ASSERT(tilesetDocument);
+
+                        auto command2 = new AdjustTileMetaData(tilesetDocument);
+                        tilesetAdjusted = true;
+                        mapDocument->undoStack()->push(command2);
+                    }
+
+                    mapDocument->undoStack()->endMacro();
                 }
             }
         }
@@ -691,8 +773,16 @@ void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
             continue;
 
         if (askForAdjustment(*tileset)) {
-            auto command = new AdjustTileIndexes(mapDocument, tileset.data());
-            mapDocument->undoStack()->push(command);
+            auto command1 = new AdjustTileIndexes(mapDocument, *tileset);
+
+            TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
+            Q_ASSERT(tilesetDocument);
+            auto command2 = new AdjustTileMetaData(tilesetDocument);
+
+            mapDocument->undoStack()->beginMacro(command1->text());
+            mapDocument->undoStack()->push(command1);
+            mapDocument->undoStack()->push(command2);
+            mapDocument->undoStack()->endMacro();
         }
 
         tileset.data()->syncExpectedColumnCount();

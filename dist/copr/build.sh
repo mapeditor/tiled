@@ -18,13 +18,18 @@ pushd ${BUILDROOT}
 popd
 rm -rf $BUILDROOT
 
-COPR_CONFIG="
+if [ $1 = "srpm-only" ]
+then
+   echo "Wrote tiled.src.rpm. Exiting."
+else
+   COPR_CONFIG="
 [copr-cli]
 login = $1
 username = $2
 token = $3
 copr_url = https://copr.fedorainfracloud.org
 "
-copr --config <(echo "$COPR_CONFIG") build ablu/tiled-dailies tiled.src.rpm || exit 1
+   copr --config <(echo "$COPR_CONFIG") build ablu/tiled-dailies tiled.src.rpm || exit 1
 
-rm tiled.src.rpm
+   rm tiled.src.rpm
+fi

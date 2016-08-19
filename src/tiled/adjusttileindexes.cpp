@@ -21,6 +21,11 @@
 #include "adjusttileindexes.h"
 
 #include "changemapobject.h"
+#include "changeproperties.h"
+#include "changetileanimation.h"
+#include "changetileobjectgroup.h"
+#include "changetileprobability.h"
+#include "changetileterrain.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -28,6 +33,7 @@
 #include "painttilelayer.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -35,28 +41,33 @@ namespace Tiled {
 namespace Internal {
 
 AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
-                                     Tileset *tileset)
+                                     const Tileset &tileset)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Adjust Tile Indexes"))
 {
-    int oldColumnCount = tileset->expectedColumnCount();
-    int newColumnCount = tileset->columnCount();
+    int oldColumnCount = tileset.expectedColumnCount();
+    int newColumnCount = tileset.columnCount();
 
-    auto isFromTileset = [=](const Cell &cell) -> bool {
-        return cell.tile && cell.tile->tileset() == tileset;
+    auto isFromTileset = [&](const Cell &cell) -> bool {
+        return cell.tile && cell.tile->tileset() == &tileset;
     };
 
-    auto adjustTile = [=](Tile *tile) -> Tile* {
+    auto adjustTile = [&](const Tile *tile) -> Tile* {
         int tileIndex = tile->id();
         int row = tileIndex / oldColumnCount;
         int column = tileIndex % oldColumnCount;
-        int newTileIndex = row * newColumnCount + column;
 
-        return tileset->findTile(newTileIndex);
+        if (column < newColumnCount) {
+            int newTileIndex = row * newColumnCount + column;
+            return tileset.findTile(newTileIndex);
+        }
+
+        return nullptr;
     };
 
     QVector<MapObjectChange> objectChanges;
 
+    // Adjust tile references from map layers
     for (Layer *layer : mapDocument->map()->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -116,6 +127,134 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                              ChangeMapObjects::ChangeTile,
                              this);
     }
+}
+
+AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Adjust Tile Indexes"))
+{
+    const Tileset &tileset = *tilesetDocument->tileset();
+
+    int oldColumnCount = tileset.expectedColumnCount();
+    int newColumnCount = tileset.columnCount();
+
+    auto adjustTile = [&](const Tile *tile) -> Tile* {
+        int tileIndex = tile->id();
+        int row = tileIndex / oldColumnCount;
+        int column = tileIndex % oldColumnCount;
+
+        if (column < newColumnCount) {
+            int newTileIndex = row * newColumnCount + column;
+            return tileset.findTile(newTileIndex);
+        }
+
+        return nullptr;
+    };
+
+    // Adjust tile meta data
+    QList<Tile*> tilesChangingProbability;
+    QList<float> tileProbabilities;
+    ChangeTileTerrain::Changes terrainChanges;
+    QSet<Tile*> tilesToReset;
+
+    auto adjustAnimationFrames = [&](const QVector<Frame> &frames) -> QVector<Frame> {
+        QVector<Frame> newFrames;
+        for (const Frame &frame : frames) {
+            if (Tile *tile = tileset.findTile(frame.tileId)) {
+                if (Tile *newTile = adjustTile(tile))
+                    newFrames.append(Frame { newTile->id(), frame.duration });
+            }
+        }
+        return newFrames;
+    };
+
+    auto applyMetaData = [&](Tile *toTile,
+                             const Properties &properties,
+                             unsigned terrain,
+                             float probability,
+                             ObjectGroup *objectGroup,
+                             const QVector<Frame> &frames)
+    {
+        if (properties != toTile->properties()) {
+            new ChangeProperties(tilesetDocument,
+                                 QCoreApplication::translate("MapDocument", "Tile"),
+                                 toTile,
+                                 properties,
+                                 this);
+        }
+
+        if (terrain != toTile->terrain()) {
+            terrainChanges.insert(toTile, ChangeTileTerrain::Change(toTile->terrain(),
+                                                                    terrain));
+        }
+
+        if (probability != toTile->probability()) {
+            tilesChangingProbability.append(toTile);
+            tileProbabilities.append(probability);
+        }
+
+        if (objectGroup != toTile->objectGroup())
+            new ChangeTileObjectGroup(tilesetDocument, toTile, objectGroup, this);
+
+        if (frames != toTile->frames())
+            new ChangeTileAnimation(tilesetDocument, toTile, frames, this);
+    };
+
+    auto moveMetaData = [&](Tile *fromTile) {
+        Tile *toTile = adjustTile(fromTile);
+        if (toTile == fromTile)
+            return;
+
+        tilesToReset.insert(fromTile);  // We may still need to reset "fromTile"
+
+        if (!toTile)
+            return;
+
+        tilesToReset.remove(toTile);    // "toTile" no longer needs to get reset
+
+        // Copy meta data from "fromTile" to "toTile"
+
+        ObjectGroup *objectGroup = nullptr;
+        if (fromTile->objectGroup())
+            objectGroup = static_cast<ObjectGroup*>(fromTile->objectGroup()->clone());
+
+        applyMetaData(toTile,
+                      fromTile->properties(),
+                      fromTile->terrain(),
+                      fromTile->probability(),
+                      objectGroup,
+                      adjustAnimationFrames(fromTile->frames()));
+    };
+
+    QMapIterator<int, Tile *> iterator{tileset.tiles()};
+
+    if (newColumnCount > oldColumnCount) {
+        // Increasing column count means information is copied to higher tiles,
+        // so we need to iterate backwards.
+        iterator.toBack();
+        while (iterator.hasPrevious())
+            moveMetaData(iterator.previous().value());
+    } else {
+        while (iterator.hasNext())
+            moveMetaData(iterator.next().value());
+    }
+
+    // Reset meta data on tiles that nothing was copied to
+    QSetIterator<Tile*> resetIterator(tilesToReset);
+    while (resetIterator.hasNext()) {
+        applyMetaData(resetIterator.next(),
+                      Properties(), -1, 1.0f, nullptr, QVector<Frame>());
+    }
+
+    if (!tilesChangingProbability.isEmpty()) {
+        new ChangeTileProbability(tilesetDocument,
+                                  tilesChangingProbability,
+                                  tileProbabilities,
+                                  this);
+    }
+
+    if (!terrainChanges.isEmpty())
+        new ChangeTileTerrain(tilesetDocument, terrainChanges, this);
 }
 
 } // namespace Internal

@@ -112,11 +112,9 @@ public:
     void setReloadTilesetsOnChange(bool enabled);
     bool reloadTilesetsOnChange() const;
 
-    /**
-     * Sets whether tile animations are running.
-     */
     void setAnimateTiles(bool enabled);
     bool animateTiles() const;
+    void resetTileAnimations();
 
     void tilesetImageSourceChanged(const Tileset &tileset,
                                    const QString &oldImageSource);

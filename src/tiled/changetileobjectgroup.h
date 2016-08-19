@@ -41,7 +41,8 @@ public:
      */
     ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                           Tile *tile,
-                          ObjectGroup *objectGroup);
+                          ObjectGroup *objectGroup,
+                          QUndoCommand *parent = nullptr);
 
     ~ChangeTileObjectGroup();
 

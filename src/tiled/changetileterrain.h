@@ -64,7 +64,8 @@ public:
     /**
      * Applies the given terrain \a changes.
      */
-    ChangeTileTerrain(TilesetDocument *tilesetDocument, const Changes &changes);
+    ChangeTileTerrain(TilesetDocument *tilesetDocument, const Changes &changes,
+                      QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

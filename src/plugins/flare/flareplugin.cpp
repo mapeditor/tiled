@@ -255,7 +255,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
 bool FlarePlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("txt");
+    return fileName.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive);
 }
 
 QString FlarePlugin::nameFilter() const

@@ -204,23 +204,7 @@
            </spacer>
           </item>
           <item row="0" column="2">
-           <widget class="QComboBox" name="styleCombo">
-            <item>
-             <property name="text">
-              <string>Native (default)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Fusion</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Tiled Fusion</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="styleCombo"/>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="selectionColorLabel">
@@ -395,7 +379,7 @@
   <customwidget>
    <class>Tiled::Internal::ColorButton</class>
    <extends>QToolButton</extends>
-   <header location="global">colorbutton.h</header>
+   <header>colorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

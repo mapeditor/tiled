@@ -80,8 +80,13 @@ Preferences::Preferences()
     mUseOpenGL = boolValue("OpenGL");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
+#if defined(Q_OS_MAC)
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", SystemDefaultStyle));
+#else
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", TiledStyle));
+#endif
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();

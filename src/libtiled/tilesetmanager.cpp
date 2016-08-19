@@ -50,11 +50,11 @@ TilesetManager::TilesetManager():
     mChangedFilesTimer.setInterval(500);
     mChangedFilesTimer.setSingleShot(true);
 
-    connect(&mChangedFilesTimer, SIGNAL(timeout()),
-            this, SLOT(fileChangedTimeout()));
+    connect(&mChangedFilesTimer, &QTimer::timeout,
+            this, &TilesetManager::fileChangedTimeout);
 
-    connect(mAnimationDriver, SIGNAL(update(int)),
-            this, SLOT(advanceTileAnimations(int)));
+    connect(mAnimationDriver, &TileAnimationDriver::update,
+            this, &TilesetManager::advanceTileAnimations);
 }
 
 TilesetManager::~TilesetManager()
@@ -144,6 +144,9 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
     // TODO: Clear the file system watcher when disabled
 }
 
+/**
+ * Sets whether tile animations are running.
+ */
 void TilesetManager::setAnimateTiles(bool enabled)
 {
     // TODO: Avoid running the driver when there are no animated tiles
@@ -193,6 +196,27 @@ void TilesetManager::fileChangedTimeout()
     }
 
     mChangedFiles.clear();
+}
+
+/**
+ * Resets all tile animations. Used to keep animations synchronized when they
+ * are edited.
+ */
+void TilesetManager::resetTileAnimations()
+{
+    const QList<SharedTileset> &_tilesets = tilesets();
+
+    // TODO: This could be more optimal by keeping track of the list of
+    // actually animated tiles
+    for (const SharedTileset &tileset : _tilesets) {
+        bool imageChanged = false;
+
+        for (Tile *tile : tileset->tiles())
+            imageChanged |= tile->resetAnimation();
+
+        if (imageChanged)
+            emit repaintTileset(tileset.data());
+    }
 }
 
 void TilesetManager::advanceTileAnimations(int ms)

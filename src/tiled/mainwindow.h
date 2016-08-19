@@ -129,6 +129,7 @@ private slots:
     void zoomIn();
     void zoomOut();
     void zoomNormal();
+    void setFullScreen(bool fullScreen);
 
     bool newTileset(const QString &path = QString());
     void newTilesets(const QStringList &paths);

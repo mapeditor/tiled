@@ -30,6 +30,7 @@
 #include <QPair>
 #include <QPointF>
 
+class QTabWidget;
 class QUndoGroup;
 class QStackedLayout;
 class QTabBar;
@@ -47,7 +48,6 @@ class MapDocument;
 class MapEditor;
 class MapScene;
 class MapView;
-class MovableTabWidget;
 class TilesetDocument;
 
 /**
@@ -220,6 +220,7 @@ private slots:
     void updateDocumentTab(Document *document);
     void documentSaved();
     void documentTabMoved(int from, int to);
+    void tabContextMenuRequested(const QPoint &pos);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);

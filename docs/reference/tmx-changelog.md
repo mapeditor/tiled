@@ -1,3 +1,4 @@
+source: reference/tmx-changelog.md
 ---
 # TMX Changelog #
 

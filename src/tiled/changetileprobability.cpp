@@ -42,6 +42,20 @@ ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                         "Change Tile Probability"));
 }
 
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile *> &tiles,
+                                             const QList<float> &probabilities,
+                                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
+    , mTiles(tiles)
+    , mProbabilities(probabilities)
+{
+    Q_ASSERT(mTiles.size() == mProbabilities.size());
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
+
 void ChangeTileProbability::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {

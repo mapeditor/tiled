@@ -1277,11 +1277,14 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
 
     const auto &objects = mDocument->currentObjects();
 
+    QColor textColor = palette().color(QPalette::Active, QPalette::WindowText);
+    QColor disabledTextColor = palette().color(QPalette::Disabled, QPalette::WindowText);
+
     // If one of the objects doesn't have this property then gray out the name and value.
     for (Object *obj : objects) {
         if (!obj->hasProperty(propertyName)) {
-            property->setNameColor(Qt::gray);
-            property->setValueColor(Qt::gray);
+            property->setNameColor(disabledTextColor);
+            property->setValueColor(disabledTextColor);
             return;
         }
     }
@@ -1291,13 +1294,13 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
         if (obj == mObject)
             continue;
         if (obj->property(propertyName) != propertyValue) {
-            property->setValueColor(Qt::gray);
+            property->setValueColor(disabledTextColor);
             return;
         }
     }
 
-    property->setNameColor(Qt::black);
-    property->setValueColor(Qt::black);
+    property->setNameColor(textColor);
+    property->setValueColor(textColor);
 }
 
 } // namespace Internal

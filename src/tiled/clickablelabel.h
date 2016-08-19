@@ -1,7 +1,6 @@
 /*
- * movabletabwidget.cpp
- * Copyright 2014, Sean Humeniuk <seanhumeniuk@gmail.com>
- * Copyright 2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * clickablelabel.h
+ * Copyright 2016, Ava Brumfield <alturos@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -19,22 +18,33 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "movabletabwidget.h"
+#ifndef CLICKABLELABEL_H
+#define CLICKABLELABEL_H
 
-#include <QTabBar>
+#include <QLabel>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
-MovableTabWidget::MovableTabWidget(QWidget *parent)
-    : QTabWidget(parent)
+class ClickableLabel : public QLabel
 {
-    setMovable(true);
-    connect(tabBar(), SIGNAL(tabMoved(int,int)),
-            SIGNAL(tabMoved(int,int)));
-}
+    Q_OBJECT
 
-void MovableTabWidget::moveTab(int from, int to)
-{
-    tabBar()->moveTab(from, to);
-}
+public:
+    ClickableLabel(QWidget *parent = nullptr);
+
+signals:
+    void mouseMoved(QMouseEvent *);
+    void mousePressed(QMouseEvent *);
+    void mouseReleased(QMouseEvent *);
+
+protected:
+    void mouseMoveEvent(QMouseEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+};
+
+} // namespace Tiled
+} // namespace Internal
+
+#endif // CLICKABLELABEL_H
