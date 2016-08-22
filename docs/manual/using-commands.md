@@ -15,13 +15,17 @@ You can press F5 as a shortcut to clicking the button to run the default command
 The 'Edit Commands' dialog contains a list of commands. Each command has several properties:
 
 * **Name**: The name of the command as it will be shown in the drop down list, so you can easily identify it.
-* **Command**: The actual shell command to execute. This probably starts with an executable program followed by arguments.
-    + The token `%mapfile` is replaced with the current maps full path.
-    + The token `%objecttype` is replaced with the type of the currently selected object, if any. (since Tiled 0.12)
+* **Command**: The actual shell command to execute. This usually starts with an executable program followed by arguments. You can use the following variables:
+    + `%mapfile` is replaced with the current maps full path.
+    + `%objecttype` is replaced with the type of the currently selected object, if any. (since Tiled 0.12)
+    + `%objectid` is replaced with the ID of the currently selected object, if any. (since Tiled 0.17)
+    * `%layername` is replaced with the name of the currently selected layer. (since Tiled 0.17)
 * **Enabled**: A quick way to disable commands and remove them from the drop down list.
     + The default command is the first enabled command.
 
 You can also change whether or not it should save the current map before running commands.
+
+Note that if the program or any of its arguments contain spaces, these parts need to be quoted.
 
 ## Example Commands
 
@@ -33,7 +37,11 @@ On Mac, remember that Apps are folders, so you need to run the actual executable
 
     /Applications/TextEdit.app/Contents/MacOS/TextEdit %mapfile
 
-Some OS's also have a command to open files in the appropriate program:
+Or use `open` (and note the quotes since one of the arguments contains spaces):
+
+    open -a "/Applications/CoronaSDK/Corona Simulator.app" /Users/user/Desktop/project/main.lua
+
+Some systems also have a command to open files in the appropriate program:
 
 * OSX: `open %mapfile`
 * GNOME systems like Ubuntu: `gnome-open %mapfile`
