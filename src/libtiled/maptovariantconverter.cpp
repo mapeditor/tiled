@@ -297,7 +297,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
     objectGroupVariant[QLatin1String("type")] = QLatin1String("objectgroup");
 
     if (objectGroup->color().isValid())
-        objectGroupVariant[QLatin1String("color")] = objectGroup->color().name();
+        objectGroupVariant[QLatin1String("color")] = colorToString(objectGroup->color());
 
     objectGroupVariant[QLatin1String("draworder")] = drawOrderToString(objectGroup->drawOrder());
 

@@ -505,7 +505,7 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
 
     if (objectGroup.color().isValid())
         w.writeAttribute(QLatin1String("color"),
-                         objectGroup.color().name());
+                         colorToString(objectGroup.color()));
 
     if (objectGroup.drawOrder() != ObjectGroup::TopDownOrder) {
         w.writeAttribute(QLatin1String("draworder"),
