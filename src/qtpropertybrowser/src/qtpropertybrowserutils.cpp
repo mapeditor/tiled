@@ -453,6 +453,36 @@ bool QtKeySequenceEdit::event(QEvent *e)
 }
 
 
+/**
+ * Strips a floating point number representation of redundant trailing zeros.
+ * Examples:
+ *
+ *  0.01000 -> 0.01
+ *  3.000   -> 3.0
+ */
+QString removeRedundantTrialingZeros(const QString &text)
+{
+    const QChar decimalPoint = QLocale::system().decimalPoint();
+
+    int i = text.length() - 1;
+    int redundantZeros = 0;
+
+    while (i > 0) {
+        if (text.at(i) == QLatin1Char('0')) {
+            ++redundantZeros;
+        } else {
+            if (text.at(i) == decimalPoint)
+                --redundantZeros;
+            break;
+        }
+        --i;
+    }
+
+    if (redundantZeros > 0)
+        return text.left(text.length() - redundantZeros);
+
+    return text;
+}
 
 
 #if QT_VERSION >= 0x040400
