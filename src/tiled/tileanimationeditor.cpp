@@ -257,7 +257,7 @@ const QVector<Frame> &FrameListModel::frames() const
 
 
 TileAnimationEditor::TileAnimationEditor(QWidget *parent)
-    : QWidget(parent, Qt::Window)
+    : QDialog(parent, Qt::Window)
     , mUi(new Ui::TileAnimationEditor)
     , mTilesetDocument(nullptr)
     , mTile(nullptr)

@@ -21,7 +21,7 @@
 #ifndef TILED_INTERNAL_TILEANIMATIONEDITOR_H
 #define TILED_INTERNAL_TILEANIMATIONEDITOR_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QModelIndex>
 
 namespace Ui {
@@ -40,7 +40,7 @@ namespace Internal {
 class FrameListModel;
 class TilesetDocument;
 
-class TileAnimationEditor : public QWidget
+class TileAnimationEditor : public QDialog
 {
     Q_OBJECT
 
