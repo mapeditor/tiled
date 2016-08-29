@@ -68,6 +68,9 @@ public:
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
 
+    TileAnimationEditor *tileAnimationEditor() const;
+    TileCollisionEditor *tileCollisionEditor() const;
+
 signals:
     void currentTileChanged(Tile *tile);
 
@@ -117,6 +120,16 @@ private:
 
     Tile *mCurrentTile;
 };
+
+inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
+{
+    return mTileAnimationEditor;
+}
+
+inline TileCollisionEditor *TilesetEditor::tileCollisionEditor() const
+{
+    return mTileCollisionEditor;
+}
 
 } // namespace Internal
 } // namespace Tiled

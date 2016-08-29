@@ -29,44 +29,46 @@
 
 #include "aboutdialog.h"
 #include "addremovemapobject.h"
-#include "automappingmanager.h"
 #include "addremovetileset.h"
+#include "automappingmanager.h"
+#include "commandbutton.h"
+#include "consoledock.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
 #include "exportasimagedialog.h"
 #include "languagemanager.h"
 #include "layer.h"
-#include "map.h"
-#include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapdocument.h"
 #include "mapeditor.h"
 #include "mapformat.h"
+#include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
-#include "pluginmanager.h"
-#include "resizedialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
+#include "pluginmanager.h"
 #include "preferences.h"
+#include "resizedialog.h"
 #include "terrain.h"
+#include "tileanimationeditor.h"
+#include "tilecollisioneditor.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
+#include "tileseteditor.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
+#include "tmxmapformat.h"
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
-#include "commandbutton.h"
-#include "consoledock.h"
-#include "tmxmapformat.h"
-#include "tileseteditor.h"
-#include "tilesetdocument.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -106,8 +108,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
 
-    mDocumentManager->setEditor(Document::MapDocumentType, new MapEditor);
-    mDocumentManager->setEditor(Document::TilesetDocumentType, new TilesetEditor);
+    auto *mapEditor = new MapEditor;
+    auto *tilesetEditor = new TilesetEditor;
+
+    mDocumentManager->setEditor(Document::MapDocumentType, mapEditor);
+    mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
 
@@ -387,13 +392,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mObjectTypesEditor, SLOT(setVisible(bool)));
     connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
 
-//    connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
-//            mTileAnimationEditor, SLOT(setVisible(bool)));
-//    connect(mTileAnimationEditor, SIGNAL(closed()), SLOT(onAnimationEditorClosed()));
+    connect(mShowTileAnimationEditor, &QAction::toggled,
+            tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::setVisible);
+    connect(tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::closed,
+            this, &MainWindow::onAnimationEditorClosed);
 
-//    connect(mShowTileCollisionEditor, SIGNAL(toggled(bool)),
-//            mTileCollisionEditor, SLOT(setVisible(bool)));
-//    connect(mTileCollisionEditor, SIGNAL(closed()), SLOT(onCollisionEditorClosed()));
+    connect(mShowTileCollisionEditor, &QAction::toggled,
+            tilesetEditor->tileCollisionEditor(), &TileCollisionEditor::setVisible);
+    connect(tilesetEditor->tileCollisionEditor(), &TileCollisionEditor::closed,
+            this, &MainWindow::onCollisionEditorClosed);
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 

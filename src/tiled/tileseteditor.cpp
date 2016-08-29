@@ -157,6 +157,11 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
     connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
 
+    connect(this, &TilesetEditor::currentTileChanged,
+            mTileAnimationEditor, &TileAnimationEditor::setTile);
+    connect(this, &TilesetEditor::currentTileChanged,
+            mTileCollisionEditor, &TileCollisionEditor::setTile);
+
     retranslateUi();
 }
 
@@ -192,6 +197,13 @@ void TilesetEditor::addDocument(Document *document)
 
     connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
             tilesetModel, &TilesetModel::tilesChanged);
+    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+            tilesetModel, &TilesetModel::tileChanged);
+    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
+            tilesetModel, &TilesetModel::tileChanged);
+
+    connect(tilesetDocument, &TilesetDocument::tilesetChanged,
+            this, &TilesetEditor::tilesetChanged);
 
     connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
@@ -200,15 +212,6 @@ void TilesetEditor::addDocument(Document *document)
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
     connect(s, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);
     connect(view, &TilesetView::pressed, this, &TilesetEditor::indexPressed);
-
-    // todo: Connect the TilesetView tile selection to these editors
-    // maybe only connect to the currently visible view
-    //    connect(mTilesetDock, &TilesetDock::currentTileChanged,
-    //            mTileAnimationEditor, &TileAnimationEditor::setTile);
-    //    connect(mTilesetDock, &TilesetDock::currentTileChanged,
-    //            mTileCollisionEditor, &TileCollisionEditor::setTile);
-
-    connect(tilesetDocument, &TilesetDocument::tilesetChanged, this, &TilesetEditor::tilesetChanged);
 
     mViewForTileset.insert(tilesetDocument, view);
     mWidgetStack->addWidget(view);
