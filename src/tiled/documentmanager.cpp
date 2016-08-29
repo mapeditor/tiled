@@ -182,6 +182,14 @@ void DocumentManager::deleteEditor(Document::DocumentType documentType)
     delete editor;
 }
 
+Editor *DocumentManager::currentEditor() const
+{
+    if (Document *document = currentDocument())
+        return editor(document->type());
+
+    return nullptr;
+}
+
 void DocumentManager::saveState()
 {
     QHashIterator<Document::DocumentType, Editor*> iterator(mEditorForType);

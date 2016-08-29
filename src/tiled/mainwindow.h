@@ -192,12 +192,15 @@ private:
     void setRecentFile(const QString &fileName);
     void updateRecentFiles();
 
+    void updateViewsAndToolbarsMenu();
+
     void retranslateUi();
 
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
+    QDockWidget *mUndoDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
     QToolButton *mRandomButton;
@@ -207,7 +210,8 @@ private:
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
-    QAction *mViewsAndToolbarsMenu;
+    QMenu *mViewsAndToolbarsMenu;
+    QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
     QAction *mShowTileCollisionEditor;

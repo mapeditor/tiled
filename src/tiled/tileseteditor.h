@@ -65,6 +65,9 @@ public:
 
     QWidget *editorWidget() const override;
 
+    QList<QToolBar *> toolBars() const override;
+    QList<QDockWidget *> dockWidgets() const override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
 
@@ -101,6 +104,7 @@ private:
     void retranslateUi();
 
     QMainWindow *mMainWindow;
+    QToolBar *mMainToolBar;
     QStackedWidget *mWidgetStack;
     QToolBar *mTilesetToolBar;
 

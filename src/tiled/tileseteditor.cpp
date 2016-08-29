@@ -105,6 +105,7 @@ private:
 TilesetEditor::TilesetEditor(QObject *parent)
     : Editor(parent)
     , mMainWindow(new QMainWindow)
+    , mMainToolBar(new MainToolBar(mMainWindow))
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
@@ -125,7 +126,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 #endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
-    mMainWindow->addToolBar(new MainToolBar(mMainWindow));
+    mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
 
@@ -271,6 +272,22 @@ Document *TilesetEditor::currentDocument() const
 QWidget *TilesetEditor::editorWidget() const
 {
     return mMainWindow;
+}
+
+QList<QToolBar *> TilesetEditor::toolBars() const
+{
+    return QList<QToolBar*> {
+        mMainToolBar,
+        mTilesetToolBar
+    };
+}
+
+QList<QDockWidget *> TilesetEditor::dockWidgets() const
+{
+    return QList<QDockWidget*> {
+        mPropertiesDock,
+        mTerrainDock
+    };
 }
 
 TilesetView *TilesetEditor::currentTilesetView() const

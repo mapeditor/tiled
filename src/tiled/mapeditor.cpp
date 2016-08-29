@@ -264,7 +264,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addToolBar(mToolsToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
-    TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
+    mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
@@ -273,14 +273,14 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
 
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
 
     mMapsDock->setVisible(false);
-    tileStampsDock->setVisible(false);
+    mTileStampsDock->setVisible(false);
 
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -307,7 +307,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
             mTerrainDock, &TerrainDock::setCurrentTerrain);
 
-    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
+    connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
 
     setSelectedTool(mToolManager->selectedTool());
@@ -493,6 +493,28 @@ Document *MapEditor::currentDocument() const
 QWidget *MapEditor::editorWidget() const
 {
     return mMainWindow;
+}
+
+QList<QToolBar *> MapEditor::toolBars() const
+{
+    return QList<QToolBar*> {
+        mMainToolBar,
+        mToolsToolBar
+    };
+}
+
+QList<QDockWidget *> MapEditor::dockWidgets() const
+{
+    return QList<QDockWidget*> {
+        mPropertiesDock,
+        mLayerDock,
+        mMapsDock,
+        mObjectsDock,
+        mTilesetDock,
+        mTerrainDock,
+        mMiniMapDock,
+        mTileStampsDock
+    };
 }
 
 MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const

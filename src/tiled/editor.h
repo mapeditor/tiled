@@ -23,6 +23,9 @@
 
 #include <QObject>
 
+class QToolBar;
+class QDockWidget;
+
 namespace Tiled {
 namespace Internal {
 
@@ -45,6 +48,9 @@ public:
     virtual Document *currentDocument() const = 0;
 
     virtual QWidget *editorWidget() const = 0;
+
+    virtual QList<QToolBar*> toolBars() const = 0;
+    virtual QList<QDockWidget*> dockWidgets() const = 0;
 };
 
 } // namespace Internal

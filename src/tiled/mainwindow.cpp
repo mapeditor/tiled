@@ -84,6 +84,7 @@
 #include <QSessionManager>
 #include <QShortcut>
 #include <QTextStream>
+#include <QToolBar>
 #include <QToolButton>
 #include <QUndoGroup>
 #include <QUndoStack>
@@ -145,16 +146,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoAction->setIcon(undoIcon);
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
-    UndoDock *undoDock = new UndoDock(undoGroup, this);
+    mUndoDock = new UndoDock(undoGroup, this);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::LeftDockWidgetArea, undoDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
 
 //    tabifyDockWidget(undoDock, mMapsDock);
 //    tabifyDockWidget(tileStampsDock, undoDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
-    undoDock->setVisible(false);
+    mUndoDock->setVisible(false);
     mConsoleDock->setVisible(false);
 
 //    mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -370,7 +371,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
-    mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
+    mViewsAndToolbarsMenu = new QMenu(this);
+    mViewsAndToolbarsAction = new QAction(tr("Views and Toolbars"), this);
+    mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
@@ -379,14 +382,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowTileCollisionEditor->setCheckable(true);
     mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
     mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
-    QMenu *popupMenu = createPopupMenu();
-    popupMenu->setParent(this);
-    mViewsAndToolbarsMenu->setMenu(popupMenu);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
+    connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
+            this, &MainWindow::updateViewsAndToolbarsMenu);
 
     connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
             mObjectTypesEditor, SLOT(setVisible(bool)));
@@ -1453,17 +1456,37 @@ void MainWindow::updateRecentFiles()
     QStringList files = recentFiles();
     const int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);
 
-    for (int i = 0; i < numRecentFiles; ++i)
-    {
+    for (int i = 0; i < numRecentFiles; ++i) {
         mRecentFiles[i]->setText(QFileInfo(files[i]).fileName());
         mRecentFiles[i]->setData(files[i]);
         mRecentFiles[i]->setVisible(true);
     }
-    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
-    {
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j) {
         mRecentFiles[j]->setVisible(false);
     }
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
+}
+
+void MainWindow::updateViewsAndToolbarsMenu()
+{
+    mViewsAndToolbarsMenu->clear();
+
+    mViewsAndToolbarsMenu->addAction(mUndoDock->toggleViewAction());
+    mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
+
+    if (Editor *editor = mDocumentManager->currentEditor()) {
+        mViewsAndToolbarsMenu->addSeparator();
+
+        const auto dockWidgets = editor->dockWidgets();
+        for (auto dockWidget : dockWidgets)
+            mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
+
+        mViewsAndToolbarsMenu->addSeparator();
+
+        const auto toolBars = editor->toolBars();
+        for (auto toolBar : toolBars)
+            mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
+    }
 }
 
 void MainWindow::updateActions()
@@ -1606,7 +1629,7 @@ void MainWindow::retranslateUi()
 
 //    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
-    mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
+    mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();

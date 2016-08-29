@@ -71,6 +71,8 @@ public:
     Editor *editor(Document::DocumentType documentType) const;
     void deleteEditor(Document::DocumentType documentType);
 
+    Editor *currentEditor() const;
+
     void saveState();
     void restoreState();
 

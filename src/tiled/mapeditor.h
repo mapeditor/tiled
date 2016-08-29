@@ -79,6 +79,9 @@ public:
 
     QWidget *editorWidget() const override;
 
+    QList<QToolBar *> toolBars() const override;
+    QList<QDockWidget *> dockWidgets() const override;
+
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
 
@@ -129,6 +132,7 @@ private:
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
+    QDockWidget *mTileStampsDock;
     QComboBox *mLayerComboBox;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
