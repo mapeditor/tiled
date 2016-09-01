@@ -1,6 +1,7 @@
 /*
  * objectselectiontool.cpp
  * Copyright 2010-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -46,8 +47,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <QUndoStack>
-
-#include <cmath>
+#include <QtCore/qmath.h>
 
 // MSVC 2010 math header does not come with M_PI
 #ifndef M_PI
@@ -1051,21 +1051,21 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     const QPointF startDiff = mOrigin - mStart;
     const QPointF currentDiff = mOrigin - pos;
 
-    const qreal startAngle = std::atan2(startDiff.y(), startDiff.x());
-    const qreal currentAngle = std::atan2(currentDiff.y(), currentDiff.x());
+    const qreal startAngle = qAtan2(startDiff.y(), startDiff.x());
+    const qreal currentAngle = qAtan2(currentDiff.y(), currentDiff.x());
     qreal angleDiff = currentAngle - startAngle;
 
     const qreal snap = 15 * M_PI / 180; // 15 degrees in radians
     if (modifiers & Qt::ControlModifier)
-        angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
+        angleDiff = qFloor((angleDiff + snap / 2) / snap) * snap;
 
     foreach (const MovingObject &object, mMovingObjects) {
         MapObject *mapObject = object.item->mapObject();
         const QPointF offset = mapObject->objectGroup()->offset();
 
         const QPointF oldRelPos = object.oldItemPosition + offset - mOrigin;
-        const qreal sn = std::sin(angleDiff);
-        const qreal cs = std::cos(angleDiff);
+        const qreal sn = qSin(angleDiff);
+        const qreal cs = qCos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
         const QPointF newPixelPos = mOrigin + newRelPos - offset;
@@ -1182,8 +1182,8 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         if (mapObject->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
             qreal rotation = object.item->rotation() * M_PI / -180;
-            const qreal sn = std::sin(rotation);
-            const qreal cs = std::cos(rotation);
+            const qreal sn = qSin(rotation);
+            const qreal cs = qCos(rotation);
             
             const QPolygonF &oldPolygon = object.oldPolygon;
             QPolygonF newPolygon(oldPolygon.size());

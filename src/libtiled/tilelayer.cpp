@@ -2,6 +2,7 @@
  * tilelayer.cpp
  * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of libtiled.
  *
@@ -61,7 +62,7 @@ static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
         const QPoint offset = tileset->tileOffset();
         const QSize tileSize = tileset->tileSize();
 
-        maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
+        maxTileSize = qMax(maxTileSize, qMax(tileSize.width(),
                                                      tileSize.height()));
 
         offsetMargins = maxMargins(QMargins(-offset.x(),

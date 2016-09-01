@@ -2,6 +2,7 @@
  * tileset.cpp
  * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of libtiled.
  *
@@ -100,7 +101,7 @@ Tile *Tileset::findOrCreateTile(int id)
     if (Tile *tile = mTiles.value(id))
         return tile;
 
-    mNextTileId = std::max(mNextTileId, id + 1);
+    mNextTileId = qMax(mNextTileId, id + 1);
     return mTiles[id] = new Tile(id, this);
 }
 
@@ -191,7 +192,7 @@ bool Tileset::loadFromImage(const QImage &image,
         }
     }
 
-    mNextTileId = std::max(mNextTileId, tileNum);
+    mNextTileId = qMax(mNextTileId, tileNum);
 
     mImageReference.size = image.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());

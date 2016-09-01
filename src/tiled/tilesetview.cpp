@@ -1,6 +1,7 @@
 /*
  * tilesetview.cpp
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -225,8 +226,8 @@ void TileDelegate::paint(QPainter *painter,
         if (tileset->isCollection()) {
             tileSize = QSize(32, 32);
         } else {
-            int max = std::max(tileset->tileWidth(), tileset->tileWidth());
-            int min = std::min(max, 32);
+            int max = qMax(tileset->tileWidth(), tileset->tileWidth());
+            int min = qMin(max, 32);
             tileSize = QSize(min, min);
         }
     }
@@ -336,8 +337,8 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
             if (tileset->isCollection()) {
                 tileSize = QSize(32, 32);
             } else {
-                int max = std::max(tileset->tileWidth(), tileset->tileWidth());
-                int min = std::min(max, 32);
+                int max = qMax(tileset->tileWidth(), tileset->tileWidth());
+                int min = qMin(max, 32);
                 tileSize = QSize(min, min);
             }
         }

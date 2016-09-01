@@ -1,6 +1,7 @@
 /*
  * abstracttiletool.cpp
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -28,7 +29,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -87,8 +88,8 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     if (mTilePositionMethod == BetweenTiles)
         tilePos = tilePosF.toPoint();
     else
-        tilePos = QPoint((int) std::floor(tilePosF.x()),
-                         (int) std::floor(tilePosF.y()));
+        tilePos = QPoint((int) qFloor(tilePosF.x()),
+                         (int) qFloor(tilePosF.y()));
 
     if (mTilePosition != tilePos) {
         mTilePosition = tilePos;
