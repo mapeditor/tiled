@@ -42,6 +42,12 @@ QString Command::finalCommand() const
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
 
+        QFileInfo fileInfo(fileName);
+        QString mapPath = fileInfo.absolutePath();
+        finalCommand.replace(
+            QLatin1String("%mappath"),
+            QString(QLatin1String("\"%1\"")).arg(mapPath));
+
         if (const Layer *layer = mapDocument->currentLayer()) {
             finalCommand.replace(QLatin1String("%layername"),
                                  QString(QLatin1String("\"%1\"")).arg(layer->name()));
