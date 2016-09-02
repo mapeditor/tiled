@@ -296,8 +296,8 @@ void TileCollisionEditor::currentObjectChanged(Object *object)
     // If a tile object is selected, edit the collision shapes for that tile
     if (object && object->typeId() == Object::MapObjectType) {
         const Cell &cell = static_cast<MapObject*>(object)->cell();
-        if (cell.tile)
-            setTile(cell.tile);
+        if (Tile *tile = cell.tile())
+            setTile(tile);
     }
 }
 

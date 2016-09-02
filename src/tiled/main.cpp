@@ -21,12 +21,12 @@
  */
 
 #include "commandlineparser.h"
-#include "mainwindow.h"
 #include "languagemanager.h"
-#include "pluginmanager.h"
+#include "mainwindow.h"
 #include "mapdocument.h"
-#include "mapreader.h"
 #include "mapformat.h"
+#include "mapreader.h"
+#include "pluginmanager.h"
 #include "preferences.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"

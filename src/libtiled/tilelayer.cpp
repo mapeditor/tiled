@@ -115,8 +115,8 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     Cell &existingCell = mGrid[x + y * mWidth];
 
     if (!mUsedTilesetsDirty) {
-        Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tile->tileset();
-        Tileset *newTileset = cell.isEmpty() ? nullptr : cell.tile->tileset();
+        Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
+        Tileset *newTileset = cell.tileset();
         if (oldTileset != newTileset) {
             if (oldTileset)
                 mUsedTilesetsDirty = true;
@@ -203,11 +203,11 @@ void TileLayer::flip(FlipDirection direction)
             if (direction == FlipHorizontally) {
                 const Cell &source = cellAt(mWidth - x - 1, y);
                 dest = source;
-                dest.flippedHorizontally = !source.flippedHorizontally;
+                dest.setFlippedHorizontally(!source.flippedHorizontally());
             } else if (direction == FlipVertically) {
                 const Cell &source = cellAt(x, mHeight - y - 1);
                 dest = source;
-                dest.flippedVertically = !source.flippedVertically;
+                dest.setFlippedVertically(!source.flippedVertically());
             }
         }
     }
@@ -233,15 +233,15 @@ void TileLayer::rotate(RotateDirection direction)
             Cell dest = source;
 
             unsigned char mask =
-                    (dest.flippedHorizontally << 2) |
-                    (dest.flippedVertically << 1) |
-                    (dest.flippedAntiDiagonally << 0);
+                    (dest.flippedHorizontally() << 2) |
+                    (dest.flippedVertically() << 1) |
+                    (dest.flippedAntiDiagonally() << 0);
 
             mask = rotateMask[mask];
 
-            dest.flippedHorizontally = (mask & 4) != 0;
-            dest.flippedVertically = (mask & 2) != 0;
-            dest.flippedAntiDiagonally = (mask & 1) != 0;
+            dest.setFlippedHorizontally((mask & 4) != 0);
+            dest.setFlippedVertically((mask & 2) != 0);
+            dest.setFlippedAntiDiagonally((mask & 1) != 0);
 
             if (direction == RotateRight)
                 newGrid[x * newWidth + (mHeight - y - 1)] = dest;
@@ -262,7 +262,7 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
         QSet<SharedTileset> tilesets;
 
         for (const Cell &cell : mGrid)
-            if (const Tile *tile = cell.tile)
+            if (const Tile *tile = cell.tile())
                 tilesets.insert(tile->sharedTileset());
 
         mUsedTilesets.swap(tilesets);
@@ -284,8 +284,7 @@ bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
     for (const Cell &cell : mGrid) {
-        const Tile *tile = cell.tile;
-        if (tile && tile->tileset() == tileset)
+        if (cell.tileset() == tileset)
             return true;
     }
     return false;
@@ -294,8 +293,7 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
-        if (tile && tile->tileset() == tileset)
+        if (mGrid.at(i).tileset() == tileset)
             mGrid.replace(i, Cell());
     }
 
@@ -306,9 +304,8 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
     for (Cell &cell : mGrid) {
-        const Tile *tile = cell.tile;
-        if (tile && tile->tileset() == oldTileset)
-            cell.tile = newTileset->findOrCreateTile(tile->id());
+        if (cell.tileset() == oldTileset)
+            cell.setTile(newTileset, cell.tileId());
     }
 
     if (mUsedTilesets.remove(oldTileset->sharedPointer()))

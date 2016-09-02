@@ -309,8 +309,11 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 if (layer->contains(rowTile)) {
                     const Cell &cell = layer->cellAt(rowTile);
 
-                    if (!cell.isEmpty())
-                        renderer.render(cell, rowPos, QSizeF(0, 0), CellRenderer::BottomLeft);
+                    if (!cell.isEmpty()) {
+                        Tile *tile = cell.tile();
+                        QSize size = tile ? tile->size() : map()->tileSize();
+                        renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    }
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -350,8 +353,11 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
                 const Cell &cell = layer->cellAt(rowTile);
 
-                if (!cell.isEmpty())
-                    renderer.render(cell, rowPos, QSizeF(0, 0), CellRenderer::BottomLeft);
+                if (!cell.isEmpty()) {
+                    Tile *tile = cell.tile();
+                    QSize size = tile ? tile->size() : map()->tileSize();
+                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }

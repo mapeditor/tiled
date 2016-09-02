@@ -304,7 +304,7 @@ bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
     // correct tileset for this layer.
     for (int y = 0; y < layer->height(); y++) {
         for (int x = 0; x < layer->width(); x++) {
-            Tile *tile = layer->cellAt(x, y).tile;
+            Tile *tile = layer->cellAt(x, y).tile();
             if (tile)
                 out << static_cast<quint8>(tile->id());
             else

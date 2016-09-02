@@ -76,9 +76,6 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     int layerWidth = 0;
     int layerHeight = 0;
 
-    int cellWidth = 0;
-    int cellHeight = 0;
-
     QString layers = "";
     foreach (Tiled::TileLayer *tileLayer, map->tileLayers()) {
         QVariantHash layer_h;
@@ -101,16 +98,16 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 QVariantHash cell_h;
                 cell_h["x"] = x;
                 cell_h["y"] = tileLayer->height() - y - 1;
-                cell_h["tile"] = cell.tile->id();
-                cell_h["h_flip"] = cell.flippedHorizontally ? 1 : 0;
-                cell_h["v_flip"] = cell.flippedVertically ? 1 : 0;
+                cell_h["tile"] = cell.tileId();
+                cell_h["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
+                cell_h["v_flip"] = cell.flippedVertically() ? 1 : 0;
                 cells.append(replaceTags(QLatin1String(cell_t), cell_h));
-                if (types[x].size() < tileLayer->height())
-                    types[x].append(cell.tile->property("Type").toString());
-                else if (!cell.tile->property("Type").toString().isEmpty())
-                    types[x][tileLayer->height() - y - 1] = cell.tile->property("Type").toString();
-                cellWidth = std::max(cell.tile->width(), cellWidth);
-                cellHeight = std::max(cell.tile->height(), cellHeight);
+                if (const Tiled::Tile *tile = cell.tile()) {
+                    if (types[x].size() < tileLayer->height())
+                        types[x].append(tile->property("Type").toString());
+                    else if (!tile->property("Type").toString().isEmpty())
+                        types[x][tileLayer->height() - y - 1] = tile->property("Type").toString();
+                }
             }
         }
         layer_h["cells"] = cells;

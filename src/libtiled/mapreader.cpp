@@ -278,8 +278,8 @@ Map *MapReaderPrivate::readMap()
         for (Layer *layer : mMap->layers()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 for (MapObject *object : *objectGroup) {
-                    if (!object->cell().isEmpty()) {
-                        const QSizeF &tileSize = object->cell().tile->size();
+                    if (const Tile *tile = object->cell().tile()) {
+                        const QSizeF tileSize = tile->size();
                         if (object->width() == 0)
                             object->setWidth(tileSize.width());
                         if (object->height() == 0)

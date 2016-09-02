@@ -64,16 +64,22 @@ MapObject::MapObject(const QString &name, const QString &type,
 
 QRectF MapObject::boundsUseTile() const
 {
-    if (mCell.isEmpty()) {
-        // No tile so just use regular bounds
-        return bounds();
+    // FIXME: This is outdated code:
+    // * It does not take into account that a tile object can be scaled.
+    // * It neglects that origin is not the same in orthogonal and isometric
+    //   maps (see MapObject::alignment).
+    // * It does not deal with rotation.
+
+    if (const Tile *tile = mCell.tile()) {
+        // Using the tile for determing boundary
+        // Note the position given is the bottom-left corner so correct for that
+        return QRectF(QPointF(mPos.x(),
+                              mPos.y() - tile->height()),
+                      tile->size());
     }
 
-    // Using the tile for determing boundary
-    // Note the position given is the bottom-left corner so correct for that
-    return QRectF(QPointF(mPos.x(),
-                          mPos.y() - mCell.tile->height()),
-                  mCell.tile->size());
+    // No tile so just use regular bounds
+    return bounds();
 }
 
 /*
@@ -104,9 +110,9 @@ void MapObject::flip(FlipDirection direction)
 {
     if (!mCell.isEmpty()) {
         if (direction == FlipHorizontally)
-            mCell.flippedHorizontally = !mCell.flippedHorizontally;
+            mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
         else if (direction == FlipVertically)
-            mCell.flippedVertically = !mCell.flippedVertically;
+            mCell.setFlippedVertically(!mCell.flippedVertically());
     }
 
     if (!mPolygon.isEmpty()) {

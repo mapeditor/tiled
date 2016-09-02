@@ -764,11 +764,11 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         const bool flippedVertically = flippingFlags & 2;
 
         // You can only change one checkbox at a time
-        if (mapObject->cell().flippedHorizontally != flippedHorizontally) {
+        if (mapObject->cell().flippedHorizontally() != flippedHorizontally) {
             command = new FlipMapObjects(mMapDocument,
                                          QList<MapObject*>() << mapObject,
                                          FlipHorizontally);
-        } else if (mapObject->cell().flippedVertically != flippedVertically) {
+        } else if (mapObject->cell().flippedVertically() != flippedVertically) {
             command = new FlipMapObjects(mMapDocument,
                                          QList<MapObject*>() << mapObject,
                                          FlipVertically);
@@ -1124,9 +1124,9 @@ void PropertyBrowser::updateProperties()
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
             int flippingFlags = 0;
-            if (mapObject->cell().flippedHorizontally)
+            if (mapObject->cell().flippedHorizontally())
                 flippingFlags |= 1;
-            if (mapObject->cell().flippedVertically)
+            if (mapObject->cell().flippedVertically())
                 flippingFlags |= 2;
             property->setValue(flippingFlags);
         }

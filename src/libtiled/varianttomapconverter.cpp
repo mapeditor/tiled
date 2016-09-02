@@ -480,8 +480,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
             bool ok;
             object->setCell(mGidMapper.gidToCell(gid, ok));
 
-            if (!object->cell().isEmpty()) {
-                const QSizeF &tileSize = object->cell().tile->size();
+            if (const Tile *tile = object->cell().tile()) {
+                const QSizeF &tileSize = tile->size();
                 if (width == 0)
                     object->setWidth(tileSize.width());
                 if (height == 0)

@@ -492,7 +492,7 @@ void MapScene::adaptToTilesetTileSizeChanges(Tileset *tileset)
 
     for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
-        if (!cell.isEmpty() && cell.tile->tileset() == tileset)
+        if (cell.tileset() == tileset)
             item->syncWithMapObject();
     }
 }
@@ -507,7 +507,7 @@ void MapScene::adaptToTileSizeChanges(Tile *tile)
 
     for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
-        if (cell.tile == tile)
+        if (cell.tile() == tile)
             item->syncWithMapObject();
     }
 }

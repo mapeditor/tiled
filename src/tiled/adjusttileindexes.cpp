@@ -49,23 +49,25 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
     int newColumnCount = tileset.columnCount();
 
     auto isFromTileset = [&](const Cell &cell) -> bool {
-        return cell.tile && cell.tile->tileset() == &tileset;
+        return cell.tileset() == &tileset;
     };
 
-    auto adjustTile = [&](const Tile *tile) -> Tile* {
-        int tileIndex = tile->id();
+    auto adjustCell = [&](Cell cell) -> Cell {
+        int tileIndex = cell.tileId();
         int row = tileIndex / oldColumnCount;
         int column = tileIndex % oldColumnCount;
 
         if (column < newColumnCount) {
             int newTileIndex = row * newColumnCount + column;
-            return tileset.findTile(newTileIndex);
+            cell.setTile(cell.tileset(), newTileIndex);
+        } else {
+            cell.setTile(nullptr);
         }
 
-        return nullptr;
+        return cell;
     };
 
-    QVector<MapObjectChange> objectChanges;
+    QVector<MapObjectCell> objectChanges;
 
     // Adjust tile references from map layers
     for (Layer *layer : mapDocument->map()->layers()) {
@@ -83,9 +85,7 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                 for (const QRect &rect : region.rects()) {
                     for (int x = rect.left(); x <= rect.right(); ++x) {
                         for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                            Cell cell = tileLayer->cellAt(x, y);
-                            cell.tile = adjustTile(cell.tile);
-
+                            Cell cell = adjustCell(tileLayer->cellAt(x, y));
                             changedLayer->setCell(x - boundingRect.x(),
                                                   y - boundingRect.y(),
                                                   cell);
@@ -108,9 +108,9 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
         case Layer::ObjectGroupType:
             for (MapObject *mapObject : *static_cast<ObjectGroup*>(layer)) {
                 if (isFromTileset(mapObject->cell())) {
-                    MapObjectChange change;
+                    MapObjectCell change;
                     change.object = mapObject;
-                    change.tile = adjustTile(mapObject->cell().tile);;
+                    change.cell = adjustCell(mapObject->cell());
                     objectChanges.append(change);
                 }
             }
@@ -121,12 +121,8 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
         }
     }
 
-    if (!objectChanges.isEmpty()) {
-        new ChangeMapObjects(mapDocument,
-                             objectChanges,
-                             ChangeMapObjects::ChangeTile,
-                             this);
-    }
+    if (!objectChanges.isEmpty())
+        new ChangeMapObjectCells(mapDocument, objectChanges, this);
 }
 
 AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)

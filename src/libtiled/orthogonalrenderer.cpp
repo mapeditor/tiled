@@ -62,13 +62,19 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     QRectF boundingRect;
 
     if (!object->cell().isEmpty()) {
-        const QPointF bottomLeft = bounds.topLeft();
-        const Tile *tile = object->cell().tile;
-        const QSize imgSize = tile->image().size();
-        const QPoint tileOffset = tile->offset();
-        const QSizeF objectSize = object->size();
-        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+        const QSizeF objectSize { object->size() };
 
+        QSizeF scale { 1.0, 1.0 };
+        QPoint tileOffset;
+
+        if (const Tile *tile = object->cell().tile()) {
+            QSize imgSize = tile->size();
+            scale = QSizeF(objectSize.width() / imgSize.width(),
+                           objectSize.height() / imgSize.height());
+            tileOffset = tile->offset();
+        }
+
+        const QPointF bottomLeft = bounds.topLeft();
         boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
                               bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                               objectSize.width(),
@@ -273,9 +279,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
+            Tile *tile = cell.tile();
+            QSize size = tile ? tile->size() : map()->tileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
-                            QSizeF(0, 0),
+                            size,
                             CellRenderer::BottomLeft);
         }
     }
@@ -316,9 +324,16 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
-            const Tile *tile = cell.tile;
-            const QSize imgSize = tile->size();
-            const QPointF tileOffset = tile->offset();
+            QSizeF imgSize;
+            QPointF tileOffset;
+
+            if (const Tile *tile = cell.tile()) {
+                imgSize = tile->size();
+                tileOffset = tile->offset();
+            } else {
+                imgSize = object->size();
+            }
+
             QRectF rect(QPointF(tileOffset.x(),
                                 tileOffset.y() - imgSize.height()),
                         imgSize);

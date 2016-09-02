@@ -383,7 +383,7 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
     for (const TileStampVariation &variation : stamp.variations()) {
         const TileLayer &tileLayer = *variation.tileLayer();
         for (const Cell &cell : tileLayer) {
-            if (Tile *tile = cell.tile) {
+            if (Tile *tile = cell.tile()) {
                 if (processed.contains(tile))
                     continue;
 
@@ -721,9 +721,7 @@ void TilesetDock::removeTileset(int index)
     if (inUse) {
         // Remove references to tiles in this tileset from the current map
         auto referencesTileset = [tileset] (const Cell &cell) {
-            if (const Tile *tile = cell.tile)
-                return tile->tileset() == tileset;
-            return false;
+            return cell.tileset() == tileset;
         };
         undoStack->beginMacro(remove->text());
         removeTileReferences(mMapDocument, referencesTileset);
@@ -753,8 +751,8 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
         for (int y = 0; y < tiles->height(); ++y) {
             for (int x = 0; x < tiles->width(); ++x) {
                 const Cell &cell = tiles->cellAt(x, y);
-                if (!cell.isEmpty())
-                    selectedTiles.append(cell.tile);
+                if (Tile *tile = cell.tile())
+                    selectedTiles.append(tile);
             }
         }
         mMapDocument->setSelectedTiles(selectedTiles);

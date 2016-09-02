@@ -82,6 +82,23 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
 }
 
 
+static void renderMissingImageMarker(QPainter &painter, const QRectF &rect)
+{
+    QRectF r { rect.adjusted(0.5, 0.5, -0.5, -0.5) };
+    QPen pen { Qt::red, 1 };
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setJoinStyle(Qt::MiterJoin);
+
+    painter.save();
+    painter.fillRect(r, QColor(0, 0, 0, 128));
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(pen);
+    painter.drawRect(r);
+    painter.drawLine(r.topLeft(), r.bottomRight());
+    painter.drawLine(r.topRight(), r.bottomLeft());
+    painter.restore();
+}
+
 static bool hasOpenGLEngine(const QPainter *painter)
 {
     const QPaintEngine::Type type = painter->paintEngine()->type();
@@ -105,41 +122,49 @@ CellRenderer::CellRenderer(QPainter *painter)
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
  */
-void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &cellSize, Origin origin)
+void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
-    if (mTile != cell.tile)
+    Tile *tile = cell.tile();
+    if (!tile) {
+        QRectF target { pos - QPointF(0, size.height()), size };
+        if (origin == BottomCenter)
+            target.moveLeft(target.left() - size.width() / 2);
+        renderMissingImageMarker(*mPainter, target);
+        return;
+    }
+
+    if (mTile != tile)
         flush();
 
-    const QPixmap &image = cell.tile->currentFrameImage();
-    const QSizeF size = image.size();
-    const QSizeF objectSize = (cellSize == QSizeF(0,0)) ? size : cellSize;
-    const QSizeF scale(objectSize.width() / size.width(), objectSize.height() / size.height());
-    const QPoint offset = cell.tile->offset();
-    const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
+    const QPixmap &image = tile->currentFrameImage();
+    const QSizeF imageSize = image.size();
+    const QSizeF scale(size.width() / imageSize.width(), size.height() / imageSize.height());
+    const QPoint offset = tile->offset();
+    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+
+    bool flippedHorizontally = cell.flippedHorizontally();
+    bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - objectSize.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
-    fragment.width = size.width();
-    fragment.height = size.height();
-    fragment.scaleX = cell.flippedHorizontally ? -1 : 1;
-    fragment.scaleY = cell.flippedVertically ? -1 : 1;
+    fragment.width = imageSize.width();
+    fragment.height = imageSize.height();
+    fragment.scaleX = flippedHorizontally ? -1 : 1;
+    fragment.scaleY = flippedVertically ? -1 : 1;
     fragment.rotation = 0;
     fragment.opacity = 1;
     
-    bool flippedHorizontally = cell.flippedHorizontally;
-    bool flippedVertically = cell.flippedVertically;
-
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
-    if (cell.flippedAntiDiagonally) {
+    if (cell.flippedAntiDiagonally()) {
         fragment.rotation = 90;
         
-        flippedHorizontally = cell.flippedVertically;
-        flippedVertically = !cell.flippedHorizontally;
+        flippedHorizontally = cell.flippedVertically();
+        flippedVertically = !cell.flippedHorizontally();
 
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
@@ -152,7 +177,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
     fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
 
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
-        mTile = cell.tile;
+        mTile = tile;
         mFragments.append(fragment);
         return;
     }

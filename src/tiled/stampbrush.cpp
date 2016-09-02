@@ -199,8 +199,8 @@ void StampBrush::updateRandomList()
         for (int x = 0; x < tileLayer->width(); x++) {
             for (int y = 0; y < tileLayer->height(); y++) {
                 const Cell &cell = tileLayer->cellAt(x, y);
-                if (!cell.isEmpty())
-                    mRandomCellPicker.add(cell, cell.tile->probability());
+                if (const Tile *tile = cell.tile())
+                    mRandomCellPicker.add(cell, tile->probability());
             }
         }
     }

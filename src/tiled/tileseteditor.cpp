@@ -493,7 +493,7 @@ void TilesetEditor::removeTiles()
             tiles.append(tile);
 
     auto matchesAnyTile = [&tiles] (const Cell &cell) {
-        if (Tile *tile = cell.tile)
+        if (Tile *tile = cell.tile())
             return tiles.contains(tile);
         return false;
     };
