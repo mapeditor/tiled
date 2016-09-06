@@ -79,6 +79,10 @@ signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
 public slots:
+    void cut();
+    void copy();
+    void delete_(); // 'delete' is a reserved word
+
     void selectAll();
     void selectNone();
 

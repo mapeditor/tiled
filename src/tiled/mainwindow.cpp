@@ -29,7 +29,6 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
-#include "addremovemapobject.h"
 #include "automappingmanager.h"
 #include "addremovetileset.h"
 #include "createobjecttool.h"
@@ -41,7 +40,6 @@
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
-#include "erasetiles.h"
 #include "exportasimagedialog.h"
 #include "bucketfilltool.h"
 #include "languagemanager.h"
@@ -412,11 +410,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
-    connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
-    connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
+    connect(mUi->actionCut, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::cut);
+    connect(mUi->actionCopy, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::copy);
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionPasteInPlace, SIGNAL(triggered()), SLOT(pasteInPlace()));
-    connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(delete_()));
+    connect(mUi->actionDelete, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::delete_);
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -1176,44 +1174,6 @@ void MainWindow::closeAllFiles()
         mDocumentManager->closeAllDocuments();
 }
 
-void MainWindow::cut()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    copy();
-
-    QUndoStack *stack = mMapDocument->undoStack();
-    stack->beginMacro(tr("Cut"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-
-    stack->endMacro();
-}
-
-void MainWindow::copy()
-{
-    if (!mMapDocument)
-        return;
-
-    ClipboardManager::instance()->copySelection(mMapDocument);
-}
-
 void MainWindow::paste()
 {
     paste(ClipboardManager::PasteDefault);
@@ -1262,33 +1222,6 @@ void MainWindow::paste(ClipboardManager::PasteFlags flags)
 
     if (map)
         tilesetManager->removeReferences(map->tilesets());
-}
-
-void MainWindow::delete_()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-    undoStack->endMacro();
 }
 
 void MainWindow::openPreferences()

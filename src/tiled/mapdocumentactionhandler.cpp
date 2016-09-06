@@ -21,8 +21,11 @@
 
 #include "mapdocumentactionhandler.h"
 
+#include "addremovemapobject.h"
 #include "changeselectedarea.h"
+#include "clipboardmanager.h"
 #include "documentmanager.h"
+#include "erasetiles.h"
 #include "tilelayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -186,6 +189,69 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     }
 
     emit mapDocumentChanged(mMapDocument);
+}
+
+void MapDocumentActionHandler::cut()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    const QRegion &selectedArea = mMapDocument->selectedArea();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+
+    copy();
+
+    QUndoStack *stack = mMapDocument->undoStack();
+    stack->beginMacro(tr("Cut"));
+
+    if (tileLayer && !selectedArea.isEmpty()) {
+        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
+    } else if (!selectedObjects.isEmpty()) {
+        foreach (MapObject *mapObject, selectedObjects)
+            stack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
+    selectNone();
+
+    stack->endMacro();
+}
+
+void MapDocumentActionHandler::copy()
+{
+    if (mMapDocument)
+        ClipboardManager::instance()->copySelection(mMapDocument);
+}
+
+void MapDocumentActionHandler::delete_()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    const QRegion &selectedArea = mMapDocument->selectedArea();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Delete"));
+
+    if (tileLayer && !selectedArea.isEmpty()) {
+        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
+    } else if (!selectedObjects.isEmpty()) {
+        foreach (MapObject *mapObject, selectedObjects)
+            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
+    selectNone();
+    undoStack->endMacro();
 }
 
 void MapDocumentActionHandler::selectAll()
