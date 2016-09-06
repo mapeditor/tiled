@@ -37,20 +37,6 @@ ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
     setPos(objectGroup->offset());
 }
 
-/*
- * Changes the object group represented by this item. Currently only expected
- * to be used by the CreateObjectTool.
- */
-void ObjectGroupItem::setObjectGroup(ObjectGroup *objectGroup)
-{
-    if (mObjectGroup == objectGroup)
-        return;
-
-    mObjectGroup = objectGroup;
-    setOpacity(mObjectGroup->opacity());
-    setPos(mObjectGroup->offset());
-}
-
 QRectF ObjectGroupItem::boundingRect() const
 {
     return QRectF();
