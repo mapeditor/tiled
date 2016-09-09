@@ -72,7 +72,7 @@ static QString findStampFileName(const QString &name,
     return fileName;
 }
 
-TileStampManager::TileStampManager(const ToolManager *toolManager,
+TileStampManager::TileStampManager(const ToolManager &toolManager,
                                    QObject *parent)
     : QObject(parent)
     , mQuickStamps(quickStampKeys().length())
@@ -148,7 +148,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
 
 TileStamp TileStampManager::createStamp()
 {
-    TileStamp stamp = stampFromContext(nullptr); // todo: mToolManager.selectedTool());
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
 
     if (!stamp.isEmpty())
         mTileStampModel->addStamp(stamp);
@@ -158,14 +158,14 @@ TileStamp TileStampManager::createStamp()
 
 void TileStampManager::addVariation(const TileStamp &targetStamp)
 {
-    TileStamp stamp = stampFromContext(nullptr); // todo: mToolManager.selectedTool());
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
     if (stamp.isEmpty())
         return;
 
     if (stamp == targetStamp) // avoid easy mistake of adding duplicates
         return;
 
-    foreach (const TileStampVariation &variation, stamp.variations())
+    for (const TileStampVariation &variation : stamp.variations())
         mTileStampModel->addVariation(targetStamp, variation);
 }
 
@@ -178,7 +178,7 @@ void TileStampManager::selectQuickStamp(int index)
 
 void TileStampManager::createQuickStamp(int index)
 {
-    TileStamp stamp = stampFromContext(nullptr); // todo: mToolManager.selectedTool());
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
     if (stamp.isEmpty())
         return;
 

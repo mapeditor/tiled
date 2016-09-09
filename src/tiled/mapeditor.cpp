@@ -222,7 +222,7 @@ MapEditor::MapEditor(QObject *parent)
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
-    , mTileStampManager(new TileStampManager(mToolManager, this))
+    , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
 #if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
