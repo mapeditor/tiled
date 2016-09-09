@@ -130,7 +130,6 @@ private slots:
     void removeTileset(int index);
     void moveTileset(int from, int to);
 
-    void editTilesetProperties();
     void editTileset();
     void importTileset();
     void exportTileset();
@@ -166,7 +165,6 @@ private:
     QAction *mNewTileset;
     QAction *mImportTileset;
     QAction *mExportTileset;
-    QAction *mPropertiesTileset;
     QAction *mEditTileset;
     QAction *mDeleteTileset;
 

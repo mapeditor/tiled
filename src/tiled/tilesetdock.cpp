@@ -198,7 +198,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mNewTileset(new QAction(this)),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
-    mPropertiesTileset(new QAction(this)),
     mEditTileset(new QAction(this)),
     mDeleteTileset(new QAction(this)),
     mTilesetMenuButton(new TilesetMenuButton(this)),
@@ -240,13 +239,13 @@ TilesetDock::TilesetDock(QWidget *parent):
     mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
-    mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
+    mEditTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
 
     Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mImportTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
-    Utils::setThemeIcon(mPropertiesTileset, "document-properties");
+    Utils::setThemeIcon(mEditTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
 
     connect(mNewTileset, SIGNAL(triggered()),
@@ -255,8 +254,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(importTileset()));
     connect(mExportTileset, SIGNAL(triggered()),
             SLOT(exportTileset()));
-    connect(mPropertiesTileset, SIGNAL(triggered()),
-            SLOT(editTilesetProperties()));
     connect(mEditTileset, SIGNAL(triggered()),
             SLOT(editTileset()));
     connect(mDeleteTileset, SIGNAL(triggered()),
@@ -266,7 +263,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->setIconSize(QSize(16, 16));
     mToolBar->addAction(mImportTileset);
     mToolBar->addAction(mExportTileset);
-    mToolBar->addAction(mPropertiesTileset);
     mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
 
@@ -514,7 +510,7 @@ void TilesetDock::updateActions()
     mNewTileset->setEnabled(mapIsDisplayed);
     mImportTileset->setEnabled(tilesetIsDisplayed && external);
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
-    mPropertiesTileset->setEnabled(tilesetIsDisplayed);
+    mEditTileset->setEnabled(tilesetIsDisplayed);
     mDeleteTileset->setEnabled(tilesetIsDisplayed);
 }
 
@@ -791,8 +787,7 @@ void TilesetDock::retranslateUi()
     mNewTileset->setText(tr("New Tileset"));
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
-    mPropertiesTileset->setText(tr("Tile&set Properties"));
-    mEditTileset->setText(tr("Edit..."));
+    mEditTileset->setText(tr("Edit Tile&set"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
 }
 
@@ -826,16 +821,6 @@ void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
             this, &TilesetDock::currentChanged);
     connect(view, &TilesetView::pressed,
             this, &TilesetDock::indexPressed);
-}
-
-void TilesetDock::editTilesetProperties()
-{
-    Tileset *tileset = currentTileset();
-    if (!tileset)
-        return;
-
-    mMapDocument->setCurrentObject(tileset);
-    emit mMapDocument->editCurrentObject();
 }
 
 void TilesetDock::editTileset()
