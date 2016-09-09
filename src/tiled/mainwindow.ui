@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -136,6 +136,7 @@
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
     <addaction name="actionSnapToFineGrid"/>
+    <addaction name="actionSnapToPixels"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -533,6 +534,14 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="actionSnapToPixels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap To &amp;Pixels</string>
    </property>
   </action>
  </widget>

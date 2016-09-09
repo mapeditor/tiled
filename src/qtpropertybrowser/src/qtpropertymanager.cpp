@@ -1111,7 +1111,14 @@ QString QtDoublePropertyManager::valueText(const QtProperty *property) const
     const QtDoublePropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QString();
-    return QLocale::system().toString(it.value().val, 'f', it.value().decimals);
+    const int decimals = it.value().decimals;
+    const QString text = QLocale::system().toString(it.value().val, 'f', decimals);
+
+    // remove redundant trailing 0's in case of high precision
+    if (decimals > 3)
+        return removeRedundantTrialingZeros(text);
+
+    return text;
 }
 
 /*!

@@ -1008,6 +1008,8 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
         property->setAttribute(QLatin1String("textVisible"), false);
     if (type == QVariant::String && id == CustomProperty)
         property->setAttribute(QLatin1String("multiline"), true);
+    if (type == QVariant::Double && id == CustomProperty)
+        property->setAttribute(QLatin1String("decimals"), 9);
 
     mPropertyToId.insert(property, id);
 

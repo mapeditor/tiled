@@ -127,6 +127,7 @@
             <Directory Id="dirED990048BCB522432182867E2817CD9B" Name="tiled">
               <Component Id="Plugins" Guid="{11ACEE38-A936-4FF4-BD8C-D1475D5454D1}">
                 <File Id="filD1109002A9E8142F43A07606A4BCE0A2" Source="$(var.InstallRoot)\plugins\tiled\csv.dll" />
+                <File Id="defold_dll" Source="$(var.InstallRoot)\plugins\tiled\defold.dll" />
                 <File Id="fil27B14922FA15B9385D880460E98E2D2E" Source="$(var.InstallRoot)\plugins\tiled\droidcraft.dll" />
                 <File Id="filD34235A8BFB590E5CCC1D9E2894616EC" Source="$(var.InstallRoot)\plugins\tiled\flare.dll" />
                 <File Id="fil39697F4D8941F23FE8E9024568D7FAD6" Source="$(var.InstallRoot)\plugins\tiled\json.dll" />

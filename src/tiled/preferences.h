@@ -1,6 +1,7 @@
 /*
  * preferences.h
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -50,6 +51,7 @@ public:
     bool showTileAnimations() const { return mShowTileAnimations; }
     bool snapToGrid() const { return mSnapToGrid; }
     bool snapToFineGrid() const { return mSnapToFineGrid; }
+    bool snapToPixels() const { return mSnapToPixels; }
     QColor gridColor() const { return mGridColor; }
     int gridFine() const { return mGridFine; }
     qreal objectLineWidth() const { return mObjectLineWidth; }
@@ -146,6 +148,7 @@ public slots:
     void setShowTileAnimations(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
+    void setSnapToPixels(bool snapToPixels);
     void setGridColor(QColor gridColor);
     void setGridFine(int gridFine);
     void setObjectLineWidth(qreal lineWidth);
@@ -161,6 +164,7 @@ signals:
     void showTileAnimationsChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
+    void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
     void gridFineChanged(int gridFine);
     void objectLineWidthChanged(qreal lineWidth);
@@ -199,6 +203,7 @@ private:
     bool mShowTileAnimations;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
+    bool mSnapToPixels;
     QColor mGridColor;
     int mGridFine;
     qreal mObjectLineWidth;

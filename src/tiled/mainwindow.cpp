@@ -7,6 +7,7 @@
  * Copyright 2009, Christian Henz <chrhenz@gmx.de>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -28,13 +29,11 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
-#include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
 #include "consoledock.h"
 #include "documentmanager.h"
-#include "erasetiles.h"
 #include "exportasimagedialog.h"
 #include "languagemanager.h"
 #include "layer.h"
@@ -184,6 +183,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
+    mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
 
@@ -249,9 +249,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 //    mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu  = mLayerMenu->addMenu(tr("&New"));
+    mNewLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mNewLayerMenu->addAction(mActionHandler->actionAddTileLayer());
+    mNewLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
+    mNewLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu->addSeparator();
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCopy());
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCut());
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
@@ -282,11 +287,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
-    connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
-    connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
+    connect(mUi->actionCut, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::cut);
+    connect(mUi->actionCopy, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::copy);
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionPasteInPlace, SIGNAL(triggered()), SLOT(pasteInPlace()));
-    connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(delete_()));
+    connect(mUi->actionDelete, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::delete_);
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -300,6 +305,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionSnapToFineGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToFineGrid(bool)));
+    connect(mUi->actionSnapToPixels, SIGNAL(toggled(bool)),
+                preferences, SLOT(setSnapToPixels(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
             preferences, SLOT(setHighlightCurrentLayer(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
@@ -358,6 +365,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 //    setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mNewLayerMenu, "document-new");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -1039,44 +1047,6 @@ void MainWindow::closeAllFiles()
         mDocumentManager->closeAllDocuments();
 }
 
-void MainWindow::cut()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    copy();
-
-    QUndoStack *stack = mMapDocument->undoStack();
-    stack->beginMacro(tr("Cut"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-
-    stack->endMacro();
-}
-
-void MainWindow::copy()
-{
-    if (!mMapDocument)
-        return;
-
-    ClipboardManager::instance()->copySelection(mMapDocument);
-}
-
 void MainWindow::paste()
 {
     paste(ClipboardManager::PasteDefault);
@@ -1125,33 +1095,6 @@ void MainWindow::paste(ClipboardManager::PasteFlags flags)
 
     if (map)
         tilesetManager->removeReferences(map->tilesets());
-}
-
-void MainWindow::delete_()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-    undoStack->endMacro();
 }
 
 void MainWindow::openPreferences()
@@ -1629,6 +1572,7 @@ void MainWindow::retranslateUi()
 
 //    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
+    mNewLayerMenu->setTitle(tr("&New"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));

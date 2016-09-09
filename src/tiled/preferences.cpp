@@ -1,6 +1,7 @@
 /*
  * preferences.cpp
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -71,6 +72,7 @@ Preferences::Preferences()
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
+    mSnapToPixels = boolValue("SnapToPixels");
     mGridColor = colorValue("GridColor", Qt::black);
     mGridFine = intValue("GridFine", 4);
     mObjectLineWidth = realValue("ObjectLineWidth", 2);
@@ -251,6 +253,16 @@ void Preferences::setSnapToFineGrid(bool snapToFineGrid)
     mSnapToFineGrid = snapToFineGrid;
     mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
     emit snapToFineGridChanged(mSnapToFineGrid);
+}
+
+void Preferences::setSnapToPixels(bool snapToPixels)
+{
+    if (mSnapToPixels == snapToPixels)
+        return;
+
+    mSnapToPixels = snapToPixels;
+    mSettings->setValue(QLatin1String("Interface/SnapToPixels"), mSnapToPixels);
+    emit snapToPixelsChanged(mSnapToPixels);
 }
 
 void Preferences::setGridColor(QColor gridColor)

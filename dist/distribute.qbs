@@ -104,6 +104,8 @@ Product {
         name: "Qt Platform Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforms/")
         files: ["*"]
+        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
+        excludeFiles: ["*d.dll", "*.pdb"]
         qbs.install: true
         qbs.installDir: "plugins/platforms"
     }
@@ -130,6 +132,8 @@ Product {
         name: "Qt Image Format Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
         files: ["*"]
+        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
+        excludeFiles: ["*d.dll", "*.pdb"]
         qbs.install: true
         qbs.installDir: "plugins/imageformats"
     }

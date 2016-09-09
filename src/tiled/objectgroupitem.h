@@ -40,7 +40,6 @@ class ObjectGroupItem : public QGraphicsItem
 public:
     ObjectGroupItem(ObjectGroup *objectGroup);
 
-    void setObjectGroup(ObjectGroup *objectGroup);
     ObjectGroup *objectGroup() const;
 
     // QGraphicsItem
