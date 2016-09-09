@@ -854,9 +854,7 @@ void TilesetDock::exportTileset()
     if (!tileset)
         return;
 
-    const QString tsxFilter = tr("Tiled tileset files (*.tsx)");
-
-    FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite, tsxFilter);
+    FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
 
     Preferences *prefs = Preferences::instance();
 
@@ -868,7 +866,8 @@ void TilesetDock::exportTileset()
     if (!suggestedFileName.endsWith(extension))
         suggestedFileName.append(extension);
 
-    QString selectedFilter = tsxFilter;
+    // todo: remember last used filter
+    QString selectedFilter = TsxTilesetFormat().nameFilter();
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),
                                          suggestedFileName,
@@ -880,10 +879,9 @@ void TilesetDock::exportTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileName).path());
 
-    TsxTilesetFormat tsxFormat;
     TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
     if (!format)
-        format = &tsxFormat;
+        return;     // can't happen
 
     if (format->write(*tileset, fileName)) {
         // todo: Reconsider what these import/export actions will actually do
