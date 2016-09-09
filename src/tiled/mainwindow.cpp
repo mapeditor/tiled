@@ -377,9 +377,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu  = mLayerMenu->addMenu(tr("&New"));
+    mNewLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mNewLayerMenu->addAction(mActionHandler->actionAddTileLayer());
+    mNewLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
+    mNewLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu->addSeparator();
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCopy());
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCut());
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
@@ -487,6 +492,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mNewLayerMenu, "document-new");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -1773,6 +1779,7 @@ void MainWindow::retranslateUi()
 
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
+    mNewLayerMenu->setTitle(tr("&New"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));

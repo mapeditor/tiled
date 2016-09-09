@@ -252,6 +252,7 @@ private:
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
+    QMenu *mNewLayerMenu;
     QAction *mViewsAndToolbarsMenu;
     QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
