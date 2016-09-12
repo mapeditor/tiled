@@ -61,6 +61,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
+    mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
     connect(mActionRemoveProperty, SIGNAL(triggered()),
             SLOT(removeProperty()));
 
@@ -309,20 +310,39 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     QVariant value = object->property(name);
 
     QMenu contextMenu(mPropertyBrowser);
-    contextMenu.addSection(tr("Convert to:"));
+    QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
+    QAction *renameAction = contextMenu.addAction(tr("Rename..."));
+    QAction *removeAction = contextMenu.addAction(tr("Remove"));
 
-    QList<unsigned int> convertTo;
-    convertTo << QVariant::Bool << QVariant::Color << QVariant::Double << filePathTypeId() << QVariant::Int << QVariant::String;
-    foreach (const unsigned int &toType, convertTo){
+    renameAction->setEnabled(mActionRenameProperty->isEnabled());
+    removeAction->setEnabled(mActionRemoveProperty->isEnabled());
+    removeAction->setShortcuts(mActionRemoveProperty->shortcuts());
+
+    const QList<int> convertTo {
+        QVariant::Bool,
+        QVariant::Color,
+        QVariant::Double,
+        filePathTypeId(),
+        QVariant::Int,
+        QVariant::String
+    };
+
+    for (int toType : convertTo) {
         QVariant copy = value;
-        if ((value.type() != toType) && copy.convert(toType)) {
-            QAction* action = contextMenu.addAction(typeToName(toType));
+        if (value.userType() != toType && copy.convert(toType)) {
+            QAction *action = convertMenu->addAction(typeToName(toType));
             action->setData(copy);
         }
     }
 
-    QAction* selectedItem = contextMenu.exec(globalPos);
-    if (selectedItem) {
+    convertMenu->setEnabled(!convertMenu->actions().isEmpty());
+
+    QAction *selectedItem = contextMenu.exec(globalPos);
+    if (selectedItem == renameAction) {
+        renameProperty();
+    } else if (selectedItem == removeAction) {
+        removeProperty();
+    } else if (selectedItem) {
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
