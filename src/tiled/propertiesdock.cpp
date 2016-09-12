@@ -91,9 +91,11 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
+    contextMenu = new QMenu(mPropertyBrowser);
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mPropertyBrowser, SIGNAL(customContextMenuRequested(const QPoint&)),
-        this, SLOT(showContextMenu(const QPoint&)));
+
+    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
+                this, &PropertiesDock::showContextMenu);
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
@@ -307,29 +309,26 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     Object *object = mMapDocument->currentObject();
     QVariant value = object->property(name);
 
-    QMenu *contextMenu;
-    contextMenu = new QMenu(mPropertyBrowser);
+    contextMenu->clear();
     contextMenu->addSection(tr("Convert to:"));
 
     QList<unsigned int> convertTo;
     convertTo << QVariant::Bool << QVariant::Color << QVariant::Double << filePathTypeId() << QVariant::Int << QVariant::String;
     foreach (const unsigned int &toType, convertTo){
-        if (value.canConvert(toType) && (value.type() != toType)) {
+        QVariant copy = value;
+        if ((value.type() != toType) && copy.convert(toType)) {
             QAction* action = contextMenu->addAction(typeToName(toType));
-            action->setData(toType);
+            action->setData(copy);
         }
     }
 
     QAction* selectedItem = contextMenu->exec(globalPos);
     if (selectedItem) {
-        unsigned int selectedType = selectedItem->data().toInt();
-        if (value.canConvert(selectedType)) {
-            value.convert(selectedType);
-            removeProperty();
-            addProperty(name, value);
-        }
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument,
+                                        mMapDocument->currentObjects(),
+                                        name, selectedItem->data()));
     }
-    delete contextMenu;
 }
 
 
