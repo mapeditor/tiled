@@ -23,6 +23,7 @@
 
 #include <QDockWidget>
 #include <QVariant>
+#include <QMenu>
 
 class QtBrowserItem;
 
@@ -64,6 +65,7 @@ private slots:
     void removeProperty();
     void renameProperty();
     void renameProperty(const QString &name);
+    void showContextMenu(const QPoint& pos);
 
 private:
     void retranslateUi();

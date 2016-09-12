@@ -91,6 +91,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
+    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mPropertyBrowser, SIGNAL(customContextMenuRequested(const QPoint&)),
+        this, SLOT(showContextMenu(const QPoint&)));
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
@@ -291,6 +294,42 @@ void PropertiesDock::renameProperty(const QString &name)
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
+}
+
+void PropertiesDock::showContextMenu(const QPoint& pos)
+{   
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+    QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
+
+    QString name = item->property()->propertyName();
+    Object *object = mMapDocument->currentObject();
+    QVariant value = object->property(name);
+
+    QMenu *contextMenu;
+    contextMenu = new QMenu(mPropertyBrowser);
+    contextMenu->addSection(tr("Convert to:"));
+
+    QList<unsigned int> convertTo;
+    convertTo << QVariant::Bool << QVariant::Color << QVariant::Double << filePathTypeId() << QVariant::Int << QVariant::String;
+    foreach (const unsigned int &toType, convertTo){
+        if (value.canConvert(toType) && (value.type() != toType)) {
+            QAction* action = contextMenu->addAction(typeToName(toType));
+            action->setData(toType);
+        }
+    }
+
+    QAction* selectedItem = contextMenu->exec(globalPos);
+    if (selectedItem) {
+        unsigned int selectedType = selectedItem->data().toInt();
+        if (value.canConvert(selectedType)) {
+            value.convert(selectedType);
+            removeProperty();
+            addProperty(name, value);
+        }
+    }
+    delete contextMenu;
 }
 
 
