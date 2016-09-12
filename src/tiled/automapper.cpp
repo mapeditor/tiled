@@ -426,9 +426,10 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
                                                      properties));
             }
         }
-        src->replaceTileset(tileset, replacement);
 
-        tilesetManager->addReference(replacement);
+        if (src->replaceTileset(tileset, replacement))
+            tilesetManager->addReference(replacement);
+
         tilesetManager->removeReference(tileset);
     }
     return true;

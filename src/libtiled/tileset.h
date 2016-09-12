@@ -306,7 +306,7 @@ inline void Tileset::setTileOffset(QPoint offset)
 }
 
 /**
- * Returns a const reference to the list of tiles in this tileset.
+ * Returns a const reference to the tiles in this tileset.
  */
 inline const QMap<int, Tile *> &Tileset::tiles() const
 {

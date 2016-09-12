@@ -124,7 +124,8 @@ void Map::recomputeDrawMargins()
     int maxTileSize = 0;
     QMargins offsetMargins;
 
-    for (const SharedTileset &tileset : mTilesets) {
+    const auto &tilesets = mTilesets;
+    for (const SharedTileset &tileset : tilesets) {
         const QPoint offset = tileset->tileOffset();
         const QSize tileSize = tileset->tileSize();
 
@@ -223,9 +224,13 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
-void Map::addTileset(const SharedTileset &tileset)
+bool Map::addTileset(const SharedTileset &tileset)
 {
+    if (mTilesets.contains(tileset))
+        return false;
+
     mTilesets.append(tileset);
+    return true;
 }
 
 void Map::addTilesets(const QSet<SharedTileset> &tilesets)
@@ -236,6 +241,7 @@ void Map::addTilesets(const QSet<SharedTileset> &tilesets)
 
 void Map::insertTileset(int index, const SharedTileset &tileset)
 {
+    Q_ASSERT(!mTilesets.contains(tileset));
     mTilesets.insert(index, tileset);
 }
 
@@ -249,17 +255,27 @@ void Map::removeTilesetAt(int index)
     mTilesets.remove(index);
 }
 
-void Map::replaceTileset(const SharedTileset &oldTileset,
+bool Map::replaceTileset(const SharedTileset &oldTileset,
                          const SharedTileset &newTileset)
 {
+    Q_ASSERT(oldTileset != newTileset);
+
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
 
-    for (Layer *layer : mLayers)
+    const auto &layers = mLayers;
+    for (Layer *layer : layers) {
         layer->replaceReferencesToTileset(oldTileset.data(),
                                           newTileset.data());
+    }
 
-    mTilesets.replace(index, newTileset);
+    if (mTilesets.contains(newTileset)) {
+        mTilesets.remove(index);
+        return false;
+    } else {
+        mTilesets.replace(index, newTileset);
+        return true;
+    }
 }
 
 bool Map::isTilesetUsed(const Tileset *tileset) const

@@ -286,8 +286,9 @@ public:
      * the map, and their saving order.
      *
      * @param tileset the tileset to add
+     * @return whether the tileset wasn't already part of the map
      */
-    void addTileset(const SharedTileset &tileset);
+    bool addTileset(const SharedTileset &tileset);
 
     /**
      * Convenience function to be used together with Layer::usedTilesets()
@@ -319,8 +320,10 @@ public:
      * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
      * Also replaces the old tileset with the new tileset in the list of
      * tilesets.
+     *
+     * @return whether the new tileset was added to the map
      */
-    void replaceTileset(const SharedTileset &oldTileset,
+    bool replaceTileset(const SharedTileset &oldTileset,
                         const SharedTileset &newTileset);
 
     /**
