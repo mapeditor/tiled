@@ -41,6 +41,10 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
 
@@ -171,6 +175,15 @@ void CommandLineHandler::startNewInstance()
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
+    // Make console output work on Windows, if running in a console.
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        FILE *dummy = nullptr;
+        freopen_s(&dummy, "CONOUT$", "w", stdout);
+        freopen_s(&dummy, "CONOUT$", "w", stderr);
+    }
+#endif
+
 #if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
 #endif
