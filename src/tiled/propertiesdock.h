@@ -23,7 +23,6 @@
 
 #include <QDockWidget>
 #include <QVariant>
-#include <QMenu>
 
 class QtBrowserItem;
 
@@ -75,7 +74,6 @@ private:
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
-    QMenu *contextMenu;
 };
 
 } // namespace Internal

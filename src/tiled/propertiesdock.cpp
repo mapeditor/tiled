@@ -40,6 +40,7 @@
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QMenu>
 
 namespace Tiled {
 namespace Internal {
@@ -91,9 +92,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
-    contextMenu = new QMenu(mPropertyBrowser);
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-
     connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
                 this, &PropertiesDock::showContextMenu);
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
@@ -309,20 +308,20 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     Object *object = mMapDocument->currentObject();
     QVariant value = object->property(name);
 
-    contextMenu->clear();
-    contextMenu->addSection(tr("Convert to:"));
+    QMenu contextMenu(mPropertyBrowser);
+    contextMenu.addSection(tr("Convert to:"));
 
     QList<unsigned int> convertTo;
     convertTo << QVariant::Bool << QVariant::Color << QVariant::Double << filePathTypeId() << QVariant::Int << QVariant::String;
     foreach (const unsigned int &toType, convertTo){
         QVariant copy = value;
         if ((value.type() != toType) && copy.convert(toType)) {
-            QAction* action = contextMenu->addAction(typeToName(toType));
+            QAction* action = contextMenu.addAction(typeToName(toType));
             action->setData(copy);
         }
     }
 
-    QAction* selectedItem = contextMenu->exec(globalPos);
+    QAction* selectedItem = contextMenu.exec(globalPos);
     if (selectedItem) {
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new SetProperty(mMapDocument,
