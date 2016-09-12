@@ -40,6 +40,7 @@
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QMenu>
 
 namespace Tiled {
 namespace Internal {
@@ -91,6 +92,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
+    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
+                this, &PropertiesDock::showContextMenu);
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
@@ -291,6 +295,39 @@ void PropertiesDock::renameProperty(const QString &name)
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
+}
+
+void PropertiesDock::showContextMenu(const QPoint& pos)
+{   
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+    QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
+
+    QString name = item->property()->propertyName();
+    Object *object = mMapDocument->currentObject();
+    QVariant value = object->property(name);
+
+    QMenu contextMenu(mPropertyBrowser);
+    contextMenu.addSection(tr("Convert to:"));
+
+    QList<unsigned int> convertTo;
+    convertTo << QVariant::Bool << QVariant::Color << QVariant::Double << filePathTypeId() << QVariant::Int << QVariant::String;
+    foreach (const unsigned int &toType, convertTo){
+        QVariant copy = value;
+        if ((value.type() != toType) && copy.convert(toType)) {
+            QAction* action = contextMenu.addAction(typeToName(toType));
+            action->setData(copy);
+        }
+    }
+
+    QAction* selectedItem = contextMenu.exec(globalPos);
+    if (selectedItem) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument,
+                                        mMapDocument->currentObjects(),
+                                        name, selectedItem->data()));
+    }
 }
 
 

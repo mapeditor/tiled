@@ -336,9 +336,12 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
     if (mObject == object) {
+        QVariant previousValue = mNameToProperty[name]->value();
         mUpdating = true;
         mNameToProperty[name]->setValue(object->property(name));
         mUpdating = false;
+        if( object->property(name).type() != previousValue.type() )
+            updateCustomProperties();
     }
     if (mMapDocument->currentObjects().contains(object))
         updatePropertyColor(name);
