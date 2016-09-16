@@ -3318,7 +3318,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Layer &amp;Properties...</source>
-        <translation>设置(&amp;P)...</translation>
+        <translation>图层属性(&amp;P)...</translation>
     </message>
     <message numerus="yes">
         <location line="+247"/>
