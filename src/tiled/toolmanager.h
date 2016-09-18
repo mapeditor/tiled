@@ -56,6 +56,8 @@ public:
 
     void retranslateTools();
 
+    void setSeparatorAction(QAction *separatorAction);
+
 signals:
     void selectedToolChanged(AbstractTool *tool);
 
@@ -65,21 +67,38 @@ signals:
      */
     void statusInfoChanged(const QString &info);
 
+public slots:
+    void selectDefaultTool();
+    void selectDefaultTileTool();
+    void selectDefaultObjectTool();
+    void highlightToolbarAction(int);
+    void activateToolbarAction(int);
+    void resetToolbarActionIcons();
+
 private slots:
     void actionTriggered(QAction *action);
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
+    void toggleSeparator(bool visible);
+
+    /**
+     * If the layer changed update selected tool
+     */
+    void updateSelectedTool();
 
 private:
     Q_DISABLE_COPY(ToolManager)
 
-    AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool;
-    AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
+    AbstractTool *mPreviouslyDisabledFloorTool;
+    AbstractTool *mPreviouslyDisabledObjectTool;
+    AbstractTool *mPreviouslyDisabledOrbObjectTool;
+
+    QAction *mSeparatorAction;
 };
 
 

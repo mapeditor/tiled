@@ -111,6 +111,7 @@ public:
 
 signals:
     void selectedObjectItemsChanged();
+    void selectionClick();
 
 protected:
     /**
@@ -179,6 +180,8 @@ private:
     void updateCurrentLayerHighlight();
 
     bool eventFilter(QObject *object, QEvent *event);
+
+    void findClickedObject(QList<MapObject *> objects, QPointF clickPos);
 
     MapDocument *mMapDocument;
     AbstractTool *mSelectedTool;

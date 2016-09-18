@@ -76,6 +76,8 @@ public:
      */
     void copySelection(const MapDocument *mapDocument);
 
+    void copySelectionAllLayers(const MapDocument *mapDocument);
+
     enum PasteMode {
         Standard,
         NoTileObjects,
@@ -90,17 +92,39 @@ public:
                           const MapView *view,
                           PasteMode mode = Standard);
 
+    void pasteAllObjectGroups(MapDocument *mapDocument,
+                                const MapView *view,
+                                PasteMode mode = Standard);
+
+    void setIsCut(bool cut) { mIsCut = cut; }
+
+    void clear();
+
 signals:
     /**
      * Emitted when whether the clip has a map changed.
      */
     void hasMapChanged();
 
+    void copyAreaChanged();
+
 private slots:
     void updateHasMap();
+    void restoreConnections(MapDocument *mapDocument);
 
 private:
     ClipboardManager();
+
+    /**
+     * Check if the given object is allowd in the current layer
+     */
+    bool checkCurrentLayer(MapDocument *mapDocument, const MapObject *mapObject);
+
+    Tiled::MapObject *pasteObject(MapDocument *mapDocument, MapObject *mapObject, QPointF insertPos
+                    , QUndoStack *undoStack, ObjectGroup *objectGroup, QPointF areaCenter);
+    bool pasteInMap(MapDocument *mapDocument, QPointF position);
+    ObjectGroup *copyObjectInArea(const MapDocument *mapDocument, QList<MapObject*> objects);
+    void noteRelatedObjects(const MapDocument *mapDocument, ObjectGroup *copyObjectLayer);
 
     Q_DISABLE_COPY(ClipboardManager)
 
@@ -108,6 +132,11 @@ private:
     bool mHasMap;
 
     static ClipboardManager *mInstance;
+
+    QRegion mSelectedArea;
+    QList<MapObject *> mPastedObjects;
+    QList<MapObject *> mRelatedObjects;
+    bool mIsCut;
 };
 
 #endif // CLIPBOARDMANAGER_H

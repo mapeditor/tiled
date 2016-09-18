@@ -47,6 +47,8 @@
 #include "utils.h"
 #include "zoomable.h"
 
+#include "rtbmapsettings.h"
+
 #include <QMimeData>
 #include <QAction>
 #include <QDropEvent>
@@ -300,15 +302,15 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mRemoveTiles, SIGNAL(triggered()),
             SLOT(removeTiles()));
 
-    mToolBar->addAction(mNewTileset);
-    mToolBar->setIconSize(QSize(16, 16));
-    mToolBar->addAction(mImportTileset);
-    mToolBar->addAction(mExportTileset);
-    mToolBar->addAction(mPropertiesTileset);
-    mToolBar->addAction(mDeleteTileset);
-    mToolBar->addAction(mEditTerrain);
-    mToolBar->addAction(mAddTiles);
-    mToolBar->addAction(mRemoveTiles);
+    //mToolBar->addAction(mNewTileset);
+    //mToolBar->setIconSize(QSize(16, 16));
+    //mToolBar->addAction(mImportTileset);
+    //mToolBar->addAction(mExportTileset);
+    //mToolBar->addAction(mPropertiesTileset);
+    //mToolBar->addAction(mDeleteTileset);
+    //mToolBar->addAction(mEditTerrain);
+    //mToolBar->addAction(mAddTiles);
+    //mToolBar->addAction(mRemoveTiles);
 
     mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
@@ -725,6 +727,23 @@ void TilesetDock::setCurrentTile(Tile *tile)
 
     if (tile)
         mMapDocument->setCurrentObject(tile);
+
+    // RTB: set the right layer active for the selected tile
+    if(0 != tile)
+    {
+        if(tile->id() <= RTBMapSettings::FloorBorder)
+        {
+            mMapDocument->setCurrentLayerIndex(RTBMapSettings::FloorID);
+        }
+        else if(tile->id() <= RTBMapSettings::OrbBorder)
+        {
+            mMapDocument->setCurrentLayerIndex(RTBMapSettings::OrbObjectID);
+        }
+        else if(tile->id() <= RTBMapSettings::ObjectBorder)
+        {
+            mMapDocument->setCurrentLayerIndex(RTBMapSettings::ObjectID);
+        }
+    }
 }
 
 void TilesetDock::retranslateUi()

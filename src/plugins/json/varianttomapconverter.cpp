@@ -80,6 +80,10 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
     map->setRenderOrder(renderOrder);
+
+    // RTB
+    toRTBMap(variantMap, map->rtbMap());
+
     if (nextObjectId)
         map->setNextObjectId(nextObjectId);
 
@@ -155,7 +159,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariant imageVariant = variantMap["image"];
 
     if (!imageVariant.isNull()) {
-        QString imagePath = resolvePath(mMapDir, imageVariant);
+        // RTB Tileset
+        //QString imagePath = resolvePath(mMapDir, imageVariant);
+        QString imagePath = QString::fromStdString(":/rtb_resources/tileset/Floor.png");
         if (!tileset->loadFromImage(imagePath)) {
             mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
             return SharedTileset();
@@ -394,6 +400,11 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         }
         if (objectVariantMap.contains("ellipse"))
             object->setShape(MapObject::Ellipse);
+
+        // RTB
+        object->createRTBMapObject();
+        toRTBMapObject(objectVariantMap, object->rtbMapObject());
+
     }
 
     return objectGroup.take();
@@ -441,4 +452,166 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         polygon.append(QPointF(pointX, pointY));
     }
     return polygon;
+}
+
+void VariantToMapConverter::toRTBMap(const QVariantMap &variantMap, RTBMap *rtbMap)
+{
+    rtbMap->setHasError(variantMap["haserror"].toInt());
+
+    QString color = variantMap["customglowcolor"].toString();
+    if (!color.isEmpty() && QColor::isValidColor(color))
+        rtbMap->setCustomGlowColor(QColor(color));
+    color = variantMap["custombackgroundcolor"].toString();
+    if (!color.isEmpty() && QColor::isValidColor(color))
+        rtbMap->setCustomBackgroundColor(QColor(color));
+
+    rtbMap->setLevelBrightness(variantMap["levelbrightness"].toDouble());
+    rtbMap->setCloudDensity(variantMap["clouddensity"].toDouble());
+    rtbMap->setCloudVelocity(variantMap["cloudvelocity"].toDouble());
+    rtbMap->setCloudAlpha(variantMap["cloudalpha"].toDouble());
+    rtbMap->setSnowDensity(variantMap["snowdensity"].toDouble());
+    rtbMap->setSnowVelocity(variantMap["snowvelocity"].toDouble());
+    rtbMap->setSnowRisingVelocity(variantMap["snowrisingvelocity"].toDouble());
+    rtbMap->setCameraGrain(variantMap["cameragrain"].toDouble());
+    rtbMap->setCameraContrast(variantMap["cameracontrast"].toDouble());
+    rtbMap->setCameraSaturation(variantMap["camerasaturation"].toDouble());
+    rtbMap->setCameraGlow(variantMap["cameraglow"].toDouble());
+    rtbMap->setHasWall(variantMap["haswalls"].toInt());
+    rtbMap->setLevelName(variantMap["levelname"].toString());
+    rtbMap->setLevelDescription(variantMap["leveldescription"].toString());
+    rtbMap->setBackgroundColorScheme(variantMap["backgroundcolorscheme"].toInt());
+    rtbMap->setGlowColorScheme(variantMap["glowcolorscheme"].toInt());
+    rtbMap->setChapter(variantMap["chapter"].toInt());
+    rtbMap->setHasStarfield(variantMap["hasstarfield"].toInt());
+    rtbMap->setDifficulty(variantMap["difficulty"].toInt());
+    rtbMap->setPlayStyle(variantMap["playstyle"].toInt());
+    rtbMap->setWorkShopId(variantMap["workshopid"].toInt());
+    rtbMap->setPreviewImagePath(variantMap["previewimagepath"].toString());
+
+}
+
+void VariantToMapConverter::toRTBMapObject(const QVariantMap &variantMap, Tiled::RTBMapObject *rtbMapObject)
+{
+    switch (rtbMapObject->objectType()) {
+    case RTBMapObject::CustomFloorTrap:
+    {
+        RTBCustomFloorTrap *mapObject = static_cast<RTBCustomFloorTrap*>(rtbMapObject);
+        mapObject->setIntervalSpeed(variantMap["intervalspeed"].toInt());
+        mapObject->setIntervalOffset(variantMap["intervaloffset"].toInt());
+
+        break;
+    }
+    case RTBMapObject::MovingFloorTrapSpawner:
+    {
+        RTBMovingFloorTrapSpawner *mapObject = static_cast<RTBMovingFloorTrapSpawner*>(rtbMapObject);
+        mapObject->setSpawnAmount(variantMap["spawnamount"].toInt());
+        mapObject->setIntervalSpeed(variantMap["intervalspeed"].toInt());
+        mapObject->setRandomizeStart(variantMap["randomizestart"].toInt());
+
+        break;
+    }
+    case RTBMapObject::Button:
+    {
+        RTBButtonObject *mapObject = static_cast<RTBButtonObject*>(rtbMapObject);
+        mapObject->setBeatsActive(variantMap["beatsactive"].toInt());
+        mapObject->setLaserBeamTargets(variantMap["laserbeamtargets"].toString());
+
+        break;
+    }
+    case RTBMapObject::LaserBeam:
+    {
+        RTBLaserBeam *mapObject = static_cast<RTBLaserBeam*>(rtbMapObject);
+        mapObject->setBeamType(variantMap["beamtype"].toInt());
+        mapObject->setActivatedOnStart(variantMap["activatedonstart"].toInt());
+        mapObject->setDirectionDegrees(variantMap["directiondegrees"].toInt());
+        mapObject->setTargetDirectionDegrees(variantMap["targetdirectiondegrees"].toInt());
+        mapObject->setIntervalOffset(variantMap["intervaloffset"].toInt());
+        mapObject->setIntervalSpeed(variantMap["intervalspeed"].toInt());
+
+        break;
+    }
+    case RTBMapObject::ProjectileTurret:
+    {
+        RTBProjectileTurret *mapObject = static_cast<RTBProjectileTurret*>(rtbMapObject);
+        mapObject->setIntervalSpeed(variantMap["intervalspeed"].toInt());
+        mapObject->setIntervalOffset(variantMap["intervaloffset"].toInt());
+        mapObject->setProjectileSpeed(variantMap["projectilespeed"].toInt());
+        mapObject->setShotDirection(variantMap["shotdirection"].toInt());
+
+        break;
+    }
+    case RTBMapObject::Teleporter:
+    {
+        RTBTeleporter *mapObject = static_cast<RTBTeleporter*>(rtbMapObject);
+        QString target = variantMap["teleportertarget"].toString();
+        if(target != QLatin1String("0"))
+            mapObject->setTeleporterTarget(target);
+        else
+            mapObject->setTeleporterTarget(QLatin1String(""));
+
+        break;
+    }
+    case RTBMapObject::Target:
+    {
+        //RTBTeleporterTarget *mapObject = static_cast<RTBTeleporterTarget*>(rtbMapObject);
+        break;
+    }
+    case RTBMapObject::FloorText:
+    {
+        RTBFloorText *mapObject = static_cast<RTBFloorText*>(rtbMapObject);
+        mapObject->setText(variantMap["text"].toString());
+        mapObject->setMaxCharacters(variantMap["maxcharacters"].toInt());
+        int width = variantMap["triggerzonewidth"].toInt();
+        int height = variantMap["triggerzoneheight"].toInt();
+        mapObject->setTriggerZoneSize(QSizeF(width, height));
+        mapObject->setUseTrigger(variantMap["usetrigger"].toInt());
+        mapObject->setScale(variantMap["scale"].toDouble());
+        mapObject->setOffsetX(variantMap["offsetx"].toDouble());
+        mapObject->setOffsetY(variantMap["offsety"].toDouble());
+
+        break;
+    }
+    case RTBMapObject::CameraTrigger:
+    {
+        RTBCameraTrigger *mapObject = static_cast<RTBCameraTrigger*>(rtbMapObject);
+        QString target = variantMap["cameratarget"].toString();
+        if(target != QLatin1String("0"))
+            mapObject->setTarget(target);
+        else
+            mapObject->setTarget(QLatin1String(""));
+
+        int width = variantMap["cameratriggerzonewidth"].toInt();
+        int height = variantMap["cameratriggerzoneheight"].toInt();
+        mapObject->setTriggerZoneSize(QSizeF(width, height));
+        mapObject->setCameraHeight(variantMap["cameraheight"].toInt());
+        mapObject->setCameraAngle(variantMap["cameraangle"].toInt());
+
+        break;
+    }
+    case RTBMapObject::StartLocation:
+    {
+        //RTBStartLocation *mapObject = static_cast<RTBStartLocation*>(rtbMapObject);
+        break;
+    }
+    case RTBMapObject::FinishHole:
+    {
+        //RTBFinishHole *mapObject = static_cast<RTBFinishHole*>(rtbMapObject);
+        break;
+    }
+
+    case RTBMapObject::NPCBallSpawner:
+    {
+        RTBNPCBallSpawner *mapObject = static_cast<RTBNPCBallSpawner*>(rtbMapObject);
+        mapObject->setSpawnClass(variantMap["spawnclass"].toInt());
+        mapObject->setSize(variantMap["size"].toInt());
+        mapObject->setIntervalOffset(variantMap["intervaloffset"].toInt());
+        mapObject->setSpawnFrequency(variantMap["spawnfrequency"].toInt());
+        mapObject->setSpeed(variantMap["speed"].toInt());
+        mapObject->setDirection(variantMap["direction"].toInt());
+        break;
+    }
+    default:
+
+        return;
+    }
 }

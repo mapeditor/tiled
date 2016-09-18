@@ -34,6 +34,7 @@
 class QComboBox;
 class QLabel;
 class QToolButton;
+class QShortcut;
 
 namespace Ui {
 class MainWindow;
@@ -69,6 +70,14 @@ class TileStamp;
 class TileStampManager;
 class ToolManager;
 class Zoomable;
+class ObjectSelectionTool;
+class RTBValidatorDock;
+class RTBValidator;
+class RTBTileSelectionManager;
+class RTBSelectAreaTool;
+class RTBInsertTool;
+class RTBTutorial;
+class RTBTutorialDock;
 
 /**
  * The main editor window.
@@ -102,6 +111,8 @@ public:
      */
     void openLastFiles();
 
+    bool showPropVisualization() { return mShowPropVisualization; }
+
 public slots:
     bool openFile(const QString &fileName);
 
@@ -114,6 +125,8 @@ protected:
 
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
+
+    void paintEvent(QPaintEvent * event);
 
 public slots:
     void newMap();
@@ -129,7 +142,7 @@ public slots:
     void closeAllFiles();
 
     void cut();
-    void copy();
+    void copy(bool isCut = false);
     void paste();
     void delete_(); // 'delete' is a reserved word
     void openPreferences();
@@ -170,11 +183,15 @@ public slots:
     void closeMapDocument(int index);
 
     void reloadError(const QString &error);
-    void autoMappingError(bool automatic);
-    void autoMappingWarning(bool automatic);
 
-    void onAnimationEditorClosed();
-    void onCollisionEditorClosed();
+    void activateObjectSelectionTool();
+    void activateObjectSelectionTool(MapObject *mapObject);
+    bool saveFileAsJSON();
+
+private slots:
+    void setShowPropVisualization(bool show);
+    void buildMap();
+    void highlightSection(int section);
 
 private:
     /**
@@ -218,26 +235,22 @@ private:
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
+    PropertiesDock *mPropertiesDock;
     LayerDock *mLayerDock;
     MapsDock *mMapsDock;
-    ObjectsDock *mObjectsDock;
-    TilesetDock *mTilesetDock;
-    TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
-    ConsoleDock *mConsoleDock;
-    TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
-    QSettings mSettings;
-    QToolButton *mRandomButton;
-    CommandButton *mCommandButton;
+    QSettings *mSettings;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
+    ObjectSelectionTool *mObjectSelectionTool;
+    RTBSelectAreaTool *mSelectAreaTool;
+    RTBInsertTool *mInsertTool;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
@@ -249,10 +262,37 @@ private:
 
     void setupQuickStamps();
 
-    AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
+
+    RTBTileSelectionManager *mTileSelectionManager;
+    QShortcut *mFloorLayerShortcut;
+    QShortcut *mOrbLayerShortcut;
+    QShortcut *mObjectLayerShortcut;
+    QShortcut *mIntervalSpeedShortcut1;
+    QShortcut *mIntervalSpeedShortcut2;
+    QShortcut *mIntervalSpeedShortcut3;
+    QShortcut *mIntervalSpeedShortcut4;
+    QShortcut *mIntervalOffsetShortcut1;
+    QShortcut *mIntervalOffsetShortcut2;
+    QShortcut *mIntervalOffsetShortcut3;
+    QShortcut *mIntervalOffsetShortcut4;
+    QShortcut *mIntervalOffsetShortcut5;
+    QShortcut *mIntervalOffsetShortcut6;
+    QShortcut *mIntervalOffsetShortcut7;
+    QShortcut *mIntervalOffsetShortcut8;
+    QShortcut *mChangeLayerShortcut;
+    QShortcut *mChangeLayerBackShortcut;
+    RTBValidatorDock *mValidatorDock;
+    RTBValidator *mValidator;
+    QAction *mPlayLevelAction;
+    QAction *mShowMapProperties;
+    RTBTutorial *mTutorial;
+    RTBTutorialDock *mTutorialDock;
+
+    bool mShowPropVisualization;
+    int mHighlightSection;
 };
 
 } // namespace Internal

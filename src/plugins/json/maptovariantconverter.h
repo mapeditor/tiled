@@ -27,6 +27,9 @@
 
 #include "gidmapper.h"
 
+#include "rtbmap.h"
+#include "rtbmapobject.h"
+
 namespace Json {
 
 /**
@@ -53,6 +56,9 @@ private:
 
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Tiled::Layer *layer) const;
+
+    void addRTBMapAttributes(QVariantMap &mapVariant, const Tiled::RTBMap *rtbMap) const;
+    void addRTBMapObjectAttributes(QVariantMap &objectVariant, const Tiled::RTBMapObject *rtbMapObject) const;
 
     QDir mMapDir;
     Tiled::GidMapper mGidMapper;

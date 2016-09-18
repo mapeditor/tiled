@@ -112,6 +112,10 @@ private:
     Properties readProperties();
     void readProperty(Properties *properties);
 
+    SharedTileset readRTBTileset();
+    void readRTBMap(const QXmlStreamAttributes atts);
+    RTBMapObject *readRTBMapObject(const QXmlStreamAttributes atts);
+
     MapReader *p;
 
     QString mError;
@@ -255,7 +259,7 @@ Map *MapReaderPrivate::readMap()
         if (xml.name() == QLatin1String("properties"))
             mMap->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("tileset"))
-            mMap->addTileset(readTileset());
+            mMap->addTileset(readRTBTileset());
         else if (xml.name() == QLatin1String("layer"))
             mMap->addLayer(readLayer());
         else if (xml.name() == QLatin1String("objectgroup"))
@@ -265,6 +269,9 @@ Map *MapReaderPrivate::readMap()
         else
             readUnknownElement();
     }
+
+    // RTB
+    readRTBMap(atts);
 
     // Clean up in case of error
     if (xml.hasError()) {
@@ -864,6 +871,9 @@ MapObject *MapReaderPrivate::readObject()
         }
     }
 
+    // RTB
+    object->setRTBMapObject(readRTBMapObject(atts));
+
     return object;
 }
 
@@ -1038,4 +1048,287 @@ SharedTileset MapReader::readExternalTileset(const QString &source,
         *error = reader.errorString();
 
     return tileset;
+}
+
+SharedTileset MapReaderPrivate::readRTBTileset()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tileset"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const unsigned firstGid =
+            atts.value(QLatin1String("firstgid")).toString().toUInt();
+
+    SharedTileset tileset;
+
+    const QString absoluteSource = QString::fromStdString(":/rtb_resources/tileset/Floor.tsx");
+    QString error;
+    tileset = p->readExternalTileset(absoluteSource, &error);
+
+    if (!tileset) {
+        xml.raiseError(tr("Error while loading tileset '%1': %2")
+                       .arg(absoluteSource, error));
+    }
+
+    xml.skipCurrentElement();
+
+
+    if (tileset && !mReadingExternalTileset)
+        mGidMapper.insert(firstGid, tileset.data());
+
+    return tileset;
+}
+
+void MapReaderPrivate::readRTBMap(const QXmlStreamAttributes atts)
+{
+    const bool error = atts.value(QLatin1String("haserror")).toString().toInt();
+    QStringRef customGlowColorString = atts.value(QLatin1String("customglowcolor"));
+    QStringRef customBackgroundColorString = atts.value(QLatin1String("custombackgroundcolor"));
+    const double levelBrightness = atts.value(QLatin1String("levelbrightness")).toString().toDouble();
+    const double cloudDensity = atts.value(QLatin1String("clouddensity")).toString().toDouble();
+    const double cloudVelocity = atts.value(QLatin1String("cloudvelocity")).toString().toDouble();
+    const double cloudAlpha = atts.value(QLatin1String("cloudalpha")).toString().toDouble();
+    const double snowDensity = atts.value(QLatin1String("snowdensity")).toString().toDouble();
+    const double snowVelocity = atts.value(QLatin1String("snowvelocity")).toString().toDouble();
+    const double snowRisingVelocity = atts.value(QLatin1String("snowrisingvelocity")).toString().toDouble();
+    const double cameraGrain = atts.value(QLatin1String("cameragrain")).toString().toDouble();
+    const double cameraContrast = atts.value(QLatin1String("cameracontrast")).toString().toDouble();
+    const double cameraSaturation = atts.value(QLatin1String("camerasaturation")).toString().toDouble();
+    const double cameraGlow = atts.value(QLatin1String("cameraglow")).toString().toDouble();
+    const bool hasWalls = atts.value(QLatin1String("haswalls")).toString().toInt();
+    const QString levelName = atts.value(QLatin1String("levelname")).toString();
+    const QString levelDescription = atts.value(QLatin1String("leveldescription")).toString();
+    const int backgroundColorScheme = atts.value(QLatin1String("backgroundcolorscheme")).toString().toInt();
+    const int glowColorScheme = atts.value(QLatin1String("glowcolorscheme")).toString().toInt();
+    const int chapter = atts.value(QLatin1String("chapter")).toString().toInt();
+    const bool hasStarfield = atts.value(QLatin1String("hasstarfield")).toString().toInt();
+    const int difficulty = atts.value(QLatin1String("difficulty")).toString().toInt();
+    const int playStyle = atts.value(QLatin1String("playstyle")).toString().toInt();
+    const int workShopId = atts.value(QLatin1String("workshopid")).toString().toInt();
+    const QString previewImagePath = atts.value(QLatin1String("previewimagepath")).toString();
+
+
+    RTBMap *rtbMap = mMap->rtbMap();
+
+    rtbMap->setHasError(error);
+    if (!customGlowColorString.isEmpty())
+        rtbMap->setCustomGlowColor(QColor(customGlowColorString.toString()));
+    if (!customBackgroundColorString.isEmpty())
+        rtbMap->setCustomBackgroundColor(QColor(customBackgroundColorString.toString()));
+    rtbMap->setLevelBrightness(levelBrightness);
+    rtbMap->setCloudDensity(cloudDensity);
+    rtbMap->setCloudVelocity(cloudVelocity);
+    rtbMap->setCloudAlpha(cloudAlpha);
+    rtbMap->setSnowDensity(snowDensity);
+    rtbMap->setSnowVelocity(snowVelocity);
+    rtbMap->setSnowRisingVelocity(snowRisingVelocity);
+    rtbMap->setCameraGrain(cameraGrain);
+    rtbMap->setCameraContrast(cameraContrast);
+    rtbMap->setCameraSaturation(cameraSaturation);
+    rtbMap->setCameraGlow(cameraGlow);
+    rtbMap->setHasWall(hasWalls);
+    rtbMap->setLevelName(levelName);
+    rtbMap->setLevelDescription(levelDescription);
+    rtbMap->setBackgroundColorScheme(backgroundColorScheme);
+    rtbMap->setGlowColorScheme(glowColorScheme);
+    rtbMap->setChapter(chapter);
+    rtbMap->setHasStarfield(hasStarfield);
+    rtbMap->setDifficulty(difficulty);
+    rtbMap->setPlayStyle(playStyle);
+    rtbMap->setWorkShopId(workShopId);
+    rtbMap->setPreviewImagePath(previewImagePath);
+}
+
+RTBMapObject *MapReaderPrivate::readRTBMapObject(const QXmlStreamAttributes atts)
+{
+    const int type = atts.value(QLatin1String("objecttype")).toString().toInt();
+    const int originID = atts.value(QLatin1String("originid")).toString().toInt();
+
+    switch (type) {
+    case RTBMapObject::CustomFloorTrap:
+    {
+        const int intervalSpeed = atts.value(QLatin1String("intervalspeed")).toString().toInt();
+        const int intervalOffset = atts.value(QLatin1String("intervaloffset")).toString().toInt();
+
+        RTBCustomFloorTrap *mapObject = new RTBCustomFloorTrap;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setIntervalSpeed(intervalSpeed);
+        mapObject->setIntervalOffset(intervalOffset);
+
+        return mapObject;
+    }
+    case RTBMapObject::MovingFloorTrapSpawner:
+    {
+        const int spawnAmount = atts.value(QLatin1String("spawnamount")).toString().toInt();
+        const int intervalSpeed = atts.value(QLatin1String("intervalspeed")).toString().toInt();
+        const int randomizeStart = atts.value(QLatin1String("randomizestart")).toString().toInt();
+
+        RTBMovingFloorTrapSpawner *mapObject = new RTBMovingFloorTrapSpawner;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setSpawnAmount(spawnAmount);
+        mapObject->setIntervalSpeed(intervalSpeed);
+        mapObject->setRandomizeStart(randomizeStart);
+
+        return mapObject;
+    }
+    case RTBMapObject::Button:
+    {
+        const int beatsActive = atts.value(QLatin1String("beatsactive")).toString().toInt();
+        const QString laserBeamTargets = atts.value(QLatin1String("laserbeamtargets")).toString();
+
+        RTBButtonObject *mapObject = new RTBButtonObject;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setBeatsActive(beatsActive);
+        mapObject->setLaserBeamTargets(laserBeamTargets);
+
+        return mapObject;
+    }
+    case RTBMapObject::LaserBeam:
+    {
+        const int beamType = atts.value(QLatin1String("beamtype")).toString().toInt();
+        const int activatedOnStart = atts.value(QLatin1String("activatedonstart")).toString().toInt();
+        const int directionDegrees = atts.value(QLatin1String("directiondegrees")).toString().toInt();
+        const int targetDirectionDegrees = atts.value(QLatin1String("targetdirectiondegrees")).toString().toInt();
+        const int intervalOffset = atts.value(QLatin1String("intervaloffset")).toString().toInt();
+        const int intervalSpeed = atts.value(QLatin1String("intervalspeed")).toString().toInt();
+
+        RTBLaserBeam *mapObject = new RTBLaserBeam;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setBeamType(beamType);
+        mapObject->setActivatedOnStart(activatedOnStart);
+        mapObject->setDirectionDegrees(directionDegrees);
+        mapObject->setTargetDirectionDegrees(targetDirectionDegrees);
+        mapObject->setIntervalOffset(intervalOffset);
+        mapObject->setIntervalSpeed(intervalSpeed);
+
+        return mapObject;
+    }
+    case RTBMapObject::ProjectileTurret:
+    {
+        const int intervalSpeed = atts.value(QLatin1String("intervalspeed")).toString().toInt();
+        const int intervalOffset = atts.value(QLatin1String("intervaloffset")).toString().toInt();
+        const int projectileSpeed = atts.value(QLatin1String("projectilespeed")).toString().toInt();
+        const int shotDirection = atts.value(QLatin1String("shotdirection")).toString().toInt();
+
+        RTBProjectileTurret *mapObject = new RTBProjectileTurret;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setIntervalSpeed(intervalSpeed);
+        mapObject->setIntervalOffset(intervalOffset);
+        mapObject->setProjectileSpeed(projectileSpeed);
+        mapObject->setShotDirection(shotDirection);
+
+        return mapObject;
+    }
+    case RTBMapObject::Teleporter:
+    {
+        const QString target = atts.value(QLatin1String("teleportertarget")).toString();
+
+        RTBTeleporter *mapObject = new RTBTeleporter;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setTeleporterTarget(target);
+
+        return mapObject;
+    }
+    case RTBMapObject::Target:
+    {
+        RTBTarget *mapObject = new RTBTarget;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        return mapObject;
+    }
+    case RTBMapObject::FloorText:
+    {
+        const QString text = atts.value(QLatin1String("text")).toString();
+        const int maxCharacters = atts.value(QLatin1String("maxcharacters")).toString().toInt();
+        const qreal triggerZoneWidth = atts.value(QLatin1String("triggerzonewidth")).toString().toDouble();
+        const qreal triggerZoneHeight = atts.value(QLatin1String("triggerzoneheight")).toString().toDouble();
+        const int useTrigger = atts.value(QLatin1String("usetrigger")).toString().toInt();
+        const double scale = atts.value(QLatin1String("scale")).toString().toDouble();
+        const double offsetX = atts.value(QLatin1String("offsetx")).toString().toDouble();
+        const double offsetY = atts.value(QLatin1String("offsety")).toString().toDouble();
+
+        RTBFloorText *mapObject = new RTBFloorText;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setText(text);
+        mapObject->setMaxCharacters(maxCharacters);
+        mapObject->setTriggerZoneSize(QSizeF(triggerZoneWidth, triggerZoneHeight));
+        mapObject->setUseTrigger(useTrigger);
+        mapObject->setScale(scale);
+        mapObject->setOffsetX(offsetX);
+        mapObject->setOffsetY(offsetY);
+
+        return mapObject;
+    }
+    case RTBMapObject::CameraTrigger:
+    {
+        const QString target = atts.value(QLatin1String("cameratarget")).toString();
+        const qreal triggerZoneWidth = atts.value(QLatin1String("cameratriggerzonewidth")).toString().toDouble();
+        const qreal triggerZoneHeight = atts.value(QLatin1String("cameratriggerzoneheight")).toString().toDouble();
+        const int cameraHeight = atts.value(QLatin1String("cameraheight")).toString().toInt();
+        const int cameraAngle = atts.value(QLatin1String("cameraangle")).toString().toInt();
+
+        RTBCameraTrigger *mapObject = new RTBCameraTrigger;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setTarget(target);
+        mapObject->setTriggerZoneSize(QSizeF(triggerZoneWidth, triggerZoneHeight));
+        mapObject->setCameraHeight(cameraHeight);
+        mapObject->setCameraAngle(cameraAngle);
+
+        return mapObject;
+    }
+    case RTBMapObject::StartLocation:
+    {
+        RTBStartLocation *mapObject = new RTBStartLocation;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        return mapObject;
+    }
+    case RTBMapObject::FinishHole:
+    {
+        RTBFinishHole *mapObject = new RTBFinishHole;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        return mapObject;
+    }
+    case RTBMapObject::NPCBallSpawner:
+    {
+        const int spawnClass = atts.value(QLatin1String("spawnclass")).toString().toInt();
+        const int size = atts.value(QLatin1String("size")).toString().toInt();
+        const int intervalOffset = atts.value(QLatin1String("intervaloffset")).toString().toInt();
+        const int spawnFrequency = atts.value(QLatin1String("spawnfrequency")).toString().toInt();
+        const int speed = atts.value(QLatin1String("speed")).toString().toInt();
+        const int direction = atts.value(QLatin1String("direction")).toString().toInt();
+
+        RTBNPCBallSpawner *mapObject = new RTBNPCBallSpawner;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        mapObject->setSpawnClass(spawnClass);
+        mapObject->setSize(size);
+        mapObject->setIntervalOffset(intervalOffset);
+        mapObject->setSpawnFrequency(spawnFrequency);
+        mapObject->setSpeed(speed);
+        mapObject->setDirection(direction);
+
+        return mapObject;
+    }
+
+    // ORBS
+    case RTBMapObject::Orb:
+    {
+        RTBOrb *mapObject = new RTBOrb;
+        mapObject->setObjectType(type);
+        mapObject->setOriginID(originID);
+        return mapObject;
+    }
+    default:
+
+        return 0;
+    }
 }

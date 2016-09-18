@@ -35,6 +35,11 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 
     const QString html = QCoreApplication::translate(
             "AboutDialog",
+            "<p align=\"center\"><font size=\"+2\"><b>RTB Tiled Map Editor</b></font><br><i>Version %1</i></p>\n"
+            "<p align=\"center\">Copyright 2015-2016 David Stammer, Kai Hillenbrand</p>\n"
+            "<p align=\"center\"><a href=\"http://www.roadtoballhalla.com/\">http://www.roadtoballhalla.com/</a></p>\n"
+            "<br>"
+
             "<p align=\"center\"><font size=\"+2\"><b>Tiled Map Editor</b></font><br><i>Version %1</i></p>\n"
             "<p align=\"center\">Copyright 2008-2015 Thorbj&oslash;rn Lindeijer<br>(see the AUTHORS file for a full list of contributors)</p>\n"
             "<p align=\"center\">You may modify and redistribute this program under the terms of the GPL (version 2 or later). "
@@ -43,11 +48,4 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
             .arg(QApplication::applicationVersion());
 
     textBrowser->setHtml(html);
-
-    connect(donateButton, SIGNAL(clicked()), SLOT(donate()));
-}
-
-void AboutDialog::donate()
-{
-    QDesktopServices::openUrl(QUrl(QLatin1String("http://www.mapeditor.org/donate")));
 }

@@ -94,7 +94,7 @@ void MiniMap::setMapDocument(MapDocument *map)
 
 QSize MiniMap::sizeHint() const
 {
-    return QSize(200, 200);
+    return QSize(250, 20);
 }
 
 void MiniMap::scheduleMapImageUpdate()

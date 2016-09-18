@@ -194,10 +194,26 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
 Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
+    // RTB: not allowed to change layer name
+    QString objectName = index.model()->data(index, Qt::DisplayRole).toString();
+    QString objectLayerName = QLatin1String("Objects");
+    // object layer name an type not editable
+    if(index.column() == 0 && objectLayerName != objectName|| index.parent().isValid())
+    {
+        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+    }
+    else
+    {
+        rc |= Qt::ItemIsUserCheckable; // Object layer name
+    }
+
+    /*
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else if (index.parent().isValid())
         rc |= Qt::ItemIsEditable; // MapObject type
+    */
+
     return rc;
 }
 

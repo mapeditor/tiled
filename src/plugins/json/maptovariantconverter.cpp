@@ -64,6 +64,10 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     if (bgColor.isValid())
         mapVariant["backgroundcolor"] = bgColor.name();
 
+    // RTB
+    addRTBMapAttributes(mapVariant, map->rtbMap());
+
+
     QVariantList tilesetVariants;
 
     unsigned firstGid = 1;
@@ -279,6 +283,9 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         if (object->shape() == MapObject::Ellipse)
             objectVariant["ellipse"] = true;
 
+        // RTB
+        addRTBMapObjectAttributes(objectVariant, object->rtbMapObject());
+
         objectVariants << objectVariant;
     }
 
@@ -317,4 +324,138 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
     const Properties &properties = layer->properties();
     if (!properties.isEmpty())
         layerVariant["properties"] = toVariant(properties);
+}
+
+void MapToVariantConverter::addRTBMapAttributes(QVariantMap &mapVariant,
+                                               const RTBMap *rtbMap) const
+{
+    mapVariant["haserror"] = rtbMap->hasError();
+    mapVariant["customglowcolor"] = rtbMap->customGlowColor().name();
+    mapVariant["custombackgroundcolor"] = rtbMap->customBackgroundColor().name();
+    mapVariant["levelbrightness"] = rtbMap->levelBrightness();
+    mapVariant["clouddensity"] = rtbMap->cloudDensity();
+    mapVariant["cloudvelocity"] = rtbMap->cloudVelocity();
+    mapVariant["cloudalpha"] = rtbMap->cloudAlpha();
+    mapVariant["snowdensity"] = rtbMap->snowDensity();
+    mapVariant["snowvelocity"] = rtbMap->snowVelocity();
+    mapVariant["snowrisingvelocity"] = rtbMap->snowRisingVelocity();
+    mapVariant["cameragrain"] = rtbMap->cameraGrain();
+    mapVariant["cameracontrast"] = rtbMap->cameraContrast();
+    mapVariant["camerasaturation"] = rtbMap->cameraSaturation();
+    mapVariant["cameraglow"] = rtbMap->cameraGlow();
+    mapVariant["haswalls"] = rtbMap->hasWall();
+    mapVariant["levelname"] = rtbMap->levelName();
+    mapVariant["leveldescription"] = rtbMap->levelDescription();
+    mapVariant["backgroundcolorscheme"] = rtbMap->backgroundColorScheme();
+    mapVariant["glowcolorscheme"] = rtbMap->glowColorScheme();
+    mapVariant["chapter"] = rtbMap->chapter();
+    mapVariant["hasstarfield"] = rtbMap->hasStarfield();
+    mapVariant["difficulty"] = rtbMap->difficulty();
+    mapVariant["playstyle"] = rtbMap->playStyle();
+    mapVariant["workshopid"] = rtbMap->workShopId();
+    mapVariant["previewimagepath"] = rtbMap->previewImagePath();
+
+}
+
+void MapToVariantConverter::addRTBMapObjectAttributes(QVariantMap &objectVariant,
+                                               const RTBMapObject *rtbMapObject) const
+{
+    objectVariant["objecttype"] = rtbMapObject->objectType();
+
+    switch (rtbMapObject->objectType()) {
+    case RTBMapObject::CustomFloorTrap:
+    {
+        const RTBCustomFloorTrap *mapObject = static_cast<const RTBCustomFloorTrap*>(rtbMapObject);
+        objectVariant["intervalspeed"] = mapObject->intervalSpeed();
+        objectVariant["intervaloffset"] = mapObject->intervalOffset();
+        break;
+    }
+    case RTBMapObject::MovingFloorTrapSpawner:
+    {
+        const RTBMovingFloorTrapSpawner *mapObject = static_cast<const RTBMovingFloorTrapSpawner*>(rtbMapObject);
+        objectVariant["spawnamount"] = mapObject->spawnAmount();
+        objectVariant["intervalspeed"] = mapObject->intervalSpeed();
+        objectVariant["randomizestart"] = mapObject->randomizeStart();
+        break;
+    }
+    case RTBMapObject::Button:
+    {
+        const RTBButtonObject *mapObject = static_cast<const RTBButtonObject*>(rtbMapObject);
+        objectVariant["beatsactive"] = mapObject->beatsActive();
+        objectVariant["laserbeamtargets"] = mapObject->laserBeamTargets();
+        break;
+    }
+    case RTBMapObject::LaserBeam:
+    {
+        const RTBLaserBeam *mapObject = static_cast<const RTBLaserBeam*>(rtbMapObject);
+        objectVariant["beamtype"] = mapObject->beamType();
+        objectVariant["activatedonstart"] = mapObject->activatedOnStart();
+        objectVariant["directiondegrees"] = mapObject->directionDegrees();
+        objectVariant["targetdirectiondegrees"] = mapObject->targetDirectionDegrees();
+        objectVariant["intervaloffset"] = mapObject->intervalOffset();
+        objectVariant["intervalspeed"] = mapObject->intervalSpeed();
+        break;
+    }
+    case RTBMapObject::ProjectileTurret:
+    {
+        const RTBProjectileTurret *mapObject = static_cast<const RTBProjectileTurret*>(rtbMapObject);
+        objectVariant["intervalspeed"] = mapObject->intervalSpeed();
+        objectVariant["intervaloffset"] = mapObject->intervalOffset();
+        objectVariant["projectilespeed"] = mapObject->projectileSpeed();
+        objectVariant["shotdirection"] = mapObject->shotDirection();
+        break;
+    }
+    case RTBMapObject::Teleporter:
+    {
+        const RTBTeleporter *mapObject = static_cast<const RTBTeleporter*>(rtbMapObject);
+        objectVariant["teleportertarget"] = mapObject->teleporterTarget().toInt();
+        break;
+    }
+    case RTBMapObject::Target:
+    {
+        return;
+    }
+    case RTBMapObject::FloorText:
+    {
+        const RTBFloorText *mapObject = static_cast<const RTBFloorText*>(rtbMapObject);
+        objectVariant["text"] = mapObject->text();
+        objectVariant["maxcharacters"] = mapObject->maxCharacters();
+        objectVariant["triggerzonewidth"] = mapObject->triggerZoneSize().width();
+        objectVariant["triggerzoneheight"] = mapObject->triggerZoneSize().height();
+        objectVariant["usetrigger"] = mapObject->useTrigger();
+        objectVariant["scale"] = mapObject->scale();
+        objectVariant["offsetx"] = mapObject->offsetX();
+        objectVariant["offsety"] = mapObject->offsetY();
+        break;
+    }
+    case RTBMapObject::CameraTrigger:
+    {
+        const RTBCameraTrigger *mapObject = static_cast<const RTBCameraTrigger*>(rtbMapObject);
+        objectVariant["cameratarget"] = mapObject->target().toInt();
+        objectVariant["cameratriggerzonewidth"] = mapObject->triggerZoneSize().width();
+        objectVariant["cameratriggerzoneheight"] = mapObject->triggerZoneSize().height();
+        objectVariant["cameraheight"] = mapObject->cameraHeight();
+        objectVariant["cameraangle"] = mapObject->cameraAngle();
+        break;
+    }
+    case RTBMapObject::StartLocation:
+    case RTBMapObject::FinishHole:
+    {
+        return;
+    }
+    case RTBMapObject::NPCBallSpawner:
+    {
+        const RTBNPCBallSpawner *mapObject = static_cast<const RTBNPCBallSpawner*>(rtbMapObject);
+        objectVariant["spawnclass"] = mapObject->spawnClass();
+        objectVariant["size"] = mapObject->size();
+        objectVariant["intervaloffset"] = mapObject->intervalOffset();
+        objectVariant["spawnfrequency"] = mapObject->spawnFrequency();
+        objectVariant["speed"] = mapObject->speed();
+        objectVariant["direction"] = mapObject->direction();
+        break;
+    }
+    default:
+
+        return;
+    }
 }

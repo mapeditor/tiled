@@ -34,6 +34,8 @@ class Map;
 class ObjectGroup;
 class Properties;
 class Tileset;
+class RTBMap;
+class RTBMapObject;
 }
 
 namespace Json {
@@ -73,6 +75,9 @@ private:
     Tiled::ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
+
+    void toRTBMap(const QVariantMap &variantMap, Tiled::RTBMap *rtbMap);
+    void toRTBMapObject(const QVariantMap &variantMap, Tiled::RTBMapObject *rtbMapObject);
 
     Tiled::Map *mMap;
     QDir mMapDir;

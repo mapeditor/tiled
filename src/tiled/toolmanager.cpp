@@ -21,6 +21,14 @@
 #include "toolmanager.h"
 
 #include "abstracttool.h"
+#include "objectselectiontool.h"
+#include "stampbrush.h"
+#include "bucketfilltool.h"
+
+#include "rtbmapsettings.h"
+#include "rtbcreateobjecttool.h"
+#include "rtbselectareatool.h"
+#include "rtbinserttool.h"
 
 #include <QAction>
 #include <QActionGroup>
@@ -32,8 +40,11 @@ ToolManager::ToolManager(QObject *parent)
     : QObject(parent)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
-    , mPreviouslyDisabledTool(0)
     , mMapDocument(0)
+    , mPreviouslyDisabledFloorTool(0)
+    , mPreviouslyDisabledObjectTool(0)
+    , mPreviouslyDisabledOrbObjectTool(0)
+    , mSeparatorAction(0)
 {
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
@@ -52,12 +63,22 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    if(mMapDocument)
+        disconnect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                this, SLOT(updateSelectedTool()));
+
     mMapDocument = mapDocument;
 
     foreach (QAction *action, mActionGroup->actions()) {
         AbstractTool *tool = action->data().value<AbstractTool*>();
         tool->setMapDocument(mapDocument);
     }
+
+    if(mMapDocument)
+        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                this, SLOT(updateSelectedTool()));
+
+    resetToolbarActionIcons();
 }
 
 /**
@@ -74,10 +95,29 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    toolAction->setToolTip(
-            QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                  tool->shortcut().toString()));
+
+    // if no tooltip is set
+    if(tool->shortcut().isEmpty())
+    {
+        toolAction->setToolTip(
+                QString(QLatin1String("%1")).arg(tool->name()));
+    }
+    else
+    {
+        toolAction->setToolTip(
+                QString(QLatin1String("%1 (%2)")).arg(tool->name(),
+                                                      tool->shortcut().toString()));
+    }
+
     toolAction->setEnabled(tool->isEnabled());
+
+    if(dynamic_cast<RTBSelectAreaTool*>(tool))
+        toolAction->setVisible(true);
+    else if(dynamic_cast<RTBInsertTool*>(tool))
+        toolAction->setVisible(false);
+    else
+        toolAction->setVisible(tool->isEnabled());
+
     mActionGroup->addAction(toolAction);
 
     connect(tool, SIGNAL(enabledChanged(bool)),
@@ -88,6 +128,10 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
         setSelectedTool(tool);
         toolAction->setChecked(true);
     }
+
+    if(dynamic_cast<ObjectSelectionTool*>(tool))
+        connect(tool, SIGNAL(enabledChanged(bool)),
+                this, SLOT(toggleSeparator(bool)));
 
     return toolAction;
 }
@@ -140,6 +184,14 @@ void ToolManager::toolEnabledChanged(bool enabled)
     foreach (QAction *action, mActionGroup->actions()) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->setEnabled(enabled);
+
+            if(dynamic_cast<RTBSelectAreaTool*>(tool))
+                action->setVisible(true);
+            else if(dynamic_cast<RTBInsertTool*>(tool))
+                action->setVisible(false);
+            else
+                action->setVisible(tool->isEnabled());
+
             break;
         }
     }
@@ -159,25 +211,46 @@ void ToolManager::selectEnabledTool()
     if (mSelectedTool && mSelectedTool->isEnabled())
         return;
 
-    AbstractTool *currentTool = mSelectedTool;
+    // if no mapdocument stop here
+    if(!mMapDocument)
+        return;
 
-    // Prefer the tool we switched away from last time
-    if (mPreviouslyDisabledTool && mPreviouslyDisabledTool->isEnabled())
-        selectTool(mPreviouslyDisabledTool);
-    else
-        selectTool(firstEnabledTool());
+    // select the previous tool for this layer
+    switch (mMapDocument->currentLayerIndex()) {
+    case RTBMapSettings::FloorID:
+    {
+        if (mPreviouslyDisabledFloorTool && mPreviouslyDisabledFloorTool->isEnabled())
+            selectTool(mPreviouslyDisabledFloorTool);
+        else
+            selectTool(0);
 
-    mPreviouslyDisabledTool = currentTool;
-}
+        break;
+    }
+    case RTBMapSettings::ObjectID:
+    {
+        if (mPreviouslyDisabledObjectTool && mPreviouslyDisabledObjectTool->isEnabled())
+            selectTool(mPreviouslyDisabledObjectTool);
+        // if no previously disabled tool exists
+        else
+            selectDefaultObjectTool();
 
-AbstractTool *ToolManager::firstEnabledTool() const
-{
-    foreach (QAction *action, mActionGroup->actions())
-        if (AbstractTool *tool = action->data().value<AbstractTool*>())
-            if (tool->isEnabled())
-                return tool;
+        break;
+    }
+    case RTBMapSettings::OrbObjectID:
+    {
+        if (mPreviouslyDisabledOrbObjectTool && mPreviouslyDisabledOrbObjectTool->isEnabled())
+            selectTool(mPreviouslyDisabledOrbObjectTool);
+        // if no previously disabled tool exists
+        else
+            selectDefaultObjectTool();
 
-    return 0;
+        break;
+    }
+    default:
+        selectTool(0);
+        break;
+    }
+
 }
 
 void ToolManager::setSelectedTool(AbstractTool *tool)
@@ -197,5 +270,150 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         emit statusInfoChanged(mSelectedTool->statusInfo());
         connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
                 this, SIGNAL(statusInfoChanged(QString)));
+    }
+
+    // if no mapdocument stop here
+    if(!mMapDocument)
+        return;
+
+    // store the previous tool for this layer
+    switch (mMapDocument->currentLayerIndex()) {
+    case RTBMapSettings::FloorID:
+    {
+        mPreviouslyDisabledFloorTool = mSelectedTool;
+
+        break;
+    }
+    case RTBMapSettings::ObjectID:
+    {
+        mPreviouslyDisabledObjectTool = mSelectedTool;
+        break;
+    }
+    case RTBMapSettings::OrbObjectID:
+    {
+        mPreviouslyDisabledOrbObjectTool = mSelectedTool;
+        break;
+    }
+    }
+}
+
+void ToolManager::selectDefaultTool()
+{
+    if(mMapDocument->currentLayerIndex() == RTBMapSettings::FloorID)
+        selectDefaultTileTool();
+    else
+        selectDefaultObjectTool();
+}
+
+void ToolManager::selectDefaultTileTool()
+{
+    if(dynamic_cast<RTBInsertTool*>(mSelectedTool) ||
+            (!dynamic_cast<StampBrush*>(mSelectedTool) && !dynamic_cast<BucketFillTool*>(mSelectedTool)))
+    {
+        QAction *stampBrushAction = mActionGroup->actions().at(RTBMapSettings::StampBrush);
+        AbstractTool *stampBrushTool = stampBrushAction->data().value<AbstractTool*>();
+
+        // if possible select stamp brush tool
+        if(stampBrushTool->isEnabled())
+           selectTool(stampBrushTool);
+    }
+}
+
+void ToolManager::selectDefaultObjectTool()
+{
+    if(!dynamic_cast<ObjectSelectionTool*>(mSelectedTool))
+    {
+        QAction *selectionAction = mActionGroup->actions().at(RTBMapSettings::ObjectSelection);
+        AbstractTool *selectionTool = selectionAction->data().value<AbstractTool*>();
+
+        // if possible select stamp brush tool
+        if(selectionTool->isEnabled())
+           selectTool(selectionTool);
+        else
+            selectTool(0);
+    }
+}
+
+void ToolManager::highlightToolbarAction(int id)
+{
+    QAction *createObjectAction = mActionGroup->actions().at(id - 35);
+    AbstractTool *createObjectTool = createObjectAction->data().value<AbstractTool*>();
+
+    if(RTBCreateObjectTool *tool = dynamic_cast<RTBCreateObjectTool*>(createObjectTool))
+    {
+        if(!tool->errorIcon().isNull())
+            createObjectAction->setIcon(tool->errorIcon());
+    }
+
+}
+
+void ToolManager::activateToolbarAction(int id)
+{
+    QAction *createObjectAction = mActionGroup->actions().at(id - 35);
+    AbstractTool *createObjectTool = createObjectAction->data().value<AbstractTool*>();
+
+    if(createObjectTool->isEnabled())
+        selectTool(createObjectTool);
+}
+
+void ToolManager::resetToolbarActionIcons()
+{
+    foreach (QAction *action, mActionGroup->actions()) {
+        AbstractTool *tool = action->data().value<AbstractTool*>();
+
+        QIcon actionIcon = action->icon();
+        QIcon toolIcon = tool->icon();
+        // change icon only if is necessary
+        if(actionIcon.pixmap(22, 22).toImage() != toolIcon.pixmap(22, 22).toImage())
+        {
+            action->setIcon(tool->icon());
+        }
+    }
+
+}
+
+void ToolManager::setSeparatorAction(QAction *separatorAction)
+{
+    mSeparatorAction = separatorAction;
+    mSeparatorAction->setVisible(false);
+}
+
+void ToolManager::toggleSeparator(bool visible)
+{
+    if(mSeparatorAction)
+        mSeparatorAction->setVisible(visible);
+}
+
+void ToolManager::updateSelectedTool()
+{
+    // select the previous tool for this layer
+    switch (mMapDocument->currentLayerIndex()) {
+    case RTBMapSettings::FloorID:
+    {
+        return;
+    }
+    case RTBMapSettings::ObjectID:
+    {
+        if (mPreviouslyDisabledObjectTool && mPreviouslyDisabledObjectTool->isEnabled())
+            selectTool(mPreviouslyDisabledObjectTool);
+        // if no previously disabled tool exists
+        else
+            selectDefaultObjectTool();
+
+        break;
+    }
+    case RTBMapSettings::OrbObjectID:
+    {
+        if (mPreviouslyDisabledOrbObjectTool && mPreviouslyDisabledOrbObjectTool->isEnabled())
+            selectTool(mPreviouslyDisabledOrbObjectTool);
+        // if no previously disabled tool exists
+        else
+            selectDefaultObjectTool();
+
+        break;
+    }
+    default:
+        selectTool(0);
+        break;
     }
 }

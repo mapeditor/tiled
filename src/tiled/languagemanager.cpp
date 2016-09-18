@@ -77,7 +77,13 @@ void LanguageManager::installTranslators()
 
     QString language = Preferences::instance()->language();
     if (language.isEmpty())
-        language = QLocale::system().name();
+        language = QLatin1String("en");
+        //language = QLocale::system().name();
+
+    // RTB: if system language is not supported en is selected
+    //if(!language.contains(QLatin1String("en")) && !language.contains(QLatin1String("de")))
+    if(!language.contains(QLatin1String("en")))
+        language = QLatin1String("en");
 
     const QString qtTranslationsDir =
             QLibraryInfo::location(QLibraryInfo::TranslationsPath);
@@ -111,7 +117,9 @@ void LanguageManager::loadAvailableLanguages()
     mLanguages.clear();
 
     QStringList nameFilters;
-    nameFilters.append(QLatin1String("tiled_*.qm"));
+    //nameFilters.append(QLatin1String("tiled_*.qm"));
+    //nameFilters.append(QLatin1String("tiled_de.qm"));
+    nameFilters.append(QLatin1String("tiled_en.qm"));
 
     QDirIterator iterator(mTranslationsDir, nameFilters,
                           QDir::Files | QDir::Readable);

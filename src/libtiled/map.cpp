@@ -50,8 +50,9 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
-    mLayerDataFormat(Base64Zlib),
-    mNextObjectId(1)
+    mLayerDataFormat(CSV),
+    mNextObjectId(1),
+    mRTBMap(new RTBMap)
 {
 }
 
@@ -70,7 +71,8 @@ Map::Map(const Map &map):
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat),
-    mNextObjectId(1)
+    mNextObjectId(1),
+    mRTBMap(map.mRTBMap)
 {
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();

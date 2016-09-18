@@ -94,6 +94,18 @@
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
 
+#include "rtbmapsettings.h"
+#include "rtbcreateobjecttool.h"
+#include "rtbtilebutton.h"
+#include "rtbtileselectionmanager.h"
+#include "rtbvalidatordock.h"
+#include "rtbvalidator.h"
+#include "rtbselectareatool.h"
+#include "rtbinserttool.h"
+#include "rtbcore.h"
+#include "rtbtutorial.h"
+#include "rtbtutorialdock.h"
+
 #ifdef Q_OS_MAC
 #include "macsupport.h"
 #endif
@@ -126,21 +138,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
-    , mObjectsDock(new ObjectsDock())
-    , mTilesetDock(new TilesetDock(this))
-    , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
-    , mConsoleDock(new ConsoleDock(this))
-    , mTileAnimationEditor(new TileAnimationEditor(this))
-    , mTileCollisionEditor(new TileCollisionEditor(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
-    , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mToolManager(new ToolManager(this))
     , mTileStampManager(new TileStampManager(*mToolManager, this))
+    , mTileSelectionManager(new RTBTileSelectionManager(this))
+    , mValidatorDock(new RTBValidatorDock(this))
+    , mValidator(new RTBValidator(mValidatorDock))
+    , mTutorialDock(new RTBTutorialDock(this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -150,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
 
     Preferences *preferences = Preferences::instance();
+    mSettings = preferences->settings();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
@@ -186,31 +196,24 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
-    PropertiesDock *propertiesDock = new PropertiesDock(this);
-    TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
+    mPropertiesDock = new PropertiesDock(this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
-    addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
 
-    tabifyDockWidget(mMiniMapDock, mObjectsDock);
-    tabifyDockWidget(mObjectsDock, mLayerDock);
-    tabifyDockWidget(mTerrainDock, mTilesetDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mValidatorDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTutorialDock);
+
+    tabifyDockWidget(mMiniMapDock, mLayerDock);
     tabifyDockWidget(undoDock, mMapsDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
-    mConsoleDock->setVisible(false);
-    tileStampsDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -231,7 +234,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
-    mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
@@ -260,34 +262,35 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->mainToolBar->addSeparator();
 
-    mCommandButton = new CommandButton(this);
-    mUi->mainToolBar->addWidget(mCommandButton);
+    mShowMapProperties = new QAction(QIcon(QLatin1String(":/images/24x24/document-properties.png"))
+                                                   , QLatin1String("Show Map Properties  (P)"), this);
+    mShowMapProperties->setShortcut(QKeySequence(Qt::Key_P));
+    mUi->mainToolBar->addAction(mShowMapProperties);
 
-    mUi->menuMap->insertAction(mUi->actionOffsetMap,
-                               mActionHandler->actionCropToSelection());
+    connect(mShowMapProperties, SIGNAL(triggered()),
+            SLOT(editMapProperties()));
 
-    mRandomButton = new QToolButton(this);
-    mRandomButton->setToolTip(tr("Random Mode"));
-    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
-    mRandomButton->setCheckable(true);
-    mRandomButton->setShortcut(QKeySequence(tr("D")));
-    mUi->mainToolBar->addWidget(mRandomButton);
+    QToolButton *showHidePropButton = new QToolButton(this);
+    showHidePropButton->setToolTip(tr("Show/Hide Property Visualization (V)"));
+    showHidePropButton->setIcon(QIcon(QLatin1String("://rtb_resources/icons/action_visualhelper.png")));
+    showHidePropButton->setCheckable(true);
+    showHidePropButton->setShortcut(QKeySequence(Qt::Key_V));
+    mUi->mainToolBar->addWidget(showHidePropButton);
+
+    bool showProp = preferences->showPropertyVisualization();
+    setShowPropVisualization(showProp);
+    showHidePropButton->setChecked(showProp);
+    connect(showHidePropButton, SIGNAL(toggled(bool)),
+            this, SLOT(setShowPropVisualization(bool)));
+
+    mPlayLevelAction = new QAction(QIcon(QLatin1String("://rtb_resources/icons/action_playlevel.png"))
+                               , QLatin1String("Play Map (F5)"), this);
+    mPlayLevelAction->setShortcut(QKeySequence(Qt::Key_F5));
+    mPlayLevelAction->setEnabled(false);
+    mUi->mainToolBar->addAction(mPlayLevelAction);
+    connect(mPlayLevelAction, SIGNAL(triggered()), SLOT(buildMap()));
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mLayerMenu->addAction(mActionHandler->actionAddImageLayer());
-    mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
-    mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
-    mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
-    mLayerMenu->addSeparator();
-    mLayerMenu->addAction(mActionHandler->actionSelectPreviousLayer());
-    mLayerMenu->addAction(mActionHandler->actionSelectNextLayer());
-    mLayerMenu->addAction(mActionHandler->actionMoveLayerUp());
-    mLayerMenu->addAction(mActionHandler->actionMoveLayerDown());
-    mLayerMenu->addSeparator();
-    mLayerMenu->addAction(mActionHandler->actionToggleOtherLayers());
-    mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
@@ -297,11 +300,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
             SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
-    connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAsJSON()));
     connect(mUi->actionSaveAll, SIGNAL(triggered()), SLOT(saveAll()));
     connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
-    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
-    connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
@@ -334,17 +335,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
-    connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
-    connect(mUi->actionAutoMap, SIGNAL(triggered()),
-            mAutomappingManager, SLOT(autoMap()));
 
-    connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-
-    connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
-            SLOT(newTilesets(QStringList)));
 
     // Add recent file actions to the recent files menu
     for (int i = 0; i < MaxRecentFiles; ++i)
@@ -383,55 +377,105 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
-    CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
-    CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
-    CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
-    CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
+    mSelectAreaTool = new RTBSelectAreaTool(this);
+    mUi->mainToolBar->addAction(mToolManager->registerTool(mSelectAreaTool));
+    mInsertTool = new RTBInsertTool(this);
+    mUi->mainToolBar->addAction(mToolManager->registerTool(mInsertTool));
 
-    connect(mTilesetDock, SIGNAL(stampCaptured(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
+    connect(mInsertTool, SIGNAL(cancelInsert()),
+            mToolManager, SLOT(selectDefaultTool()));
+
     connect(mStampBrush, SIGNAL(stampCaptured(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
 
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            tileObjectsTool, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileAnimationEditor, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileCollisionEditor, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(newTileset()),
-            this, SLOT(newTileset()));
-
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
-            this, SLOT(setTerrainBrush(const Terrain*)));
-
-    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
-
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mStampBrush, SLOT(setRandom(bool)));
-    connect(mRandomButton, SIGNAL(toggled(bool)),
-            mBucketFillTool, SLOT(setRandom(bool)));
+    mObjectSelectionTool = new ObjectSelectionTool(this);
 
     QToolBar *toolBar = mUi->toolsToolBar;
     toolBar->addAction(mToolManager->registerTool(mStampBrush));
-    toolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
-    toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
-    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
-    toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
-    toolBar->addSeparator();
-    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
+    toolBar->addAction(mToolManager->registerTool(mObjectSelectionTool));
+
+    connect(mValidatorDock, SIGNAL(validatorItemClicked(MapObject*))
+                                   , this, SLOT(activateObjectSelectionTool(MapObject*)));
+    connect(mValidatorDock, SIGNAL(validatorItemClicked(MapObject*))
+                                   , mObjectSelectionTool, SLOT(selectObject(MapObject*)));
+    connect(mValidatorDock, SIGNAL(validatorItemClicked(int))
+                                   , mToolManager, SLOT(highlightToolbarAction(int)));
+    connect(mValidatorDock, SIGNAL(validatorItemClicked(int))
+                                   , mToolManager, SLOT(activateToolbarAction(int)));
+    connect(mValidator, SIGNAL(highlightToolbarAction(int))
+                                   , mToolManager, SLOT(highlightToolbarAction(int)));
+
+    // create layer shortcuts
+    mFloorLayerShortcut = new QShortcut(QKeySequence(Qt::Key_1), this);
+    mOrbLayerShortcut = new QShortcut(QKeySequence(Qt::Key_3), this);
+    mObjectLayerShortcut = new QShortcut(QKeySequence(Qt::Key_2), this);
+    // create interval speed shortcuts
+    mIntervalSpeedShortcut1 = new QShortcut(QKeySequence(Qt::ALT + Qt::Key_1), this);
+    mIntervalSpeedShortcut2 = new QShortcut(QKeySequence(Qt::ALT + Qt::Key_2), this);
+    mIntervalSpeedShortcut3 = new QShortcut(QKeySequence(Qt::ALT + Qt::Key_3), this);
+    mIntervalSpeedShortcut4 = new QShortcut(QKeySequence(Qt::ALT + Qt::Key_4), this);
+    // create interval offset shortcuts
+    mIntervalOffsetShortcut1 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_1), this);
+    mIntervalOffsetShortcut2 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_2), this);
+    mIntervalOffsetShortcut3 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_3), this);
+    mIntervalOffsetShortcut4 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_4), this);
+    mIntervalOffsetShortcut5 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_5), this);
+    mIntervalOffsetShortcut6 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_6), this);
+    mIntervalOffsetShortcut7 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_7), this);
+    mIntervalOffsetShortcut8 = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_8), this);
+    // create change layer shortcuts
+    mChangeLayerShortcut = new QShortcut(QKeySequence(Qt::Key_Tab), this);
+    mChangeLayerBackShortcut = new QShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Tab), this);
+
+    mTileSelectionManager->setStampBrush(mStampBrush);
+    mTileSelectionManager->setBucketFillTool(mBucketFillTool);
+
+    mTileSelectionManager->setSeparatorAction(toolBar->addSeparator());
+    mToolManager->setSeparatorAction(toolBar->addSeparator());
+
+    // RTB: create floor tools
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::Floor, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::FloorTrap, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::Barrier, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::HiddenFloor, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::SpeedpadRight, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::SpeedpadLeft, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::SpeedpadUp, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::SpeedpadDown, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::Jumppad, RTBMapSettings::FloorID)));
+    toolBar->addAction(mTileSelectionManager->registerTile(new RTBTileButton(this, RTBMapSettings::WallBlock, RTBMapSettings::FloorID)));
+
+    // RTB: create orb tools
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::PointOrb, RTBMapSettings::OrbObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::CheckpointOrb, RTBMapSettings::OrbObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::HealthOrb, RTBMapSettings::OrbObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::KeyOrb, RTBMapSettings::OrbObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::FakeOrb, RTBMapSettings::OrbObjectID)));
+
+    // RTB: create object tools
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::StartLocation, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::FinishHole, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::FloorText, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::CameraTrigger, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::Target, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::CustomFloorTrap, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::LaserBeamLeft, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::LaserBeamBottom, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::LaserBeamTop, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::LaserBeamRight, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::Button, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::MovingFloorTrapSpawner, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::Teleporter, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::NPCBallSpawner, RTBMapSettings::ObjectID)));
+    toolBar->addAction(mToolManager->registerTool(new RTBCreateObjectTool(this, RTBMapObject::ProjectileTurret, RTBMapSettings::ObjectID)));
+
+
+    connect(mTileSelectionManager, SIGNAL(selectedTileChanged(AbstractTool *)),
+            mToolManager, SLOT(selectDefaultTileTool()));
+
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
@@ -445,25 +489,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
-    mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
-    mShowTileAnimationEditor->setCheckable(true);
-    mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
-    mShowTileCollisionEditor->setCheckable(true);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
-
-    connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
-            mTileAnimationEditor, SLOT(setVisible(bool)));
-    connect(mTileAnimationEditor, SIGNAL(closed()), SLOT(onAnimationEditorClosed()));
-
-    connect(mShowTileCollisionEditor, SIGNAL(toggled(bool)),
-            mTileCollisionEditor, SLOT(setVisible(bool)));
-    connect(mTileCollisionEditor, SIGNAL(closed()), SLOT(onCollisionEditorClosed()));
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -488,12 +518,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
-
-    new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
-    new QShortcut(tr("Y"), this, SLOT(flipVertically()));
-    new QShortcut(tr("Z"), this, SLOT(rotateRight()));
-    new QShortcut(tr("Shift+Z"), this, SLOT(rotateLeft()));
-
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
@@ -507,26 +531,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     updateActions();
     readSettings();
-    setupQuickStamps();
 
-    connect(mAutomappingManager, SIGNAL(warningsOccurred(bool)),
-            this, SLOT(autoMappingWarning(bool)));
-    connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
-            this, SLOT(autoMappingError(bool)));
+    mTutorial = new RTBTutorial(mTutorialDock, this);
+    connect(mTutorial, SIGNAL(highlightSection(int)),
+                this, SLOT(highlightSection(int)));
+
 }
 
 MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
 
-    // This needs to happen before deleting the TilesetManager otherwise it may
-    // hold references to tilesets.
-    mTileAnimationEditor->setTile(0);
-    mTileAnimationEditor->writeSettings();
-    mTileCollisionEditor->setTile(0);
-    mTileCollisionEditor->writeSettings();
-
     delete mTileStampManager;
+    delete mTutorial;
+    delete mValidator;
+    delete mValidatorDock;
+    delete mTutorialDock;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -534,6 +554,7 @@ MainWindow::~MainWindow()
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
     ClipboardManager::deleteInstance();
+    RTBCore::deleteInstance();
 
     delete mUi;
 }
@@ -630,6 +651,10 @@ bool MainWindow::openFile(const QString &fileName,
 
     mDocumentManager->addDocument(mapDocument);
     setRecentFile(fileName);
+
+    // validate the map
+    mapDocument->map()->rtbMap()->setHasError(mValidator->validate());
+
     return true;
 }
 
@@ -640,30 +665,30 @@ bool MainWindow::openFile(const QString &fileName)
 
 void MainWindow::openLastFiles()
 {
-    mSettings.beginGroup(QLatin1String("recentFiles"));
+    mSettings->beginGroup(QLatin1String("recentFiles"));
 
-    QStringList lastOpenFiles = mSettings.value(
+    QStringList lastOpenFiles = mSettings->value(
                 QLatin1String("lastOpenFiles")).toStringList();
-    QVariant openCountVariant = mSettings.value(
+    QVariant openCountVariant = mSettings->value(
                 QLatin1String("recentOpenedFiles"));
 
     // Backwards compatibility mode
     if (openCountVariant.isValid()) {
-        const QStringList recentFiles = mSettings.value(
+        const QStringList recentFiles = mSettings->value(
                     QLatin1String("fileNames")).toStringList();
         int openCount = qMin(openCountVariant.toInt(), recentFiles.size());
         for (; openCount; --openCount)
             lastOpenFiles.append(recentFiles.at(openCount - 1));
-        mSettings.remove(QLatin1String("recentOpenedFiles"));
+        mSettings->remove(QLatin1String("recentOpenedFiles"));
     }
 
-    QStringList mapScales = mSettings.value(
+    QStringList mapScales = mSettings->value(
                 QLatin1String("mapScale")).toStringList();
-    QStringList scrollX = mSettings.value(
+    QStringList scrollX = mSettings->value(
                 QLatin1String("scrollX")).toStringList();
-    QStringList scrollY = mSettings.value(
+    QStringList scrollY = mSettings->value(
                 QLatin1String("scrollY")).toStringList();
-    QStringList selectedLayer = mSettings.value(
+    QStringList selectedLayer = mSettings->value(
                 QLatin1String("selectedLayer")).toStringList();
 
     for (int i = 0; i < lastOpenFiles.size(); i++) {
@@ -695,36 +720,22 @@ void MainWindow::openLastFiles()
         }
     }
     QString lastActiveDocument =
-            mSettings.value(QLatin1String("lastActive")).toString();
+            mSettings->value(QLatin1String("lastActive")).toString();
     int documentIndex = mDocumentManager->findDocument(lastActiveDocument);
     if (documentIndex != -1)
         mDocumentManager->switchToDocument(documentIndex);
 
-    mSettings.endGroup();
+    mSettings->endGroup();
 }
 
 void MainWindow::openFile()
 {
-    QString filter = tr("All Files (*)");
-    filter += QLatin1String(";;");
-
-    QString selectedFilter = tr("Tiled map files (*.tmx)");
-    filter += selectedFilter;
-
-    selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
-                                     selectedFilter).toString();
+    QString filter = tr("Json files (*.json)");
 
     const PluginManager *pm = PluginManager::instance();
     QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
-    foreach (const MapReaderInterface *reader, readers) {
-        foreach (const QString &str, reader->nameFilters()) {
-            if (!str.isEmpty()) {
-                filter += QLatin1String(";;");
-                filter += str;
-            }
-        }
-    }
 
+    QString selectedFilter = tr("Json files (*.json)");
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
                                                     fileDialogStartLocation(),
                                                     filter, &selectedFilter);
@@ -738,7 +749,7 @@ void MainWindow::openFile()
             mapReader = reader;
     }
 
-    mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
+    mSettings->setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
     foreach (const QString &fileName, fileNames)
         openFile(fileName, mapReader);
 }
@@ -750,6 +761,9 @@ bool MainWindow::saveFile(const QString &fileName)
 
     if (fileName.isEmpty())
         return false;
+
+    mToolManager->resetToolbarActionIcons();
+    mMapDocument->map()->rtbMap()->setHasError(mValidator->validate());
 
     QString error;
     if (!mMapDocument->save(fileName, &error)) {
@@ -769,7 +783,7 @@ bool MainWindow::saveFile()
     const QString currentFileName = mMapDocument->fileName();
 
     if (!saveFile(currentFileName))
-        return saveFileAs();
+        return saveFileAsJSON();
 
     return true;
 }
@@ -936,7 +950,7 @@ void MainWindow::exportAs()
     Preferences *pref = Preferences::instance();
 
     QString selectedFilter =
-            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+            mSettings->value(QLatin1String("lastUsedExportFilter")).toString();
     QString suggestedFilename = mMapDocument->lastExportFileName();
 
     if (suggestedFilename.isEmpty()) {
@@ -1038,7 +1052,7 @@ void MainWindow::exportAs()
     }
 
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
-    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+    mSettings->setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error Exporting Map"),
@@ -1097,16 +1111,48 @@ void MainWindow::cut()
     const QRegion &selectedArea = mMapDocument->selectedArea();
     const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
-    copy();
+    copy(true);
 
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
 
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
+    if(mSelectAreaTool->isActive())
+    {
+        // delete floor tiles
+        if (tileLayer && !selectedArea.isEmpty())
+            stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
+
+        // delete all objects in the selected area objects
+        QList<MapObject*> objects = mMapDocument->map()->objectGroups().at(0)->objects();
+        QList<MapObject*> orbs = mMapDocument->map()->objectGroups().at(1)->objects();
+
+        // convert the grid area to a normal rect
+        QPointF topLeft = selectedArea.boundingRect().topLeft() * 32;
+        QPointF bottomRight = selectedArea.boundingRect().bottomRight() * 32;
+        bottomRight.setX(bottomRight.x() + 32);
+        bottomRight.setY(bottomRight.y() + 32);
+        QRectF area(topLeft, bottomRight);
+
+        for(MapObject *obj : objects)
+        {
+            if(area.contains(obj->position().toPoint()))
+                stack->push(new RemoveMapObject(mMapDocument, obj));
+        }
+
+        for(MapObject *obj : orbs)
+        {
+            if(area.contains(obj->boundsUseTile().center().toPoint()))
+                stack->push(new RemoveMapObject(mMapDocument, obj));
+        }
+    }
+    else
+    {
+        if (tileLayer && !selectedArea.isEmpty()) {
+            stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
+        } else if (!selectedObjects.isEmpty()) {
+            foreach (MapObject *mapObject, selectedObjects)
+                stack->push(new RemoveMapObject(mMapDocument, mapObject));
+        }
     }
 
     mActionHandler->selectNone();
@@ -1114,12 +1160,18 @@ void MainWindow::cut()
     stack->endMacro();
 }
 
-void MainWindow::copy()
+void MainWindow::copy(bool isCut)
 {
     if (!mMapDocument)
         return;
 
-    ClipboardManager::instance()->copySelection(mMapDocument);
+    ClipboardManager *clipboardManager = ClipboardManager::instance();
+    clipboardManager->setIsCut(isCut);
+
+    if(mSelectAreaTool->isActive())
+        clipboardManager->copySelectionAllLayers(mMapDocument);
+    else
+        clipboardManager->copySelection(mMapDocument);
 }
 
 void MainWindow::paste()
@@ -1136,26 +1188,41 @@ void MainWindow::paste()
     if (!map)
         return;
 
-    // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1)
-        return;
-
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(map->tilesets());
-
     mMapDocument->unifyTilesets(map.data());
-    Layer *layer = map->layerAt(0);
 
-    if (layer->isTileLayer()) {
-        // Reset selection and paste into the stamp brush
+    // We can currently only handle maps with a single layer
+    if (map->layerCount() == 1)
+    {
+        Layer *layer = map->layerAt(0);
+
+        if (layer->isTileLayer()) {
+            // Reset selection and paste into the stamp brush
+            mActionHandler->selectNone();
+            Map *stamp = map.take(); // TileStamp will take ownership
+            setStamp(TileStamp(stamp));
+            tilesetManager->removeReferences(stamp->tilesets());
+            mToolManager->selectTool(mStampBrush);
+        } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            const MapView *view = mDocumentManager->currentMapView();
+            clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
+        }
+    }
+    else
+    {
+        TileLayer *floorLayer = map->layerAt(RTBMapSettings::FloorID)->asTileLayer();
+
         mActionHandler->selectNone();
-        Map *stamp = map.take(); // TileStamp will take ownership
-        setStamp(TileStamp(stamp));
-        tilesetManager->removeReferences(stamp->tilesets());
-        mToolManager->selectTool(mStampBrush);
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        const MapView *view = mDocumentManager->currentMapView();
-        clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
+        Map *stamp = new Map(map->orientation(),
+                             floorLayer->width(),
+                             floorLayer->height(),
+                             map->tileWidth(),
+                             map->tileHeight());
+        stamp->addLayer(floorLayer->clone());
+        mInsertTool->setStamp(TileStamp(stamp));
+
+        mToolManager->selectTool(mInsertTool);
     }
 
     if (map)
@@ -1171,22 +1238,29 @@ void MainWindow::delete_()
     if (!currentLayer)
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+    if(!mSelectAreaTool->isActive())
+    {
+        TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+        const QRegion &selectedArea = mMapDocument->selectedArea();
+        const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->beginMacro(tr("Delete"));
 
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+        if (tileLayer && !selectedArea.isEmpty()) {
+            undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
+        } else if (!selectedObjects.isEmpty()) {
+            foreach (MapObject *mapObject, selectedObjects)
+                undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+        }
+
+        mActionHandler->selectNone();
+        undoStack->endMacro();
     }
-
-    mActionHandler->selectNone();
-    undoStack->endMacro();
+    else
+    {
+        mSelectAreaTool->deleteArea();
+    }
 }
 
 void MainWindow::openPreferences()
@@ -1351,40 +1425,6 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void MainWindow::autoMappingError(bool automatic)
-{
-    const QString title = tr("Automatic Mapping Error");
-    QString error = mAutomappingManager->errorString();
-    if (!error.isEmpty()) {
-        if (automatic)
-            statusBar()->showMessage(error, 3000);
-        else
-            QMessageBox::critical(this, title, error);
-    }
-}
-
-void MainWindow::autoMappingWarning(bool automatic)
-{
-    const QString title = tr("Automatic Mapping Warning");
-    QString warning = mAutomappingManager->warningString();
-    if (!warning.isEmpty()) {
-        if (automatic)
-            statusBar()->showMessage(warning, 3000);
-        else
-            QMessageBox::warning(this, title, warning);
-    }
-}
-
-void MainWindow::onAnimationEditorClosed()
-{
-    mShowTileAnimationEditor->setChecked(false);
-}
-
-void MainWindow::onCollisionEditorClosed()
-{
-    mShowTileCollisionEditor->setChecked(false);
-}
-
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -1394,7 +1434,7 @@ void MainWindow::openRecentFile()
 
 QStringList MainWindow::recentFiles() const
 {
-    QVariant v = mSettings.value(QLatin1String("recentFiles/fileNames"));
+    QVariant v = mSettings->value(QLatin1String("recentFiles/fileNames"));
     return v.toStringList();
 }
 
@@ -1421,17 +1461,17 @@ void MainWindow::setRecentFile(const QString &fileName)
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-    mSettings.setValue(QLatin1String("fileNames"), files);
-    mSettings.endGroup();
+    mSettings->beginGroup(QLatin1String("recentFiles"));
+    mSettings->setValue(QLatin1String("fileNames"), files);
+    mSettings->endGroup();
     updateRecentFiles();
 }
 
 void MainWindow::clearRecentFiles()
 {
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-    mSettings.setValue(QLatin1String("fileNames"), QStringList());
-    mSettings.endGroup();
+    mSettings->beginGroup(QLatin1String("recentFiles"));
+    mSettings->setValue(QLatin1String("fileNames"), QStringList());
+    mSettings->endGroup();
     updateRecentFiles();
 }
 
@@ -1479,8 +1519,6 @@ void MainWindow::updateActions()
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAll->setEnabled(map);
     mUi->actionExportAsImage->setEnabled(map);
-    mUi->actionExport->setEnabled(map);
-    mUi->actionExportAs->setEnabled(map);
     mUi->actionReload->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
@@ -1491,11 +1529,9 @@ void MainWindow::updateActions()
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
-    mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
-    mUi->actionAutoMap->setEnabled(map);
 
-    mCommandButton->setEnabled(map);
+    mShowMapProperties->setEnabled(map);
 
     updateZoomLabel(); // for the zoom actions
 
@@ -1586,14 +1622,14 @@ void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 
 void MainWindow::writeSettings()
 {
-    mSettings.beginGroup(QLatin1String("mainwindow"));
-    mSettings.setValue(QLatin1String("geometry"), saveGeometry());
-    mSettings.setValue(QLatin1String("state"), saveState());
-    mSettings.endGroup();
+    mSettings->beginGroup(QLatin1String("mainwindow"));
+    mSettings->setValue(QLatin1String("geometry"), saveGeometry());
+    mSettings->setValue(QLatin1String("state"), saveState());
+    mSettings->endGroup();
 
-    mSettings.beginGroup(QLatin1String("recentFiles"));
+    mSettings->beginGroup(QLatin1String("recentFiles"));
     if (MapDocument *document = mDocumentManager->currentDocument())
-        mSettings.setValue(QLatin1String("lastActive"), document->fileName());
+        mSettings->setValue(QLatin1String("lastActive"), document->fileName());
 
     QStringList fileList;
     QStringList mapScales;
@@ -1613,36 +1649,36 @@ void MainWindow::writeSettings()
                        mapView->verticalScrollBar()->sliderPosition()));
         selectedLayer.append(QString::number(currentLayerIndex));
     }
-    mSettings.setValue(QLatin1String("lastOpenFiles"), fileList);
-    mSettings.setValue(QLatin1String("mapScale"), mapScales);
-    mSettings.setValue(QLatin1String("scrollX"), scrollX);
-    mSettings.setValue(QLatin1String("scrollY"), scrollY);
-    mSettings.setValue(QLatin1String("selectedLayer"), selectedLayer);
-    mSettings.endGroup();
+    mSettings->setValue(QLatin1String("lastOpenFiles"), fileList);
+    mSettings->setValue(QLatin1String("mapScale"), mapScales);
+    mSettings->setValue(QLatin1String("scrollX"), scrollX);
+    mSettings->setValue(QLatin1String("scrollY"), scrollY);
+    mSettings->setValue(QLatin1String("selectedLayer"), selectedLayer);
+    mSettings->endGroup();
 }
 
 void MainWindow::readSettings()
 {
-    mSettings.beginGroup(QLatin1String("mainwindow"));
-    QByteArray geom = mSettings.value(QLatin1String("geometry")).toByteArray();
+    mSettings->beginGroup(QLatin1String("mainwindow"));
+    QByteArray geom = mSettings->value(QLatin1String("geometry")).toByteArray();
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
         resize(1200, 700);
-    restoreState(mSettings.value(QLatin1String("state"),
+    restoreState(mSettings->value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
-    mSettings.endGroup();
+    mSettings->endGroup();
     updateRecentFiles();
 }
 
 void MainWindow::updateWindowTitle()
 {
     if (mMapDocument) {
-        setWindowTitle(tr("[*]%1 - Tiled").arg(mMapDocument->displayName()));
+        setWindowTitle(tr("[*]%1").arg(mMapDocument->displayName()));
         setWindowFilePath(mMapDocument->fileName());
         setWindowModified(mMapDocument->isModified());
     } else {
-        setWindowTitle(QApplication::applicationName());
+        setWindowTitle(QString());
         setWindowFilePath(QString());
         setWindowModified(false);
     }
@@ -1664,19 +1700,41 @@ void MainWindow::retranslateUi()
 {
     updateWindowTitle();
 
-    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
-    mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
-    mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
     mToolManager->retranslateTools();
+    mTutorial->retranslate();
 }
 
 void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 {
     if (mMapDocument)
+    {
         mMapDocument->disconnect(this);
+
+        // RTB: disconnect shortcuts
+        disconnect(mFloorLayerShortcut, SIGNAL(activated()), mMapDocument, SLOT(selectFloorLayer()));
+        disconnect(mOrbLayerShortcut, SIGNAL(activated()), mMapDocument, SLOT(selectOrbLayer()));
+        disconnect(mObjectLayerShortcut, SIGNAL(activated()), mMapDocument, SLOT(selectObjectLayer()));
+        disconnect(mIntervalSpeedShortcut1, SIGNAL(activated()), mMapDocument, SLOT(setIntervalSpeed1()));
+        disconnect(mIntervalSpeedShortcut2, SIGNAL(activated()), mMapDocument, SLOT(setIntervalSpeed2()));
+        disconnect(mIntervalSpeedShortcut3, SIGNAL(activated()), mMapDocument, SLOT(setIntervalSpeed3()));
+        disconnect(mIntervalSpeedShortcut4, SIGNAL(activated()), mMapDocument, SLOT(setIntervalSpeed4()));
+        disconnect(mIntervalOffsetShortcut1, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset1()));
+        disconnect(mIntervalOffsetShortcut2, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset2()));
+        disconnect(mIntervalOffsetShortcut3, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset3()));
+        disconnect(mIntervalOffsetShortcut4, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset4()));
+        disconnect(mIntervalOffsetShortcut5, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset5()));
+        disconnect(mIntervalOffsetShortcut6, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset6()));
+        disconnect(mIntervalOffsetShortcut7, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset7()));
+        disconnect(mIntervalOffsetShortcut8, SIGNAL(activated()), mMapDocument, SLOT(setIntervalOffset8()));
+        disconnect(mChangeLayerShortcut, SIGNAL(activated()), mMapDocument, SLOT(selectNextLayer()));
+        disconnect(mChangeLayerBackShortcut, SIGNAL(activated()), mMapDocument, SLOT(selectPreviousLayer()));
+
+        disconnect(mMapDocument->validatorModel(), SIGNAL(highlightToolbarAction(int))
+                                       , mToolManager, SLOT(highlightToolbarAction(int)));
+    }
 
     if (mZoomable) {
         mZoomable->connectToComboBox(0);
@@ -1690,14 +1748,15 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
     mActionHandler->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
-    mObjectsDock->setMapDocument(mapDocument);
-    mTilesetDock->setMapDocument(mapDocument);
-    mTerrainDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
-    mTileAnimationEditor->setMapDocument(mapDocument);
-    mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
-    mAutomappingManager->setMapDocument(mapDocument);
+    mTileSelectionManager->setMapDocument(mapDocument);
+    mValidator->setMapDocument(mapDocument);
+    mValidatorDock->setMapDocument(mapDocument);
+
+    // enable only if the exe can be found and mapDocument exists
+    if(!Preferences::instance()->gameDirectory().isEmpty())
+        mPlayLevelAction->setEnabled(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
@@ -1715,49 +1774,40 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
             connect(mZoomable, SIGNAL(scaleChanged(qreal)),
                     this, SLOT(updateZoomLabel()));
+
+            // RTB: connect for selection click
+            connect(mapView->mapScene(), SIGNAL(selectionClick()),
+                        this, SLOT(activateObjectSelectionTool()));
+
+            connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                        mapView, SLOT(updateLayerLabelText(int)));
         }
+
+        // RTB: connect Shortcuts
+        connect(mFloorLayerShortcut, SIGNAL(activated()), mapDocument, SLOT(selectFloorLayer()));
+        connect(mOrbLayerShortcut, SIGNAL(activated()), mapDocument, SLOT(selectOrbLayer()));
+        connect(mObjectLayerShortcut, SIGNAL(activated()), mapDocument, SLOT(selectObjectLayer()));
+        connect(mIntervalSpeedShortcut1, SIGNAL(activated()), mapDocument, SLOT(setIntervalSpeed1()));
+        connect(mIntervalSpeedShortcut2, SIGNAL(activated()), mapDocument, SLOT(setIntervalSpeed2()));
+        connect(mIntervalSpeedShortcut3, SIGNAL(activated()), mapDocument, SLOT(setIntervalSpeed3()));
+        connect(mIntervalSpeedShortcut4, SIGNAL(activated()), mapDocument, SLOT(setIntervalSpeed4()));
+        connect(mIntervalOffsetShortcut1, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset1()));
+        connect(mIntervalOffsetShortcut2, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset2()));
+        connect(mIntervalOffsetShortcut3, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset3()));
+        connect(mIntervalOffsetShortcut4, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset4()));
+        connect(mIntervalOffsetShortcut5, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset5()));
+        connect(mIntervalOffsetShortcut6, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset6()));
+        connect(mIntervalOffsetShortcut7, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset7()));
+        connect(mIntervalOffsetShortcut8, SIGNAL(activated()), mapDocument, SLOT(setIntervalOffset8()));
+        connect(mChangeLayerShortcut, SIGNAL(activated()), mapDocument, SLOT(selectNextLayer()));
+        connect(mChangeLayerBackShortcut, SIGNAL(activated()), mapDocument, SLOT(selectPreviousLayer()));
+
+        connect(mapDocument, SIGNAL(highlightToolbarAction(int))
+                                       , mToolManager, SLOT(highlightToolbarAction(int)));
     }
 
     updateWindowTitle();
     updateActions();
-}
-
-void MainWindow::setupQuickStamps()
-{
-    QList<Qt::Key> keys = TileStampManager::quickStampKeys();
-
-    QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *saveMapper = new QSignalMapper(this);
-    QSignalMapper *extendMapper = new QSignalMapper(this);
-
-    for (int i = 0; i < keys.length(); i++) {
-        Qt::Key key = keys.at(i);
-
-        // Set up shortcut for selecting this quick stamp
-        QShortcut *selectStamp = new QShortcut(key, this);
-        connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
-        selectMapper->setMapping(selectStamp, i);
-
-        // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
-        connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
-        saveMapper->setMapping(saveStamp, i);
-
-        // Set up shortcut for extending this quick stamp
-        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
-        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
-        extendMapper->setMapping(extendStamp, i);
-    }
-
-    connect(selectMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(saveMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(saveQuickStamp(int)));
-    connect(extendMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(extendQuickStamp(int)));
-
-    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
-            this, SLOT(setStamp(TileStamp)));
 }
 
 void MainWindow::closeMapDocument(int index)
@@ -1769,4 +1819,185 @@ void MainWindow::closeMapDocument(int index)
 void MainWindow::reloadError(const QString &error)
 {
     QMessageBox::critical(this, tr("Error Reloading Map"), error);
+}
+
+void MainWindow::activateObjectSelectionTool()
+{
+    if(mToolManager->selectedTool() != mObjectSelectionTool)
+    {
+        mToolManager->selectTool(mObjectSelectionTool);
+    }
+}
+
+void MainWindow::activateObjectSelectionTool(MapObject *mapObject)
+{
+    if(mapObject)
+    {
+        int id = mapObject->cell().tile->id();
+        if(id > RTBMapSettings::OrbBorder && mMapDocument->currentLayerIndex() != RTBMapSettings::ObjectID)
+            mMapDocument->setCurrentLayerIndex(RTBMapSettings::ObjectID);
+        else if(id > RTBMapSettings::FloorBorder && id <= RTBMapSettings::OrbBorder
+                && mMapDocument->currentLayerIndex() != RTBMapSettings::OrbObjectID)
+            mMapDocument->setCurrentLayerIndex(RTBMapSettings::OrbObjectID);
+    }
+
+    if(mToolManager->selectedTool() != mObjectSelectionTool)
+        mToolManager->selectTool(mObjectSelectionTool);
+}
+
+void MainWindow::setShowPropVisualization(bool show)
+{
+    if(!mShowPropVisualization && mShowPropVisualization == show)
+        return;
+
+    mShowPropVisualization = show;
+    Preferences::instance()->setShowPropertyVisualization(show);
+
+    if(mDocumentManager && mDocumentManager->currentMapView())
+        mDocumentManager->currentMapView()->mapScene()->update();
+}
+
+bool MainWindow::saveFileAsJSON()
+{
+    if (!mMapDocument)
+        return false;
+
+    PluginManager *pm = PluginManager::instance();
+    QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
+    QString filter;
+    foreach (const MapWriterInterface *writer, writers) {
+        foreach (const QString &str, writer->nameFilters()) {
+            if (!str.isEmpty() && str.contains(tr(".json"))) {
+                filter += str;
+                break;
+            }
+        }
+    }
+
+    QString suggestedFileName;
+    if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
+        suggestedFileName = mMapDocument->fileName();
+    } else {
+        QString mapName = mMapDocument->map()->rtbMap()->levelName();
+        if(mapName.isEmpty()){
+            mapName = tr("untitled");
+        } else {
+            mapName.replace(QLatin1String(" "), QLatin1String("_"));
+        }
+        suggestedFileName = fileDialogStartLocation();
+        suggestedFileName += QLatin1Char('/');
+        suggestedFileName += mapName + QLatin1String(".json");
+    }
+
+    QString selectedFilter = filter;
+    const QString fileName =
+            QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
+                                         filter, &selectedFilter);
+
+    if (fileName.isEmpty())
+        return false;
+
+    QString writerPluginFilename;
+    if (const Plugin *p = pm->pluginByNameFilter(selectedFilter))
+        writerPluginFilename = p->fileName;
+
+    mMapDocument->setWriterPluginFileName(writerPluginFilename);
+
+    return saveFile(fileName);
+}
+
+void MainWindow::buildMap()
+{
+    // save first
+    if(!saveFile())
+        return;
+
+    RTBCore *core = RTBCore::instance();
+
+    if(mValidator->hasError())
+    {
+        QMessageBox *messageBox = new QMessageBox(this);
+        messageBox->setText(QLatin1String("Please fix all errors in the level (as listed in the Validator view) before playing it."));
+        messageBox->setVisible(true);
+    }
+    // check if game is already running
+    else if(!core->isGameAlreadyRunning())
+    {
+        core->buildMap(mMapDocument);
+    }
+    else
+    {
+        QMessageBox *messageBox = new QMessageBox(this);
+        messageBox->setText(QLatin1String("Road to Ballhalla is already running. To reload the level and see your changes, press F5 in the game."));
+        messageBox->setVisible(true);
+    }
+}
+
+void MainWindow::highlightSection(int section)
+{
+    mHighlightSection = section;
+    // to update the section highlight
+    repaint();
+}
+
+void MainWindow::paintEvent(QPaintEvent * event)
+{
+    QMainWindow::paintEvent(event);
+
+    if(mHighlightSection == RTBTutorial::None)
+        return;
+
+
+    QPainter painter(this);
+    painter.setPen(QPen(Qt::red, 2));
+    QRectF sectionRect;
+
+    switch (mHighlightSection) {
+    case RTBTutorial::MainToolBar:
+        sectionRect = mUi->mainToolBar->geometry();
+        break;
+    case RTBTutorial::ToolsToolBar:
+        sectionRect = mUi->toolsToolBar->geometry();
+        break;
+    case RTBTutorial::LayerDock:
+        sectionRect = mLayerDock->geometry();
+        break;
+    case RTBTutorial::PropertiesDock:
+        sectionRect = mPropertiesDock->geometry();
+        break;
+    case RTBTutorial::ValidatorDock:
+        sectionRect = mValidatorDock->geometry();
+        break;
+    case RTBTutorial::MapView:
+        sectionRect = mDocumentManager->widget()->geometry();
+        break;
+    default:
+        break;
+    }
+
+    if(mHighlightSection == RTBTutorial::MapView)
+    {
+        sectionRect.setTop(sectionRect.top() - 2);
+        sectionRect.setBottom(sectionRect.bottom() + 2);
+        sectionRect.setLeft(sectionRect.left() - 2);
+        sectionRect.setRight(sectionRect.right() + 2);
+    }
+    else if(mHighlightSection == RTBTutorial::PropertiesDock
+            || mHighlightSection == RTBTutorial::LayerDock
+            || mHighlightSection == RTBTutorial::ValidatorDock)
+    {
+        sectionRect.setTop(sectionRect.top() - 2);
+        sectionRect.setBottom(sectionRect.bottom() - 2);
+        sectionRect.setLeft(sectionRect.left() - 0);
+        sectionRect.setRight(sectionRect.right() + 0);
+    }
+    else
+    {
+        sectionRect.setTop(sectionRect.top() + 2);
+        sectionRect.setBottom(sectionRect.bottom() - 2);
+        sectionRect.setLeft(sectionRect.left() + 2);
+        sectionRect.setRight(sectionRect.right() - 2);
+    }
+
+    painter.drawRect(sectionRect);
 }

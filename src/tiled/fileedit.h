@@ -46,6 +46,8 @@ public:
     void setFilter(const QString &filter) { mFilter = filter; }
     QString filter() const { return mFilter; }
 
+    void setLineEditEnabled(bool enabled) { mLineEdit->setEnabled(enabled); }
+
 signals:
     void filePathChanged(const QString &filePath);
 

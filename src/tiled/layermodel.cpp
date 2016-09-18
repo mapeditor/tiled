@@ -56,7 +56,8 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return layer->name();
+        return tr(layer->name().toStdString().c_str()) + QLatin1String(" (")
+                + QString::number(layerIndex + 1) + QLatin1String(")");
     case Qt::DecorationRole:
         switch (layer->layerType()) {
         case Layer::TileLayerType:
@@ -122,8 +123,10 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
 Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractListModel::flags(index);
-    if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+    //if (index.column() == 0)
+        // RTB: don't change the layer
+        //rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+        rc |= Qt::ItemIsUserCheckable;
     return rc;
 }
 

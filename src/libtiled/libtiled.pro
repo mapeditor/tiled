@@ -44,7 +44,9 @@ SOURCES += compression.cpp \
     tile.cpp \
     tilelayer.cpp \
     tileset.cpp \
-    hexagonalrenderer.cpp
+    hexagonalrenderer.cpp \
+    rtbmap.cpp \
+    rtbmapobject.cpp
 HEADERS += compression.h \
     gidmapper.h \
     imagelayer.h \
@@ -69,7 +71,9 @@ HEADERS += compression.h \
     tilelayer.h \
     tileset.h \
     logginginterface.h \
-    hexagonalrenderer.h
+    hexagonalrenderer.h \
+    rtbmap.h \
+    rtbmapobject.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

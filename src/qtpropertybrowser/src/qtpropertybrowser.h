@@ -88,6 +88,8 @@ public:
     QColor valueColor() const;
     bool isEnabled() const;
     bool isModified() const;
+    bool hasConflict() const;
+    bool isResettable() const;
 
     bool hasValue() const;
     QIcon valueIcon() const;
@@ -102,6 +104,8 @@ public:
     void setValueColor(const QColor &color);
     void setEnabled(bool enable);
     void setModified(bool modified);
+    void setHasConflict(bool hasConflict);
+    void setIsResettable(bool isResettable);
 
     void addSubProperty(QtProperty *property);
     void insertSubProperty(QtProperty *property, QtProperty *afterProperty);

@@ -36,6 +36,7 @@ class MapDocument;
 class ObjectGroupItem;
 class PointHandle;
 class ResizeHandle;
+class RTBMapObjectItem;
 
 /**
  * A graphics item displaying a map object.
@@ -100,6 +101,12 @@ public:
      */
     static QColor objectColor(const MapObject *object);
 
+    void updateLaserBeam();
+
+    void setIsMoving(bool isMoving);
+    bool isMoving() const
+    { return mIsMoving; }
+
 private:
     MapDocument *mapDocument() const { return mMapDocument; }
     QColor color() const { return mColor; }
@@ -114,6 +121,10 @@ private:
     QColor mColor;      // Cached color of the object
     bool mIsEditable;
     bool mSyncing;
+    RTBMapObjectItem *mRTBMapObjectItem;
+    QPointF mPosition;
+
+    bool mIsMoving;
 };
 
 } // namespace Internal

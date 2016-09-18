@@ -81,5 +81,16 @@
         <file>images/24x24/move-image-layer.png</file>
         <file>images/16x16/rename.png</file>
         <file>images/22x22/stock-tool-fuzzy-select-22.png</file>
+        <file>rtb_resources/StarterContent.json</file>
+        <file>rtb_resources/icons/action_playlevel.png</file>
+        <file>rtb_resources/icons/action_visualhelper.png</file>
+        <file>rtb_resources/icons/Floor_actions.png</file>
+        <file>rtb_resources/icons/Floor_actions.tsx</file>
+        <file>rtb_resources/icons/highlight_finishhole.png</file>
+        <file>rtb_resources/icons/highlight_startlocation.png</file>
+        <file>rtb_resources/tileset/Floor.png</file>
+        <file>rtb_resources/tileset/Floor.tsx</file>
+        <file>rtb_resources/tutorial/tutorialFloor.png</file>
+        <file>rtb_resources/tutorial/tutorialObjects.png</file>
     </qresource>
 </RCC>

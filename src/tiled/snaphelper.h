@@ -36,8 +36,11 @@ public:
     bool snaps() const { return mSnapToGrid || mSnapToFineGrid; }
 
     void snap(QPointF &pixelPos) const;
+    void snap(QPointF &pixelPos, QSet<MapObjectItem*> mapObjectItems, bool useHalfeTile = true) const;
 
 private:
+    QPointF roundedTileCoords(QPointF &pixelPos) const;
+
     const MapRenderer *mRenderer;
     bool mSnapToGrid;
     bool mSnapToFineGrid;

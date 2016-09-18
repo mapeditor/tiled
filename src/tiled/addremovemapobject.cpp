@@ -25,6 +25,8 @@
 #include "objectgroup.h"
 #include "mapobjectmodel.h"
 
+#include "rtbchangemapobjectproperties.h"
+
 #include <QCoreApplication>
 
 using namespace Tiled;
@@ -41,6 +43,7 @@ AddRemoveMapObject::AddRemoveMapObject(MapDocument *mapDocument,
     , mObjectGroup(objectGroup)
     , mIndex(-1)
     , mOwnsObject(ownObject)
+    , mRelatedObjects(QList<MapObject*>())
 {
 }
 
@@ -55,6 +58,8 @@ void AddRemoveMapObject::addObject()
     mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
                                                  mMapObject);
     mOwnsObject = false;
+
+    updateRelatedObjectsAdd();
 }
 
 void AddRemoveMapObject::removeObject()
@@ -62,8 +67,158 @@ void AddRemoveMapObject::removeObject()
     mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup,
                                                           mMapObject);
     mOwnsObject = true;
+
+    updateRelatedObjectsRemove();
 }
 
+void AddRemoveMapObject::updateRelatedObjectsRemove()
+{
+    // update objects which points of this object as target
+    if(mMapObject->rtbMapObject()->objectType() == RTBMapObject::LaserBeam)
+    {
+        for(MapObject *obj: mMapDocument->map()->objectGroups().first()->objects())
+        {
+            if(obj->rtbMapObject()->objectType() == RTBMapObject::Button)
+            {
+                RTBButtonObject *rtbMapObject = static_cast<RTBButtonObject*>(obj->rtbMapObject());
+
+                // check if one if the targets points of the object to delete, if so delete entry
+                if(mMapObject->id() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget1).toInt())
+                {
+                    rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget1, QString());
+                    mRelatedObjects.append(obj);
+                    break;
+                }
+                else if(mMapObject->id() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget2).toInt())
+                {
+                    rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget2, QString());
+                    mRelatedObjects.append(obj);
+                    break;
+                }
+                else if(mMapObject->id() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget3).toInt())
+                {
+                    rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget3, QString());
+                    mRelatedObjects.append(obj);
+                    break;
+                }
+                else if(mMapObject->id() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget4).toInt())
+                {
+                    rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget4, QString());
+                    mRelatedObjects.append(obj);
+                    break;
+                }
+                else if(mMapObject->id() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget5).toInt())
+                {
+                    rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget5, QString());
+                    mRelatedObjects.append(obj);
+                    break;
+                }
+            }
+        }
+    }
+    else if(mMapObject->rtbMapObject()->objectType() == RTBMapObject::Target)
+    {
+        for(MapObject *obj: mMapDocument->map()->objectGroups().first()->objects())
+        {
+            switch (obj->rtbMapObject()->objectType()) {
+            case RTBMapObject::Teleporter:
+            {
+                RTBTeleporter *rtbMapObject = static_cast<RTBTeleporter*>(obj->rtbMapObject());
+
+                if(mMapObject->id() == rtbMapObject->teleporterTarget().toInt())
+                {
+                    rtbMapObject->setTeleporterTarget(QString());
+                    mRelatedObjects.append(obj);
+                }
+
+                break;
+            }
+            case RTBMapObject::CameraTrigger:
+            {
+                RTBCameraTrigger *rtbMapObject = static_cast<RTBCameraTrigger*>(obj->rtbMapObject());
+
+                if(mMapObject->id() == rtbMapObject->target().toInt())
+                {
+                    rtbMapObject->setTarget(QString());
+                    mRelatedObjects.append(obj);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
+
+    // update property view
+    mMapDocument->mapObjectModel()->emitObjectsChanged(mRelatedObjects);
+}
+
+void AddRemoveMapObject::updateRelatedObjectsAdd()
+{
+    if(mRelatedObjects.size() > 0)
+    {
+        switch (mMapObject->rtbMapObject()->objectType()) {
+        case RTBMapObject::LaserBeam:
+        {
+            RTBButtonObject *rtbMapObject = static_cast<RTBButtonObject*>(mRelatedObjects.first()->rtbMapObject());
+
+            // check if one if the targets points of the object to delete, if so delete entry
+            if(QString() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget1))
+            {
+                rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget1, QString::number(mMapObject->id()));
+            }
+            else if(QString() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget2))
+            {
+                rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget2, QString::number(mMapObject->id()));
+            }
+            else if(QString() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget3))
+            {
+                rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget3, QString::number(mMapObject->id()));
+            }
+            else if(QString() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget4))
+            {
+                rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget4, QString::number(mMapObject->id()));
+            }
+            else if(QString() == rtbMapObject->target(RTBChangeMapObjectProperties::RTBLaserBeamTarget5))
+            {
+                rtbMapObject->insertTarget(RTBChangeMapObjectProperties::RTBLaserBeamTarget5, QString::number(mMapObject->id()));
+            }
+
+            break;
+        }
+        case RTBMapObject::Target:
+        {
+            for(MapObject *obj: mRelatedObjects)
+            {
+                switch (obj->rtbMapObject()->objectType()) {
+                case RTBMapObject::Teleporter:
+                {
+                    RTBTeleporter *rtbMapObject = static_cast<RTBTeleporter*>(obj->rtbMapObject());
+                    rtbMapObject->setTeleporterTarget(QString::number(mMapObject->id()));
+
+                    break;
+                }
+                case RTBMapObject::CameraTrigger:
+                {
+                    RTBCameraTrigger *rtbMapObject = static_cast<RTBCameraTrigger*>(obj->rtbMapObject());
+                    rtbMapObject->setTarget(QString::number(mMapObject->id()));
+
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
+        }
+        default:
+            break;
+        }
+
+        // update property view
+        mMapDocument->mapObjectModel()->emitObjectsChanged(mRelatedObjects);
+    }
+}
 
 AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
                            MapObject *mapObject, QUndoCommand *parent)

@@ -24,6 +24,8 @@
 #include <QGraphicsView>
 #include <QPinchGesture>
 
+class QLabel;
+
 namespace Tiled {
 namespace Internal {
 
@@ -65,6 +67,9 @@ public:
     bool handScrolling() const { return mHandScrolling; }
     void setHandScrolling(bool handScrolling);
 
+public slots:
+    void updateLayerLabelText(int index);
+
 protected:
     bool event(QEvent *event);
 
@@ -85,11 +90,14 @@ private slots:
     void setUseOpenGL(bool useOpenGL);
 
 private:
+    void resizeEvent(QResizeEvent *e);
+
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
     bool mHandScrolling;
     Mode mMode;
     Zoomable *mZoomable;
+    QLabel *mLayerLabel;
 };
 
 } // namespace Internal

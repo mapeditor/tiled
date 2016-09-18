@@ -52,6 +52,8 @@
 #include <QStyle>
 #include <QPalette>
 
+#include "qtvariantproperty.h"
+
 #if QT_VERSION >= 0x040400
 QT_BEGIN_NAMESPACE
 #endif
@@ -164,12 +166,14 @@ void QtPropertyEditorView::drawRow(QPainter *painter, const QStyleOptionViewItem
             opt.palette.setColor(QPalette::AlternateBase, c.lighter(112));
         }
     }
-    QTreeWidget::drawRow(painter, opt, index);
+
+    QTreeWidget::drawRow(painter, option, index);
     QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &opt));
     painter->save();
     painter->setPen(QPen(color));
     painter->drawLine(opt.rect.x(), opt.rect.bottom(), opt.rect.right(), opt.rect.bottom());
     painter->restore();
+
 }
 
 void QtPropertyEditorView::keyPressEvent(QKeyEvent *event)
@@ -625,10 +629,31 @@ void QtTreePropertyBrowserPrivate::updateItem(QTreeWidgetItem *item)
 {
     QtProperty *property = m_itemToIndex[item]->property();
 
-    if (property->nameColor().isValid())
+    if(property->nameColor().isValid())
+    {
         item->setForeground(0, QBrush(property->nameColor()));
-    if (property->valueColor().isValid())
         item->setForeground(1, QBrush(property->valueColor()));
+    }
+
+    if (property->hasConflict())
+    {
+        item->setBackground(0, QBrush(Qt::cyan, Qt::BDiagPattern));
+        item->setBackground(1, QBrush(Qt::cyan, Qt::BDiagPattern));
+
+        // draw conflict highlight for the children
+        for(int i = 0; i < item->childCount(); i++)
+        {
+            QTreeWidgetItem *childItem = item->child(i);
+            childItem->setBackground(0, QBrush(Qt::cyan, Qt::BDiagPattern));
+            childItem->setBackground(1, QBrush(Qt::cyan, Qt::BDiagPattern));
+        }
+    }
+    else
+    {
+        item->setBackground(0, QBrush());
+        item->setBackground(1, QBrush());
+    }
+
 
     QIcon expandIcon;
     if (property->hasValue()) {
@@ -643,7 +668,8 @@ void QtTreePropertyBrowserPrivate::updateItem(QTreeWidgetItem *item)
     }
     item->setIcon(0, expandIcon);
     item->setFirstColumnSpanned(!property->hasValue());
-    item->setToolTip(0, property->propertyName());
+    // RTB: set the tooltip for the complete row
+    item->setToolTip(0, property->toolTip());
     item->setStatusTip(0, property->statusTip());
     item->setWhatsThis(0, property->whatsThis());
     item->setText(0, property->propertyName());
@@ -664,6 +690,7 @@ void QtTreePropertyBrowserPrivate::updateItem(QTreeWidgetItem *item)
         else
             disableItem(item);
     }
+
     m_treeWidget->viewport()->update();
 }
 

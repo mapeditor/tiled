@@ -46,6 +46,9 @@ public:
 
     ~VariantEditorFactory();
 
+signals:
+    void resetProperty(QtProperty *property);
+
 protected:
     void connectPropertyManager(QtVariantPropertyManager *manager);
     QWidget *createEditor(QtVariantPropertyManager *manager,

@@ -35,8 +35,6 @@ class AboutDialog : public QDialog, private Ui::AboutDialog
 public:
     AboutDialog(QWidget *parent = 0);
 
-private slots:
-    void donate();
 };
 
 } // namespace Internal

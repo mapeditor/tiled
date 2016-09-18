@@ -43,6 +43,10 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
                                SLOT(updateOffsetBounds(QRect)));
 
+    // width and height musst be even
+    connect(mUi->widthSpinBox, SIGNAL(valueChanged(int)), mUi->heightSpinBox, SLOT(setValue(int)));
+    connect(mUi->heightSpinBox, SIGNAL(valueChanged(int)), mUi->widthSpinBox, SLOT(setValue(int)));
+
     Utils::restoreGeometry(this);
 }
 

@@ -64,6 +64,8 @@ private slots:
     void importObjectTypes();
     void exportObjectTypes();
 
+    void browse();
+
 private:
     void fromPreferences();
     void toPreferences();

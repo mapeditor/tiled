@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=Tiled
+Name=RTB-Tiled
 GenericName=Map editor
 Comment=Tile map editor
-TryExec=tiled
-Exec=tiled %f
+TryExec=rtbtiled
+Exec=rtbtiled %f
 Terminal=false
 Type=Application
 Icon=tiled

@@ -21,6 +21,10 @@
 #include "snaphelper.h"
 
 #include "preferences.h"
+#include "mapobject.h"
+#include "mapobjectitem.h"
+
+#include "rtbcore.h"
 
 namespace Tiled {
 namespace Internal {
@@ -58,5 +62,36 @@ void SnapHelper::snap(QPointF &pixelPos) const
     }
 }
 
+void SnapHelper::snap(QPointF &pixelPos, QSet<MapObjectItem*> mapObjectItems, bool useHalfeTile) const
+{
+    // if half tiles not explicit forbidden check the selected objects if they are allowed
+    if(useHalfeTile)
+        useHalfeTile = RTBCore::instance()->isHalfTileAllowed(mapObjectItems);
+
+    if (mSnapToFineGrid || mSnapToGrid) {
+        QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos);
+        if (mSnapToFineGrid) {
+            int gridFine = Preferences::instance()->gridFine();
+            tileCoords = (tileCoords * gridFine).toPoint();
+            tileCoords /= gridFine;
+        }
+        else if(useHalfeTile)
+        {
+            tileCoords = roundedTileCoords(tileCoords);
+        }
+        else
+        {
+            tileCoords = tileCoords.toPoint();
+        }
+        pixelPos = mRenderer->tileToPixelCoords(tileCoords);
+    }
+}
+
+QPointF SnapHelper::roundedTileCoords(QPointF &pixelPos) const
+{
+    qreal x = round(pixelPos.x() * 2) / 2;
+    qreal y = round(pixelPos.y() * 2) / 2;
+    return QPointF(x, y);
+}
 } // namespace Internal
 } // namespace Tiled

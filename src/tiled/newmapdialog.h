@@ -51,6 +51,7 @@ public:
 
 private slots:
     void refreshPixelSize();
+    void enableButton();
 
 private:
     Ui::NewMapDialog *mUi;

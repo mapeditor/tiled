@@ -3,7 +3,7 @@ include(../libtiled/libtiled.pri)
 include(../qtpropertybrowser/src/qtpropertybrowser.pri)
 
 TEMPLATE = app
-TARGET = tiled
+TARGET = rtbtiled
 target.path = $${PREFIX}/bin
 INSTALLS += target
 win32 {
@@ -176,7 +176,22 @@ SOURCES += aboutdialog.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
-    magicwandtool.cpp
+    magicwandtool.cpp \
+    rtbchangemapobjectproperties.cpp \
+    rtbcore.cpp \
+    rtbcreateobjecttool.cpp \
+    rtbinserttool.cpp \
+    rtbmapobjectitem.cpp \
+    rtbmapsettings.cpp \
+    rtbselectareatool.cpp \
+    rtbtilebutton.cpp \
+    rtbtileselectionmanager.cpp \
+    rtbtutorial.cpp \
+    rtbtutorialdock.cpp \
+    rtbvalidator.cpp \
+    rtbvalidatordock.cpp \
+    rtbvalidatormodel.cpp \
+    rtbvalidatorrule.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -318,7 +333,22 @@ HEADERS += aboutdialog.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
     zoomable.h \
-    magicwandtool.h
+    magicwandtool.h \
+    rtbchangemapobjectproperties.h \
+    rtbcore.h \
+    rtbcreateobjecttool.h \
+    rtbinserttool.h \
+    rtbmapobjectitem.h \
+    rtbmapsettings.h \
+    rtbselectareatool.h \
+    rtbtilebutton.h \
+    rtbtileselectionmanager.h \
+    rtbtutorial.h \
+    rtbtutorialdock.h \
+    rtbvalidator.h \
+    rtbvalidatordock.h \
+    rtbvalidatormodel.h \
+    rtbvalidatorrule.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

@@ -43,6 +43,8 @@ protected:
 
     void updateStatusInfo();
 
+    void setSelectedArea(QRegion area);
+
 private:
     enum SelectionMode {
         Replace,

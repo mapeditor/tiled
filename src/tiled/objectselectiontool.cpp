@@ -40,6 +40,8 @@
 #include "tile.h"
 #include "tileset.h"
 
+#include "rtbcore.h"
+
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -307,7 +309,6 @@ void ResizeHandle::paint(QPainter *painter,
     painter->setBrush(brush);
     painter->drawPath(mArrow);
 }
-
 } // namespace Internal
 } // namespace Tiled
 
@@ -328,10 +329,12 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mMode(Resize)
     , mAction(NoAction)
 {
+    /*
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
     for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i] = new ResizeHandle(static_cast<AnchorPosition>(i));
+        */
 }
 
 ObjectSelectionTool::~ObjectSelectionTool()
@@ -339,10 +342,12 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mSelectionRectangle;
     delete mOriginIndicator;
 
+    /*
     for (int i = 0; i < CornerAnchorCount; ++i)
         delete mRotateHandles[i];
     for (int i = 0; i < AnchorCount; ++i)
         delete mResizeHandles[i];
+        */
 }
 
 void ObjectSelectionTool::activate(MapScene *scene)
@@ -362,19 +367,23 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, SLOT(objectsRemoved(QList<MapObject*>)));
 
     scene->addItem(mOriginIndicator);
+    /*
     for (int i = 0; i < CornerAnchorCount; ++i)
         scene->addItem(mRotateHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
         scene->addItem(mResizeHandles[i]);
+        */
 }
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mOriginIndicator);
+    /*
     for (int i = 0; i < CornerAnchorCount; ++i)
         scene->removeItem(mRotateHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
         scene->removeItem(mResizeHandles[i]);
+        */
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
                this, SLOT(updateHandles()));
@@ -393,19 +402,26 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
         return;
     }
 
+    const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
+
     QPointF moveBy;
+    int stepSize;
+
+    if(RTBCore::instance()->isHalfTileAllowed(items))
+        stepSize = mapDocument()->map()->tileWidth() / 2;
+    else
+        stepSize = mapDocument()->map()->tileWidth();
 
     switch (event->key()) {
-    case Qt::Key_Up:    moveBy = QPointF(0, -1); break;
-    case Qt::Key_Down:  moveBy = QPointF(0, 1); break;
-    case Qt::Key_Left:  moveBy = QPointF(-1, 0); break;
-    case Qt::Key_Right: moveBy = QPointF(1, 0); break;
+    case Qt::Key_Up:    moveBy = QPointF(0, -stepSize); break;
+    case Qt::Key_Down:  moveBy = QPointF(0, stepSize); break;
+    case Qt::Key_Left:  moveBy = QPointF(-stepSize, 0); break;
+    case Qt::Key_Right: moveBy = QPointF(stepSize, 0); break;
     default:
         AbstractObjectTool::keyPressed(event);
         return;
     }
 
-    const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
     const Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if (moveBy.isNull() || items.isEmpty() || (modifiers & Qt::ControlModifier)) {
@@ -450,8 +466,11 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
-            // Holding shift makes sure we'll start a selection operation
-            if ((mClickedObjectItem || modifiers & Qt::AltModifier) &&
+            const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
+
+            // Holding Alt forces moving current selection
+            // Holding Shift forces selection rectangle
+            if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
                     !(modifiers & Qt::ShiftModifier)) {
                 startMoving(modifiers);
             } else if (mClickedRotateHandle) {
@@ -725,6 +744,7 @@ void ObjectSelectionTool::updateHandles()
     const bool showHandles = objects.size() > 0;
 
     if (showHandles) {
+        /*
         MapRenderer *renderer = mapDocument()->renderer();
         QRectF boundingRect = objectBounds(objects.first(), renderer,
                                             objectTransform(objects.first(), renderer));
@@ -808,6 +828,7 @@ void ObjectSelectionTool::updateHandles()
             mRotateHandles[i]->setRotation(handleRotation);
         for (int i = 0; i < AnchorCount; ++i)
             mResizeHandles[i]->setRotation(handleRotation);
+        */
     }
 
     updateHandleVisibility();
@@ -816,14 +837,16 @@ void ObjectSelectionTool::updateHandles()
 void ObjectSelectionTool::updateHandleVisibility()
 {
     const bool hasSelection = !mapDocument()->selectedObjects().isEmpty();
-    const bool showHandles = hasSelection && (mAction == NoAction || mAction == Selecting);
+    //const bool showHandles = hasSelection && (mAction == NoAction || mAction == Selecting);
     const bool showOrigin = hasSelection &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
+    /*
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i]->setVisible(showHandles && mMode == Rotate);
     for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i]->setVisible(showHandles && mMode == Resize);
+        */
 
     mOriginIndicator->setVisible(showOrigin);
 }
@@ -921,8 +944,14 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         const QPointF newPixelPos = object.oldItemPosition + diff;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        MapObject *mapObject = object.item->mapObject();
-        mapObject->setPosition(newPos);
+        qreal cellX = newPos.x() / 32;
+        qreal cellY = (newPos.y() / 32 ) - 1;
+        // only move if the target is inside the map
+        if(cellX >= 0 && cellX <= mapDocument()->map()->width()-1 && cellY >= 0 && cellY <= mapDocument()->map()->height() - 1)
+        {
+            MapObject *mapObject = object.item->mapObject();
+            mapObject->setPosition(newPos);
+        }
     }
 
     mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
@@ -934,7 +963,17 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
     mAction = NoAction;
     updateHandles();
 
-    if (mStart == pos) // Move is a no-op
+    if(Preferences::instance()->snapToGrid())
+    {
+        QPointF posGridPos = snapToGrid(pos, Qt::NoModifier);
+        QPointF startGridPos = snapToGrid(mStart, Qt::NoModifier);
+        // return if the new pos is the equal the old or the pos is outside the map
+        if(startGridPos.x() == posGridPos.x() && startGridPos.y() == posGridPos.y()
+                || posGridPos.x() < 0 || posGridPos.y() < 0
+                || posGridPos.x() >= mapDocument()->map()->width() * 32 ||posGridPos.y() >= mapDocument()->map()->height() * 32)
+            return;
+    }
+    else if (mStart == pos) // Move is a no-op
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
@@ -1306,7 +1345,7 @@ const QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
         const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos);
-        snapHelper.snap(newAlignPixelPos);
+        snapHelper.snap(newAlignPixelPos, mapScene()->selectedObjectItems());
 
         return renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }
@@ -1323,4 +1362,12 @@ QList<MapObject *> ObjectSelectionTool::changingObjects() const
         changingObjects.append(movingObject.item->mapObject());
 
     return changingObjects;
+}
+
+void ObjectSelectionTool::selectObject(MapObject *mapObject)
+{
+    MapObjectItem *mapObjectItem = mapScene()->itemForObject(mapObject);
+    QSet<MapObjectItem*> selectedItems;
+    selectedItems.insert(mapObjectItem);
+    mapScene()->setSelectedObjectItems(selectedItems);
 }

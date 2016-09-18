@@ -29,15 +29,20 @@
 #include "preferences.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
+#include "pluginmanager.h"
+#include "mapreaderinterface.h"
+#include "rtbmapsettings.h"
 
 #include <QSettings>
 #include <QMessageBox>
+#include <QPushButton>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
 static const char * const MAP_HEIGHT_KEY = "Map/Height";
 static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
 static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
+static const char * const ADD_STARTER_CONTENT_KEY = "Map/AddStarterContent";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -49,52 +54,44 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
+
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
+    //const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
-    const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
-    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
-                                    32).toInt();
+    //const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
+    //const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY), 32).toInt();
+    const bool addStarterContent = s->value(QLatin1String(ADD_STARTER_CONTENT_KEY), true).toBool();
 
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+    mUi->levelName->setText(QLatin1String(""));
+    mUi->levelName->setFocus();
+    connect(mUi->levelName, SIGNAL(textChanged(QString)), SLOT(enableButton()));
 
-    mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
-    mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
-    mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
-    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), Map::Hexagonal);
-
-    mUi->orientation->setCurrentIndex(orientation);
-    mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
-    mUi->renderOrder->setCurrentIndex(prefs->mapRenderOrder());
+    mUi->addStarterContent->setChecked(addStarterContent);
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
-    mUi->tileWidth->setValue(tileWidth);
-    mUi->tileHeight->setValue(tileHeight);
-
-    // Make the font of the pixel size label smaller
-    QFont font = mUi->pixelSizeLabel->font();
-    const qreal size = QFontInfo(font).pointSizeF();
-    font.setPointSizeF(size - 1);
-    mUi->pixelSizeLabel->setFont(font);
-
     connect(mUi->mapWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
-    connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
+
+    // width and height musst be even
+    connect(mUi->mapWidth, SIGNAL(valueChanged(int)), mUi->mapHeight, SLOT(setValue(int)));
+    connect(mUi->mapHeight, SIGNAL(valueChanged(int)), mUi->mapWidth, SLOT(setValue(int)));
+
     refreshPixelSize();
+
+    //QStringList difficultyNames({tr("None"), tr("Easy"), tr("Medium"), tr("Hard"), tr("Extrem")});
+    QStringList difficultyNames(QList<QString>() << tr("Choose...") << tr("Easy") << tr("Medium") << tr("Hard") << tr("Extrem"));
+    mUi->difficulty->addItems(difficultyNames);
+    connect(mUi->difficulty, SIGNAL(currentIndexChanged(int)), SLOT(enableButton()));
+
+    //QStringList playStyleNames({tr("None"), tr("Speed"), tr("Puzzle"), tr("Rhythm"), tr("Mix")});
+    QStringList playStyleNames(QList<QString>() << tr("Choose...") << tr("Speed") << tr("Puzzle") << tr("Rhythm") << tr("Mix"));
+    mUi->playStyle->addItems(playStyleNames);
+    connect(mUi->playStyle, SIGNAL(currentIndexChanged(int)), SLOT(enableButton()));
 }
 
 NewMapDialog::~NewMapDialog()
@@ -109,17 +106,16 @@ MapDocument *NewMapDialog::createMap()
 
     const int mapWidth = mUi->mapWidth->value();
     const int mapHeight = mUi->mapHeight->value();
-    const int tileWidth = mUi->tileWidth->value();
-    const int tileHeight = mUi->tileHeight->value();
 
-    const int orientationIndex = mUi->orientation->currentIndex();
-    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const int tileWidth = 32;
+    const int tileHeight = 32;
+
     const Map::Orientation orientation =
-            static_cast<Map::Orientation>(orientationData.toInt());
+            static_cast<Map::Orientation>(1);
     const Map::LayerDataFormat layerFormat =
-            static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
+            static_cast<Map::LayerDataFormat>(4);
     const Map::RenderOrder renderOrder =
-            static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
+            static_cast<Map::RenderOrder>(0);
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
@@ -128,47 +124,51 @@ MapDocument *NewMapDialog::createMap()
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
 
-    const size_t gigabyte = 1073741824;
-    const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
+    RTBMap *rtbMap = map->rtbMap();
+    rtbMap->setLevelName(mUi->levelName->text());
+    rtbMap->setDifficulty(mUi->difficulty->currentIndex());
+    rtbMap->setPlayStyle(mUi->playStyle->currentIndex());
 
-    // Add a tile layer to new maps of reasonable size
-    if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
-                                    mapWidth, mapHeight));
-    } else {
-        const double gigabytes = (double) memory / gigabyte;
-        QMessageBox::warning(this, tr("Memory Usage Warning"),
-                             tr("Tile layers for this map will consume %L1 GB "
-                                "of memory each. Not creating one by default.")
-                             .arg(gigabytes, 0, 'f', 2));
-    }
+    MapDocument *mapDocument = new MapDocument(map);
+
+    RTBMapSettings *rtbMapSettings = new RTBMapSettings;
+    rtbMapSettings->loadTileSets(mapDocument);
+    rtbMapSettings->setMapSettings(map);
+
+    // add the starter content to the new map else create the layers
+    if(mUi->addStarterContent->isChecked())
+        rtbMapSettings->addStarterContent(mapDocument);
+    else
+        rtbMapSettings->createLayers(mapDocument);
+
+    // set the floor layer selected
+    mapDocument->setCurrentLayerIndex(RTBMapSettings::FloorID);
+
+    // show map properties
+    mapDocument->setCurrentObject(map);
+    mapDocument->emitEditCurrentObject();
 
     // Store settings for next time
-    Preferences *prefs = Preferences::instance();
-    prefs->setLayerDataFormat(layerFormat);
-    prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
-    s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
-    s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
+    s->setValue(QLatin1String(ADD_STARTER_CONTENT_KEY), mUi->addStarterContent->isChecked());
 
-    return new MapDocument(map);
+    return mapDocument;
 }
 
 void NewMapDialog::refreshPixelSize()
 {
-    const int orientationIndex = mUi->orientation->currentIndex();
-    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    //const int orientationIndex = mUi->orientation->currentIndex();
+    //const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
     const Map::Orientation orientation =
-            static_cast<Map::Orientation>(orientationData.toInt());
+            static_cast<Map::Orientation>(1);
 
     const Map map(orientation,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
-                  mUi->tileWidth->value(),
-                  mUi->tileHeight->value());
+                  32,
+                  32);
 
     QSize size;
 
@@ -190,4 +190,17 @@ void NewMapDialog::refreshPixelSize()
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
                                  .arg(size.width())
                                  .arg(size.height()));
+}
+
+void NewMapDialog::enableButton()
+{
+    QPushButton *button = mUi->buttonBox->button(QDialogButtonBox::Ok);
+    QString text = mUi->levelName->text();
+    int difficulty = mUi->difficulty->currentIndex();
+    int playStyle = mUi->playStyle->currentIndex();
+
+    if(text.length() < 5 || text.isEmpty() || difficulty == 0 || playStyle == 0)
+        button->setEnabled(false);
+    else
+        button->setEnabled(true);
 }

@@ -460,7 +460,21 @@ void TilesetView::setTerrainId(int terrainId)
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
     if (!mEditTerrain) {
-        QTableView::mousePressEvent(event);
+        // RTB: select only if no placeholder is clicked
+        /*const QModelIndex selectedIndex = indexAt(event->pos());
+        if(selectedIndex.row() == 0)
+        {
+            QTableView::mousePressEvent(event);
+        }
+        else if(selectedIndex.row() == 1 && selectedIndex.column() <= 4)
+        {
+            QTableView::mousePressEvent(event);
+        }
+        else if(selectedIndex.row() == 3 && selectedIndex.column() <= 4)
+        {
+            QTableView::mousePressEvent(event);
+        }*/
+
         return;
     }
 
@@ -471,7 +485,8 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
     if (!mEditTerrain) {
-        QTableView::mouseMoveEvent(event);
+        // RTB: no multiple selection allowed
+        //QTableView::mouseMoveEvent(event);
         return;
     }
 

@@ -23,6 +23,7 @@
 #include "mapscene.h"
 #include "preferences.h"
 #include "zoomable.h"
+#include "rtbmapsettings.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -31,6 +32,7 @@
 #include <QPinchGesture>
 #include <QWheelEvent>
 #include <QScrollBar>
+#include <QLabel>
 
 #ifndef QT_NO_OPENGL
 #include <QGLWidget>
@@ -75,6 +77,25 @@ MapView::MapView(QWidget *parent, Mode mode)
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
+
+    // RTB: create layer name label
+    mLayerLabel = new QLabel(this);
+
+    QFont font = mLayerLabel->font();
+    font.setPointSize(24);
+    font.setBold(true);
+    mLayerLabel->setFont(font);
+    mLayerLabel->setAlignment(Qt::AlignRight);
+
+    updateLayerLabelText(0);
+}
+
+void MapView::resizeEvent(QResizeEvent *e)
+{
+    if(mLayerLabel)
+        mLayerLabel->setGeometry(width() - 300, height() - 80, 250, 50);
+
+    QGraphicsView::resizeEvent(e);
 }
 
 MapView::~MapView()
@@ -257,4 +278,26 @@ void MapView::adjustCenterFromMousePosition(QPoint &mousePos)
     QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     QPointF diff = viewCenterScenePos - mouseScenePos;
     centerOn(mLastMouseScenePos + diff);
+}
+
+void MapView::updateLayerLabelText(int index)
+{
+    QString layerName;
+    switch (index) {
+    case RTBMapSettings::FloorID:
+        layerName = QLatin1String("Floor");
+        break;
+    case RTBMapSettings::ObjectID:
+        layerName = QLatin1String("Objects");
+        break;
+    case RTBMapSettings::OrbObjectID:
+        layerName = QLatin1String("Orbs");
+        break;
+    default:
+        layerName = QLatin1String("");
+        break;
+    }
+
+    QString fonttemplate = tr("<font color='#55FFFFFF'>%2</font>");
+    mLayerLabel->setText(fonttemplate.arg(layerName));
 }

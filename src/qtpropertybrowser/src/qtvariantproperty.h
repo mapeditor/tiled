@@ -66,6 +66,7 @@ public:
 
     void setValue(const QVariant &value);
     void setAttribute(const QString &attribute, const QVariant &value);
+
 protected:
     QtVariantProperty(QtVariantPropertyManager *manager);
 private:

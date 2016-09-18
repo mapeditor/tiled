@@ -26,6 +26,8 @@
 #include "preferences.h"
 #include "utils.h"
 
+#include "rtbcore.h"
+
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -102,13 +104,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
+/*
 #ifndef QT_NO_OPENGL
     mUi->openGL->setEnabled(QGLFormat::hasOpenGL());
 #else
     mUi->openGL->setEnabled(false);
 #endif
-
+*/
     foreach (const QString &name, mLanguages) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
@@ -118,8 +120,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     }
 
     mUi->languageCombo->model()->sort(0);
-    mUi->languageCombo->insertItem(0, tr("System default"));
+    //mUi->languageCombo->insertItem(0, tr("System default"));
 
+    /*
     mObjectTypesModel = new ObjectTypesModel(this);
     mUi->objectTypesTable->setModel(mObjectTypesModel);
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
@@ -133,19 +136,19 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
     Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");
-
+    */
     fromPreferences();
 
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
-    connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    //connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             Preferences::instance(), SLOT(setGridColor(QColor)));
-    connect(mUi->gridFine, SIGNAL(valueChanged(int)),
-            Preferences::instance(), SLOT(setGridFine(int)));
-    connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
-            SLOT(objectLineWidthChanged(double)));
-
+    //connect(mUi->gridFine, SIGNAL(valueChanged(int)),
+            //Preferences::instance(), SLOT(setGridFine(int)));
+    //connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
+            //SLOT(objectLineWidthChanged(double)));
+    /*
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(selectedObjectTypesChanged()));
@@ -167,7 +170,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
             SLOT(useAutomappingDrawingToggled(bool)));
+    */
     connect(mUi->openLastFiles, SIGNAL(toggled(bool)), SLOT(openLastFilesToggled(bool)));
+    connect(mUi->browseButton, SIGNAL(pressed()), SLOT(browse()));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -209,6 +214,7 @@ void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
 
 void PreferencesDialog::addObjectType()
 {
+    /*
     const int newRow = mObjectTypesModel->objectTypes().size();
     mObjectTypesModel->appendNewObjectType();
 
@@ -221,18 +227,19 @@ void PreferencesDialog::addObjectType()
     sm->setCurrentIndex(newIndex, QItemSelectionModel::Current);
     mUi->objectTypesTable->setFocus();
     mUi->objectTypesTable->scrollTo(newIndex);
+    */
 }
 
 void PreferencesDialog::selectedObjectTypesChanged()
 {
-    const QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    mUi->removeObjectTypeButton->setEnabled(sm->hasSelection());
+    //const QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
+    //mUi->removeObjectTypeButton->setEnabled(sm->hasSelection());
 }
 
 void PreferencesDialog::removeSelectedObjectTypes()
 {
-    const QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    mObjectTypesModel->removeObjectTypes(sm->selectedRows());
+    //const QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
+    //mObjectTypesModel->removeObjectTypes(sm->selectedRows());
 }
 
 void PreferencesDialog::objectTypeIndexClicked(const QModelIndex &index)
@@ -303,11 +310,11 @@ void PreferencesDialog::exportObjectTypes()
 void PreferencesDialog::fromPreferences()
 {
     const Preferences *prefs = Preferences::instance();
-    mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
-    mUi->enableDtd->setChecked(prefs->dtdEnabled());
+    //mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
+    //mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
-    if (mUi->openGL->isEnabled())
-        mUi->openGL->setChecked(prefs->useOpenGL());
+    //if (mUi->openGL->isEnabled())
+        //mUi->openGL->setChecked(prefs->useOpenGL());
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
@@ -315,20 +322,23 @@ void PreferencesDialog::fromPreferences()
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
-    mUi->gridFine->setValue(prefs->gridFine());
-    mUi->objectLineWidth->setValue(prefs->objectLineWidth());
-    mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
-    mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+    //mUi->gridFine->setValue(prefs->gridFine());
+    //mUi->objectLineWidth->setValue(prefs->objectLineWidth());
+    //mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
+    //mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+
+    mUi->gamePath->setText(prefs->gameDirectory());
 }
 
 void PreferencesDialog::toPreferences()
 {
     Preferences *prefs = Preferences::instance();
 
-    prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
-    prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
+    //prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
+    //prefs->setDtdEnabled(mUi->enableDtd->isChecked());
+    //prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
     prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
+    prefs->setGameDirectory(mUi->gamePath->text());
 }
 
 void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
@@ -339,4 +349,17 @@ void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
 void PreferencesDialog::openLastFilesToggled(bool enabled)
 {
     Preferences::instance()->setOpenLastFilesOnStartup(enabled);
+}
+
+void PreferencesDialog::browse()
+{
+    QString filter = RTBCore::instance()->gameExe();
+    QString currentPath = mUi->gamePath->text();
+
+    const QString newPath =
+            QFileDialog::getOpenFileName(this, QString(), currentPath,
+                                         filter, &filter);
+
+    if(!newPath.isEmpty() && currentPath != newPath)
+        mUi->gamePath->setText(newPath);
 }

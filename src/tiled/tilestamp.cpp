@@ -94,7 +94,7 @@ TileStamp TileStamp::operator=(const TileStamp &other)
     return *this;
 }
 
-bool TileStamp::operator==(const TileStamp &other)
+bool TileStamp::operator==(const TileStamp &other) const
 {
     return d == other.d;
 }

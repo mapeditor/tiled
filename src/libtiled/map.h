@@ -35,6 +35,8 @@
 #include "object.h"
 #include "tileset.h"
 
+#include "rtbmap.h"
+
 #include <QColor>
 #include <QList>
 #include <QMargins>
@@ -394,6 +396,20 @@ public:
      */
     int takeNextObjectId() { return mNextObjectId++; }
 
+    /**
+     * Returns the RTBMap of this map.
+     */
+    RTBMap *rtbMap() const { return mRTBMap; }
+
+    /**
+     * Sets the RTBMap of this map.
+     */
+    void setRTBMap(RTBMap *rtbMap)
+    {
+        mRTBMap = rtbMap;
+    }
+
+
 private:
     void adoptLayer(Layer *layer);
 
@@ -412,6 +428,8 @@ private:
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
+
+    RTBMap *mRTBMap;
 };
 
 

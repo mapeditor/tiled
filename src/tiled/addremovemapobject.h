@@ -50,11 +50,23 @@ protected:
     void removeObject();
 
 private:
+    /**
+     * remove the target properties of the related objects
+     */
+    void updateRelatedObjectsRemove();
+
+    /**
+     * restore the target properties in the related objects
+     */
+    void updateRelatedObjectsAdd();
+
     MapDocument *mMapDocument;
     MapObject *mMapObject;
     ObjectGroup *mObjectGroup;
     int mIndex;
     bool mOwnsObject;
+
+    QList<MapObject*> mRelatedObjects;
 };
 
 /**

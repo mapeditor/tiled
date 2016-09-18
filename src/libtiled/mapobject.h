@@ -35,6 +35,9 @@
 #include "tiled.h"
 #include "tilelayer.h"
 
+#include "tile.h"
+#include "rtbmapobject.h"
+
 #include <QPolygonF>
 #include <QSizeF>
 #include <QString>
@@ -257,6 +260,112 @@ public:
      */
     MapObject *clone() const;
 
+    /**
+     * Returns the RTBMapObject of this map.
+     */
+    RTBMapObject *rtbMapObject() const { return mRTBMapObject; }
+
+    /**
+     * Sets the RTBMapObject of this map.
+     */
+    void setRTBMapObject(RTBMapObject *rtbMapObject)
+    {
+        mRTBMapObject = rtbMapObject;
+        mType = mRTBMapObject->name();
+    }
+
+    /**
+     * Creates an RTBMapObject for this map.
+     */
+    void createRTBMapObject()
+    {
+        if(!mCell.isEmpty() && mCell.tile->id() >= RTBMapObject::PointOrb)
+        {
+            switch (mCell.tile->id()) {
+            case RTBMapObject::CustomFloorTrap:
+            {
+                mRTBMapObject = new RTBCustomFloorTrap;
+                break;
+            }
+            case RTBMapObject::MovingFloorTrapSpawner:
+            {
+                mRTBMapObject = new RTBMovingFloorTrapSpawner;
+                break;
+            }
+            case RTBMapObject::Button:
+            {
+                mRTBMapObject = new RTBButtonObject;
+                break;
+            }
+            case RTBMapObject::LaserBeamLeft:
+            case RTBMapObject::LaserBeamBottom:
+            case RTBMapObject::LaserBeamTop:
+            case RTBMapObject::LaserBeamRight:
+            {
+                mRTBMapObject = new RTBLaserBeam;
+                break;
+            }
+            case RTBMapObject::ProjectileTurret:
+            {
+                mRTBMapObject = new RTBProjectileTurret;
+                break;
+            }
+            case RTBMapObject::Teleporter:
+            {
+                mRTBMapObject = new RTBTeleporter;
+                break;
+            }
+            case RTBMapObject::Target:
+            {
+                mRTBMapObject = new RTBTarget;
+                break;
+            }
+            case RTBMapObject::FloorText:
+            {
+                mRTBMapObject = new RTBFloorText;
+                break;
+            }
+            case RTBMapObject::CameraTrigger:
+            {
+                mRTBMapObject = new RTBCameraTrigger;
+                break;
+            }
+            case RTBMapObject::StartLocation:
+            {
+                mRTBMapObject = new RTBStartLocation;
+                break;
+            }
+            case RTBMapObject::FinishHole:
+            {
+                mRTBMapObject = new RTBFinishHole;
+                break;
+            }
+            case RTBMapObject::NPCBallSpawner:
+            {
+                mRTBMapObject = new RTBNPCBallSpawner;
+                break;
+            }
+
+            // ORBS
+            case RTBMapObject::PointOrb:
+            case RTBMapObject::CheckpointOrb:
+            case RTBMapObject::HealthOrb:
+            case RTBMapObject::KeyOrb:
+            case RTBMapObject::FakeOrb:
+            {
+                mRTBMapObject = new RTBOrb;
+                break;
+            }
+            default:
+                break;
+            }
+
+            if(mRTBMapObject)
+                mType = mRTBMapObject->name();
+        }
+    }
+
+
 private:
     int mId;
     QString mName;
@@ -269,6 +378,8 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+
+    RTBMapObject *mRTBMapObject;
 };
 
 } // namespace Tiled

@@ -42,6 +42,10 @@
 #include "toolmanager.h"
 #include "tilesetmanager.h"
 
+#include "objectselectiontool.h"
+#include "stampbrush.h"
+#include "rtbmapsettings.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QKeyEvent>
@@ -665,6 +669,31 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // RTB: Selection-Click
+    if(mMapDocument)
+    {
+        // only if the object layer is active
+        if(mMapDocument->currentLayerIndex() == RTBMapSettings::ObjectID)
+        {
+            // only if selection tool is not already active
+            if(!dynamic_cast<ObjectSelectionTool*>(mActiveTool))
+            {
+                findClickedObject(mMapDocument->map()->objectGroups().at(0)->objects()
+                                  , mouseEvent->scenePos());
+            }
+        }
+        // only if the orb object layer is active
+        else if(mMapDocument->currentLayerIndex() == RTBMapSettings::OrbObjectID)
+        {
+            // only if selection tool is not already active
+            if(!dynamic_cast<ObjectSelectionTool*>(mActiveTool))
+            {
+                findClickedObject(mMapDocument->map()->objectGroups().at(1)->objects()
+                                  , mouseEvent->scenePos());
+            }
+        }
+    }
+
     QGraphicsScene::mousePressEvent(mouseEvent);
     if (mouseEvent->isAccepted())
         return;
@@ -714,4 +743,20 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
     }
 
     return false;
+}
+
+void MapScene::findClickedObject(QList<MapObject *> objects, QPointF clickPos)
+{
+    for(MapObject * obj : objects)
+    {
+        QRectF bounds = obj->boundsUseTile();
+        if(bounds.contains(clickPos))
+        {
+            if(mMapDocument->currentObject() != obj)
+            {
+                emit selectionClick();
+                return;
+            }
+        }
+    }
 }

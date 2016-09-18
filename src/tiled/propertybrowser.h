@@ -80,6 +80,8 @@ public:
      */
     void editCustomProperty(const QString &name);
 
+    QSize sizeHint() const;
+
 protected:
     bool event(QEvent *event);
 
@@ -101,6 +103,8 @@ private slots:
     void selectedTilesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
+
+    void resetProperty(QtProperty *property);
 
 private:
     enum PropertyId {
@@ -128,7 +132,67 @@ private:
         SpacingProperty,
         TileProbabilityProperty,
         IdProperty,
-        CustomProperty
+        CustomProperty,
+        // RTB Properties
+        RTBChapter,
+        RTBCustomBaseInterval,
+        RTBCustomGlowColor,
+        RTBCustomBackgroundColor,
+        RTBLevelBrightness,
+        RTBCloudDensity,
+        RTBCloudVelocity,
+        RTBCloudAlpha,
+        RTBSnowDensity,
+        RTBSnowVelocity,
+        RTBSnowRisingVelocity,
+        RTBCameraGrain,
+        RTBCameraContrast,
+        RTBCameraSaturation,
+        RTBCameraGlow,
+        RTBHasWalls,
+        RTBCustomMusicTrack,
+        RTBLevelName,
+        RTBLevelDescription,
+        RTBBackgroundColorScheme,
+        RTBLevelModifier,
+        RTBHasStarfield,
+        RTBGlowColorScheme,
+        RTBDifficulty,
+        RTBPlayStyle,
+        RTBPreviewImagePath,
+        // Objects
+        RTBIntervalSpeed = 100,
+        RTBIntervalOffset,
+        RTBSpawnAmount,
+        RTBBeatsActive,
+        RTBLaserBeamTargets,
+        RTBBeamType,
+        RTBActivatedOnStart,
+        RTBDirectionDegrees,
+        RTBTargetDirectionDegrees,
+        RTBProjectileSpeed,
+        RTBShotDirection,
+        RTBTeleporterTarget,
+        RTBLaserBeamTarget1,
+        RTBLaserBeamTarget2,
+        RTBLaserBeamTarget3,
+        RTBLaserBeamTarget4,
+        RTBLaserBeamTarget5,
+        RTBText,
+        RTBMaxCharacters,
+        RTBTriggerZone,
+        RTBUseTrigger,
+        RTBCameraTarget,
+        RTBCameraHeight,
+        RTBCameraAngle,
+        RTBRandomizeStart,
+        RTBScale,
+        RTBSpawnClass,
+        RTBSize,
+        RTBSpawnFrequency,
+        RTBSpeed,
+        RTBOffsetX,
+        RTBOffsetY
     };
 
     void addMapProperties();
@@ -165,6 +229,24 @@ private:
     bool mUpdating;
 
     void updatePropertyColor(const QString &name);
+
+    // ------------ RTB
+    void addRTBMapProperties();
+    void addRTBMapObjectProperties(int tileID);
+    void setDoublePropSettings(QtVariantProperty *property, double min, double max, double step=1, int decimals=0);
+    QtVariantProperty *createIntervalSpeedProperty(QtProperty *groupProperty);
+    QtVariantProperty *createIntervalOffsetProperty(QtProperty *groupProperty);
+    void setTileDescription(int tileID);
+    void updatePropMultipleSelection();
+    void removeConflicts();
+    void setMapObjectPropertiesTooltip(int tileID);
+    void setMapPropertiesTooltip();
+    void updateValidationState(const RTBMapObject *mapObject, PropertyId, Tiled::RTBMapObject::PropertyId objectPropID);
+    void updateMapValidationState(const RTBMap *rtbMap, PropertyId id, RTBMap::PropertyId mapPropID);
+    QStringList buttonTargetList(Tiled::RTBButtonObject *button, QString target, QStringList targets);
+
+    QStringList mButtonTargetNames;
+    QStringList mTeleporterTargetNames;
 
     Object *mObject;
     MapDocument *mMapDocument;

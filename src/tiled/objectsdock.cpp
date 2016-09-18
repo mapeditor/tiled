@@ -319,10 +319,11 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
             selectedObjects.append(o);
     }
 
+    // RTB: not allowed to change layer
     // Switch the current object layer if only one object layer (and/or its objects)
     // are included in the current selection.
-    if (currentLayerIndex >= 0 && currentLayerIndex != mMapDocument->currentLayerIndex())
-        mMapDocument->setCurrentLayerIndex(currentLayerIndex);
+    //if (currentLayerIndex >= 0 && currentLayerIndex != mMapDocument->currentLayerIndex())
+        //mMapDocument->setCurrentLayerIndex(currentLayerIndex);
 
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;

@@ -103,6 +103,18 @@ public:
     bool openLastFilesOnStartup() const;
     void setOpenLastFilesOnStartup(bool load);
 
+    bool showPropertyVisualization() const;
+    void setShowPropertyVisualization(bool showProperty);
+
+    QString gameDirectory() const;
+    void setGameDirectory(QString gameDirectory);
+
+    bool tutorialOnStart() const;
+    void setTutorialOnStart(bool tutorialOnStart);
+
+    int tutorialChapter() const;
+    void setTutorialChapter(int tutorialChapter);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -181,6 +193,10 @@ private:
     int mRunCount;
     bool mIsPatron;
 
+    bool mShowPropertyVisualization;
+    QString mGameDirectory;
+    int mTutorialChapter;
+
     static Preferences *mInstance;
 };
 
@@ -203,6 +219,21 @@ inline bool Preferences::isPatron() const
 inline bool Preferences::openLastFilesOnStartup() const
 {
     return mOpenLastFilesOnStartup;
+}
+
+inline bool Preferences::showPropertyVisualization() const
+{
+    return mShowPropertyVisualization;
+}
+
+inline QString Preferences::gameDirectory() const
+{
+    return mGameDirectory;
+}
+
+inline int Preferences::tutorialChapter() const
+{
+    return mTutorialChapter;
 }
 
 } // namespace Internal

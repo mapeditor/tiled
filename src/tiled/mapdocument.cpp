@@ -55,6 +55,9 @@
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 
+#include "rtbmapsettings.h"
+#include "rtbchangemapobjectproperties.h"
+
 #include <QFileInfo>
 #include <QRect>
 #include <QUndoStack>
@@ -70,12 +73,17 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mRenderer(0),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
-    mUndoStack(new QUndoStack(this))
+    mUndoStack(new QUndoStack(this)),
+    mValidatorModel(new RTBValidatorModel(this))
 {
     createRenderer();
 
     mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
+    mValidatorModel->setMapDocument(this);
+
+    // Forward signals emitted from the validator model
+    connect(mValidatorModel, SIGNAL(highlightToolbarAction(int)), SLOT(updateToolbarAction(int)));
 
     // Forward signals emitted from the layer model
     connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
@@ -133,9 +141,23 @@ bool MapDocument::save(const QString &fileName, QString *error)
     if (const Plugin *plugin = pm->pluginByFileName(mWriterPluginFileName))
         chosenWriter = qobject_cast<MapWriterInterface*>(plugin->instance);
 
-    TmxMapWriter mapWriter;
+    // if writer could not found search for the plugin file and set chosenWriter
     if (!chosenWriter)
-        chosenWriter = &mapWriter;
+    {
+        foreach (const Plugin p, pm->plugins()) {
+            QString fileName = p.fileName;
+            if(fileName.contains(QString::fromStdString("json.dll")))
+            {
+                mWriterPluginFileName = fileName;
+                break;
+            }
+        }
+
+        if (const Plugin *plugin = pm->pluginByFileName(mWriterPluginFileName))
+            chosenWriter = qobject_cast<MapWriterInterface*>(plugin->instance);
+        else
+            return false;
+    }
 
     if (!chosenWriter->write(map(), fileName)) {
         if (error)
@@ -214,8 +236,15 @@ void MapDocument::setFileName(const QString &fileName)
 QString MapDocument::displayName() const
 {
     QString displayName = QFileInfo(mFileName).fileName();
-    if (displayName.isEmpty())
-        displayName = tr("untitled.tmx");
+    if (displayName.isEmpty()){
+        QString mapName = map()->rtbMap()->levelName();
+        if(mapName.isEmpty()){
+            mapName = tr("untitled");
+        } else {
+            mapName.replace(QLatin1String(" "), QLatin1String("_"));
+        }
+        displayName = mapName + QLatin1String(".json");
+    }
 
     return displayName;
 }
@@ -607,6 +636,30 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 
     if (selectedObjects.size() == 1)
         setCurrentObject(selectedObjects.first());
+    // RTB: show properties only if all selected objects have the same type
+    else if (selectedObjects.size() > 0)
+    {
+        int tileID = selectedObjects.first()->cell().tile->id();
+        for(int i = 1; i < selectedObjects.size(); i++)
+        {
+            int id = selectedObjects.at(i)->cell().tile->id();
+            // you can select the different laserbeam types
+            if(tileID != id && !(tileID <= RTBMapObject::LaserBeamRight && tileID >= RTBMapObject::LaserBeamLeft
+                                 && id <= RTBMapObject::LaserBeamRight && id >= RTBMapObject::LaserBeamLeft))
+            {
+                setCurrentObject(0);
+                return;
+            }
+        }
+        // select the object which is not already selected, to update the properties
+        if(selectedObjects.first() != currentObject())
+            setCurrentObject(selectedObjects.first());
+        else
+            setCurrentObject(selectedObjects.last());
+    }
+    // if nothing is selected
+    else
+        setCurrentObject(0);
 }
 
 void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
@@ -968,4 +1021,184 @@ void MapDocument::createRenderer()
         mRenderer = new OrthogonalRenderer(mMap);
         break;
     }
+}
+
+void MapDocument::selectFloorLayer()
+{
+    setCurrentLayerIndex(RTBMapSettings::FloorID);
+}
+
+void MapDocument::selectOrbLayer()
+{
+    setCurrentLayerIndex(RTBMapSettings::OrbObjectID);
+}
+
+void MapDocument::selectObjectLayer()
+{
+    setCurrentLayerIndex(RTBMapSettings::ObjectID);
+}
+
+void MapDocument::setIntervalSpeed(int value)
+{
+    QList<MapObject*> mapObjects;
+    for(Object *obj : currentObjects())
+    {
+        if(dynamic_cast<MapObject*>(obj))
+            mapObjects.append(static_cast<MapObject*>(obj));
+        else
+            return;
+    }
+
+    for(MapObject *mapObject : mapObjects)
+    {
+        int type = mapObject->rtbMapObject()->objectType();
+        if(type != RTBMapObject::CustomFloorTrap
+                && type != RTBMapObject::MovingFloorTrapSpawner
+                && type != RTBMapObject::ProjectileTurret
+                && type != RTBMapObject::LaserBeam)
+            return;
+    }
+
+    QList<QUndoCommand*> commands;
+    for(MapObject *mapObject : mapObjects)
+    {
+        // check if the value is the same, if so continue with next object
+        RTBMapObject *rtbMapObject = mapObject->rtbMapObject();
+        switch (mapObject->rtbMapObject()->objectType()) {
+        case RTBMapObject::CustomFloorTrap:
+            if(static_cast<RTBCustomFloorTrap*>(rtbMapObject)->intervalSpeed() == value)
+                continue;
+            break;
+        case RTBMapObject::MovingFloorTrapSpawner:
+            if(static_cast<RTBMovingFloorTrapSpawner*>(rtbMapObject)->intervalSpeed() == value)
+                continue;
+            break;
+        case RTBMapObject::ProjectileTurret:
+        {
+            RTBProjectileTurret *projectileTurret = static_cast<RTBProjectileTurret*>(rtbMapObject);
+            int currentIndex = projectileTurret->convertToIndex(RTBMapObject::IntervalSpeed, projectileTurret->intervalSpeed());
+            if(value > (projectileTurret->idCount(RTBMapObject::IntervalSpeed) - 1)
+                || currentIndex == value)
+                continue;
+            break;
+        }
+        case RTBMapObject::LaserBeam:
+            if(static_cast<RTBLaserBeam*>(rtbMapObject)->intervalSpeed() == value)
+                continue;
+            break;
+        default:
+            break;
+        }
+
+        QUndoCommand *command = new RTBChangeMapObjectProperties(this, mapObject, RTBChangeMapObjectProperties::RTBIntervalSpeed, value);
+        commands.append(command);
+    }
+
+    if(commands.size() > 0)
+    {
+        undoStack()->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                            "Change Interval Speed"));
+        for(QUndoCommand *command : commands)
+            undoStack()->push(command);
+
+        undoStack()->endMacro();
+    }
+
+
+    objectsChanged(mapObjects);
+}
+
+void MapDocument::setIntervalOffset(int value)
+{
+    QList<MapObject*> mapObjects;
+    for(Object *obj : currentObjects())
+    {
+        if(dynamic_cast<MapObject*>(obj))
+            mapObjects.append(static_cast<MapObject*>(obj));
+        else
+            return;
+    }
+
+    for(MapObject *mapObject : mapObjects)
+    {
+        int type = mapObject->rtbMapObject()->objectType();
+        if(type != RTBMapObject::CustomFloorTrap
+                && type != RTBMapObject::LaserBeam
+                && type != RTBMapObject::ProjectileTurret
+                && type != RTBMapObject::NPCBallSpawner)
+            return;
+    }
+
+    QList<QUndoCommand*> commands;
+    for(MapObject *mapObject : mapObjects)
+    {
+        // check if the value is the same, if so continue with next object
+        RTBMapObject *rtbMapObject = mapObject->rtbMapObject();
+        switch (mapObject->rtbMapObject()->objectType()) {
+        case RTBMapObject::CustomFloorTrap:
+            if(static_cast<RTBCustomFloorTrap*>(rtbMapObject)->intervalOffset() == value)
+                continue;
+            break;
+        case RTBMapObject::LaserBeam:
+            if(static_cast<RTBLaserBeam*>(rtbMapObject)->intervalOffset() == value)
+                continue;
+            break;
+        case RTBMapObject::ProjectileTurret:
+        {
+            RTBProjectileTurret *projectileTurret = static_cast<RTBProjectileTurret*>(rtbMapObject);
+            int currentIndex = projectileTurret->convertToIndex(RTBMapObject::IntervalOffset, projectileTurret->intervalOffset());
+            if(value > (projectileTurret->idCount(RTBMapObject::IntervalOffset) - 1)
+                || currentIndex == value)
+                continue;
+            break;
+        }
+        case RTBMapObject::NPCBallSpawner:
+        {
+            RTBNPCBallSpawner *npcBallSpawner = static_cast<RTBNPCBallSpawner*>(rtbMapObject);
+            int currentIndex = npcBallSpawner->convertToIndex(RTBMapObject::IntervalOffset, npcBallSpawner->intervalOffset());
+            if(value > (npcBallSpawner->idCount(RTBMapObject::IntervalOffset) - 1)
+                || currentIndex == value)
+                continue;
+            break;
+        }
+        default:
+            break;
+        }
+
+        QUndoCommand *command = new RTBChangeMapObjectProperties(this, mapObject, RTBChangeMapObjectProperties::RTBIntervalOffset, value);
+        commands.append(command);
+    }
+
+    if(commands.size() > 0)
+    {
+        undoStack()->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                            "Change Interval Offset"));
+        for(QUndoCommand *command : commands)
+            undoStack()->push(command);
+
+        undoStack()->endMacro();
+    }
+
+    objectsChanged(mapObjects);
+}
+
+void MapDocument::selectNextLayer()
+{
+    if(currentLayerIndex() + 1 <= RTBMapSettings::OrbObjectID)
+        setCurrentLayerIndex(currentLayerIndex() + 1);
+    else
+        setCurrentLayerIndex(RTBMapSettings::FloorID);
+}
+
+void MapDocument::selectPreviousLayer()
+{
+    if(currentLayerIndex() - 1 >= RTBMapSettings::FloorID)
+        setCurrentLayerIndex(currentLayerIndex() - 1);
+    else
+        setCurrentLayerIndex(RTBMapSettings::OrbObjectID);
+}
+
+void MapDocument::updateToolbarAction(int id)
+{
+    emit highlightToolbarAction(id);
 }

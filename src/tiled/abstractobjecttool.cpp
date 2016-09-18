@@ -181,7 +181,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
-
+    /*
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
     menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
@@ -204,7 +204,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
             action->setData(QVariant::fromValue(objectGroup));
         }
     }
-
+    */
     menu.addSeparator();
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QAction *propertiesAction = menu.addAction(propIcon,

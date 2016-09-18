@@ -43,7 +43,34 @@ public:
         Orientation,
         RenderOrder,
         BackgroundColor,
-        LayerDataFormat
+        LayerDataFormat,
+        // RTB
+        RTBChapter,
+        RTBCustomBaseInterval,
+        RTBCustomGlowColor,
+        RTBCustomBackgroundColor,
+        RTBLevelBrightness,
+        RTBCloudDensity,
+        RTBCloudVelocity,
+        RTBCloudAlpha,
+        RTBSnowDensity,
+        RTBSnowVelocity,
+        RTBSnowRisingVelocity,
+        RTBCameraGrain,
+        RTBCameraContrast,
+        RTBCameraSaturation,
+        RTBCameraGlow,
+        RTBHasWalls,
+        RTBCustomMusicTrack,
+        RTBLevelName,
+        RTBLevelDescription,
+        RTBBackgroundColorScheme,
+        RTBGlowColorScheme,
+        RTBLevelModifier,
+        RTBHasStarfield,
+        RTBDifficulty,
+        RTBPlayStyle,
+        RTBPreviewImagePath
     };
 
     /**
@@ -107,14 +134,21 @@ public:
     void undo();
     void redo();
 
+    ChangeMapProperty(MapDocument *mapDocument, ChangeMapProperty::Property property, double value);
+    ChangeMapProperty(MapDocument *mapDocument, ChangeMapProperty::Property property, QString value);
+    ChangeMapProperty(MapDocument *mapDocument, ChangeMapProperty::Property property, const QColor &value);
+
 private:
     void swap();
 
     MapDocument *mMapDocument;
     Property mProperty;
     QColor mBackgroundColor;
+    QString mStringValue;
+    QColor mColorValue;
     union {
         int mIntValue;
+        double mDoubleValue;
         Map::StaggerAxis mStaggerAxis;
         Map::StaggerIndex mStaggerIndex;
         Map::Orientation mOrientation;

@@ -37,6 +37,8 @@
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QCheckBox>
+#include <QToolButton>
 
 namespace Tiled {
 namespace Internal {
@@ -48,6 +50,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 {
     setObjectName(QLatin1String("propertiesDock"));
 
+    /*
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
@@ -77,13 +80,14 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     toolBar->addAction(mActionAddProperty);
     toolBar->addAction(mActionRemoveProperty);
     toolBar->addAction(mActionRenameProperty);
+    */
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(5);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
-    layout->addWidget(toolBar);
+    //layout->addWidget(toolBar);
     widget->setLayout(layout);
 
     setWidget(widget);
@@ -92,8 +96,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(manager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
 
-    connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
-            SLOT(currentItemChanged(QtBrowserItem*)));
+    //connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
+            //SLOT(currentItemChanged(QtBrowserItem*)));
 
     retranslateUi();
 }
@@ -150,7 +154,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
     const bool enabled = object != 0 && !isExternal(object);
     mPropertyBrowser->setEnabled(enabled);
-    mActionAddProperty->setEnabled(enabled);
+    //mActionAddProperty->setEnabled(enabled);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
@@ -185,7 +189,7 @@ void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 
     if (update) {
         currentObjectChanged(object);
-        currentItemChanged(mPropertyBrowser->currentItem());
+        //currentItemChanged(mPropertyBrowser->currentItem());
     }
 }
 
@@ -281,6 +285,36 @@ bool PropertiesDock::event(QEvent *event)
             event->accept();
             return true;
         }
+
+        if (keyEvent->key() == Qt::Key_Tab || keyEvent->key() == Qt::Key_Backtab)
+        {
+            event->accept();
+
+            if(mPropertyBrowser->properties().contains(mPropertyBrowser->currentItem()->property()))
+            {
+                setFocus();
+                QtBrowserItem *newItem = mPropertyBrowser->currentItem()->children().first();
+                //mPropertyBrowser->setCurrentItem(newItem);
+                mPropertyBrowser->editItem(newItem);
+                return true;
+            }
+            else if(dynamic_cast<QCheckBox*>(focusWidget()))
+            {
+                setFocus();
+                QtBrowserItem *currentItem = mPropertyBrowser->currentItem();
+                QtBrowserItem *parent = currentItem->parent();
+                int index = parent->children().indexOf(currentItem);
+                mPropertyBrowser->editItem(parent->children().at(index + 1));
+                return true;
+            }
+            else if(dynamic_cast<QToolButton*>(focusWidget()))
+            {
+                setFocus();
+                QtBrowserItem *newItem = mPropertyBrowser->currentItem()->children().first();
+                mPropertyBrowser->editItem(newItem);
+                return true;
+            }
+        }
         break;
     }
     case QEvent::LanguageChange:
@@ -296,10 +330,11 @@ bool PropertiesDock::event(QEvent *event)
 void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
-
+    /*
     mActionAddProperty->setText(tr("Add Property"));
     mActionRemoveProperty->setText(tr("Remove Property"));
     mActionRenameProperty->setText(tr("Rename Property"));
+    */
 }
 
 } // namespace Internal

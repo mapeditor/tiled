@@ -59,6 +59,8 @@ public:
     QtPropertyPrivate(QtAbstractPropertyManager *manager)
         : m_enabled(true),
           m_modified(false),
+          m_hasConflict(false),
+          m_isResettable(true),
           m_manager(manager) {}
     QtProperty *q_ptr;
 
@@ -73,6 +75,8 @@ public:
     QColor m_valueColor;
     bool m_enabled;
     bool m_modified;
+    bool m_hasConflict;
+    bool m_isResettable;
 
     QtAbstractPropertyManager * const m_manager;
 };
@@ -277,6 +281,26 @@ bool QtProperty::isEnabled() const
 }
 
 /*!
+    Returns whether the property has conflict.
+
+    \sa setHasConflict()
+*/
+bool QtProperty::hasConflict() const
+{
+    return d_ptr->m_hasConflict;
+}
+
+/*!
+    Returns whether the property is resettable.
+
+    \sa setHasConflict()
+*/
+bool QtProperty::isResettable() const
+{
+    return d_ptr->m_isResettable;
+}
+
+/*!
     Returns whether the property is modified.
 
     \sa setModified()
@@ -450,6 +474,34 @@ void QtProperty::setModified(bool modified)
         return;
 
     d_ptr->m_modified = modified;
+    propertyChanged();
+}
+
+/*!
+    Sets the property's conflict state.
+
+    \sa hasConflict()
+*/
+void QtProperty::setHasConflict(bool hasConflict)
+{
+    if (d_ptr->m_hasConflict == hasConflict)
+        return;
+
+    d_ptr->m_hasConflict = hasConflict;
+    propertyChanged();
+}
+
+/*!
+    Sets the property's is resettable.
+
+    \sa isResettable()
+*/
+void QtProperty::setIsResettable(bool isResettable)
+{
+    if (d_ptr->m_isResettable == isResettable)
+        return;
+
+    d_ptr->m_isResettable = isResettable;
     propertyChanged();
 }
 

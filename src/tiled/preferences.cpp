@@ -25,6 +25,8 @@
 #include "mapdocument.h"
 #include "tilesetmanager.h"
 
+#include "rtbcore.h"
+
 #if QT_VERSION >= 0x050000
 #include <QStandardPaths>
 #else
@@ -53,13 +55,14 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSettings(new QSettings(this))
+    : mSettings(new QSettings(QCoreApplication::applicationDirPath() + QLatin1String("/settings.ini")
+                              , QSettings::IniFormat, this))
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
     mLayerDataFormat = (Map::LayerDataFormat)
             mSettings->value(QLatin1String("LayerDataFormat"),
-                             Map::Base64Zlib).toInt();
+                             Map::CSV).toInt();
     mMapRenderOrder = (Map::RenderOrder)
             mSettings->value(QLatin1String("MapRenderOrder"),
                              Map::RightDown).toInt();
@@ -69,12 +72,12 @@ Preferences::Preferences()
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
-    mShowGrid = boolValue("ShowGrid");
+    mShowGrid = boolValue("ShowGrid", true);
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
-    mSnapToGrid = boolValue("SnapToGrid");
+    mSnapToGrid = true;
     mSnapToFineGrid = boolValue("SnapToFineGrid");
-    mGridColor = colorValue("GridColor", Qt::black);
+    mGridColor = colorValue("GridColor", QColor(QLatin1String("#333333")));
     mGridFine = intValue("GridFine", 4);
     mObjectLineWidth = realValue("ObjectLineWidth", 2);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
@@ -123,6 +126,19 @@ Preferences::Preferences()
     mSettings->beginGroup(QLatin1String("Startup"));
     mOpenLastFilesOnStartup = boolValue("OpenLastFiles", true);
     mSettings->endGroup();
+
+    // Retrieve RTB settings
+    mSettings->beginGroup(QLatin1String("RTB"));
+    mShowPropertyVisualization = boolValue("ShowPropertyVisualization", false);
+    mGameDirectory = stringValue("GameDirectory");
+    mTutorialChapter = intValue("TutorialChapter", 0);
+
+    mSettings->endGroup();
+
+    if(mGameDirectory.isEmpty())
+    {
+        setGameDirectory(RTBCore::instance()->findGameDirectory());
+    }
 }
 
 Preferences::~Preferences()
@@ -447,6 +463,33 @@ void Preferences::setOpenLastFilesOnStartup(bool open)
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
+}
+
+void Preferences::setShowPropertyVisualization(bool showProperty)
+{
+    if (mShowPropertyVisualization == showProperty)
+        return;
+
+    mShowPropertyVisualization = showProperty;
+    mSettings->setValue(QLatin1String("RTB/ShowPropertyVisualization"), showProperty);
+}
+
+void Preferences::setGameDirectory(QString gameDirectory)
+{
+    if (mGameDirectory == gameDirectory)
+        return;
+
+    mGameDirectory = gameDirectory;
+    mSettings->setValue(QLatin1String("RTB/GameDirectory"), gameDirectory);
+}
+
+void Preferences::setTutorialChapter(int tutorialChapter)
+{
+    if (mTutorialChapter == tutorialChapter)
+        return;
+
+    mTutorialChapter = tutorialChapter;
+    mSettings->setValue(QLatin1String("RTB/TutorialChapter"), tutorialChapter);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const

@@ -58,7 +58,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mRTBMapObject(0)
 {
 }
 
@@ -130,5 +131,7 @@ MapObject *MapObject::clone() const
     o->setShape(mShape);
     o->setCell(mCell);
     o->setRotation(mRotation);
+    o->setRTBMapObject(mRTBMapObject->clone());
+
     return o;
 }

@@ -35,6 +35,8 @@
 #include "tile.h"
 #include "zoomable.h"
 
+#include "rtbmapobjectitem.h"
+
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -53,7 +55,9 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     mObject(object),
     mMapDocument(mapDocument),
     mIsEditable(false),
-    mSyncing(false)
+    mSyncing(false),
+    mRTBMapObjectItem(new RTBMapObjectItem(object, mapDocument, this)),
+    mIsMoving(false)
 {
     syncWithMapObject();
 }
@@ -76,7 +80,7 @@ void MapObjectItem::syncWithMapObject()
     QString toolTip = mName;
     const QString &type = mObject->type();
     if (!type.isEmpty())
-        toolTip += QLatin1String(" (") + type + QLatin1String(")");
+        toolTip += type;
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
@@ -103,6 +107,12 @@ void MapObjectItem::syncWithMapObject()
     mSyncing = false;
 
     setVisible(mObject->isVisible());
+
+    if(mObject->position() != mPosition)
+    {
+        mRTBMapObjectItem->updateBoundingRect();
+        mPosition = mObject->position();
+    }
 }
 
 void MapObjectItem::setEditable(bool editable)
@@ -141,7 +151,8 @@ void MapObjectItem::paint(QPainter *painter,
     mMapDocument->renderer()->setPainterScale(scale);
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
 
-    if (mIsEditable) {
+    // this is now in RTBVisualization
+    /*if (mIsEditable) {
         painter->translate(pos());
 
         QLineF top(mBoundingRect.topLeft(), mBoundingRect.topRight());
@@ -158,7 +169,7 @@ void MapObjectItem::paint(QPainter *painter,
         dashPen.setDashOffset(qMax(qreal(0), y()));
         painter->setPen(dashPen);
         painter->drawLines(QVector<QLineF>() << left << right);
-    }
+    }*/
 }
 
 void MapObjectItem::resizeObject(const QSizeF &size)
@@ -190,4 +201,15 @@ QColor MapObjectItem::objectColor(const MapObject *object)
 
     // Fallback color
     return Qt::gray;
+}
+
+void MapObjectItem::setIsMoving(bool isMoving)
+{
+    if(mIsMoving == isMoving)
+        return;
+
+    mIsMoving = isMoving;
+
+    if(mRTBMapObjectItem)
+        mRTBMapObjectItem->setIsPaintingAllowed(!isMoving);
 }

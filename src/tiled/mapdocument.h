@@ -27,6 +27,7 @@
 #include "tiled.h"
 #include "tileset.h"
 #include "mapobject.h"
+#include "rtbvalidatormodel.h"
 
 #include <QDateTime>
 #include <QList>
@@ -258,6 +259,8 @@ public:
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
+    RTBValidatorModel *validatorModel() const { return mValidatorModel; }
+
     void emitMapChanged();
 
     void emitRegionChanged(const QRegion &region);
@@ -276,6 +279,8 @@ public:
 
     void emitEditLayerNameRequested();
     void emitEditCurrentObject();
+
+    void emitHasWallsChanged();
 
 signals:
     void fileNameChanged(const QString &fileName,
@@ -372,6 +377,32 @@ signals:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
 
+    void highlightToolbarAction(int id);
+
+    void hasWallsChanged();
+
+public slots:
+    void selectFloorLayer();
+    void selectOrbLayer();
+    void selectObjectLayer();
+    void setIntervalSpeed(int value);
+    void setIntervalSpeed1() { setIntervalSpeed(0); }
+    void setIntervalSpeed2() { setIntervalSpeed(1); }
+    void setIntervalSpeed3() { setIntervalSpeed(2); }
+    void setIntervalSpeed4() { setIntervalSpeed(3); }
+    void setIntervalOffset(int value);
+    void setIntervalOffset1() { setIntervalOffset(0); }
+    void setIntervalOffset2() { setIntervalOffset(1); }
+    void setIntervalOffset3() { setIntervalOffset(2); }
+    void setIntervalOffset4() { setIntervalOffset(3); }
+    void setIntervalOffset5() { setIntervalOffset(4); }
+    void setIntervalOffset6() { setIntervalOffset(5); }
+    void setIntervalOffset7() { setIntervalOffset(6); }
+    void setIntervalOffset8() { setIntervalOffset(7); }
+    void selectNextLayer();
+    void selectPreviousLayer();
+    void updateToolbarAction(int id);
+
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
 
@@ -415,6 +446,8 @@ private:
     TerrainModel *mTerrainModel;
     QUndoStack *mUndoStack;
     QDateTime mLastSaved;
+
+    RTBValidatorModel *mValidatorModel;
 };
 
 inline QString MapDocument::lastExportFileName() const
@@ -558,6 +591,15 @@ inline void MapDocument::emitEditLayerNameRequested()
 inline void MapDocument::emitEditCurrentObject()
 {
     emit editCurrentObject();
+}
+
+/**
+ * Emits the hasWallsChanged signal, which updates the enable state of the
+ * wall block action in the toolbar.
+ */
+inline void MapDocument::emitHasWallsChanged()
+{
+    emit hasWallsChanged();
 }
 
 } // namespace Internal

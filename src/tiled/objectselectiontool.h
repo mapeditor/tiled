@@ -58,6 +58,9 @@ public:
 
     void languageChanged();
 
+public slots:
+    void selectObject(MapObject *mapObject);
+
 private slots:
     void updateHandles();
     void updateHandleVisibility();

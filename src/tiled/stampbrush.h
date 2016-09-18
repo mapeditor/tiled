@@ -81,6 +81,8 @@ protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument);
 
+    void updatePreview();
+
 private:
     enum PaintFlags {
         Mergeable               = 0x1,
@@ -94,7 +96,6 @@ private:
     void endCapture();
     QRect capturedArea() const;
 
-    void updatePreview();
     void updatePreview(QPoint tilePos);
 
     TileStamp mStamp;

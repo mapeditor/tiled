@@ -363,7 +363,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        foreach (const QPoint p, list) {
+        for (const QPoint &p : list) {
             // todo: take into account tile probability
             const Cell &cell = mRandomList.at(rand() % mRandomList.size());
             preview->setCell(p.x() - bounds.left(),
@@ -379,7 +379,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
 
-        foreach (const QPoint p, list) {
+        for (const QPoint &p : list) {
             Map *variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation, mMissingTilesets);
 
@@ -411,7 +411,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        foreach (const PaintOperation &op, operations)
+        for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
 
         mPreviewLayer = preview;

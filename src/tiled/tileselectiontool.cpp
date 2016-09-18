@@ -126,3 +126,9 @@ QRect TileSelectionTool::selectedArea() const
 
     return QRect(pos, size);
 }
+
+void TileSelectionTool::setSelectedArea(QRegion area)
+{
+    QUndoCommand *cmd = new ChangeSelectedArea(mapDocument(), area);
+    mapDocument()->undoStack()->push(cmd);
+}

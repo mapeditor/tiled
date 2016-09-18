@@ -91,6 +91,9 @@ private:
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
+    void writeRTBMap(QXmlStreamWriter &w, const Map *map);
+    void writeRTBMapObject(QXmlStreamWriter &w, const RTBMapObject *rtbMapObject);
+
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths;
@@ -199,6 +202,9 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
         w.writeAttribute(QLatin1String("backgroundcolor"),
                          map->backgroundColor().name());
     }
+
+    // RTB
+    writeRTBMap(w, map);
 
     w.writeAttribute(QLatin1String("nextobjectid"),
                      QString::number(map->nextObjectId()));
@@ -556,6 +562,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
 
+    // RTB
+    if(mapObject->rtbMapObject())
+        writeRTBMapObject(w, mapObject->rtbMapObject());
+
+
     const qreal rotation = mapObject->rotation();
     if (rotation != 0.0)
         w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
@@ -581,6 +592,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         }
         points.chop(1);
         w.writeAttribute(QLatin1String("points"), points);
+
         w.writeEndElement();
     }
 
@@ -722,4 +734,141 @@ void MapWriter::setDtdEnabled(bool enabled)
 bool MapWriter::isDtdEnabled() const
 {
     return d->mDtdEnabled;
+}
+
+void MapWriterPrivate::writeRTBMap(QXmlStreamWriter &w, const Map *map)
+{
+    const RTBMap *rtbMap = map->rtbMap();
+
+    w.writeAttribute(QLatin1String("haserror"), QString::number(rtbMap->hasError()));
+    w.writeAttribute(QLatin1String("customglowcolor"), rtbMap->customGlowColor().name());
+    w.writeAttribute(QLatin1String("custombackgroundcolor"), rtbMap->customBackgroundColor().name());
+    w.writeAttribute(QLatin1String("levelbrightness"), QString::number(rtbMap->levelBrightness()));
+    w.writeAttribute(QLatin1String("clouddensity"), QString::number(rtbMap->cloudDensity()));
+    w.writeAttribute(QLatin1String("cloudvelocity"), QString::number(rtbMap->cloudVelocity()));
+    w.writeAttribute(QLatin1String("cloudalpha"), QString::number(rtbMap->cloudAlpha()));
+    w.writeAttribute(QLatin1String("snowdensity"), QString::number(rtbMap->snowDensity()));
+    w.writeAttribute(QLatin1String("snowvelocity"), QString::number(rtbMap->snowVelocity()));
+    w.writeAttribute(QLatin1String("snowrisingvelocity"), QString::number(rtbMap->snowRisingVelocity()));
+    w.writeAttribute(QLatin1String("cameragrain"), QString::number(rtbMap->cameraGrain()));
+    w.writeAttribute(QLatin1String("cameracontrast"), QString::number(rtbMap->cameraContrast()));
+    w.writeAttribute(QLatin1String("camerasaturation"), QString::number(rtbMap->cameraSaturation()));
+    w.writeAttribute(QLatin1String("cameraglow"), QString::number(rtbMap->cameraGlow()));
+    w.writeAttribute(QLatin1String("haswalls"), QString::number(rtbMap->hasWall()));
+    w.writeAttribute(QLatin1String("levelname"), rtbMap->levelName());
+    w.writeAttribute(QLatin1String("leveldescription"), rtbMap->levelDescription());
+    w.writeAttribute(QLatin1String("backgroundcolorscheme"), QString::number(rtbMap->backgroundColorScheme()));
+    w.writeAttribute(QLatin1String("glowcolorscheme"), QString::number(rtbMap->glowColorScheme()));
+    w.writeAttribute(QLatin1String("chapter"), QString::number(rtbMap->chapter()));
+    w.writeAttribute(QLatin1String("hasstarfield"), QString::number(rtbMap->hasStarfield()));
+    w.writeAttribute(QLatin1String("difficulty"), QString::number(rtbMap->difficulty()));
+    w.writeAttribute(QLatin1String("playstyle"), QString::number(rtbMap->playStyle()));
+    w.writeAttribute(QLatin1String("workShopId"), QString::number(rtbMap->workShopId()));
+    w.writeAttribute(QLatin1String("previewimagepath"), rtbMap->previewImagePath());
+}
+
+void MapWriterPrivate::writeRTBMapObject(QXmlStreamWriter &w, const RTBMapObject *rtbMapObject)
+{
+    w.writeAttribute(QLatin1String("objecttype"), QString::number(rtbMapObject->objectType()));
+    w.writeAttribute(QLatin1String("originid"), QString::number(rtbMapObject->originID()));
+
+    switch (rtbMapObject->objectType()) {
+    case RTBMapObject::CustomFloorTrap:
+    {
+        const RTBCustomFloorTrap *mapObject = static_cast<const RTBCustomFloorTrap*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("intervalspeed"), QString::number(mapObject->intervalSpeed()));
+        w.writeAttribute(QLatin1String("intervaloffset"), QString::number(mapObject->intervalOffset()));
+        break;
+    }
+    case RTBMapObject::MovingFloorTrapSpawner:
+    {
+        const RTBMovingFloorTrapSpawner *mapObject = static_cast<const RTBMovingFloorTrapSpawner*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("spawnamount"), QString::number(mapObject->spawnAmount()));
+        w.writeAttribute(QLatin1String("intervalspeed"), QString::number(mapObject->intervalSpeed()));
+        w.writeAttribute(QLatin1String("randomizestart"), QString::number(mapObject->randomizeStart()));
+        break;
+    }
+    case RTBMapObject::Button:
+    {
+        const RTBButtonObject *mapObject = static_cast<const RTBButtonObject*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("beatsactive"), QString::number(mapObject->beatsActive()));
+        w.writeAttribute(QLatin1String("laserbeamtargets"), mapObject->laserBeamTargets());
+        break;
+    }
+    case RTBMapObject::LaserBeam:
+    {
+        const RTBLaserBeam *mapObject = static_cast<const RTBLaserBeam*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("beamtype"), QString::number(mapObject->beamType()));
+        w.writeAttribute(QLatin1String("activatedonstart"), QString::number(mapObject->activatedOnStart()));
+        w.writeAttribute(QLatin1String("directiondegrees"), QString::number(mapObject->directionDegrees()));
+        w.writeAttribute(QLatin1String("targetdirectiondegrees"), QString::number(mapObject->targetDirectionDegrees()));
+        w.writeAttribute(QLatin1String("intervaloffset"), QString::number(mapObject->intervalOffset()));
+        w.writeAttribute(QLatin1String("intervalspeed"), QString::number(mapObject->intervalSpeed()));
+        break;
+    }
+    case RTBMapObject::ProjectileTurret:
+    {
+        const RTBProjectileTurret *mapObject = static_cast<const RTBProjectileTurret*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("intervalspeed"), QString::number(mapObject->intervalSpeed()));
+        w.writeAttribute(QLatin1String("intervaloffset"), QString::number(mapObject->intervalOffset()));
+        w.writeAttribute(QLatin1String("projectilespeed"), QString::number(mapObject->projectileSpeed()));
+        w.writeAttribute(QLatin1String("shotdirection"), QString::number(mapObject->shotDirection()));
+        break;
+    }
+    case RTBMapObject::Teleporter:
+    {
+        const RTBTeleporter *mapObject = static_cast<const RTBTeleporter*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("teleportertarget"), mapObject->teleporterTarget());
+        break;
+    }
+    case RTBMapObject::Target:
+    {
+        return;
+    }
+    case RTBMapObject::FloorText:
+    {
+        const RTBFloorText *mapObject = static_cast<const RTBFloorText*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("text"), mapObject->text());
+        w.writeAttribute(QLatin1String("maxcharacters"), QString::number(mapObject->maxCharacters()));
+        w.writeAttribute(QLatin1String("triggerzonewidth"), QString::number(mapObject->triggerZoneSize().width()));
+        w.writeAttribute(QLatin1String("triggerzoneheight"), QString::number(mapObject->triggerZoneSize().height()));
+        w.writeAttribute(QLatin1String("usetrigger"), QString::number(mapObject->useTrigger()));
+        w.writeAttribute(QLatin1String("scale"), QString::number(mapObject->scale()));
+        w.writeAttribute(QLatin1String("offsetx"), QString::number(mapObject->offsetX()));
+        w.writeAttribute(QLatin1String("offsety"), QString::number(mapObject->offsetY()));
+        break;
+    }
+    case RTBMapObject::CameraTrigger:
+    {
+        const RTBCameraTrigger *mapObject = static_cast<const RTBCameraTrigger*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("cameratarget"), mapObject->target());
+        w.writeAttribute(QLatin1String("cameratriggerzonewidth"), QString::number(mapObject->triggerZoneSize().width()));
+        w.writeAttribute(QLatin1String("cameratriggerzoneheight"), QString::number(mapObject->triggerZoneSize().height()));
+        w.writeAttribute(QLatin1String("cameraheight"), QString::number(mapObject->cameraHeight()));
+        w.writeAttribute(QLatin1String("cameraangle"), QString::number(mapObject->cameraAngle()));
+        break;
+    }
+    case RTBMapObject::StartLocation:
+    {
+        return;
+    }
+    case RTBMapObject::FinishHole:
+    {
+        return;
+    }
+    case RTBMapObject::NPCBallSpawner:
+    {
+        const RTBNPCBallSpawner *mapObject = static_cast<const RTBNPCBallSpawner*>(rtbMapObject);
+        w.writeAttribute(QLatin1String("spawnclass"), QString::number(mapObject->spawnClass()));
+        w.writeAttribute(QLatin1String("size"), QString::number(mapObject->size()));
+        w.writeAttribute(QLatin1String("intervaloffset"), QString::number(mapObject->intervalOffset()));
+        w.writeAttribute(QLatin1String("spawnfrequency"), QString::number(mapObject->spawnFrequency()));
+        w.writeAttribute(QLatin1String("speed"), QString::number(mapObject->speed()));
+        w.writeAttribute(QLatin1String("direction"), QString::number(mapObject->direction()));
+        break;
+    }
+    default:
+
+        return;
+    }
 }

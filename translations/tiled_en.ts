@@ -20,7 +20,12 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+	<source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;RTB Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+	&lt;p align=&quot;center&quot;&gt;Copyright 2015-2016 David Stammer, Kai Hillenbrand&lt;/p&gt;
+	&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.roadtoballhalla.com/&quot;&gt;http://www.roadtoballhalla.com/&lt;/a&gt;&lt;/p&gt;
+	&lt;br&gt;
+
+        &lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2015 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
@@ -238,7 +243,7 @@
     </message>
     <message>
         <location line="+10"/>
-        <source>Use current &amp;zoom level</source>
+	<source>Use current &amp;zoom Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -813,7 +818,8 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="1928"/>
+	<location filename="../src/tiled/newmapdialog.ui" line="23"/>
         <source>Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -831,6 +837,16 @@ Line %1, column %2</source>
         <location line="+13"/>
         <source>Tile render order:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="42"/>
+	<source>Map Name</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="127"/>
+	<source>Add Starter Content</source>
+	<translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1203,6 +1219,16 @@ Line %1, column %2</source>
         <location line="+13"/>
         <source>Export...</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="108"/>
+	<source>Path:</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+	<source>Browse...</source>
+	<translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2354,7 +2380,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
+	<source>Could not allocate sufficient memory for the image. Try reducing the zoom Map or using a 64-bit version of Tiled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2364,7 +2390,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
+	<source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom Map.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2994,7 +3020,46 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+2"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="90"/>
+	<location line="-4"/>
+	<source>None</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Easy</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medium</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extrem</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Speed</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Puzzle</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rhythm</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mix</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-14"/>
         <source>Orthogonal</source>
         <translation type="unfinished"></translation>
@@ -3266,23 +3331,13 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+237"/>
-        <source>Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+34"/>
+        <location line="+274"/>
         <source>Tile Layer Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Background Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3316,7 +3371,9 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-134"/>
+        <location line="2093"/>
+	<location line="2497"/>
+	<location line="433"/>
         <location line="+70"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
@@ -3451,6 +3508,840 @@ Please select specific format.</source>
         <location line="+8"/>
         <source>Terrain</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+	<source>Has Walls</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Has Starfield</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Visuals</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Background Color</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+	<location line="-14"/>
+	<source>Custom</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Steel Blue</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Indian Red</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Light Sea Green</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Royal Purple</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Glow Color</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Light Blue</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Royal Yellow</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Light Cyan</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Carrot Orange</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Custom Glow Color</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Custom Background Color</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Map Brightness</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Cloud Density</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Cloud Velocity</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Cloud Alpha</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Snow Density</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Snow Velocity</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Snow Rising Velocity</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+	<source>Camera</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Camera Grain</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Camera Contrast</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Camera Saturation</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Camera Glow</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+	<source>"Music 	&amp; SFX</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Chapter</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+	<source>"Workshop Settings</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Map Name</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Map Description</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Difficulty</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+	<location line="-14"/>
+	<source>None</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Easy</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Medium</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Hard</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Extreme</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+         <location line="+3"/>
+	<source>Play Style</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+434"/>
+	<location line="-426"/>
+	<source>Speed</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Puzzle</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Rhythm</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Mix</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Preview Image Path</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2207"/>
+	<source>Spawn Amount</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>Randomize Start</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Beats Active</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Laser Beam Targets</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2265"/>
+	<source>Target ID 1</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Target ID 2</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Target ID 3</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Target ID 4</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Target ID 5</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+	<source>Beam Type</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+	<source>Static</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Rotating</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Static Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Activated On Start</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Start Direction Degrees</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>End Direction Degrees</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2577"/>
+	<location line="2345"/>
+	<source>Interval Speed</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2582"/>
+	<location line="2349"/>
+	<source>1 Base Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2583"/>
+	<location line="2350"/>
+	<source>2 Base Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2584"/>
+	<location line="2351"/>
+	<source>4 Base Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2595"/>
+	<location line="2357"/>
+	<location line="2509"/>
+	<source>Interval Offset</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2599"/>
+	<location line="2513"/>
+	<location line="2361"/>
+	<source>No Offset</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2514"/>
+	<location line="2362"/>
+	<source>1/2 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Projectile Speed</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Shot Direction</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2538"/>
+	<location line="2375"/>
+	<source>Left</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2539"/>
+	<location line="2376"/>
+	<source>Right</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2540"/>
+	<location line="2377"/>
+	<source>Up</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2541"/>
+	<location line="2378"/>
+	<source>Down</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>All</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2460"/>
+	<location line="2404"/>
+	<source>Target ID</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+	<source>Invisible</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+	<source>Text</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Targeted Chars per Line</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Use Trigger</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2464"/>
+	<location line="2427"/>
+	<source>Trigger Zone</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Offset X</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Offset Y</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Text Scale</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+32"/>
+	<source>Camera Height</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+	<source>Camera Angle</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+	<source>Class</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+	<source>Rolling</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Dropping</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+	<source>Small</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2524"/>
+	<location line="2502"/>
+	<source>Normal</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Large</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+	<source>Spawn Frequency</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Low</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+	<source>Direction</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2580"/>
+	<source>1/2 Base Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+	<source>1/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>2/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>3/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>4/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>5/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>6/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>7/8 Interval</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="2747"/>
+	<source>Duration of the interval between two trap activations. 1 Base Interval = speed of a standard red floor trap.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Time offset to the default interval of the trap. 4/8 means it activates exactly between two standard activations.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>Amount of traps that are spawned.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Time the trap waits before moving to the next tile.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether the floor trap(s) should spawn at the spawner's location or 10 random steps away from it.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>How long the button is active after pressing it. 0 = toggle.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>IDs of up to 5 laser beams that are toggled by this button.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+	<source>Type of the laser beam. Static Interval beams can't be toggled by a button.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether the beam is active or not when starting the Map.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Beam starts at this angle. Only for &quot;Rotating beams&quot;.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Beam ends at this angle. Only for &quot;Rotating beams&quot;.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Time offset to the default interval. 4/8 means it activates exactly between two standard activations.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Time the laser needs to do a half sweep in one direction. Full sweep (there and back) takes 4x the time specified. 1 Base Interval = speed of a standard red floor trap. Only for &quot;Rotating beams&quot;.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>Duration of the interval between two shots. 1 Base Interval = speed of a standard red floor trap.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Time offset to the default interval. 4/8 means it shoots exactly between two standard shots.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Speed of the shot projectiles.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Direction the turret shoots. All = shots in all 8 cardinal directions.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>ID of the target object the teleporter moves the ball to.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether the teleporter should be hidden.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+	<source>The text to display. Make sure you have enough space on the floor!</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The amount of chars in a line before an automatic line break (following the current word).</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Width and height of the area the ball has to be in to display the text.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether the text should always be shown or only when the ball is inside the trigger zone.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The scale of the text.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>TOOLTIP1</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>TOOLTIP2</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>TOOLTIP3</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>ID of the target object the camera points to.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Width and height of the area the ball has to be in to use the camera.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Height of the camera.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Angle of the camera facing downwards in degrees.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+	<source>Whether the evil balls should start rolling or simply drop down and jump back into the sky.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Size of the evil balls.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Spawn time offset to the default interval. 4/8 means the evil balls spawn exactly between two standard floor trap activations.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>How frequently new evil balls should spawn.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>How fast the evil balls should roll. Only for rolling balls.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The direction in which the evil balls should start rolling. Only for rolling balls.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+	<source>Displayed e.g. in the Workshop Hub.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Displayed on the Steam Workshop page.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether to use the tileset with or without walls.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Whether a starfield should be drawn in the background.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The difficulty of your map, used for filtering on Steam Workshop.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The play style of your map, used for filtering on Steam Workshop.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Preview Image Path Tooltip</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Use one of the existing color schemes or define a custom one.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Glow Tooltip.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The wall/border glow color. Only used if &quot;Glow Color Scheme&quot; is set to &quot;Custom&quot;.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The background color of the Map. Only used if &quot;Background Color Scheme&quot; is set to &quot;Custom&quot;.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Brightness of the Map.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Density of the clouds.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The speed at which the clouds move.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The transparency of the clouds.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Density of the snow particles.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>The speed at which the snow particles move.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Forces the snow particles to slightly move upwards if set to a high value.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+	<source>Amount of grain the image has.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Amount of contrast the image has</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Amount of saturation the image has.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Amount of glow the image has.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>The chapter number influences both the rhythm/speed of the Map and the music track.</source>
+	<translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4037,8 +4928,291 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="53"/>
+        <source>Change Base Intervall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Has Walls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Background Color Scheme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Glow Color Scheme</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Map Modifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Has Starfield</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Difficulty</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Play Style</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="356"/>
+        <source>Change Custom Base Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Change Map Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Cloud Density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Cloud Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Cloud Alpha</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Snow Density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Snow Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Snow Rising Velocity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Grain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Saturation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="417"/>
+        <source>Change Custom Music Track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Change Map Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Map Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+	<source>Change Preview Image Path</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="442"/>
+        <source>Change Custom Glow Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Custom Background Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/layermodel.cpp" line="+59"/>
+        <source>Floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Orbs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/rtbchangemapobjectproperties.cpp" line="+21"/>
+        <source>Change Interval Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Interval Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Spawn Amount</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Beats Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Beam Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Activated On Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Direction Degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Target Direction Degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Projectile Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Shot Direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Teleporter Target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Invisible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Use Trigger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Offset X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Offset Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Camera Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Max Characters per Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Randomize Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Spawn Class</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Spawn Frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Change Laser Beam Targets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Change Trigger Zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Scale</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4047,6 +5221,553 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+34"/>
         <source>Image files</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--            RTB              -->
+<context>
+    <name>Tiled::Internal::RTBTutorial</name>
+    <message>
+        <location filename="../src/tiled/rtbtutorial.cpp" line="+154"/>
+        <source>&lt;b&gt;Start&lt;/b&gt;&lt;br&gt;Welcome to the Road to Ballhalla Editor Tutorial.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Map erstellen&lt;/b&gt;
+        &lt;br&gt;Zuerst erstellen wir eine neue Map.
+        &lt;br&gt;Im oben markierten Bereich befinden sich allgemeine Funktionen zum erstellen, öffnen und speichern einer Map und einige mehr.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b>Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Klick auf &quot;Neu&quot; &lt;img src=&quot;:images/24x24/document-new.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt;
+	&lt;br&gt;2. &quot;Map Name&quot; eingeben (min. 5 Zeichen)
+        &lt;br&gt;3. Klick auf &quot;OK\quot;
+        &lt;br&gt;4. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;- Mit der Option &quot;Add Starter Content&quot; wird der neuen Map bereits die nötigen Start und Ziel Objekte hinzugefügt
+        &lt;br&gt;- Unter Kartengröße kann die Mapgröße eingestellt werden, wobei eine Kachel der größe eines Feldes/Objektes entspricht.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Map&lt;/b&gt;
+        &lt;br&gt;In dem markierten Bereich befindet sich die Map. Hier können Objekte hinzugefügt, verschoben oder entfernt werden.
+        &lt;br&gt;Außerdem ist es möglich über die Tabs im oberen Bereich, zwischen verschiedenen Maps hin und her zu wechseln.
+        &lt;br&gt;&lt;br&gt;Im Moment besteht die Map aus einer kleinen Fläche mit einem Start &lt;img src=&quot;data:image/png;base64, %1 height=&quot;16&quot; width=&quot;16&quot;&gt; und einem Ziel &lt;img src=&quot;data:image/png;base64, %2 height=&quot;16&quot; width=&quot;16&quot;&gt; Objekt.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Properties&lt;/b&gt;
+        &lt;br&gt;In diesem Bereich werden die Properties für das aktuell ausgewählte Objekt der Map oder sonst etwas angezeigt.
+        &lt;br&gt;Im Moment sind hier die Properties der erstellten Map zu sehen.
+	&lt;br&gt;Diese umfassen u.a. den Map Namen, Farbeinstellungen, Kameraeinstellungen und die Musikauswahl.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;Sie können sich nun mit den verschiedenen Properties vertraut machen, diese werden in den Tooltips näher erklärt. Um fortzufahren klicken Sie auf &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;Mit Hilfe des Pinsel Symbols neben den jeweiligen Properties können diese auf die Defaultwerte zurückgesetzt werden.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Toolbar&lt;/b&gt;
+        &lt;br&gt;In diesem Bereich stehen verschiedene Tools zur Verfügung. Im Moment können hier diverse Kacheln ausgewählt und in der Map eingefügt werden.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Klick auf &quot;Floor&quot; &lt;img src=&quot;data:image/png;base64, %1 height=&quot;16&quot; width=&quot;16&quot;&gt;
+        &lt;br&gt;2. Durch einen Linksklick kann nun diese Kacheln platziert werden.
+        &lt;br&gt;3. Erstellen Sie so bitte eine Fläche (3x3) unterhalb der bestehenden Fläche (min. 3 Felder entfernt).&lt;/p&gt;
+        &lt;br&gt;4. Verbinden Sie nun die beiden Flächen über einen Korridor an den rechten Enden der Fläche.&lt;/p&gt;
+        &lt;br&gt;5. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;Es stehen noch mehr Tools zur Verfügung. Mit denen können Flächen ausgefüllt, Kacheln entfernt oder Bereiche ausgewählt werden.
+        &lt;br&gt;&lt;br&gt;&lt;br&gt;
+	&lt;img src=&quot;://rtb_resources/tutorial/tutorialFloor.png&quot; &gt;
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Layer&lt;/b&gt;
+        &lt;br&gt;Eine Map besteht aus 3 Ebenen (Floor, Objects, Orbs). Zwischen diesen kann über diese Übersicht gewechselt werden. Jede Ebene hat seine eigene Auswahl an Tools in der Toolbar.
+        &lt;br&gt;- Floor: Auf dieser Ebene kann der Boden der Map erstellt werden. Dies beinhaltet normale(graue) Kacheln, Fallen, Barrieren, und Speedpads.
+        &lt;br&gt;- Objects: Diese Ebene beinhaltet die Objekte, wie Buttons, Laser Beams, Teleporter und viele mehr.
+        &lt;br&gt;- Orbs: Auf dieser Ebene befinden sich die verschiedenen Orbs (Point, Checkpoint, etc.).
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Wechseln Sie bitte auf die Ebene &quot;Objects\
+        &lt;br&gt;2. Fortfahren mit \NEXT\.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;- Zwischen den Ebenen kann auch mit den Tasten 1 (Floor), 2 (Objects) und 3 (Orbs) gewechselt werden.
+        &lt;br&gt;- Mit dem Tool \Select on multiple Layers\ ist es möglich einen Bereich Ebenenübergreifend zu selektierien und diesen dann zu verschieben oder zu kopieren.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Objects&lt;/b&gt;
+        &lt;br&gt;Wie Sie sehen hat sich die Toolauswahl in dem markierten Bereich verändert. Nun stehen verschiedene Objekte, wie Buttons, Laser Beams und Teleporter zur Verfügung.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Wählen Sie das Object &quot;Laser Beam Left&quot; &lt;img src=&quot;data:image/png;base64, %1 height=&quot;16&quot; width=&quot;16&quot;&gt; aus.
+        &lt;br&gt;2. Platzieren Sie dieses am linken Rand der Map oberhalb des Ziels.
+        &lt;br&gt;3. Platzieren Sie einen weiteren Laser Beam am linken Rand der Map unterhalb des Ziels.
+        &lt;br&gt;4. Wählen Sie das Object &quot;Button&quot; &lt;img src=&quot;data:image/png;base64, %2 height=&quot;16&quot; width=&quot;16&quot;&gt; aus.
+        &lt;br&gt;5. Platzieren Sie diesen auf der unteren Reihe der selbst erstellten Fläche.
+        &lt;br&gt;6. Wählen Sie das Object &quot;Teleporter&quot; &lt;img src=&quot;data:image/png;base64, %3 height=&quot;16&quot; width=&quot;16&quot;&gt; aus.
+        &lt;br&gt;7. Platzieren Sie dieses 3-4 Felder rechts neben dem Startpunkt.
+        &lt;br&gt;8. Wählen Sie das Object &quot;Target&quot; &lt;img src=&quot;data:image/png;base64, %4 height=&quot;16&quot; width=&quot;16&quot;&gt; aus.
+        &lt;br&gt;9. Platzieren Sie dieses in der Mitte der von Ihnen erstellten Fläche.
+        &lt;br&gt;10. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;&lt;br&gt;
+	&lt;img src=&quot;://rtb_resources/tutorial/tutorialObjects.png&quot; &gt;
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Objects Properties&lt;/b&gt;
+        &lt;br&gt;Ein Objekt kann eine Vielzahl von Properties besitzen.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Wählen Sie den von Ihnen erstellten Button &lt;img src=&quot;data:image/png;base64, %1 height=&quot;16&quot; width=&quot;16&quot;&gt; in der Map mit einem Linksklick aus.
+        &lt;br&gt;2. Weisen Sie diesem über den Property &quot;Target ID 1&quot; und &quot;Target ID 2&quot; die IDs der erstellten Laser Beams zu.
+        &lt;br&gt;3. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;- Verbindungen zwischen zwei Objekte werden durch eine gestrichelte Linie dargestellt, wenn das Objekt ausgewählt ist in dem das Target angegeben wurde.
+	&lt;br&gt;- Über den Button &quot;Show/Hide Property Visualization&quot; (V) &lt;img src=&quot;://rtb_resources/icons/action_visualhelper.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt; können Verbindungen auch permanent angezeigt werden.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Play Map&lt;/b&gt;
+	&lt;br&gt;Mit dem Button Play Map können Sie die aktuell ausgewählte Map direkt im Spiel testen. Hierfür muss dem Editor der Pfad zum Spiel bekannt sein. Sollte dieser nicht automatisch ermittelt werden können, kann er in den Preferences selbst eingetragen werden.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Speichern &lt;img src=&quot;:images/24x24/document-save.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt; Sie die Map
+	&lt;br&gt;2. Klick auf &quot;Play Map&quot; (F5) &lt;img src=&quot;://rtb_resources/icons/action_playMap.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt; und bestätigen Sie den Dialog mit &quot;OK&quot;
+        &lt;br&gt;3. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;Änderungen in der Map können im Spiel durch drücken von F5 geladen werden.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Validator&lt;/b&gt;
+        &lt;br&gt;Da es anscheinend einen Fehler in der Map gibt kann diese nicht im Spiel getestet werden.
+        Im markierten Bereich ist die Ausgabe des Validators zu sehen. Hier werden sämtliche Fehler und Warnung aus der aktuellen Map aufgelistet. Gehört der Validatoreintrag zu einem speziellen Objekt wird dessen ID angegeben, mit einem Klick auf den Eintrag wird das Objekt ausgewählt und die dazugehörigen Properties angezeigt.
+        &lt;br&gt;
+        &lt;br&gt;&lt;b&gt;Anleitung:&lt;/b&gt;
+        &lt;br&gt;1. Klick auf den Validatoreintrag &quot;Teleporters musst have a Target.&quot;
+        &lt;br&gt;2. In den Properties nun unter &quot;Target ID&quot; die ID des Targetobjektes auswählen.
+        &lt;br&gt;3. Speichern &lt;img src=&quot;:images/24x24/document-save.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt; der Map.
+	&lt;br&gt;4. Klick auf &quot;Play Map&quot; (F5) &lt;img src=&quot;://rtb_resources/icons/action_playMap.png&quot; height=&quot;16&quot; width=&quot;16&quot;&gt;
+        &lt;br&gt;5. Fortfahren mit &quot;NEXT&quot;.
+        &lt;br&gt;&lt;br&gt;
+        &lt;i&gt;Hinweise:&lt;/i&gt;
+        &lt;br&gt;- Der Validator wird jedes mal aktualisiert, wenn die Map gespeichert wird.
+        &lt;br&gt;- Eine Map kann trotz Warnungen gestartet werden, jedoch nicht mit Fehlern.
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;End&lt;/b&gt;
+        &lt;br&gt;Nun haben Sie einen ersten Eindruck des Editors und seiner Möglichkeiten bekommen. Es gibt noch eine Vielzahl weiterer Funktionen und Einstellungen. Diese werden in den Tooltips weiter erläutert.
+        &lt;br&gt;&lt;br&gt;&lt;b&gt;Shortcuts:&lt;/b&gt;
+        &lt;table cellspacing=&quot;5&quot;&gt;
+        &lt;tr&gt;&lt;td&gt;1, 2, 3&lt;/td&gt;&lt;td&gt;Auswahl eines Layers&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;TAB&lt;/td&gt;&lt;td&gt;Layerwechsel vorwärts&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;SHIFT + TAB&lt;/td&gt;&lt;td&gt;Layerwechsel rückwärts&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;V&lt;/td&gt;&lt;td&gt;Show/Hide Property Visualization&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;P&lt;/td&gt;&lt;td&gt;Map Properties&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;F5&lt;/td&gt;&lt;td&gt;Play Map&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;Select Area Tool&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;ALT + 1-4&lt;/td&gt;&lt;td&gt;Setzen des Interval Speed Properties bei dem ausgewähltem Objekt&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;CTRL + 1-8&lt;/td&gt;&lt;td&gt;Setzen des Interval Offset Properties bei dem ausgewähltem Objekt&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;
+        </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Not yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Don't ask again</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::RTBMap</name>
+    <message>
+        <location filename="../src/libtiled/rtbmap.h" line="+53"/>
+	<source>No Map description given.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::RTBMapObject</name>
+    <message>
+        <location filename="../src/libtiled/rtbmapobject.h" line="+172"/>
+        <source>Custom Floor Trap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Custom Floor Trap Spawner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Laser Beam Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Laser Beam Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Laser Beam Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>"Laser Beam Right"</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Projectile Turret</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Teleporter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Laser Beam</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Floor Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Camera Trigger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Start Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Finish Hole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Warball Spawner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Point Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Checkpoint Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Health Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Key Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Fake Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Orb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBTileButton</name>
+    <message>
+        <location filename="../src/tiled/rtbtilebutton.cpp" line="+82"/>
+	<source>Wall Blocks are only available in Maps that have the &quot;Has Walls&quot; map property disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBCore</name>
+    <message>
+        <location filename="../src/tiled/rtbcore.h" line="+56"/>
+        <source>Floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Floor Trap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Barrier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hidden Floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Wall Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Speedpad Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Speedpad Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Speedpad Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Speedpad Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Jumppad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBInsertTool</name>
+    <message>
+        <location filename="../src/tiled/rtbinserttool.cpp" line="+17"/>
+        <source>Paste All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBMapSettings</name>
+    <message>
+        <location line="+41"/>
+        <source>Floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Orbs</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBSelectAreaTool</name>
+    <message>
+        <location filename="../src/tiled/rtbselectareatool.cpp" line="+104"/>
+        <source>Select Area</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBTutorialDock</name>
+    <message>
+        <location filename="../src/tiled/rtbtutorialdock.cpp" line="+62"/>
+        <source>Tutorial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+	<source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continue</source>
+	<translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBValidatorDock</name>
+    <message>
+        <location filename="../src/tiled/rtbvalidatordock.cpp" line="+54"/>
+        <source>Validator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBValidatorModel</name>
+    <message>
+        <location filename="../src/tiled/rtbvalidatormodel.cpp" line="+52"/>
+        <source>Validator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::RTBValidatorRule</name>
+    <message>
+        <location filename="../src/tiled/rtbvalidatorrule.cpp" line="+32"/>
+	<source>There must be exactly 1 Start Location in the Map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There must be at least 1 Finish Hole in the Map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Teleporters must have a Target.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotating Laser Beams are not allowed in Maps without walls.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Camera Triggers must have a Target.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Laser Beams must be located next to a wall (opposite to the beam direction).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Laser Beams must be blocked (e.g. by a Wall Tile or a Projectile Turret).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Object must be placed on a (grey) floor tile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Objects/Orbs are not allowed to be on top of each other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Finish Hole must be surrounded by floor tiles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The object is not allowed to be in a wall.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wall Blocks are not allowed if the map property \"Has Walls\" is set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Object must be placed on a floor tile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rolling Warballs are not allowed to be small in a Map that has walls.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difficulty must be set.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play Style must be set.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview Image size must less 1 MB.</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projectile Turrets must be blocked (e.g. by a Wall Tile or a Projectile Turret).</source>
+	<translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buttons should have a Target or they will not work.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotating Laser Beams should have different start and end degrees.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Objects/Orbs should not overlap each other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default Value still set.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floor Text Object missing text.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

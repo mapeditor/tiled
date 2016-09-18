@@ -168,12 +168,13 @@ int main(int argc, char *argv[])
 
     TiledApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("Tiled"));
+    //a.setOrganizationDomain(QLatin1String(""));
+    a.setApplicationName(QLatin1String("Road to Ballhalla Editor - Beta"));
+    a.setApplicationDisplayName(QLatin1String("Road to Ballhalla Editor - Beta"));
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
-    a.setApplicationVersion(QLatin1String("0.12.3"));
+    a.setApplicationVersion(QLatin1String("0.91.0"));
 #endif
 
 #ifdef Q_OS_MAC

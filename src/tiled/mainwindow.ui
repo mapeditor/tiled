@@ -13,15 +13,21 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
-  <property name="windowTitle">
-   <string>Tiled</string>
-  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
    </layout>
@@ -32,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -80,7 +86,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionBecomePatron"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuMap">
@@ -227,6 +233,9 @@
    <property name="text">
     <string>&amp;Resize Map...</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionMapProperties">
    <property name="icon">
@@ -243,6 +252,9 @@
    </property>
    <property name="shortcut">
     <string>A</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionShowGrid">
@@ -264,6 +276,9 @@
    <property name="text">
     <string>Save &amp;As...</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionNew">
    <property name="icon">
@@ -281,6 +296,9 @@
    </property>
    <property name="text">
     <string>New &amp;Tileset...</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionClose">
@@ -349,6 +367,9 @@
    <property name="toolTip">
     <string>Offsets everything in a layer</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionPreferences">
    <property name="text">
@@ -374,18 +395,30 @@
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionAddExternalTileset">
    <property name="text">
     <string>&amp;Add External Tileset...</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionSnapToGrid">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>&amp;Snap to Grid</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionCloseAll">
@@ -437,6 +470,9 @@
    <property name="text">
     <string>Snap to &amp;Fine Grid</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionShowTileAnimations">
    <property name="checkable">
@@ -444,6 +480,9 @@
    </property>
    <property name="text">
     <string>Show Tile Animations</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionReload">
@@ -461,6 +500,9 @@
    <property name="shortcut">
     <string>Ctrl+E</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionBecomePatron">
    <property name="text">
@@ -470,6 +512,11 @@
   <action name="actionSaveAll">
    <property name="text">
     <string>Save All</string>
+   </property>
+  </action>
+  <action name="actionTutorial">
+   <property name="text">
+    <string>Tutorial</string>
    </property>
   </action>
  </widget>
