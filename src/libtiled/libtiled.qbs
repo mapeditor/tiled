@@ -31,7 +31,7 @@ DynamicLibrary {
     }
 
     bundle.isBundle: false
-    cpp.installNamePrefix: "@rpath"
+    cpp.sonamePrefix: qbs.targetOS.contains("darwin") ? "@rpath" : undefined
 
     files: [
         "compression.cpp",

@@ -89,9 +89,12 @@ Product {
                     "Qt5DBus.so",
                     "Qt5XcbQpa.so",
                 ]))
-                list.push("icudata.so.56", "icudata.so.56.1");
-                list.push("icui18n.so.56", "icui18n.so.56.1");
-                list.push("icuuc.so.56", "icuuc.so.56.1");
+
+                if (File.exists(prefix + "icudata.so.56")) {
+                    list.push("icudata.so.56", "icudata.so.56.1");
+                    list.push("icui18n.so.56", "icui18n.so.56.1");
+                    list.push("icuuc.so.56", "icuuc.so.56.1");
+                }
             }
 
             return list;
