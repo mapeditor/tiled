@@ -215,8 +215,6 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QAction *propertiesAction = menu.addAction(propIcon,
                                                tr("Object &Properties..."));
-    // TODO: Implement editing of properties for multiple objects
-    propertiesAction->setEnabled(selectedObjects.size() == 1);
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");

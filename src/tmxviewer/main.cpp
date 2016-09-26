@@ -31,6 +31,10 @@
 #include <QApplication>
 #include <QDebug>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 namespace {
 
 struct CommandLineOptions {
@@ -84,6 +88,15 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
+    // Make console output work on Windows, if running in a console.
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        FILE *dummy = nullptr;
+        freopen_s(&dummy, "CONOUT$", "w", stdout);
+        freopen_s(&dummy, "CONOUT$", "w", stderr);
+    }
+#endif
+
     QApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));

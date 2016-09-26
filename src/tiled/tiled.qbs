@@ -28,7 +28,7 @@ QtGuiApplication {
         else
             return ["$ORIGIN/../lib"];
     }
-//    cpp.cxxPrecompiledHeader: "pch.h"
+    cpp.useCxxPrecompiledHeader: true
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
@@ -47,6 +47,12 @@ QtGuiApplication {
     }
 
     consoleApplication: false
+
+    Group {
+        name: "Precompiled header"
+        files: ["pch.h"]
+        fileTags: ["cpp_pch_src"]
+    }
 
     files: [
         "aboutdialog.cpp",
@@ -260,7 +266,6 @@ QtGuiApplication {
         "patreondialog.cpp",
         "patreondialog.h",
         "patreondialog.ui",
-        "pch.h",
         "pluginlistmodel.cpp",
         "pluginlistmodel.h",
         "preferences.cpp",

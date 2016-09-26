@@ -203,6 +203,8 @@ void NewTilesetDialog::tryAccept()
                                          "margin and spacing!"));
                 return;
             }
+
+            tileset->syncExpectedColumnsAndRows();
         }
 
         if (mMode == CreateTileset) {

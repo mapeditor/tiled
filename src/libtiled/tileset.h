@@ -124,9 +124,11 @@ public:
     int tileCount() const;
 
     int columnCount() const;
+    int rowCount() const;
     void setColumnCount(int columnCount);
     int expectedColumnCount() const;
-    void syncExpectedColumnCount();
+    int expectedRowCount() const;
+    void syncExpectedColumnsAndRows();
 
     int imageWidth() const;
     int imageHeight() const;
@@ -150,6 +152,7 @@ public:
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
+    int rowCountForHeight(int height) const;
 
     const QList<Terrain*> &terrains() const;
     int terrainCount() const;
@@ -196,6 +199,7 @@ private:
     QPoint mTileOffset;
     int mColumnCount;
     int mExpectedColumnCount;
+    int mExpectedRowCount;
     QMap<int, Tile*> mTiles;
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
@@ -360,13 +364,24 @@ inline int Tileset::expectedColumnCount() const
 }
 
 /**
- * Sets the expected column count to the actual column count. Usually called
- * after checking with the user whether he wants the map to be adjusted to a
- * change to the tileset image width.
+ * Returns the number of tile rows expected to be in the tileset image. This
+ * may differ from the actual amount of rows encountered when loading the
+ * image, and is checked when automatically adjusting tile indexes.
  */
-inline void Tileset::syncExpectedColumnCount()
+inline int Tileset::expectedRowCount() const
+{
+    return mExpectedRowCount;
+}
+
+/**
+ * Sets the expected column and row count to the actual column count. Usually
+ * called after checking with the user whether he wants the map to be adjusted
+ * to a change to the tileset image size.
+ */
+inline void Tileset::syncExpectedColumnsAndRows()
 {
     mExpectedColumnCount = mColumnCount;
+    mExpectedRowCount = rowCount();
 }
 
 /**

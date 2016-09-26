@@ -324,18 +324,20 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
             if (mObject == obj)
                 continue;
             if (obj->properties().contains(name)) {
-                // An other selected object still has this property, so just clear the value.
-                mUpdating = true;
-                mNameToProperty[name]->setValue(tr(""));
-                mUpdating = false;
                 deleteProperty = false;
                 break;
             }
         }
 
-        // No other selected objects have this property so delete it.
-        if (deleteProperty)
+        if (deleteProperty) {
+            // No other selected objects have this property so delete it.
             delete mNameToProperty.take(name);
+        } else {
+            // Another selected object still has this property, so just clear the value.
+            mUpdating = true;
+            mNameToProperty[name]->setValue(QString());
+            mUpdating = false;
+        }
     }
     updatePropertyColor(name);
 }
@@ -343,9 +345,15 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
 {
     if (mObject == object) {
-        mUpdating = true;
-        mNameToProperty[name]->setValue(object->property(name));
-        mUpdating = false;
+        QVariant previousValue = mNameToProperty[name]->value();
+        QVariant newValue = object->property(name);
+        if (newValue.userType() != previousValue.userType()) {
+            updateCustomProperties();
+        } else {
+            mUpdating = true;
+            mNameToProperty[name]->setValue(newValue);
+            mUpdating = false;
+        }
     }
     if (mDocument->currentObjects().contains(object))
         updatePropertyColor(name);

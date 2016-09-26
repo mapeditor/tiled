@@ -719,6 +719,8 @@ static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
         return false;
     if (tileset.columnCount() == 0 || tileset.expectedColumnCount() == 0)
         return false;
+    if (tileset.expectedRowCount() < 2 || tileset.rowCount() < 2)
+        return false;
 
     return true;
 }
@@ -767,7 +769,7 @@ void DocumentManager::tilesetChanged(Tileset *tileset)
         }
     }
 
-    tileset->syncExpectedColumnCount();
+    tileset->syncExpectedColumnsAndRows();
 }
 
 /**
@@ -793,7 +795,7 @@ void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
             mapDocument->undoStack()->endMacro();
         }
 
-        tileset.data()->syncExpectedColumnCount();
+        tileset->syncExpectedColumnsAndRows();
     }
 }
 
