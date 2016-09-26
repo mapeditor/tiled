@@ -49,6 +49,7 @@ QtGuiApplication {
     consoleApplication: false
 
     Group {
+        name: "Precompiled header"
         files: ["pch.h"]
         fileTags: ["cpp_pch_src"]
     }
