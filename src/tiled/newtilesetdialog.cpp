@@ -204,7 +204,7 @@ void NewTilesetDialog::tryAccept()
                 return;
             }
 
-            tileset->syncExpectedColumnCount();
+            tileset->syncExpectedColumnsAndRows();
         }
 
         if (mMode == CreateTileset) {
