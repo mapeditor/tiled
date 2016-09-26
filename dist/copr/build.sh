@@ -18,7 +18,7 @@ pushd ${BUILDROOT}
 popd
 rm -rf $BUILDROOT
 
-if [ $1 = "srpm-only" ]
+if [ "$1" = "srpm-only" ]
 then
    echo "Wrote tiled.src.rpm. Exiting."
 else
