@@ -31,6 +31,7 @@
 #include <QGuiApplication>
 #include <QDebug>
 #include <QStringList>
+#include <QUrl>
 
 namespace {
 
@@ -40,6 +41,7 @@ struct CommandLineOptions {
         , showVersion(false)
         , scale(1.0)
         , tileSize(0)
+        , size(0)
         , useAntiAliasing(false)
         , ignoreVisibility(false)
     {}
@@ -50,6 +52,7 @@ struct CommandLineOptions {
     QString fileToSave;
     qreal scale;
     int tileSize;
+    int size;
     bool useAntiAliasing;
     bool ignoreVisibility;
     QStringList layersToHide;
@@ -70,6 +73,8 @@ static void showHelp()
             "  -s --scale SCALE        : The scale of the output image (default: 1)\n"
             "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
             "                            Overrides the --scale option\n"
+            "     --size SIZE          : The output image fits within a SIZE x SIZE square\n"
+            "                            Overrides the --scale and --tilesize options\n"
             "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
             "     --ignore-visibility  : Ignore all layer visibility flags in the map file, and render all\n"
             "                            layers in the output (default is to omit invisible layers)\n"
@@ -120,6 +125,18 @@ static void parseCommandLineArguments(CommandLineOptions &options)
                     options.showHelp = true;
                 }
             }
+        } else if (arg == QLatin1String("--size")) {
+            i++;
+            if (i >= arguments.size()) {
+                options.showHelp = true;
+            } else {
+                bool sizeIsInt;
+                options.size = arguments.at(i).toInt(&sizeIsInt);
+                if (!sizeIsInt) {
+                    qWarning() << arguments.at(i) << ": the specified size is not an integer.";
+                    options.showHelp = true;
+                }
+            }
         } else if (arg == QLatin1String("--hide-layer")) {
             i++;
             if (i >= arguments.size()) {
@@ -138,7 +155,11 @@ static void parseCommandLineArguments(CommandLineOptions &options)
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
         } else if (options.fileToOpen.isEmpty()) {
-            options.fileToOpen = arg;
+            const QUrl url(arg);
+            if (url.isLocalFile())
+                options.fileToOpen = url.toLocalFile();
+            else
+                options.fileToOpen = arg;
         } else if (options.fileToSave.isEmpty()) {
             options.fileToSave = arg;
         } else {
@@ -177,8 +198,9 @@ int main(int argc, char *argv[])
     w.setIgnoreVisibility(options.ignoreVisibility);
     w.setLayersToHide(options.layersToHide);
 
-
-    if (options.tileSize > 0) {
+    if (options.size > 0) {
+        w.setSize(options.size);
+    } else if (options.tileSize > 0) {
         w.setTileSize(options.tileSize);
     } else if (options.scale > 0.0) {
         w.setScale(options.scale);

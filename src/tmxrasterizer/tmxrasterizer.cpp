@@ -46,6 +46,7 @@ using namespace Tiled;
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
+    mSize(0),
     mUseAntiAliasing(true),
     mIgnoreVisibility(false)
 {
@@ -98,16 +99,19 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
+    QSize mapSize = renderer->mapSize();
     qreal xScale, yScale;
 
-    if (mTileSize > 0) {
+    if (mSize > 0) {
+        xScale = (qreal) mSize / mapSize.width();
+        yScale = (qreal) mSize / mapSize.height();
+        xScale = yScale = qMin(1.0, qMin(xScale, yScale));
+    } else if (mTileSize > 0) {
         xScale = (qreal) mTileSize / map->tileWidth();
         yScale = (qreal) mTileSize / map->tileHeight();
     } else {
         xScale = yScale = mScale;
     }
-
-    QSize mapSize = renderer->mapSize();
 
     QMargins margins = map->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());

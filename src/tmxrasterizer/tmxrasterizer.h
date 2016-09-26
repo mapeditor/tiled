@@ -50,6 +50,7 @@ public:
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
+    void setSize(int size) { mSize = size; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
 
@@ -60,6 +61,7 @@ public:
 private:
     qreal mScale;
     int mTileSize;
+    int mSize;
     bool mUseAntiAliasing;
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
