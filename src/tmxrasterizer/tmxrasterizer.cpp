@@ -159,6 +159,10 @@ int TmxRasterizer::render(const QString &mapFileName,
 
     // Save image
     QImageWriter imageWriter(imageFileName);
+
+    if (!imageWriter.canWrite())
+        imageWriter.setFormat("png");
+
     if (!imageWriter.write(image)) {
         qWarning().nospace() << "Error while writing " << imageFileName << ": "
                              << qPrintable(imageWriter.errorString());
