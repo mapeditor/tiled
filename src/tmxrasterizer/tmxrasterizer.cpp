@@ -47,7 +47,8 @@ TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
     mSize(0),
-    mUseAntiAliasing(true),
+    mUseAntiAliasing(false),
+    mSmoothImages(true),
     mIgnoreVisibility(false)
 {
 }
@@ -124,13 +125,9 @@ int TmxRasterizer::render(const QString &mapFileName,
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    if (xScale != qreal(1) || yScale != qreal(1)) {
-        if (mUseAntiAliasing) {
-            painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                                   QPainter::Antialiasing);
-        }
-        painter.setTransform(QTransform::fromScale(xScale, yScale));
-    }
+    painter.setRenderHint(QPainter::Antialiasing, mUseAntiAliasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
+    painter.setTransform(QTransform::fromScale(xScale, yScale));
 
     painter.translate(margins.left(), margins.top());
 

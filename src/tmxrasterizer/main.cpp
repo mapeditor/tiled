@@ -43,6 +43,7 @@ struct CommandLineOptions {
         , tileSize(0)
         , size(0)
         , useAntiAliasing(false)
+        , smoothImages(true)
         , ignoreVisibility(false)
     {}
 
@@ -54,6 +55,7 @@ struct CommandLineOptions {
     int tileSize;
     int size;
     bool useAntiAliasing;
+    bool smoothImages;
     bool ignoreVisibility;
     QStringList layersToHide;
 };
@@ -75,7 +77,8 @@ static void showHelp()
             "                            Overrides the --scale option\n"
             "     --size SIZE          : The output image fits within a SIZE x SIZE square\n"
             "                            Overrides the --scale and --tilesize options\n"
-            "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
+            "  -a --anti-aliasing      : Antialias edges of primitives\n"
+            "     --no-smoothing       : Use nearest neighbour instead of smooth blending of pixels\n"
             "     --ignore-visibility  : Ignore all layer visibility flags in the map file, and render all\n"
             "                            layers in the output (default is to omit invisible layers)\n"
             "     --hide-layer         : Specifies a layer to omit from the output image\n"
@@ -147,6 +150,8 @@ static void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
             options.useAntiAliasing = true;
+        } else if (arg == QLatin1String("--no-smoothing")) {
+            options.smoothImages = false;
         } else if (arg == QLatin1String("--ignore-visibility")) {
             options.ignoreVisibility = true;
         } else if (arg.isEmpty()) {
@@ -195,6 +200,7 @@ int main(int argc, char *argv[])
 
     TmxRasterizer w;
     w.setAntiAliasing(options.useAntiAliasing);
+    w.setSmoothImages(options.smoothImages);
     w.setIgnoreVisibility(options.ignoreVisibility);
     w.setLayersToHide(options.layersToHide);
 
@@ -208,4 +214,3 @@ int main(int argc, char *argv[])
 
     return w.render(options.fileToOpen, options.fileToSave);
 }
-
