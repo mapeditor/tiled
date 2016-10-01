@@ -1,72 +1,101 @@
-/*
- * Copyright 2004-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2004-2008, Adam Turk <aturk@biggeruniverse.com>
- *
+/*-
+ * #%L
  * This file is part of libtiled-java.
- *
+ * %%
+ * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
-
 package tiled.io;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
+import tiled.core.AnimatedTile;
 
-import tiled.core.*;
 import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.MapObject;
+import tiled.core.ObjectGroup;
+import tiled.core.Sprite;
+import tiled.core.Tile;
+import tiled.core.TileLayer;
+import tiled.core.TileSet;
 import tiled.io.xml.XMLWriter;
 import tiled.util.Base64;
 
 /**
  * A writer for Tiled's TMX map format.
+ *
+ * @author Thorbjørn Lindeijer
+ * @author Adam Turk
+ * @author Mike Thomas
+ * @version 0.17
  */
-public class TMXMapWriter
-{
+public class TMXMapWriter {
+
     private static final int LAST_BYTE = 0x000000FF;
 
-    private static final boolean encodeLayerData = true;
-    private static final boolean compressLayerData = encodeLayerData;
+    private static final boolean ENCODE_LAYER_DATA = true;
+    private static final boolean COMPRESS_LAYER_DATA = ENCODE_LAYER_DATA;
 
     private HashMap<TileSet, Integer> firstGidPerTileset;
 
     public static class Settings {
+
+        @Deprecated
         public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
         public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
 
-        public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_GZIP;
+        public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_ZLIB;
     }
     public Settings settings = new Settings();
 
     /**
      * Saves a map to an XML file.
      *
+     * @param map a {@link tiled.core.Map} object.
      * @param filename the filename of the map file
+     * @throws java.io.IOException if any.
      */
-    public void writeMap(Map map, String filename) throws Exception {
+    public void writeMap(Map map, String filename) throws IOException {
         OutputStream os = new FileOutputStream(filename);
 
         if (filename.endsWith(".tmx.gz")) {
@@ -83,16 +112,18 @@ public class TMXMapWriter
         writer.flush();
 
         if (os instanceof GZIPOutputStream) {
-            ((GZIPOutputStream)os).finish();
+            ((GZIPOutputStream) os).finish();
         }
     }
 
     /**
      * Saves a tileset to an XML file.
      *
+     * @param set a {@link tiled.core.TileSet} object.
      * @param filename the filename of the tileset file
+     * @throws java.io.IOException if any.
      */
-    public void writeTileset(TileSet set, String filename) throws Exception {
+    public void writeTileset(TileSet set, String filename) throws IOException {
         OutputStream os = new FileOutputStream(filename);
         Writer writer = new OutputStreamWriter(os, Charset.forName("UTF-8"));
         XMLWriter xmlWriter = new XMLWriter(writer);
@@ -104,9 +135,15 @@ public class TMXMapWriter
         writer.flush();
     }
 
-
+    /**
+     * <p>writeMap.</p>
+     *
+     * @param map a {@link tiled.core.Map} object.
+     * @param out a {@link java.io.OutputStream} object.
+     * @throws java.lang.Exception if any.
+     */
     public void writeMap(Map map, OutputStream out) throws Exception {
-        Writer writer = new OutputStreamWriter(out,Charset.forName("UTF-8"));
+        Writer writer = new OutputStreamWriter(out, Charset.forName("UTF-8"));
         XMLWriter xmlWriter = new XMLWriter(writer);
 
         xmlWriter.startDocument();
@@ -116,6 +153,13 @@ public class TMXMapWriter
         writer.flush();
     }
 
+    /**
+     * <p>writeTileset.</p>
+     *
+     * @param set a {@link tiled.core.TileSet} object.
+     * @param out a {@link java.io.OutputStream} object.
+     * @throws java.lang.Exception if any.
+     */
     public void writeTileset(TileSet set, OutputStream out) throws Exception {
         Writer writer = new OutputStreamWriter(out, Charset.forName("UTF-8"));
         XMLWriter xmlWriter = new XMLWriter(writer);
@@ -135,13 +179,17 @@ public class TMXMapWriter
 
         switch (map.getOrientation()) {
             case Map.ORIENTATION_ORTHOGONAL:
-                w.writeAttribute("orientation", "orthogonal"); break;
+                w.writeAttribute("orientation", "orthogonal");
+                break;
             case Map.ORIENTATION_ISOMETRIC:
-                w.writeAttribute("orientation", "isometric"); break;
+                w.writeAttribute("orientation", "isometric");
+                break;
             case Map.ORIENTATION_HEXAGONAL:
-                w.writeAttribute("orientation", "hexagonal"); break;
+                w.writeAttribute("orientation", "hexagonal");
+                break;
             case Map.ORIENTATION_SHIFTED:
-                w.writeAttribute("orientation", "shifted"); break;
+                w.writeAttribute("orientation", "shifted");
+                break;
         }
 
         w.writeAttribute("width", map.getWidth());
@@ -151,9 +199,9 @@ public class TMXMapWriter
 
         writeProperties(map.getProperties(), w);
 
-        firstGidPerTileset = new HashMap<TileSet, Integer>();
+        firstGidPerTileset = new HashMap<>();
         int firstgid = 1;
-        for (TileSet tileset : map.getTileSets()) {
+        for (TileSet tileset : map.getMapTileSets()) {
             setFirstGidForTileset(tileset, firstgid);
             writeTilesetReference(tileset, w, wp);
             firstgid += tileset.getMaxTileId() + 1;
@@ -168,10 +216,9 @@ public class TMXMapWriter
     }
 
     private static void writeProperties(Properties props, XMLWriter w) throws
-            IOException
-    {
+            IOException {
         if (!props.isEmpty()) {
-            final SortedSet<Object> propertyKeys = new TreeSet<Object>();
+            final Set<Object> propertyKeys = new TreeSet<>();
             propertyKeys.addAll(props.keySet());
             w.startElement("properties");
             for (Object propertyKey : propertyKeys) {
@@ -180,6 +227,9 @@ public class TMXMapWriter
                 w.startElement("property");
                 w.writeAttribute("name", key);
                 if (property.indexOf('\n') == -1) {
+                    if ("true".equals(property) || "false".equals(property)) {
+                        w.writeAttribute("type", "bool");
+                    }
                     w.writeAttribute("value", property);
                 } else {
                     // Save multiline values as character data
@@ -197,12 +247,12 @@ public class TMXMapWriter
      * contents of the tileset instead.
      *
      * @param set the tileset to write a reference to
-     * @param w   the XML writer to write to
-     * @param wp  the working directory of the map
+     * @param w the XML writer to write to
+     * @param wp the working directory of the map
      * @throws java.io.IOException
      */
     private void writeTilesetReference(TileSet set, XMLWriter w, String wp)
-        throws IOException {
+            throws IOException {
 
         String source = set.getSource();
 
@@ -220,7 +270,7 @@ public class TMXMapWriter
     }
 
     private void writeTileset(TileSet set, XMLWriter w, String wp)
-        throws IOException {
+            throws IOException {
 
         String tileBitmapFile = set.getTilebmpFile();
         String name = set.getName();
@@ -257,7 +307,7 @@ public class TMXMapWriter
             Color trans = set.getTransparentColor();
             if (trans != null) {
                 w.writeAttribute("trans", Integer.toHexString(
-                            trans.getRGB()).substring(2));
+                        trans.getRGB()).substring(2));
             }
             w.endElement();
 
@@ -272,23 +322,29 @@ public class TMXMapWriter
                 }
             }
         } else {
-            // Check to see if there is a need to write tile elements
+                        // Check to see if there is a need to write tile elements
             boolean needWrite = false;
 
             // As long as one has properties, they all need to be written.
             // TODO: This shouldn't be necessary
             for (Tile tile : set) {
-                if (!tile.getProperties().isEmpty()) {
+                if (!tile.getProperties().isEmpty() ||
+                        tile.getSource() != null) {
                     needWrite = true;
                     break;
                 }
             }
 
             if (needWrite) {
+                w.writeAttribute("tilewidth", set.getTileWidth());
+                w.writeAttribute("tileheight", set.getTileHeight());
+                w.writeAttribute("tilecount", set.size());
+                w.writeAttribute("columns", set.getTilesPerRow());
+
                 for (Tile tile : set) {
                     // todo: move this check back into the iterator?
                     if (tile != null) {
-                        writeTile(tile, w);
+                        writeTile(tile, w, wp);
                     }
                 }
             }
@@ -297,8 +353,7 @@ public class TMXMapWriter
     }
 
     private static void writeObjectGroup(ObjectGroup o, XMLWriter w, String wp)
-        throws IOException
-    {
+            throws IOException {
         Iterator<MapObject> itr = o.getObjects();
         while (itr.hasNext()) {
             writeMapObject(itr.next(), w, wp);
@@ -342,19 +397,19 @@ public class TMXMapWriter
 
         writeProperties(l.getProperties(), w);
 
-        if (l instanceof ObjectGroup){
+        if (l instanceof ObjectGroup) {
             writeObjectGroup((ObjectGroup) l, w, wp);
         } else if (l instanceof TileLayer) {
             final TileLayer tl = (TileLayer) l;
             w.startElement("data");
-            if (encodeLayerData) {
+            if (ENCODE_LAYER_DATA) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 OutputStream out;
 
                 w.writeAttribute("encoding", "base64");
 
                 DeflaterOutputStream dos;
-                if (compressLayerData) {
+                if (COMPRESS_LAYER_DATA) {
                     if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
                         dos = new DeflaterOutputStream(baos);
                     } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
@@ -371,21 +426,21 @@ public class TMXMapWriter
                 for (int y = 0; y < l.getHeight(); y++) {
                     for (int x = 0; x < l.getWidth(); x++) {
                         Tile tile = tl.getTileAt(x + bounds.x,
-                                                 y + bounds.y);
+                                y + bounds.y);
                         int gid = 0;
 
                         if (tile != null) {
                             gid = getGid(tile);
                         }
 
-                        out.write(gid       & LAST_BYTE);
-                        out.write(gid >> 8  & LAST_BYTE);
+                        out.write(gid & LAST_BYTE);
+                        out.write(gid >> 8 & LAST_BYTE);
                         out.write(gid >> 16 & LAST_BYTE);
                         out.write(gid >> 24 & LAST_BYTE);
                     }
                 }
 
-                if (compressLayerData && dos != null) {
+                if (COMPRESS_LAYER_DATA && dos != null) {
                     dos.finish();
                 }
 
@@ -431,8 +486,9 @@ public class TMXMapWriter
                 }
             }
 
-            if (tilePropertiesElementStarted)
+            if (tilePropertiesElementStarted) {
                 w.endElement();
+            }
         }
         w.endElement();
     }
@@ -444,15 +500,30 @@ public class TMXMapWriter
      * @param w the writer to write to
      * @throws IOException when an io error occurs
      */
-    private void writeTile(Tile tile, XMLWriter w) throws IOException {
+    private void writeTile(Tile tile, XMLWriter w, String wp) throws IOException {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
-        writeProperties(tile.getProperties(), w);
+        if (!tile.getProperties().isEmpty()) {
+            writeProperties(tile.getProperties(), w);
+        }
 
-        if (tile instanceof AnimatedTile)
-            writeAnimation(((AnimatedTile)tile).getSprite(), w);
+        if (tile.getSource() != null) {
+            writeImage(tile, w, wp);
+        }
 
+        if (tile instanceof AnimatedTile) {
+            writeAnimation(((AnimatedTile) tile).getSprite(), w);
+        }
+
+        w.endElement();
+    }
+
+    private void writeImage(Tile t, XMLWriter w, String wp) throws IOException {
+        w.startElement("image");
+        w.writeAttribute("width", t.getWidth());
+        w.writeAttribute("height", t.getHeight());
+        w.writeAttribute("source", getRelativePath(wp, t.getSource()));
         w.endElement();
     }
 
@@ -474,21 +545,23 @@ public class TMXMapWriter
     }
 
     private static void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
-        throws IOException
-    {
+            throws IOException {
         w.startElement("object");
         w.writeAttribute("name", mapObject.getName());
 
-        if (mapObject.getType().length() != 0)
+        if (mapObject.getType().length() != 0) {
             w.writeAttribute("type", mapObject.getType());
+        }
 
         w.writeAttribute("x", mapObject.getX());
         w.writeAttribute("y", mapObject.getY());
 
-        if (mapObject.getWidth() != 0)
+        if (mapObject.getWidth() != 0) {
             w.writeAttribute("width", mapObject.getWidth());
-        if (mapObject.getHeight() != 0)
+        }
+        if (mapObject.getHeight() != 0) {
             w.writeAttribute("height", mapObject.getHeight());
+        }
 
         writeProperties(mapObject.getProperties(), w);
 
@@ -508,24 +581,26 @@ public class TMXMapWriter
      * using the working directory.
      *
      * @param from the path of the origin file
-     * @param to   the path of the destination file
-     * @return     the relative path from origin to destination
+     * @param to the path of the destination file
+     * @return the relative path from origin to destination
      */
     public static String getRelativePath(String from, String to) {
-        if(!(new File(to)).isAbsolute())
+        if (!(new File(to)).isAbsolute()) {
             return to;
+        }
 
         // Make the two paths absolute and unique
         try {
             from = new File(from).getCanonicalPath();
             to = new File(to).getCanonicalPath();
         } catch (IOException e) {
+            // todo: log this
         }
 
         File fromFile = new File(from);
         File toFile = new File(to);
-        Vector<String> fromParents = new Vector<String>();
-        Vector<String> toParents = new Vector<String>();
+        List<String> fromParents = new ArrayList<>();
+        List<String> toParents = new ArrayList<>();
 
         // Iterate to find both parent lists
         while (fromFile != null) {
@@ -549,14 +624,14 @@ public class TMXMapWriter
         }
 
         // Append .. for each remaining parent in fromParents
-        StringBuffer relPathBuf = new StringBuffer();
+        StringBuilder relPathBuf = new StringBuilder();
         for (int i = shared; i < fromParents.size() - 1; i++) {
-            relPathBuf.append(".." + File.separator);
+            relPathBuf.append("..").append(File.separator);
         }
 
         // Add the remaining part in toParents
         for (int i = shared; i < toParents.size() - 1; i++) {
-            relPathBuf.append(toParents.get(i) + File.separator);
+            relPathBuf.append(toParents.get(i)).append(File.separator);
         }
         relPathBuf.append(new File(to).getName());
         String relPath = relPathBuf.toString();
@@ -576,13 +651,20 @@ public class TMXMapWriter
         return relPath;
     }
 
+    /**
+     * <p>accept.</p>
+     *
+     * @param pathName a {@link java.io.File} object.
+     * @return a boolean.
+     */
     public boolean accept(File pathName) {
         try {
             String path = pathName.getCanonicalPath();
             if (path.endsWith(".tmx") || path.endsWith(".tsx") || path.endsWith(".tmx.gz")) {
                 return true;
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         return false;
     }
 
@@ -604,6 +686,7 @@ public class TMXMapWriter
     }
 
     private int getFirstGidForTileset(TileSet tileset) {
+        if (firstGidPerTileset == null) return 1;
         return firstGidPerTileset.get(tileset);
     }
 }

@@ -1,31 +1,32 @@
-/*
- * Copyright 2004-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2004-2006, Adam Turk <aturk@biggeruniverse.com>
- *
+/*-
+ * #%L
  * This file is part of libtiled-java.
- *
+ * %%
+ * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
-
 package tiled.core;
 
 import java.awt.Point;
@@ -35,14 +36,25 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
- * A TileLayer is a specialized MapLayer, used for tracking two dimensional
- * tile data.
+ * A TileLayer is a specialized MapLayer, used for tracking two dimensional tile
+ * data.
+ *
+ * @author Thorbjørn Lindeijer
+ * @author Adam Turk
+ * @version 0.17
  */
-public class TileLayer extends MapLayer
-{
-    protected Tile[][] map;
-    protected HashMap<Object, Properties> tileInstanceProperties = new HashMap<Object, Properties>();
+public class TileLayer extends MapLayer {
 
+    protected Tile[][] map;
+    protected HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
+
+    /**
+     * <p>getTileInstancePropertiesAt.</p>
+     *
+     * @param x a int.
+     * @param y a int.
+     * @return a {@link java.util.Properties} object.
+     */
     public Properties getTileInstancePropertiesAt(int x, int y) {
         if (!bounds.contains(x, y)) {
             return null;
@@ -51,6 +63,13 @@ public class TileLayer extends MapLayer
         return tileInstanceProperties.get(key);
     }
 
+    /**
+     * <p>setTileInstancePropertiesAt.</p>
+     *
+     * @param x a int.
+     * @param y a int.
+     * @param tip a {@link java.util.Properties} object.
+     */
     public void setTileInstancePropertiesAt(int x, int y, Properties tip) {
         if (bounds.contains(x, y)) {
             Object key = new Point(x, y);
@@ -91,6 +110,8 @@ public class TileLayer extends MapLayer
     }
 
     /**
+     * <p>Constructor for TileLayer.</p>
+     *
      * @param m the map this layer is part of
      * @param w width in tiles
      * @param h height in tiles
@@ -101,9 +122,9 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Rotates the layer by the given Euler angle.
+     * {@inheritDoc}
      *
-     * @param angle The Euler angle (0-360) to rotate the layer array data by.
+     * Rotates the layer by the given Euler angle.
      * @see MapLayer#rotate(int)
      */
     @Override
@@ -131,14 +152,14 @@ public class TileLayer extends MapLayer
         }
 
         double ra = Math.toRadians(angle);
-        int cos_angle = (int)Math.round(Math.cos(ra));
-        int sin_angle = (int)Math.round(Math.sin(ra));
+        int cos_angle = (int) Math.round(Math.cos(ra));
+        int sin_angle = (int) Math.round(Math.sin(ra));
 
         for (int y = 0; y < bounds.height; y++) {
             for (int x = 0; x < bounds.width; x++) {
                 int xrot = x * cos_angle - y * sin_angle;
                 int yrot = x * sin_angle + y * cos_angle;
-                trans[yrot + ytrans][xrot + xtrans] = getTileAt(x+bounds.x, y+bounds.y);
+                trans[yrot + ytrans][xrot + xtrans] = getTileAt(x + bounds.x, y + bounds.y);
             }
         }
 
@@ -148,13 +169,13 @@ public class TileLayer extends MapLayer
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Performs a mirroring function on the layer data. Two orientations are
      * allowed: vertical and horizontal.
      *
-     * Example: <code>layer.mirror(MapLayer.MIRROR_VERTICAL);</code> will
-     * mirror the layer data around a horizontal axis.
-     *
-     * @param dir the axial orientation to mirror around
+     * Example: <code>layer.mirror(MapLayer.MIRROR_VERTICAL);</code> will mirror
+     * the layer data around a horizontal axis.
      */
     @Override
     public void mirror(int dir) {
@@ -176,7 +197,7 @@ public class TileLayer extends MapLayer
      *
      * @param t a Tile object to check for
      * @return <code>true</code> if the Tile is used at least once,
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     public boolean isUsed(Tile t) {
         for (int y = 0; y < bounds.height; y++) {
@@ -189,13 +210,15 @@ public class TileLayer extends MapLayer
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isEmpty() {
         for (int p = 0; p < 2; p++) {
             for (int y = 0; y < bounds.height; y++) {
                 for (int x = p; x < bounds.width; x += 2) {
-                    if (map[y][x] != null)
+                    if (map[y][x] != null) {
                         return false;
+                    }
                 }
             }
         }
@@ -203,11 +226,11 @@ public class TileLayer extends MapLayer
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Sets the bounds (in tiles) to the specified Rectangle. <b>Caution:</b>
      * this causes a reallocation of the data array, and all previous data is
      * lost.
-     *
-     * @param bounds new new bounds of this tile layer (in tiles)
      * @see MapLayer#setBounds
      */
     @Override
@@ -223,23 +246,23 @@ public class TileLayer extends MapLayer
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Creates a diff of the two layers, <code>ml</code> is considered the
      * significant difference.
-     *
-     * @param ml
-     * @return A new MapLayer that represents the difference between this
-     *         layer, and the argument, or <b>null</b> if no difference exists.
      */
     @Override
     public MapLayer createDiff(MapLayer ml) {
-        if (ml == null) { return null; }
+        if (ml == null) {
+            return null;
+        }
 
         if (ml instanceof TileLayer) {
             Rectangle r = null;
 
             for (int y = bounds.y; y < bounds.height + bounds.y; y++) {
                 for (int x = bounds.x; x < bounds.width + bounds.x; x++) {
-                    if (((TileLayer)ml).getTileAt(x, y) != getTileAt(x, y)) {
+                    if (((TileLayer) ml).getTileAt(x, y) != getTileAt(x, y)) {
                         if (r != null) {
                             r.add(x, y);
                         } else {
@@ -263,8 +286,8 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Removes any occurences of the given tile from this map layer. If layer
-     * is locked, an exception is thrown.
+     * Removes any occurences of the given tile from this map layer. If layer is
+     * locked, an exception is thrown.
      *
      * @param tile the Tile to be removed
      */
@@ -298,20 +321,20 @@ public class TileLayer extends MapLayer
      * @param tx Tile-space x coordinate
      * @param ty Tile-space y coordinate
      * @return tile at position (tx, ty) or <code>null</code> when (tx, ty) is
-     *         outside this layer
+     * outside this layer
      */
     public Tile getTileAt(int tx, int ty) {
-        return (bounds.contains(tx, ty)) ?
-                map[ty - bounds.y][tx - bounds.x] : null;
+        return (bounds.contains(tx, ty))
+                ? map[ty - bounds.y][tx - bounds.x] : null;
     }
 
     /**
      * Returns the first occurrence (using top down, left to right search) of
      * the given tile.
      *
-     * @param t the {@link Tile} to look for
+     * @param t the {@link tiled.core.Tile} to look for
      * @return A java.awt.Point instance of the first instance of t, or
-     *         <code>null</code> if it is not found
+     * <code>null</code> if it is not found
      */
     public Point locationOf(Tile t) {
         for (int y = bounds.y; y < bounds.height + bounds.y; y++) {
@@ -328,19 +351,20 @@ public class TileLayer extends MapLayer
      * Replaces all occurrences of the Tile <code>find</code> with the Tile
      * <code>replace</code> in the entire layer
      *
-     * @param find    the tile to replace
+     * @param find the tile to replace
      * @param replace the replacement tile
      */
     public void replaceTile(Tile find, Tile replace) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
-                if(getTileAt(x,y) == find) {
+                if (getTileAt(x, y) == find) {
                     setTileAt(x, y, replace);
                 }
             }
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void mergeOnto(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
@@ -354,11 +378,10 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Like mergeOnto, but will only copy the area specified.
+     * {@inheritDoc}
      *
+     * Like mergeOnto, but will only copy the area specified.
      * @see TileLayer#mergeOnto(MapLayer)
-     * @param other
-     * @param mask
      */
     @Override
     public void maskedMergeOnto(MapLayer other, Area mask) {
@@ -375,11 +398,11 @@ public class TileLayer extends MapLayer
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Copy data from another layer onto this layer. Unlike mergeOnto,
      * copyFrom() copies the empty cells as well.
-     *
      * @see MapLayer#mergeOnto
-     * @param other
      */
     @Override
     public void copyFrom(MapLayer other) {
@@ -391,11 +414,10 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Like copyFrom, but will only copy the area specified.
+     * {@inheritDoc}
      *
+     * Like copyFrom, but will only copy the area specified.
      * @see TileLayer#copyFrom(MapLayer)
-     * @param other
-     * @param mask
      */
     @Override
     public void maskedCopyFrom(MapLayer other, Area mask) {
@@ -403,7 +425,7 @@ public class TileLayer extends MapLayer
 
         for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
             for (int x = boundBox.x; x < boundBox.x + boundBox.width; x++) {
-                if (mask.contains(x,y)) {
+                if (mask.contains(x, y)) {
                     setTileAt(x, y, ((TileLayer) other).getTileAt(x, y));
                 }
             }
@@ -411,11 +433,13 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Unlike mergeOnto, copyTo includes the null tile when merging.
+     * {@inheritDoc}
      *
+     * Unlike mergeOnto, copyTo includes the null tile when merging.
      * @see MapLayer#copyFrom
      * @see MapLayer#mergeOnto
-     * @param other the layer to copy this layer to
+     * @see MapLayer#copyFrom
+     * @see MapLayer#mergeOnto
      */
     @Override
     public void copyTo(MapLayer other) {
@@ -427,11 +451,10 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Creates a copy of this layer.
+     * {@inheritDoc}
      *
+     * Creates a copy of this layer.
      * @see Object#clone
-     * @return a clone of this layer, as complete as possible
-     * @exception CloneNotSupportedException
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -439,7 +462,7 @@ public class TileLayer extends MapLayer
 
         // Clone the layer data
         clone.map = new Tile[map.length][];
-        clone.tileInstanceProperties = new HashMap<Object, Properties>();
+        clone.tileInstanceProperties = new HashMap<>();
 
         for (int i = 0; i < map.length; i++) {
             clone.map[i] = new Tile[map[i].length];
@@ -458,16 +481,11 @@ public class TileLayer extends MapLayer
         return clone;
     }
 
-    /**
-     * @param width  the new width of the layer
-     * @param height the new height of the layer
-     * @param dx     the shift in x direction
-     * @param dy     the shift in y direction
-     */
+    /** {@inheritDoc} */
     @Override
     public void resize(int width, int height, int dx, int dy) {
         Tile[][] newMap = new Tile[height][width];
-        HashMap<Object, Properties> newTileInstanceProperties = new HashMap<Object, Properties>();
+        HashMap<Object, Properties> newTileInstanceProperties = new HashMap<>();
 
         int maxX = Math.min(width, bounds.width + dx);
         int maxY = Math.min(height, bounds.height + dy);

@@ -1,39 +1,46 @@
-/*
- * Copyright 2004-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2004-2006, Adam Turk <aturk@biggeruniverse.com>
- *
+/*-
+ * #%L
  * This file is part of libtiled-java.
- *
+ * %%
+ * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
-
 package tiled.core;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 
 import tiled.util.TileCutter;
@@ -42,18 +49,24 @@ import tiled.util.BasicTileCutter;
 
 /**
  * todo: Update documentation
- * <p>TileSet handles operations on tiles as a set, or group. It has several
- * advanced internal functions aimed at reducing unnecessary data replication.
- * A 'tile' is represented internally as two distinct pieces of data. The
- * first and most important is a {@link Tile} object, and these are held in
- * a {@link Vector}.</p>
+ * <p>
+ * TileSet handles operations on tiles as a set, or group. It has several
+ * advanced internal functions aimed at reducing unnecessary data replication. A
+ * 'tile' is represented internally as two distinct pieces of data. The first
+ * and most important is a {@link tiled.core.Tile} object, and these are held in a
+ * {@link java.util.Vector}.</p>
  *
- * <p>The other is the tile image.</p>
+ * <p>
+ * The other is the tile image.</p>
+ *
+ * @author Thorbjørn Lindeijer
+ * @author Adam Turk
+ * @version 0.17
  */
-public class TileSet implements Iterable<Tile>
-{
+public class TileSet implements Iterable<Tile> {
+
     private String base;
-    final private Vector<Tile> tiles = new Vector<Tile>();
+    final private List<Tile> tiles = new ArrayList<>();
     private long tilebmpFileLastModified;
     private TileCutter tileCutter;
     private Rectangle tileDimensions;
@@ -76,14 +89,13 @@ public class TileSet implements Iterable<Tile>
     /**
      * Creates a tileset from a tileset image file.
      *
-     * @param imgFilename
-     * @param cutter
-     * @throws IOException
+     * @param imgFilename a {@link java.lang.String} object.
+     * @param cutter a {@link tiled.util.TileCutter} object.
+     * @throws java.io.IOException if any.
      * @see TileSet#importTileBitmap(BufferedImage, TileCutter)
      */
     public void importTileBitmap(String imgFilename, TileCutter cutter)
-            throws IOException
-    {
+            throws IOException {
         setTilesetImageFilename(imgFilename);
 
         Image image = ImageIO.read(new File(imgFilename));
@@ -113,11 +125,10 @@ public class TileSet implements Iterable<Tile>
      * Creates a tileset from a buffered image. Tiles are cut by the passed
      * cutter.
      *
-     * @param tileBitmap  the image to be used, must not be null
-     * @param cutter      the tile cutter, must not be null
+     * @param tileBitmap the image to be used, must not be null
+     * @param cutter the tile cutter, must not be null
      */
-    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter)
-    {
+    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
         assert tileBitmap != null;
         assert cutter != null;
 
@@ -150,8 +161,7 @@ public class TileSet implements Iterable<Tile>
      * @see TileSet#importTileBitmap(BufferedImage,TileCutter)
      */
     private void refreshImportedTileBitmap()
-            throws IOException
-    {
+            throws IOException {
         String imgFilename = tilebmpFile.getPath();
 
         Image image = ImageIO.read(new File(imgFilename));
@@ -202,10 +212,14 @@ public class TileSet implements Iterable<Tile>
         }
     }
 
+    /**
+     * <p>checkUpdate.</p>
+     *
+     * @throws java.io.IOException if any.
+     */
     public void checkUpdate() throws IOException {
-        if (tilebmpFile != null &&
-                tilebmpFile.lastModified() > tilebmpFileLastModified)
-        {
+        if (tilebmpFile != null
+                && tilebmpFile.lastModified() > tilebmpFileLastModified) {
             refreshImportedTileBitmap();
             tilebmpFileLastModified = tilebmpFile.lastModified();
         }
@@ -231,17 +245,16 @@ public class TileSet implements Iterable<Tile>
     }
 
     /**
-     * Sets the filename of the tileset image. Doesn't change the tileset in
-     * any other way.
+     * Sets the filename of the tileset image. Doesn't change the tileset in any
+     * other way.
      *
-     * @param name
+     * @param name a {@link java.lang.String} object.
      */
     public void setTilesetImageFilename(String name) {
         if (name != null) {
             tilebmpFile = new File(name);
             tilebmpFileLastModified = tilebmpFile.lastModified();
-        }
-        else {
+        } else {
             tilebmpFile = null;
         }
     }
@@ -258,7 +271,7 @@ public class TileSet implements Iterable<Tile>
     /**
      * Sets the transparent color in the tileset image.
      *
-     * @param color
+     * @param color a {@link java.awt.Color} object.
      */
     public void setTransparentColor(Color color) {
         transparentColor = color;
@@ -272,14 +285,17 @@ public class TileSet implements Iterable<Tile>
      * @return int The <b>local</b> id of the tile
      */
     public int addTile(Tile t) {
-        if (t.getId() < 0)
+        if (t.getId() < 0) {
             t.setId(tiles.size());
+        }
 
-        if (tileDimensions.width < t.getWidth())
+        if (tileDimensions.width < t.getWidth()) {
             tileDimensions.width = t.getWidth();
+        }
 
-        if (tileDimensions.height < t.getHeight())
+        if (tileDimensions.height < t.getHeight()) {
             tileDimensions.height = t.getHeight();
+        }
 
         tiles.add(t);
         t.setTileSet(this);
@@ -288,9 +304,8 @@ public class TileSet implements Iterable<Tile>
     }
 
     /**
-     * This method takes a new Tile object as argument, and in addition to
-     * the functionality of <code>addTile()</code>, sets the id of the tile
-     * to -1.
+     * This method takes a new Tile object as argument, and in addition to the
+     * functionality of <code>addTile()</code>, sets the id of the tile to -1.
      *
      * @see TileSet#addTile(Tile)
      * @param t the new tile to add.
@@ -301,9 +316,9 @@ public class TileSet implements Iterable<Tile>
     }
 
     /**
-     * Removes a tile from this tileset. Does not invalidate other tile
-     * indices. Removal is simply setting the reference at the specified
-     * index to <b>null</b>.
+     * Removes a tile from this tileset. Does not invalidate other tile indices.
+     * Removal is simply setting the reference at the specified index to
+     * <b>null</b>.
      *
      * @param i the index to remove
      */
@@ -315,6 +330,7 @@ public class TileSet implements Iterable<Tile>
      * Returns the amount of tiles in this tileset.
      *
      * @return the amount of tiles in this tileset
+     * @since 0.13
      */
     public int size() {
         return tiles.size();
@@ -330,18 +346,19 @@ public class TileSet implements Iterable<Tile>
     }
 
     /**
-     * Returns an iterator over the tiles in this tileset.
+     * {@inheritDoc}
      *
-     * @return an iterator over the tiles in this tileset.
+     * Returns an iterator over the tiles in this tileset.
      */
+    @Override
     public Iterator<Tile> iterator() {
         return tiles.iterator();
     }
 
     /**
-     * Returns the width of tiles in this tileset. All tiles in a tileset
-     * should be the same width, and the same as the tile width of the map the
-     * tileset is used with.
+     * Returns the width of tiles in this tileset. All tiles in a tileset should
+     * be the same width, and the same as the tile width of the map the tileset
+     * is used with.
      *
      * @return int - The maximum tile width
      */
@@ -351,8 +368,8 @@ public class TileSet implements Iterable<Tile>
 
     /**
      * Returns the tile height of tiles in this tileset. Not all tiles in a
-     * tileset are required to have the same height, but the height should be
-     * at least the tile height of the map the tileset is used with.
+     * tileset are required to have the same height, but the height should be at
+     * least the tile height of the map the tileset is used with.
      *
      * If there are tiles with varying heights in this tileset, the returned
      * height will be the maximum.
@@ -365,6 +382,7 @@ public class TileSet implements Iterable<Tile>
 
     /**
      * Returns the spacing between the tiles on the tileset image.
+     *
      * @return the spacing in pixels between the tiles on the tileset image
      */
     public int getTileSpacing() {
@@ -373,6 +391,7 @@ public class TileSet implements Iterable<Tile>
 
     /**
      * Returns the margin around the tiles on the tileset image.
+     *
      * @return the margin in pixels around the tiles on the tileset image
      */
     public int getTileMargin() {
@@ -381,6 +400,7 @@ public class TileSet implements Iterable<Tile>
 
     /**
      * Returns the number of tiles per row in the original tileset image.
+     *
      * @return the number of tiles per row in the original tileset image.
      */
     public int getTilesPerRow() {
@@ -392,12 +412,13 @@ public class TileSet implements Iterable<Tile>
      *
      * @param i local id of tile
      * @return A tile with local id <code>i</code> or <code>null</code> if no
-     *         tile exists with that id
+     * tile exists with that id
      */
     public Tile getTile(int i) {
         try {
             return tiles.get(i);
-        } catch (ArrayIndexOutOfBoundsException a) {}
+        } catch (ArrayIndexOutOfBoundsException a) {
+        }
         return null;
     }
 
@@ -405,7 +426,7 @@ public class TileSet implements Iterable<Tile>
      * Returns the first non-null tile in the set.
      *
      * @return The first tile in this tileset, or <code>null</code> if none
-     *         exists.
+     * exists.
      */
     public Tile getFirstTile() {
         Tile ret = null;
@@ -420,8 +441,8 @@ public class TileSet implements Iterable<Tile>
     /**
      * Returns the source of this tileset.
      *
-     * @return a filename if tileset is external or <code>null</code> if
-     *         tileset is internal.
+     * @return a filename if tileset is external or <code>null</code> if tileset
+     * is internal.
      */
     public String getSource() {
         return externalSource;
@@ -440,7 +461,7 @@ public class TileSet implements Iterable<Tile>
      * Returns the filename of the tileset image.
      *
      * @return the filename of the tileset image, or <code>null</code> if this
-     *         tileset doesn't reference a tileset image
+     * tileset doesn't reference a tileset image
      */
     public String getTilebmpFile() {
         if (tilebmpFile != null) {
@@ -454,6 +475,8 @@ public class TileSet implements Iterable<Tile>
     }
 
     /**
+     * <p>Getter for the field <code>name</code>.</p>
+     *
      * @return the name of this tileset.
      */
     public String getName() {
@@ -470,17 +493,13 @@ public class TileSet implements Iterable<Tile>
         return transparentColor;
     }
 
-    /**
-     * @return the name of the tileset, and the total tiles
-     */
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return getName() + " [" + size() + "]";
     }
 
-
     // TILE IMAGE CODE
-
     /**
      * Returns whether the tileset is derived from a tileset image.
      *

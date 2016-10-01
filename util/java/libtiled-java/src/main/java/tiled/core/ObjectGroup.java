@@ -1,31 +1,32 @@
-/*
- * Copyright 2004-2006, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2004-2006, Adam Turk <aturk@biggeruniverse.com>
- *
+/*-
+ * #%L
  * This file is part of libtiled-java.
- *
+ * %%
+ * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
-
 package tiled.core;
 
 import java.awt.Rectangle;
@@ -35,13 +36,18 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A layer containing {@link MapObject map objects}.
+ *
+ * @author Thorbjørn Lindeijer
+ * @author Adam Turk
+ * @version 0.17
  */
-public class ObjectGroup extends MapLayer implements Iterable<MapObject>
-{
-    private LinkedList<MapObject> objects = new LinkedList<MapObject>();
+public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
+
+    private List<MapObject> objects = new LinkedList<>();
     private String draworder;
 
     /**
@@ -51,7 +57,9 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
     }
 
     /**
-     * @param map    the map this object group is part of
+     * <p>Constructor for ObjectGroup.</p>
+     *
+     * @param map the map this object group is part of
      */
     public ObjectGroup(Map map) {
         super(map);
@@ -61,9 +69,9 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
      * Creates an object group that is part of the given map and has the given
      * origin.
      *
-     * @param map    the map this object group is part of
-     * @param origX  the x origin of this layer
-     * @param origY  the y origin of this layer
+     * @param map the map this object group is part of
+     * @param origX the x origin of this layer
+     * @param origY the y origin of this layer
      */
     public ObjectGroup(Map map, int origX, int origY) {
         super(map);
@@ -95,7 +103,7 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
      * @param draworder "topdown" or "index"
      */
     public void setDraworder(String draworder) {
-       this.draworder = draworder;
+        this.draworder = draworder;
     }
 
     /**
@@ -116,64 +124,65 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
         super.getBounds().width = width;
     }
 
-    /**
-     * @see MapLayer#rotate(int)
-     */
+    /** {@inheritDoc} */
     @Override
     public void rotate(int angle) {
         // TODO: Implement rotating an object group
     }
 
-    /**
-     * @see MapLayer#mirror(int)
-     */
+    /** {@inheritDoc} */
     @Override
     public void mirror(int dir) {
         // TODO: Implement mirroring an object group
     }
 
+    /** {@inheritDoc} */
     @Override
     public void mergeOnto(MapLayer other) {
         // TODO: Implement merging with another object group
     }
 
+    /** {@inheritDoc} */
     @Override
     public void maskedMergeOnto(MapLayer other, Area mask) {
         // TODO: Figure out what object group should do with this method
     }
 
+    /** {@inheritDoc} */
     @Override
     public void copyFrom(MapLayer other) {
         // TODO: Implement copying from another object group (same as merging)
     }
 
+    /** {@inheritDoc} */
     @Override
     public void maskedCopyFrom(MapLayer other, Area mask) {
         // TODO: Figure out what object group should do with this method
     }
 
+    /** {@inheritDoc} */
     @Override
     public void copyTo(MapLayer other) {
         // TODO: Implement copying to another object group (same as merging)
     }
 
-    /**
-     * @see MapLayer#resize(int,int,int,int)
-     */
+    /** {@inheritDoc} */
     @Override
     public void resize(int width, int height, int dx, int dy) {
         // TODO: Translate contained objects by the change of origin
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isEmpty() {
         return objects.isEmpty();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object clone() throws CloneNotSupportedException {
         ObjectGroup clone = (ObjectGroup) super.clone();
-        clone.objects = new LinkedList<MapObject>();
+        clone.objects = new LinkedList<>();
         for (MapObject object : objects) {
             final MapObject objectClone = (MapObject) object.clone();
             clone.objects.add(objectClone);
@@ -182,33 +191,55 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
         return clone;
     }
 
-    /**
-     * @deprecated
-     */
+    /** {@inheritDoc} */
     @Override
     @Deprecated
     public MapLayer createDiff(MapLayer ml) {
         return null;
     }
 
+    /**
+     * <p>addObject.</p>
+     *
+     * @param o a {@link tiled.core.MapObject} object.
+     */
     public void addObject(MapObject o) {
         objects.add(o);
         o.setObjectGroup(this);
     }
 
+    /**
+     * <p>removeObject.</p>
+     *
+     * @param o a {@link tiled.core.MapObject} object.
+     */
     public void removeObject(MapObject o) {
         objects.remove(o);
         o.setObjectGroup(null);
     }
 
+    /**
+     * <p>Getter for the field <code>objects</code>.</p>
+     *
+     * @return a {@link java.util.Iterator} object.
+     */
     public Iterator<MapObject> getObjects() {
         return objects.iterator();
     }
 
+    /** {@inheritDoc} */
+    @Override
     public Iterator<MapObject> iterator() {
         return objects.iterator();
     }
 
+    /**
+     * <p>getObjectAt.</p>
+     *
+     * @param x a double.
+     * @param y a double.
+     * @return a {@link tiled.core.MapObject} object.
+     */
     public MapObject getObjectAt(double x, double y) {
         for (MapObject obj : objects) {
             // Attempt to get an object bordering the point that has no width
@@ -232,6 +263,14 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
     }
 
     // This method will work at any zoom level, provided you provide the correct zoom factor. It also adds a one pixel buffer (that doesn't change with zoom).
+    /**
+     * <p>getObjectNear.</p>
+     *
+     * @param x a int.
+     * @param y a int.
+     * @param zoom a double.
+     * @return a {@link tiled.core.MapObject} object.
+     */
     public MapObject getObjectNear(int x, int y, double zoom) {
         Rectangle2D mouse = new Rectangle2D.Double(x - zoom - 1, y - zoom - 1, 2 * zoom + 1, 2 * zoom + 1);
         Shape shape;

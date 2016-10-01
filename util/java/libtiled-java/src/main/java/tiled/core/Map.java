@@ -1,49 +1,72 @@
-/*
- * Copyright 2004-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2004-2006, Adam Turk <aturk@biggeruniverse.com>
- *
+/*-
+ * #%L
  * This file is part of libtiled-java.
- *
+ * %%
+ * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
-
 package tiled.core;
 
 import java.awt.Rectangle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * The Map class is the focal point of the <code>tiled.core</code> package.
+ *
+ * @author Thorbjørn Lindeijer
+ * @author Adam Turk
+ * @author Mike Thomas
+ * @version 0.17
  */
-public class Map implements Iterable<MapLayer>
-{
+public class Map implements Iterable<MapLayer> {
+
+    /**
+     * Constant <code>ORIENTATION_ORTHOGONAL=1</code>
+     */
     public static final int ORIENTATION_ORTHOGONAL = 1;
+    /**
+     * Constant <code>ORIENTATION_ISOMETRIC=2</code>
+     */
     public static final int ORIENTATION_ISOMETRIC = 2;
+    /**
+     * Constant <code>ORIENTATION_HEXAGONAL=4</code>
+     *
+     * @since 0.11
+     */
     public static final int ORIENTATION_HEXAGONAL = 4;
-    /** Shifted (used for iso and hex). */
+    /**
+     * Shifted (used for iso and hex).
+     */
     public static final int ORIENTATION_SHIFTED = 5;
 
-    private Vector<MapLayer> layers;
-    private Vector<TileSet> tileSets;
+    private List<MapLayer> layers;
+    private List<TileSet> tileSets;
 
     private int tileWidth, tileHeight;
     private int orientation = ORIENTATION_ORTHOGONAL;
@@ -52,14 +75,17 @@ public class Map implements Iterable<MapLayer>
     protected Rectangle bounds;          // in tiles
 
     /**
-     * @param width  the map width in tiles.
+     * <p>
+     * Constructor for Map.</p>
+     *
+     * @param width the map width in tiles.
      * @param height the map height in tiles.
      */
     public Map(int width, int height) {
-        layers = new Vector<MapLayer>();
+        layers = new ArrayList<>();
         bounds = new Rectangle(width, height);
         properties = new Properties();
-        tileSets = new Vector<TileSet>();
+        tileSets = new ArrayList<>();
     }
 
     /**
@@ -82,8 +108,12 @@ public class Map implements Iterable<MapLayer>
 
         for (int i = 0; i < layers.size(); i++) {
             getLayer(i).getBounds(layerBounds);
-            if (width < layerBounds.width) width = layerBounds.width;
-            if (height < layerBounds.height) height = layerBounds.height;
+            if (width < layerBounds.width) {
+                width = layerBounds.width;
+            }
+            if (height < layerBounds.height) {
+                height = layerBounds.height;
+            }
         }
 
         bounds.width = width;
@@ -93,23 +123,42 @@ public class Map implements Iterable<MapLayer>
     /**
      * Returns a <code>Rectangle</code> representing the maximum bounds in
      * tiles.
+     *
      * @return a new rectangle containing the maximum bounds of this plane
      */
     public Rectangle getBounds() {
         return new Rectangle(bounds);
     }
 
+    /**
+     * <p>addLayer.</p>
+     *
+     * @param layer a {@link tiled.core.MapLayer} object.
+     * @return a {@link tiled.core.MapLayer} object.
+     */
     public MapLayer addLayer(MapLayer layer) {
         layer.setMap(this);
         layers.add(layer);
         return layer;
     }
 
+    /**
+     * <p>setLayer.</p>
+     *
+     * @param index a int.
+     * @param layer a {@link tiled.core.MapLayer} object.
+     */
     public void setLayer(int index, MapLayer layer) {
         layer.setMap(this);
         layers.set(index, layer);
     }
 
+    /**
+     * <p>insertLayer.</p>
+     *
+     * @param index a int.
+     * @param layer a {@link tiled.core.MapLayer} object.
+     */
     public void insertLayer(int index, MapLayer layer) {
         layer.setMap(this);
         layers.add(index, layer);
@@ -130,15 +179,26 @@ public class Map implements Iterable<MapLayer>
      * Removes all layers from the plane.
      */
     public void removeAllLayers() {
-        layers.removeAllElements();
+        layers.clear();
     }
 
     /**
      * Returns the layer vector.
      *
      * @return Vector the layer vector
+     * @deprecated Use getMapLayers instead.
      */
+    @Deprecated
     public Vector<MapLayer> getLayers() {
+        return new Vector<>(layers);
+    }
+
+    /**
+     * Returns the layer list.
+     *
+     * @return List the layer list
+     */
+    public List<MapLayer> getMapLayers() {
         return layers;
     }
 
@@ -146,8 +206,19 @@ public class Map implements Iterable<MapLayer>
      * Sets the layer vector to the given java.util.Vector.
      *
      * @param layers the new set of layers
+     * @deprecated Use setMapLayers instead.
      */
+    @Deprecated
     public void setLayers(Vector<MapLayer> layers) {
+        this.layers = new ArrayList<>(layers);
+    }
+
+    /**
+     * Sets the layer list to the given java.util.List.
+     *
+     * @param layers the new set of layers
+     */
+    public void setMapLayers(List<MapLayer> layers) {
         this.layers = layers;
     }
 
@@ -156,28 +227,28 @@ public class Map implements Iterable<MapLayer>
      *
      * @param i the index of the layer to return
      * @return the layer at the specified index, or null if the index is out of
-     *         bounds
+     * bounds
      */
     public MapLayer getLayer(int i) {
         try {
             return layers.get(i);
         } catch (ArrayIndexOutOfBoundsException e) {
+            // todo: we should log this
         }
         return null;
     }
 
     /**
-     * Resizes this plane. The (dx, dy) pair determines where the original
-     * plane should be positioned on the new area. Only layers that exactly
-     * match the bounds of the map are resized, any other layers are moved by
-     * the given shift.
+     * Resizes this plane. The (dx, dy) pair determines where the original plane
+     * should be positioned on the new area. Only layers that exactly match the
+     * bounds of the map are resized, any other layers are moved by the given
+     * shift.
      *
      * @see tiled.core.MapLayer#resize
-     *
-     * @param width  The new width of the map.
+     * @param width The new width of the map.
      * @param height The new height of the map.
-     * @param dx     The shift in x direction in tiles.
-     * @param dy     The shift in y direction in tiles.
+     * @param dx The shift in x direction in tiles.
+     * @param dy The shift in y direction in tiles.
      */
     public void resize(int width, int height, int dx, int dy) {
         for (MapLayer layer : this) {
@@ -195,15 +266,19 @@ public class Map implements Iterable<MapLayer>
     /**
      * Determines whether the point (x,y) falls within the plane.
      *
-     * @param x
-     * @param y
+     * @param x a int.
+     * @param y a int.
      * @return <code>true</code> if the point is within the plane,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean inBounds(int x, int y) {
         return x >= 0 && y >= 0 && x < bounds.width && y < bounds.height;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Iterator<MapLayer> iterator() {
         return layers.iterator();
     }
@@ -236,16 +311,17 @@ public class Map implements Iterable<MapLayer>
     }
 
     /**
-     * Removes a {@link TileSet} from the map, and removes any tiles in the set
-     * from the map layers.
+     * Removes a {@link tiled.core.TileSet} from the map, and removes any tiles
+     * in the set from the map layers.
      *
      * @param tileset TileSet to remove
      */
     public void removeTileset(TileSet tileset) {
         // Sanity check
         final int tilesetIndex = tileSets.indexOf(tileset);
-        if (tilesetIndex == -1)
+        if (tilesetIndex == -1) {
             return;
+        }
 
         // Go through the map and remove any instances of the tiles in the set
         for (Tile tile : tileset) {
@@ -260,16 +336,28 @@ public class Map implements Iterable<MapLayer>
     }
 
     /**
+     * <p>Getter for the field <code>properties</code>.</p>
+     *
      * @return the map properties
      */
     public Properties getProperties() {
         return properties;
     }
 
+    /**
+     * <p>Setter for the field <code>properties</code>.</p>
+     *
+     * @param prop a {@link java.util.Properties} object.
+     */
     public void setProperties(Properties prop) {
         properties = prop;
     }
 
+    /**
+     * <p>Setter for the field <code>filename</code>.</p>
+     *
+     * @param filename a {@link java.lang.String} object.
+     */
     public void setFilename(String filename) {
         this.filename = filename;
     }
@@ -292,10 +380,20 @@ public class Map implements Iterable<MapLayer>
         tileHeight = height;
     }
 
+    /**
+     * <p>Setter for the field <code>orientation</code>.</p>
+     *
+     * @param orientation a int.
+     */
     public void setOrientation(int orientation) {
         this.orientation = orientation;
     }
 
+    /**
+     * <p>Getter for the field <code>filename</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getFilename() {
         return filename;
     }
@@ -304,8 +402,19 @@ public class Map implements Iterable<MapLayer>
      * Returns a vector with the currently loaded tileSets.
      *
      * @return Vector
+     * @deprecated Use getMapTileSets instead.
      */
+    @Deprecated
     public Vector<TileSet> getTileSets() {
+        return new Vector<>(tileSets);
+    }
+
+    /**
+     * Returns a list with the currently loaded tileSets.
+     *
+     * @return List
+     */
+    public List<TileSet> getMapTileSets() {
         return tileSets;
     }
 
@@ -346,13 +455,13 @@ public class Map implements Iterable<MapLayer>
     }
 
     /**
-     * Returns wether the given tile coordinates fall within the map
+     * Returns whether the given tile coordinates fall within the map
      * boundaries.
      *
      * @param x The tile-space x-coordinate
      * @param y The tile-space y-coordinate
      * @return <code>true</code> if the point is within the map boundaries,
-     *         <code>false</code> otherwise
+     * <code>false</code> otherwise
      */
     public boolean contains(int x, int y) {
         return x >= 0 && y >= 0 && x < bounds.width && y < bounds.height;
@@ -379,18 +488,23 @@ public class Map implements Iterable<MapLayer>
 
     /**
      * Swaps the tile sets at the given indices.
+     *
+     * @param index0 a int.
+     * @param index1 a int.
      */
     public void swapTileSets(int index0, int index1) {
-        if (index0 == index1) return;
+        if (index0 == index1) {
+            return;
+        }
         TileSet set = tileSets.get(index0);
         tileSets.set(index0, tileSets.get(index1));
         tileSets.set(index1, set);
     }
 
     /**
-     * Returns the orientation of this map. Orientation will be one of
-     * {@link Map#ORIENTATION_ISOMETRIC}, {@link Map#ORIENTATION_ORTHOGONAL},
-     * {@link Map#ORIENTATION_HEXAGONAL} and {@link Map#ORIENTATION_SHIFTED}.
+     * Returns the orientation of this map. Orientation will be one of null null null     {@link tiled.core.Map#ORIENTATION_ISOMETRIC}, {@link tiled.core.Map#ORIENTATION_ORTHOGONAL},
+     * {@link tiled.core.Map#ORIENTATION_HEXAGONAL} and
+     * {@link tiled.core.Map#ORIENTATION_SHIFTED}.
      *
      * @return The orientation from the enumerated set
      */
@@ -399,16 +513,16 @@ public class Map implements Iterable<MapLayer>
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Returns string describing the map. The form is <code>Map[width x height
      * x layers][tileWidth x tileHeight]</code>, for example <code>
      * Map[64x64x2][24x24]</code>.
-     *
-     * @return string describing map
      */
     @Override
     public String toString() {
-        return "Map[" + bounds.width + "x" + bounds.height + "x" +
-            getLayerCount() + "][" + tileWidth + "x" +
-            tileHeight + "]";
+        return "Map[" + bounds.width + "x" + bounds.height + "x"
+                + getLayerCount() + "][" + tileWidth + "x"
+                + tileHeight + "]";
     }
 }
