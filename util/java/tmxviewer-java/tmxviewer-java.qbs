@@ -9,5 +9,5 @@ Product {
 
     property string entryPoint: "TMXViewer"
 
-    files: ["src/**/*.java"]
+    files: ["src/main/java/**/*.java"]
 }
