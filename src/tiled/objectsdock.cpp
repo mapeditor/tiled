@@ -76,6 +76,11 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mActionMoveToGroup = new QAction(this);
     mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
 
+    mActionMoveUp = new QAction(this);
+    mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
+    mActionMoveDown = new QAction(this);
+    mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
@@ -85,6 +90,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     toolBar->addAction(handler->actionDuplicateObjects());
     toolBar->addAction(handler->actionRemoveObjects());
 
+    toolBar->addAction(mActionMoveUp);
+    toolBar->addAction(mActionMoveDown);
     toolBar->addAction(mActionMoveToGroup);
     QToolButton *button;
     button = dynamic_cast<QToolButton*>(toolBar->widgetForAction(mActionMoveToGroup));
@@ -103,6 +110,23 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
             SLOT(documentAboutToClose(MapDocument*)));
+
+    connect(mActionMoveUp, SIGNAL(triggered()), SLOT(moveObjectUp()));
+    connect(mActionMoveDown, SIGNAL(triggered()), SLOT(moveObjectDown()));
+}
+
+void ObjectsDock::moveObjectUp()
+{
+    if (mMapDocument) {
+        mMapDocument->moveObjectUp(mMapDocument->selectedObjects());
+    }
+}
+
+void ObjectsDock::moveObjectDown()
+{
+    if (mMapDocument) {
+        mMapDocument->moveObjectDown(mMapDocument->selectedObjects());
+    }
 }
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)

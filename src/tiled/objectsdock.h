@@ -54,6 +54,8 @@ private slots:
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
     void documentAboutToClose(MapDocument *mapDocument);
+    void moveObjectUp();
+    void moveObjectDown();
 
 private:
     void retranslateUi();
@@ -64,6 +66,8 @@ private:
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
     QAction *mActionMoveToGroup;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;

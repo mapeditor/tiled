@@ -190,6 +190,8 @@ public:
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
+    void moveObjectUp(const QList<MapObject*> &objects);
+    void moveObjectDown(const QList<MapObject*> &objects);
 
     void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
@@ -394,6 +396,7 @@ private slots:
 private:
     void setFileName(const QString &fileName);
     void deselectObjects(const QList<MapObject*> &objects);
+    void moveObjectIndex(const MapObject *object, int count);
 
     QString mFileName;
     QString mLastExportFileName;

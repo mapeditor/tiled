@@ -996,6 +996,39 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->endMacro();
 }
 
+// TODO add undo code
+void MapDocument::moveObjectIndex(const MapObject *object, int count)
+{
+    int index = 0;
+    ObjectGroup *group = object->objectGroup();
+
+    while (index < group->objectCount() && group->objectAt( index ) != object)
+        index++;
+
+    if ( count < 0 && index > 0 ) {
+        mMapObjectModel->moveObjects( group, index, index - 1, 1 );
+
+    } else if ( count > 0 && (index < group->objectCount()-1)) {
+        mMapObjectModel->moveObjects( group, index+1, index, 1 );
+    }
+}
+
+void MapDocument::moveObjectUp(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    moveObjectIndex( objects.at(0), -1 );
+}
+
+void MapDocument::moveObjectDown(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    moveObjectIndex( objects.at(0), 1 );
+}
+
 void MapDocument::setProperty(Object *object,
                               const QString &name,
                               const QVariant &value)
