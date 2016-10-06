@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 /**
  * The Map class is the focal point of the <code>tiled.core</code> package.
@@ -183,34 +182,12 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns the layer vector.
-     *
-     * @return Vector the layer vector
-     * @deprecated Use getMapLayers instead.
-     */
-    @Deprecated
-    public Vector<MapLayer> getLayers() {
-        return new Vector<>(layers);
-    }
-
-    /**
      * Returns the layer list.
      *
      * @return List the layer list
      */
-    public List<MapLayer> getMapLayers() {
+    public List<MapLayer> getLayers() {
         return layers;
-    }
-
-    /**
-     * Sets the layer vector to the given java.util.Vector.
-     *
-     * @param layers the new set of layers
-     * @deprecated Use setMapLayers instead.
-     */
-    @Deprecated
-    public void setLayers(Vector<MapLayer> layers) {
-        this.layers = new ArrayList<>(layers);
     }
 
     /**
@@ -218,7 +195,7 @@ public class Map implements Iterable<MapLayer> {
      *
      * @param layers the new set of layers
      */
-    public void setMapLayers(List<MapLayer> layers) {
+    public void setLayers(List<MapLayer> layers) {
         this.layers = layers;
     }
 
@@ -399,22 +376,11 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns a vector with the currently loaded tileSets.
-     *
-     * @return Vector
-     * @deprecated Use getMapTileSets instead.
-     */
-    @Deprecated
-    public Vector<TileSet> getTileSets() {
-        return new Vector<>(tileSets);
-    }
-
-    /**
      * Returns a list with the currently loaded tileSets.
      *
      * @return List
      */
-    public List<TileSet> getMapTileSets() {
+    public List<TileSet> getTileSets() {
         return tileSets;
     }
 
@@ -502,7 +468,9 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns the orientation of this map. Orientation will be one of null null null     {@link tiled.core.Map#ORIENTATION_ISOMETRIC}, {@link tiled.core.Map#ORIENTATION_ORTHOGONAL},
+     * Returns the orientation of this map. Orientation will be one of
+     * {@link tiled.core.Map#ORIENTATION_ISOMETRIC},
+     * {@link tiled.core.Map#ORIENTATION_ORTHOGONAL},
      * {@link tiled.core.Map#ORIENTATION_HEXAGONAL} and
      * {@link tiled.core.Map#ORIENTATION_SHIFTED}.
      *

@@ -201,7 +201,7 @@ public class TMXMapWriter {
 
         firstGidPerTileset = new HashMap<>();
         int firstgid = 1;
-        for (TileSet tileset : map.getMapTileSets()) {
+        for (TileSet tileset : map.getTileSets()) {
             setFirstGidForTileset(tileset, firstgid);
             writeTilesetReference(tileset, w, wp);
             firstgid += tileset.getMaxTileId() + 1;

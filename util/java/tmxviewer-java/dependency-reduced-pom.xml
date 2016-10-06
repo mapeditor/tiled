@@ -49,9 +49,9 @@
     </dependency>
   </dependencies>
   <properties>
-    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.source>1.7</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.5</maven.compiler.target>
+    <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
 </project>
 
