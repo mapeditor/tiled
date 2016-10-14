@@ -461,14 +461,9 @@ MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
 
-    // This needs to happen before deleting the TilesetManager otherwise it may
-    // hold references to tilesets.
-    // todo: Delete the MapEditor first?
-//    mTileAnimationEditor->setTile(nullptr);
-//    mTileAnimationEditor->writeSettings();
-//    mTileCollisionEditor->setTile(nullptr);
-//    mTileCollisionEditor->writeSettings();
-
+    // This needs to happen before deleting the TilesetManager, otherwise
+    // tileset references may remain. It also needs to be done before deleting
+    // the Preferences.
     mDocumentManager->deleteEditor(Document::MapDocumentType);
     mDocumentManager->deleteEditor(Document::TilesetDocumentType);
 

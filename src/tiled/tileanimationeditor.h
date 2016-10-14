@@ -50,8 +50,6 @@ public:
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
-    void writeSettings();
-
 signals:
     void closed();
 

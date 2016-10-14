@@ -147,6 +147,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
 
 TileCollisionEditor::~TileCollisionEditor()
 {
+    Utils::saveGeometry(this);
     setTile(nullptr);
 }
 
@@ -164,11 +165,6 @@ void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &MapDocument::currentObjectChanged,
                 this, &TileCollisionEditor::currentObjectChanged);
     }
-}
-
-void TileCollisionEditor::writeSettings()
-{
-    Utils::saveGeometry(this);
 }
 
 void TileCollisionEditor::setTile(Tile *tile)

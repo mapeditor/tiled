@@ -308,6 +308,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
 TileAnimationEditor::~TileAnimationEditor()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 
@@ -346,11 +347,6 @@ void TileAnimationEditor::setTile(Tile *tile)
     mUi->frameList->setEnabled(tile);
 
     resetPreview();
-}
-
-void TileAnimationEditor::writeSettings()
-{
-    Utils::saveGeometry(this);
 }
 
 void TileAnimationEditor::closeEvent(QCloseEvent *event)
