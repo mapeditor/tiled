@@ -38,7 +38,7 @@ using namespace Tiled::Internal;
 MagicWandTool::MagicWandTool(QObject *parent)
     : AbstractTileTool(tr("Magic Wand"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-fuzzy-select-22.png")),
+                               ":images/scalable/gimp-tool-fuzzy-select.svg")),
                        QKeySequence(tr("W")),
                        parent)
 {

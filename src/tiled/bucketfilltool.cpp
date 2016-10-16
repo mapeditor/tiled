@@ -39,7 +39,7 @@ using namespace Tiled::Internal;
 BucketFillTool::BucketFillTool(QObject *parent)
     : AbstractTileTool(tr("Bucket Fill Tool"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-bucket-fill.png")),
+                               ":images/scalable/gimp-tool-bucket-fill.svg")),
                        QKeySequence(tr("F")),
                        parent)
     , mIsActive(false)

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16.000001 16"
+   id="svg7384"
+   height="16"
+   width="16.000002"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="gimp-tool-clone.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="640"
+     inkscape:window-height="480"
+     id="namedview1509"
+     showgrid="false"
+     inkscape:zoom="14.772377"
+     inkscape:cx="-68.277427"
+     inkscape:cy="56.08612"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg7384" />
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>Barbara Muraus, Jakub Steiner, Klaus Staedtler</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <dc:description>Images originally created as the &quot;Art Libre&quot; icon set. Extended and adopted for GIMP</dc:description>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs7386">
+    <linearGradient
+       osb:paint="solid"
+       id="linearGradient8074">
+      <stop
+         id="stop8072"
+         offset="0"
+         style="stop-color:#be00be;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       osb:paint="solid"
+       id="linearGradient7561">
+      <stop
+         id="stop7558"
+         offset="0"
+         style="stop-color:#a5a5a5;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       osb:paint="solid"
+       id="linearGradient7548">
+      <stop
+         id="stop7546"
+         offset="0"
+         style="stop-color:#ebebeb;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       osb:paint="solid"
+       id="linearGradient7542">
+      <stop
+         id="stop7538"
+         offset="0"
+         style="stop-color:#c9c9c9;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="matrix(0,-735328.32,170712.69,0,2464326300,577972450)"
+       osb:paint="solid"
+       id="linearGradient19282">
+      <stop
+         id="stop19284"
+         offset="0"
+         style="stop-color:#b4b4b4;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="matrix(0.34682586,0,0,0.30620888,-73.351872,524.06274)"
+       osb:paint="solid"
+       id="linearGradient19282-4">
+      <stop
+         id="stop19284-0"
+         offset="0"
+         style="stop-color:#bebebe;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="translate(157.27763,233.65517)"
+       gradientUnits="userSpaceOnUse"
+       y2="245.5"
+       x2="94.000198"
+       y1="245.5"
+       x1="84.000198"
+       id="linearGradient10526"
+       xlink:href="#linearGradient19282-4" />
+    <linearGradient
+       gradientTransform="translate(275.23558,233.65517)"
+       gradientUnits="userSpaceOnUse"
+       y2="24"
+       x2="-148"
+       y1="24"
+       x1="-155"
+       id="linearGradient10532"
+       xlink:href="#linearGradient19282-4" />
+    <linearGradient
+       gradientTransform="translate(157.27763,233.65517)"
+       gradientUnits="userSpaceOnUse"
+       y2="249.5"
+       x2="95.000198"
+       y1="249.5"
+       x1="83.000198"
+       id="linearGradient10538"
+       xlink:href="#linearGradient19282-4" />
+  </defs>
+  <g
+     transform="translate(133.35605,-298.53313)"
+     style="display:inline"
+     id="tools">
+    <g
+       transform="matrix(1,0,0,1.0015171,-214.35625,61.173579)"
+       id="gimp-tool-clone"
+       style="display:inline">
+      <rect
+         style="fill:none;fill-opacity:1;stroke:none"
+         id="rect5537"
+         width="16.000002"
+         height="15.975763"
+         x="81.000198"
+         y="237"
+         rx="0.75"
+         ry="0.75" />
+      <path
+         style="fill:url(#linearGradient10538);fill-opacity:1;stroke:none"
+         d="m 83.0002,248 0,3 6,0 -2,-3 z m 6,3 6,0 0,-3 -4,0 z"
+         id="rect5543"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:url(#linearGradient10526);fill-opacity:1;stroke:none"
+         d="m 84.000198,247.22414 c 0,0 4.000002,0 4.000002,-3.87931 1,-0.77586 2,0 2,0 0,3.87931 3.999998,3.87931 3.999998,3.87931 l 0,0.77586 -10,0 z"
+         id="rect5545"
+         inkscape:connector-curvature="0" />
+      <ellipse
+         ry="2"
+         rx="3.5"
+         cy="24"
+         cx="-151.5"
+         style="fill:url(#linearGradient10532);fill-opacity:1;stroke:none"
+         id="path5547"
+         transform="matrix(0.57142911,0,0,1,175.57171,218)" />
+    </g>
+  </g>
+</svg>

@@ -95,5 +95,34 @@
         <file>images/22x22/stock-tool-color-picker-22.png</file>
         <file>images/dock-close.png</file>
         <file>images/dock-restore.png</file>
+        <file>images/scalable/document-new.svg</file>
+        <file>images/scalable/document-open-recent.svg</file>
+        <file>images/scalable/document-open.svg</file>
+        <file>images/scalable/document-revert.svg</file>
+        <file>images/scalable/document-save-as.svg</file>
+        <file>images/scalable/document-save.svg</file>
+        <file>images/scalable/edit-delete.svg</file>
+        <file>images/scalable/edit-paste.svg</file>
+        <file>images/scalable/edit-redo.svg</file>
+        <file>images/scalable/edit-undo.svg</file>
+        <file>images/scalable/gimp-duplicate.svg</file>
+        <file>images/scalable/gimp-error.svg</file>
+        <file>images/scalable/gimp-hchain-broken.svg</file>
+        <file>images/scalable/gimp-hchain.svg</file>
+        <file>images/scalable/gimp-image-reload.svg</file>
+        <file>images/scalable/gimp-plugin.svg</file>
+        <file>images/scalable/gimp-tool-bucket-fill.svg</file>
+        <file>images/scalable/gimp-tool-by-color-select.svg</file>
+        <file>images/scalable/gimp-tool-clone.svg</file>
+        <file>images/scalable/gimp-tool-color-picker.svg</file>
+        <file>images/scalable/gimp-tool-eraser.svg</file>
+        <file>images/scalable/gimp-tool-fuzzy-select.svg</file>
+        <file>images/scalable/gimp-tool-move.svg</file>
+        <file>images/scalable/gimp-tool-rect-select.svg</file>
+        <file>images/scalable/list-add.svg</file>
+        <file>images/scalable/list-remove.svg</file>
+        <file>images/scalable/zoom-in.svg</file>
+        <file>images/scalable/zoom-original.svg</file>
+        <file>images/scalable/zoom-out.svg</file>
     </qresource>
 </RCC>

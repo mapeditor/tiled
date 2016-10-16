@@ -33,7 +33,7 @@ using namespace Tiled::Internal;
 TileSelectionTool::TileSelectionTool(QObject *parent)
     : AbstractTileTool(tr("Rectangular Select"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-rect-select.png")),
+                               ":images/scalable/gimp-tool-rect-select.svg")),
                        QKeySequence(tr("R")),
                        parent)
     , mSelectionMode(Replace)

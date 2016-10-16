@@ -32,7 +32,7 @@ using namespace Tiled::Internal;
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
     : AbstractTileTool(tr("Select Same Tile"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-by-color-select.png")),
+                               ":images/scalable/gimp-tool-by-color-select.svg")),
                        QKeySequence(tr("S")),
                        parent)
 {
