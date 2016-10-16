@@ -39,6 +39,8 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
 
     connect(mMapDocument, &MapDocument::selectedAreaChanged,
             this, &TileSelectionItem::selectionChanged);
+    connect(mapDocument, &MapDocument::layerChanged,
+            this, &TileSelectionItem::layerChanged);
     connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
             this, &TileSelectionItem::currentLayerIndexChanged);
 
@@ -72,6 +74,12 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
     update(mMapDocument->renderer()->boundingRect(changedArea));
+}
+
+void TileSelectionItem::layerChanged(int index)
+{
+    const Layer *layer = mMapDocument->map()->layerAt(index);
+    setPos(layer->offset());
 }
 
 void TileSelectionItem::currentLayerIndexChanged()
