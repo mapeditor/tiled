@@ -76,9 +76,10 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     update(mMapDocument->renderer()->boundingRect(changedArea));
 }
 
-void TileSelectionItem::layerChanged(int)
+void TileSelectionItem::layerChanged(int index)
 {
-    if (Layer *layer = mMapDocument->currentLayer())
+    const Layer *layer = mMapDocument->map()->layerAt(index);
+    if (layer == mMapDocument->currentLayer())
         setPos(layer->offset());
 }
 
