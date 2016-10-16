@@ -49,6 +49,8 @@ private slots:
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
 
+    void layerChanged(int index);
+
     void currentLayerIndexChanged();
 
 private:
