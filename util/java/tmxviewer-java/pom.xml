@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>org.mapeditor</groupId>
-        <artifactId>tiled</artifactId>
+        <artifactId>tiled-parent</artifactId>
         <version>0.17-SNAPSHOT</version>
     </parent>
 
