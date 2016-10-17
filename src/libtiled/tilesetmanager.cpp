@@ -129,7 +129,7 @@ QList<SharedTileset> TilesetManager::tilesets() const
     return mTilesets.keys();
 }
 
-void TilesetManager::forceTilesetReload(SharedTileset &tileset)
+void TilesetManager::forceTilesetReload(const SharedTileset &tileset)
 {
     if (!mTilesets.contains(tileset))
         return;

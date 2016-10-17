@@ -24,9 +24,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "mapdocument.h"
-#include "consoledock.h"
 #include "clipboardmanager.h"
+#include "consoledock.h"
+#include "document.h"
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
@@ -145,8 +145,8 @@ private slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void mapDocumentChanged(Document *document);
-    void closeMapDocument(int index);
+    void documentChanged(Document *document);
+    void closeDocument(int index);
 
     void reloadError(const QString &error);
     void autoMappingError(bool automatic);
@@ -194,7 +194,7 @@ private:
     void retranslateUi();
 
     Ui::MainWindow *mUi;
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
     QDockWidget *mUndoDock;
