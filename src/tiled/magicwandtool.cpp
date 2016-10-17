@@ -58,23 +58,29 @@ void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
 
 void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() != Qt::LeftButton)
-        return;
-
+    const Qt::MouseButton button = event->button();
     const Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    if (button != Qt::LeftButton && button != Qt::RightButton)
+        return;
 
     MapDocument *document = mapDocument();
 
-    QRegion selection = document->selectedArea();
+    QRegion selection;
 
-    if (modifiers == Qt::ShiftModifier)
-        selection += mSelectedRegion;
-    else if (modifiers == Qt::ControlModifier)
-        selection -= mSelectedRegion;
-    else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
-        selection &= mSelectedRegion;
-    else
-        selection = mSelectedRegion;
+    // Left button modifies selection, right button clears selection
+    if (button == Qt::LeftButton) {
+        selection = document->selectedArea();
+
+        if (modifiers == Qt::ShiftModifier)
+            selection += mSelectedRegion;
+        else if (modifiers == Qt::ControlModifier)
+            selection -= mSelectedRegion;
+        else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
+            selection &= mSelectedRegion;
+        else
+            selection = mSelectedRegion;
+    }
 
     if (selection != document->selectedArea()) {
         QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
