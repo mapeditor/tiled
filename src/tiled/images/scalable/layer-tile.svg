@@ -14,10 +14,10 @@
    height="16"
    id="svg3600"
    version="1.1"
-   inkscape:version="0.47 r22583"
-   inkscape:export-filename="/home/bjorn/projects/tiled-qt/src/tiled/images/16x16/layer-tile.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
+   inkscape:version="0.91 r13725"
+   inkscape:export-filename="/home/bjorn/projects/tiled/src/tiled/images/32x32/layer-tile.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180"
    sodipodi:docname="tilelayer-icon.svg">
   <defs
      id="defs3602">
@@ -37,15 +37,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.4"
-     inkscape:cx="-0.25591059"
-     inkscape:cy="8.5488237"
+     inkscape:cx="-2.465732"
+     inkscape:cy="8.4148951"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1270"
-     inkscape:window-height="626"
-     inkscape:window-x="0"
-     inkscape:window-y="137"
+     inkscape:window-width="2330"
+     inkscape:window-height="1275"
+     inkscape:window-x="976"
+     inkscape:window-y="292"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -63,7 +63,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>

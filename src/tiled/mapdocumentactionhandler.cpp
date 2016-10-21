@@ -61,12 +61,19 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionCropToSelection = new QAction(this);
 
+    QIcon addTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png"));
+    QIcon addObjectLayerIcon(QLatin1String(":/images/16x16/layer-object.png"));
+    QIcon addImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"));
+
+    addTileLayerIcon.addFile(QLatin1String(":/images/32x32/layer-tile.png"));
+    addObjectLayerIcon.addFile(QLatin1String(":/images/32x32/layer-object.png"));
+
     mActionAddTileLayer = new QAction(this);
-    mActionAddTileLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-tile.png")));
+    mActionAddTileLayer->setIcon(addTileLayerIcon);
     mActionAddObjectGroup = new QAction(this);
-    mActionAddObjectGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
+    mActionAddObjectGroup->setIcon(addObjectLayerIcon);
     mActionAddImageLayer = new QAction(this);
-    mActionAddImageLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-image.png")));
+    mActionAddImageLayer->setIcon(addImageLayerIcon);
 
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
