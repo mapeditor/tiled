@@ -4,6 +4,11 @@ source: reference/tmx-changelog.md
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 0.17 ##
+
+* Added `color` and `file` as possible values for the [`property.type`](tmx-map-format.md#property) attribute.
+* Added support for editing multi-line string properties, which are written out differently.
+
 ## Tiled 0.16 ##
 
 * The [`property`](tmx-map-format.md#property) element gained a `type` attribute, storing the type of the value. Currently supported types are `string` (the default), `int`, `float` and `bool`.
