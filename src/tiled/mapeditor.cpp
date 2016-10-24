@@ -525,8 +525,7 @@ MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
 
 MapView *MapEditor::currentMapView() const
 {
-    MapViewContainer *container = mWidgetForMap.value(mCurrentMapDocument);
-    return container ? container->mapView() : nullptr;
+    return viewForDocument(mCurrentMapDocument);
 }
 
 void MapEditor::showMessage(const QString &text, int timeout)

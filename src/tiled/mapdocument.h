@@ -152,7 +152,6 @@ public:
 
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
-    void moveTileset(int from, int to);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
 
     void duplicateObjects(const QList<MapObject*> &objects);
@@ -278,7 +277,6 @@ signals:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetMoved(int from, int to);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void objectsAdded(const QList<MapObject*> &objects);

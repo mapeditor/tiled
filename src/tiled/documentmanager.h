@@ -94,11 +94,6 @@ public:
      */
     MapView *currentMapView() const;
 
-    /**
-     * Returns the map scene of the current document, or 0 when there is none.
-     */
-    MapScene *currentMapScene() const;
-
     MapView *viewForDocument(MapDocument *mapDocument) const;
 
     /**
@@ -166,6 +161,8 @@ public:
      */
     const QList<Document*> &documents() const { return mDocuments; }
 
+    const QList<TilesetDocument*> &tilesetDocuments() const;
+
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findOrCreateTilesetDocument(const SharedTileset &tileset);
 
@@ -205,6 +202,9 @@ signals:
      * Emitted when an error occurred while reloading the map.
      */
     void reloadError(const QString &error);
+
+    void tilesetDocumentAdded(TilesetDocument *tilesetDocument);
+    void tilesetDocumentRemoved(TilesetDocument *tilesetDocument);
 
 public slots:
     void switchToLeftDocument();
@@ -246,6 +246,7 @@ private:
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
     QList<Document*> mDocuments;
+    QList<TilesetDocument*> mTilesetDocuments;
 
     QWidget *mWidget;
     QWidget *mNoEditorWidget;
@@ -258,10 +259,18 @@ private:
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
 
-    QMap<SharedTileset, TilesetDocument*> mTilesetDocuments;
+    QMap<SharedTileset, TilesetDocument*> mTilesetToDocument;
 
     static DocumentManager *mInstance;
 };
+
+/**
+ * Returns all open tileset documents, either embedded or external.
+ */
+inline const QList<TilesetDocument *> &DocumentManager::tilesetDocuments() const
+{
+    return mTilesetDocuments;
+}
 
 } // namespace Tiled::Internal
 } // namespace Tiled

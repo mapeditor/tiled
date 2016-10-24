@@ -150,6 +150,7 @@ DocumentManager::~DocumentManager()
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
     Q_ASSERT(mTilesetDocuments.isEmpty());
+    Q_ASSERT(mTilesetToDocument.isEmpty());
     delete mWidget;
 }
 
@@ -216,19 +217,6 @@ Document *DocumentManager::currentDocument() const
 MapView *DocumentManager::currentMapView() const
 {
     return mMapEditor->currentMapView();
-}
-
-MapScene *DocumentManager::currentMapScene() const
-{
-    // todo:
-    // * get index from mTabBar
-    // * get document by index
-    // * ask the right main window for the map scene
-
-//    if (MapView *mapView = currentMapView())
-//        return mapView->mapScene();
-
-    return nullptr;
 }
 
 /**
@@ -318,7 +306,12 @@ void DocumentManager::addDocument(Document *document)
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             addToTilesetDocument(tileset, mapDocument);
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-        mTilesetDocuments.insert(tilesetDocument->tileset(), tilesetDocument);
+        // We may have opened a bare tileset that wasn't seen before
+        if (!mTilesetDocuments.contains(tilesetDocument)) {
+            mTilesetToDocument.insert(tilesetDocument->tileset(), tilesetDocument);
+            mTilesetDocuments.append(tilesetDocument);
+            emit tilesetDocumentAdded(tilesetDocument);
+        }
     }
 
     if (!document->fileName().isEmpty())
@@ -404,7 +397,9 @@ void DocumentManager::closeDocumentAt(int index)
         delete document;
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
-            mTilesetDocuments.remove(tilesetDocument->tileset());
+            mTilesetToDocument.remove(tilesetDocument->tileset());
+            mTilesetDocuments.removeOne(tilesetDocument);
+            emit tilesetDocumentRemoved(tilesetDocument);
             delete document;
         } else {
             tilesetDocument->disconnect(this);
@@ -655,7 +650,7 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
 
 TilesetDocument *DocumentManager::findTilesetDocument(const SharedTileset &tileset) const
 {
-    return mTilesetDocuments.value(tileset);
+    return mTilesetToDocument.value(tileset);
 }
 
 /**
@@ -669,7 +664,9 @@ TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTilese
     // Create TilesetDocument instance when it doesn't exist yet
     if (!tilesetDocument) {
         tilesetDocument = new TilesetDocument(tileset);
-        mTilesetDocuments.insert(tileset, tilesetDocument);
+        mTilesetToDocument.insert(tileset, tilesetDocument);
+        mTilesetDocuments.append(tilesetDocument);
+        emit tilesetDocumentAdded(tilesetDocument);
     }
 
     return tilesetDocument;
@@ -703,7 +700,9 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
         if (index != -1) {
             closeDocumentAt(index);
         } else {
-            mTilesetDocuments.remove(tileset);
+            mTilesetToDocument.remove(tileset);
+            mTilesetDocuments.removeOne(tilesetDocument);
+            emit tilesetDocumentRemoved(tilesetDocument);
             delete tilesetDocument;
         }
     }

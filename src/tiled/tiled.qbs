@@ -233,8 +233,6 @@ QtGuiApplication {
         "movemapobject.h",
         "movemapobjecttogroup.cpp",
         "movemapobjecttogroup.h",
-        "movetileset.cpp",
-        "movetileset.h",
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",

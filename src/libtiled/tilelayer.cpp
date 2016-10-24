@@ -283,11 +283,7 @@ bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
-    for (const Cell &cell : mGrid) {
-        if (cell.tileset() == tileset)
-            return true;
-    }
-    return false;
+    return usedTilesets().contains(tileset->sharedPointer());
 }
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)

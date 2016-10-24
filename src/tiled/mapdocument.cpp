@@ -574,17 +574,6 @@ void MapDocument::removeTilesetAt(int index)
     tilesetManager->removeReference(tileset);
 }
 
-void MapDocument::moveTileset(int from, int to)
-{
-    if (from == to)
-        return;
-
-    SharedTileset tileset = mMap->tilesets().at(from);
-    mMap->removeTilesetAt(from);
-    mMap->insertTileset(to, tileset);
-    emit tilesetMoved(from, to);
-}
-
 /**
  * Replaces the tileset at the given \a index with the new \a tileset. Replaces
  * all tiles from the replaced tileset with tiles from the new tileset.
