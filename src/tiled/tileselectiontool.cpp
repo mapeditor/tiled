@@ -82,11 +82,26 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mSelectionStart = tilePosition();
         brushItem()->setTileRegion(QRegion());
     }
+
+    if (button == Qt::RightButton) {
+        if (mSelecting) {
+            // Cancel selecting
+            mSelecting = false;
+            brushItem()->setTileRegion(QRegion());
+        } else {
+            // Clear the selection
+            MapDocument *document = mapDocument();
+            if (!document->selectedArea().isEmpty()) {
+                QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
+                document->undoStack()->push(cmd);
+            }
+        }
+    }
 }
 
 void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && mSelecting) {
         mSelecting = false;
 
         MapDocument *document = mapDocument();

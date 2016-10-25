@@ -38,6 +38,8 @@ LayerModel::LayerModel(QObject *parent):
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
     mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
 {
+    mTileLayerIcon.addFile(QLatin1String(":images/32x32/layer-tile.png"));
+    mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
 }
 
 /**

@@ -3704,12 +3704,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Top Down</source>
-        <translation>左下</translation>
+        <translation>从上到下</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation>手册</translation>
+        <translation>自定义</translation>
     </message>
     <message>
         <location line="+477"/>

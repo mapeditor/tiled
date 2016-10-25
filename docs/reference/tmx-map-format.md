@@ -65,6 +65,8 @@ This element is used to specify an offset in pixels, to be applied when drawing 
 * <b>width:</b> The image width in pixels (optional, used for tile index correction when the image changes)
 * <b>height:</b> The image height in pixels (optional)
 
+Note that it is not currently possible to use Tiled to create maps with embedded image data, even though the TMX format supports this. It is possible to create such maps using `libtiled` (Qt/C++) or [tmxlib](https://pypi.python.org/pypi/tmxlib) (Python).
+
 Can contain: [data](#data) (since 0.9)
 
 ### &lt;terraintypes> ###
@@ -272,14 +274,16 @@ Wraps any number of custom properties. Can be used as a child of the `map`, `til
 ### &lt;property> ###
 
 * <b>name:</b> The name of the property.
-* <b>type:</b> The type of the property. Can be `string` (default), `int`, `float` or `bool`. (since 0.16)
+* <b>type:</b> The type of the property. Can be `string` (default), `int`, `float`, `bool`, `color` or `file` (since 0.16, with `color` and `file` added in 0.17).
 * <b>value:</b> The value of the property.
 
 Boolean properties have a value of either "true" or "false".
 
-When a string property spans contains newlines, the current versions of Tiled Java and Tiled Qt will write out the value as characters contained inside the `property` element rather than as the `value` attribute. However, it is at the moment not really possible to edit properties consisting of multiple lines with Tiled.
+Color properties are stored in the format `#AARRGGBB`.
 
-It is possible that a future version of the TMX format will switch to always saving property values inside the element rather than as an attribute.
+File properties are stored as paths relative from the location of the map file.
+
+When a string property contains newlines, the current version of Tiled will write out the value as characters contained inside the `property` element rather than as the `value` attribute. It is possible that a future version of the TMX format will switch to always saving property values inside the element rather than as an attribute.
 
 ---
 ![Creative Commons License](CC-BY-SA.png)

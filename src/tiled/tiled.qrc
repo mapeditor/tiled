@@ -95,5 +95,9 @@
         <file>images/22x22/stock-tool-color-picker-22.png</file>
         <file>images/dock-close.png</file>
         <file>images/dock-restore.png</file>
+        <file>images/32x32/layer-tile.png</file>
+        <file>images/32x32/layer-object.png</file>
+        <file>images/dock-close@2x.png</file>
+        <file>images/dock-restore@2x.png</file>
     </qresource>
 </RCC>

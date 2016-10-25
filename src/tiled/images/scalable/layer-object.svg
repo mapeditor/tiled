@@ -13,11 +13,11 @@
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47 r22583"
-   inkscape:export-filename="/home/tlindeij/projects/tiled-qt/src/tiled/images/16x16/layer-object.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   sodipodi:docname="New document 1">
+   inkscape:version="0.91 r13725"
+   inkscape:export-filename="/home/bjorn/projects/tiled/src/tiled/images/32x32/layer-object.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180"
+   sodipodi:docname="objectlayer-icon.svg">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -35,16 +35,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="11.782364"
-     inkscape:cy="5.4257073"
+     inkscape:zoom="22.627417"
+     inkscape:cx="4.5884774"
+     inkscape:cy="6.2043362"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:window-width="1423"
-     inkscape:window-height="874"
-     inkscape:window-x="6"
-     inkscape:window-y="52"
+     showgrid="false"
+     inkscape:window-width="2382"
+     inkscape:window-height="1447"
+     inkscape:window-x="231"
+     inkscape:window-y="85"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -62,7 +62,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
