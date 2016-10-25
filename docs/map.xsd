@@ -17,6 +17,10 @@
   types
 -->
 
+  <xs:simpleType name="pixelT">
+    <xs:restriction base="xs:nonNegativeInteger"></xs:restriction>
+  </xs:simpleType>
+
 <xs:simpleType name="encodingT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="base64" />
@@ -29,12 +33,78 @@
   </xs:restriction>
 </xs:simpleType>
 
+  <xs:simpleType name="percentageT">
+    <xs:restriction base="xs:double">
+      <xs:maxInclusive value="1"/>
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
 <xs:simpleType name="nameT">
   <xs:restriction base="xs:string">
     <xs:minLength value="1"/>
   </xs:restriction>
 </xs:simpleType>
 
+  <xs:simpleType name="draworderT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="index" />
+      <xs:enumeration value="topdown" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="staggeraxisT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="x" />
+      <xs:enumeration value="y" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="imageformatT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="png" />
+      <xs:enumeration value="gif" />
+      <xs:enumeration value="jpg" />
+      <xs:enumeration value="bmp" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="degreesT">
+    <xs:restriction base="xs:nonNegativeInteger">
+      <xs:maxInclusive value="360"/>
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+ 
+  <xs:simpleType name="opacityT">
+    <xs:restriction base="xs:double">
+      <xs:maxInclusive value="1"/>
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="tileId">
+    <xs:restriction base="xs:nonNegativeInteger"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="staggerindexT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="even" />
+      <xs:enumeration value="odd" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="propertyT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="string" />
+      <xs:enumeration value="int" />
+      <xs:enumeration value="float" />
+      <xs:enumeration value="bool" />
+      <xs:enumeration value="color" />
+      <xs:enumeration value="file" />
+    </xs:restriction>
+  </xs:simpleType>
+  
 <xs:simpleType name="orientationT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="orthogonal" />
@@ -59,13 +129,33 @@
   </xs:restriction>
 </xs:simpleType>
 
+  <xs:simpleType name="cornerterrainT">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9],[0-9],[0-9],[0-9]"/>
+      <!-- TODO: check pattern -->
+    </xs:restriction>
+  </xs:simpleType>
+
 <xs:simpleType name="hexColourT">
   <xs:restriction base="xs:string">
     <xs:pattern value="[a-fA-F0-9]{6}"/>
   </xs:restriction>
 </xs:simpleType>
 
-<xs:complexType name="simpleDataT">
+  <xs:simpleType name="pointsT">
+    <xs:restriction base="xs:string">
+      <!-- Should be listed as [414,134][341,313][35,33] etc-->
+      <xs:pattern value="(\[([0-9])+,([0-9])+\])+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="hexColourAlphaT">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#[a-fA-F0-9]{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="simpleDataT">
   <xs:simpleContent>
     <xs:extension base="xs:base64Binary">
       <xs:attributeGroup ref="simpleDataT"/>
@@ -87,18 +177,37 @@
 
 <xs:element name="properties">
   <xs:complexType>
-    <xs:sequence maxOccurs="unbounded">
-      <xs:element ref="property"/>
+    <xs:sequence maxOccurs="unbounded" minOccurs="1">
+      <xs:element name="property">
+        <xs:complexType>
+          <xs:attributeGroup ref="property"/>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="property">
-  <xs:complexType>
-    <xs:attributeGroup ref="property"/>
-  </xs:complexType>
-</xs:element>
+  <xs:element name="image">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="data" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="image"/>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="imagelayer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="properties" minOccurs="0"/>
+        <xs:element ref="image" minOccurs="0"/>
+      </xs:sequence>
+        <xs:attributeGroup ref="imagelayer"/>
+      </xs:complexType>
+  </xs:element>
 
+    
 <xs:element name="map">
   <xs:complexType>
     <xs:sequence>
@@ -108,11 +217,16 @@
         <xs:element ref="layer"/>
         <xs:element ref="objectgroup"/>
       </xs:choice>
+      <xs:element ref="imagelayer" minOccurs="0"/>
     </xs:sequence>
     <xs:attributeGroup ref="map"/>
   </xs:complexType>
 </xs:element>
 
+
+
+
+  
 <xs:element name="tileset">
   <xs:complexType>
     <xs:sequence>
@@ -136,8 +250,40 @@
 
             <!-- image.tile.tileset -->
             <xs:element name="image" minOccurs="0" type="simpleImageT"/>
+            <xs:element ref="objectgroup" minOccurs="0"/>
+            <xs:element name="animation" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="frame" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:attributeGroup ref="frame"/>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
           </xs:sequence>
           <xs:attributeGroup ref="tile.tileset"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="tileoffset">
+        <xs:complexType>
+          <xs:attributeGroup ref="tileoffset"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="terraintypes">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="terrain">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="terrain"/>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -145,26 +291,28 @@
   </xs:complexType>
 </xs:element>
 
+  
+  <!-- Can be used in both image and layer -->
+  <xs:element name="data">
+    <xs:complexType mixed="true">
+      <xs:choice>
+        <!-- tile.data -->
+        <xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attributeGroup ref="tile.data.layer"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+      <xs:attributeGroup ref="data.layer"/>
+    </xs:complexType>
+  </xs:element>
+
 <xs:element name="layer">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="properties" minOccurs="0"/>
-
       <!-- data.layer -->
-      <xs:element name="data">
-        <xs:complexType mixed="true">
-          <xs:choice>
-
-            <!-- tile.data.layer -->
-            <xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:attributeGroup ref="tile.data.layer"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:choice>
-          <xs:attributeGroup ref="data.layer"/>
-        </xs:complexType>
-      </xs:element>
+      <xs:element ref="data"/>        
     </xs:sequence>
     <xs:attributeGroup ref="layer"/>
   </xs:complexType>
@@ -173,20 +321,33 @@
 <xs:element name="objectgroup">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="object" maxOccurs="unbounded"/>
+      <xs:element name="object" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="properties" minOccurs="0"/>
+            <xs:choice>
+              <xs:element name="ellipse" minOccurs="0" maxOccurs="1"/>
+              <xs:element name="polygon" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="points" type="pointsT"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="polyline" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="points" type="pointsT"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attributeGroup ref="object"/>
+        </xs:complexType>
+      </xs:element>
     </xs:sequence>
     <xs:attributeGroup ref="objectgroup"/>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="object">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element ref="properties" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attributeGroup ref="object"/>
-  </xs:complexType>
-</xs:element>
+
 
 <!--
   attributes
@@ -204,41 +365,92 @@
 <xs:attributeGroup name="property">
   <xs:attribute name="name" type="nameT" use="required"/>
   <xs:attribute name="value" type="xs:string" use="required"/>
+  <xs:attribute name="type" type="propertyT" use="optional" default="string"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="map">
   <xs:attribute name="version" type="xs:string" use="required"/>
   <xs:attribute name="orientation" type="orientationT" use="required"/>
-  <xs:attribute name="renderorder" type="renderorderT"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="tilewidth" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="tileheight" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="renderorder" type="renderorderT" default="right-down"/>
+  <xs:attribute name="width" type="pixelT" use="required"/>
+  <xs:attribute name="height" type="pixelT" use="required"/>
+  <xs:attribute name="tilewidth" type="pixelT" use="required"/>
+  <xs:attribute name="tileheight" type="pixelT" use="required"/>
+  <xs:attribute name="hexsidelength" type="pixelT" use="optional"/>
+  <xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
+  <xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>
+  <xs:attribute name="backgroundcolor" type="hexColourAlphaT" use="optional"/>
+  <xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="required"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="tileset">
   <xs:attribute name="name" type="nameT"/>
   <xs:attribute name="firstgid" type="xs:positiveInteger" use="required"/>
   <xs:attribute name="source" type="xs:anyURI"/>
-  <xs:attribute name="tilewidth" type="xs:nonNegativeInteger"/>
-  <xs:attribute name="tileheight" type="xs:nonNegativeInteger"/>
-  <xs:attribute name="spacing" type="xs:nonNegativeInteger"/>
+  <xs:attribute name="tilewidth" type="pixelT"/>
+  <xs:attribute name="tileheight" type="pixelT"/>
+  <xs:attribute name="spacing" type="pixelT"/>
+  <xs:attribute name="margin" type="pixelT"/>
+  <xs:attribute name="tilecount" type="xs:nonNegativeInteger"/>
+  <xs:attribute name="columns" type="xs:nonNegativeInteger"/>
 </xs:attributeGroup>
 
-<xs:attributeGroup name="image.tileset">
+  <xs:attributeGroup name="imagelayer">
+    <xs:attribute name="name" type="nameT"/>
+    <xs:attribute name="offsetx" type="pixelT" default="0" use="optional"/>
+    <xs:attribute name="offsety" type="pixelT" default="0" use="optional"/>
+    <xs:attribute name="opacity" type="opacityT" default="1" use="optional"/>
+    <xs:attribute name="visible" type="xs:boolean" default="1" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="terrain">
+    <xs:attribute name="name" type="nameT"/>
+    <xs:attribute name="tile" type="tileId"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="tileoffset">
+    <xs:attribute name="x" type="pixelT" use="required"/>
+    <xs:attribute name="y" type="pixelT" use="required"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="data">
+    <xs:attribute name="encoding" type="encodingT" use="required"/>
+    <xs:attribute name="compression" type="compressionT" use="required"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="frame">
+    <xs:attribute name="tileid" type="tileId" use="required"/>
+    <xs:attribute name="duration" type="xs:nonNegativeInteger" use="required"/>
+  </xs:attributeGroup>
+  
+  <xs:attributeGroup name="image">
+    <xs:attribute name="format" type="imageformatT" use="required"/>
+    <xs:attribute name="source" type="xs:anyURI" use="required"/>
+    <xs:attribute name="trans" type="hexColourT" use="required"/>
+    <xs:attribute name="width" type="pixelT" use="required"/>
+    <xs:attribute name="height" type="pixelT" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="image.tileset">
   <xs:attribute name="source" type="xs:anyURI"/>
   <xs:attribute name="trans" type="hexColourT"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="tile.tileset">
-  <xs:attribute name="id" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="id" type="tileId" use="required"/>
+  <xs:attribute name="terrain" type="cornerterrainT" use="optional"/>
+  <xs:attribute name="probability" type="percentageT" use="optional"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="layer">
+  <!--Not sure if missing x,y which are defaulted to 0 and unchangable-->
   <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="opacity" type="xs:decimal"/>
+  <xs:attribute name="width" type="pixelT" use="required"/>
+  <xs:attribute name="height" type="pixelT" use="required"/>
+  <xs:attribute name="opacity" type="opacityT" default="1"/>
+  <xs:attribute name="visible" type="xs:boolean" default="1"/>
+  <xs:attribute name="offsetx" type="pixelT" default="0"/>
+  <xs:attribute name="offsety" type="pixelT" default="0"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="data.layer">
@@ -247,22 +459,33 @@
 </xs:attributeGroup>
 
 <xs:attributeGroup name="tile.data.layer">
-  <xs:attribute name="gid" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="gid" type="tileId" use="required"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="objectgroup">
+  <!--Not sure if missing x,y which are defaulted to 0 and unchangable-->
   <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="width" type="pixelT" use="required"/>
+  <xs:attribute name="height" type="pixelT" use="required"/>
+  <xs:attribute name="color" type="hexColourT" use ="required"/>
+  <xs:attribute name="opacity" type="opacityT" use="optional" default="1"/>
+  <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
+  <xs:attribute name="offsetx" type="pixelT" use="optional" default="0"/>
+  <xs:attribute name="offsety" type="pixelT" use="optional" default="0"/>
+  <xs:attribute name="draworder" type="draworderT" use="optional" default="topdown"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="object">
+  <xs:attribute name="id" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="name" type="nameT" use="required"/>
   <xs:attribute name="type" type="xs:string" use="required"/>
-  <xs:attribute name="x" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="y" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger"/>
+  <xs:attribute name="x" type="pixelT" use="required"/>
+  <xs:attribute name="y" type="pixelT" use="required"/>
+  <xs:attribute name="width" type="pixelT" use="optional" default="0"/>
+  <xs:attribute name="height" type="pixelT" use="optional" default="0"/>
+  <xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
+  <xs:attribute name="gid" type="tileId" use="optional"/>
+  <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
 </xs:attributeGroup>
 
 </xs:schema>
