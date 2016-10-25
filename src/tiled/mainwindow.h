@@ -30,6 +30,7 @@
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
+#include <QPointer>
 #include <QSessionManager>
 #include <QSettings>
 
