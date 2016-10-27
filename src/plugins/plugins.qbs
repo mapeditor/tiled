@@ -12,5 +12,6 @@ Project {
         "replicaisland",
         "tengine",
         "tmw",
+        "gmx"
     ]
 }
