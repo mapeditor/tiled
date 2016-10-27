@@ -32,14 +32,7 @@
     <xs:enumeration value="gzip" />
   </xs:restriction>
 </xs:simpleType>
-
-  <xs:simpleType name="percentageT">
-    <xs:restriction base="xs:double">
-      <xs:maxInclusive value="1"/>
-      <xs:minInclusive value="0"/>
-    </xs:restriction>
-  </xs:simpleType>
-
+  
 <xs:simpleType name="nameT">
   <xs:restriction base="xs:string">
     <xs:minLength value="1"/>
@@ -77,7 +70,7 @@
   </xs:simpleType>
  
   <xs:simpleType name="opacityT">
-    <xs:restriction base="xs:double">
+    <xs:restriction base="xs:float">
       <xs:maxInclusive value="1"/>
       <xs:minInclusive value="0"/>
     </xs:restriction>
@@ -94,7 +87,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="propertyT">
+  <xs:simpleType name="propertytypeT">
     <xs:restriction base="xs:NMTOKEN">
       <xs:enumeration value="string" />
       <xs:enumeration value="int" />
@@ -365,7 +358,7 @@
 <xs:attributeGroup name="property">
   <xs:attribute name="name" type="nameT" use="required"/>
   <xs:attribute name="value" type="xs:string" use="required"/>
-  <xs:attribute name="type" type="propertyT" use="optional" default="string"/>
+  <xs:attribute name="type" type="propertytypeT" use="optional" default="string"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="map">
@@ -439,7 +432,7 @@
 <xs:attributeGroup name="tile.tileset">
   <xs:attribute name="id" type="tileId" use="required"/>
   <xs:attribute name="terrain" type="cornerterrainT" use="optional"/>
-  <xs:attribute name="probability" type="percentageT" use="optional"/>
+  <xs:attribute name="probability" type="xs:float" use="optional"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="layer">
