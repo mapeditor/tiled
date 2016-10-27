@@ -24,12 +24,21 @@
 <xs:simpleType name="encodingT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="base64" />
+    <xs:enumeration value="csv" />
   </xs:restriction>
 </xs:simpleType>
+
+  <xs:simpleType name="formatorsourceT">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="format" />
+      <xs:enumeration value="source" />
+    </xs:restriction>
+  </xs:simpleType>
 
 <xs:simpleType name="compressionT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="gzip" />
+    <xs:enumeration value="zlip" />
   </xs:restriction>
 </xs:simpleType>
   
@@ -129,9 +138,9 @@
     </xs:restriction>
   </xs:simpleType>
 
-<xs:simpleType name="hexColourT">
+<xs:simpleType name="hexColorT">
   <xs:restriction base="xs:string">
-    <xs:pattern value="[a-fA-F0-9]{6}"/>
+    <xs:pattern value="([a-fA-F0-9][a-fA-F0-9]){3}"/>
   </xs:restriction>
 </xs:simpleType>
 
@@ -142,9 +151,9 @@
     </xs:restriction>
   </xs:simpleType>
   
-  <xs:simpleType name="hexColourAlphaT">
+  <xs:simpleType name="hexColorAlphaT">
     <xs:restriction base="xs:string">
-      <xs:pattern value="#[a-fA-F0-9]{8}"/>
+      <xs:pattern value="#([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
     </xs:restriction>
   </xs:simpleType>
   
@@ -199,7 +208,6 @@
         <xs:attributeGroup ref="imagelayer"/>
       </xs:complexType>
   </xs:element>
-
     
 <xs:element name="map">
   <xs:complexType>
@@ -369,10 +377,10 @@
   <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="tilewidth" type="pixelT" use="required"/>
   <xs:attribute name="tileheight" type="pixelT" use="required"/>
-  <xs:attribute name="hexsidelength" type="pixelT" use="optional"/>
+  <xs:attribute name="hexsidelength" type="xs:integer" use="optional"/>
   <xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
   <xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>
-  <xs:attribute name="backgroundcolor" type="hexColourAlphaT" use="optional"/>
+  <xs:attribute name="backgroundcolor" type="hexColorAlphaT" use="optional"/>
   <xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="required"/>
 </xs:attributeGroup>
 
@@ -408,7 +416,7 @@
 
   <xs:attributeGroup name="data">
     <xs:attribute name="encoding" type="encodingT" use="required"/>
-    <xs:attribute name="compression" type="compressionT" use="required"/>
+    <xs:attribute name="compression" type="compressionT" use="optional"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="frame">
@@ -417,16 +425,16 @@
   </xs:attributeGroup>
   
   <xs:attributeGroup name="image">
-    <xs:attribute name="format" type="imageformatT" use="required"/>
-    <xs:attribute name="source" type="xs:anyURI" use="required"/>
-    <xs:attribute name="trans" type="hexColourT" use="required"/>
-    <xs:attribute name="width" type="pixelT" use="required"/>
+    <xs:attribute name="format" type="imageformatT" use="optional"/>
+    <xs:attribute name="source" type="xs:anyURI" use="optional"/>
+    <xs:attribute name="trans" type="hexColorT" use="optional"/>
+    <xs:attribute name="width" type="pixelT" use="optional"/>
     <xs:attribute name="height" type="pixelT" use="optional"/>
   </xs:attributeGroup>
 
   <xs:attributeGroup name="image.tileset">
   <xs:attribute name="source" type="xs:anyURI"/>
-  <xs:attribute name="trans" type="hexColourT"/>
+  <xs:attribute name="trans" type="hexColorT"/>
 </xs:attributeGroup>
 
 <xs:attributeGroup name="tile.tileset">
@@ -458,9 +466,11 @@
 <xs:attributeGroup name="objectgroup">
   <!--Not sure if missing x,y which are defaulted to 0 and unchangable-->
   <xs:attribute name="name" type="nameT" use="required"/>
+  <!-- Deprecated:
   <xs:attribute name="width" type="pixelT" use="required"/>
   <xs:attribute name="height" type="pixelT" use="required"/>
-  <xs:attribute name="color" type="hexColourT" use ="required"/>
+  -->
+  <xs:attribute name="color" type="hexColorT" use ="required"/>
   <xs:attribute name="opacity" type="opacityT" use="optional" default="1"/>
   <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
   <xs:attribute name="offsetx" type="xs:integer" use="optional" default="0"/>
@@ -469,7 +479,7 @@
 </xs:attributeGroup>
 
 <xs:attributeGroup name="object">
-  <xs:attribute name="id" type="xs:nonNegativeInteger" use="required"/>
+  <xs:attribute name="id" type="xs:nonNegativeInteger" use="optional"/>
   <xs:attribute name="name" type="nameT" use="required"/>
   <xs:attribute name="type" type="xs:string" use="required"/>
   <xs:attribute name="x" type="xs:integer" use="required"/>
@@ -477,7 +487,7 @@
   <xs:attribute name="width" type="pixelT" use="optional" default="0"/>
   <xs:attribute name="height" type="pixelT" use="optional" default="0"/>
   <xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
-  <xs:attribute name="gid" type="tileId" use="optional"/>
+  <xs:attribute name="gid" type="tileId" use="optional" default="0"/>
   <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
 </xs:attributeGroup>
 
