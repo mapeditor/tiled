@@ -28,13 +28,6 @@
   </xs:restriction>
 </xs:simpleType>
 
-  <xs:simpleType name="formatorsourceT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="format" />
-      <xs:enumeration value="source" />
-    </xs:restriction>
-  </xs:simpleType>
-
 <xs:simpleType name="compressionT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="gzip" />
