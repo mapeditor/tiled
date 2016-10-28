@@ -46,7 +46,9 @@ using namespace Tiled;
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
-    mUseAntiAliasing(true),
+    mSize(0),
+    mUseAntiAliasing(false),
+    mSmoothImages(true),
     mIgnoreVisibility(false)
 {
 }
@@ -98,16 +100,19 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
+    QSize mapSize = renderer->mapSize();
     qreal xScale, yScale;
 
-    if (mTileSize > 0) {
+    if (mSize > 0) {
+        xScale = (qreal) mSize / mapSize.width();
+        yScale = (qreal) mSize / mapSize.height();
+        xScale = yScale = qMin(1.0, qMin(xScale, yScale));
+    } else if (mTileSize > 0) {
         xScale = (qreal) mTileSize / map->tileWidth();
         yScale = (qreal) mTileSize / map->tileHeight();
     } else {
         xScale = yScale = mScale;
     }
-
-    QSize mapSize = renderer->mapSize();
 
     QMargins margins = map->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -120,13 +125,9 @@ int TmxRasterizer::render(const QString &mapFileName,
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    if (xScale != qreal(1) || yScale != qreal(1)) {
-        if (mUseAntiAliasing) {
-            painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                                   QPainter::Antialiasing);
-        }
-        painter.setTransform(QTransform::fromScale(xScale, yScale));
-    }
+    painter.setRenderHint(QPainter::Antialiasing, mUseAntiAliasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, mSmoothImages);
+    painter.setTransform(QTransform::fromScale(xScale, yScale));
 
     painter.translate(margins.left(), margins.top());
 
@@ -155,6 +156,10 @@ int TmxRasterizer::render(const QString &mapFileName,
 
     // Save image
     QImageWriter imageWriter(imageFileName);
+
+    if (!imageWriter.canWrite())
+        imageWriter.setFormat("png");
+
     if (!imageWriter.write(image)) {
         qWarning().nospace() << "Error while writing " << imageFileName << ": "
                              << qPrintable(imageWriter.errorString());

@@ -152,6 +152,7 @@ fi
 %{_datadir}/icons/hicolor/*/apps/*%{name}*
 %{_datadir}/icons/hicolor/*/mimetypes/*%{name}*
 %{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/thumbnailers/%{name}.thumbnailer
 %{_datadir}/appdata/%{name}.appdata.xml
 %dir %{_datadir}/%{name}/
 %dir %{_datadir}/%{name}/translations

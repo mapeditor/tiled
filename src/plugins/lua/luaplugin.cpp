@@ -313,8 +313,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writer.writeStartTable("animation");
             for (const Frame &frame : frames) {
                 writer.writeStartTable();
-                writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
-                writer.writeKeyAndValue("duration", QString::number(frame.duration));
+                writer.writeKeyAndValue("tileid", frame.tileId);
+                writer.writeKeyAndValue("duration", frame.duration);
                 writer.writeEndTable();
             }
             writer.writeEndTable(); // animation

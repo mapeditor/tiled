@@ -425,6 +425,10 @@ mimeinfofile.path = $${PREFIX}/share/mime/packages/
 mimeinfofile.files += ../../mime/tiled.xml
 INSTALLS += mimeinfofile
 
+thumbnailgenerator.path = $${PREFIX}/share/thumbnailers/
+thumbnailgenerator.files += ../../mime/tiled.thumbnailer
+INSTALLS += thumbnailgenerator
+
 desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../tiled.desktop
 INSTALLS += desktopfile

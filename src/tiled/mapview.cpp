@@ -207,6 +207,9 @@ void MapView::hideEvent(QHideEvent *event)
  */
 void MapView::wheelEvent(QWheelEvent *event)
 {
+    auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+    auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+
     if (event->modifiers() & Qt::ControlModifier
         && event->orientation() == Qt::Vertical)
     {
@@ -215,8 +218,8 @@ void MapView::wheelEvent(QWheelEvent *event)
 
         // This works around problems with automatic alignment of scenes that
         // are smaller than the view, which seems to be impossible to disable.
-        static_cast<FlexibleScrollBar*>(horizontalScrollBar())->allowNextRangeChange();
-        static_cast<FlexibleScrollBar*>(verticalScrollBar())->allowNextRangeChange();
+        hBar->allowNextRangeChange();
+        vBar->allowNextRangeChange();
 
         mZoomable->handleWheelDelta(event->delta());
 
@@ -227,11 +230,32 @@ void MapView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QGraphicsView::wheelEvent(event);
+    // By default, the scroll area forwards the wheel events to the scroll
+    // bars, which apply their bounds. This custom wheel handling is here to
+    // override the bounds checking.
+    //
+    // This also disables QGraphicsSceneWheelEvent, but Tiled does not rely
+    // on that event.
 
-    // When scrolling the mouse does not move, but the view below it does.
-    // This affects the mouse scene position, which needs to be updated.
-    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    QPoint pixels = event->pixelDelta();
+
+    if (pixels.isNull()) {
+        QPointF steps = event->angleDelta() / 8.0 / 15.0;
+        int lines = QApplication::wheelScrollLines();
+        pixels.setX(int(steps.x() * lines * hBar->singleStep()));
+        pixels.setY(int(steps.y() * lines * vBar->singleStep()));
+    }
+
+    if (!pixels.isNull()) {
+        int horizontalValue = hBar->value() + (isRightToLeft() ? pixels.x() : -pixels.x());
+        int verticalValue = vBar->value() - pixels.y();
+        hBar->forceSetValue(horizontalValue);
+        vBar->forceSetValue(verticalValue);
+
+        // When scrolling the mouse does not move, but the view below it does.
+        // This affects the mouse scene position, which needs to be updated.
+        mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    }
 }
 
 /**
