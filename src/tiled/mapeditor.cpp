@@ -230,6 +230,11 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
+    mRandomButton = new QToolButton(mMainToolBar);
+    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
+    mRandomButton->setCheckable(true);
+    mMainToolBar->addWidget(mRandomButton);
+
     mToolsToolBar = new QToolBar(mMainWindow);
     mToolsToolBar->setObjectName(QLatin1String("toolsToolBar"));
 
@@ -297,8 +302,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mStampBrush, &StampBrush::stampCaptured, this, &MapEditor::setStamp);
 
-    //    connect(mRandomButton, SIGNAL(toggled(bool)), mStampBrush, SLOT(setRandom(bool)));
-    //    connect(mRandomButton, SIGNAL(toggled(bool)), mBucketFillTool, SLOT(setRandom(bool)));
+    connect(mRandomButton, &QToolButton::toggled, mStampBrush, &StampBrush::setRandom);
+    connect(mRandomButton, &QToolButton::toggled, mBucketFillTool, &BucketFillTool::setRandom);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -711,6 +716,9 @@ void MapEditor::setupQuickStamps()
 
 void MapEditor::retranslateUi()
 {
+    mRandomButton->setToolTip(tr("Random Mode"));
+    mRandomButton->setShortcut(QKeySequence(tr("D")));
+
     mToolsToolBar->setWindowTitle(tr("Tools"));
 }
 

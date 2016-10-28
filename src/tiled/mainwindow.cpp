@@ -240,14 +240,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
 
-    // todo: Move into Tools menu
-//    mRandomButton = new QToolButton(this);
-//    mRandomButton->setToolTip(tr("Random Mode"));
-//    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
-//    mRandomButton->setCheckable(true);
-//    mRandomButton->setShortcut(QKeySequence(tr("D")));
-//    mUi->mainToolBar->addWidget(mRandomButton);
-
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu  = mLayerMenu->addMenu(tr("&New"));
     mNewLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));

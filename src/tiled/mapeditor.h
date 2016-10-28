@@ -33,6 +33,7 @@ class QLabel;
 class QMainWindow;
 class QStackedWidget;
 class QToolBar;
+class QToolButton;
 
 namespace Tiled {
 
@@ -41,24 +42,24 @@ class Terrain;
 namespace Internal {
 
 class AbstractTool;
-class MapDocument;
-class MapView;
-class MapViewContainer;
-class ToolManager;
-class StampBrush;
-class TerrainBrush;
 class BucketFillTool;
-class TileStamp;
+class LayerDock;
+class MapDocument;
 class MapDocumentActionHandler;
 class MapsDock;
+class MapView;
+class MapViewContainer;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
+class StampBrush;
+class TerrainBrush;
 class TerrainDock;
 class TilesetDock;
-class Zoomable;
-class LayerDock;
+class TileStamp;
 class TileStampManager;
+class ToolManager;
+class Zoomable;
 
 class MapEditor : public Editor
 {
@@ -125,6 +126,8 @@ private:
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
+
+    QToolButton *mRandomButton;
 
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;

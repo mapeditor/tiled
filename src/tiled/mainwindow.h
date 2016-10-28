@@ -36,7 +36,6 @@
 
 class QComboBox;
 class QLabel;
-class QToolButton;
 
 namespace Ui {
 class MainWindow;
@@ -201,7 +200,6 @@ private:
     QDockWidget *mUndoDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
-    QToolButton *mRandomButton;
     CommandButton *mCommandButton;
 
     enum { MaxRecentFiles = 8 };
