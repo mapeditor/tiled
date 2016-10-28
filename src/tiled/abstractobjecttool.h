@@ -71,6 +71,7 @@ protected:
 private slots:
     void duplicateObjects();
     void removeObjects();
+    void resetTileSize();
 
     void flipHorizontally();
     void flipVertically();
