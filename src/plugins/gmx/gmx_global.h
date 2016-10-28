@@ -1,6 +1,6 @@
 /*
  * GMX Tiled Plugin
- * Copyright 2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Jones Blunt <mrjonesblunt@gmail.com>
  *
  * This file is part of Tiled.
  *
