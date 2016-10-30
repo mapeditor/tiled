@@ -22,9 +22,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="encodingT">
-		<xs:annotation>
-			<xs:documentation>The encoding</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:NMTOKEN">
 			<xs:enumeration value="base64" />
 			<xs:enumeration value="csv" />
@@ -32,9 +29,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="compressionT">
-		<xs:annotation>
-			<xs:documentation>The compression</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:NMTOKEN">
 			<xs:enumeration value="gzip" />
 			<xs:enumeration value="zlip" />
@@ -76,9 +70,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="opacityT">
-		<xs:annotation>
-			<xs:documentation>Percentage of opacity, 1 being fully visible</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:float">
 			<xs:maxInclusive value="1"/>
 			<xs:minInclusive value="0"/>
@@ -97,9 +88,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="propertytypeT">
-		<xs:annotation>
-			<xs:documentation>The property type</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:NMTOKEN">
 			<xs:enumeration value="string" />
 			<xs:enumeration value="int" />
@@ -111,9 +99,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="orientationT">
-		<xs:annotation>
-			<xs:documentation>The map orientation</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:NMTOKEN">
 			<xs:enumeration value="orthogonal" />
 			<xs:enumeration value="isometric" />
@@ -123,9 +108,6 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="renderorderT">
-		<xs:annotation>
-			<xs:documentation>The order in which to render</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:NMTOKEN">
 			<xs:enumeration value="right-down" />
 			<xs:enumeration value="right-up" />
@@ -147,25 +129,16 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="hexColorT">
-		<xs:annotation>
-			<xs:documentation>A hexcolor</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="#?([a-fA-F0-9][a-fA-F0-9]){3}"/>
 		</xs:restriction>
 	</xs:simpleType>
 
 	<xs:simpleType name="pointsT">
-		<xs:annotation>
-			<xs:documentation>A list of floating points as x,y seperated by spaces</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:string"/>
 	</xs:simpleType>
 
 	<xs:simpleType name="hexColorAlphaT">
-		<xs:annotation>
-			<xs:documentation>A hexcolor with alpha</xs:documentation>
-		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="#?([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
 		</xs:restriction>
@@ -192,26 +165,9 @@
 -->
 
 	<xs:element name="properties">
-		<xs:annotation>
-			<xs:documentation>
-				Can contain: property
-				Wraps any number of custom properties. Can be used as a child of the map,
-				tile (when part of a tileset), layer, objectgroup and object elements.
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence maxOccurs="unbounded" minOccurs="1">
 				<xs:element name="property">
-					<xs:annotation>
-						<xs:documentation>
-							Boolean properties have a value of either "true" or "false".
-							Color properties are stored in the format #AARRGGBB.
-							File properties are stored as paths relative from the location of the map file.
-							When a string property contains newlines,
-							the current version of Tiled will write out the value as characters contained inside the property element rather than as the value attribute.
-							It is possible that a future version of the TMX format will switch to always saving property values inside the element rather than as an attribute.
-						</xs:documentation>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:attributeGroup ref="property"/>
 					</xs:complexType>
@@ -221,13 +177,6 @@
 	</xs:element>
 
 	<xs:element name="image">
-		<xs:annotation>
-			<xs:documentation>
-				Note that it is not currently possible to use Tiled to create maps with embedded image data,
-				even though the TMX format supports this. It is possible to create such maps using libtiled (Qt/C++) or tmxlib (Python).
-				Can contain: data (since 0.9)
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="data" minOccurs="0"/>
@@ -238,12 +187,6 @@
 
 
 	<xs:element name="imagelayer">
-		<xs:annotation>
-			<xs:documentation>
-				A layer consisting of a single image.
-				Can contain: properties, image
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="properties" minOccurs="0"/>
@@ -254,17 +197,6 @@
 	</xs:element>
 
 	<xs:element name="map">
-		<xs:annotation>
-			<xs:documentation>
-				The tilewidth and tileheight properties determine the general grid size of the map.
-				The individual tiles may have different sizes.
-				Larger tiles will extend at the top and right (anchored to the bottom left).
-				A map contains three different kinds of layers.
-				Tile layers were once the only type, and are simply called layer, object layers have the objectgroup tag and image layers use the imagelayer tag.
-				The order in which these layers appear is the order in which the layers are rendered by Tiled.
-				Can contain: properties, tileset, layer, objectgroup, imagelayer
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="properties" minOccurs="0"/>
@@ -280,14 +212,6 @@
 	</xs:element>
 
 	<xs:element name="tileset">
-		<xs:annotation>
-			<xs:documentation>
-				If there are multiple tilset elements, they are in ascending order of their firstgid attribute.
-				The first tileset always has a firstgid value of 1. Since Tiled 0.15,
-				image collection tilesets do not necessarily number their tiles consecutively since gaps can occur when removing tiles.
-				Can contain: tileoffset (since 0.8), properties (since 0.8), image, terraintypes (since 0.9), tile
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 
@@ -304,11 +228,6 @@
 
 				<!-- tile.tileset -->
 				<xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>
-							Can contain: properties, image (since 0.9), objectgroup (since 0.10), animation (since 0.10)
-						</xs:documentation>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element ref="properties" minOccurs="0"/>
@@ -317,14 +236,6 @@
 							<xs:element name="image" minOccurs="0" type="simpleImageT"/>
 							<xs:element ref="objectgroup" minOccurs="0"/>
 							<xs:element name="animation" maxOccurs="1">
-								<xs:annotation>
-									<xs:documentation>
-										Contains a list of animation frames.
-										As of Tiled 0.10, each tile can have exactly one animation associated with it.
-										In the future, there could be support for multiple named animations on a tile.
-										Can contain: frame
-									</xs:documentation>
-								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="frame" minOccurs="1" maxOccurs="unbounded">
@@ -346,20 +257,9 @@
 				</xs:element>
 				<xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="terraintypes">
-					<xs:annotation>
-						<xs:documentation>
-							This element defines an array of terrain types, which can be referenced from the terrain attribute of the tile element.
-							Can contain: terrain
-						</xs:documentation>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="terrain">
-								<xs:annotation>
-									<xs:documentation>
-										Can contain: properties
-									</xs:documentation>
-								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
@@ -377,18 +277,6 @@
 
 	<!-- Can be used in both image and layer -->
 	<xs:element name="data">
-		<xs:annotation>
-			<xs:documentation>
-				When no encoding or compression is given, the tiles are stored as individual XML tile elements.
-				Next to that, the easiest format to parse is the "csv" (comma separated values) format.
-				The base64-encoded and optionally compressed layer data is somewhat more complicated to parse.
-				First you need to base64-decode it, then you may need to decompress it. Now you have an array of bytes,
-				which should be interpreted as an array of unsigned 32-bit integers using little-endian byte ordering.
-				Whatever format you choose for your layer data, you will always end up with so called "global tile IDs" (gids).
-				They are global, since they may refer to a tile from any of the tilesets used by the map. In order to find out from which tileset the tile is you need to find the tileset with the highest firstgid that is still lower or equal than the gid. The tilesets are always stored with increasing firstgids.
-				Can contain: tile
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType mixed="true">
 			<xs:choice>
 				<!-- tile.data -->
@@ -403,11 +291,6 @@
 	</xs:element>
 
 	<xs:element name="layer">
-		<xs:annotation>
-			<xs:documentation>
-				Can contain: properties, data
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="properties" minOccurs="0"/>
@@ -419,56 +302,21 @@
 	</xs:element>
 
 	<xs:element name="objectgroup">
-		<xs:annotation>
-			<xs:documentation>
-				The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.
-				Can contain: properties, object
-			</xs:documentation>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="object" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>
-							While tile layers are very suitable for anything repetitive aligned to the tile grid,
-							sometimes you want to annotate your map with other information, not necessarily aligned to the grid.
-							Hence the objects have their coordinates and size in pixels, but you can still easily align that to the grid when you want to.
-							You generally use objects to add custom information to your tile map, such as spawn points, warps, exits, etc.
-							When the object has a gid set, then it is represented by the image of the tile with that global ID.
-							The image alignment currently depends on the map orientation. In orthogonal orientation
-							it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
-							Can contain: properties, ellipse (since 0.9), polygon, polyline, image
-						</xs:documentation>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element ref="properties" minOccurs="0"/>
 							<xs:choice>
 								<xs:element name="ellipse" minOccurs="0" maxOccurs="1">
-									<xs:annotation>
-										<xs:documentation>
-											Used to mark an object as an ellipse. The existing x, y, width and height attributes are used to determine the size of the ellipse.
-										</xs:documentation>
-									</xs:annotation>
 								</xs:element>
 								<xs:element name="polygon" minOccurs="0" maxOccurs="1">
-									<xs:annotation>
-										<xs:documentation>
-											Each polygon object is made up of a space-delimited list of x,y coordinates.
-											The origin for these coordinates is the location of the parent object. By default,
-											the first point is created as 0,0 denoting that the point will originate exactly where the object is placed.
-										</xs:documentation>
-									</xs:annotation>
 									<xs:complexType>
 										<xs:attribute name="points" type="pointsT"/>
 									</xs:complexType>
 								</xs:element>
 								<xs:element name="polyline" minOccurs="0" maxOccurs="1">
-									<xs:annotation>
-										<xs:documentation>
-											A polyline follows the same placement definition as a polygon object.
-										</xs:documentation>
-									</xs:annotation>
 									<xs:complexType>
 										<xs:attribute name="points" type="pointsT"/>
 									</xs:complexType>
@@ -543,11 +391,6 @@
 	</xs:attributeGroup>
 
 	<xs:attributeGroup name="tileoffset">
-		<xs:annotation>
-			<xs:documentation>
-				This element is used to specify an offset in pixels, to be applied when drawing a tile from the related tileset. When not present, no offset is applied.
-			</xs:documentation>
-		</xs:annotation>
 		<xs:attribute name="x" type="xs:integer" use="required"/>
 		<xs:attribute name="y" type="xs:integer" use="required"/>
 	</xs:attributeGroup>
@@ -597,13 +440,6 @@
 	</xs:attributeGroup>
 
 	<xs:attributeGroup name="tile.data.layer">
-		<xs:annotation>
-			<xs:documentation>
-				Not to be confused with the tile element inside a tileset,
-				this element defines the value of a single tile on a tile layer.
-				This is however the most inefficient way of storing the tile layer data, and should generally be avoided.
-			</xs:documentation>
-		</xs:annotation>
 		<xs:attribute name="gid" type="tileId" use="required"/>
 	</xs:attributeGroup>
 
