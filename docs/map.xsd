@@ -1,472 +1,635 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  format 0.7.0 by
-    Tiled Developers (mapeditor.org)
-  documented in schema form originally by
-    Olivier.Beaton@quadir.net
-    Creative Commons Attribution 3.0
-    http://creativecommons.org/licenses/by/3.0/
-  last updated on
-    2008-07-06
+	format 0.7.0 by
+		Tiled Developers (mapeditor.org)
+	documented in schema form originally by
+		Olivier.Beaton@quadir.net
+		Creative Commons Attribution 3.0
+		http://creativecommons.org/licenses/by/3.0/
+	last updated on
+		2008-07-06
 -->
 
 <xs:schema version="0.7.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mapeditor.org" xmlns="http://mapeditor.org" elementFormDefault="qualified">
 
-<!--
-  types
+	<!--
+	types
 -->
 
-  <xs:simpleType name="pixelT">
-    <xs:restriction base="xs:nonNegativeInteger"></xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="pixelT">
+		<xs:restriction base="xs:nonNegativeInteger"></xs:restriction>
+	</xs:simpleType>
 
-<xs:simpleType name="encodingT">
-  <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="base64" />
-    <xs:enumeration value="csv" />
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="encodingT">
+		<xs:annotation>
+			<xs:documentation>The encoding</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="base64" />
+			<xs:enumeration value="csv" />
+		</xs:restriction>
+	</xs:simpleType>
 
-<xs:simpleType name="compressionT">
-  <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="gzip" />
-    <xs:enumeration value="zlip" />
-  </xs:restriction>
-</xs:simpleType>
-  
-<xs:simpleType name="nameT">
-  <xs:restriction base="xs:string">
-    <xs:minLength value="1"/>
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="compressionT">
+		<xs:annotation>
+			<xs:documentation>The compression</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="gzip" />
+			<xs:enumeration value="zlip" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="draworderT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="index" />
-      <xs:enumeration value="topdown" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="nameT">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="staggeraxisT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="x" />
-      <xs:enumeration value="y" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="draworderT">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="index" />
+			<xs:enumeration value="topdown" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="imageformatT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="png" />
-      <xs:enumeration value="gif" />
-      <xs:enumeration value="jpg" />
-      <xs:enumeration value="bmp" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="staggeraxisT">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="x" />
+			<xs:enumeration value="y" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="degreesT">
-    <xs:restriction base="xs:nonNegativeInteger">
-      <xs:maxInclusive value="360"/>
-      <xs:minInclusive value="0"/>
-    </xs:restriction>
-  </xs:simpleType>
- 
-  <xs:simpleType name="opacityT">
-    <xs:restriction base="xs:float">
-      <xs:maxInclusive value="1"/>
-      <xs:minInclusive value="0"/>
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="imageformatT">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="png" />
+			<xs:enumeration value="gif" />
+			<xs:enumeration value="jpg" />
+			<xs:enumeration value="bmp" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="tileId">
-    <xs:restriction base="xs:nonNegativeInteger"/>
-  </xs:simpleType>
+	<xs:simpleType name="degreesT">
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:maxInclusive value="360"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="staggerindexT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="even" />
-      <xs:enumeration value="odd" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="opacityT">
+		<xs:annotation>
+			<xs:documentation>Percentage of opacity, 1 being fully visible</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:float">
+			<xs:maxInclusive value="1"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="propertytypeT">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="string" />
-      <xs:enumeration value="int" />
-      <xs:enumeration value="float" />
-      <xs:enumeration value="bool" />
-      <xs:enumeration value="color" />
-      <xs:enumeration value="file" />
-    </xs:restriction>
-  </xs:simpleType>
-  
-<xs:simpleType name="orientationT">
-  <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="orthogonal" />
-    <xs:enumeration value="isometric" />
-    <xs:enumeration value="hexagonal" />
-    <xs:enumeration value="shifted" />
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="tileId">
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
 
-<xs:simpleType name="renderorderT">
-  <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="right-down" />
-    <xs:enumeration value="right-up" />
-    <xs:enumeration value="left-down" />
-    <xs:enumeration value="left-up" />
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="staggerindexT">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="even" />
+			<xs:enumeration value="odd" />
+		</xs:restriction>
+	</xs:simpleType>
 
-<xs:simpleType name="formatT">
-  <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="png" />
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="propertytypeT">
+		<xs:annotation>
+			<xs:documentation>The property type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="string" />
+			<xs:enumeration value="int" />
+			<xs:enumeration value="float" />
+			<xs:enumeration value="bool" />
+			<xs:enumeration value="color" />
+			<xs:enumeration value="file" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="cornerterrainT">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}"/>
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="orientationT">
+		<xs:annotation>
+			<xs:documentation>The map orientation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="orthogonal" />
+			<xs:enumeration value="isometric" />
+			<xs:enumeration value="hexagonal" />
+			<xs:enumeration value="shifted" />
+		</xs:restriction>
+	</xs:simpleType>
 
-<xs:simpleType name="hexColorT">
-  <xs:restriction base="xs:string">
-    <xs:pattern value="([a-fA-F0-9][a-fA-F0-9]){3}"/>
-  </xs:restriction>
-</xs:simpleType>
+	<xs:simpleType name="renderorderT">
+		<xs:annotation>
+			<xs:documentation>The order in which to render</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="right-down" />
+			<xs:enumeration value="right-up" />
+			<xs:enumeration value="left-down" />
+			<xs:enumeration value="left-up" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="pointsT">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="-?[0-9]+(.[0-9]+)?,-?[0-9]+(.[0-9]+)?"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="hexColorAlphaT">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="#([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:complexType name="simpleDataT">
-  <xs:simpleContent>
-    <xs:extension base="xs:base64Binary">
-      <xs:attributeGroup ref="simpleDataT"/>
-    </xs:extension>
-  </xs:simpleContent>
-</xs:complexType>
+	<xs:simpleType name="formatT">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="png" />
+		</xs:restriction>
+	</xs:simpleType>
 
-<xs:complexType name="simpleImageT">
-  <xs:sequence>
-    <!-- data -->
-    <xs:element name="data" minOccurs="0" type="simpleDataT"/>
-  </xs:sequence>
-  <xs:attributeGroup ref="simpleImageT"/>
-</xs:complexType>
+	<xs:simpleType name="cornerterrainT">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{1,3},[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-<!--
-  elements
+	<xs:simpleType name="hexColorT">
+		<xs:annotation>
+			<xs:documentation>A hexcolor</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([a-fA-F0-9][a-fA-F0-9]){3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="pointsT">
+		<xs:annotation>
+			<xs:documentation>A list of floating points as x,y seperated by spaces</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="hexColorAlphaT">
+		<xs:annotation>
+			<xs:documentation>A hexcolor with alpha</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="#([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="simpleDataT">
+		<xs:simpleContent>
+			<xs:extension base="xs:base64Binary">
+				<xs:attributeGroup ref="simpleDataT"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="simpleImageT">
+		<xs:sequence>
+			<!-- data -->
+			<xs:element name="data" minOccurs="0" type="simpleDataT"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="simpleImageT"/>
+	</xs:complexType>
+
+	<!--
+	elements
 -->
 
-<xs:element name="properties">
-  <xs:complexType>
-    <xs:sequence maxOccurs="unbounded" minOccurs="1">
-      <xs:element name="property">
-        <xs:complexType>
-          <xs:attributeGroup ref="property"/>
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
+	<xs:element name="properties">
+		<xs:annotation>
+			<xs:documentation>
+				Can contain: property
+				Wraps any number of custom properties. Can be used as a child of the map,
+				tile (when part of a tileset), layer, objectgroup and object elements.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded" minOccurs="1">
+				<xs:element name="property">
+					<xs:annotation>
+						<xs:documentation>
+							Boolean properties have a value of either "true" or "false".
+							Color properties are stored in the format #AARRGGBB.
+							File properties are stored as paths relative from the location of the map file.
+							When a string property contains newlines,
+							the current version of Tiled will write out the value as characters contained inside the property element rather than as the value attribute.
+							It is possible that a future version of the TMX format will switch to always saving property values inside the element rather than as an attribute.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attributeGroup ref="property"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
-  <xs:element name="image">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="data" minOccurs="0"/>
-      </xs:sequence>
-      <xs:attributeGroup ref="image"/>
-    </xs:complexType>
-  </xs:element>
-  
-  
-  <xs:element name="imagelayer">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="properties" minOccurs="0"/>
-        <xs:element ref="image" minOccurs="0"/>
-      </xs:sequence>
-        <xs:attributeGroup ref="imagelayer"/>
-      </xs:complexType>
-  </xs:element>
-    
-<xs:element name="map">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element ref="properties" minOccurs="0"/>
-      <xs:element ref="tileset" maxOccurs="unbounded"/>
-      <xs:choice maxOccurs="unbounded">
-        <xs:element ref="layer"/>
-        <xs:element ref="objectgroup"/>
-      </xs:choice>
-      <xs:element ref="imagelayer" minOccurs="0"/>
-    </xs:sequence>
-    <xs:attributeGroup ref="map"/>
-  </xs:complexType>
-</xs:element>
+	<xs:element name="image">
+		<xs:annotation>
+			<xs:documentation>
+				Note that it is not currently possible to use Tiled to create maps with embedded image data,
+				even though the TMX format supports this. It is possible to create such maps using libtiled (Qt/C++) or tmxlib (Python).
+				Can contain: data (since 0.9)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="data" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="image"/>
+		</xs:complexType>
+	</xs:element>
 
-  <xs:element name="tileset">
-  <xs:complexType>
-    <xs:sequence>
 
-      <!-- image.tileset -->
-      <xs:element name="image" minOccurs="0" maxOccurs="unbounded">
-        <xs:complexType>
-          <xs:complexContent>
-            <xs:extension base="simpleImageT">
-              <xs:attributeGroup ref="image.tileset"/>
-            </xs:extension>
-          </xs:complexContent>
-        </xs:complexType>
-      </xs:element>
+	<xs:element name="imagelayer">
+		<xs:annotation>
+			<xs:documentation>
+				A layer consisting of a single image.
+				Can contain: properties, image
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="properties" minOccurs="0"/>
+				<xs:element ref="image" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="imagelayer"/>
+		</xs:complexType>
+	</xs:element>
 
-      <!-- tile.tileset -->
-      <xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="properties" minOccurs="0"/>
+	<xs:element name="map">
+		<xs:annotation>
+			<xs:documentation>
+				The tilewidth and tileheight properties determine the general grid size of the map.
+				The individual tiles may have different sizes.
+				Larger tiles will extend at the top and right (anchored to the bottom left).
+				A map contains three different kinds of layers.
+				Tile layers were once the only type, and are simply called layer, object layers have the objectgroup tag and image layers use the imagelayer tag.
+				The order in which these layers appear is the order in which the layers are rendered by Tiled.
+				Can contain: properties, tileset, layer, objectgroup, imagelayer
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="properties" minOccurs="0"/>
+				<xs:element ref="tileset" maxOccurs="unbounded"/>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element ref="layer"/>
+					<xs:element ref="objectgroup"/>
+				</xs:choice>
+				<xs:element ref="imagelayer" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="map"/>
+		</xs:complexType>
+	</xs:element>
 
-            <!-- image.tile.tileset -->
-            <xs:element name="image" minOccurs="0" type="simpleImageT"/>
-            <xs:element ref="objectgroup" minOccurs="0"/>
-            <xs:element name="animation" maxOccurs="1">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="frame" minOccurs="1" maxOccurs="unbounded">
-                    <xs:complexType>
-                      <xs:attributeGroup ref="frame"/>
-                    </xs:complexType>
-                  </xs:element>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-          <xs:attributeGroup ref="tile.tileset"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="tileoffset">
-        <xs:complexType>
-          <xs:attributeGroup ref="tileoffset"/>
-        </xs:complexType>
-      </xs:element>
-      <xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="terraintypes">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="terrain">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
-                </xs:sequence>
-                <xs:attributeGroup ref="terrain"/>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-    <xs:attributeGroup ref="tileset"/>
-  </xs:complexType>
-</xs:element>
-  
-  <!-- Can be used in both image and layer -->
-  <xs:element name="data">
-    <xs:complexType mixed="true">
-      <xs:choice>
-        <!-- tile.data -->
-        <xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:attributeGroup ref="tile.data.layer"/>
-          </xs:complexType>
-        </xs:element>
-      </xs:choice>
-      <xs:attributeGroup ref="data.layer"/>
-    </xs:complexType>
-  </xs:element>
+	<xs:element name="tileset">
+		<xs:annotation>
+			<xs:documentation>
+				If there are multiple tilset elements, they are in ascending order of their firstgid attribute.
+				The first tileset always has a firstgid value of 1. Since Tiled 0.15,
+				image collection tilesets do not necessarily number their tiles consecutively since gaps can occur when removing tiles.
+				Can contain: tileoffset (since 0.8), properties (since 0.8), image, terraintypes (since 0.9), tile
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
 
-<xs:element name="layer">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element ref="properties" minOccurs="0"/>
-      <!-- data.layer -->
-      <xs:element ref="data"/>        
-    </xs:sequence>
-    <xs:attributeGroup ref="layer"/>
-  </xs:complexType>
-</xs:element>
+				<!-- image.tileset -->
+				<xs:element name="image" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="simpleImageT">
+								<xs:attributeGroup ref="image.tileset"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
 
-<xs:element name="objectgroup">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element name="object" maxOccurs="unbounded">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="properties" minOccurs="0"/>
-            <xs:choice>
-              <xs:element name="ellipse" minOccurs="0" maxOccurs="1"/>
-              <xs:element name="polygon" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:attribute name="points" type="pointsT"/>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="polyline" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                  <xs:attribute name="points" type="pointsT"/>
-                </xs:complexType>
-              </xs:element>
-            </xs:choice>
-          </xs:sequence>
-          <xs:attributeGroup ref="object"/>
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-    <xs:attributeGroup ref="objectgroup"/>
-  </xs:complexType>
-</xs:element>
+				<!-- tile.tileset -->
+				<xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>
+							Can contain: properties, image (since 0.9), objectgroup (since 0.10), animation (since 0.10)
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="properties" minOccurs="0"/>
 
-<!--
-  attributes
+							<!-- image.tile.tileset -->
+							<xs:element name="image" minOccurs="0" type="simpleImageT"/>
+							<xs:element ref="objectgroup" minOccurs="0"/>
+							<xs:element name="animation" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+										Contains a list of animation frames.
+										As of Tiled 0.10, each tile can have exactly one animation associated with it.
+										In the future, there could be support for multiple named animations on a tile.
+										Can contain: frame
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="frame" minOccurs="1" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attributeGroup ref="frame"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attributeGroup ref="tile.tileset"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="tileoffset">
+					<xs:complexType>
+						<xs:attributeGroup ref="tileoffset"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="terraintypes">
+					<xs:annotation>
+						<xs:documentation>
+							This element defines an array of terrain types, which can be referenced from the terrain attribute of the tile element.
+							Can contain: terrain
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="terrain">
+								<xs:annotation>
+									<xs:documentation>
+										Can contain: properties
+									</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="properties" minOccurs="0" maxOccurs="1"/>
+									</xs:sequence>
+									<xs:attributeGroup ref="terrain"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attributeGroup ref="tileset"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Can be used in both image and layer -->
+	<xs:element name="data">
+		<xs:annotation>
+			<xs:documentation>
+				When no encoding or compression is given, the tiles are stored as individual XML tile elements.
+				Next to that, the easiest format to parse is the "csv" (comma separated values) format.
+				The base64-encoded and optionally compressed layer data is somewhat more complicated to parse.
+				First you need to base64-decode it, then you may need to decompress it. Now you have an array of bytes,
+				which should be interpreted as an array of unsigned 32-bit integers using little-endian byte ordering.
+				Whatever format you choose for your layer data, you will always end up with so called "global tile IDs" (gids).
+				They are global, since they may refer to a tile from any of the tilesets used by the map. In order to find out from which tileset the tile is you need to find the tileset with the highest firstgid that is still lower or equal than the gid. The tilesets are always stored with increasing firstgids.
+				Can contain: tile
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="true">
+			<xs:choice>
+				<!-- tile.data -->
+				<xs:element name="tile" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attributeGroup ref="tile.data.layer"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:attributeGroup ref="data.layer"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="layer">
+		<xs:annotation>
+			<xs:documentation>
+				Can contain: properties, data
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="properties" minOccurs="0"/>
+				<!-- data.layer -->
+				<xs:element ref="data"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="layer"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="objectgroup">
+		<xs:annotation>
+			<xs:documentation>
+				The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.
+				Can contain: properties, object
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="object" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>
+							While tile layers are very suitable for anything repetitive aligned to the tile grid,
+							sometimes you want to annotate your map with other information, not necessarily aligned to the grid.
+							Hence the objects have their coordinates and size in pixels, but you can still easily align that to the grid when you want to.
+							You generally use objects to add custom information to your tile map, such as spawn points, warps, exits, etc.
+							When the object has a gid set, then it is represented by the image of the tile with that global ID.
+							The image alignment currently depends on the map orientation. In orthogonal orientation
+							it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
+							Can contain: properties, ellipse (since 0.9), polygon, polyline, image
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="properties" minOccurs="0"/>
+							<xs:choice>
+								<xs:element name="ellipse" minOccurs="0" maxOccurs="1">
+									<xs:annotation>
+										<xs:documentation>
+											Used to mark an object as an ellipse. The existing x, y, width and height attributes are used to determine the size of the ellipse.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="polygon" minOccurs="0" maxOccurs="1">
+									<xs:annotation>
+										<xs:documentation>
+											Each polygon object is made up of a space-delimited list of x,y coordinates.
+											The origin for these coordinates is the location of the parent object. By default,
+											the first point is created as 0,0 denoting that the point will originate exactly where the object is placed.
+										</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:attribute name="points" type="pointsT"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="polyline" minOccurs="0" maxOccurs="1">
+									<xs:annotation>
+										<xs:documentation>
+											A polyline follows the same placement definition as a polygon object.
+										</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:attribute name="points" type="pointsT"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:choice>
+						</xs:sequence>
+						<xs:attributeGroup ref="object"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attributeGroup ref="objectgroup"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!--
+	attributes
 -->
 
-<xs:attributeGroup name="simpleDataT">
-  <xs:attribute name="encoding" type="encodingT" use="required"></xs:attribute>
-</xs:attributeGroup>
+	<xs:attributeGroup name="simpleDataT">
+		<xs:attribute name="encoding" type="encodingT" use="required"></xs:attribute>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="simpleImageT">
-  <xs:attribute name="id" type="xs:nonNegativeInteger"/>
-  <xs:attribute name="format" type="formatT"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="simpleImageT">
+		<xs:attribute name="id" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="format" type="formatT"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="property">
-  <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="value" type="xs:string" use="required"/>
-  <xs:attribute name="type" type="propertytypeT" use="optional" default="string"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="property">
+		<xs:attribute name="name" type="nameT" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="propertytypeT" use="optional" default="string"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="map">
-  <xs:attribute name="version" type="xs:string" use="required"/>
-  <xs:attribute name="orientation" type="orientationT" use="required"/>
-  <xs:attribute name="renderorder" type="renderorderT" default="right-down"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="tilewidth" type="pixelT" use="required"/>
-  <xs:attribute name="tileheight" type="pixelT" use="required"/>
-  <xs:attribute name="hexsidelength" type="xs:integer" use="optional"/>
-  <xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
-  <xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>
-  <xs:attribute name="backgroundcolor" type="hexColorAlphaT" use="optional"/>
-  <xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="required"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="map">
+		<xs:attribute name="version" type="xs:string" use="required"/>
+		<xs:attribute name="orientation" type="orientationT" use="required"/>
+		<xs:attribute name="renderorder" type="renderorderT" default="right-down"/>
+		<xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="tilewidth" type="pixelT" use="required"/>
+		<xs:attribute name="tileheight" type="pixelT" use="required"/>
+		<xs:attribute name="hexsidelength" type="xs:integer" use="optional"/>
+		<xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
+		<xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>
+		<xs:attribute name="backgroundcolor" type="hexColorAlphaT" use="optional"/>
+		<xs:attribute name="nextobjectid" type="xs:nonNegativeInteger" use="required"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="tileset">
-  <xs:attribute name="name" type="nameT"/>
-  <xs:attribute name="firstgid" type="xs:positiveInteger" use="required"/>
-  <xs:attribute name="source" type="xs:anyURI"/>
-  <xs:attribute name="tilewidth" type="pixelT"/>
-  <xs:attribute name="tileheight" type="pixelT"/>
-  <xs:attribute name="spacing" type="pixelT"/>
-  <xs:attribute name="margin" type="pixelT"/>
-  <xs:attribute name="tilecount" type="xs:nonNegativeInteger"/>
-  <xs:attribute name="columns" type="xs:nonNegativeInteger"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="tileset">
+		<xs:attribute name="name" type="nameT"/>
+		<xs:attribute name="firstgid" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="source" type="xs:anyURI"/>
+		<xs:attribute name="tilewidth" type="pixelT"/>
+		<xs:attribute name="tileheight" type="pixelT"/>
+		<xs:attribute name="spacing" type="pixelT"/>
+		<xs:attribute name="margin" type="pixelT"/>
+		<xs:attribute name="tilecount" type="xs:nonNegativeInteger"/>
+		<xs:attribute name="columns" type="xs:nonNegativeInteger"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="imagelayer">
-    <xs:attribute name="name" type="nameT"/>
-    <xs:attribute name="offsetx" type="xs:integer" default="0" use="optional"/>
-    <xs:attribute name="offsety" type="xs:integer" default="0" use="optional"/>
-    <xs:attribute name="opacity" type="opacityT" default="1" use="optional"/>
-    <xs:attribute name="visible" type="xs:boolean" default="1" use="optional"/>
-  </xs:attributeGroup>
+	<xs:attributeGroup name="imagelayer">
+		<xs:attribute name="name" type="nameT"/>
+		<xs:attribute name="offsetx" type="xs:integer" default="0" use="optional"/>
+		<xs:attribute name="offsety" type="xs:integer" default="0" use="optional"/>
+		<xs:attribute name="opacity" type="opacityT" default="1" use="optional"/>
+		<xs:attribute name="visible" type="xs:boolean" default="1" use="optional"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="terrain">
-    <xs:attribute name="name" type="nameT"/>
-    <xs:attribute name="tile" type="tileId"/>
-  </xs:attributeGroup>
+	<xs:attributeGroup name="terrain">
+		<xs:attribute name="name" type="nameT"/>
+		<xs:attribute name="tile" type="tileId"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="tileoffset">
-    <xs:attribute name="x" type="xs:integer" use="required"/>
-    <xs:attribute name="y" type="xs:integer" use="required"/>
-  </xs:attributeGroup>
+	<xs:attributeGroup name="tileoffset">
+		<xs:annotation>
+			<xs:documentation>
+				This element is used to specify an offset in pixels, to be applied when drawing a tile from the related tileset. When not present, no offset is applied.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="x" type="xs:integer" use="required"/>
+		<xs:attribute name="y" type="xs:integer" use="required"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="data">
-    <xs:attribute name="encoding" type="encodingT" use="required"/>
-    <xs:attribute name="compression" type="compressionT" use="optional"/>
-  </xs:attributeGroup>
+	<xs:attributeGroup name="data">
+		<xs:attribute name="encoding" type="encodingT" use="required"/>
+		<xs:attribute name="compression" type="compressionT" use="optional"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="frame">
-    <xs:attribute name="tileid" type="tileId" use="required"/>
-    <xs:attribute name="duration" type="xs:nonNegativeInteger" use="required"/>
-  </xs:attributeGroup>
-  
-  <xs:attributeGroup name="image">
-    <xs:attribute name="format" type="imageformatT" use="optional"/>
-    <xs:attribute name="source" type="xs:anyURI" use="optional"/>
-    <xs:attribute name="trans" type="hexColorT" use="optional"/>
-    <xs:attribute name="width" type="pixelT" use="optional"/>
-    <xs:attribute name="height" type="pixelT" use="optional"/>
-  </xs:attributeGroup>
+	<xs:attributeGroup name="frame">
+		<xs:attribute name="tileid" type="tileId" use="required"/>
+		<xs:attribute name="duration" type="xs:nonNegativeInteger" use="required"/>
+	</xs:attributeGroup>
 
-  <xs:attributeGroup name="image.tileset">
-  <xs:attribute name="source" type="xs:anyURI"/>
-  <xs:attribute name="trans" type="hexColorT"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="image">
+		<xs:attribute name="format" type="imageformatT" use="optional"/>
+		<xs:attribute name="source" type="xs:anyURI" use="optional"/>
+		<xs:attribute name="trans" type="hexColorT" use="optional"/>
+		<xs:attribute name="width" type="pixelT" use="optional"/>
+		<xs:attribute name="height" type="pixelT" use="optional"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="tile.tileset">
-  <xs:attribute name="id" type="tileId" use="required"/>
-  <xs:attribute name="terrain" type="cornerterrainT" use="optional"/>
-  <xs:attribute name="probability" type="xs:float" use="optional"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="image.tileset">
+		<xs:attribute name="source" type="xs:anyURI"/>
+		<xs:attribute name="trans" type="hexColorT"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="layer">
-  <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
-  <xs:attribute name="opacity" type="opacityT" default="1"/>
-  <xs:attribute name="visible" type="xs:boolean" default="1"/>
-  <xs:attribute name="offsetx" type="xs:integer" default="0"/>
-  <xs:attribute name="offsety" type="xs:integer" default="0"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="tile.tileset">
+		<xs:attribute name="id" type="tileId" use="required"/>
+		<xs:attribute name="terrain" type="cornerterrainT" use="optional"/>
+		<xs:attribute name="probability" type="xs:float" use="optional"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="data.layer">
-  <xs:attribute name="encoding" type="encodingT"/>
-  <xs:attribute name="compression" type="compressionT"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="layer">
+		<xs:attribute name="name" type="nameT" use="required"/>
+		<xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="opacity" type="opacityT" default="1"/>
+		<xs:attribute name="visible" type="xs:boolean" default="1"/>
+		<xs:attribute name="offsetx" type="xs:integer" default="0"/>
+		<xs:attribute name="offsety" type="xs:integer" default="0"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="tile.data.layer">
-  <xs:attribute name="gid" type="tileId" use="required"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="data.layer">
+		<xs:attribute name="encoding" type="encodingT"/>
+		<xs:attribute name="compression" type="compressionT"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="objectgroup">
-  <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="color" type="hexColorT" use ="required"/>
-  <xs:attribute name="opacity" type="opacityT" use="optional" default="1"/>
-  <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
-  <xs:attribute name="offsetx" type="xs:integer" use="optional" default="0"/>
-  <xs:attribute name="offsety" type="xs:integer" use="optional" default="0"/>
-  <xs:attribute name="draworder" type="draworderT" use="optional" default="topdown"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="tile.data.layer">
+		<xs:annotation>
+			<xs:documentation>
+				Not to be confused with the tile element inside a tileset,
+				this element defines the value of a single tile on a tile layer.
+				This is however the most inefficient way of storing the tile layer data, and should generally be avoided.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="gid" type="tileId" use="required"/>
+	</xs:attributeGroup>
 
-<xs:attributeGroup name="object">
-  <xs:attribute name="id" type="xs:nonNegativeInteger" use="optional"/>
-  <xs:attribute name="name" type="nameT" use="required"/>
-  <xs:attribute name="type" type="xs:string" use="required"/>
-  <xs:attribute name="x" type="xs:integer" use="required"/>
-  <xs:attribute name="y" type="xs:integer" use="required"/>
-  <xs:attribute name="width" type="pixelT" use="optional" default="0"/>
-  <xs:attribute name="height" type="pixelT" use="optional" default="0"/>
-  <xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
-  <xs:attribute name="gid" type="tileId" use="optional" default="0"/>
-  <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
-</xs:attributeGroup>
+	<xs:attributeGroup name="objectgroup">
+		<xs:attribute name="name" type="nameT" use="required"/>
+		<xs:attribute name="color" type="hexColorT" use ="required"/>
+		<xs:attribute name="opacity" type="opacityT" use="optional" default="1"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
+		<xs:attribute name="offsetx" type="xs:integer" use="optional" default="0"/>
+		<xs:attribute name="offsety" type="xs:integer" use="optional" default="0"/>
+		<xs:attribute name="draworder" type="draworderT" use="optional" default="topdown"/>
+	</xs:attributeGroup>
+
+	<xs:attributeGroup name="object">
+		<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional"/>
+		<xs:attribute name="name" type="nameT" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="x" type="xs:integer" use="required"/>
+		<xs:attribute name="y" type="xs:integer" use="required"/>
+		<xs:attribute name="width" type="pixelT" use="optional" default="0"/>
+		<xs:attribute name="height" type="pixelT" use="optional" default="0"/>
+		<xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
+		<xs:attribute name="gid" type="tileId" use="optional" default="0"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
+	</xs:attributeGroup>
 
 </xs:schema>
