@@ -71,7 +71,7 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="degreesT">
-		<xs:restriction base="xs:float">
+		<xs:restriction base="xs:double">
 		</xs:restriction>
 	</xs:simpleType>
 
