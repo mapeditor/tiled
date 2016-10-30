@@ -71,9 +71,7 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="degreesT">
-		<xs:restriction base="xs:nonNegativeInteger">
-			<xs:maxInclusive value="360"/>
-			<xs:minInclusive value="0"/>
+		<xs:restriction base="xs:float">
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -153,7 +151,7 @@
 			<xs:documentation>A hexcolor</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:pattern value="([a-fA-F0-9][a-fA-F0-9]){3}"/>
+			<xs:pattern value="#?([a-fA-F0-9][a-fA-F0-9]){3}"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -169,7 +167,7 @@
 			<xs:documentation>A hexcolor with alpha</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:pattern value="#([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
+			<xs:pattern value="#?([a-fA-F0-9][a-fA-F0-9]){3,4}"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -533,8 +531,8 @@
 
 	<xs:attributeGroup name="imagelayer">
 		<xs:attribute name="name" type="nameT"/>
-		<xs:attribute name="offsetx" type="xs:integer" default="0" use="optional"/>
-		<xs:attribute name="offsety" type="xs:integer" default="0" use="optional"/>
+		<xs:attribute name="offsetx" type="xs:double" default="0" use="optional"/>
+		<xs:attribute name="offsety" type="xs:double" default="0" use="optional"/>
 		<xs:attribute name="opacity" type="opacityT" default="1" use="optional"/>
 		<xs:attribute name="visible" type="xs:boolean" default="1" use="optional"/>
 	</xs:attributeGroup>
@@ -589,8 +587,8 @@
 		<xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
 		<xs:attribute name="opacity" type="opacityT" default="1"/>
 		<xs:attribute name="visible" type="xs:boolean" default="1"/>
-		<xs:attribute name="offsetx" type="xs:integer" default="0"/>
-		<xs:attribute name="offsety" type="xs:integer" default="0"/>
+		<xs:attribute name="offsetx" type="xs:double" default="0"/>
+		<xs:attribute name="offsety" type="xs:double" default="0"/>
 	</xs:attributeGroup>
 
 	<xs:attributeGroup name="data.layer">
@@ -614,8 +612,8 @@
 		<xs:attribute name="color" type="hexColorT" use ="required"/>
 		<xs:attribute name="opacity" type="opacityT" use="optional" default="1"/>
 		<xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
-		<xs:attribute name="offsetx" type="xs:integer" use="optional" default="0"/>
-		<xs:attribute name="offsety" type="xs:integer" use="optional" default="0"/>
+		<xs:attribute name="offsetx" type="xs:double" use="optional" default="0"/>
+		<xs:attribute name="offsety" type="xs:double" use="optional" default="0"/>
 		<xs:attribute name="draworder" type="draworderT" use="optional" default="topdown"/>
 	</xs:attributeGroup>
 
@@ -623,10 +621,10 @@
 		<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional"/>
 		<xs:attribute name="name" type="nameT" use="required"/>
 		<xs:attribute name="type" type="xs:string" use="required"/>
-		<xs:attribute name="x" type="xs:integer" use="required"/>
-		<xs:attribute name="y" type="xs:integer" use="required"/>
-		<xs:attribute name="width" type="pixelT" use="optional" default="0"/>
-		<xs:attribute name="height" type="pixelT" use="optional" default="0"/>
+		<xs:attribute name="x" type="xs:double" use="required"/>
+		<xs:attribute name="y" type="xs:double" use="required"/>
+		<xs:attribute name="width" type="xs:double" use="optional" default="0"/>
+		<xs:attribute name="height" type="xs:double" use="optional" default="0"/>
 		<xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
 		<xs:attribute name="gid" type="tileId" use="optional" default="0"/>
 		<xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
