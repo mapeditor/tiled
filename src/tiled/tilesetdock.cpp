@@ -546,8 +546,10 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     view->setTilesetDocument(tilesetDocument);
     view->setZoomable(mZoomable);
 
-    mTabBar->insertTab(index, tileset->name());
+    // Insert view before the tab to make sure it is there when the tab index
+    // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
+    mTabBar->insertTab(index, tileset->name());
 
     connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
             this, &TilesetDock::tilesetNameChanged);
