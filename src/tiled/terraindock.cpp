@@ -114,7 +114,7 @@ TerrainDock::TerrainDock(QWidget *parent):
 
     QVBoxLayout *horizontal = new QVBoxLayout(w);
     horizontal->setSpacing(0);
-    horizontal->setMargin(5);
+    horizontal->setMargin(0);
     horizontal->addWidget(mTerrainView);
     horizontal->addWidget(mEraseTerrainButton);
 

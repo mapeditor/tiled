@@ -70,11 +70,6 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
 {
     setObjectName(QLatin1String("TileCollisionEditor"));
 
-    QWidget *widget = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setSpacing(0);
-    layout->setMargin(5);
-
     // We re-use the PropertiesDock class in order to manipulate properties on
     // collision objects. This instance of the PropertiesDock is best left with
     // the docking features disabled though as it only belongs to the collision

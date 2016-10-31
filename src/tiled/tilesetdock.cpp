@@ -248,7 +248,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
-    vertical->setMargin(5);
+    vertical->setMargin(0);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
 

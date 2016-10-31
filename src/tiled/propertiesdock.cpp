@@ -85,7 +85,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(5);
+    layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
     layout->addWidget(toolBar);
