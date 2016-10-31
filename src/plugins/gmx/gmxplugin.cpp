@@ -57,14 +57,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     stream.writeStartElement("caption");
     stream.writeEndElement();
 
-    stream.writeTextElement("width", QByteArray::number(map->tileWidth() * map->width()));
+    stream.writeTextElement("width", QString::number(map->tileWidth() * map->width()));
 
-    stream.writeTextElement("height", QByteArray::number(map->tileHeight() * map->height()));
+    stream.writeTextElement("height", QString::number(map->tileHeight() * map->height()));
 
-    stream.writeTextElement("vsnap", QByteArray::number(map->tileHeight()));
-    stream.writeTextElement("hsnap", QByteArray::number(map->tileWidth()));
+    stream.writeTextElement("vsnap", QString::number(map->tileHeight()));
+    stream.writeTextElement("hsnap", QString::number(map->tileWidth()));
 
-    stream.writeTextElement("isometric", QByteArray::number((map->orientation() == Map::Orientation::Isometric ? 1 : 0)));
+    stream.writeTextElement("isometric", QString::number((map->orientation() == Map::Orientation::Isometric ? 1 : 0)));
 
     stream.writeStartElement("instances");
 
@@ -78,14 +78,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             stream.writeStartElement("instance");
 
             stream.writeAttribute("objName", object->name());
-            stream.writeAttribute("x", QByteArray::number((int)(object->x())));
-            stream.writeAttribute("y", QByteArray::number((int)(object->y() - object->height())));
+            stream.writeAttribute("x", QString::number((int)(object->x())));
+            stream.writeAttribute("y", QString::number((int)(object->y() - object->height())));
 
-            stream.writeAttribute("id", QByteArray::number(++objectId));
+            stream.writeAttribute("id", QString::number(++objectId));
 
-            stream.writeAttribute("locked", QByteArray::number(0));
-            stream.writeAttribute("scaleX", QByteArray::number(1));
-            stream.writeAttribute("scaleY", QByteArray::number(1));
+            stream.writeAttribute("locked", QString::number(0));
+            stream.writeAttribute("scaleX", QString::number(1));
+            stream.writeAttribute("scaleY", QString::number(1));
 
             stream.writeEndElement();
         }
@@ -121,18 +121,18 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                     stream.writeStartElement("tile");
 
                     stream.writeAttribute("bgName", tile->tileset()->name());
-                    stream.writeAttribute("x", QByteArray::number((int)(x * map->tileWidth())));
-                    stream.writeAttribute("y", QByteArray::number((int)(y * map->tileHeight())));
-                    stream.writeAttribute("w", QByteArray::number(map->tileWidth()));
-                    stream.writeAttribute("h", QByteArray::number(map->tileHeight()));
+                    stream.writeAttribute("x", QString::number((int)(x * map->tileWidth())));
+                    stream.writeAttribute("y", QString::number((int)(y * map->tileHeight())));
+                    stream.writeAttribute("w", QString::number(map->tileWidth()));
+                    stream.writeAttribute("h", QString::number(map->tileHeight()));
 
-                    stream.writeAttribute("xo", QByteArray::number(tile->id() % tile->tileset()->rowCount() * tile->tileset()->tileWidth()));
-                    stream.writeAttribute("yo", QByteArray::number((int)(tile->id() / tile->tileset()->rowCount()) * tile->tileset()->tileWidth()));
+                    stream.writeAttribute("xo", QString::number(tile->id() % tile->tileset()->rowCount() * tile->tileset()->tileWidth()));
+                    stream.writeAttribute("yo", QString::number((int)(tile->id() / tile->tileset()->rowCount()) * tile->tileset()->tileWidth()));
 
-                    stream.writeAttribute("depth", QByteArray::number(layer->hasProperty(QLatin1String("Depth")) ? layer->property(QLatin1String("Depth")).toInt() : currentLayer));
-                    stream.writeAttribute("id", QByteArray::number(++tileId));
-                    stream.writeAttribute("scaleX", QByteArray::number(1));
-                    stream.writeAttribute("scaleY", QByteArray::number(1));
+                    stream.writeAttribute("depth", QString::number(layer->hasProperty(QLatin1String("Depth")) ? layer->property(QLatin1String("Depth")).toInt() : currentLayer));
+                    stream.writeAttribute("id", QString::number(++tileId));
+                    stream.writeAttribute("scaleX", QString::number(1));
+                    stream.writeAttribute("scaleY", QString::number(1));
 
                     stream.writeEndElement();
                 }
