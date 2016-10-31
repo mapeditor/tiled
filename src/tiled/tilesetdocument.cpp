@@ -21,6 +21,7 @@
 #include "tilesetdocument.h"
 
 #include "mapdocument.h"
+#include "map.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetterrainmodel.h"
@@ -154,8 +155,11 @@ void TilesetDocument::setTilesetName(const QString &name)
 void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
 {
     mTileset->setTileOffset(tileOffset);
-    // todo: Have the maps using this tileset recompute their draw margins
-//    mMap->recomputeDrawMargins();
+
+    // Invalidate the draw margins of the maps using this tileset
+    for (MapDocument *mapDocument : mapDocuments())
+        mapDocument->map()->invalidateDrawMargins();
+
     emit tilesetTileOffsetChanged(mTileset.data());
 }
 

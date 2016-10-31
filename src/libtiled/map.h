@@ -211,11 +211,10 @@ public:
      * Returns the margins that have to be taken into account when figuring
      * out which part of the map to repaint after changing some tiles.
      */
-    QMargins drawMargins() const { return mDrawMargins; }
+    QMargins drawMargins() const;
+    void invalidateDrawMargins();
 
     QMargins computeLayerOffsetMargins() const;
-
-    void recomputeDrawMargins();
 
     /**
      * Returns the number of layers of this map.
@@ -379,6 +378,8 @@ public:
 private:
     void adoptLayer(Layer *layer);
 
+    void recomputeDrawMargins() const;
+
     Orientation mOrientation;
     RenderOrder mRenderOrder;
     int mWidth;
@@ -389,7 +390,8 @@ private:
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
-    QMargins mDrawMargins;
+    mutable QMargins mDrawMargins;
+    mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
@@ -425,6 +427,11 @@ inline Map::StaggerIndex Map::staggerIndex() const
 inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 {
     mStaggerIndex = staggerIndex;
+}
+
+inline void Map::invalidateDrawMargins()
+{
+    mDrawMarginsDirty = true;
 }
 
 /**

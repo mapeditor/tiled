@@ -52,6 +52,7 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextObjectId(1)
 {
@@ -70,6 +71,7 @@ Map::Map(const Map &map):
     mStaggerIndex(map.mStaggerIndex),
     mBackgroundColor(map.mBackgroundColor),
     mDrawMargins(map.mDrawMargins),
+    mDrawMarginsDirty(map.mDrawMarginsDirty),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat),
     mNextObjectId(1)
@@ -84,6 +86,14 @@ Map::Map(const Map &map):
 Map::~Map()
 {
     qDeleteAll(mLayers);
+}
+
+QMargins Map::drawMargins() const
+{
+    if (mDrawMarginsDirty)
+        recomputeDrawMargins();
+
+    return mDrawMargins;
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -119,13 +129,12 @@ QMargins Map::computeLayerOffsetMargins() const
  * Recomputes the draw margins for this map and each of its tilesets. Needed
  * after the tile offset of a tileset has changed for example.
  */
-void Map::recomputeDrawMargins()
+void Map::recomputeDrawMargins() const
 {
     int maxTileSize = 0;
     QMargins offsetMargins;
 
-    const auto &tilesets = mTilesets;
-    for (const SharedTileset &tileset : tilesets) {
+    for (const SharedTileset &tileset : mTilesets) {
         const QPoint offset = tileset->tileOffset();
         const QSize tileSize = tileset->tileSize();
 
@@ -145,6 +154,8 @@ void Map::recomputeDrawMargins()
                             offsetMargins.top() + maxTileSize - mTileHeight,
                             offsetMargins.right() + maxTileSize - mTileWidth,
                             offsetMargins.bottom());
+
+    mDrawMarginsDirty = false;
 }
 
 int Map::layerCount(Layer::TypeFlag type) const

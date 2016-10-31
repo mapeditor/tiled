@@ -272,8 +272,6 @@ Map *MapReaderPrivate::readMap()
                 tileset->loadImage();
         }
 
-        mMap->recomputeDrawMargins();
-
         // Fix up sizes of tile objects
         for (Layer *layer : mMap->layers()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
