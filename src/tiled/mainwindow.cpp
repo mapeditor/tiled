@@ -535,12 +535,15 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::newMap()
 {
     NewMapDialog newMapDialog(this);
-    MapDocument *mapDocument = newMapDialog.createMap();
+    QScopedPointer<MapDocument> mapDocument(newMapDialog.createMap());
 
     if (!mapDocument)
         return;
 
-    mDocumentManager->addDocument(mapDocument);
+    if (!saveDocumentAs(mapDocument.data()))
+        return;
+
+    mDocumentManager->addDocument(mapDocument.take());
 }
 
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
@@ -743,7 +746,9 @@ bool MainWindow::saveDocumentAs(Document *document)
                                                 filter,
                                                 &selectedFilter);
 
-        if (!fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter)) {
+        if (!fileName.isEmpty() &&
+            !fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+        {
             QMessageBox messageBox(QMessageBox::Warning,
                                    tr("Extension Mismatch"),
                                    tr("The file extension does not match the chosen file type."),
@@ -1152,10 +1157,14 @@ bool MainWindow::newTileset(const QString &path)
 //    newTileset.setTileSize(map->tileSize());
 
     if (SharedTileset tileset = newTileset.createTileset()) {
-        mDocumentManager->addDocument(new TilesetDocument(tileset));
-
-//        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
         prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
+
+        QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
+
+        if (!saveDocumentAs(tilesetDocument.data()))
+            return false;
+
+        mDocumentManager->addDocument(tilesetDocument.take());
         return true;
     }
     return false;

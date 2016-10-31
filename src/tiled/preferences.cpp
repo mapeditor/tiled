@@ -466,6 +466,9 @@ QString Preferences::lastPath(FileType fileType) const
  */
 void Preferences::setLastPath(FileType fileType, const QString &path)
 {
+    if (path.isEmpty())
+        return;
+
     mSettings->setValue(lastPathKey(fileType), path);
 }
 

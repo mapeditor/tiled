@@ -228,11 +228,15 @@ void NewTilesetDialog::setMode(Mode mode)
 {
     mMode = mode;
 
+    auto okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
+
     if (mode == EditTilesetParameters) {
         mUi->tilesetType->setCurrentIndex(0);
         setWindowTitle(QApplication::translate("NewTilesetDialog", "Edit Tileset"));
+        okButton->setText(tr("&OK"));
     } else {
         setWindowTitle(QApplication::translate("NewTilesetDialog", "New Tileset"));
+        okButton->setText(tr("&Save As..."));
     }
 
     mUi->tilesetGroupBox->setVisible(mode == CreateTileset);

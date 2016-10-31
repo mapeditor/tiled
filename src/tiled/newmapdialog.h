@@ -44,7 +44,7 @@ public:
     ~NewMapDialog();
 
     /**
-     * Shows the dialog and returns the created map. Returns 0 if the dialog
+     * Shows the dialog and returns the created map. Returns null if the dialog
      * was cancelled.
      */
     MapDocument *createMap();
