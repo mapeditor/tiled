@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  format 0.7.0 by
+  format 1.0.0 by
     Tiled Developers (mapeditor.org)
   documented in schema form originally by
     Olivier.Beaton@quadir.net
     Creative Commons Attribution 3.0
     http://creativecommons.org/licenses/by/3.0/
+  amended by
+    Asser Fahrenholz
   last updated on
-    2008-07-06
+    31-10-2016
 -->
 
 <xs:schema version="0.7.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mapeditor.org" xmlns="http://mapeditor.org" elementFormDefault="qualified">
