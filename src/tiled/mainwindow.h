@@ -49,6 +49,7 @@ class Terrain;
 
 namespace Internal {
 
+class ActionManager;
 class AutomappingManager;
 class CommandButton;
 class DocumentManager;
@@ -193,6 +194,7 @@ private:
 
     void retranslateUi();
 
+    ActionManager *mActionManager;
     Ui::MainWindow *mUi;
     Document *mDocument;
     MapDocumentActionHandler *mActionHandler;

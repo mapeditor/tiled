@@ -29,6 +29,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
+#include "actionmanager.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
@@ -96,6 +97,7 @@ using namespace Tiled::Utils;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
+    , mActionManager(new ActionManager)
     , mUi(new Ui::MainWindow)
     , mDocument(nullptr)
     , mActionHandler(new MapDocumentActionHandler(this))
@@ -439,6 +441,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
+
+    ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
+    ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
 
     updateActions();
     readSettings();

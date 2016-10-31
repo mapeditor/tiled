@@ -509,11 +509,6 @@
     <string>New Map...</string>
    </property>
   </action>
-  <action name="actionNewTileset_2">
-   <property name="text">
-    <string>New Tileset...</string>
-   </property>
-  </action>
   <action name="actionPasteInPlace">
    <property name="enabled">
     <bool>false</bool>

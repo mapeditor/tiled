@@ -30,6 +30,7 @@
 #include "mapeditor.h"
 #include "maprenderer.h"
 #include "mapview.h"
+#include "noeditorwidget.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "zoomable.h"
@@ -108,7 +109,7 @@ void DocumentManager::deleteInstance()
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mWidget(new QWidget)
-    , mNoEditorWidget(new QWidget(mWidget))
+    , mNoEditorWidget(new NoEditorWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
