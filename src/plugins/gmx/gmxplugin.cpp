@@ -126,8 +126,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                     stream.writeAttribute("w", QString::number(map->tileWidth()));
                     stream.writeAttribute("h", QString::number(map->tileHeight()));
 
-                    stream.writeAttribute("xo", QString::number(tile->id() % tile->tileset()->rowCount() * tile->tileset()->tileWidth()));
-                    stream.writeAttribute("yo", QString::number((int)(tile->id() / tile->tileset()->rowCount()) * tile->tileset()->tileWidth()));
+                    stream.writeAttribute("xo", QString::number(tile->id() % tile->tileset()->columnCount() * tile->tileset()->tileWidth()));
+
+                    stream.writeAttribute("yo", QString::number((int)(tile->id() / tile->tileset()->columnCount()) * tile->tileset()->tileWidth()));
 
                     stream.writeAttribute("depth", QString::number(layer->hasProperty(QLatin1String("Depth")) ? layer->property(QLatin1String("Depth")).toInt() : currentLayer));
                     stream.writeAttribute("id", QString::number(++tileId));
