@@ -356,20 +356,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
-//    setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mNewLayerMenu, "document-new");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
-
-
-    // todo: Creating a new tileset does not necessarily mean adding it to the
-    // current map. Consider automatically figuring out which tilesets are used
-    // on a map.
-//    connect(mTilesetDock, SIGNAL(newTileset()),
-//            this, SLOT(newTileset()));
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.

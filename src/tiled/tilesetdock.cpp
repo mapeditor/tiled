@@ -22,6 +22,7 @@
 
 #include "tilesetdock.h"
 
+#include "actionmanager.h"
 #include "addremovemapobject.h"
 #include "addremovetiles.h"
 #include "addremovetileset.h"
@@ -244,16 +245,11 @@ TilesetDock::TilesetDock(QWidget *parent):
     Utils::setThemeIcon(mEditTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
 
-    connect(mNewTileset, SIGNAL(triggered()),
-            SIGNAL(newTileset()));
-    connect(mImportTileset, SIGNAL(triggered()),
-            SLOT(importTileset()));
-    connect(mExportTileset, SIGNAL(triggered()),
-            SLOT(exportTileset()));
-    connect(mEditTileset, SIGNAL(triggered()),
-            SLOT(editTileset()));
-    connect(mDeleteTileset, SIGNAL(triggered()),
-            SLOT(removeTileset()));
+    connect(mNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
+    connect(mImportTileset, SIGNAL(triggered()), SLOT(importTileset()));
+    connect(mExportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
+    connect(mEditTileset, SIGNAL(triggered()), SLOT(editTileset()));
+    connect(mDeleteTileset, SIGNAL(triggered()), SLOT(removeTileset()));
 
     mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
@@ -675,6 +671,11 @@ void TilesetDock::removeTileset(int index)
     undoStack->push(remove);
     if (inUse)
         undoStack->endMacro();
+}
+
+void TilesetDock::newTileset()
+{
+    ActionManager::action("file.new_tileset")->trigger();
 }
 
 void TilesetDock::setCurrentTiles(TileLayer *tiles)

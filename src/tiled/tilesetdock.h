@@ -100,8 +100,6 @@ signals:
      */
     void tilesetsDropped(const QStringList &paths);
 
-    void newTileset();
-
 protected:
     void changeEvent(QEvent *e) override;
 
@@ -126,6 +124,7 @@ private slots:
     void removeTileset();
     void removeTileset(int index);
 
+    void newTileset();
     void editTileset();
     void importTileset();
     void exportTileset();
