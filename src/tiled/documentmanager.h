@@ -164,6 +164,7 @@ public:
     const QList<TilesetDocument*> &tilesetDocuments() const;
 
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
+    TilesetDocument *findTilesetDocument(const QString &fileName) const;
     TilesetDocument *findOrCreateTilesetDocument(const SharedTileset &tileset);
 
     /**

@@ -563,7 +563,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     if (!fileFormat) {
         // Try to find a plugin that implements support for this format
-        auto formats = PluginManager::objects<FileFormat>();
+        const auto formats = PluginManager::objects<FileFormat>();
         for (FileFormat *format : formats) {
             if (format->supportsFile(fileName)) {
                 fileFormat = format;
@@ -583,11 +583,17 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
         document = MapDocument::load(fileName, mapFormat, &error);
     } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        SharedTileset tileset = tilesetFormat->read(fileName);
-        if (tileset.isNull())
-            error = tilesetFormat->errorString();
-        else
-            document = new TilesetDocument(tileset, fileName);
+        // It could be, that we have already loaded this tileset while loading
+        // some map.
+        if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
+            document = tilesetDocument;
+        } else {
+            SharedTileset tileset = tilesetFormat->read(fileName);
+            if (tileset.isNull())
+                error = tilesetFormat->errorString();
+            else
+                document = new TilesetDocument(tileset, fileName);
+        }
     }
 
     if (!document) {

@@ -654,6 +654,21 @@ TilesetDocument *DocumentManager::findTilesetDocument(const SharedTileset &tiles
     return mTilesetToDocument.value(tileset);
 }
 
+TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) const
+{
+    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    if (canonicalFilePath.isEmpty()) // file doesn't exist
+        return nullptr;
+
+    for (auto tilesetDocument : mTilesetDocuments) {
+        QString name = tilesetDocument->fileName();
+        if (!name.isEmpty() && QFileInfo(name).canonicalFilePath() == canonicalFilePath)
+            return tilesetDocument;
+    }
+
+    return nullptr;
+}
+
 /**
  * Searches for a document for the given tileset, creating it if it does not
  * exist already.
