@@ -133,9 +133,8 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         }
 
         if (typeId == tilesetParametersTypeId()) {
-            EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
-            if (embeddedTileset.tileset())
-                return QFileInfo(embeddedTileset.tileset()->imageSource()).fileName();
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                return QFileInfo(tilesetDocument->tileset()->imageSource()).fileName();
         }
 
         return value.toString();
@@ -161,9 +160,8 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
             filePath = value.value<FilePath>().absolutePath;
 
         if (typeId == tilesetParametersTypeId()) {
-            EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
-            if (embeddedTileset.tileset())
-                filePath = embeddedTileset.tileset()->imageSource();
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                filePath = tilesetDocument->tileset()->imageSource();
         }
 
         // TODO: This assumes the file path is an image reference. It should be

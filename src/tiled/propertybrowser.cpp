@@ -1183,10 +1183,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[ColumnCountProperty]->setEnabled(mTilesetDocument && tileset->isCollection());
 
         if (!tileset->isCollection()) {
-            // todo: Consider when to set the TilesetDocument on the parameters edit
-//            EmbeddedTileset embeddedTileset(mMapDocument, tileset);
-
-//            mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));
+            mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(mTilesetDocument));
             mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { tileset->imageSource() }));
             mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
             mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());

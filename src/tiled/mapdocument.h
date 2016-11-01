@@ -329,34 +329,6 @@ private:
 };
 
 
-/**
- * Class used to describe an embedded Tileset, changes to which are applied
- * using undo commands on the undo stack of the associated MapDocument.
- */
-class EmbeddedTileset
-{
-public:
-    EmbeddedTileset()
-        : mMapDocument(nullptr)
-        , mTileset(nullptr)
-    {}
-
-    EmbeddedTileset(MapDocument *mapDocument, Tileset *tileset)
-        : mMapDocument(mapDocument)
-        , mTileset(tileset)
-        , mImageSource(tileset->imageSource())
-    {}
-
-    MapDocument *mapDocument() const { return mMapDocument; }
-    Tileset *tileset() const { return mTileset; }
-
-private:
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
-    QString mImageSource;    // affects display
-};
-
-
 inline QString MapDocument::lastExportFileName() const
 {
     return mLastExportFileName;
@@ -428,7 +400,5 @@ inline void MapDocument::emitEditLayerNameRequested()
 
 } // namespace Internal
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Internal::EmbeddedTileset)
 
 #endif // MAPDOCUMENT_H
