@@ -24,6 +24,7 @@
 #include "map.h"
 #include "terrain.h"
 #include "tile.h"
+#include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
 #include "tmxmapformat.h"
 
@@ -51,6 +52,15 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
             this, &TilesetDocument::onTerrainAboutToBeRemoved);
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReference(tileset);
+}
+
+TilesetDocument::~TilesetDocument()
+{
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->removeReference(mTileset);
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
