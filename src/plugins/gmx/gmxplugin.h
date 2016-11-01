@@ -37,7 +37,6 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
-    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 
 protected:
     QString nameFilter() const override;
