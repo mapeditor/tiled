@@ -151,7 +151,7 @@ TerrainDock::TerrainDock(QWidget *parent)
     horizontal->addWidget(mToolBar);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
-    vertical->setMargin(5);
+    vertical->setMargin(0);
     vertical->addWidget(mTerrainView);
     vertical->addLayout(horizontal);
 
