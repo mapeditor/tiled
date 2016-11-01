@@ -110,6 +110,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
 
+    ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
+    ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
+
     auto *mapEditor = new MapEditor;
     auto *tilesetEditor = new TilesetEditor;
 
@@ -433,9 +436,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
-
-    ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
-    ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
 
     updateActions();
     readSettings();

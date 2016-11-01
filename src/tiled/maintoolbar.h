@@ -23,6 +23,8 @@
 
 #include <QToolBar>
 
+class QToolButton;
+
 namespace Tiled {
 namespace Internal {
 
@@ -44,6 +46,7 @@ private slots:
 private:
     void retranslateUi();
 
+    QToolButton *mNewButton;
     QAction *mOpenAction;
     QAction *mSaveAction;
     QAction *mUndoAction;

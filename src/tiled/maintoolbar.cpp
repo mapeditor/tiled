@@ -20,11 +20,14 @@
 
 #include "maintoolbar.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "utils.h"
 
 #include <QAction>
 #include <QEvent>
+#include <QMenu>
+#include <QToolButton>
 #include <QUndoGroup>
 
 namespace Tiled {
@@ -37,33 +40,39 @@ MainToolBar::MainToolBar(QWidget *parent)
     setWindowTitle(tr("Main Toolbar"));
     setToolButtonStyle(Qt::ToolButtonFollowStyle);
 
+    QIcon newIcon(QLatin1String(":images/24x24/document-new.png"));
     QIcon openIcon(QLatin1String(":images/24x24/document-open.png"));
     QIcon saveIcon(QLatin1String(":images/24x24/document-save.png"));
     QIcon undoIcon(QLatin1String(":images/24x24/edit-undo.png"));
     QIcon redoIcon(QLatin1String(":images/24x24/edit-redo.png"));
 
+    newIcon.addFile(QLatin1String(":images/16x16/document-new.png"));
     openIcon.addFile(QLatin1String(":images/16x16/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/16x16/document-save.png"));
     redoIcon.addFile(QLatin1String(":images/16x16/edit-redo.png"));
     undoIcon.addFile(QLatin1String(":images/16x16/edit-undo.png"));
 
+    mNewButton = new QToolButton(this);
     mOpenAction = new QAction(this);
     mSaveAction = new QAction(this);
+
+    QMenu *newMenu = new QMenu(this);
+    newMenu->addAction(ActionManager::action("file.new_map"));
+    newMenu->addAction(ActionManager::action("file.new_tileset"));
+    mNewButton->setMenu(newMenu);
+    mNewButton->setPopupMode(QToolButton::InstantPopup);
 
     QUndoGroup *undoGroup = DocumentManager::instance()->undoGroup();
     mUndoAction = undoGroup->createUndoAction(this, tr("Undo"));
     mRedoAction = undoGroup->createRedoAction(this, tr("Redo"));
 
-    // todo: having a 'New' action on the tool bar requires having a dialog to
-    // choose between making a new map or a new tileset. Or maybe just making
-    // it only work for maps.
-//    mUi->actionNew->setPriority(QAction::LowPriority);
-
+    mNewButton->setIcon(newIcon);
     mOpenAction->setIcon(openIcon);
     mSaveAction->setIcon(saveIcon);
     mUndoAction->setIcon(undoIcon);
     mRedoAction->setIcon(redoIcon);
 
+    Utils::setThemeIcon(mNewButton, "document-new");
     Utils::setThemeIcon(mOpenAction, "document-open");
     Utils::setThemeIcon(mSaveAction, "document-save");
     Utils::setThemeIcon(mRedoAction, "edit-redo");
@@ -74,6 +83,7 @@ MainToolBar::MainToolBar(QWidget *parent)
 #endif
     mRedoAction->setPriority(QAction::LowPriority);
 
+    addWidget(mNewButton);
     addAction(mOpenAction);
     addAction(mSaveAction);
     addSeparator();
@@ -118,6 +128,7 @@ void MainToolBar::currentDocumentChanged(Document *document)
 
 void MainToolBar::retranslateUi()
 {
+    mNewButton->setToolTip(tr("New"));
     mOpenAction->setText(tr("Open"));
     mSaveAction->setText(tr("Save"));
 
