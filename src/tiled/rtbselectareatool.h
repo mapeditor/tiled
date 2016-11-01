@@ -21,6 +21,7 @@
 #ifndef RTBSELECTAREATOOL_H
 #define RTBSELECTAREATOOL_H
 
+#include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tilestamp.h"
 
@@ -28,9 +29,12 @@ class SelectedAreaItem;
 
 namespace Tiled {
 
+class MapObject;
+
 namespace Internal {
 
 class MapDocument;
+class MapObjectItem;
 
 class RTBSelectAreaTool: public TileSelectionTool
 {

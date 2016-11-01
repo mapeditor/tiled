@@ -21,7 +21,12 @@
 #ifndef RTBVALIDATORRULE_H
 #define RTBVALIDATORRULE_H
 
+#include <QObject>
+#include <QPixmap>
+
 namespace Tiled {
+
+class MapObject;
 
 namespace Internal {
 

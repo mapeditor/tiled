@@ -27,8 +27,11 @@
 #include <QSettings>
 #include <QDir>
 #include <QProcess>
+
+#ifdef Q_OS_WIN
 #include <Windows.h>
 #include <Psapi.h>
+#endif
 
 using namespace Tiled;
 using namespace Internal;
@@ -155,6 +158,7 @@ QString RTBCore::createPath(QDir dir)
 
 bool RTBCore::isGameAlreadyRunning()
 {
+#ifdef Q_OS_WIN
     DWORD aProcesses[1024], cbNeeded, cProcesses;
     unsigned int i;
 
@@ -200,6 +204,7 @@ bool RTBCore::isGameAlreadyRunning()
             }
         }
     }
+#endif // Q_OS_WIN
 
     return false;
 }

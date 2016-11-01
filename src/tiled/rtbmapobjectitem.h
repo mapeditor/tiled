@@ -24,7 +24,12 @@
 #include <qgraphicsitem.h>
 
 namespace Tiled {
+
+class MapObject;
+
 namespace Internal {
+
+class MapDocument;
 
 class RTBMapObjectItem
 {

@@ -23,6 +23,7 @@
 #include "mapobject.h"
 #include "mapdocument.h"
 #include "map.h"
+#include "objectgroup.h"
 #include "rtbmapobject.h"
 #include "rtbmapsettings.h"
 #include "mapview.h"
@@ -32,6 +33,8 @@
 #include "rtbcore.h"
 
 #include <QPainter>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;

@@ -25,8 +25,12 @@
 #include <QTreeView>
 
 namespace Tiled {
+
+class MapObject;
+
 namespace Internal {
 
+class MapDocument;
 class ValidatorView;
 class RTBValidatorRule;
 

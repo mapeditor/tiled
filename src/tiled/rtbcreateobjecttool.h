@@ -21,7 +21,7 @@
 #ifndef RTBCREATEOBJECTTOOL_H
 #define RTBCREATEOBJECTTOOL_H
 
-#include "CreateTileObjectTool.h"
+#include "createtileobjecttool.h"
 
 namespace Tiled {
 

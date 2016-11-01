@@ -26,6 +26,8 @@
 namespace Tiled {
 namespace Internal {
 
+class MapObjectItem;
+
 class SnapHelper
 {
 public:

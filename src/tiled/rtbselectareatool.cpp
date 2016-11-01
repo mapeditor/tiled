@@ -38,7 +38,10 @@
 #include "rtbmapsettings.h"
 #include "rtbinserttool.h"
 
+#include <QCursor>
 #include <QGraphicsItem>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;

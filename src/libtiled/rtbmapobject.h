@@ -21,6 +21,8 @@
 #ifndef RTBMAPOBJECT_H
 #define RTBMAPOBJECT_H
 
+#include "tiled_global.h"
+
 #include <QString>
 #include <QStringList>
 #include <QMap>
@@ -57,7 +59,7 @@ static const char* FAKE_ORB = "Fake Orb";
 static const char* ORB = "Orb";
 static const char* OBJECT = "Object";
 
-class RTBMapObject
+class TILEDSHARED_EXPORT RTBMapObject
 {
 protected:
     // struct with the default values
@@ -379,7 +381,7 @@ private:
 
 //=============================================================================
 
-class RTBButtonObject : public RTBMapObject
+class TILEDSHARED_EXPORT RTBButtonObject : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -508,7 +510,7 @@ private:
 
 //=============================================================================
 
-class RTBCustomFloorTrap : public RTBMapObject
+class TILEDSHARED_EXPORT RTBCustomFloorTrap : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -555,7 +557,7 @@ private:
 
 //=============================================================================
 
-class RTBMovingFloorTrapSpawner : public RTBMapObject
+class TILEDSHARED_EXPORT RTBMovingFloorTrapSpawner : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -613,7 +615,7 @@ private:
 const QList<int> projectileTurretIS = QList<int>() << 1 << 2 << 3 << 4;
 const QList<int> projectileTurretIO = QList<int>() << 0 << 8;
 
-class RTBProjectileTurret : public RTBMapObject
+class TILEDSHARED_EXPORT RTBProjectileTurret : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -743,7 +745,7 @@ private:
 
 //=============================================================================
 
-class RTBTeleporter : public RTBMapObject
+class TILEDSHARED_EXPORT RTBTeleporter : public RTBMapObject
 {   
 private:
     // struct with the default values
@@ -785,7 +787,7 @@ private:
 
 //=============================================================================
 
-class RTBLaserBeam : public RTBMapObject
+class TILEDSHARED_EXPORT RTBLaserBeam : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -852,7 +854,7 @@ private:
 
 //=============================================================================
 
-class RTBTarget : public RTBMapObject
+class TILEDSHARED_EXPORT RTBTarget : public RTBMapObject
 {
 public:
     RTBTarget();
@@ -870,7 +872,7 @@ public:
 
 //=============================================================================
 
-class RTBFloorText : public RTBMapObject
+class TILEDSHARED_EXPORT RTBFloorText : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -941,7 +943,7 @@ private:
 
 //=============================================================================
 
-class RTBCameraTrigger : public RTBMapObject
+class TILEDSHARED_EXPORT RTBCameraTrigger : public RTBMapObject
 {
 private:
     // struct with the default values
@@ -997,7 +999,7 @@ private:
 
 //=============================================================================
 
-class RTBStartLocation : public RTBMapObject
+class TILEDSHARED_EXPORT RTBStartLocation : public RTBMapObject
 {
 public:
     RTBStartLocation();
@@ -1015,7 +1017,7 @@ public:
 
 //=============================================================================
 
-class RTBFinishHole : public RTBMapObject
+class TILEDSHARED_EXPORT RTBFinishHole : public RTBMapObject
 {
 public:
     RTBFinishHole();
@@ -1033,7 +1035,7 @@ public:
 
 //=============================================================================
 
-class RTBOrb : public RTBMapObject
+class TILEDSHARED_EXPORT RTBOrb : public RTBMapObject
 {
 public:
     RTBOrb();
@@ -1054,7 +1056,7 @@ public:
 // IMPORTANT: postition  represent the position in the dropdown
 const QList<int> npcBallSpawnerIO = QList<int>() << 0 << 8;
 
-class RTBNPCBallSpawner : public RTBMapObject
+class TILEDSHARED_EXPORT RTBNPCBallSpawner : public RTBMapObject
 {
 private:
     // struct with the default values

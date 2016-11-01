@@ -23,11 +23,14 @@
 
 #include "rtbmapsettings.h"
 
+#include <QDir>
 #include <QObject>
 #include <QString>
 
 namespace Tiled {
 namespace Internal {
+
+class MapObjectItem;
 
 static const char* FLOOR = "Floor";
 static const char* FLOOR_TRAP = "Floor Trap";

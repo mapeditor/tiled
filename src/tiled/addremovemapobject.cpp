@@ -20,6 +20,7 @@
 
 #include "addremovemapobject.h"
 
+#include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"

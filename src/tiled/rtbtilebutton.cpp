@@ -27,7 +27,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-RTBTileButton::RTBTileButton(QWidget *parent, int type, int layerType)
+RTBTileButton::RTBTileButton(QObject *parent, int type, int layerType)
         :AbstractTileTool(QString(),
                           QIcon(QLatin1String(
                                   ":images/24x24/dice.png")),

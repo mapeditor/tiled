@@ -34,7 +34,7 @@ class RTBTileButton : public AbstractTileTool
     Q_OBJECT
 
 public:
-    RTBTileButton(QWidget *parent, int type, int layerType);
+    RTBTileButton(QObject *parent, int type, int layerType);
     ~RTBTileButton();
 
     void languageChanged();

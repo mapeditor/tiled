@@ -23,6 +23,9 @@
 
 #include <QDockWidget>
 
+class QTextEdit;
+class QPushButton;
+
 namespace Tiled {
 
 namespace Internal {

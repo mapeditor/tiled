@@ -27,6 +27,9 @@
 #include <QtTreePropertyBrowser>
 #include "properties.h"
 
+#include "rtbmap.h"
+#include "rtbmapobject.h"
+
 class QtGroupPropertyManager;
 class QtVariantProperty;
 class QtVariantPropertyManager;

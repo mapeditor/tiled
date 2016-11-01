@@ -26,6 +26,8 @@
 
 #include "rtbcore.h"
 
+#include <cmath>
+
 namespace Tiled {
 namespace Internal {
 

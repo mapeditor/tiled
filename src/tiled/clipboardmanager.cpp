@@ -41,6 +41,8 @@
 #include <QSet>
 #include <QUndoStack>
 
+#include <cmath>
+
 static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;

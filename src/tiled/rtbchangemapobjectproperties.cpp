@@ -20,7 +20,9 @@
 
 #include "rtbchangemapobjectproperties.h"
 
+#include "map.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 

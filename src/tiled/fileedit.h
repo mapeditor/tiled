@@ -22,10 +22,9 @@
 #ifndef FILEEDIT_H
 #define FILEEDIT_H
 
+#include <QLineEdit>
 #include <QValidator>
 #include <QWidget>
-
-class QLineEdit;
 
 namespace Tiled {
 namespace Internal {

@@ -22,13 +22,16 @@
 #define CLIPBOARDMANAGER_H
 
 #include <QObject>
+#include <QRegion>
 
 class QClipboard;
+class QUndoStack;
 
 namespace Tiled {
 
 class ObjectGroup;
 class Map;
+class MapObject;
 
 namespace Internal {
 

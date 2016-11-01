@@ -30,6 +30,7 @@
 #include "rtbmapsettings.h"
 
 #include <QAction>
+#include <QPainter>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
