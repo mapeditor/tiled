@@ -550,7 +550,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
             if (!(option->state & State_Horizontal))
                 gradient = QLinearGradient(rect.left(), rect.center().y(),
                                            rect.right(), rect.center().y());
-            gradient.setColorAt(0, option->palette.window().color().lighter(104));
+            gradient.setColorAt(0, option->palette.window().color());
             gradient.setColorAt(1, option->palette.window().color().darker(104));
             painter->fillRect(option->rect, gradient);
 
@@ -574,9 +574,6 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                 }
-                // All top toolbar lines draw a light line at the top.
-                painter->setPen(light);
-                painter->drawLine(option->rect.topLeft(), option->rect.topRight());
             } else if (toolBar->toolBarArea == Qt::BottomToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::End
                         || toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
