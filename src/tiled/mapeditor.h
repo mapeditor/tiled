@@ -85,6 +85,7 @@ public:
 
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
+    Zoomable *zoomable() const override;
 
     void showMessage(const QString &text, int timeout = 0);
 

@@ -99,7 +99,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , mActionManager(new ActionManager)
     , mUi(new Ui::MainWindow)
-    , mDocument(nullptr)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mConsoleDock(new ConsoleDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
@@ -441,6 +440,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mActionHandler, SLOT(copyPosition()));
 
     updateActions();
+    updateZoomActions();
     readSettings();
 
     connect(mAutomappingManager, SIGNAL(warningsOccurred(bool)),
@@ -1120,20 +1120,20 @@ void MainWindow::labelVisibilityActionTriggered(QAction *action)
 
 void MainWindow::zoomIn()
 {
-    if (MapView *mapView = mDocumentManager->currentMapView())
-        mapView->zoomable()->zoomIn();
+    if (mZoomable)
+        mZoomable->zoomIn();
 }
 
 void MainWindow::zoomOut()
 {
-    if (MapView *mapView = mDocumentManager->currentMapView())
-        mapView->zoomable()->zoomOut();
+    if (mZoomable)
+        mZoomable->zoomOut();
 }
 
 void MainWindow::zoomNormal()
 {
-    if (MapView *mapView = mDocumentManager->currentMapView())
-        mapView->zoomable()->resetZoom();
+    if (mZoomable)
+        mZoomable->resetZoom();
 }
 
 void MainWindow::setFullScreen(bool fullScreen)
@@ -1501,19 +1501,38 @@ void MainWindow::updateActions()
     mLayerMenu->menuAction()->setVisible(mapDocument);
 
 //    mCommandButton->setEnabled(mapDocument);
+}
 
-    updateZoomActions();
+void MainWindow::updateZoomable()
+{
+    Zoomable *zoomable = nullptr;
+    if (auto editor = mDocumentManager->currentEditor())
+        zoomable = editor->zoomable();
+
+    if (zoomable != mZoomable) {
+        if (mZoomable)
+            mZoomable->disconnect(this);
+
+        mZoomable = zoomable;
+
+        if (zoomable) {
+            connect(zoomable, &Zoomable::scaleChanged, this, &MainWindow::updateZoomActions);
+            connect(zoomable, &Zoomable::destroyed, this, [=] {
+                if (mZoomable == zoomable)
+                    mZoomable = nullptr;
+            });
+        }
+
+        updateZoomActions();
+    }
 }
 
 void MainWindow::updateZoomActions()
 {
-    MapView *mapView = mDocumentManager->currentMapView();
+    const qreal scale = mZoomable ? mZoomable->scale() : 1;
 
-    Zoomable *zoomable = mapView ? mapView->zoomable() : nullptr;
-    const qreal scale = zoomable ? zoomable->scale() : 1;
-
-    mUi->actionZoomIn->setEnabled(zoomable && zoomable->canZoomIn());
-    mUi->actionZoomOut->setEnabled(zoomable && zoomable->canZoomOut());
+    mUi->actionZoomIn->setEnabled(mZoomable && mZoomable->canZoomIn());
+    mUi->actionZoomOut->setEnabled(mZoomable && mZoomable->canZoomOut());
     mUi->actionZoomNormal->setEnabled(scale != 1);
 }
 
@@ -1595,7 +1614,6 @@ void MainWindow::retranslateUi()
 {
     updateWindowTitle();
 
-//    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mNewLayerMenu->setTitle(tr("&New"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
@@ -1632,6 +1650,7 @@ void MainWindow::documentChanged(Document *document)
 
     updateWindowTitle();
     updateActions();
+    updateZoomable();
 }
 
 void MainWindow::closeDocument(int index)

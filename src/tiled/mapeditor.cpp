@@ -533,6 +533,13 @@ MapView *MapEditor::currentMapView() const
     return viewForDocument(mCurrentMapDocument);
 }
 
+Zoomable *MapEditor::zoomable() const
+{
+    if (auto view = currentMapView())
+        return view->zoomable();
+    return nullptr;
+}
+
 void MapEditor::showMessage(const QString &text, int timeout)
 {
     mMainWindow->statusBar()->showMessage(text, timeout);

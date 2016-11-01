@@ -70,6 +70,7 @@ public:
 
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
+    Zoomable *zoomable() const override;
 
     TileAnimationEditor *tileAnimationEditor() const;
     TileCollisionEditor *tileCollisionEditor() const;

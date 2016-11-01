@@ -30,6 +30,7 @@ namespace Tiled {
 namespace Internal {
 
 class Document;
+class Zoomable;
 
 class Editor : public QObject
 {
@@ -48,6 +49,7 @@ public:
     virtual Document *currentDocument() const = 0;
 
     virtual QWidget *editorWidget() const = 0;
+    virtual Zoomable *zoomable() const = 0;
 
     virtual QList<QToolBar*> toolBars() const = 0;
     virtual QList<QDockWidget*> dockWidgets() const = 0;

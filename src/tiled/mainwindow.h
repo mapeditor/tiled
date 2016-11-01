@@ -59,6 +59,7 @@ class MapView;
 class ObjectTypesEditor;
 class TmxMapFormat;
 class TsxTilesetFormat;
+class Zoomable;
 
 /**
  * The main editor window.
@@ -141,6 +142,7 @@ private slots:
 
     void updateWindowTitle();
     void updateActions();
+    void updateZoomable();
     void updateZoomActions();
     void openDocumentation();
     void becomePatron();
@@ -198,7 +200,8 @@ private:
 
     ActionManager *mActionManager;
     Ui::MainWindow *mUi;
-    Document *mDocument;
+    Document *mDocument = nullptr;
+    Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
     QDockWidget *mUndoDock;

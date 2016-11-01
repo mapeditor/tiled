@@ -302,6 +302,13 @@ Tileset *TilesetEditor::currentTileset() const
     return nullptr;
 }
 
+Zoomable *TilesetEditor::zoomable() const
+{
+    if (auto view = currentTilesetView())
+        return view->zoomable();
+    return nullptr;
+}
+
 void TilesetEditor::currentWidgetChanged()
 {
     auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
