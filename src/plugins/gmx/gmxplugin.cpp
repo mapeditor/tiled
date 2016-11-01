@@ -67,21 +67,22 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         if (layer->layerType() != Layer::ObjectGroupType) continue;
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
-        bool rotating = false;
         for (const MapObject *object : objectLayer->objects()) {
-
-            rotating = (object->rotation() != 0);
 
             stream.writeStartElement("instance");
 
             stream.writeAttribute("objName", object->name());
-            stream.writeAttribute("x", QString::number((int)(object->x())));
-            stream.writeAttribute("y", QString::number((int)(object->y() - object->height()) + (rotating ? object->height() : 0)));
 
-            stream.writeAttribute("scaleY", QString::number(rotating ? -1 : 1));
+            if(object->rotation() != 0) {
+                QPoint base(0, object->height());
+                base = QTransform().rotate(-object->rotation()).map(base);
 
-            if(rotating) {
+                stream.writeAttribute("x", QString::number((int)(object->x()) + base.x()));
+                stream.writeAttribute("y", QString::number((int)(object->y()) - base.y()));
                 stream.writeAttribute("rotation", QString::number(-object->rotation()));
+            } else {
+                stream.writeAttribute("x", QString::number((int)(object->x())));
+                stream.writeAttribute("y", QString::number((int)(object->y() - object->height())));
             }
 
             stream.writeAttribute("id", QString::number(object->id()));
@@ -120,8 +121,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                     stream.writeStartElement("tile");
 
                     stream.writeAttribute("bgName", tile->tileset()->name());
-                    stream.writeAttribute("x", QString::number((int)(x * tile->width())));
-                    stream.writeAttribute("y", QString::number((int)(y * tile->height())));
+                    stream.writeAttribute("x", QString::number((int)(x * map->tileWidth())));
+                    stream.writeAttribute("y", QString::number((int)(y * map->tileHeight())));
                     stream.writeAttribute("w", QString::number(tile->width()));
                     stream.writeAttribute("h", QString::number(tile->height()));
 
