@@ -695,9 +695,12 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
 
     tilesetDocument->removeMapDocument(mapDocument);
 
+    bool unused = tilesetDocument->mapDocuments().isEmpty();
+    bool external = tilesetDocument->tileset()->isExternal();
+    int index = mDocuments.indexOf(tilesetDocument);
+
     // Delete the TilesetDocument instance when its tileset is no longer reachable
-    if (tilesetDocument->mapDocuments().isEmpty()) {
-        int index = mDocuments.indexOf(tilesetDocument);
+    if (unused && !(index >= 0 && external)) {
         if (index != -1) {
             closeDocumentAt(index);
         } else {

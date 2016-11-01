@@ -460,13 +460,14 @@ void TilesetDock::updateActions()
 {
     bool external = false;
     TilesetView *view = nullptr;
+    Tileset *tileset = nullptr;
     const int index = mTabBar->currentIndex();
 
     if (index > -1) {
         view = tilesetViewAt(index);
-        if (view) {
-            Tileset *tileset = mTilesets.at(index).data();
+        tileset = mTilesets.at(index).data();
 
+        if (view) {
             if (!view->model()) // Lazily set up the model
                 setupTilesetModel(view, tileset);
 
@@ -476,13 +477,12 @@ void TilesetDock::updateActions()
     }
 
     const bool tilesetIsDisplayed = view != nullptr;
-    const bool mapIsDisplayed = mMapDocument != nullptr;
+    const auto map = mMapDocument ? mMapDocument->map() : nullptr;
 
-    mNewTileset->setEnabled(mapIsDisplayed);
     mImportTileset->setEnabled(tilesetIsDisplayed && external);
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
     mEditTileset->setEnabled(tilesetIsDisplayed);
-    mDeleteTileset->setEnabled(tilesetIsDisplayed);
+    mDeleteTileset->setEnabled(tilesetIsDisplayed && map && contains(map->tilesets(), tileset));
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -640,7 +640,13 @@ void TilesetDock::removeTileset()
  */
 void TilesetDock::removeTileset(int index)
 {
-    Tileset *tileset = mTilesets.at(index).data();
+    auto &sharedTileset = mTilesets.at(index);
+
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(sharedTileset);
+    if (mapTilesetIndex == -1)
+        return;
+
+    Tileset *tileset = sharedTileset.data();
     const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
     // If the tileset is in use, warn the user and confirm removal
@@ -659,7 +665,7 @@ void TilesetDock::removeTileset(int index)
             return;
     }
 
-    QUndoCommand *remove = new RemoveTileset(mMapDocument, index);
+    QUndoCommand *remove = new RemoveTileset(mMapDocument, mapTilesetIndex);
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     if (inUse) {
@@ -784,6 +790,8 @@ void TilesetDock::updateTilesets()
             ++index;
         }
     }
+
+    updateActions();
 }
 
 Tileset *TilesetDock::currentTileset() const
