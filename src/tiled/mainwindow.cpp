@@ -323,6 +323,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
 
+    connect(mUi->actionTilesetProperties, &QAction::triggered,
+            this, &MainWindow::editTilesetProperties);
+
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
@@ -1303,6 +1306,16 @@ void MainWindow::editMapProperties()
     emit mapDocument->editCurrentObject();
 }
 
+void MainWindow::editTilesetProperties()
+{
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+    if (!tilesetDocument)
+        return;
+
+    tilesetDocument->setCurrentObject(tilesetDocument->tileset().data());
+    emit tilesetDocument->editCurrentObject();
+}
+
 void MainWindow::autoMappingError(bool automatic)
 {
     QString error = mAutomappingManager->errorString();
@@ -1439,6 +1452,7 @@ void MainWindow::updateActions()
 {
     auto document = mDocumentManager->currentDocument();
     auto mapDocument = qobject_cast<MapDocument*>(document);
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
 
     bool tileLayerSelected = false;
     bool objectsSelected = false;
@@ -1473,12 +1487,18 @@ void MainWindow::updateActions()
     mUi->actionPasteInPlace->setEnabled(clipboardHasMap);
     mUi->actionDelete->setEnabled(canCopy);
 
+    mUi->menuMap->menuAction()->setVisible(mapDocument);
 //    mUi->actionNewTileset->setEnabled(mapDocument);
     mUi->actionAddExternalTileset->setEnabled(mapDocument);
     mUi->actionResizeMap->setEnabled(mapDocument);
     mUi->actionOffsetMap->setEnabled(mapDocument);
     mUi->actionMapProperties->setEnabled(mapDocument);
     mUi->actionAutoMap->setEnabled(mapDocument);
+
+    mUi->menuTileset->menuAction()->setVisible(tilesetDocument);
+    mUi->actionTilesetProperties->setEnabled(tilesetDocument);
+
+    mLayerMenu->menuAction()->setVisible(mapDocument);
 
 //    mCommandButton->setEnabled(mapDocument);
 

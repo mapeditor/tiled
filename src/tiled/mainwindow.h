@@ -137,6 +137,8 @@ private slots:
     void offsetMap();
     void editMapProperties();
 
+    void editTilesetProperties();
+
     void updateWindowTitle();
     void updateActions();
     void updateZoomActions();

@@ -144,10 +144,17 @@
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
    </widget>
+   <widget class="QMenu" name="menuTileset">
+    <property name="title">
+     <string>Tileset</string>
+    </property>
+    <addaction name="actionTilesetProperties"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
+   <addaction name="menuTileset"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
@@ -239,7 +246,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>Map &amp;Properties</string>
+    <string>Map &amp;Properties...</string>
    </property>
   </action>
   <action name="actionAutoMap">
@@ -537,6 +544,15 @@
    </property>
    <property name="text">
     <string>Snap To &amp;Pixels</string>
+   </property>
+  </action>
+  <action name="actionTilesetProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tileset &amp;Properties...</string>
    </property>
   </action>
  </widget>
