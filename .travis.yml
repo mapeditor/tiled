@@ -53,6 +53,20 @@ matrix:
         - unset LD_LIBRARY_PATH
         - ./linuxdeployqt-42fc34c-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
+      deploy:
+        - provider: releases
+          api_key:
+            secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+          file: Tiled*.AppImage
+          file_glob: true
+          on:
+            repo: bjorn/tiled
+            tags: true
+        - provider: script
+          skip_cleanup: true
+          script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
+          on:
+            all_branches: true
     - os: linux
       compiler: clang
       env: QMAKESPEC=linux-clang
@@ -87,22 +101,3 @@ before_script:
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
   - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi
-
-deploy:
-  - provider: releases
-    api_key:
-      secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
-    file: Tiled*.AppImage
-    file_glob: true
-    on:
-      repo: bjorn/tiled
-      tags: true
-      os: linux
-      compiler: gcc
-  - provider: script
-    skip_cleanup: true
-    script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
-    on:
-      all_branches: true
-      os: linux
-      compiler: gcc
