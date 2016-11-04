@@ -12,6 +12,7 @@
 * OS X: Fixed compile when pkg-config is present
 * Windows: Include the Defold plugin
 * Windows: Added support for DDS, TGA, WBMP and WEBP image formats
+* Linux: Added 64-bit AppImage (with help from Simon Peter)
 * Chinese translation updates (by endlesstravel and buckle2000)
 * French translation updated (by Yohann Ferreira)
 
