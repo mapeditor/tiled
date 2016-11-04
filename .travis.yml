@@ -34,9 +34,9 @@ matrix:
     - os: linux
       compiler: gcc
       before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt562-trusty
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt57-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt56base qt56tools binutils zlib1g-dev libqt5opengl5-dev
+        - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev libqt5opengl5-dev
         - source /opt/*/bin/qt*-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
