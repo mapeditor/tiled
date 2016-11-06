@@ -108,6 +108,7 @@ class MapView extends JPanel implements Scrollable
         setOpaque(true);
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         final Graphics2D g2d = (Graphics2D) g.create();
         final Rectangle clip = g2d.getClipBounds();
@@ -126,17 +127,19 @@ class MapView extends JPanel implements Scrollable
 
     private static MapRenderer createRenderer(Map map) {
         switch (map.getOrientation()) {
-            case Map.ORIENTATION_ORTHOGONAL:
+            case ORTHOGONAL:
                 return new OrthogonalRenderer(map);
             default:
                 return null;
         }
     }
 
+    @Override
     public Dimension getPreferredScrollableViewportSize() {
         return getPreferredSize();
     }
 
+    @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect,
                                           int orientation, int direction) {
         if (orientation == SwingConstants.HORIZONTAL)
@@ -145,6 +148,7 @@ class MapView extends JPanel implements Scrollable
             return map.getTileHeight();
     }
 
+    @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect,
                                            int orientation, int direction) {
         if (orientation == SwingConstants.HORIZONTAL) {
@@ -156,10 +160,12 @@ class MapView extends JPanel implements Scrollable
         }
     }
 
+    @Override
     public boolean getScrollableTracksViewportWidth() {
         return false;
     }
 
+    @Override
     public boolean getScrollableTracksViewportHeight() {
         return false;
     }

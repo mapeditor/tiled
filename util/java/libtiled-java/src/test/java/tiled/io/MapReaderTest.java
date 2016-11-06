@@ -3,6 +3,7 @@
  * This file is part of libtiled-java.
  * %%
  * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,11 +34,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import tiled.core.Map;
 import tiled.core.TileLayer;
 
 public class MapReaderTest extends TestCase {
+
+    @Test
     public void testAcceptValidFilenames() {
         // Arrange
         TMXMapReader reader = new TMXMapReader();
@@ -53,16 +57,7 @@ public class MapReaderTest extends TestCase {
         assertFalse(reader.accept(new File("/tmp/example")));
     }
 
-    private File getFileFromResources(String filename) throws URISyntaxException {
-        // Need to load files with their absolute paths, since they might refer to
-        // tileset files that are expected to be in the same directory as the TMX file.
-        URL fileUrl = this.getClass().getResource(filename);
-        assertNotNull(fileUrl);
-        File mapFile = new File(fileUrl.toURI());
-        assertTrue(mapFile.exists());
-        return mapFile;
-    }
-
+    @Test
     public void testReadingExampleMap() throws Exception {
         // Arrange
         File mapFile = getFileFromResources("resources/sewers.tmx");
@@ -71,7 +66,7 @@ public class MapReaderTest extends TestCase {
         Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
 
         // Assert
-        assertEquals(Map.ORIENTATION_ORTHOGONAL, map.getOrientation());
+        assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
         assertEquals(50, map.getHeight());
         assertEquals(50, map.getHeight());
         assertEquals(24, map.getTileWidth());
@@ -79,21 +74,71 @@ public class MapReaderTest extends TestCase {
         assertEquals(3, map.getLayerCount());
         assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
     }
-    
+
+    @Test
     public void testReadingExampleCsvMap() throws Exception {
         // Arrange
         File mapFile = getFileFromResources("resources/csvmap.tmx");
-        
+
         // Act
         Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
-        
+
         // Assert
-        assertEquals(Map.ORIENTATION_ORTHOGONAL, map.getOrientation());
+        assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
         assertEquals(100, map.getHeight());
         assertEquals(100, map.getHeight());
         assertEquals(32, map.getTileWidth());
         assertEquals(32, map.getTileHeight());
         assertEquals(1, map.getLayerCount());
         assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
+    }
+
+    @Test
+    public void testReadingExampleHexagonalMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/hexagonal.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+
+        // Assert
+        assertEquals(Map.Orientation.HEXAGONAL, map.getOrientation());
+        assertEquals(9, map.getHeight());
+        assertEquals(9, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(16, map.getHexSideLength());
+        assertEquals(Map.StaggerAxis.Y, map.getStaggerAxis());
+        assertEquals(Map.StaggerIndex.ODD, map.getStaggerIndex());
+        assertEquals(1, map.getLayerCount());
+    }
+
+    @Test
+    public void testReadingExampleStaggeredMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/staggered.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+
+        // Assert
+        assertEquals(Map.Orientation.STAGGERED, map.getOrientation());
+        assertEquals(9, map.getHeight());
+        assertEquals(9, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(Map.StaggerAxis.Y, map.getStaggerAxis());
+        assertEquals(Map.StaggerIndex.ODD, map.getStaggerIndex());
+        assertEquals(1, map.getLayerCount());
+    }
+
+    private File getFileFromResources(String filename) throws URISyntaxException {
+        // Need to load files with their absolute paths, since they might refer to
+        // tileset files that are expected to be in the same directory as the TMX file.
+        URL fileUrl = this.getClass().getResource(filename);
+        assertNotNull(fileUrl);
+        File mapFile = new File(fileUrl.toURI());
+        assertTrue(mapFile.exists());
+        return mapFile;
     }
 }
