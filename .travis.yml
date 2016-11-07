@@ -1,8 +1,6 @@
 language: cpp
 sudo: required
 dist: trusty
-services:
-  - docker
 
 env:
   global:
@@ -33,12 +31,14 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      env:
+        - MAKEFLAGS=-j2
       before_install:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt57-trusty
         - sudo apt-get update -qq
         - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev libqt5opengl5-dev
         - source /opt/*/bin/qt*-env.sh
-        - openssl aes-256-cbc -K $encrypted_498dac83364f_key -iv $encrypted_498dac83364f_iv -in dist/butler_creds.enc -out ~/.config/itch/butler_creds -d
+        - openssl aes-256-cbc -K $encrypted_498dac83364f_key -iv $encrypted_498dac83364f_iv -in dist/butler_creds.enc -out butler_creds -d
       script:
         - mkdir Tiled ; cd Tiled/
         - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
@@ -49,10 +49,10 @@ matrix:
         - cp LICENSE* COPYING *md Tiled/
         - cp ./tiled.desktop Tiled/
         - cp ./src/tiled/images/32x32/tiled.png Tiled/
-        - wget -c "https://transfer.sh/ihv7a/linuxdeployqt-42fc34c-x86-64.appimage"
-        - chmod a+x linuxdeployqt-42fc34c-x86-64.appimage
+        - wget -c "https://transfer.sh/bK37L/linuxdeployqt-5c79e30-x86-64.appimage"
+        - chmod a+x linuxdeployqt-5c79e30-x86-64.appimage
         - unset LD_LIBRARY_PATH
-        - ./linuxdeployqt-42fc34c-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
+        - ./linuxdeployqt-5c79e30-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
         - rm -rf Tiled/
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
@@ -73,15 +73,12 @@ matrix:
           skip_cleanup: true
           on:
             branch: snapshot
-          script:
-            - mkdir Tiled
-            - mv Tiled-$TILED_VERSION-x86_64.AppImage Tiled/
-            - wget https://dl.itch.ovh/butler/linux-amd64/head/butler
-            - chmod +x ./butler
-            - ./butler push Tiled thorbjorn/tiled:linux-64bit-snapshot
+          script: dist/linux/push-to-itch.sh
     - os: linux
       compiler: clang
-      env: QMAKESPEC=linux-clang
+      env:
+        - QMAKESPEC=linux-clang
+        - MAKEFLAGS=-j2
       before_install:
         - sudo apt-get update -qq
         - sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck xvfb
