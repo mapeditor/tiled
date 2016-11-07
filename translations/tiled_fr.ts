@@ -217,12 +217,12 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+59"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers Defold (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en écriture.</translation>
     </message>
 </context>
 <context>
@@ -652,23 +652,23 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller à cet &amp;Emplacement</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+129"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Plein Ecran</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-192"/>
@@ -806,7 +806,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation type="unfinished">Tile</translation>
+        <translation>Tile</translation>
     </message>
 </context>
 <context>
@@ -1045,7 +1045,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtenir la couleur de l&apos;image</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1173,7 +1173,7 @@ Ligne %1, colonne %2</translation>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation type="unfinished"> Tiles</translation>
+        <translation> Tiles</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -1373,37 +1373,37 @@ Ligne %1, colonne %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Thème</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Native</source>
-        <translation type="unfinished"></translation>
+        <translation>Natif</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tiled Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Fusion</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Selection color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de sélection :</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Style :</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de fond :</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2008,7 +2008,7 @@ Ligne %1, colonne %2</translation>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"> Tiles</translation>
+        <translation> Tiles</translation>
     </message>
     <message>
         <location line="-75"/>
@@ -2038,7 +2038,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+47"/>
         <source>Remove objects outside of the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les objets hors de la carte</translation>
     </message>
 </context>
 <context>
@@ -2059,7 +2059,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Edition du texte</translation>
     </message>
 </context>
 <context>
@@ -2627,12 +2627,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+146"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier le chemin du fichier</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le dossier parent ...</translation>
     </message>
     <message>
         <location line="+139"/>
@@ -2966,17 +2966,17 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="+12"/>
         <source>Extension Mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension incompatible</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;extension du fichier ne correspond pas au type de fichier donné.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled pourrait être incapable de reconnaître automatiquement votre fichier lors de son prochain chargement. Etes-vous sûr de vouloir le sauvegarder avec cette extension ?</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -4053,7 +4053,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4716,9 +4716,9 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Retourner %n objet</numerusform>
+            <numerusform>Retourner %n objets</numerusform>
         </translation>
     </message>
 </context>
