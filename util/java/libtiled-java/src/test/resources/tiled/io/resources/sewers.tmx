@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="24" tileheight="24">
- <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="24" tileheight="24" nextobjectid="3">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24" tilecount="72" columns="8">
   <image source="sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
  </tileset>
  <layer name="Bottom" width="50" height="50">
@@ -13,12 +13,12 @@
    eJzt1jsKgDAQQEELtVKvYuGvEDvvfya3MBeQQAzMwCPdsum2af5lL71AJv7xL7X+Y46WtzXayq7z2RGd0f2+V6a5bdRFfaZ5pQzRGE2lFwEAoArpDk7Veg+nOzjlHgYAAAAAIIcHvboDlQ==
   </data>
  </layer>
- <objectgroup color="#4a4530" name="Objects" width="50" height="50">
-  <object name="rect1" type="spawn" x="456" y="120" width="168" height="120">
+ <objectgroup color="#4a4530" name="Objects">
+  <object id="1" name="rect1" type="spawn" x="456" y="120" width="168" height="120">
    <properties>
     <property name="quantity" value="2"/>
    </properties>
   </object>
-  <object name="exit" type="warp" x="0" y="336" width="24" height="48"/>
+  <object id="2" name="exit" type="warp" x="0" y="336" width="24" height="48"/>
  </objectgroup>
 </map>
