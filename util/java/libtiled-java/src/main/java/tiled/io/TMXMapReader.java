@@ -4,6 +4,7 @@
  * %%
  * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -81,6 +82,7 @@ import tiled.util.ImageHelper;
  *
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
+ * @author Mike Thomas
  * @version 0.17
  */
 public class TMXMapReader {
@@ -155,17 +157,27 @@ public class TMXMapReader {
         method.invoke(invokeVictim, conformingArguments);
     }
 
-    private void setOrientation(String o) {
-        if ("isometric".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.ORIENTATION_ISOMETRIC);
-        } else if ("orthogonal".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.ORIENTATION_ORTHOGONAL);
-        } else if ("hexagonal".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.ORIENTATION_HEXAGONAL);
-        } else if ("shifted".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.ORIENTATION_SHIFTED);
-        } else {
-            System.out.println("Unknown orientation '" + o + "'");
+    private void setOrientation(String orientation) {
+        try {
+            map.setOrientation(Map.Orientation.valueOf(orientation));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Unknown orientation '" + orientation + "'");
+        }
+    }
+
+    private void setStaggerAxis(String staggerAxis) {
+        try {
+            map.setStaggerAxis(Map.StaggerAxis.valueOf(staggerAxis));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Unknown stagger axis '" + staggerAxis + "'");
+        }
+    }
+
+    private void setStaggerIndex(String staggerIndex) {
+        try {
+            map.setStaggerIndex(Map.StaggerIndex.valueOf(staggerIndex));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Unknown stagger index '" + staggerIndex + "'");
         }
     }
 
@@ -813,6 +825,15 @@ public class TMXMapReader {
         String orientation = getAttributeValue(mapNode, "orientation");
         int tileWidth = getAttribute(mapNode, "tilewidth", 0);
         int tileHeight = getAttribute(mapNode, "tileheight", 0);
+        int hexsidelength = getAttribute(mapNode, "hexsidelength", 0);
+        String staggerAxis = getAttributeValue(mapNode, "staggeraxis");
+        String staggerIndex = getAttributeValue(mapNode, "staggerindex");
+
+        if (orientation != null) {
+            setOrientation(orientation.toUpperCase());
+        } else {
+            map.setOrientation(Map.Orientation.ORTHOGONAL);
+        }
 
         if (tileWidth > 0) {
             map.setTileWidth(tileWidth);
@@ -820,11 +841,16 @@ public class TMXMapReader {
         if (tileHeight > 0) {
             map.setTileHeight(tileHeight);
         }
+        if (hexsidelength > 0) {
+            map.setHexSideLength(hexsidelength);
+        }
 
-        if (orientation != null) {
-            setOrientation(orientation);
-        } else {
-            setOrientation("orthogonal");
+        if (staggerAxis != null) {
+            setStaggerAxis(staggerAxis.toUpperCase());
+        }
+
+        if (staggerIndex != null) {
+            setStaggerIndex(staggerIndex.toUpperCase());
         }
 
         // Load properties
