@@ -24,10 +24,11 @@
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
 #include "editor.h"
+#include "filechangedwarning.h"
 #include "filesystemwatcher.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
+#include "map.h"
 #include "maprenderer.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
@@ -111,6 +112,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mWidget(new QWidget)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
+    , mFileChangedWarning(new FileChangedWarning(mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
@@ -121,8 +123,14 @@ DocumentManager::DocumentManager(QObject *parent)
     mTabBar->setMovable(true);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    mFileChangedWarning->setVisible(false);
+
+    connect(mFileChangedWarning, &FileChangedWarning::reload, this, &DocumentManager::reloadCurrentDocument);
+    connect(mFileChangedWarning, &FileChangedWarning::ignore, this, &DocumentManager::hideChangedWarning);
+
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
+    vertical->addWidget(mFileChangedWarning);
     vertical->setMargin(0);
     vertical->setSpacing(0);
 
@@ -342,8 +350,6 @@ void DocumentManager::addDocument(Document *document)
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
     }
 
-//    connect(container, SIGNAL(reload()), SLOT(reloadRequested()));
-
     switchToDocument(documentIndex);
 
     // todo: fix this (move to MapEditor)
@@ -357,7 +363,7 @@ void DocumentManager::addDocument(Document *document)
  */
 bool DocumentManager::isDocumentModified(Document *document) const
 {
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
             if (TilesetDocument *tilesetDocument = findTilesetDocument(tileset))
                 if (tilesetDocument->isEmbedded() && tilesetDocument->isModified())
@@ -366,6 +372,20 @@ bool DocumentManager::isDocumentModified(Document *document) const
     }
 
     return document->isModified();
+}
+
+/**
+ * Returns whether the given document was changed on disk. Taking into account
+ * the case where the given document is an embedded tileset document.
+ */
+bool DocumentManager::isDocumentChangedOnDisk(Document *document) const
+{
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (tilesetDocument->isEmbedded())
+            document = tilesetDocument->mapDocuments().first();
+    }
+
+    return mDocumentsChangedOnDisk.contains(document);
 }
 
 void DocumentManager::closeCurrentDocument()
@@ -388,8 +408,10 @@ void DocumentManager::closeDocumentAt(int index)
     if (Editor *editor = mEditorForType.value(document->type()))
         editor->removeDocument(document);
 
-    if (!document->fileName().isEmpty())
+    if (!document->fileName().isEmpty()) {
         mFileSystemWatcher->removePath(document->fileName());
+        mDocumentsChangedOnDisk.remove(document);
+    }
 
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
@@ -419,47 +441,44 @@ bool DocumentManager::reloadCurrentDocument()
 
 bool DocumentManager::reloadDocumentAt(int index)
 {
-    return false;
-
-    // todo: look into how to split this functionality between DocumentManager
-    // and MapEditHost / TilesetEditHost
-
-    /*
-    MapDocument *oldDocument = mDocuments.at(index);
-
+    Document *oldDocument = mDocuments.at(index);
     QString error;
-    MapDocument *newDocument = MapDocument::load(oldDocument->fileName(),
-                                                 oldDocument->readerFormat(),
-                                                 &error);
-    if (!newDocument) {
-        emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
-        return false;
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(oldDocument)) {
+        // TODO: Consider fixing the reload to avoid recreating the MapDocument
+        auto newDocument = MapDocument::load(oldDocument->fileName(),
+                                        mapDocument->readerFormat(),
+                                        &error);
+        if (!newDocument) {
+            emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
+            return false;
+        }
+
+        // Replace old tab
+        addDocument(newDocument);
+        closeDocumentAt(index);
+        mTabBar->moveTab(mDocuments.size() - 1, index);
+
+        checkTilesetColumns(mapDocument);
+
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(oldDocument)) {
+        if (tilesetDocument->isEmbedded()) {
+            // For embedded tilesets, we need to reload the map
+            index = mDocuments.indexOf(tilesetDocument->mapDocuments().first());
+            if (!reloadDocumentAt(index))
+                return false;
+        } else if (!tilesetDocument->reload(&error)) {
+            emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
+            return false;
+        }
+
+        mDocumentsChangedOnDisk.remove(tilesetDocument);
     }
 
-    // Remember current view state
-    MapView *mapView = viewForDocument(oldDocument);
-    const int layerIndex = oldDocument->currentLayerIndex();
-    const qreal scale = mapView->zoomable()->scale();
-    const int horizontalPosition = mapView->horizontalScrollBar()->sliderPosition();
-    const int verticalPosition = mapView->verticalScrollBar()->sliderPosition();
-
-    // Replace old tab
-    addDocument(newDocument);
-    closeDocumentAt(index);
-    mTabBar->moveTab(mDocuments.size() - 1, index);
-
-    // Restore previous view state
-    mapView = currentMapView();
-    mapView->zoomable()->setScale(scale);
-    mapView->horizontalScrollBar()->setSliderPosition(horizontalPosition);
-    mapView->verticalScrollBar()->setSliderPosition(verticalPosition);
-    if (layerIndex > 0 && layerIndex < newDocument->map()->layerCount())
-        newDocument->setCurrentLayerIndex(layerIndex);
-
-    checkTilesetColumns(newDocument);
+    if (!isDocumentChangedOnDisk(currentDocument()))
+        mFileChangedWarning->setVisible(false);
 
     return true;
-    */
 }
 
 void DocumentManager::closeAllDocuments()
@@ -472,10 +491,13 @@ void DocumentManager::currentIndexChanged()
 {
     Document *document = currentDocument();
     Editor *editor = nullptr;
+    bool changed = false;
 
     if (document) {
         editor = mEditorForType.value(document->type());
         mUndoGroup->setActiveStack(document->undoStack());
+
+        changed = isDocumentChangedOnDisk(document);
     }
 
     if (editor) {
@@ -484,6 +506,8 @@ void DocumentManager::currentIndexChanged()
     } else {
         mEditorStack->setCurrentWidget(mNoEditorWidget);
     }
+
+    mFileChangedWarning->setVisible(changed);
 
     emit currentDocumentChanged(document);
 }
@@ -530,18 +554,11 @@ void DocumentManager::updateDocumentTab(Document *document)
 void DocumentManager::documentSaved()
 {
     Document *document = static_cast<Document*>(sender());
-    const int index = mDocuments.indexOf(document);
-    Q_ASSERT(index != -1);
 
-    // todo:
-    // * find the edit host
-    // * have it hide any file changed warnings
-    // or better:
-    // * find a nice place for the warning in the document manager
-
-    //QWidget *widget = mTabWidget->widget(index);
-    //MapViewContainer *container = static_cast<MapViewContainer*>(widget);
-    //container->setFileChangedWarningVisible(false);
+    if (mDocumentsChangedOnDisk.remove(document)) {
+        if (!isDocumentModified(currentDocument()))
+            mFileChangedWarning->setVisible(false);
+    }
 }
 
 void DocumentManager::documentTabMoved(int from, int to)
@@ -616,25 +633,27 @@ void DocumentManager::fileChanged(const QString &fileName)
         return;
 
     // Automatically reload when there are no unsaved changes
-    if (!document->isModified()) {
+    if (!isDocumentModified(document)) {
         reloadDocumentAt(index);
         return;
     }
 
-    // todo: find a better place for the file changed warning
+    mDocumentsChangedOnDisk.insert(document);
 
-//    QWidget *widget = mTabWidget->widget(index);
-//    MapViewContainer *container = static_cast<MapViewContainer*>(widget);
-//    container->setFileChangedWarningVisible(true);
+    if (isDocumentChangedOnDisk(currentDocument()))
+        mFileChangedWarning->setVisible(true);
 }
 
-void DocumentManager::reloadRequested()
+void DocumentManager::hideChangedWarning()
 {
-    // todo: verify that this can only trigger for the current document, and
-    // then just reload the one.
-//    int index = mTabWidget->indexOf(static_cast<MapViewContainer*>(sender()));
-//    Q_ASSERT(index != -1);
-//    reloadDocumentAt(index);
+    Document *document = currentDocument();
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (tilesetDocument->isEmbedded())
+            document = tilesetDocument->mapDocuments().first();
+    }
+
+    mDocumentsChangedOnDisk.remove(document);
+    mFileChangedWarning->setVisible(false);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)

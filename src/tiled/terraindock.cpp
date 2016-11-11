@@ -193,7 +193,7 @@ void TerrainDock::setDocument(Document *document)
     mDocument = document;
     mInitializing = true;
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         TerrainModel *terrainModel = mapDocument->terrainModel();
 
         mProxyModel->setEnabled(true);
@@ -204,7 +204,7 @@ void TerrainDock::setDocument(Document *document)
 
         mToolBar->setVisible(false);
 
-    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
 
         mTerrainView->setTilesetDocument(tilesetDocument);
@@ -267,7 +267,8 @@ void TerrainDock::refreshCurrentTerrain()
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
     if (Terrain *terrain = mTerrainView->terrainAt(index)) {
-        mDocument->setCurrentObject(terrain);
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+            tilesetDocument->setCurrentObject(terrain);
         emit selectTerrainBrush();
     }
 }
@@ -305,8 +306,10 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
         mCurrentTerrain = nullptr;
     }
 
-    if (terrain && !mInitializing)
-        mDocument->setCurrentObject(terrain);
+    if (terrain && !mInitializing) {
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+            tilesetDocument->setCurrentObject(terrain);
+    }
 
     mEraseTerrainButton->setChecked(terrain == nullptr);
 
@@ -328,9 +331,9 @@ QModelIndex TerrainDock::terrainIndex(Terrain *terrain) const
 {
     QModelIndex sourceIndex;
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
         sourceIndex = mapDocument->terrainModel()->index(terrain);
-    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
         sourceIndex = tilesetDocument->terrainModel()->index(terrain);
     }
 

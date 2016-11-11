@@ -582,6 +582,39 @@ void Tileset::setTileImage(Tile *tile,
     }
 }
 
+void Tileset::swap(Tileset &other)
+{
+    std::swap(mFileName, other.mFileName);
+    std::swap(mImageReference, other.mImageReference);
+    std::swap(mTileWidth, other.mTileWidth);
+    std::swap(mTileHeight, other.mTileHeight);
+    std::swap(mTileSpacing, other.mTileSpacing);
+    std::swap(mMargin, other.mMargin);
+    std::swap(mTileOffset, other.mTileOffset);
+    std::swap(mColumnCount, other.mColumnCount);
+    std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
+    std::swap(mExpectedRowCount, other.mExpectedRowCount);
+    std::swap(mTiles, other.mTiles);
+    std::swap(mNextTileId, other.mNextTileId);
+    std::swap(mTerrainTypes, other.mTerrainTypes);
+    std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
+    std::swap(mLoaded, other.mLoaded);
+    std::swap(mBackgroundColor, other.mBackgroundColor);
+
+    // Don't swap mWeakPointer, since it's a reference to this.
+
+    // Update back references from tiles and terrains
+    for (auto tile : mTiles)
+        tile->mTileset = this;
+    for (auto terrain : mTerrainTypes)
+        terrain->mTileset = this;
+
+    for (auto tile : other.mTiles)
+        tile->mTileset = &other;
+    for (auto terrain : other.mTerrainTypes)
+        terrain->mTileset = &other;
+}
+
 /**
  * Sets tile size to the maximum size.
  */

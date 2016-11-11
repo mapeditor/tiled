@@ -83,7 +83,7 @@ public:
      * on error and sets the \a error message.
      */
     static MapDocument *load(const QString &fileName,
-                             MapFormat *mapFormat,
+                             MapFormat *format,
                              QString *error = nullptr);
 
     QString lastExportFileName() const;

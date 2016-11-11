@@ -151,25 +151,23 @@ bool MapDocument::save(const QString &fileName, QString *error)
 }
 
 MapDocument *MapDocument::load(const QString &fileName,
-                               MapFormat *mapFormat,
+                               MapFormat *format,
                                QString *error)
 {
-    Map *map = mapFormat->read(fileName);
+    Map *map = format->read(fileName);
 
     if (!map) {
         if (error)
-            *error = mapFormat->errorString();;
+            *error = format->errorString();;
         return nullptr;
     }
 
-    MapDocument *mapDocument = new MapDocument(map, fileName);
-    if (mapFormat) {
-        mapDocument->setReaderFormat(mapFormat);
-        if (mapFormat->hasCapabilities(MapFormat::Write))
-            mapDocument->setWriterFormat(mapFormat);
-    }
+    MapDocument *document = new MapDocument(map, fileName);
+    document->setReaderFormat(format);
+    if (format->hasCapabilities(MapFormat::Write))
+        document->setWriterFormat(format);
 
-    return mapDocument;
+    return document;
 }
 
 MapFormat *MapDocument::readerFormat() const
@@ -585,22 +583,6 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
     SharedTileset oldTileset = mMap->tilesetAt(index);
 
     bool added = mMap->replaceTileset(oldTileset, tileset);
-
-    // Try to keep the current object valid
-    if (mCurrentObject == oldTileset.data()) {
-        setCurrentObject(tileset.data());
-
-    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TileType) {
-        Tile *tile = static_cast<Tile*>(mCurrentObject);
-        if (tile->tileset() == oldTileset.data())
-            setCurrentObject(tileset->findTile(tile->id()));
-
-    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TerrainType) {
-        Terrain *terrain = static_cast<Terrain*>(mCurrentObject);
-        if (terrain->tileset() == oldTileset.data())
-            setCurrentObject(tileset->terrain(terrain->id()));
-    }
-
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     if (added)

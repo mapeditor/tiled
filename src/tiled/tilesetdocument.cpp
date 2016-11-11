@@ -28,11 +28,31 @@
 #include "tilesetterrainmodel.h"
 #include "tmxmapformat.h"
 
+#include <QCoreApplication>
 #include <QFileInfo>
 #include <QUndoStack>
 
 namespace Tiled {
 namespace Internal {
+
+class ReloadTileset : public QUndoCommand
+{
+public:
+    ReloadTileset(TilesetDocument *tilesetDocument, const SharedTileset &tileset)
+        : mTilesetDocument(tilesetDocument)
+        , mTileset(tileset)
+    {
+        setText(QCoreApplication::translate("Undo Commands", "Reload Tileset"));
+    }
+
+    void undo() override { mTilesetDocument->swapTileset(mTileset); }
+    void redo() override { mTilesetDocument->swapTileset(mTileset); }
+
+private:
+    TilesetDocument *mTilesetDocument;
+    SharedTileset mTileset;
+};
+
 
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
     : Document(TilesetDocumentType, fileName)
@@ -82,10 +102,49 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
     undoStack()->setClean();
     setFileName(fileName);
-    mLastSaved = QFileInfo(fileName).lastModified();
 
     emit saved();
     return true;
+}
+
+bool TilesetDocument::reload(QString *error)
+{
+    auto format = readerFormat();
+    Q_ASSERT(format);
+
+    SharedTileset tileset = format->read(fileName());
+
+    if (tileset.isNull()) {
+        if (error)
+            *error = format->errorString();
+        return false;
+    }
+
+    mUndoStack->push(new ReloadTileset(this, tileset));
+    mUndoStack->setClean();
+    mLastSaved = QFileInfo(fileName()).lastModified();
+
+    return true;
+}
+
+TilesetDocument *TilesetDocument::load(const QString &fileName,
+                                       TilesetFormat *format,
+                                       QString *error)
+{
+    SharedTileset tileset = format->read(fileName);
+
+    if (tileset.isNull()) {
+        if (error)
+            *error = format->errorString();
+        return nullptr;
+    }
+
+    auto *document = new TilesetDocument(tileset, fileName);
+    document->setReaderFormat(format);
+    if (format->hasCapabilities(MapFormat::Write))
+        document->setWriterFormat(format);
+
+    return document;
 }
 
 TilesetFormat *TilesetDocument::readerFormat() const
@@ -124,6 +183,20 @@ QString TilesetDocument::displayName() const
     }
 
     return displayName;
+}
+
+/**
+ * Exchanges the tileset data of the tileset wrapped by this document with the
+ * data in the given \a tileset, and vica-versa.
+ */
+void TilesetDocument::swapTileset(SharedTileset &tileset)
+{
+    // Bring pointers to safety
+    setSelectedTiles(QList<Tile*>());
+    setCurrentObject(mTileset.data());
+
+    mTileset->swap(*tileset);
+    emit tilesetChanged(mTileset.data());
 }
 
 /**
@@ -191,6 +264,12 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
 
     mTileset->removeTiles(tiles);
     emit tilesetChanged(mTileset.data());
+}
+
+void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
+{
+    mSelectedTiles = selectedTiles;
+    emit selectedTilesChanged();
 }
 
 void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)

@@ -583,16 +583,11 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
         document = MapDocument::load(fileName, mapFormat, &error);
     } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        // It could be, that we have already loaded this tileset while loading
-        // some map.
+        // It could be, that we have already loaded this tileset while loading some map.
         if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
             document = tilesetDocument;
         } else {
-            SharedTileset tileset = tilesetFormat->read(fileName);
-            if (tileset.isNull())
-                error = tilesetFormat->errorString();
-            else
-                document = new TilesetDocument(tileset, fileName);
+            document = TilesetDocument::load(fileName, tilesetFormat, &error);
         }
     }
 
@@ -1033,6 +1028,7 @@ void MainWindow::exportAsImage()
 
 void MainWindow::reload()
 {
+    // todo: asking to save is not appropriate here
     if (confirmSave(mDocumentManager->currentDocument()))
         mDocumentManager->reloadCurrentDocument();
 }
@@ -1483,7 +1479,7 @@ void MainWindow::updateActions()
     mUi->actionExportAsImage->setEnabled(mapDocument);
     mUi->actionExport->setEnabled(mapDocument);
     mUi->actionExportAs->setEnabled(mapDocument);
-    mUi->actionReload->setEnabled(mapDocument);
+    mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->readerFormat()));
     mUi->actionClose->setEnabled(document);
     mUi->actionCloseAll->setEnabled(document);
 

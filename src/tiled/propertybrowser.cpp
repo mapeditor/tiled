@@ -180,6 +180,9 @@ void PropertyBrowser::setDocument(Document *document)
         connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
                 this, &PropertyBrowser::tileChanged);
 
+        connect(tilesetDocument, &TilesetDocument::selectedTilesChanged,
+                this, &PropertyBrowser::selectedTilesChanged);
+
         TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
         connect(terrainModel, &TilesetTerrainModel::terrainChanged,
                 this, &PropertyBrowser::terrainChanged);
@@ -195,9 +198,6 @@ void PropertyBrowser::setDocument(Document *document)
                 this, &PropertyBrowser::propertyChanged);
         connect(document, &Document::propertiesChanged,
                 this, &PropertyBrowser::propertiesChanged);
-
-        connect(document, &Document::selectedTilesChanged,
-                this, &PropertyBrowser::selectedTilesChanged);
     }
 }
 

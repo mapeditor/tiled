@@ -23,6 +23,8 @@
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPainter>
+#include <QPushButton>
 
 namespace Tiled {
 namespace Internal {
@@ -35,16 +37,37 @@ FileChangedWarning::FileChangedWarning(QWidget *parent)
                                     Qt::Horizontal,
                                     this))
 {
-    mLabel->setText(tr("File change detected. Discard changes and reload the map?"));
+    mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(mLabel);
-    layout->addStretch(1);
     layout->addWidget(mButtons);
+    layout->addStretch(1);
     setLayout(layout);
+
+    mButtons->button(QDialogButtonBox::Yes)->setText(tr("Reload"));
+    mButtons->button(QDialogButtonBox::No)->setText(tr("Ignore"));
 
     connect(mButtons, SIGNAL(accepted()), SIGNAL(reload()));
     connect(mButtons, SIGNAL(rejected()), SIGNAL(ignore()));
+}
+
+void FileChangedWarning::paintEvent(QPaintEvent *event)
+{
+    QWidget::paintEvent(event);
+
+    const QPalette p = palette();
+    const QRect r = rect();
+    const QColor light = p.midlight().color();
+    const QColor shadow = p.mid().color();
+
+    QPainter painter(this);
+    painter.setPen(light);
+    painter.drawLine(r.bottomLeft(), r.bottomRight());
+    painter.setPen(shadow);
+    painter.drawLine(r.left(), r.bottom() - 1,
+                     r.right(), r.bottom() - 1);
+
 }
 
 } // namespace Internal

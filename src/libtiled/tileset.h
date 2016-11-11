@@ -185,6 +185,8 @@ public:
     bool loaded() const;
     bool imageLoaded() const;
 
+    void swap(Tileset &other);
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();

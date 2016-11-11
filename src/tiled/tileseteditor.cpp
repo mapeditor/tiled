@@ -245,9 +245,12 @@ void TilesetEditor::setCurrentDocument(Document *document)
         mZoomable = nullptr;
     }
 
+    TilesetView *tilesetView = nullptr;
+
     if (document) {
-        TilesetView *tilesetView = mViewForTileset.value(tilesetDocument);
+        tilesetView = mViewForTileset.value(tilesetDocument);
         Q_ASSERT(tilesetView);
+
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditTerrain(mEditTerrain->isChecked());
 
@@ -261,6 +264,12 @@ void TilesetEditor::setCurrentDocument(Document *document)
     mTerrainDock->setDocument(document);
 
     mCurrentTilesetDocument = tilesetDocument;
+
+    if (tilesetDocument) {
+        currentChanged(tilesetView->currentIndex());
+        selectionChanged();
+    }
+
     updateAddRemoveActions();
 }
 
@@ -343,7 +352,7 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
     if (!index.isValid())
         return;
 
-    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    auto model = static_cast<const TilesetModel*>(index.model());
     setCurrentTile(model->tileAt(index));
 }
 
@@ -359,6 +368,9 @@ void TilesetEditor::tilesetChanged()
     auto *tilesetDocument = static_cast<TilesetDocument*>(sender());
     auto *tilesetView = mViewForTileset.value(tilesetDocument);
     auto *model = tilesetView->tilesetModel();
+
+    if (tilesetDocument == mCurrentTilesetDocument)
+        setCurrentTile(nullptr);        // It may be gone
 
     tilesetView->updateBackgroundColor();
     model->tilesetChanged();

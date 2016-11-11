@@ -382,9 +382,6 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
             selectionModel->select(selection, QItemSelectionModel::SelectCurrent);
         }
 
-        // Show/edit properties of all captured tiles
-        mMapDocument->setSelectedTiles(processed.toList());
-
         // Update the current tile (useful for animation and collision editors)
         auto first = selections.begin();
         QItemSelectionModel *selectionModel = first.key();
@@ -527,13 +524,6 @@ void TilesetDock::updateCurrentTiles()
     setCurrentTiles(tileLayer);
 }
 
-void TilesetDock::indexPressed(const QModelIndex &index)
-{
-    TilesetView *view = currentTilesetView();
-    if (Tile *tile = view->tilesetModel()->tileAt(index))
-        mMapDocument->setCurrentObject(tile);
-}
-
 void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 {
     auto tileset = tilesetDocument->tileset();
@@ -542,8 +532,6 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTilesetDocuments.insert(index, tilesetDocument);
 
     TilesetView *view = new TilesetView;
-    // todo: Make sure the view does not crash in read-only mode
-    view->setTilesetDocument(tilesetDocument);
     view->setZoomable(mZoomable);
 
     // Insert view before the tab to make sure it is there when the tab index
@@ -694,18 +682,7 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     delete mCurrentTiles;
     mCurrentTiles = tiles;
 
-    // Set the selected tiles on the map document
     if (tiles) {
-        QList<Tile*> selectedTiles;
-        for (int y = 0; y < tiles->height(); ++y) {
-            for (int x = 0; x < tiles->width(); ++x) {
-                const Cell &cell = tiles->cellAt(x, y);
-                if (Tile *tile = cell.tile())
-                    selectedTiles.append(tile);
-            }
-        }
-        mMapDocument->setSelectedTiles(selectedTiles);
-
         // Create a tile stamp with these tiles
         Map *map = mMapDocument->map();
         Map *stamp = new Map(map->orientation(),
@@ -729,9 +706,6 @@ void TilesetDock::setCurrentTile(Tile *tile)
 
     mCurrentTile = tile;
     emit currentTileChanged(tile);
-
-    if (mMapDocument && tile)
-        mMapDocument->setCurrentObject(tile);
 }
 
 void TilesetDock::retranslateUi()
@@ -822,8 +796,6 @@ void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
             this, &TilesetDock::selectionChanged);
     connect(s, &QItemSelectionModel::currentChanged,
             this, &TilesetDock::currentChanged);
-    connect(view, &TilesetView::pressed,
-            this, &TilesetDock::indexPressed);
 }
 
 void TilesetDock::editTileset()

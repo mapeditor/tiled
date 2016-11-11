@@ -28,7 +28,6 @@
 enum UndoCommands {
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
-    Cmd_MoveTileset,
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
     Cmd_ChangeTileTerrain,

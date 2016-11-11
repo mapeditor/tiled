@@ -92,9 +92,6 @@ public:
 
     virtual QList<Object*> currentObjects() const;
 
-    const QList<Tile*> &selectedTiles() const;
-    void setSelectedTiles(const QList<Tile*> &selectedTiles);
-
     void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
@@ -117,11 +114,6 @@ signals:
     void propertyRemoved(Object *object, const QString &name);
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
-
-    /**
-     * Emitted when the list of selected tiles from the dock changes.
-     */
-    void selectedTilesChanged();
 
 protected:
     void setFileName(const QString &fileName);
@@ -148,14 +140,6 @@ inline QString Document::fileName() const
 inline QUndoStack *Document::undoStack() const
 {
     return mUndoStack;
-}
-
-/**
- * Returns the list of selected tiles.
- */
-inline const QList<Tile *> &Document::selectedTiles() const
-{
-    return mSelectedTiles;
 }
 
 } // namespace Internal

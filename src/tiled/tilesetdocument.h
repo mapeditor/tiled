@@ -49,6 +49,16 @@ public:
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
+    bool reload(QString *error);
+
+    /**
+     * Loads a tileset and returns a TilesetDocument instance on success.
+     * Returns null on error and sets the \a error message.
+     */
+    static TilesetDocument *load(const QString &fileName,
+                                 TilesetFormat *format,
+                                 QString *error = nullptr);
+
     TilesetFormat *readerFormat() const;
     void setReaderFormat(TilesetFormat *format);
 
@@ -57,6 +67,7 @@ public:
 
     QString displayName() const override;
 
+    void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
 
     bool isEmbedded() const;
@@ -72,6 +83,9 @@ public:
 
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
+
+    const QList<Tile*> &selectedTiles() const;
+    void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
 
@@ -112,6 +126,11 @@ signals:
      */
     void tileAnimationChanged(Tile *tile);
 
+    /**
+     * Emitted when the list of selected tiles in the tileset changes.
+     */
+    void selectedTilesChanged();
+
 private slots:
     void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
     void onTerrainAdded(Tileset *tileset, int terrainId);
@@ -145,6 +164,14 @@ inline bool TilesetDocument::isEmbedded() const
 inline const QList<MapDocument*> &TilesetDocument::mapDocuments() const
 {
     return mMapDocuments;
+}
+
+/**
+ * Returns the list of selected tiles.
+ */
+inline const QList<Tile *> &TilesetDocument::selectedTiles() const
+{
+    return mSelectedTiles;
 }
 
 } // namespace Internal

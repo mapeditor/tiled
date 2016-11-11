@@ -40,6 +40,9 @@ signals:
     void reload();
     void ignore();
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     QLabel *mLabel;
     QDialogButtonBox *mButtons;

@@ -83,12 +83,6 @@ QList<Object *> Document::currentObjects() const
     return objects;
 }
 
-void Document::setSelectedTiles(const QList<Tile*> &selectedTiles)
-{
-    mSelectedTiles = selectedTiles;
-    emit selectedTilesChanged();
-}
-
 void Document::setProperty(Object *object,
                            const QString &name,
                            const QVariant &value)

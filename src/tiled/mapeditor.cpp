@@ -142,12 +142,9 @@ public:
                      QWidget *parent = nullptr)
         : QWidget(parent)
         , mMapView(mapView)
-        , mWarning(new FileChangedWarning)
         , mBrokenLinksModel(new BrokenLinksModel(mapDocument, this))
         , mBrokenLinksWidget(nullptr)
     {
-        mWarning->setVisible(false);
-
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(0);
@@ -164,19 +161,9 @@ public:
                 this, &MapViewContainer::hasBrokenLinksChanged);
 
         layout->addWidget(mapView);
-        layout->addWidget(mWarning);
-
-        connect(mWarning, &FileChangedWarning::reload, this, &MapViewContainer::reload);
-        connect(mWarning, &FileChangedWarning::ignore, mWarning, &FileChangedWarning::hide);
     }
 
     MapView *mapView() const { return mMapView; }
-
-    void setFileChangedWarningVisible(bool visible)
-    { mWarning->setVisible(visible); }
-
-signals:
-    void reload();
 
 private slots:
     void hasBrokenLinksChanged(bool hasBrokenLinks)
@@ -196,7 +183,6 @@ private slots:
 private:
     MapView *mMapView;
 
-    FileChangedWarning *mWarning;
     BrokenLinksModel *mBrokenLinksModel;
     BrokenLinksWidget *mBrokenLinksWidget;
 };
