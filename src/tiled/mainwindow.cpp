@@ -1204,8 +1204,6 @@ void MainWindow::addExternalTileset()
     QString filter = tr("All Files (*)");
 
     QString selectedFilter = TsxTilesetFormat().nameFilter();
-    filter += QLatin1String(";;");
-    filter += selectedFilter;
 
     FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
 
