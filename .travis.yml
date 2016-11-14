@@ -49,10 +49,10 @@ matrix:
         - cp LICENSE* COPYING *md Tiled/
         - cp ./tiled.desktop Tiled/
         - cp ./src/tiled/images/32x32/tiled.png Tiled/
-        - wget -c "https://transfer.sh/bK37L/linuxdeployqt-5c79e30-x86-64.appimage"
-        - chmod a+x linuxdeployqt-5c79e30-x86-64.appimage
+        - wget -c "https://update.mapeditor.org/linuxdeployqt/linuxdeployqt-9a1fbab-x86-64.appimage"
+        - chmod a+x linuxdeployqt-9a1fbab-x86-64.appimage
         - unset LD_LIBRARY_PATH
-        - ./linuxdeployqt-5c79e30-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
+        - ./linuxdeployqt-9a1fbab-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
         - rm -rf Tiled/
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
