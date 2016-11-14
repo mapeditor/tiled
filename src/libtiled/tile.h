@@ -105,7 +105,7 @@ public:
     const QPixmap &image() const;
     void setImage(const QPixmap &image);
 
-    const QPixmap &currentFrameImage() const;
+    const Tile *currentFrameTile() const;
 
     const QString &imageSource() const;
     void setImageSource(const QString &imageSource);
