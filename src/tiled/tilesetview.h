@@ -123,6 +123,7 @@ protected:
     void leaveEvent(QEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
     void createNewTerrain();
@@ -131,6 +132,7 @@ private slots:
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();
+    void adjustColumnCount();
 
 private:
     void applyTerrain();

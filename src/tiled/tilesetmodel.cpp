@@ -33,6 +33,7 @@ using namespace Tiled::Internal;
 
 TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
     QAbstractListModel(parent),
+    mColumnCount(5),
     mTileset(tileset)
 {
     refreshTileIds();
@@ -64,7 +65,25 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
         return mTileset->columnCount();
     // TODO: Non-table tilesets should use a different model.
     // For now use an arbitrary number of columns.
-    return 5;
+    return mColumnCount;
+}
+
+void TilesetModel::setColumnCount(int columnCount)
+{
+    if (!mTileset)
+        return;
+
+    if (mTileset->columnCount())
+        return;
+
+    if (columnCount<1)
+        columnCount= 1;
+
+    if (mColumnCount != columnCount)
+    {
+        mColumnCount= columnCount;
+        tilesetChanged();
+    }
 }
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const

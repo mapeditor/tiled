@@ -601,6 +601,15 @@ void TilesetView::wheelEvent(QWheelEvent *event)
 }
 
 /**
+ * Change the column width to fit the viewport width.
+ */
+void TilesetView::resizeEvent(QResizeEvent *event)
+{
+    adjustColumnCount();
+    QTableView::resizeEvent(event);
+}
+
+/**
  * Allow changing tile properties through a context menu.
  */
 void TilesetView::contextMenuEvent(QContextMenuEvent *event)
@@ -686,10 +695,27 @@ void TilesetView::setDrawGrid(bool drawGrid)
         model->resetModel();
 }
 
+void TilesetView::adjustColumnCount()
+{
+    int columnWidth= sizeHintForColumn(0);
+    int viewportWidth= viewport()->width();
+
+    if (columnWidth > 0)
+    {
+        int columnCount= ( viewportWidth ) / columnWidth;
+
+        if (TilesetModel *model = tilesetModel())
+            model->setColumnCount(columnCount);
+    }
+}
+
 void TilesetView::adjustScale()
 {
     if (TilesetModel *model = tilesetModel())
+    {
         model->resetModel();
+        adjustColumnCount();
+    }
 }
 
 void TilesetView::applyTerrain()

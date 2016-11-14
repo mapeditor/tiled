@@ -64,6 +64,11 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
+     * Sets the number of columns.
+     */
+    void setColumnCount(int columnCount);
+
+    /**
      * Returns the data stored under the given <i>role</i> for the item
      * referred to by the <i>index</i>.
      */
@@ -141,6 +146,7 @@ public slots:
 private:
     void refreshTileIds();
 
+    int mColumnCount;
     Tileset *mTileset;
     QList<int> mTileIds;
 };
