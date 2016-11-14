@@ -1,7 +1,7 @@
 include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
 
-win32 {
+win32|!isEmpty(TILED_LINUX_ARCHIVE) {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin

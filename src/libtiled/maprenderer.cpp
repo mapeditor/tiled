@@ -124,7 +124,7 @@ CellRenderer::CellRenderer(QPainter *painter)
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
-    Tile *tile = cell.tile();
+    const Tile *tile = cell.tile();
     if (!tile) {
         QRectF target { pos - QPointF(0, size.height()), size };
         if (origin == BottomCenter)
@@ -133,10 +133,14 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         return;
     }
 
+    tile = tile->currentFrameTile();
+    if (!tile)
+        return;
+
     if (mTile != tile)
         flush();
 
-    const QPixmap &image = tile->currentFrameImage();
+    const QPixmap &image = tile->image();
     const QSizeF imageSize = image.size();
     const QSizeF scale(size.width() / imageSize.width(), size.height() / imageSize.height());
     const QPoint offset = tile->offset();
@@ -212,7 +216,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->currentFrameImage());
+                                  mTile->image());
 
     mTile = nullptr;
     mFragments.resize(0);

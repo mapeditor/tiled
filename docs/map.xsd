@@ -33,7 +33,7 @@
   <xs:simpleType name="compressionT">
     <xs:restriction base="xs:NMTOKEN">
       <xs:enumeration value="gzip" />
-      <xs:enumeration value="zlip" />
+      <xs:enumeration value="zlib" />
     </xs:restriction>
   </xs:simpleType>
 

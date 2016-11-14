@@ -8,7 +8,7 @@ INSTALLS += target
 
 QT += widgets
 
-win32 {
+win32|!isEmpty(TILED_LINUX_ARCHIVE) {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin

@@ -137,5 +137,6 @@ MapObject *MapObject::clone() const
     o->setShape(mShape);
     o->setCell(mCell);
     o->setRotation(mRotation);
+    o->setVisible(mVisible);
     return o;
 }

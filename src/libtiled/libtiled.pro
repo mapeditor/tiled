@@ -22,6 +22,9 @@ win32 {
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
+
+!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
+
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 
 SOURCES += compression.cpp \
