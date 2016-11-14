@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Editor map Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verze %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(plný seznam přispěvatelů je v souboru AUTHORS)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Tento program můžete šířit a upravovat podle licence GPLicence (verze 2 nebo pozdější). Kopii GPLlicence najdete v souboru COPYING ve zdrojovém kódu programu Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Editor map Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verze %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(plný seznam přispěvatelů je v souboru AUTHORS)&lt;/p&gt;
+&lt;p align="center"&gt;Tento program můžete šířit a upravovat podle licence GPLicence (verze 2 nebo pozdější). Kopii GPLlicence najdete v souboru COPYING ve zdrojovém kódu programu Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -36,7 +36,7 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidání vlastnosti</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -58,7 +58,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Přípona souboru není unikátní. Není možné určit formát souboru pro export.</translation>
     </message>
     <message>
@@ -275,7 +275,7 @@
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation>Vymazat</translation>
+        <translation>Vymazání</translation>
     </message>
     <message>
         <location line="+89"/>
@@ -806,7 +806,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation type="unfinished">Dlaždice</translation>
+        <translation>Dlaždice</translation>
     </message>
 </context>
 <context>
@@ -828,7 +828,7 @@
 Line %1, column %2</source>
         <translation>%3
 
-Řádek: %1, sloupec: %2</translation>
+Řádek %1, sloupec %2</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -843,15 +843,15 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Nepodporovaná orientace mapy: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Nepodporovaná orientace mapy: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Špatné parametry sady dlaždic &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Špatné parametry sady dlaždic '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -895,22 +895,22 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Kompresní metoda &apos;%1&apos; není podporována</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Kompresní metoda '%1' není podporována</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Špatná data vrstvy &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Špatná data vrstvy '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Nepodařilo se přečíst jméno na (%1, %2) ve vrstvě &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Nepodařilo se přečíst jméno na (%1, %2) ve vrstvě '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1005,7 +1005,7 @@ Line %1, column %2</source>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation>Sada</translation>
+        <translation>Sada dlaždic</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1094,7 +1094,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation>Editovat sadu dlaždic</translation>
+        <translation>Změna sady dlaždic</translation>
     </message>
 </context>
 <context>
@@ -1111,7 +1111,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>Soubor neobsahuje typy objektů.</translation>
     </message>
     <message>
@@ -1236,7 +1236,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Už jsem patron!</translation>
     </message>
     <message>
@@ -1594,12 +1594,12 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation>Diagonální změna velikosti &quot;\&quot;</translation>
+        <translation>Diagonální změna velikosti "\"</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation>Diagonální změna velikosti &quot;/&quot;</translation>
+        <translation>Diagonální změna velikosti "/"</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1643,7 +1643,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Copak je tohle</translation>
     </message>
     <message>
@@ -1931,12 +1931,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Nepodařilo se načíst hlavičku souboru!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Nepodařilo se načíst hlavičku vrstvy!</translation>
     </message>
     <message>
@@ -1971,23 +1971,23 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Nemůžu uložit jinou než dlaždicovou vrstvu!</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>You must define a type property on each layer!</source>
-        <translation>Každá vrstva musí mít vlastnost &quot;type&quot;!</translation>
+        <translation>Každá vrstva musí mít vlastnost "type"!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation>Každá vrstva musí mít vlastnost &quot;tile_index&quot;!</translation>
+        <translation>Každá vrstva musí mít vlastnost "tile_index"!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation>Každá vrstva musí mít vlastnost &quot;scroll_speed&quot;!</translation>
+        <translation>Každá vrstva musí mít vlastnost "scroll_speed"!</translation>
     </message>
 </context>
 <context>
@@ -2119,7 +2119,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation>Zvednout objekt</translation>
+        <translation>Zvednutí objektu</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2129,7 +2129,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation>Snížit objekt</translation>
+        <translation>Snížení objektu</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2183,54 +2183,54 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Vlastnoost %2 = &apos;%3&apos; nedává smysl. Ignoruji tuto vlastnost.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Vlastnoost %2 = '%3' nedává smysl. Ignoruji tuto vlastnost.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Zapomenuté podtržítko ve vrstvě &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Zapomenuté podtržítko ve vrstvě '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Vrstva &apos;%1&apos; není platná vrstva pro automatické mapování.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Vrstva '%1' není platná vrstva pro automatické mapování.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>Vrstva &apos;regions_input&apos; se nesmí objevit víc než jednou.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>Vrstva 'regions_input' se nesmí objevit víc než jednou.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>Vrstvy &apos;regions_*&apos; musí být dlaždicové.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>Vrstvy 'regions_*' musí být dlaždicové.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>Vrstva &apos;regions_output&apos; se nesmí objevit víc než jednou.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>Vrstva 'regions_output' se nesmí objevit víc než jednou.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>Vrstvy &apos;input_*&apos; a &apos;inputnot_*&apos; musí být dlaždicové.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>Vrstvy 'input_*' a 'inputnot_*' musí být dlaždicové.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Nenalezena vrstva &apos;regions&apos; nebo &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Nenalezena vrstva 'regions' nebo 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Nenalezena vrstva &apos;regions&apos; nebo &apos;regions_output&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Nenalezena vrstva 'regions' nebo 'regions_output'.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation>Nenalezena vrstva &apos;input_&lt;name&gt;&apos;!</translation>
+        <translation>Nenalezena vrstva 'input_&lt;name&gt;'!</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -2614,7 +2614,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation></translation>
+        <translation>TT</translation>
     </message>
 </context>
 <context>
@@ -2645,8 +2645,8 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Počet sloupců v sadě dlaždic &apos;%1&apos; se nejspíš změnil z %2 na %3. Chcete upravit číslování dlaždic?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Počet sloupců v sadě dlaždic '%1' se nejspíš změnil z %2 na %3. Chcete upravit číslování dlaždic?</translation>
     </message>
 </context>
 <context>
@@ -2661,7 +2661,7 @@ Line %1, column %2</source>
         <location line="-207"/>
         <location line="+208"/>
         <source>E</source>
-        <translation>E</translation>
+        <translation>G</translation>
     </message>
     <message numerus="yes">
         <location line="+227"/>
@@ -2760,7 +2760,7 @@ Má se přepsat?</translation>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation>Obrázek by měl %1x%2 pixelů a zabral by %3 GB paměti. Tiled s tak velkým obrázkem nemůže pracovat. Zkuste menší zoom.</translation>
+        <translation>Obrázek by měl %1 x %2 pixelů a zabral by %3 GB paměti. Tiled s tak velkým obrázkem nemůže pracovat. Zkuste menší zoom.</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -3140,7 +3140,7 @@ Please select specific format.</source>
     <message>
         <location line="+90"/>
         <source>Resize Map</source>
-        <translation>Změnit velikost mapy</translation>
+        <translation>Změna velikosti mapy</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -3471,8 +3471,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Chyba načítání obrázku sady dlaždic &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Chyba načítání obrázku sady dlaždic '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3548,13 +3548,13 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranění vlastnosti</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenování vlastnosti</translation>
     </message>
     <message>
         <location line="-265"/>
@@ -3649,17 +3649,17 @@ Please select specific format.</source>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Díky za podporu!&lt;/h3&gt;
 &lt;p&gt;Vaše patronská podpora mi, jako hlavnímu vývojářovi programu Tiled, dává možnost méně pracovat jinde, a místo toho vylepšovat Tiled.&lt;/p&gt;
-&lt;p&gt;Na stránce &quot;Activity feed&quot; na Patreonu si můžete přečíst, na co jsem využil čas, který jsem díky Vám mohl věnovat tomuto editoru!&lt;/p&gt;
+&lt;p&gt;Na stránce "Activity feed" na Patreonu si můžete přečíst, na co jsem využil čas, který jsem díky Vám mohl věnovat tomuto editoru!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Už nejsem patron</translation>
     </message>
     <message>
@@ -3677,7 +3677,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Už jsem patron!</translation>
     </message>
 </context>
@@ -4192,8 +4192,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Sadu dlaždic &apos;%1&apos; mapa používá!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>Sadu dlaždic '%1' mapa používá!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4235,14 +4235,14 @@ Please select specific format.</source>
         <location line="+128"/>
         <location line="+15"/>
         <source>Add Tiles</source>
-        <translation>Přidat dlaždice</translation>
+        <translation>Přidání dlaždic</translation>
     </message>
     <message>
         <location line="-142"/>
         <location line="+199"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
-        <translation>Odstranit dlaždice</translation>
+        <translation>Odstranění dlaždic</translation>
     </message>
     <message>
         <location line="-121"/>
@@ -4251,8 +4251,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>Nepodařilo se načíst &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>Nepodařilo se načíst "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4273,7 +4273,7 @@ Please select specific format.</source>
         <location line="+69"/>
         <location line="+23"/>
         <source>Export Tileset</source>
-        <translation>Exportovat sadu dlaždic</translation>
+        <translation>Export sady dlaždic</translation>
     </message>
     <message>
         <location line="-39"/>
