@@ -244,9 +244,15 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument) {
         mMapDocument->disconnect(this);
+
         QItemSelectionModel *s = selectionModel();
         disconnect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                    this, SLOT(currentRowChanged(QModelIndex)));
+
+        if (QWidget *w = indexWidget(currentIndex())) {
+            commitData(w);
+            closeEditor(w, QAbstractItemDelegate::NoHint);
+        }
     }
 
     mMapDocument = mapDocument;
