@@ -86,6 +86,7 @@ private slots:
     void indexPressed(const QModelIndex &index);
 
     void tilesetChanged();
+    void updateTilesetView(Tileset *tileset);
 
     void addTiles();
     void removeTiles();

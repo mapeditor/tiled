@@ -133,7 +133,7 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
     if (oldImageSource != mTileset.imageSource())
         tilesetManager->tilesetImageSourceChanged(mTileset, oldImageSource);
     if (mTileset.loadImage())
-        emit tilesetManager->tilesetChanged(&mTileset);
+        emit tilesetManager->tilesetImagesChanged(&mTileset);
 
     emit mTilesetDocument->tilesetChanged(&mTileset);
 }

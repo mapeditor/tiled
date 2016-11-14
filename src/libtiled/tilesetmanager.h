@@ -123,12 +123,11 @@ signals:
     /**
      * Emitted when a tileset's images have changed and views need updating.
      */
-    void tilesetChanged(Tileset *tileset);
+    void tilesetImagesChanged(Tileset *tileset);
 
     /**
      * Emitted when any images of the tiles in the given \a tileset have
-     * changed. This is used to trigger repaints for displaying tile
-     * animations.
+     * changed as a result of playing tile animations.
      */
     void repaintTileset(Tileset *tileset);
 

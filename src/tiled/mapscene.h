@@ -155,7 +155,7 @@ private slots:
     void currentLayerIndexChanged();
 
     void mapChanged();
-    void tilesetChanged(Tileset *tileset);
+    void repaintTileset(Tileset *tileset);
     void tileLayerDrawMarginsChanged(TileLayer *tileLayer);
 
     void layerAdded(int index);

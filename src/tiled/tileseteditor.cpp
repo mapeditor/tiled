@@ -38,6 +38,7 @@
 #include "tilecollisioneditor.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
+#include "tilesetmanager.h"
 #include "tilesetmodel.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
@@ -162,6 +163,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
             mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged,
             mTileCollisionEditor, &TileCollisionEditor::setTile);
+
+    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
+            this, &TilesetEditor::updateTilesetView);
 
     retranslateUi();
 }
@@ -373,6 +377,17 @@ void TilesetEditor::tilesetChanged()
         setCurrentTile(nullptr);        // It may be gone
 
     tilesetView->updateBackgroundColor();
+    model->tilesetChanged();
+}
+
+void TilesetEditor::updateTilesetView(Tileset *tileset)
+{
+    if (!mCurrentTilesetDocument)
+        return;
+    if (mCurrentTilesetDocument->tileset().data() != tileset)
+        return;
+
+    TilesetModel *model = currentTilesetView()->tilesetModel();
     model->tilesetChanged();
 }
 

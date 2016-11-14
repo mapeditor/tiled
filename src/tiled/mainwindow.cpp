@@ -1184,15 +1184,16 @@ void MainWindow::newTilesets(const QStringList &paths)
 
 void MainWindow::reloadTilesetImages()
 {
-    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
-    if (!mapDocument)
-        return;
-
-    Map *map = mapDocument->map();
     TilesetManager *tilesetManager = TilesetManager::instance();
-    const auto tilesets = map->tilesets();
-    for (const SharedTileset &tileset : tilesets)
-        tilesetManager->reloadImages(tileset);
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+        Map *map = mapDocument->map();
+        const auto tilesets = map->tilesets();
+        for (const SharedTileset &tileset : tilesets)
+            tilesetManager->reloadImages(tileset);
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        tilesetManager->reloadImages(tilesetDocument->tileset());
+    }
 }
 
 void MainWindow::addExternalTileset()

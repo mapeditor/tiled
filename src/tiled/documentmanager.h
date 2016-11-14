@@ -237,7 +237,7 @@ private slots:
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
-    void tilesetChanged(Tileset *tileset);
+    void tilesetImagesChanged(Tileset *tileset);
 
 private:
     DocumentManager(QObject *parent = nullptr);

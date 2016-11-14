@@ -74,10 +74,10 @@ MapScene::MapScene(QObject *parent):
             this, &MapScene::updateDefaultBackgroundColor);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
-    connect(tilesetManager, SIGNAL(repaintTileset(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
+    connect(tilesetManager, &TilesetManager::tilesetImagesChanged,
+            this, &MapScene::repaintTileset);
+    connect(tilesetManager, &TilesetManager::repaintTileset,
+            this, &MapScene::repaintTileset);
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
@@ -397,7 +397,7 @@ void MapScene::mapChanged()
         setBackgroundBrush(mDefaultBackgroundColor);
 }
 
-void MapScene::tilesetChanged(Tileset *tileset)
+void MapScene::repaintTileset(Tileset *tileset)
 {
     if (!mMapDocument)
         return;

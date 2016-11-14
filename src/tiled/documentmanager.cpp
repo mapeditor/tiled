@@ -150,8 +150,8 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
             this, &DocumentManager::fileChanged);
 
-    connect(TilesetManager::instance(), &TilesetManager::tilesetChanged,
-            this, &DocumentManager::tilesetChanged);
+    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
+            this, &DocumentManager::tilesetImagesChanged);
 }
 
 DocumentManager::~DocumentManager()
@@ -762,7 +762,7 @@ static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
     return true;
 }
 
-void DocumentManager::tilesetChanged(Tileset *tileset)
+void DocumentManager::tilesetImagesChanged(Tileset *tileset)
 {
     if (!mayNeedColumnCountAdjustment(*tileset))
         return;

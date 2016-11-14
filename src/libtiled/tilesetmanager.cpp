@@ -137,10 +137,10 @@ void TilesetManager::reloadImages(const SharedTileset &tileset)
     if (tileset->isCollection()) {
         for (Tile *tile : tileset->tiles())
             tile->setImage(QPixmap(tile->imageSource()));
-        emit tilesetChanged(tileset.data());
+        emit tilesetImagesChanged(tileset.data());
     } else {
         if (tileset->loadImage())
-            emit tilesetChanged(tileset.data());
+            emit tilesetImagesChanged(tileset.data());
     }
 }
 
@@ -198,7 +198,7 @@ void TilesetManager::fileChangedTimeout()
         QString fileName = tileset->imageSource();
         if (mChangedFiles.contains(fileName))
             if (tileset->loadFromImage(fileName))
-                emit tilesetChanged(tileset.data());
+                emit tilesetImagesChanged(tileset.data());
     }
 
     mChangedFiles.clear();
