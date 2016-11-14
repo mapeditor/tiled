@@ -34,6 +34,34 @@
 using namespace Tiled;
 using namespace Gmx;
 
+template <typename T>
+static T optionalProperty(const Object *object, const QString &name, const T &def)
+{
+    const QVariant var = object->property(name);
+    return var.isValid() ? var.value<T>() : def;
+}
+
+template <typename T>
+static QString toString(T number)
+{
+    return QString::number(number);
+}
+
+static QString toString(bool b)
+{
+    return QString::number(b ? -1 : 0);
+}
+
+template <typename T>
+static void writeProperty(QXmlStreamWriter &writer,
+                          const Object *object,
+                          const QString &name,
+                          const T &def)
+{
+    const T value = optionalProperty(object, name, def);
+    writer.writeTextElement(name, toString(value));
+}
+
 GmxPlugin::GmxPlugin()
 {
 }
@@ -55,10 +83,18 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
     stream.writeStartElement("room");
 
-    stream.writeTextElement("width", QString::number(map->tileWidth() * map->width()));
-    stream.writeTextElement("height", QString::number(map->tileHeight() * map->height()));
+    int mapPixelWidth = map->tileWidth() * map->width();
+    int mapPixelHeight = map->tileHeight() * map->height();
 
-    stream.writeTextElement("isometric", QString::number((map->orientation() == Map::Orientation::Isometric ? 1 : 0)));
+    stream.writeTextElement("width", QString::number(mapPixelWidth));
+    stream.writeTextElement("height", QString::number(mapPixelHeight));
+    stream.writeTextElement("vsnap", QString::number(map->tileHeight()));
+    stream.writeTextElement("hsnap", QString::number(map->tileWidth()));
+    writeProperty(stream, map, "speed", 30);
+    writeProperty(stream, map, "persistent", false);
+    writeProperty(stream, map, "clearDisplayBuffer", true);
+
+    stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
 
     stream.writeStartElement("instances");
 
@@ -135,6 +171,16 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     }
 
     stream.writeEndElement();
+
+    writeProperty(stream, map, "PhysicsWorld", false);
+    writeProperty(stream, map, "PhysicsWorldTop", 0);
+    writeProperty(stream, map, "PhysicsWorldLeft", 0);
+    writeProperty(stream, map, "PhysicsWorldRight", mapPixelWidth);
+    writeProperty(stream, map, "PhysicsWorldBottom", mapPixelHeight);
+    writeProperty(stream, map, "PhysicsWorldGravityX", 0.0);
+    writeProperty(stream, map, "PhysicsWorldGravityY", 10.0);
+    writeProperty(stream, map, "PhysicsWorldPixToMeters", 0.1);
+
     stream.writeEndDocument();
 
     if (!file.commit()) {
