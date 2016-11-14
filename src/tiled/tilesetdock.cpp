@@ -268,8 +268,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mViewStack, &QStackedWidget::currentChanged,
             this, &TilesetDock::currentTilesetChanged);
 
-    connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
+    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
+            this, &TilesetDock::tilesetChanged);
 
     auto *documentManager = DocumentManager::instance();
 
