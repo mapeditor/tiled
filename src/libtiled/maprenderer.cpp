@@ -107,14 +107,18 @@ CellRenderer::CellRenderer(QPainter *painter)
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &cellSize, Origin origin)
 {
-    if (mTile != cell.tile)
+    const Tile *tile = cell.tile->currentFrameTile();
+    if (!tile)
+        return;
+
+    if (mTile != tile)
         flush();
 
-    const QPixmap &image = cell.tile->currentFrameImage();
+    const QPixmap &image = tile->image();
     const QSizeF size = image.size();
     const QSizeF objectSize = (cellSize == QSizeF(0,0)) ? size : cellSize;
     const QSizeF scale(objectSize.width() / size.width(), objectSize.height() / size.height());
-    const QPoint offset = cell.tile->offset();
+    const QPoint offset = tile->offset();
     const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
 
     QPainter::PixmapFragment fragment;
@@ -152,7 +156,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
     fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
 
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
-        mTile = cell.tile;
+        mTile = tile;
         mFragments.append(fragment);
         return;
     }
@@ -187,7 +191,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->currentFrameImage());
+                                  mTile->image());
 
     mTile = nullptr;
     mFragments.resize(0);

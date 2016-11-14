@@ -70,17 +70,18 @@ QSharedPointer<Tileset> Tile::sharedTileset() const
 }
 
 /**
- * Returns the image for rendering this tile, taking into account tile
- * animations.
+ * Returns the tile to render when taking into account tile animations.
+ *
+ * \warning May return null when the tileset is invalid or the image could
+ *          not be loaded.
  */
-const QPixmap &Tile::currentFrameImage() const
+const Tile *Tile::currentFrameTile() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->findTile(frame.tileId)->image();
-    } else {
-        return mImage;
+        return mTileset->findTile(frame.tileId);
     }
+    return this;
 }
 
 /**
