@@ -102,6 +102,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
     undoStack()->setClean();
     setFileName(fileName);
+    mLastSaved = QFileInfo(fileName).lastModified();
 
     emit saved();
     return true;
@@ -109,7 +110,11 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
 bool TilesetDocument::reload(QString *error)
 {
-    auto format = readerFormat();
+    auto format = mReaderFormat;
+    if (!format)
+        format = mWriterFormat;
+
+    // Either the file was saved or it was loaded, so now we must have a format
     Q_ASSERT(format);
 
     SharedTileset tileset = format->read(fileName());

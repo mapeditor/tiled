@@ -141,9 +141,9 @@ bool MapDocument::save(const QString &fileName, QString *error)
     // Mark TilesetDocuments for embedded tilesets as saved
     auto documentManager = DocumentManager::instance();
     for (const SharedTileset &tileset : mMap->tilesets()) {
-        TilesetDocument *tilesetDocument = documentManager->findOrCreateTilesetDocument(tileset);
-        if (tilesetDocument->isEmbedded())
-            tilesetDocument->setClean();
+        if (TilesetDocument *tilesetDocument = documentManager->findTilesetDocument(tileset))
+            if (tilesetDocument->isEmbedded())
+                tilesetDocument->setClean();
     }
 
     emit saved();
