@@ -132,7 +132,7 @@ private slots:
 
     bool newTileset(const QString &path = QString());
     void newTilesets(const QStringList &paths);
-    void reloadTilesets();
+    void reloadTilesetImages();
     void addExternalTileset();
     void resizeMap();
     void offsetMap();

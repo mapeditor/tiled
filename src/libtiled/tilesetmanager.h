@@ -103,7 +103,7 @@ public:
     /**
      * Forces a tileset to reload.
      */
-    void forceTilesetReload(const SharedTileset &tileset);
+    void reloadImages(const SharedTileset &tileset);
 
     /**
      * Sets whether tilesets are automatically reloaded when their tileset

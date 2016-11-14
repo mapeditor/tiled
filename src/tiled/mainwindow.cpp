@@ -217,7 +217,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
     connect(reloadTilesetsShortcut, SIGNAL(activated()),
-            this, SLOT(reloadTilesets()));
+            this, SLOT(reloadTilesetImages()));
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
@@ -1182,7 +1182,7 @@ void MainWindow::newTilesets(const QStringList &paths)
             return;
 }
 
-void MainWindow::reloadTilesets()
+void MainWindow::reloadTilesetImages()
 {
     auto mapDocument = qobject_cast<MapDocument*>(mDocument);
     if (!mapDocument)
@@ -1192,7 +1192,7 @@ void MainWindow::reloadTilesets()
     TilesetManager *tilesetManager = TilesetManager::instance();
     const auto tilesets = map->tilesets();
     for (const SharedTileset &tileset : tilesets)
-        tilesetManager->forceTilesetReload(tileset);
+        tilesetManager->reloadImages(tileset);
 }
 
 void MainWindow::addExternalTileset()

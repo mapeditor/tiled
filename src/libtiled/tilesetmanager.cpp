@@ -129,13 +129,19 @@ QList<SharedTileset> TilesetManager::tilesets() const
     return mTilesets.keys();
 }
 
-void TilesetManager::forceTilesetReload(const SharedTileset &tileset)
+void TilesetManager::reloadImages(const SharedTileset &tileset)
 {
     if (!mTilesets.contains(tileset))
         return;
 
-    if (tileset->loadImage())
+    if (tileset->isCollection()) {
+        for (Tile *tile : tileset->tiles())
+            tile->setImage(QPixmap(tile->imageSource()));
         emit tilesetChanged(tileset.data());
+    } else {
+        if (tileset->loadImage())
+            emit tilesetChanged(tileset.data());
+    }
 }
 
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
