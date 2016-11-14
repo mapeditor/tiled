@@ -533,22 +533,6 @@ void MapDocument::insertTileset(int index, const SharedTileset &tileset)
     emit tilesetAdded(index, tileset.data());
 }
 
-static bool isFromTileset(Object *object, Tileset *tileset)
-{
-    if (!object)
-        return false;
-
-    if (object->typeId() == Object::TileType
-            && tileset == static_cast<Tile*>(object)->tileset())
-        return true;
-
-    if (object->typeId() == Object::TerrainType
-            && tileset == static_cast<Terrain*>(object)->tileset())
-        return true;
-
-    return false;
-}
-
 /**
  * Removes the tileset at the given \a index from this map. Emits the
  * appropriate signal.
@@ -561,10 +545,6 @@ void MapDocument::removeTilesetAt(int index)
     emit tilesetAboutToBeRemoved(index);
 
     SharedTileset tileset = mMap->tilesets().at(index);
-
-    if (tileset.data() == mCurrentObject || isFromTileset(mCurrentObject, tileset.data()))
-        setCurrentObject(nullptr);
-
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset.data());
 
@@ -619,8 +599,7 @@ QList<Object*> MapDocument::currentObjects() const
 {
     if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
         QList<Object*> objects;
-        const auto &selectedObjects = mSelectedObjects;
-        for (MapObject *mapObj : selectedObjects)
+        for (MapObject *mapObj : mSelectedObjects)
             objects.append(mapObj);
         return objects;
     }

@@ -277,6 +277,18 @@ void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
     emit selectedTilesChanged();
 }
 
+QList<Object *> TilesetDocument::currentObjects() const
+{
+    if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
+        QList<Object*> objects;
+        for (Tile *tile : mSelectedTiles)
+            objects.append(tile);
+        return objects;
+    }
+
+    return Document::currentObjects();
+}
+
 void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)
 {
     for (MapDocument *mapDocument : mapDocuments())

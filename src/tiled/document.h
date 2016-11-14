@@ -124,7 +124,6 @@ protected:
     QDateTime mLastSaved;
 
     Object *mCurrentObject;             /**< Current properties object. */
-    QList<Tile*> mSelectedTiles;
 };
 
 

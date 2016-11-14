@@ -71,15 +71,8 @@ void Document::setCurrentObject(Object *object)
 QList<Object *> Document::currentObjects() const
 {
     QList<Object*> objects;
-    if (mCurrentObject) {
-        if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            const auto &selectedTiles = mSelectedTiles;
-            for (Tile *tile : selectedTiles)
-                objects.append(tile);
-        } else {
-            objects.append(mCurrentObject);
-        }
-    }
+    if (mCurrentObject)
+        objects.append(mCurrentObject);
     return objects;
 }
 

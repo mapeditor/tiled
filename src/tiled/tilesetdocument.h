@@ -87,6 +87,8 @@ public:
     const QList<Tile*> &selectedTiles() const;
     void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
+    QList<Object*> currentObjects() const override;
+
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
 
 signals:
@@ -145,6 +147,8 @@ private:
     QPointer<TilesetFormat> mWriterFormat;
 
     TilesetTerrainModel *mTerrainModel;
+
+    QList<Tile*> mSelectedTiles;
 };
 
 
