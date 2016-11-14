@@ -27,8 +27,8 @@
 #include "objectgroup.h"
 
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
+#include <QSaveFile>
 #include <QXmlStreamWriter>
 
 using namespace Tiled;
@@ -40,7 +40,7 @@ GmxPlugin::GmxPlugin()
 
 bool GmxPlugin::write(const Map *map, const QString &fileName)
 {
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -89,12 +89,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             stream.writeEndElement();
         }
-
-        if (file.error() != QFile::NoError) {
-            mError = file.errorString();
-            return false;
-        }
-
     }
 
     stream.writeEndElement();
@@ -138,17 +132,16 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         }
 
         currentLayer--;
-
-        if (file.error() != QFile::NoError) {
-            mError = file.errorString();
-            return false;
-        }
     }
 
     stream.writeEndElement();
     stream.writeEndDocument();
 
-    file.close();
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
     return true;
 }
 
