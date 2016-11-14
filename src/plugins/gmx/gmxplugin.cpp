@@ -28,6 +28,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QSaveFile>
 #include <QXmlStreamWriter>
 
@@ -60,6 +61,14 @@ static void writeProperty(QXmlStreamWriter &writer,
 {
     const T value = optionalProperty(object, name, def);
     writer.writeTextElement(name, toString(value));
+}
+
+static QString sanitizeName(const QString &name)
+{
+    QString sanitized = name;
+    sanitized.replace(QRegularExpression(QLatin1String("[^a-zA-Z0-9]")),
+                      QLatin1String("_"));
+    return sanitized;
 }
 
 GmxPlugin::GmxPlugin()
@@ -98,30 +107,43 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
     stream.writeStartElement("instances");
 
-    for (const Layer *layer : map->layers()) {
+    QSet<QString> usedNames;
 
-        if (layer->layerType() != Layer::ObjectGroupType) continue;
+    for (const Layer *layer : map->layers()) {
+        if (layer->layerType() != Layer::ObjectGroupType)
+            continue;
+
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
+            if (object->type().isEmpty())
+                continue;
 
             stream.writeStartElement("instance");
 
-            stream.writeAttribute("objName", object->name());
+            // The type is used to refer to the name of the object
+            stream.writeAttribute("objName", sanitizeName(object->type()));
 
-            if(object->rotation() != 0) {
-                QPoint base(0, object->height());
-                base = QTransform().rotate(-object->rotation()).map(base);
+            QPoint base(0, object->height());
+            base = QTransform().rotate(-object->rotation()).map(base);
 
-                stream.writeAttribute("x", QString::number((int)(object->x()) + base.x()));
-                stream.writeAttribute("y", QString::number((int)(object->y()) - base.y()));
-                stream.writeAttribute("rotation", QString::number(-object->rotation()));
+            stream.writeAttribute("x", QString::number((int)(object->x()) + base.x()));
+            stream.writeAttribute("y", QString::number((int)(object->y()) - base.y()));
+
+            // Include object ID in the name when necessary because duplicates are not allowed
+            if (object->name().isEmpty()) {
+                stream.writeAttribute("name", QString("inst_%1").arg(object->id()));
             } else {
-                stream.writeAttribute("x", QString::number((int)(object->x())));
-                stream.writeAttribute("y", QString::number((int)(object->y() - object->height())));
+                QString name = sanitizeName(object->name());
+
+                while (usedNames.contains(name))
+                    name += QString("_%1").arg(object->id());
+
+                usedNames.insert(name);
+                stream.writeAttribute("name", name);
             }
 
-            stream.writeAttribute("id", QString::number(object->id()));
+            stream.writeAttribute("rotation", QString::number(-object->rotation()));
 
             stream.writeEndElement();
         }
@@ -132,15 +154,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
     stream.writeStartElement("tiles");
 
-
-
     uint tileId = 0u;
     int currentLayer = map->layers().size();
+
     for (const Layer *layer : map->layers()) {
+        if (layer->layerType() != Layer::TileLayerType)
+            continue;
 
-        if (layer->layerType() != Layer::TileLayerType) continue;
-
-        QString depth = QString::number(layer->hasProperty(QLatin1String("Depth")) ? layer->property(QLatin1String("Depth")).toInt() : currentLayer);
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), currentLayer));
 
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
         for (int y = 0; y < tileLayer->height(); ++y) {
