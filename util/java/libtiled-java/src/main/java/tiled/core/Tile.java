@@ -32,6 +32,9 @@ package tiled.core;
 import java.awt.Image;
 import java.util.Properties;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * The core class for our tiles.
  *
@@ -39,6 +42,7 @@ import java.util.Properties;
  * @author Adam Turk
  * @version 0.17
  */
+@XmlRootElement(name = "tile")
 public class Tile {
 
     private Image image;
@@ -79,6 +83,7 @@ public class Tile {
      *
      * @param i The id of the tile
      */
+    @XmlAttribute
     public void setId(int i) {
         if (i >= 0) {
             id = i;
