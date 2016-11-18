@@ -702,9 +702,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
 
     switch (id) {
     case NameProperty:
-    case TypeProperty:
         command = new ChangeMapObject(mMapDocument, mapObject,
                                       mIdToProperty[NameProperty]->value().toString(),
+                                      mapObject->type());
+        break;
+    case TypeProperty:
+        command = new ChangeMapObject(mMapDocument, mapObject,
+                                      mapObject->name(),
                                       mIdToProperty[TypeProperty]->value().toString());
         break;
     case VisibleProperty:
