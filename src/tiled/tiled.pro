@@ -15,7 +15,9 @@ win32|!isEmpty(TILED_LINUX_ARCHIVE) {
 
 QT += widgets
 
-contains(QT_CONFIG, opengl):!macx: QT += opengl
+contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) { {
+    QT += opengl
+}
 
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 

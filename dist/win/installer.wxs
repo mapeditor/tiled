@@ -88,7 +88,6 @@
             <File Id="Qt5Gui_dll" Source="$(var.QtDir)\bin\Qt5Gui.dll"/>
             <File Id="Qt5Network_dll" Source="$(var.QtDir)\bin\Qt5Network.dll"/>
             <File Id="Qt5Widgets_dll" Source="$(var.QtDir)\bin\Qt5Widgets.dll"/>
-            <File Id="Qt5OpenGL_dll" Source="$(var.QtDir)\bin\Qt5OpenGL.dll"/>
 
             <?ifdef MingwDir ?>
             <File Id="libgcc_s_dw2_1_dll" Source="$(var.MingwDir)\bin\libgcc_s_dw2-1.dll"/>
