@@ -15,7 +15,7 @@ win32|!isEmpty(TILED_LINUX_ARCHIVE) {
 
 QT += widgets
 
-contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) { {
+contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) {
     QT += opengl
 }
 
