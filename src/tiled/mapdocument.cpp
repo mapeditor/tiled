@@ -996,37 +996,44 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->endMacro();
 }
 
-// TODO add undo code
-void MapDocument::moveObjectIndex(const MapObject *object, int count)
+static bool mapObjectIndexLessThan(MapObject *o1, MapObject *o2){
+    return o1->objectGroup()->objects().indexOf(o1) < o2->objectGroup()->objects().indexOf(o2);
+}
+
+static bool mapObjectIndexGreaterThan(MapObject *o1, MapObject *o2){
+    return o1->objectGroup()->objects().indexOf(o1) > o2->objectGroup()->objects().indexOf(o2);
+}
+
+void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
 {
-    int index = 0;
-    ObjectGroup *group = object->objectGroup();
+    if (objects.isEmpty())
+        return;
 
-    while (index < group->objectCount() && group->objectAt( index ) != object)
-        index++;
+		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
+    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexLessThan);
 
-    if ( count < 0 && index > 0 ) {
-        mMapObjectModel->moveObjects( group, index, index - 1, 1 );
-
-    } else if ( count > 0 && (index < group->objectCount()-1)) {
-        mMapObjectModel->moveObjects( group, index+1, index, 1 );
+    foreach(MapObject *mapObject, objectsSorted) {
+        ObjectGroup *group = mapObject->objectGroup();
+        int index = group->objects().indexOf(mapObject);
+        if (index > 0)
+            mMapObjectModel->moveObjects(group, index, index-1, 1);
     }
 }
 
-void MapDocument::moveObjectUp(const QList<MapObject *> &objects)
+void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
 {
     if (objects.isEmpty())
         return;
 
-    moveObjectIndex( objects.at(0), -1 );
-}
+		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
+    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexGreaterThan);
 
-void MapDocument::moveObjectDown(const QList<MapObject *> &objects)
-{
-    if (objects.isEmpty())
-        return;
-
-    moveObjectIndex( objects.at(0), 1 );
+    foreach(MapObject *mapObject, objectsSorted) {
+        ObjectGroup *group = mapObject->objectGroup();
+        int index = group->objects().indexOf(mapObject);
+        if (index < group->objectCount() - 1)
+            mMapObjectModel->moveObjects(group, index+1, index, 1);
+    }
 }
 
 void MapDocument::setProperty(Object *object,

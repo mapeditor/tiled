@@ -111,22 +111,20 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
             SLOT(documentAboutToClose(MapDocument*)));
 
-    connect(mActionMoveUp, SIGNAL(triggered()), SLOT(moveObjectUp()));
-    connect(mActionMoveDown, SIGNAL(triggered()), SLOT(moveObjectDown()));
+    connect(mActionMoveUp, SIGNAL(triggered()), SLOT(moveObjectsUp()));
+    connect(mActionMoveDown, SIGNAL(triggered()), SLOT(moveObjectsDown()));
 }
 
-void ObjectsDock::moveObjectUp()
+void ObjectsDock::moveObjectsUp()
 {
-    if (mMapDocument) {
-        mMapDocument->moveObjectUp(mMapDocument->selectedObjects());
-    }
+    if (mMapDocument)
+        mMapDocument->moveObjectsUp(mMapDocument->selectedObjects());
 }
 
-void ObjectsDock::moveObjectDown()
+void ObjectsDock::moveObjectsDown()
 {
-    if (mMapDocument) {
-        mMapDocument->moveObjectDown(mMapDocument->selectedObjects());
-    }
+    if (mMapDocument)
+        mMapDocument->moveObjectsDown(mMapDocument->selectedObjects());
 }
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)

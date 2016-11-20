@@ -190,8 +190,8 @@ public:
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
-    void moveObjectUp(const QList<MapObject*> &objects);
-    void moveObjectDown(const QList<MapObject*> &objects);
+    void moveObjectsUp(const QList<MapObject*> &objects);
+    void moveObjectsDown(const QList<MapObject*> &objects);
 
     void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
