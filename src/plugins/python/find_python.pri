@@ -1,5 +1,5 @@
 !contains(DISABLE_PYTHON_PLUGIN, yes) {
-		unix&!macx {
+    unix {
         system(pkg-config python-2.7) {
             HAVE_PYTHON = yes
             CONFIG += link_pkgconfig
@@ -11,12 +11,6 @@
             QMAKE_LFLAGS += `python-config --ldflags`
         }
     }
-
-		macx {
-			HAVE_PYTHON = yes
-      QMAKE_CXXFLAGS += `python-config --cflags`
-      QMAKE_LFLAGS += `python-config --ldflags`
-		}
 
     win32 {
         exists(C:/Python27/include/Python.h) {
