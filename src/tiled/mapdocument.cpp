@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
@@ -1012,12 +1013,14 @@ void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
 		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
     qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexLessThan);
 
+    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) up", "", objects.size()));
     foreach(MapObject *mapObject, objectsSorted) {
         ObjectGroup *group = mapObject->objectGroup();
         int index = group->objects().indexOf(mapObject);
         if (index > 0)
-            mMapObjectModel->moveObjects(group, index, index-1, 1);
+            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index, index-1, 1));
     }
+    mUndoStack->endMacro();
 }
 
 void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
@@ -1028,12 +1031,14 @@ void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
 		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
     qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexGreaterThan);
 
+    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) down", "", objects.size()));
     foreach(MapObject *mapObject, objectsSorted) {
         ObjectGroup *group = mapObject->objectGroup();
         int index = group->objects().indexOf(mapObject);
         if (index < group->objectCount() - 1)
-            mMapObjectModel->moveObjects(group, index+1, index, 1);
+            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index+1, index, 1));
     }
+    mUndoStack->endMacro();
 }
 
 void MapDocument::setProperty(Object *object,
