@@ -28,6 +28,8 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "raiselowerhelper.h"
+#include "resizemapobject.h"
+#include "tile.h"
 #include "utils.h"
 
 #include <QKeyEvent>
@@ -38,6 +40,22 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+
+static bool isTileObject(MapObject *mapObject)
+{
+    return !mapObject->cell().isEmpty();
+}
+
+static bool isResizedTileObject(MapObject *mapObject)
+{
+    const auto &cell = mapObject->cell();
+    if (cell.isEmpty())
+        return false;
+
+    return mapObject->size() != cell.tile->size();
+}
+
 
 AbstractObjectTool::AbstractObjectTool(const QString &name,
                                        const QIcon &icon,
@@ -130,6 +148,29 @@ void AbstractObjectTool::removeObjects()
     mapDocument()->removeObjects(mapDocument()->selectedObjects());
 }
 
+void AbstractObjectTool::resetTileSize()
+{
+    QList<QUndoCommand*> commands;
+
+    for (auto mapObject : mapDocument()->selectedObjects()) {
+        if (!isResizedTileObject(mapObject))
+            continue;
+
+        commands << new ResizeMapObject(mapDocument(),
+                                        mapObject,
+                                        mapObject->cell().tile->size(),
+                                        mapObject->size());
+    }
+
+    if (!commands.isEmpty()) {
+        QUndoStack *undoStack = mapDocument()->undoStack();
+        undoStack->beginMacro(tr("Reset Tile Size"));
+        for (auto command : commands)
+            undoStack->push(command);
+        undoStack->endMacro();
+    }
+}
+
 void AbstractObjectTool::flipHorizontally()
 {
     mapDocument()->flipSelectedObjects(FlipHorizontally);
@@ -187,6 +228,17 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+
+    bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
+                                             selectedObjects.end(),
+                                             isTileObject);
+
+    if (anyTileObjectSelected) {
+        auto resetTileSizeAction = menu.addAction(tr("Reset Tile Size"), this, SLOT(resetTileSize()));
+        resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
+                                                    selectedObjects.end(),
+                                                    isResizedTileObject));
+    }
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

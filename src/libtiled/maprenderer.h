@@ -268,7 +268,7 @@ public:
 
 private:
     QPainter * const mPainter;
-    Tile *mTile;
+    const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
 };

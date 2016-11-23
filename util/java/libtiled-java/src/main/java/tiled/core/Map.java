@@ -4,6 +4,7 @@
  * %%
  * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -44,38 +45,62 @@ import java.util.Properties;
  * @version 0.17
  */
 public class Map implements Iterable<MapLayer> {
+    // <editor-fold defaultstate="collapsed" desc="Enumerations">
+    public enum Orientation {
+        ORTHOGONAL,
+        ISOMETRIC,
+        /**
+        * Hexagonal.
+        *
+        * @since 0.11
+        */
+        HEXAGONAL,
+        /**
+        * Staggered (used for iso and hex).
+        */
+        STAGGERED;
 
-    /**
-     * Constant <code>ORIENTATION_ORTHOGONAL=1</code>
-     */
-    public static final int ORIENTATION_ORTHOGONAL = 1;
-    /**
-     * Constant <code>ORIENTATION_ISOMETRIC=2</code>
-     */
-    public static final int ORIENTATION_ISOMETRIC = 2;
-    /**
-     * Constant <code>ORIENTATION_HEXAGONAL=4</code>
-     *
-     * @since 0.11
-     */
-    public static final int ORIENTATION_HEXAGONAL = 4;
-    /**
-     * Shifted (used for iso and hex).
-     */
-    public static final int ORIENTATION_SHIFTED = 5;
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+
+    public enum StaggerAxis {
+        X,
+        Y;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+
+    public enum StaggerIndex {
+        EVEN,
+        ODD;
+
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
+    // </editor-fold>
 
     private List<MapLayer> layers;
     private List<TileSet> tileSets;
 
+    private Orientation orientation = Orientation.ORTHOGONAL;
     private int tileWidth, tileHeight;
-    private int orientation = ORIENTATION_ORTHOGONAL;
+    private int hexSideLength;
+    private StaggerAxis staggerAxis;
+    private StaggerIndex staggerIndex;
     private Properties properties;
     private String filename;
     protected Rectangle bounds;          // in tiles
 
     /**
-     * <p>
-     * Constructor for Map.</p>
+     * <p>Constructor for Map.</p>
      *
      * @param width the map width in tiles.
      * @param height the map height in tiles.
@@ -253,14 +278,6 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterator<MapLayer> iterator() {
-        return layers.iterator();
-    }
-
-    /**
      * Adds a Tileset to this Map. If the set is already attached to this map,
      * <code>addTileset</code> simply returns.
      *
@@ -313,69 +330,6 @@ public class Map implements Iterable<MapLayer> {
     }
 
     /**
-     * <p>Getter for the field <code>properties</code>.</p>
-     *
-     * @return the map properties
-     */
-    public Properties getProperties() {
-        return properties;
-    }
-
-    /**
-     * <p>Setter for the field <code>properties</code>.</p>
-     *
-     * @param prop a {@link java.util.Properties} object.
-     */
-    public void setProperties(Properties prop) {
-        properties = prop;
-    }
-
-    /**
-     * <p>Setter for the field <code>filename</code>.</p>
-     *
-     * @param filename a {@link java.lang.String} object.
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    /**
-     * Sets a new tile width.
-     *
-     * @param width the new tile width
-     */
-    public void setTileWidth(int width) {
-        tileWidth = width;
-    }
-
-    /**
-     * Sets a new tile height.
-     *
-     * @param height the new tile height
-     */
-    public void setTileHeight(int height) {
-        tileHeight = height;
-    }
-
-    /**
-     * <p>Setter for the field <code>orientation</code>.</p>
-     *
-     * @param orientation a int.
-     */
-    public void setOrientation(int orientation) {
-        this.orientation = orientation;
-    }
-
-    /**
-     * <p>Getter for the field <code>filename</code>.</p>
-     *
-     * @return a {@link java.lang.String} object.
-     */
-    public String getFilename() {
-        return filename;
-    }
-
-    /**
      * Returns a list with the currently loaded tileSets.
      *
      * @return List
@@ -400,24 +354,6 @@ public class Map implements Iterable<MapLayer> {
      */
     public int getHeight() {
         return bounds.height;
-    }
-
-    /**
-     * Returns default tile width for this map.
-     *
-     * @return the default tile width
-     */
-    public int getTileWidth() {
-        return tileWidth;
-    }
-
-    /**
-     * Returns default tile height for this map.
-     *
-     * @return the default tile height
-     */
-    public int getTileHeight() {
-        return tileHeight;
     }
 
     /**
@@ -467,17 +403,160 @@ public class Map implements Iterable<MapLayer> {
         tileSets.set(index1, set);
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters/Setters">
     /**
      * Returns the orientation of this map. Orientation will be one of
-     * {@link tiled.core.Map#ORIENTATION_ISOMETRIC},
-     * {@link tiled.core.Map#ORIENTATION_ORTHOGONAL},
-     * {@link tiled.core.Map#ORIENTATION_HEXAGONAL} and
-     * {@link tiled.core.Map#ORIENTATION_SHIFTED}.
+     * {@link tiled.core.Map.Orientation#ISOMETRIC},
+     * {@link tiled.core.Map.Orientation#ORTHOGONAL},
+     * {@link tiled.core.Map.Orientation#HEXAGONAL} and
+     * {@link tiled.core.Map.Orientation#STAGGERED}.
      *
      * @return The orientation from the enumerated set
      */
-    public int getOrientation() {
+    public Orientation getOrientation() {
         return orientation;
+    }
+
+    /**
+     * <p>Setter for the field <code>orientation</code>.</p>
+     *
+     * @param orientation a {@link tiled.core.Map.Orientation} enumeration.
+     */
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+    }
+
+    /**
+     * Returns default tile width for this map.
+     *
+     * @return the default tile width
+     */
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    /**
+     * Sets a new tile width.
+     *
+     * @param tileWidth the new tile width
+     */
+    public void setTileWidth(int tileWidth) {
+        this.tileWidth = tileWidth;
+    }
+
+    /**
+     * Returns default tile height for this map.
+     *
+     * @return the default tile height
+     */
+    public int getTileHeight() {
+        return tileHeight;
+    }
+
+    /**
+     * Sets a new tile height.
+     *
+     * @param tileHeight the new tile height
+     */
+    public void setTileHeight(int tileHeight) {
+        this.tileHeight = tileHeight;
+    }
+
+    /**
+     * <p>Getter for the field <code>hexSideLength</code>.</p>
+     *
+     * @return a int.
+     */
+    public int getHexSideLength() {
+        return hexSideLength;
+    }
+
+    /**
+     * <p>Setter for the field <code>hexSideLength</code>.</p>
+     *
+     * @param hexSideLength a int.
+     */
+    public void setHexSideLength(int hexSideLength) {
+        this.hexSideLength = hexSideLength;
+    }
+
+    /**
+     * <p>Getter for the field <code>staggerAxis</code>.</p>
+     *
+     * @return a {@link tiled.core.Map.StaggerAxis} object.
+     */
+    public StaggerAxis getStaggerAxis() {
+        return staggerAxis;
+    }
+
+    /**
+     * <p>Setter for the field <code>staggerAxis</code>.</p>
+     *
+     * @param staggerAxis a {@link tiled.core.Map.StaggerAxis} object.
+     */
+    public void setStaggerAxis(StaggerAxis staggerAxis) {
+        this.staggerAxis = staggerAxis;
+    }
+
+    /**
+     * <p>Getter for the field <code>staggerIndex</code>.</p>
+     *
+     * @return a {@link tiled.core.Map.StaggerIndex} object.
+     */
+    public StaggerIndex getStaggerIndex() {
+        return staggerIndex;
+    }
+
+    /**
+     * <p>Setter for the field <code>staggerIndex</code>.</p>
+     *
+     * @param staggerIndex a {@link tiled.core.Map.StaggerIndex} object.
+     */
+    public void setStaggerIndex(StaggerIndex staggerIndex) {
+        this.staggerIndex = staggerIndex;
+    }
+
+    /**
+     * <p>Getter for the field <code>properties</code>.</p>
+     *
+     * @return the map properties
+     */
+    public Properties getProperties() {
+        return properties;
+    }
+
+    /**
+     * <p>Setter for the field <code>properties</code>.</p>
+     *
+     * @param properties a {@link java.util.Properties} object.
+     */
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * <p>Getter for the field <code>filename</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
+     * <p>Setter for the field <code>filename</code>.</p>
+     *
+     * @param filename a {@link java.lang.String} object.
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    // </editor-fold>
+
+    /** {@inheritDoc} */
+    @Override
+    public Iterator<MapLayer> iterator() {
+        return layers.iterator();
     }
 
     /**

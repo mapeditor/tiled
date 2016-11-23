@@ -1,3 +1,21 @@
+### 0.17.1 (4 November 2016)
+
+* Fixed wrong alpha value when opening the color picker dialog
+* Fixed saving of object group color alpha value
+* Fixed tile id adjustment for newly added tilesets
+* Fixed "Object Properties" entry in the context menu to be always enabled (by Erik Schilling)
+* Fixed out-of-sync tile selection during layer offset change (by nykm)
+* Fixed hidden objects becoming visible when offsetting the map (by ranjak)
+* Fixed problems with using predefined file properties
+* Lua plugin: Fixed type of animation frame properties
+* OS X: Use standard shortcut for toggling full screen
+* OS X: Fixed compile when pkg-config is present
+* Windows: Include the Defold plugin
+* Windows: Added support for DDS, TGA, WBMP and WEBP image formats
+* Linux: Added 64-bit AppImage (with help from Simon Peter)
+* Chinese translation updates (by endlesstravel and buckle2000)
+* French translation updated (by Yohann Ferreira)
+
 ### 0.17.0 (15 August 2016)
 
 * Added a platform-independent theme, which can be dark (#786)

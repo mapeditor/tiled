@@ -710,9 +710,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
 
     switch (id) {
     case NameProperty:
-    case TypeProperty:
         command = new ChangeMapObject(mMapDocument, mapObject,
                                       mIdToProperty[NameProperty]->value().toString(),
+                                      mapObject->type());
+        break;
+    case TypeProperty:
+        command = new ChangeMapObject(mMapDocument, mapObject,
+                                      mapObject->name(),
                                       mIdToProperty[TypeProperty]->value().toString());
         break;
     case VisibleProperty:
@@ -1180,7 +1184,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
-            imageSourceProperty->setValue(tile->imageSource());
+            imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         break;
     }
     case Object::TerrainType: {

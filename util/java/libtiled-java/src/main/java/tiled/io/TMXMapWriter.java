@@ -4,6 +4,7 @@
  * %%
  * Copyright (C) 2004 - 2016 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright (C) 2004 - 2016 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -176,26 +177,21 @@ public class TMXMapWriter {
         w.startElement("map");
 
         w.writeAttribute("version", "1.0");
-
-        switch (map.getOrientation()) {
-            case Map.ORIENTATION_ORTHOGONAL:
-                w.writeAttribute("orientation", "orthogonal");
-                break;
-            case Map.ORIENTATION_ISOMETRIC:
-                w.writeAttribute("orientation", "isometric");
-                break;
-            case Map.ORIENTATION_HEXAGONAL:
-                w.writeAttribute("orientation", "hexagonal");
-                break;
-            case Map.ORIENTATION_SHIFTED:
-                w.writeAttribute("orientation", "shifted");
-                break;
-        }
-
+        
+        Map.Orientation orientation = map.getOrientation();
+        w.writeAttribute("orientation", String.valueOf(orientation));
         w.writeAttribute("width", map.getWidth());
         w.writeAttribute("height", map.getHeight());
         w.writeAttribute("tilewidth", map.getTileWidth());
         w.writeAttribute("tileheight", map.getTileHeight());
+
+        switch (orientation) {
+            case HEXAGONAL:
+                w.writeAttribute("hexsidelength", map.getHexSideLength());
+            case STAGGERED:
+                w.writeAttribute("staggeraxis", String.valueOf(map.getStaggerAxis()));
+                w.writeAttribute("staggerindex", String.valueOf(map.getStaggerIndex()));
+        }
 
         writeProperties(map.getProperties(), w);
 

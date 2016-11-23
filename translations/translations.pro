@@ -63,7 +63,7 @@ isEmpty(LRELEASE):LRELEASE = $$fixSlashes($$[QT_INSTALL_BINS]/lrelease)
 ts.commands = cd $$PWD/.. && $$LUPDATE src -ts $$TRANSLATIONS
 QMAKE_EXTRA_TARGETS += ts
 
-win32 {
+win32|!isEmpty(TILED_LINUX_ARCHIVE) {
     TARGET_DIR = .
 } else:macx {
     TARGET_DIR = ../bin/Tiled.app/Contents/Translations

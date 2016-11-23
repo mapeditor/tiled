@@ -1,6 +1,6 @@
 !contains(DISABLE_PYTHON_PLUGIN, yes) {
     unix {
-        system(pkg-config python-2.7) {
+        packagesExist(python-2.7) {
             HAVE_PYTHON = yes
             CONFIG += link_pkgconfig
             PKGCONFIG += python-2.7
