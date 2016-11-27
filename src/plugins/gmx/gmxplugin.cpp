@@ -179,8 +179,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                     int xInTilesetGrid = tile->id() % tile->tileset()->columnCount();
                     int yInTilesetGrid = (int)(tile->id() / tile->tileset()->columnCount());
-                    stream.writeAttribute("xo", QString::number(tile->tileset()->margin() + (xInTilesetGrid * tile->tileset()->tileSpacing()) + (xInTilesetGrid * tile->tileset()->tileWidth())));
-                    stream.writeAttribute("yo", QString::number(tile->tileset()->margin() + (yInTilesetGrid * tile->tileset()->tileSpacing()) + (yInTilesetGrid * tile->tileset()->tileHeight())));
+                    stream.writeAttribute("xo", QString::number(tile->tileset()->margin() + (tile->tileset()->tileSpacing() + tile->tileset()->tileWidth()) * xInTilesetGrid));
+                    stream.writeAttribute("yo", QString::number(tile->tileset()->margin() + (tile->tileset()->tileSpacing() + tile->tileset()->tileHeight()) * yInTilesetGrid));
 
                     stream.writeAttribute("depth", depth);
                     stream.writeAttribute("id", QString::number(++tileId));
