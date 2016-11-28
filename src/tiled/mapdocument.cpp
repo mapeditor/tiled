@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
@@ -992,6 +993,50 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
         mUndoStack->push(new MoveMapObjectToGroup(this,
                                                   mapObject,
                                                   objectGroup));
+    }
+    mUndoStack->endMacro();
+}
+
+static bool mapObjectIndexLessThan(MapObject *o1, MapObject *o2){
+    return o1->objectGroup()->objects().indexOf(o1) < o2->objectGroup()->objects().indexOf(o2);
+}
+
+static bool mapObjectIndexGreaterThan(MapObject *o1, MapObject *o2){
+    return o1->objectGroup()->objects().indexOf(o1) > o2->objectGroup()->objects().indexOf(o2);
+}
+
+void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
+    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexLessThan);
+
+    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) up", "", objects.size()));
+    foreach(MapObject *mapObject, objectsSorted) {
+        ObjectGroup *group = mapObject->objectGroup();
+        int index = group->objects().indexOf(mapObject);
+        if (index > 0)
+            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index, index-1, 1));
+    }
+    mUndoStack->endMacro();
+}
+
+void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
+    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexGreaterThan);
+
+    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) down", "", objects.size()));
+    foreach(MapObject *mapObject, objectsSorted) {
+        ObjectGroup *group = mapObject->objectGroup();
+        int index = group->objects().indexOf(mapObject);
+        if (index < group->objectCount() - 1)
+            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index+1, index, 1));
     }
     mUndoStack->endMacro();
 }
