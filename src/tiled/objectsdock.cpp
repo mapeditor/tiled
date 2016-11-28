@@ -56,8 +56,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mActionObjectProperties = new QAction(this);
     mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
 
-    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
-
     connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
@@ -80,6 +78,10 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16x16/go-up.png")));
     mActionMoveDown = new QAction(this);
     mActionMoveDown->setIcon(QIcon(QLatin1String(":/images/16x16/go-down.png")));
+
+    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
+    Utils::setThemeIcon(mActionMoveUp, "go-up");
+    Utils::setThemeIcon(mActionMoveDown, "go-down");
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
@@ -111,8 +113,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
             SLOT(documentAboutToClose(MapDocument*)));
 
-    connect(mActionMoveUp, SIGNAL(triggered()), SLOT(moveObjectsUp()));
-    connect(mActionMoveDown, SIGNAL(triggered()), SLOT(moveObjectsDown()));
+    connect(mActionMoveUp, &QAction::triggered, this, &ObjectsDock::moveObjectsUp);
+    connect(mActionMoveDown, &QAction::triggered, this, &ObjectsDock::moveObjectsDown);
 }
 
 void ObjectsDock::moveObjectsUp()
@@ -165,27 +167,35 @@ void ObjectsDock::retranslateUi()
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
     mActionObjectProperties->setToolTip(tr("Object Properties"));
+    mActionMoveUp->setToolTip(tr("Move Objects Up"));
+    mActionMoveDown->setToolTip(tr("Move Objects Down"));
 
     updateActions();
 }
 
 void ObjectsDock::updateActions()
 {
-    int count = mMapDocument ? mMapDocument->selectedObjects().count() : 0;
-    bool enabled = count > 0;
-    mActionObjectProperties->setEnabled(count == 1);
+    int selectedObjectsCount = 0;
+    int objectGroupCount = 0;
 
-    if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
-        enabled = false;
-    mActionMoveToGroup->setEnabled(enabled);
-    mActionMoveToGroup->setToolTip(tr("Move %n Object(s) to Layer", "", count));
+    if (mMapDocument) {
+        selectedObjectsCount = mMapDocument->selectedObjects().count();
+        objectGroupCount = mMapDocument->map()->objectGroupCount();
+    }
+
+    mActionObjectProperties->setEnabled(selectedObjectsCount > 0);
+    mActionMoveToGroup->setEnabled(selectedObjectsCount > 0 && objectGroupCount >= 2);
+    mActionMoveToGroup->setToolTip(tr("Move %n Object(s) to Layer", "", selectedObjectsCount));
+    mActionMoveUp->setEnabled(selectedObjectsCount > 0);
+    mActionMoveDown->setEnabled(selectedObjectsCount > 0);
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
 {
     mMoveToMenu->clear();
 
-    foreach (ObjectGroup *objectGroup, mMapDocument->map()->objectGroups()) {
+    const auto &objectGroups = mMapDocument->map()->objectGroups();
+    for (ObjectGroup *objectGroup : objectGroups) {
         QAction *action = mMoveToMenu->addAction(objectGroup->name());
         action->setData(QVariant::fromValue(objectGroup));
     }
@@ -210,7 +220,9 @@ void ObjectsDock::objectProperties()
 void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
 {
     mExpandedGroups[mapDoc].clear();
-    foreach (ObjectGroup *og, mapDoc->map()->objectGroups()) {
+
+    const auto &objectGroups = mMapDocument->map()->objectGroups();
+    for (ObjectGroup *og : objectGroups) {
         if (mObjectsView->isExpanded(mObjectsView->model()->index(og)))
             mExpandedGroups[mapDoc].append(og);
     }
@@ -218,9 +230,9 @@ void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
 
 void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
 {
-    foreach (ObjectGroup *og, mExpandedGroups[mapDoc])
+    const auto objectGroups = mExpandedGroups.take(mapDoc);
+    for (ObjectGroup *og : objectGroups)
         mObjectsView->setExpanded(mObjectsView->model()->index(og), true);
-    mExpandedGroups[mapDoc].clear();
 }
 
 void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)

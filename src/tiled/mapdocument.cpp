@@ -44,6 +44,7 @@
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "pluginmanager.h"
+#include "rangeset.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
@@ -347,7 +348,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
 
             // Remove objects that will fall outside of the map
             if (removeObjects) {
-                foreach (MapObject *o, objectGroup->objects()) {
+                for (MapObject *o : objectGroup->objects()) {
                     if (!visibleIn(visibleArea, o, mRenderer)) {
                         mUndoStack->push(new RemoveMapObject(this, o));
                     } else {
@@ -416,7 +417,8 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
                               mSelectedObjects.size()));
 
     // TODO: Rotate them properly as a group
-    foreach (MapObject *mapObject, mSelectedObjects) {
+    const auto &selectedObjects = mSelectedObjects;
+    for (MapObject *mapObject : selectedObjects) {
         const qreal oldRotation = mapObject->rotation();
         qreal newRotation = oldRotation;
 
@@ -762,7 +764,8 @@ void MapDocument::unifyTilesets(Map *map)
 
     if (!undoCommands.isEmpty()) {
         mUndoStack->beginMacro(tr("Tileset Changes"));
-        foreach (QUndoCommand *command, undoCommands)
+        const auto &commands = undoCommands;
+        for (QUndoCommand *command : commands)
             mUndoStack->push(command);
         mUndoStack->endMacro();
     }
@@ -917,7 +920,7 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
             setCurrentObject(nullptr);
 
     int removedCount = 0;
-    foreach (MapObject *object, objects)
+    for (MapObject *object : objects)
         removedCount += mSelectedObjects.removeAll(object);
 
     if (removedCount > 0)
@@ -972,7 +975,7 @@ void MapDocument::removeObjects(const QList<MapObject *> &objects)
         return;
 
     mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
+    for (MapObject *mapObject : objects)
         mUndoStack->push(new RemoveMapObject(this, mapObject));
     mUndoStack->endMacro();
 }
@@ -986,7 +989,7 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    foreach (MapObject *mapObject, objects) {
+    for (MapObject *mapObject : objects) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
 
@@ -997,12 +1000,20 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->endMacro();
 }
 
-static bool mapObjectIndexLessThan(MapObject *o1, MapObject *o2){
-    return o1->objectGroup()->objects().indexOf(o1) < o2->objectGroup()->objects().indexOf(o2);
-}
+typedef QMap<ObjectGroup*, RangeSet<int>>           Ranges;
+typedef QMapIterator<ObjectGroup*, RangeSet<int>>   RangesIterator;
 
-static bool mapObjectIndexGreaterThan(MapObject *o1, MapObject *o2){
-    return o1->objectGroup()->objects().indexOf(o1) > o2->objectGroup()->objects().indexOf(o2);
+static Ranges computeRanges(const QList<MapObject *> &objects)
+{
+    Ranges ranges;
+
+    for (MapObject *object : objects) {
+        ObjectGroup *group = object->objectGroup();
+        auto &set = ranges[group];
+        set.insert(group->objects().indexOf(object));
+    }
+
+    return ranges;
 }
 
 void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
@@ -1010,17 +1021,37 @@ void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
     if (objects.isEmpty())
         return;
 
-		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
-    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexLessThan);
+    const auto ranges = computeRanges(objects);
 
-    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) up", "", objects.size()));
-    foreach(MapObject *mapObject, objectsSorted) {
-        ObjectGroup *group = mapObject->objectGroup();
-        int index = group->objects().indexOf(mapObject);
-        if (index > 0)
-            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index, index-1, 1));
+    QScopedPointer<QUndoCommand> command(new QUndoCommand(tr("Move %n Object(s) Up",
+                                                             "", objects.size())));
+
+    RangesIterator rangesIterator(ranges);
+    while (rangesIterator.hasNext()) {
+        rangesIterator.next();
+
+        ObjectGroup *group = rangesIterator.key();
+        const RangeSet<int> &rangeSet = rangesIterator.value();
+
+        const RangeSet<int>::Range it_begin = rangeSet.begin();
+        RangeSet<int>::Range it = rangeSet.end();
+        Q_ASSERT(it != it_begin);
+
+        do {
+            --it;
+
+            int from = it.first();
+            int count = it.length();
+            int to = from + count + 1;
+
+            if (to <= group->objectCount())
+                new ChangeMapObjectsOrder(this, group, from, to, count, command.data());
+
+        } while (it != it_begin);
     }
-    mUndoStack->endMacro();
+
+    if (command->childCount() > 0)
+        mUndoStack->push(command.take());
 }
 
 void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
@@ -1028,17 +1059,33 @@ void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
     if (objects.isEmpty())
         return;
 
-		QList<MapObject *> objectsSorted = QList<MapObject *>(objects);
-    qSort(objectsSorted.begin(), objectsSorted.end(), mapObjectIndexGreaterThan);
+    QScopedPointer<QUndoCommand> command(new QUndoCommand(tr("Move %n Object(s) Down",
+                                                             "", objects.size())));
 
-    mUndoStack->beginMacro(tr("Move %n Object(s) index(ices) down", "", objects.size()));
-    foreach(MapObject *mapObject, objectsSorted) {
-        ObjectGroup *group = mapObject->objectGroup();
-        int index = group->objects().indexOf(mapObject);
-        if (index < group->objectCount() - 1)
-            mUndoStack->push(new ChangeMapObjectsOrder(this, group, index+1, index, 1));
+    RangesIterator rangesIterator(computeRanges(objects));
+    while (rangesIterator.hasNext()) {
+        rangesIterator.next();
+
+        ObjectGroup *group = rangesIterator.key();
+        const RangeSet<int> &rangeSet = rangesIterator.value();
+
+        RangeSet<int>::Range it = rangeSet.begin();
+        const RangeSet<int>::Range it_end = rangeSet.end();
+
+        for (; it != it_end; ++it) {
+            int from = it.first();
+
+            if (from > 0) {
+                int to = from - 1;
+                int count = it.length();
+
+                new ChangeMapObjectsOrder(this, group, from, to, count, command.data());
+            }
+        }
     }
-    mUndoStack->endMacro();
+
+    if (command->childCount() > 0)
+        mUndoStack->push(command.take());
 }
 
 void MapDocument::setProperty(Object *object,
