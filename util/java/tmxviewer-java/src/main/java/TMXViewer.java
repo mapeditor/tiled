@@ -34,6 +34,7 @@ import tiled.view.OrthogonalRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import tiled.view.IsometricRenderer;
 
 /**
  * An example showing how to use libtiled-java to do a simple TMX viewer.
@@ -129,6 +130,10 @@ class MapView extends JPanel implements Scrollable
         switch (map.getOrientation()) {
             case ORTHOGONAL:
                 return new OrthogonalRenderer(map);
+
+            case ISOMETRIC:
+                return new IsometricRenderer(map);
+
             default:
                 return null;
         }
