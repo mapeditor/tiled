@@ -294,6 +294,8 @@ QtGuiApplication {
         "resizemapobject.h",
         "resizetilelayer.cpp",
         "resizetilelayer.h",
+        "reversingproxymodel.cpp",
+        "reversingproxymodel.h",
         "rotatemapobject.cpp",
         "rotatemapobject.h",
         "selectionrectangle.cpp",

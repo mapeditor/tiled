@@ -220,7 +220,8 @@ SOURCES += aboutdialog.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
     clickablelabel.cpp \
-    imagecolorpickerwidget.cpp
+    imagecolorpickerwidget.cpp \
+    reversingproxymodel.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -256,6 +257,7 @@ HEADERS += aboutdialog.h \
     changetileprobability.h \
     changeselectedarea.h \
     changetileterrain.h \
+    clickablelabel.h \
     clipboardmanager.h \
     colorbutton.h \
     containerhelpers.h \
@@ -284,6 +286,7 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
+    imagecolorpickerwidget.h \
     imagelayeritem.h \
     languagemanager.h \
     layerdock.h \
@@ -334,6 +337,7 @@ HEADERS += aboutdialog.h \
     resizemap.h \
     resizemapobject.h \
     resizetilelayer.h \
+    reversingproxymodel.h \
     rotatemapobject.h \
     selectionrectangle.h \
     selectsametiletool.h \
@@ -375,15 +379,14 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    clickablelabel.h \
-    imagecolorpickerwidget.h
+    zoomable.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
     exportasimagedialog.ui \
+    imagecolorpickerwidget.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
@@ -393,8 +396,7 @@ FORMS += aboutdialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
     texteditordialog.ui \
-    tileanimationeditor.ui \
-    imagecolorpickerwidget.ui
+    tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
 icon32.files += images/32x32/tiled.png

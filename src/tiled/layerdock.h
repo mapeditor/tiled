@@ -28,6 +28,7 @@
 #include <QTreeView>
 #include <QToolButton>
 
+class QAbstractProxyModel;
 class QLabel;
 class QModelIndex;
 class QTreeView;
@@ -90,17 +91,20 @@ public:
     QSize sizeHint() const override;
     void setMapDocument(MapDocument *mapDocument);
 
+    void editLayerModelIndex(const QModelIndex &layerModelIndex);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
-    void currentRowChanged(const QModelIndex &index);
-    void indexPressed(const QModelIndex &index);
+    void currentRowChanged(const QModelIndex &proxyIndex);
+    void indexPressed(const QModelIndex &proxyIndex);
     void currentLayerIndexChanged(int index);
 
 private:
     MapDocument *mMapDocument;
+    QAbstractProxyModel *mProxyModel;
 };
 
 } // namespace Internal

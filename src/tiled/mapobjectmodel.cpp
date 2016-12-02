@@ -171,8 +171,7 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         case Qt::CheckStateRole: {
             LayerModel *layerModel = mMapDocument->layerModel();
             const int layerIndex = mMap->layers().indexOf(objectGroup);
-            const int row = layerModel->layerIndexToRow(layerIndex);
-            layerModel->setData(layerModel->index(row), value, role);
+            layerModel->setData(layerModel->index(layerIndex), value, role);
             return true;
         }
         case Qt::EditRole: {

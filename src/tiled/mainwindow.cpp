@@ -1481,10 +1481,8 @@ void MainWindow::layerComboActivated(int index)
     if (!mMapDocument)
         return;
 
-    int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
-
-    if (layerIndex != mMapDocument->currentLayerIndex())
-        mMapDocument->setCurrentLayerIndex(layerIndex);
+    if (index != mMapDocument->currentLayerIndex())
+        mMapDocument->setCurrentLayerIndex(index);
 }
 
 void MainWindow::openRecentFile()
@@ -1564,7 +1562,7 @@ void MainWindow::updateActions()
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
-    int layerComboIndex = -1;
+    int layerIndex = -1;
 
     if (mMapDocument) {
         Layer *currentLayer = mMapDocument->currentLayer();
@@ -1573,10 +1571,7 @@ void MainWindow::updateActions()
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
-
-        int layerIndex = mMapDocument->currentLayerIndex();
-        if (layerIndex != -1)
-            layerComboIndex = mMapDocument->layerModel()->layerIndexToRow(layerIndex);
+        layerIndex = mMapDocument->currentLayerIndex();
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
@@ -1609,7 +1604,7 @@ void MainWindow::updateActions()
     updateZoomLabel(); // for the zoom actions
 
     mLayerComboBox->setEnabled(mMapDocument);
-    mLayerComboBox->setCurrentIndex(layerComboIndex);
+    mLayerComboBox->setCurrentIndex(layerIndex);
 }
 
 void MainWindow::updateZoomLabel()

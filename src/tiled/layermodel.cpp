@@ -56,11 +56,10 @@ int LayerModel::rowCount(const QModelIndex &parent) const
  */
 QVariant LayerModel::data(const QModelIndex &index, int role) const
 {
-    const int layerIndex = toLayerIndex(index);
-    if (layerIndex < 0)
+    if (index.row() < 0)
         return QVariant();
 
-    const Layer *layer = mMap->layerAt(layerIndex);
+    const Layer *layer = mMap->layerAt(index.row());
 
     switch (role) {
     case Qt::DisplayRole:
@@ -90,18 +89,17 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
 bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
                          int role)
 {
-    const int layerIndex = toLayerIndex(index);
-    if (layerIndex < 0)
+    if (index.row() < 0)
         return false;
 
-    Layer *layer = mMap->layerAt(layerIndex);
+    Layer *layer = mMap->layerAt(index.row());
 
     if (role == Qt::CheckStateRole) {
         Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
         const bool visible = (c == Qt::Checked);
         if (visible != layer->isVisible()) {
             QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                        layerIndex,
+                                                        index.row(),
                                                         visible);
             mMapDocument->undoStack()->push(command);
         }
@@ -112,7 +110,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         if (ok) {
             if (layer->opacity() != opacity) {
                 QUndoCommand *command = new SetLayerOpacity(mMapDocument,
-                                                            layerIndex,
+                                                            index.row(),
                                                             opacity);
                 mMapDocument->undoStack()->push(command);
             }
@@ -121,7 +119,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == Qt::EditRole) {
         const QString newName = value.toString();
         if (layer->name() != newName) {
-            RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
+            RenameLayer *rename = new RenameLayer(mMapDocument, index.row(),
                                                   newName);
             mMapDocument->undoStack()->push(rename);
         }
@@ -157,36 +155,6 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
 }
 
 /**
- * Returns the layer index associated with a given model index.
- * \sa layerIndexToRow
- */
-int LayerModel::toLayerIndex(const QModelIndex &index) const
-{
-    if (index.isValid())
-        return toLayerIndex(index.row());
-
-    return -1;
-}
-
-/**
- * Returns the layer index associated with a given row index.
- * \sa layerIndexToRow
- */
-int LayerModel::toLayerIndex(int index) const
-{
-    return mMap->layerCount() - index - 1;
-}
-
-/**
- * Returns the row associated with the given layer index.
- * \sa toLayerIndex
- */
-int LayerModel::layerIndexToRow(int layerIndex) const
-{
-    return mMap->layerCount() - layerIndex - 1;
-}
-
-/**
  * Sets the map document associated with this model.
  */
 void LayerModel::setMapDocument(MapDocument *mapDocument)
@@ -205,8 +173,7 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
  */
 void LayerModel::insertLayer(int index, Layer *layer)
 {
-    const int row = layerIndexToRow(index) + 1;
-    beginInsertRows(QModelIndex(), row, row);
+    beginInsertRows(QModelIndex(), index, index);
     mMap->insertLayer(index, layer);
     endInsertRows();
     emit layerAdded(index);
@@ -220,8 +187,7 @@ void LayerModel::insertLayer(int index, Layer *layer)
 Layer *LayerModel::takeLayerAt(int index)
 {
     emit layerAboutToBeRemoved(index);
-    const int row = layerIndexToRow(index);
-    beginRemoveRows(QModelIndex(), row, row);
+    beginRemoveRows(QModelIndex(), index, index);
     Layer *layer = mMap->takeLayerAt(index);
     endRemoveRows();
     emit layerRemoved(index);
@@ -233,12 +199,13 @@ Layer *LayerModel::takeLayerAt(int index)
  */
 void LayerModel::setLayerVisible(int layerIndex, bool visible)
 {
-    const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);
     if (layer->isVisible() == visible)
         return;
 
     layer->setVisible(visible);
+
+    const QModelIndex modelIndex = index(layerIndex, 0);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }
@@ -274,7 +241,6 @@ void LayerModel::setLayerOffset(int layerIndex, const QPointF &offset)
  */
 void LayerModel::renameLayer(int layerIndex, const QString &name)
 {
-    const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);
     if (layer->name() == name)
         return;
@@ -282,6 +248,8 @@ void LayerModel::renameLayer(int layerIndex, const QString &name)
     emit layerAboutToBeRenamed(layerIndex);
     layer->setName(name);
     emit layerRenamed(layerIndex);
+
+    const QModelIndex modelIndex = index(layerIndex, 0);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }
