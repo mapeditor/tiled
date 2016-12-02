@@ -22,6 +22,7 @@
 #include "ui_tileanimationeditor.h"
 
 #include "changetileanimation.h"
+#include "editframedurationsdialog.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "rangeset.h"
@@ -288,6 +289,10 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(framesEdited()));
 
+    connect(mUi->frameList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(selectionChanged(QItemSelection,QItemSelection)));
+    connect(mUi->editFrameDurations, SIGNAL(clicked()), SLOT(editFrameDurations()));
+
     connect(mPreviewAnimationDriver, SIGNAL(update(int)),
             SLOT(advancePreviewAnimation(int)));
 
@@ -522,6 +527,21 @@ void TileAnimationEditor::resetPreview()
 
     mUi->preview->setText(QApplication::translate("TileAnimationEditor",
                                                   "Preview"));
+}
+
+void TileAnimationEditor::selectionChanged(QItemSelection, QItemSelection)
+{
+    mUi->editFrameDurations->setEnabled(mUi->frameList->selectionModel()->hasSelection());
+}
+
+void TileAnimationEditor::editFrameDurations()
+{
+    EditFrameDurationsDialog dialog(window());
+    if (dialog.exec() == EditFrameDurationsDialog::Accepted) {
+        for (QModelIndex &item : mUi->frameList->selectionModel()->selectedRows()) {
+            mFrameListModel->setData(item, dialog.frameDuration(), Qt::EditRole);
+        }
+    }
 }
 
 } // namespace Internal
