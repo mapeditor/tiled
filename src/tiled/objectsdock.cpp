@@ -22,12 +22,13 @@
 
 #include "documentmanager.h"
 #include "map.h"
-#include "mapobject.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapobject.h"
 #include "mapobjectmodel.h"
 #include "objectgroup.h"
 #include "preferences.h"
+#include "reversingproxymodel.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -132,7 +133,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
-        saveExpandedGroups(mMapDocument);
+        saveExpandedGroups();
         mMapDocument->disconnect(this);
     }
 
@@ -141,7 +142,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        restoreExpandedGroups(mMapDocument);
+        restoreExpandedGroups();
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateActions()));
     }
@@ -217,22 +218,27 @@ void ObjectsDock::objectProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
+void ObjectsDock::saveExpandedGroups()
 {
-    mExpandedGroups[mapDoc].clear();
+    mExpandedGroups[mMapDocument].clear();
 
     const auto &objectGroups = mMapDocument->map()->objectGroups();
     for (ObjectGroup *og : objectGroups) {
-        if (mObjectsView->isExpanded(mObjectsView->model()->index(og)))
-            mExpandedGroups[mapDoc].append(og);
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+        const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
+        if (mObjectsView->isExpanded(index))
+            mExpandedGroups[mMapDocument].append(og);
     }
 }
 
-void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
+void ObjectsDock::restoreExpandedGroups()
 {
-    const auto objectGroups = mExpandedGroups.take(mapDoc);
-    for (ObjectGroup *og : objectGroups)
-        mObjectsView->setExpanded(mObjectsView->model()->index(og), true);
+    const auto objectGroups = mExpandedGroups.take(mMapDocument);
+    for (ObjectGroup *og : objectGroups) {
+        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+        const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
+        mObjectsView->setExpanded(index, true);
+    }
 }
 
 void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)
@@ -245,9 +251,11 @@ void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
+    , mProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
     setUniformRowHeights(true);
+    setModel(mProxyModel);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -275,7 +283,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-        setModel(mMapDocument->mapObjectModel());
+        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
         const int firstSectionSize =
@@ -291,22 +299,26 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     }
 }
 
-MapObjectModel *ObjectsView::model() const
+MapObjectModel *ObjectsView::mapObjectModel() const
 {
-    return static_cast<MapObjectModel*>(QTreeView::model());
+    return mMapDocument ? mMapDocument->mapObjectModel() : nullptr;
 }
 
-void ObjectsView::onPressed(const QModelIndex &index)
+void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
-    if (MapObject *mapObject = model()->toMapObject(index))
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+
+    if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
-    else if (ObjectGroup *objectGroup = model()->toObjectGroup(index))
+    else if (ObjectGroup *objectGroup = mapObjectModel()->toObjectGroup(index))
         mMapDocument->setCurrentObject(objectGroup);
 }
 
-void ObjectsView::onActivated(const QModelIndex &index)
+void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 {
-    if (MapObject *mapObject = model()->toMapObject(index)) {
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+
+    if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
         mMapDocument->emitEditCurrentObject();
     }
@@ -330,19 +342,21 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     if (!mMapDocument || mSynching)
         return;
 
-    const QModelIndexList selectedRows = selectionModel()->selectedRows();
+    const QModelIndexList selectedProxyRows = selectionModel()->selectedRows();
     int currentLayerIndex = -1;
 
     QList<MapObject*> selectedObjects;
-    for (const QModelIndex &index : selectedRows) {
-        if (ObjectGroup *og = model()->toLayer(index)) {
+    for (const QModelIndex &proxyIndex : selectedProxyRows) {
+        const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+
+        if (ObjectGroup *og = mapObjectModel()->toLayer(index)) {
             int index = mMapDocument->map()->layers().indexOf(og);
             if (currentLayerIndex == -1)
                 currentLayerIndex = index;
             else if (currentLayerIndex != index)
                 currentLayerIndex = -2;
         }
-        if (MapObject *o = model()->toMapObject(index))
+        if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
     }
 
@@ -373,7 +387,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(model()->index(o));
+        scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
     }
 }
 
@@ -382,11 +396,10 @@ void ObjectsView::synchronizeSelectedItems()
     Q_ASSERT(!mSynching);
     Q_ASSERT(mMapDocument);
 
-    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     QItemSelection itemSelection;
 
-    for (MapObject *o : selectedObjects) {
-        QModelIndex index = model()->index(o);
+    for (MapObject *o : mMapDocument->selectedObjects()) {
+        QModelIndex index = mProxyModel->mapFromSource(mapObjectModel()->index(o));
         itemSelection.select(index, index);
     }
 
