@@ -33,6 +33,8 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.Properties;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 /**
  * A layer of a map.
  *
@@ -159,6 +161,7 @@ public abstract class MapLayer implements Cloneable {
      *
      * @param name the new name
      */
+    @XmlAttribute
     public void setName(String name) {
         this.name = name;
     }
