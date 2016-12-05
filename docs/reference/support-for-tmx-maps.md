@@ -142,6 +142,9 @@ Following entries are integrated solutions for specific game engines. They are t
 ### Node.js
 * [node-tmx-parser](https://github.com/andrewrk/node-tmx-parser) - loads the TMX file into a JavaScript object
 
+### Orx Portable Game Engine
+* [TMX to ORX Converter](http://orx-project.org/wiki/tutorials/community/sausage/tmx_to_orx) Tutorial and converter download for Orx.
+
 ### Pygame
 * [Pygame map loader](http://www.pygame.org/project/1158/) by dr0id
 * [PyTMX](https://github.com/bitcraft/PyTMX) by Leif Theden (bitcraft)
