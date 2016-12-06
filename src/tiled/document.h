@@ -96,6 +96,9 @@ public:
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
 
+    bool ignoreBrokenLinks() const;
+    void setIgnoreBrokenLinks(bool ignoreBrokenLinks);
+
 signals:
     void saved();
 
@@ -115,6 +118,8 @@ signals:
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
 
+    void ignoreBrokenLinksChanged(bool ignoreBrokenLinks);
+
 protected:
     void setFileName(const QString &fileName);
 
@@ -124,6 +129,8 @@ protected:
     QDateTime mLastSaved;
 
     Object *mCurrentObject;             /**< Current properties object. */
+
+    bool mIgnoreBrokenLinks;
 };
 
 
@@ -139,6 +146,11 @@ inline QString Document::fileName() const
 inline QUndoStack *Document::undoStack() const
 {
     return mUndoStack;
+}
+
+inline bool Document::ignoreBrokenLinks() const
+{
+    return mIgnoreBrokenLinks;
 }
 
 } // namespace Internal

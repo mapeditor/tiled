@@ -43,6 +43,8 @@ class FileSystemWatcher;
 namespace Internal {
 
 class AbstractTool;
+class BrokenLinksModel;
+class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
@@ -255,6 +257,8 @@ private:
     QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;
+    BrokenLinksModel *mBrokenLinksModel;
+    BrokenLinksWidget *mBrokenLinksWidget;
     QStackedLayout *mEditorStack;
     MapEditor *mMapEditor;
 

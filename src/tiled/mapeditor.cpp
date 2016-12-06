@@ -132,63 +132,6 @@ static UncheckableItemsModel uncheckableLayerModel;
 } // anonymous namespace
 
 
-class MapViewContainer : public QWidget
-{
-    Q_OBJECT
-
-public:
-    MapViewContainer(MapView *mapView,
-                     MapDocument *mapDocument,
-                     QWidget *parent = nullptr)
-        : QWidget(parent)
-        , mMapView(mapView)
-        , mBrokenLinksModel(new BrokenLinksModel(mapDocument, this))
-        , mBrokenLinksWidget(nullptr)
-    {
-        QVBoxLayout *layout = new QVBoxLayout(this);
-        layout->setMargin(0);
-        layout->setSpacing(0);
-
-        if (mBrokenLinksModel->hasBrokenLinks()) {
-            mBrokenLinksWidget = new BrokenLinksWidget(mBrokenLinksModel, this);
-            layout->addWidget(mBrokenLinksWidget);
-
-            connect(mBrokenLinksWidget, &BrokenLinksWidget::ignore,
-                    this, &MapViewContainer::deleteBrokenLinksWidget);
-        }
-
-        connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
-                this, &MapViewContainer::hasBrokenLinksChanged);
-
-        layout->addWidget(mapView);
-    }
-
-    MapView *mapView() const { return mMapView; }
-
-private slots:
-    void hasBrokenLinksChanged(bool hasBrokenLinks)
-    {
-        if (!hasBrokenLinks)
-            deleteBrokenLinksWidget();
-    }
-
-    void deleteBrokenLinksWidget()
-    {
-        if (mBrokenLinksWidget) {
-            mBrokenLinksWidget->deleteLater();
-            mBrokenLinksWidget = nullptr;
-        }
-    }
-
-private:
-    MapView *mMapView;
-
-    BrokenLinksModel *mBrokenLinksModel;
-    BrokenLinksWidget *mBrokenLinksWidget;
-};
-
-
-
 MapEditor::MapEditor(QObject *parent)
     : Editor(parent)
     , mMainWindow(new QMainWindow)
@@ -348,15 +291,14 @@ void MapEditor::addDocument(Document *document)
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
     Q_ASSERT(mapDocument);
 
-    MapView *view = new MapView;
+    MapView *view = new MapView(mWidgetStack);
     MapScene *scene = new MapScene(view); // scene is owned by the view
-    MapViewContainer *container = new MapViewContainer(view, mapDocument, mWidgetStack);
 
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
-    mWidgetForMap.insert(mapDocument, container);
-    mWidgetStack->addWidget(container);
+    mWidgetForMap.insert(mapDocument, view);
+    mWidgetStack->addWidget(view);
 
     // restore the previous state for this map
     QVariantMap mapState = mMapStates.value(document->fileName()).toMap();
@@ -382,12 +324,10 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mapDocument);
     Q_ASSERT(mWidgetForMap.contains(mapDocument));
 
-    MapViewContainer *mapViewContainer = mWidgetForMap.take(mapDocument);
+    MapView *mapView = mWidgetForMap.take(mapDocument);
 
     // remember the state of this map before deleting the view
     if (!mapDocument->fileName().isEmpty()) {
-        MapView *mapView = mapViewContainer->mapView();
-
         QVariantMap mapState;
         mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
         mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
@@ -401,8 +341,8 @@ void MapEditor::removeDocument(Document *document)
     }
 
     // remove first, to keep it valid while the current widget changes
-    mWidgetStack->removeWidget(mapViewContainer);
-    delete mapViewContainer;
+    mWidgetStack->removeWidget(mapView);
+    delete mapView;
 }
 
 void MapEditor::setCurrentDocument(Document *document)
@@ -418,9 +358,9 @@ void MapEditor::setCurrentDocument(Document *document)
 
     mCurrentMapDocument = mapDocument;
 
-    MapViewContainer *container = mWidgetForMap.value(mapDocument);
-    if (container)
-        mWidgetStack->setCurrentWidget(container);
+    MapView *mapView = mWidgetForMap.value(mapDocument);
+    if (mapView)
+        mWidgetStack->setCurrentWidget(mapView);
 
     mLayerDock->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
@@ -444,7 +384,7 @@ void MapEditor::setCurrentDocument(Document *document)
 //        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
 //                SLOT(updateActions()));
 
-        if (MapView *mapView = currentMapView()) {
+        if (mapView) {
             mZoomable = mapView->zoomable();
             mZoomable->setComboBox(mZoomComboBox);
         }
@@ -464,7 +404,7 @@ void MapEditor::setCurrentDocument(Document *document)
         mapScene->disableSelectedTool();
         mViewWithTool = nullptr;
     }
-    if (MapView *mapView = currentMapView()) {
+    if (mapView) {
         MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);
         mapScene->enableSelectedTool();
@@ -506,17 +446,6 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mMiniMapDock,
         mTileStampsDock
     };
-}
-
-MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
-{
-    MapViewContainer *container = mWidgetForMap.value(mapDocument);
-    return container ? container->mapView() : nullptr;
-}
-
-MapView *MapEditor::currentMapView() const
-{
-    return viewForDocument(mCurrentMapDocument);
 }
 
 Zoomable *MapEditor::zoomable() const
@@ -615,8 +544,8 @@ void MapEditor::selectTerrainBrush()
 
 void MapEditor::currentWidgetChanged()
 {
-    auto container = static_cast<MapViewContainer*>(mWidgetStack->currentWidget());
-    setCurrentDocument(container ? container->mapView()->mapScene()->mapDocument() : nullptr);
+    auto mapView = static_cast<MapView*>(mWidgetStack->currentWidget());
+    setCurrentDocument(mapView ? mapView->mapScene()->mapDocument() : nullptr);
 }
 
 //void MapEditor::changeEvent(QEvent *event)
@@ -717,5 +646,3 @@ void MapEditor::retranslateUi()
 
 } // namespace Internal
 } // namespace Tiled
-
-#include "mapeditor.moc"

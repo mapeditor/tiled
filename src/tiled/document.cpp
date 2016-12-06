@@ -36,6 +36,7 @@ Document::Document(DocumentType type, const QString &fileName,
     , mFileName(fileName)
     , mUndoStack(new QUndoStack(this))
     , mCurrentObject(nullptr)
+    , mIgnoreBrokenLinks(false)
 {
     connect(mUndoStack, &QUndoStack::cleanChanged,
             this, &Document::modifiedChanged);
@@ -100,6 +101,15 @@ void Document::removeProperty(Object *object, const QString &name)
 {
     object->removeProperty(name);
     emit propertyRemoved(object, name);
+}
+
+void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
+{
+    if (mIgnoreBrokenLinks == ignoreBrokenLinks)
+        return;
+
+    mIgnoreBrokenLinks = ignoreBrokenLinks;
+    emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
 } // namespace Internal

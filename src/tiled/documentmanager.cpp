@@ -23,6 +23,7 @@
 
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
+#include "brokenlinks.h"
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
@@ -113,10 +114,14 @@ DocumentManager::DocumentManager(QObject *parent)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
     , mFileChangedWarning(new FileChangedWarning(mWidget))
+    , mBrokenLinksModel(new BrokenLinksModel(this))
+    , mBrokenLinksWidget(new BrokenLinksWidget(mBrokenLinksModel, mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
 {
+    mBrokenLinksWidget->setVisible(false);
+
     mTabBar->setExpanding(false);
     mTabBar->setDocumentMode(true);
     mTabBar->setTabsClosable(true);
@@ -131,6 +136,7 @@ DocumentManager::DocumentManager(QObject *parent)
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
     vertical->addWidget(mFileChangedWarning);
+    vertical->addWidget(mBrokenLinksWidget);
     vertical->setMargin(0);
     vertical->setSpacing(0);
 
@@ -149,6 +155,9 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
             this, &DocumentManager::fileChanged);
+
+    connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
+            mBrokenLinksWidget, &BrokenLinksWidget::setVisible);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
@@ -352,6 +361,9 @@ void DocumentManager::addDocument(Document *document)
 
     switchToDocument(documentIndex);
 
+    if (mBrokenLinksModel->hasBrokenLinks())
+        mBrokenLinksWidget->show();
+
     // todo: fix this (move to MapEditor)
     //    centerViewOn(0, 0);
 }
@@ -508,6 +520,8 @@ void DocumentManager::currentIndexChanged()
     }
 
     mFileChangedWarning->setVisible(changed);
+
+    mBrokenLinksModel->setDocument(document);
 
     emit currentDocumentChanged(document);
 }

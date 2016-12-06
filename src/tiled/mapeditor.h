@@ -48,7 +48,6 @@ class MapDocument;
 class MapDocumentActionHandler;
 class MapsDock;
 class MapView;
-class MapViewContainer;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
@@ -125,7 +124,7 @@ private:
 
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
-    QHash<MapDocument*, MapViewContainer*> mWidgetForMap;
+    QHash<MapDocument*, MapView*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
     QToolButton *mRandomButton;
@@ -156,6 +155,17 @@ private:
 
     QMap<QString, QVariant> mMapStates;
 };
+
+
+inline MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
+{
+    return mWidgetForMap.value(mapDocument);
+}
+
+inline MapView *MapEditor::currentMapView() const
+{
+    return viewForDocument(mCurrentMapDocument);
+}
 
 } // namespace Internal
 } // namespace Tiled
