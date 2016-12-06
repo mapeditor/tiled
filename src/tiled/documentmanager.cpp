@@ -338,9 +338,11 @@ void DocumentManager::addDocument(Document *document)
     if (Editor *editor = mEditorForType.value(document->type()))
         editor->addDocument(document);
 
-    const int documentIndex = mDocuments.size() - 1;
+    QString tabText = document->displayName();
+    if (document->isModified())
+        tabText.prepend(QLatin1Char('*'));
 
-    mTabBar->addTab(document->displayName());
+    const int documentIndex = mTabBar->addTab(tabText);
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
     // todo: updateDocumentTab if an embedded tileset name changes
