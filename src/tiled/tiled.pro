@@ -186,6 +186,7 @@ SOURCES += aboutdialog.cpp \
     resizemap.cpp \
     resizemapobject.cpp \
     resizetilelayer.cpp \
+    reversingproxymodel.cpp \
     rotatemapobject.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
