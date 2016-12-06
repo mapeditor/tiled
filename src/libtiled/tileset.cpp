@@ -615,6 +615,38 @@ void Tileset::swap(Tileset &other)
         terrain->mTileset = &other;
 }
 
+SharedTileset Tileset::clone() const
+{
+    SharedTileset c = create(mName, mTileWidth, mTileHeight, mTileSpacing, mMargin);
+
+    // mFileName stays empty
+    c->mImageReference = mImageReference;
+    c->mTileOffset = mTileOffset;
+    c->mColumnCount = mColumnCount;
+    c->mExpectedColumnCount = mExpectedColumnCount;
+    c->mExpectedRowCount = mExpectedRowCount;
+    c->mNextTileId = mNextTileId;
+    c->mTerrainDistancesDirty = mTerrainDistancesDirty;
+    c->mLoaded = mLoaded;
+    c->mBackgroundColor = mBackgroundColor;
+
+    QMapIterator<int, Tile*> tileIterator(mTiles);
+    while (tileIterator.hasNext()) {
+        tileIterator.next();
+
+        const int id = tileIterator.key();
+        const Tile *tile = tileIterator.value();
+
+        c->mTiles.insert(id, tile->clone(c.data()));
+    }
+
+    c->mTerrainTypes.reserve(mTerrainTypes.size());
+    for (Terrain *terrain : mTerrainTypes)
+        c->mTerrainTypes.append(terrain->clone(c.data()));
+
+    return c;
+}
+
 /**
  * Sets tile size to the maximum size.
  */

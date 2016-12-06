@@ -193,3 +193,24 @@ bool Tile::advanceAnimation(int ms)
 
     return previousTileId != frame.tileId;
 }
+
+/**
+ * Returns a duplicate of this tile, to be added to the given \a tileset.
+ */
+Tile *Tile::clone(Tileset *tileset) const
+{
+    Tile *c = new Tile(mImage, mId, tileset);
+
+    c->mImageSource = mImageSource;
+    c->mTerrain = mTerrain;
+    c->mProbability = mProbability;
+
+    if (mObjectGroup)
+        c->mObjectGroup = static_cast<ObjectGroup*>(mObjectGroup->clone());
+
+    c->mFrames = mFrames;
+    c->mCurrentFrameIndex = mCurrentFrameIndex;
+    c->mUnusedTime = mUnusedTime;
+
+    return c;
+}

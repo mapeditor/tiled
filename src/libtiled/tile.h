@@ -140,6 +140,8 @@ public:
 
     bool imageLoaded() const;
 
+    Tile *clone(Tileset *tileset) const;
+
 private:
     int mId;
     Tileset *mTileset;

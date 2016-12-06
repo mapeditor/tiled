@@ -166,8 +166,6 @@ void PropertyBrowser::setDocument(Document *document)
     }
 
     if (tilesetDocument) {
-        connect(tilesetDocument, &TilesetDocument::tilesetFileNameChanged,
-                this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
                 this, &PropertyBrowser::tilesetChanged);
         connect(tilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,

@@ -187,6 +187,8 @@ public:
 
     void swap(Tileset &other);
 
+    SharedTileset clone() const;
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();

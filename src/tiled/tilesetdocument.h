@@ -77,7 +77,6 @@ public:
     void addMapDocument(MapDocument *mapDocument);
     void removeMapDocument(MapDocument *mapDocument);
 
-    void setTilesetFileName(const QString &fileName);
     void setTilesetName(const QString &name);
     void setTilesetTileOffset(const QPoint &tileOffset);
 
@@ -100,7 +99,6 @@ signals:
      */
     void tilesetChanged(Tileset *tileset);
 
-    void tilesetFileNameChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
 

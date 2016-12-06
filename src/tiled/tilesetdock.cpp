@@ -34,6 +34,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
+#include "replacetileset.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -69,47 +70,6 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 namespace {
-
-/**
- * Used for exporting/importing tilesets.
- *
- * @warning Does not work for tilesets that are shared by multiple maps!
- */
-/*
-class SetTilesetFileName : public QUndoCommand
-{
-public:
-    SetTilesetFileName(MapDocument *mapDocument,
-                       Tileset *tileset,
-                       const QString &fileName)
-        : mMapDocument(mapDocument)
-        , mTileset(tileset)
-        , mFileName(fileName)
-    {
-        if (fileName.isEmpty())
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Import Tileset"));
-        else
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Export Tileset"));
-    }
-
-    void undo() override { swap(); }
-    void redo() override { swap(); }
-
-private:
-    void swap()
-    {
-        QString previousFileName = mTileset->fileName();
-        mMapDocument->setTilesetFileName(mTileset, mFileName);
-        mFileName = previousFileName;
-    }
-
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
-    QString mFileName;
-};
-*/
 
 class TilesetMenuButton : public QToolButton
 {
@@ -196,7 +156,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mCurrentTile(nullptr),
     mCurrentTiles(nullptr),
     mNewTileset(new QAction(this)),
-    mImportTileset(new QAction(this)),
+    mEmbedTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
     mEditTileset(new QAction(this)),
     mDeleteTileset(new QAction(this)),
@@ -234,26 +194,26 @@ TilesetDock::TilesetDock(QWidget *parent):
     vertical->addLayout(horizontal);
 
     mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
-    mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
+    mEmbedTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mEditTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
 
     Utils::setThemeIcon(mNewTileset, "document-new");
-    Utils::setThemeIcon(mImportTileset, "document-import");
+    Utils::setThemeIcon(mEmbedTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
     Utils::setThemeIcon(mEditTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
 
     connect(mNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
-    connect(mImportTileset, SIGNAL(triggered()), SLOT(importTileset()));
+    connect(mEmbedTileset, SIGNAL(triggered()), SLOT(embedTileset()));
     connect(mExportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
     connect(mEditTileset, SIGNAL(triggered()), SLOT(editTileset()));
     connect(mDeleteTileset, SIGNAL(triggered()), SLOT(removeTileset()));
 
     mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
-    mToolBar->addAction(mImportTileset);
+    mToolBar->addAction(mEmbedTileset);
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
@@ -476,7 +436,7 @@ void TilesetDock::updateActions()
     const bool tilesetIsDisplayed = view != nullptr;
     const auto map = mMapDocument ? mMapDocument->map() : nullptr;
 
-    mImportTileset->setEnabled(tilesetIsDisplayed && external);
+    mEmbedTileset->setEnabled(tilesetIsDisplayed && external);
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
     mEditTileset->setEnabled(tilesetIsDisplayed);
     mDeleteTileset->setEnabled(tilesetIsDisplayed && map && contains(map->tilesets(), tileset));
@@ -712,7 +672,7 @@ void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
     mNewTileset->setText(tr("New Tileset"));
-    mImportTileset->setText(tr("&Import Tileset"));
+    mEmbedTileset->setText(tr("&Embed Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mEditTileset->setText(tr("Edit Tile&set"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
@@ -857,17 +817,32 @@ void TilesetDock::exportTileset()
     }
 }
 
-void TilesetDock::importTileset()
+void TilesetDock::embedTileset()
 {
     Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    // todo: Reconsider what these import/export actions will actually do
-//    QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-//                                                   tileset,
-//                                                   QString());
-//    mMapDocument->undoStack()->push(command);
+    if (!tileset->isExternal())
+        return;
+
+    // To embed a tileset we clone it, since further changes to that tileset
+    // should not affect the exteral tileset.
+    SharedTileset embeddedTileset = tileset->clone();
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+
+    // Tileset may not be part of the map yet
+    if (mapTilesetIndex == -1)
+        undoStack->push(new AddTileset(mMapDocument, embeddedTileset));
+    else
+        undoStack->push(new ReplaceTileset(mMapDocument, mapTilesetIndex, embeddedTileset));
+
+    // Make sure the embedded tileset is selected
+    int embeddedTilesetIndex = mTilesets.indexOf(embeddedTileset);
+    if (embeddedTilesetIndex != -1)
+        mTabBar->setCurrentIndex(embeddedTilesetIndex);
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)

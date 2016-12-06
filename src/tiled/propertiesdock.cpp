@@ -113,8 +113,6 @@ void PropertiesDock::setDocument(Document *document)
     if (document) {
         connect(document, SIGNAL(currentObjectChanged(Object*)),
                 SLOT(currentObjectChanged(Object*)));
-//        connect(mapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-//                SLOT(tilesetFileNameChanged(Tileset*)));
         connect(document, SIGNAL(editCurrentObject()),
                 SLOT(bringToFront()));
 
@@ -186,34 +184,6 @@ void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify);
-}
-
-void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
-{
-    Object *object = mDocument->currentObject();
-    if (!object)
-        return;
-
-    bool update = false;
-
-    switch (object->typeId()) {
-    case Object::TilesetType:
-        update = object == tileset;
-        break;
-    case Object::TileType:
-        update = static_cast<Tile*>(object)->tileset() == tileset;
-        break;
-    case Object::TerrainType:
-        update = static_cast<Terrain*>(object)->tileset() == tileset;
-        break;
-    default:
-        break;
-    }
-
-    if (update) {
-        currentObjectChanged(object);
-        currentItemChanged(mPropertyBrowser->currentItem());
-    }
 }
 
 void PropertiesDock::addProperty()

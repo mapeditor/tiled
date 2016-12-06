@@ -125,7 +125,7 @@ private slots:
 
     void newTileset();
     void editTileset();
-    void importTileset();
+    void embedTileset();
     void exportTileset();
 
     void refreshTilesetMenu();
@@ -160,7 +160,7 @@ private:
     const Terrain *mTerrain;
 
     QAction *mNewTileset;
-    QAction *mImportTileset;
+    QAction *mEmbedTileset;
     QAction *mExportTileset;
     QAction *mEditTileset;
     QAction *mDeleteTileset;

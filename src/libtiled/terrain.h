@@ -73,6 +73,8 @@ public:
     void setTransitionDistance(int targetTerrainType, int distance);
     void setTransitionDistances(const QVector<int> &transitionDistances);
 
+    Terrain *clone(Tileset *tileset) const;
+
 private:
     int mId;
     Tileset *mTileset;
@@ -169,6 +171,16 @@ inline void Terrain::setTransitionDistance(int targetTerrainType, int distance)
 inline void Terrain::setTransitionDistances(const QVector<int> &transitionDistances)
 {
     mTransitionDistance = transitionDistances;
+}
+
+/**
+ * Returns a duplicate of this terrain, to be added to the given \a tileset.
+ */
+inline Terrain *Terrain::clone(Tileset *tileset) const
+{
+    Terrain *c = new Terrain(mId, tileset, mName, mImageTileId);
+    c->mTransitionDistance = mTransitionDistance;
+    return c;
 }
 
 } // namespace Tiled
