@@ -24,7 +24,6 @@
 
 #include "actionmanager.h"
 #include "addremovemapobject.h"
-#include "addremovetiles.h"
 #include "addremovetileset.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
@@ -774,13 +773,25 @@ void TilesetDock::exportTileset()
     if (!tileset)
         return;
 
+    if (tileset->isExternal())
+        return;
+
+    int mapTilesetIndex = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+    if (mapTilesetIndex == -1)
+        return;
+
+    // To export a tileset we clone it, since the tileset could now be used by
+    // other maps. This ensures undo can take the map back to using an embedded
+    // tileset, without affecting those other maps.
+    SharedTileset externalTileset = tileset->clone();
+
     FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
 
     Preferences *prefs = Preferences::instance();
 
     QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
     suggestedFileName += QLatin1Char('/');
-    suggestedFileName += tileset->name();
+    suggestedFileName += externalTileset->name();
 
     const QLatin1String extension(".tsx");
     if (!suggestedFileName.endsWith(extension))
@@ -803,18 +814,25 @@ void TilesetDock::exportTileset()
     if (!format)
         return;     // can't happen
 
-    if (format->write(*tileset, fileName)) {
-        // todo: Reconsider what these import/export actions will actually do
-//        QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-//                                                       tileset,
-//                                                       fileName);
-//        mMapDocument->undoStack()->push(command);
-    } else {
+    if (!format->write(*externalTileset, fileName)) {
         QString error = format->errorString();
         QMessageBox::critical(window(),
                               tr("Export Tileset"),
                               tr("Error saving tileset: %1").arg(error));
+        return;
     }
+
+    externalTileset->setFileName(fileName);
+
+    QUndoCommand *command = new ReplaceTileset(mMapDocument,
+                                               mapTilesetIndex,
+                                               externalTileset);
+    mMapDocument->undoStack()->push(command);
+
+    // Make sure the external tileset is selected
+    int externalTilesetIndex = mTilesets.indexOf(externalTileset);
+    if (externalTilesetIndex != -1)
+        mTabBar->setCurrentIndex(externalTilesetIndex);
 }
 
 void TilesetDock::embedTileset()
