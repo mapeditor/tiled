@@ -55,6 +55,8 @@ public:
 
     SharedTileset createTileset();
 
+    bool isEmbedded() const;
+
     bool editTilesetParameters(TilesetParameters &parameters);
 
 private slots:

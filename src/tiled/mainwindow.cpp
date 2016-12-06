@@ -1159,20 +1159,26 @@ bool MainWindow::newTileset(const QString &path)
 
     NewTilesetDialog newTileset(this);
     newTileset.setImagePath(startLocation);
-//    newTileset.setTileSize(map->tileSize());
 
-    if (SharedTileset tileset = newTileset.createTileset()) {
-        prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
+    SharedTileset tileset = newTileset.createTileset();
+    if (!tileset)
+        return false;
 
+    prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
+
+    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
+
+    if (mapDocument && newTileset.isEmbedded()) {
+        // Add embedded tileset to the map
+        mapDocument->undoStack()->push(new AddTileset(mapDocument, tileset));
+    } else {
+        // Save new external tileset and open it
         QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
-
         if (!saveDocumentAs(tilesetDocument.data()))
             return false;
-
         mDocumentManager->addDocument(tilesetDocument.take());
-        return true;
     }
-    return false;
+    return true;
 }
 
 void MainWindow::newTilesets(const QStringList &paths)
