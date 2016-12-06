@@ -23,7 +23,7 @@ WindowsInstallerPackage {
             return 32;
     }
 
-    targetName: "tiled-" + project.version + "-win" + bits
+    targetName: "Tiled-" + project.version + "-win" + bits
 
     wix.defines: {
         var defs = [

@@ -32,7 +32,8 @@ Compiling
 
 Make sure the Qt (>= 5.2) development libraries are installed:
 
-* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev libqt5opengl5-dev`
+* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
+  + When using Qt < 5.4: `apt-get install libqt5opengl5-dev`
 * In Fedora:        `yum install qt-devel`
 * In Arch Linux:    `pacman -S qt`
 * In Mac OS X with [Homebrew](http://brew.sh/):

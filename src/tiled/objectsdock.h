@@ -24,6 +24,7 @@
 #include <QDockWidget>
 #include <QTreeView>
 
+class QAbstractProxyModel;
 class QTreeView;
 
 namespace Tiled {
@@ -55,16 +56,20 @@ private slots:
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
     void documentAboutToClose(Document *document);
+    void moveObjectsUp();
+    void moveObjectsDown();
 
 private:
     void retranslateUi();
 
-    void saveExpandedGroups(MapDocument *mapDoc);
-    void restoreExpandedGroups(MapDocument *mapDoc);
+    void saveExpandedGroups();
+    void restoreExpandedGroups();
 
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
     QAction *mActionMoveToGroup;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
@@ -83,15 +88,15 @@ public:
 
     void setMapDocument(MapDocument *mapDoc);
 
-    MapObjectModel *model() const;
+    MapObjectModel *mapObjectModel() const;
 
 protected:
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
 private slots:
-    void onPressed(const QModelIndex &index);
-    void onActivated(const QModelIndex &index);
+    void onPressed(const QModelIndex &proxyIndex);
+    void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
 
@@ -99,6 +104,7 @@ private:
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;
+    QAbstractProxyModel *mProxyModel;
     bool mSynching;
 };
 

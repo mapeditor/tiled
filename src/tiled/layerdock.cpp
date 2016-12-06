@@ -29,6 +29,7 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "objectgroup.h"
+#include "reversingproxymodel.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -180,10 +181,9 @@ void LayerDock::editLayerName()
 
     const LayerModel *layerModel = mMapDocument->layerModel();
     const int currentLayerIndex = mMapDocument->currentLayerIndex();
-    const int row = layerModel->layerIndexToRow(currentLayerIndex);
 
     raise();
-    mLayerView->edit(layerModel->index(row));
+    mLayerView->editLayerModelIndex(layerModel->index(currentLayerIndex));
 }
 
 void LayerDock::sliderValueChanged(int opacity)
@@ -205,8 +205,7 @@ void LayerDock::sliderValueChanged(int opacity)
     if ((int) (layer->opacity() * 100) != opacity) {
         mChangingLayerOpacity = true;
         LayerModel *layerModel = mMapDocument->layerModel();
-        const int row = layerModel->layerIndexToRow(layerIndex);
-        layerModel->setData(layerModel->index(row),
+        layerModel->setData(layerModel->index(layerIndex),
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
         mChangingLayerOpacity = false;
@@ -222,14 +221,16 @@ void LayerDock::retranslateUi()
 
 //=============================================================================
 
-LayerView::LayerView(QWidget *parent):
-    QTreeView(parent),
-    mMapDocument(nullptr)
+LayerView::LayerView(QWidget *parent)
+    : QTreeView(parent)
+    , mMapDocument(nullptr)
+    , mProxyModel(new ReversingProxyModel(this))
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
+    setModel(mProxyModel);
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
@@ -258,7 +259,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        setModel(mMapDocument->layerModel());
+        mProxyModel->setSourceModel(mMapDocument->layerModel());
 
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged(int)));
@@ -269,21 +270,26 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 
         currentLayerIndexChanged(mMapDocument->currentLayerIndex());
     } else {
-        setModel(nullptr);
+        mProxyModel->setSourceModel(nullptr);
     }
 }
 
-void LayerView::currentRowChanged(const QModelIndex &index)
+void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
 {
-    const int layer = mMapDocument->layerModel()->toLayerIndex(index);
-    mMapDocument->setCurrentLayerIndex(layer);
+    edit(mProxyModel->mapFromSource(layerModelIndex));
 }
 
-void LayerView::indexPressed(const QModelIndex &index)
+void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 {
-    const int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
-    if (layerIndex != -1) {
-        Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    mMapDocument->setCurrentLayerIndex(index.row());
+}
+
+void LayerView::indexPressed(const QModelIndex &proxyIndex)
+{
+    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    if (index.isValid()) {
+        Layer *layer = mMapDocument->map()->layerAt(index.row());
         mMapDocument->setCurrentObject(layer);
     }
 }
@@ -292,8 +298,7 @@ void LayerView::currentLayerIndexChanged(int index)
 {
     if (index > -1) {
         const LayerModel *layerModel = mMapDocument->layerModel();
-        const int row = layerModel->layerIndexToRow(index);
-        setCurrentIndex(layerModel->index(row, 0));
+        setCurrentIndex(mProxyModel->mapFromSource(layerModel->index(index, 0)));
     } else {
         setCurrentIndex(QModelIndex());
     }
@@ -304,9 +309,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (!mMapDocument)
         return;
 
-    const QModelIndex index = indexAt(event->pos());
-    const LayerModel *m = mMapDocument->layerModel();
-    const int layerIndex = m->toLayerIndex(index);
+    const QModelIndex proxyIndex = indexAt(event->pos());
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
@@ -315,7 +318,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(handler->actionAddObjectGroup());
     menu.addAction(handler->actionAddImageLayer());
 
-    if (layerIndex >= 0) {
+    if (proxyIndex.isValid()) {
         menu.addAction(handler->actionDuplicateLayer());
         menu.addAction(handler->actionMergeLayerDown());
         menu.addAction(handler->actionRemoveLayer());
@@ -336,15 +339,12 @@ void LayerView::keyPressEvent(QKeyEvent *event)
     if (!mMapDocument)
         return;
 
-    const QModelIndex index = currentIndex();
+    const QModelIndex index = mProxyModel->mapToSource(currentIndex());
     if (!index.isValid())
         return;
 
-    const LayerModel *m = mMapDocument->layerModel();
-    const int layerIndex = m->toLayerIndex(index);
-
     if (event->key() == Qt::Key_Delete) {
-        mMapDocument->removeLayer(layerIndex);
+        mMapDocument->removeLayer(index.row());
         return;
     }
 

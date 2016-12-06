@@ -158,6 +158,8 @@ public:
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
+    void moveObjectsUp(const QList<MapObject*> &objects);
+    void moveObjectsDown(const QList<MapObject*> &objects);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -307,6 +309,7 @@ private slots:
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);
+    void moveObjectIndex(const MapObject *object, int count);
 
     QString mLastExportFileName;
 

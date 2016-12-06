@@ -39,6 +39,8 @@ import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * A layer containing {@link MapObject map objects}.
  *
@@ -46,6 +48,7 @@ import java.util.List;
  * @author Adam Turk
  * @version 0.17
  */
+@XmlRootElement(name = "objectgroup")
 public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
 
     private List<MapObject> objects = new LinkedList<>();

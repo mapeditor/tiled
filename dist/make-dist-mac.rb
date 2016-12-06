@@ -38,7 +38,7 @@ Dir.mktmpdir do |tempDir|
 
     # Use macdeployqt to copy Qt frameworks to the app
     puts "Running macdeployqt"
-    `#{ENV['HOME']}/Qt/5.7/clang_64/bin/macdeployqt "#{tempDir}/Tiled.app"`
+    `#{ENV['HOME']}/Qt/5.6/clang_64/bin/macdeployqt "#{tempDir}/Tiled.app"`
     raise "macdeployqt error #{$?}" unless $? == 0
 
     # Modify plugins to use Qt frameworks contained within the app bundle (is there some way to get macdeployqt to do this?)
@@ -60,7 +60,7 @@ Dir.mktmpdir do |tempDir|
     end
 
     # Create dmg from the temp directory
-    dmgPath = File.join(baseDir, 'tiled-' + version + '.dmg')
+    dmgPath = File.join(baseDir, 'Tiled-' + version + '.dmg')
     puts "Creating dmg at #{dmgPath}"
     `hdiutil create "#{dmgPath}" -srcfolder "#{tempDir}" -volname "Tiled #{version}"`
     raise "hdiutil error #{$?}" unless $? == 0

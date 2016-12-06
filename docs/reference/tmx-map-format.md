@@ -269,7 +269,7 @@ Can contain: [properties](#properties), [image](#image)
 
 Can contain: [property](#property)
 
-Wraps any number of custom properties. Can be used as a child of the `map`, `tile` (when part of a `tileset`), `layer`, `objectgroup` and `object` elements.
+Wraps any number of custom properties. Can be used as a child of the `map`, `tileset`, `tile` (when part of a `tileset`), `layer`, `objectgroup`, `object` and `imagelayer` elements.
 
 ### &lt;property> ###
 

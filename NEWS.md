@@ -1,3 +1,11 @@
+### 0.17.2 (28 November 2016)
+
+* Fixed bug with editing type and name for multiple objects
+* Fixed ability to change the image of a tile in an image collection tileset
+* Fixed wrong layer name getting edited when switching maps
+* Fixed possible crash when missing tileset images and using tile animations
+* Compiled against Qt 5.6.2 on macOS to avoid crashes with Qt 5.7
+
 ### 0.17.1 (4 November 2016)
 
 * Fixed wrong alpha value when opening the color picker dialog

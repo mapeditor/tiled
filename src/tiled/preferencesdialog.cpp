@@ -28,7 +28,7 @@
 
 #include <QSortFilterProxyModel>
 
-#ifndef QT_NO_OPENGL
+#if !defined(QT_NO_OPENGL) && QT_VERSION < 0x050400
 #include <QGLFormat>
 #endif
 
@@ -44,10 +44,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-#ifndef QT_NO_OPENGL
+#if defined(QT_NO_OPENGL)
+    mUi->openGL->setEnabled(false);
+#elif QT_VERSION < 0x050400
     mUi->openGL->setEnabled(QGLFormat::hasOpenGL());
 #else
-    mUi->openGL->setEnabled(false);
+    mUi->openGL->setEnabled(true);
 #endif
 
     foreach (const QString &name, mLanguages) {

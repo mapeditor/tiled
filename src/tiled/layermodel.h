@@ -64,11 +64,6 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
-    int toLayerIndex(const QModelIndex &index) const;
-    int toLayerIndex(int index) const;
-
-    int layerIndexToRow(int layerIndex) const;
-
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *mapDocument);
 

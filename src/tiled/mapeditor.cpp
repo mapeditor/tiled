@@ -579,23 +579,18 @@ void MapEditor::layerComboActivated(int index)
     if (!mCurrentMapDocument)
         return;
 
-    int layerIndex = mCurrentMapDocument->layerModel()->toLayerIndex(index);
-
-    if (layerIndex != mCurrentMapDocument->currentLayerIndex())
-        mCurrentMapDocument->setCurrentLayerIndex(layerIndex);
+    if (index != mCurrentMapDocument->currentLayerIndex())
+        mCurrentMapDocument->setCurrentLayerIndex(index);
 }
 
 void MapEditor::updateLayerComboIndex()
 {
-    int layerComboIndex = -1;
+    int layerIndex = -1;
 
-    if (mCurrentMapDocument) {
-        int layerIndex = mCurrentMapDocument->currentLayerIndex();
-        if (layerIndex != -1)
-            layerComboIndex = mCurrentMapDocument->layerModel()->layerIndexToRow(layerIndex);
-    }
+    if (mCurrentMapDocument)
+        layerIndex = mCurrentMapDocument->currentLayerIndex();
 
-    mLayerComboBox->setCurrentIndex(layerComboIndex);
+    mLayerComboBox->setCurrentIndex(layerIndex);
 }
 
 void MapEditor::setupQuickStamps()

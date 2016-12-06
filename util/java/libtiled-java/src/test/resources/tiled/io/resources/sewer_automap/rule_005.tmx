@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="13" height="6" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+  <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
+ </tileset>
+ <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
+  <image source="rules_sewers.png" width="72" height="48"/>
+ </tileset>
+ <layer name="Regions" width="13" height="6">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAP+BDgk6LHBwcbnxy19ZAKAMzFByE=
+  </data>
+ </layer>
+ <layer name="Input_set" width="13" height="6">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPeBLgD6QeYsyj1BwAd2cCSQ==
+  </data>
+ </layer>
+ <layer name="Output_Ground" width="13" height="6" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPiKHxRYjQw43G5yRCjzAaX5AIPfQAAE2oAGM=
+  </data>
+ </layer>
+ <layer name="Output_Over" width="13" height="6" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgcgAVKs5GghwdK81HZLcQAABQQACU=
+  </data>
+ </layer>
+</map>
