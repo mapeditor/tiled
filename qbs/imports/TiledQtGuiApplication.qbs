@@ -12,7 +12,7 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++11"
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 

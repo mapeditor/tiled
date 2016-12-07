@@ -50,11 +50,10 @@ Product {
             }
         }
         property string postfix: {
-            if (qbs.targetOS.contains("windows")) {
-                return qbs.debugInformation ? "d.dll" : ".dll"
-            } else {
-                return ".so"
-            }
+            var suffix = "";
+            if (qbs.targetOS.contains("windows") && qbs.debugInformation)
+                suffix += "d";
+            return suffix + cpp.dynamicLibrarySuffix;
         }
         files: {
             function addQtVersions(libs) {
@@ -68,13 +67,17 @@ Product {
                 return result;
             }
 
-            var list = [
-                "Qt5Core" + postfix,
-                "Qt5Gui" + postfix,
-                "Qt5Network" + postfix,
-                "Qt5Svg" + postfix,
-                "Qt5Widgets" + postfix,
-            ];
+            var list = [];
+
+            if (!Qt.core.frameworkBuild) {
+                list.push(
+                    "Qt5Core" + postfix,
+                    "Qt5Gui" + postfix,
+                    "Qt5Network" + postfix,
+                    "Qt5Svg" + postfix,
+                    "Qt5Widgets" + postfix
+                );
+            }
 
             if (Qt.core.versionMinor < 4) {
                 list.push("Qt5OpenGL" + postfix);
