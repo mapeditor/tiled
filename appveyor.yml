@@ -12,7 +12,8 @@ environment:
 configuration: Release
 
 install:
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
+  - choco install -y qbs
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
@@ -35,7 +36,7 @@ build_script:
   - qbs install --all-products --install-root install-root release
 
 after_build:
-  - cd qt-release
+  - cd release
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
   - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
