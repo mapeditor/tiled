@@ -23,7 +23,7 @@ TiledQtGuiApplication {
     ]
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         targetName: "Automapping Converter"
     }
 }

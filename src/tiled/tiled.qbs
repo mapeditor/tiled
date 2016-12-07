@@ -383,15 +383,15 @@ QtGuiApplication {
     ]
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
         bundle.infoPlistFile: "Info.plist"
         targetName: "Tiled"
     }
     Group {
-        name: "OS X"
-        condition: qbs.targetOS.contains("osx")
+        name: "macOS"
+        condition: qbs.targetOS.contains("macos")
         files: [
             "Info.plist",
             "macsupport.h",
@@ -403,14 +403,14 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows")
-                    || qbs.targetOS.contains("osx")
+                    || qbs.targetOS.contains("macos")
                     || project.linuxArchive)
                 return ""
             else
                 return "bin"
         }
         qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: product.type.concat(["infoplist", "pkginfo"])
+        fileTagsFilter: product.type.concat(["aggregate_infoplist", "pkginfo"])
     }
 
     Properties {
@@ -438,8 +438,8 @@ QtGuiApplication {
     }
 
     Group {
-        name: "OS X (icons)"
-        condition: qbs.targetOS.contains("osx")
+        name: "macOS (icons)"
+        condition: qbs.targetOS.contains("macos")
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
         files: ["images/*.icns"]
