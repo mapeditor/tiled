@@ -39,7 +39,7 @@ Make sure the Qt (>= 5.2) development libraries are installed:
 * In Mac OS X with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
-* Or you can checkout the QT website: https://www.qt.io/download-open-source/
+* Or you can download Qt from: https://www.qt.io/download-open-source/
 
 Now you can compile by running:
 
