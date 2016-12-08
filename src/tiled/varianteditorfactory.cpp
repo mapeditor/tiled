@@ -23,6 +23,7 @@
 
 #include "fileedit.h"
 #include "textpropertyedit.h"
+#include "objectidedit.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
@@ -82,6 +83,8 @@ VariantEditorFactory::~VariantEditorFactory()
     qDeleteAll(mFileEditToProperty.keys());
     qDeleteAll(mTilesetEditToProperty.keys());
     qDeleteAll(mTextPropertyEditToProperty.keys());
+    qDeleteAll(mObjectIdEditToProperty.keys());
+
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -98,6 +101,19 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                                             QWidget *parent)
 {
     const int type = manager->propertyType(property);
+
+    if (type == objectIdTypeId()) {
+        auto editor = new ObjectIdEdit(parent);
+        ObjectId objectId = manager->value(property).value<ObjectId>();
+        editor->setId(objectId.id);
+        mCreatedObjectIdEdits[property].append(editor);
+        mObjectIdEditToProperty[editor] = property;
+
+        connect(editor, &ObjectIdEdit::idChanged,
+                this, &VariantEditorFactory::objectIdEditIdChanged);
+
+        return editor;
+    }
 
     if (type == filePathTypeId()) {
         FileEdit *editor = new FileEdit(parent);
@@ -236,8 +252,35 @@ void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
     }
 }
 
+void VariantEditorFactory::objectIdEditIdChanged(int id)
+{
+    auto objectIdEdit = qobject_cast<ObjectIdEdit*>(sender());
+    Q_ASSERT(objectIdEdit);
+
+    if (QtProperty *property = mObjectIdEditToProperty.value(objectIdEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, QVariant::fromValue(ObjectId { id }));
+    }
+}
+
+
 void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
+    // Check if it was an ObjectIdEdit
+    {
+        ObjectIdEdit *objectIdEdit = static_cast<ObjectIdEdit*>(object);
+
+        if (QtProperty *property = mObjectIdEditToProperty.value(objectIdEdit)) {
+            mObjectIdEditToProperty.remove(objectIdEdit);
+            mCreatedObjectIdEdits[property].removeAll(objectIdEdit);
+            if (mCreatedObjectIdEdits[property].isEmpty())
+                mCreatedObjectIdEdits.remove(property);
+            return;
+        }
+    }
+
     // Check if it was a FileEdit
     {
         FileEdit *fileEdit = static_cast<FileEdit*>(object);

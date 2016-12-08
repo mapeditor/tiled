@@ -29,6 +29,7 @@ namespace Internal {
 
 class FileEdit;
 class TextPropertyEdit;
+class ObjectIdEdit;
 class TilesetParametersEdit;
 
 /**
@@ -66,6 +67,7 @@ private slots:
                                       const QVariant &value);
     void fileEditFilePathChanged(const QString &value);
     void textPropertyEditTextChanged(const QString &value);
+    void objectIdEditIdChanged(int id);
     void slotEditorDestroyed(QObject *object);
 
 private:
@@ -77,6 +79,9 @@ private:
 
     QMap<QtProperty *, QList<TextPropertyEdit *> > mCreatedTextPropertyEdits;
     QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
+
+    QMap<QtProperty *, QList<ObjectIdEdit *> > mCreatedObjectIdEdits;
+    QMap<ObjectIdEdit *, QtProperty *> mObjectIdEditToProperty;
 };
 
 } // namespace Internal

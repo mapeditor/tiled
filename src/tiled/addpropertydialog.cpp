@@ -48,6 +48,7 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
     mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
     mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(objectIdTypeId()), QVariant::fromValue(ObjectId()));
     mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
     mUi->typeBox->addItem(stringType,                   QString());
 
