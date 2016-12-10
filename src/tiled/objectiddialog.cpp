@@ -53,8 +53,8 @@ ObjectIdDialog::ObjectIdDialog(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    if (document = DocumentManager::instance()->currentDocument()) {
-        if (map = document->map()) {
+    if ((document = DocumentManager::instance()->currentDocument())) {
+        if ((map = document->map())) {
             QTableWidget *tableWidget = mUi->tableWidget;
 
             QStringList headers = {QStringLiteral("ID"), QStringLiteral("Name"), QStringLiteral("Type")};
@@ -153,11 +153,13 @@ void ObjectIdDialog::onItemSelectionChanged()
 
 void ObjectIdDialog::onItemDoubleClicked(QTableWidgetItem * item)
 {
+    Q_UNUSED(item);
     accept();
 }
 
 void ObjectIdDialog::onButtonClicked(bool checked)
 {
+    Q_UNUSED(checked);
     mUi->lineEdit->clear();
     mUi->tableWidget->clearSelection();
 }

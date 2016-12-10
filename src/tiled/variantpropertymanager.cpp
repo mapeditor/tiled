@@ -141,8 +141,8 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
             MapDocument *document;
             Map *map;
 
-            if (document = DocumentManager::instance()->currentDocument()) {
-                if (map = document->map()) {
+            if ((document = DocumentManager::instance()->currentDocument())) {
+                if ((map = document->map())) {
                     QList<ObjectGroup*> objectGroups = map->objectGroups();
 
                     foreach(const ObjectGroup *group, objectGroups) {
