@@ -45,33 +45,28 @@ ObjectIdDialog::ObjectIdDialog(QWidget *parent)
     , mUi(new Ui::ObjectIdDialog)
     , mId(0)
 {
-    MapDocument *document;
-    Map *map;
-
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     Utils::restoreGeometry(this);
 
-    if ((document = DocumentManager::instance()->currentDocument())) {
-        if ((map = document->map())) {
-            QTableWidget *tableWidget = mUi->tableWidget;
+    if (MapDocument *document = DocumentManager::instance()->currentDocument()) {
+        QTableWidget *tableWidget = mUi->tableWidget;
 
-            QStringList headers = {QStringLiteral("ID"), QStringLiteral("Name"), QStringLiteral("Type")};
-            tableWidget->setHorizontalHeaderLabels(headers);
-            tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-            tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        QStringList headers = {QStringLiteral("ID"), QStringLiteral("Name"), QStringLiteral("Type")};
+        tableWidget->setHorizontalHeaderLabels(headers);
+        tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+        tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-            QList<ObjectGroup*> objectGroups = map->objectGroups();
+        QList<ObjectGroup*> objectGroups = document->map()->objectGroups();
 
-            foreach(const ObjectGroup *group, objectGroups) {
-                foreach (const MapObject *object, group->objects())
-                {
-                    tableWidget->insertRow(tableWidget->rowCount());
-                    tableWidget->setItem(tableWidget->rowCount() - 1, 0, new QTableWidgetItem(QString::number(object->id())));
-                    tableWidget->setItem(tableWidget->rowCount() - 1, 1, new QTableWidgetItem(object->name()));
-                    tableWidget->setItem(tableWidget->rowCount() - 1, 2, new QTableWidgetItem(object->type()));
-                }
+        foreach(const ObjectGroup *group, objectGroups) {
+            foreach (const MapObject *object, group->objects())
+            {
+                tableWidget->insertRow(tableWidget->rowCount());
+                tableWidget->setItem(tableWidget->rowCount() - 1, 0, new QTableWidgetItem(QString::number(object->id())));
+                tableWidget->setItem(tableWidget->rowCount() - 1, 1, new QTableWidgetItem(object->name()));
+                tableWidget->setItem(tableWidget->rowCount() - 1, 2, new QTableWidgetItem(object->type()));
             }
         }
     }

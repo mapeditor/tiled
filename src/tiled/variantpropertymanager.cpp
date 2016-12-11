@@ -138,27 +138,22 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         if (typeId == objectIdTypeId()) {
             ObjectId id = value.value<ObjectId>();
 
-            MapDocument *document;
-            Map *map;
+            if (MapDocument *document = DocumentManager::instance()->currentDocument()) {
+                QList<ObjectGroup*> objectGroups = document->map()->objectGroups();
 
-            if ((document = DocumentManager::instance()->currentDocument())) {
-                if ((map = document->map())) {
-                    QList<ObjectGroup*> objectGroups = map->objectGroups();
+                foreach(const ObjectGroup *group, objectGroups) {
+                    foreach (const MapObject *object, group->objects())
+                    {
+                        if (object->id() == id.id) {
+                            QString label = QStringLiteral("%1: ").arg(QString::number(object->id()));
+                            if (object->name().length())
+                                label.append(object->name());
+                            else
+                                label.append(QStringLiteral("Unnamed object"));
 
-                    foreach(const ObjectGroup *group, objectGroups) {
-                        foreach (const MapObject *object, group->objects())
-                        {
-                            if (object->id() == id.id) {
-                                QString label = QStringLiteral("%1: ").arg(QString::number(object->id()));
-                                if (object->name().length())
-                                    label.append(object->name());
-                                else
-                                    label.append(QStringLiteral("Unnamed object"));
-
-                                if (object->type().length())
-                                    label.append(QStringLiteral(" (%1)").arg(object->type()));
-                                return label;
-                            }
+                            if (object->type().length())
+                                label.append(QStringLiteral(" (%1)").arg(object->type()));
+                            return label;
                         }
                     }
                 }
