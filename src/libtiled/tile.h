@@ -79,6 +79,12 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
  */
 struct Frame
 {
+    bool operator == (const Frame &frame) const
+    {
+        return tileId == frame.tileId &&
+                duration == frame.duration;
+    }
+
     int tileId;
     int duration;
 };
@@ -99,7 +105,7 @@ public:
     const QPixmap &image() const;
     void setImage(const QPixmap &image);
 
-    const QPixmap &currentFrameImage() const;
+    const Tile *currentFrameTile() const;
 
     const QString &imageSource() const;
     void setImageSource(const QString &imageSource);
@@ -129,6 +135,7 @@ public:
     void setFrames(const QVector<Frame> &frames);
     bool isAnimated() const;
     int currentFrameIndex() const;
+    bool resetAnimation();
     bool advanceAnimation(int ms);
 
     bool imageLoaded() const;

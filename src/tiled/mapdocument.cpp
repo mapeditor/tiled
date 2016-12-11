@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
@@ -43,6 +44,7 @@
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "pluginmanager.h"
+#include "rangeset.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
@@ -320,7 +322,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
     return intersects(area, boundingRect);
 }
 
-void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
+void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
     const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
@@ -345,13 +347,15 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             // Remove objects that will fall outside of the map
-            foreach (MapObject *o, objectGroup->objects()) {
-                if (!visibleIn(visibleArea, o, mRenderer)) {
-                    mUndoStack->push(new RemoveMapObject(this, o));
-                } else {
-                    QPointF oldPos = o->position();
-                    QPointF newPos = oldPos + pixelOffset;
-                    mUndoStack->push(new MoveMapObject(this, o, newPos, oldPos));
+            if (removeObjects) {
+                for (MapObject *o : objectGroup->objects()) {
+                    if (!visibleIn(visibleArea, o, mRenderer)) {
+                        mUndoStack->push(new RemoveMapObject(this, o));
+                    } else {
+                        QPointF oldPos = o->position();
+                        QPointF newPos = oldPos + pixelOffset;
+                        mUndoStack->push(new MoveMapObject(this, o, newPos, oldPos));
+                    }
                 }
             }
             break;
@@ -382,7 +386,7 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
                                          bounds, wrapX, wrapY));
     } else {
         mUndoStack->beginMacro(tr("Offset Map"));
-        foreach (const int layerIndex, layerIndexes) {
+        for (const int layerIndex : layerIndexes) {
             mUndoStack->push(new OffsetLayer(this, layerIndex, offset,
                                              bounds, wrapX, wrapY));
         }
@@ -413,7 +417,8 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
                               mSelectedObjects.size()));
 
     // TODO: Rotate them properly as a group
-    foreach (MapObject *mapObject, mSelectedObjects) {
+    const auto &selectedObjects = mSelectedObjects;
+    for (MapObject *mapObject : selectedObjects) {
         const qreal oldRotation = mapObject->rotation();
         qreal newRotation = oldRotation;
 
@@ -437,7 +442,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
  * Adds a layer of the given type to the top of the layer stack. After adding
  * the new layer, emits editLayerNameRequested().
  */
-void MapDocument::addLayer(Layer::TypeFlag layerType)
+Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = nullptr;
     QString name;
@@ -463,6 +468,8 @@ void MapDocument::addLayer(Layer::TypeFlag layerType)
     setCurrentLayerIndex(index);
 
     emit editLayerNameRequested();
+
+    return layer;
 }
 
 /**
@@ -475,6 +482,9 @@ void MapDocument::duplicateLayer()
 
     Layer *duplicate = mMap->layerAt(mCurrentLayerIndex)->clone();
     duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
+
+    if (duplicate->layerType() == Layer::ObjectGroupType)
+        static_cast<ObjectGroup*>(duplicate)->resetObjectIds();
 
     const int index = mCurrentLayerIndex + 1;
     QUndoCommand *cmd = new AddLayer(this, index, duplicate);
@@ -754,7 +764,8 @@ void MapDocument::unifyTilesets(Map *map)
 
     if (!undoCommands.isEmpty()) {
         mUndoStack->beginMacro(tr("Tileset Changes"));
-        foreach (QUndoCommand *command, undoCommands)
+        const auto &commands = undoCommands;
+        for (QUndoCommand *command : commands)
             mUndoStack->push(command);
         mUndoStack->endMacro();
     }
@@ -909,7 +920,7 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
             setCurrentObject(nullptr);
 
     int removedCount = 0;
-    foreach (MapObject *object, objects)
+    for (MapObject *object : objects)
         removedCount += mSelectedObjects.removeAll(object);
 
     if (removedCount > 0)
@@ -945,8 +956,9 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
     mUndoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
 
     QList<MapObject*> clones;
-    foreach (const MapObject *mapObject, objects) {
+    for (const MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
+        clone->resetId();
         clones.append(clone);
         mUndoStack->push(new AddMapObject(this,
                                           mapObject->objectGroup(),
@@ -963,7 +975,7 @@ void MapDocument::removeObjects(const QList<MapObject *> &objects)
         return;
 
     mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
+    for (MapObject *mapObject : objects)
         mUndoStack->push(new RemoveMapObject(this, mapObject));
     mUndoStack->endMacro();
 }
@@ -977,7 +989,7 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    foreach (MapObject *mapObject, objects) {
+    for (MapObject *mapObject : objects) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
 
@@ -986,6 +998,94 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
                                                   objectGroup));
     }
     mUndoStack->endMacro();
+}
+
+typedef QMap<ObjectGroup*, RangeSet<int>>           Ranges;
+typedef QMapIterator<ObjectGroup*, RangeSet<int>>   RangesIterator;
+
+static Ranges computeRanges(const QList<MapObject *> &objects)
+{
+    Ranges ranges;
+
+    for (MapObject *object : objects) {
+        ObjectGroup *group = object->objectGroup();
+        auto &set = ranges[group];
+        set.insert(group->objects().indexOf(object));
+    }
+
+    return ranges;
+}
+
+void MapDocument::moveObjectsUp(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    const auto ranges = computeRanges(objects);
+
+    QScopedPointer<QUndoCommand> command(new QUndoCommand(tr("Move %n Object(s) Up",
+                                                             "", objects.size())));
+
+    RangesIterator rangesIterator(ranges);
+    while (rangesIterator.hasNext()) {
+        rangesIterator.next();
+
+        ObjectGroup *group = rangesIterator.key();
+        const RangeSet<int> &rangeSet = rangesIterator.value();
+
+        const RangeSet<int>::Range it_begin = rangeSet.begin();
+        RangeSet<int>::Range it = rangeSet.end();
+        Q_ASSERT(it != it_begin);
+
+        do {
+            --it;
+
+            int from = it.first();
+            int count = it.length();
+            int to = from + count + 1;
+
+            if (to <= group->objectCount())
+                new ChangeMapObjectsOrder(this, group, from, to, count, command.data());
+
+        } while (it != it_begin);
+    }
+
+    if (command->childCount() > 0)
+        mUndoStack->push(command.take());
+}
+
+void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    QScopedPointer<QUndoCommand> command(new QUndoCommand(tr("Move %n Object(s) Down",
+                                                             "", objects.size())));
+
+    RangesIterator rangesIterator(computeRanges(objects));
+    while (rangesIterator.hasNext()) {
+        rangesIterator.next();
+
+        ObjectGroup *group = rangesIterator.key();
+        const RangeSet<int> &rangeSet = rangesIterator.value();
+
+        RangeSet<int>::Range it = rangeSet.begin();
+        const RangeSet<int>::Range it_end = rangeSet.end();
+
+        for (; it != it_end; ++it) {
+            int from = it.first();
+
+            if (from > 0) {
+                int to = from - 1;
+                int count = it.length();
+
+                new ChangeMapObjectsOrder(this, group, from, to, count, command.data());
+            }
+        }
+    }
+
+    if (command->childCount() > 0)
+        mUndoStack->push(command.take());
 }
 
 void MapDocument::setProperty(Object *object,

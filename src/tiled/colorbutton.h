@@ -44,10 +44,13 @@ public:
 signals:
     void colorChanged(const QColor &color);
 
-private slots:
-    void pickColor();
+protected:
+    void changeEvent(QEvent *e) override;
 
 private:
+    void pickColor();
+    void updateIcon();
+
     QColor mColor;
 };
 

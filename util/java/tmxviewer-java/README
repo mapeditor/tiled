@@ -14,15 +14,11 @@ entered there.
 Trying it out from the command line
 -----------------------------------
 
-The tmxviewer-java needs libtiled-java to be compiled first, and its .jar file
-needs to be in the CLASSPATH both during compiling and running.
+The tmxviewer-java needs libtiled-java to be compiled first to add libtiled
+dependency to your local Maven repository.
 
-The Apache 'ant' build tool is used to build from the command line.
+The Apache 'Maven' build tool is used to build from the command line.
 
-* Run 'ant' in the libtiled-java directory to provide libtiled.jar
-* Run 'export CLASSPATH=$PWD/libtiled.jar' afterwards to add the jar file
-  to the CLASSPATH
-* Go to the tmxviewer-java directory and run 'ant' there to compile it
-* Run 'export CLASSPATH=build:$CLASSPATH' to add the 'build' directory to the
-  CLASSPATH along with libtiled.jar
-* Launch the TMX Viewer using 'java TMXViewer [file]'
+* Run 'mvn clean install' in the libtiled-java directory to build libtiled.jar
+* Go to the tmxviewer-java directory and run 'mvn clean install' there to compile it
+* Launch the TMX Viewer using 'java -jar tmxviewer-<Version>.jar [file]'

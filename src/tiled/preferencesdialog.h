@@ -52,9 +52,10 @@ private slots:
 
 private:
     void fromPreferences();
-    void toPreferences();
 
     void retranslateUi();
+
+    void styleComboChanged(int index);
 
     void autoUpdateToggled(bool checked);
     void checkForUpdates();

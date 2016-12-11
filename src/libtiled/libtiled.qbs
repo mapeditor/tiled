@@ -7,25 +7,31 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui" }
 
     Properties {
-        condition: !qbs.targetOS.contains("windows")
+        condition: !(qbs.toolchain.contains("msvc") ||
+                     (qbs.toolchain.contains("mingw") && Qt.core.versionMinor < 6))
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII"
+        ];
+        if (project.linuxArchive)
+            defs.push("TILED_LINUX_ARCHIVE");
+        return defs;
+    }
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
     bundle.isBundle: false
-    cpp.installNamePrefix: "@rpath"
+    cpp.sonamePrefix: qbs.targetOS.contains("darwin") ? "@rpath" : undefined
 
     files: [
         "compression.cpp",

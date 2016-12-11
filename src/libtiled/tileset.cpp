@@ -45,6 +45,7 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mMargin(margin),
     mColumnCount(0),
     mExpectedColumnCount(0),
+    mExpectedRowCount(0),
     mNextTileId(0),
     mTerrainDistancesDirty(false),
     mLoaded(true)
@@ -105,6 +106,17 @@ Tile *Tileset::findOrCreateTile(int id)
 }
 
 /**
+ * Returns the number of tile rows in the tileset image.
+ */
+int Tileset::rowCount() const
+{
+    if (isCollection())
+        return 1;
+
+    return rowCountForHeight(mImageReference.size.height());
+}
+
+/**
  * Sets the transparent color. Pixels with this color will be masked out
  * when loadFromImage() is called.
  */
@@ -124,6 +136,7 @@ void Tileset::setImageReference(const ImageReference &reference)
 {
     mImageReference = reference;
     mExpectedColumnCount = columnCountForWidth(mImageReference.size.width());
+    mExpectedRowCount = rowCountForHeight(mImageReference.size.height());
 }
 
 /**
@@ -282,6 +295,18 @@ int Tileset::columnCountForWidth(int width) const
     if (mTileWidth <= 0)
         return 0;
     return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
+}
+
+/**
+ * Returns the row count that this tileset would have if the tileset
+ * image would have the given \a width. This takes into account the tile
+ * size, margin and spacing.
+ */
+int Tileset::rowCountForHeight(int height) const
+{
+    if (mTileHeight <= 0)
+        return 0;
+    return (height - mMargin + mTileSpacing) / (mTileHeight + mTileSpacing);
 }
 
 /**

@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "TMXRASTERIZER" "1" "April 2014" "" ""
+.TH "TMXRASTERIZER" "1" "September 2016" "" ""
 .
 .SH "NAME"
 \fBtmxrasterizer\fR \- renders a tile map to an image
@@ -29,6 +29,10 @@ The scale of the output image
 .TP
 \fB\-t\fR \fB\-\-tilesize\fR SIZE
 The requested size in pixels at which a tile is rendered\. Overrides the \-\-scale option\.
+.
+.TP
+\fB\-\-size\fR SIZE
+The output image fits within a SIZE x SIZE square\. Overrides the \-\-scale and \-\-tilesize options\.
 .
 .TP
 \fB\-a\fR \fB\-\-anti\-aliasing\fR

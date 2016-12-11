@@ -166,8 +166,12 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         return;
     newMapObject->setPosition(pos);
 
-    objectGroup->addObject(newMapObject);
-    mObjectGroupItem->setObjectGroup(objectGroup);
+    mNewMapObjectGroup->addObject(newMapObject);
+
+    mNewMapObjectGroup->setColor(objectGroup->color());
+    mNewMapObjectGroup->setOffset(objectGroup->offset());
+
+    mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
 }
@@ -178,8 +182,7 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
 
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
-    ObjectGroup *objectGroup = newMapObject->objectGroup();
-    objectGroup->removeObject(newMapObject);
+    mNewMapObjectGroup->removeObject(newMapObject);
 
     delete mNewMapObjectItem;
     mNewMapObjectItem = nullptr;
@@ -199,8 +202,14 @@ void CreateObjectTool::cancelNewMapObject()
 void CreateObjectTool::finishNewMapObject()
 {
     Q_ASSERT(mNewMapObjectItem);
+
+    ObjectGroup *objectGroup = currentObjectGroup();
+    if (!objectGroup) {
+        cancelNewMapObject();
+        return;
+    }
+
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
-    ObjectGroup *objectGroup = newMapObject->objectGroup();
     clearNewMapObjectItem();
 
     mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),

@@ -38,6 +38,11 @@ public:
                           const QList<Tile*> &tiles,
                           float probability);
 
+    ChangeTileProbability(MapDocument *mapDocument,
+                          const QList<Tile*> &tiles,
+                          const QList<float> &probabilities,
+                          QUndoCommand *parent = nullptr);
+
     void undo() override { swap(); }
     void redo() override { swap(); }
 

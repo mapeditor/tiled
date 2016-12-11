@@ -34,7 +34,11 @@
 #include <QScrollBar>
 
 #ifndef QT_NO_OPENGL
+#if QT_VERSION >= 0x050400
+#include <QOpenGLWidget>
+#else
 #include <QGLWidget>
+#endif
 #endif
 
 using namespace Tiled::Internal;
@@ -100,17 +104,34 @@ void MapView::adjustScale(qreal scale)
 void MapView::setUseOpenGL(bool useOpenGL)
 {
 #ifndef QT_NO_OPENGL
+#if QT_VERSION >= 0x050400
+    if (useOpenGL) {
+        if (!qobject_cast<QOpenGLWidget*>(viewport())) {
+            QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+            format.setDepthBufferSize(0);   // No need for a depth buffer
+            format.setSamples(4);           // Enable anti-aliasing
+
+            QOpenGLWidget *openGLWidget = new QOpenGLWidget(this);
+            openGLWidget->setFormat(format);
+            setViewport(openGLWidget);
+        }
+    } else {
+        if (qobject_cast<QOpenGLWidget*>(viewport()))
+            setViewport(nullptr);
+    }
+#else
     if (useOpenGL && QGLFormat::hasOpenGL()) {
         if (!qobject_cast<QGLWidget*>(viewport())) {
             QGLFormat format = QGLFormat::defaultFormat();
-            format.setDepth(false); // No need for a depth buffer
-            format.setSampleBuffers(true); // Enable anti-aliasing
+            format.setDepth(false);         // No need for a depth buffer
+            format.setSampleBuffers(true);  // Enable anti-aliasing
             setViewport(new QGLWidget(format));
         }
     } else {
         if (qobject_cast<QGLWidget*>(viewport()))
             setViewport(nullptr);
     }
+#endif
 
     QWidget *v = viewport();
     if (mMode == StaticContents)
@@ -207,6 +228,9 @@ void MapView::hideEvent(QHideEvent *event)
  */
 void MapView::wheelEvent(QWheelEvent *event)
 {
+    auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
+    auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+
     if (event->modifiers() & Qt::ControlModifier
         && event->orientation() == Qt::Vertical)
     {
@@ -215,8 +239,8 @@ void MapView::wheelEvent(QWheelEvent *event)
 
         // This works around problems with automatic alignment of scenes that
         // are smaller than the view, which seems to be impossible to disable.
-        static_cast<FlexibleScrollBar*>(horizontalScrollBar())->allowNextRangeChange();
-        static_cast<FlexibleScrollBar*>(verticalScrollBar())->allowNextRangeChange();
+        hBar->allowNextRangeChange();
+        vBar->allowNextRangeChange();
 
         mZoomable->handleWheelDelta(event->delta());
 
@@ -227,11 +251,32 @@ void MapView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QGraphicsView::wheelEvent(event);
+    // By default, the scroll area forwards the wheel events to the scroll
+    // bars, which apply their bounds. This custom wheel handling is here to
+    // override the bounds checking.
+    //
+    // This also disables QGraphicsSceneWheelEvent, but Tiled does not rely
+    // on that event.
 
-    // When scrolling the mouse does not move, but the view below it does.
-    // This affects the mouse scene position, which needs to be updated.
-    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    QPoint pixels = event->pixelDelta();
+
+    if (pixels.isNull()) {
+        QPointF steps = event->angleDelta() / 8.0 / 15.0;
+        int lines = QApplication::wheelScrollLines();
+        pixels.setX(int(steps.x() * lines * hBar->singleStep()));
+        pixels.setY(int(steps.y() * lines * vBar->singleStep()));
+    }
+
+    if (!pixels.isNull()) {
+        int horizontalValue = hBar->value() + (isRightToLeft() ? pixels.x() : -pixels.x());
+        int verticalValue = vBar->value() - pixels.y();
+        hBar->forceSetValue(horizontalValue);
+        vBar->forceSetValue(verticalValue);
+
+        // When scrolling the mouse does not move, but the view below it does.
+        // This affects the mouse scene position, which needs to be updated.
+        mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    }
 }
 
 /**

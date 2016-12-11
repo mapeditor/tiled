@@ -13,6 +13,9 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
@@ -38,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -78,6 +81,7 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="actionPasteInPlace"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
@@ -126,10 +130,13 @@
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
     <addaction name="actionSnapToFineGrid"/>
+    <addaction name="actionSnapToPixels"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
+    <addaction name="separator"/>
+    <addaction name="actionFullScreen"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -529,6 +536,36 @@
    </property>
    <property name="text">
     <string>AutoMap While Drawing</string>
+   </property>
+  </action>
+  <action name="actionPasteInPlace">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Paste &amp;in Place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="actionFullScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Full Screen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionSnapToPixels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap To &amp;Pixels</string>
    </property>
   </action>
  </widget>

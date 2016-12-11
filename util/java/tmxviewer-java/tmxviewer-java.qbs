@@ -5,9 +5,9 @@ Product {
     Depends { name: "libtiled-java" }
 
     type: ["java.jar"]
-    condition: java.present
+    condition: java.present && !(qbs.versionMinor == 6)
 
     property string entryPoint: "TMXViewer"
 
-    files: ["src/**/*.java"]
+    files: ["src/main/java/**/*.java"]
 }

@@ -173,8 +173,14 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it)
-        writer.writeQuotedKeyAndValue(it.key(), it.value());
+    for (; it != it_end; ++it) {
+        QVariant value = toExportValue(it.value());
+
+        if (it.value().userType() == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        writer.writeQuotedKeyAndValue(it.key(), value);
+    }
 
     writer.writeEndTable();
 }
@@ -297,8 +303,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writer.writeStartTable("animation");
             for (const Frame &frame : frames) {
                 writer.writeStartTable();
-                writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
-                writer.writeKeyAndValue("duration", QString::number(frame.duration));
+                writer.writeKeyAndValue("tileid", frame.tileId);
+                writer.writeKeyAndValue("duration", frame.duration);
                 writer.writeEndTable();
             }
             writer.writeEndTable(); // animation
@@ -383,6 +389,8 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     const QPointF offset = objectGroup->offset();
     writer.writeKeyAndValue("offsetx", offset.x());
     writer.writeKeyAndValue("offsety", offset.y());
+
+    writer.writeKeyAndValue("draworder", drawOrderToString(objectGroup->drawOrder()));
 
     writeProperties(writer, objectGroup->properties());
 

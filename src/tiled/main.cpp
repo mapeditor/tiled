@@ -30,6 +30,7 @@
 #include "preferences.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"
+#include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "winsparkleautoupdater.h"
@@ -39,8 +40,10 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtPlugin>
-#include <QStyle>
-#include <QStyleFactory>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -169,8 +172,26 @@ void CommandLineHandler::startNewInstance()
     newInstance = true;
 }
 
+
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
+    // Make console output work on Windows, if running in a console.
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        FILE *dummy = nullptr;
+        freopen_s(&dummy, "CONOUT$", "w", stdout);
+        freopen_s(&dummy, "CONOUT$", "w", stderr);
+    }
+#endif
+
+#if QT_VERSION >= 0x050600
+    QGuiApplication::setFallbackSessionManagementEnabled(false);
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
+    // Enable support for highres images (added in Qt 5.1, but off by default)
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
@@ -186,26 +207,7 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
-    // Enable support for highres images (added in Qt 5.1, but off by default)
-    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
-
-#ifndef Q_OS_WIN
-    QString baseName = QApplication::style()->objectName();
-    if (baseName == QLatin1String("windows")) {
-        // Avoid Windows 95 style at all cost
-        if (QStyleFactory::keys().contains(QLatin1String("Fusion"))) {
-            baseName = QLatin1String("fusion"); // Qt5
-        } else { // Qt4
-            // e.g. if we are running on a KDE4 desktop
-            QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
-            if (desktopEnvironment == "kde")
-                baseName = QLatin1String("plastique");
-            else
-                baseName = QLatin1String("cleanlooks");
-        }
-        a.setStyle(QStyleFactory::create(baseName));
-    }
-#endif
+    StyleHelper::initialize();
 
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
@@ -294,7 +296,12 @@ int main(int argc, char *argv[])
     }
 
     if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
-        QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
+        // Convert files to absolute paths because the already running Tiled
+        // instance likely does not have the same working directory.
+        QStringList absolutePaths;
+        for (const QString &fileName : commandLine.filesToOpen())
+            absolutePaths.append(QFileInfo(fileName).absoluteFilePath());
+        QJsonDocument doc(QJsonArray::fromStringList(absolutePaths));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
@@ -317,7 +324,7 @@ int main(int argc, char *argv[])
                      &w, SLOT(openFile(QString)));
 
     if (!commandLine.filesToOpen().isEmpty()) {
-        foreach (const QString &fileName, commandLine.filesToOpen())
+        for (const QString &fileName : commandLine.filesToOpen())
             w.openFile(fileName);
     } else if (Preferences::instance()->openLastFilesOnStartup()) {
         w.openLastFiles();

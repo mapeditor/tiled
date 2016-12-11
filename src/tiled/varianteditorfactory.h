@@ -28,13 +28,15 @@ namespace Tiled {
 namespace Internal {
 
 class FileEdit;
+class TextPropertyEdit;
 class TilesetParametersEdit;
 
 /**
  * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
  * used for editing file references.
  *
- * It also adds support for a "suggestions" attribute for string values.
+ * It also adds support for "suggestions" and "multiline" attributes for string
+ * values.
  */
 class VariantEditorFactory : public QtVariantEditorFactory
 {
@@ -63,6 +65,7 @@ private slots:
                                       const QString &attribute,
                                       const QVariant &value);
     void fileEditFilePathChanged(const QString &value);
+    void textPropertyEditTextChanged(const QString &value);
     void slotEditorDestroyed(QObject *object);
 
 private:
@@ -71,6 +74,9 @@ private:
 
     QMap<QtProperty *, QList<TilesetParametersEdit *> > mCreatedTilesetEdits;
     QMap<TilesetParametersEdit *, QtProperty *> mTilesetEditToProperty;
+
+    QMap<QtProperty *, QList<TextPropertyEdit *> > mCreatedTextPropertyEdits;
+    QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
 };
 
 } // namespace Internal

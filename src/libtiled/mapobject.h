@@ -87,6 +87,12 @@ public:
     void setId(int id) { mId = id; }
 
     /**
+     * Sets the id back to 0. Mostly used when a new id should be assigned
+     * after the object has been cloned.
+     */
+    void resetId() { setId(0); }
+
+    /**
      * Returns the name of this object. The name is usually just used for
      * identification of the object in the editor.
      */
@@ -170,6 +176,11 @@ public:
      * Sets the height of this object.
      */
     void setHeight(qreal height) { mSize.setHeight(height); }
+
+    /**
+     * Sets the position and size of this object.
+     */
+    void setBounds(const QRectF &bounds);
 
     /**
      * Sets the polygon associated with this object. The polygon is only used
@@ -270,6 +281,12 @@ private:
     qreal mRotation;
     bool mVisible;
 };
+
+inline void MapObject::setBounds(const QRectF &bounds)
+{
+    mPos = bounds.topLeft();
+    mSize = bounds.size();
+}
 
 } // namespace Tiled
 

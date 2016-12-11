@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>关于Tiled</translation>
+        <translation>关于 Tiled</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>捐助</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -25,9 +25,9 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看AUTHORS文件获取全部贡献者名单列表)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;你可以基于GPL(V2或更新版本)修改、重发布此应用程序.GPL的一份拷贝被包含在&apos;COPYING&apos;文件中并随Tiled一起发布.&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled 地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看 AUTHORS 文件获取全部贡献者名单列表)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;你可以基于GPL(V2或更新版本)修改、重发布此应用程序。GPL的一份拷贝已包含在&apos;COPYING&apos;文件中并随 Tiled 一起发布。&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
@@ -37,45 +37,45 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>添加属性</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>属性名称</translation>
     </message>
 </context>
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+227"/>
+        <location filename="../src/tiled/main.cpp" line="+215"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>导出语法为 --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>格式不正确 (参见 --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>非唯一的文件扩展名。无法确定正确的导出格式。</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有找到适合目标文件的导出器。</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>载入源地图失败。</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>导出地图到目标文件失败。</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
         <translation>属性</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+27"/>
         <source>&amp;Save map before executing</source>
         <translation>执行前保存地图(&amp;S)</translation>
     </message>
@@ -94,39 +94,39 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="-189"/>
+        <location filename="../src/tiled/main.cpp" line="-178"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>显示版本</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>只检查参数有效性</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>禁用硬件加速渲染</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>导出指定的 tmx 文件到目标</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>显示支持的导出格式列表</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>开始新实例，即使已有实例正在运行</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>导出格式：</translation>
     </message>
 </context>
 <context>
@@ -134,33 +134,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>错误参数 %1：孤立的连字符</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>未知长参数 %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>未知短参数 %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>用法:
+  %1 [选项] [文件...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>选项：</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>显示此帮助</translation>
     </message>
 </context>
 <context>
@@ -204,18 +205,31 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开文件进行写入。</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>CSV files (*.csv)</source>
+        <translation>CSV 文件 (*.csv)</translation>
+    </message>
+</context>
+<context>
+    <name>Defold::DefoldPlugin</name>
+    <message>
+        <location filename="../src/plugins/defold/defoldplugin.cpp" line="+59"/>
+        <source>Defold files (*.tilemap)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+69"/>
+        <source>Could not open file for writing.</source>
+        <translation>无法打开文件进行写入</translation>
     </message>
 </context>
 <context>
     <name>Droidcraft::DroidcraftPlugin</name>
     <message>
-        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+57"/>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
         <translation>无效的Droidcraft地图文件!</translation>
     </message>
@@ -290,47 +304,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>导出为图像</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">名称:</translation>
+        <translation>名称:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">浏览(&amp;B)...</translation>
+        <translation>浏览(&amp;B)...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">设置</translation>
+        <translation>设置</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">仅可见图层(&amp;v)</translation>
+        <translation>仅包括可见图层(&amp;v)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">当前缩放级别(&amp;z)</translation>
+        <translation>当前缩放级别(&amp;z)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">绘制网格(&amp;D)</translation>
+        <translation>绘制网格(&amp;D)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished"></translation>
+        <translation>包括背景色(&amp;I)</translation>
     </message>
 </context>
 <context>
@@ -338,7 +352,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation>无法读取文件.</translation>
+        <translation>无法打开文件进行读取。</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -348,7 +362,7 @@
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation>在图块段前面没有找到图块集部分。</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -358,18 +372,18 @@
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>可能是无效的Flare地图。有效的Flare地图至少有一个header部分、一个图块部分和一个图层部分。</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
         <translatorcomment>暂不翻译</translatorcomment>
-        <translation>Flare map files (*.txt)</translation>
+        <translation>Flare 地图文件 (*.txt)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Could not open file for writing.</source>
-        <translation>文件不可写.</translation>
+        <translation>无法打开文件进行写入。</translation>
     </message>
 </context>
 <context>
@@ -377,34 +391,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">无法读取文件.</translation>
+        <translation>无法打开文件进行读取。</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">解析文件错误.</translation>
+        <translation>解析文件错误。</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开文件进行写入。</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">写文件时发生错误:
+        <translation>写入文件发生错误：
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 地图文件 (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript 地图文件 (*.js)</translation>
     </message>
 </context>
 <context>
@@ -412,29 +426,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">无法读取文件.</translation>
+        <translation>无法打开文件进行读取。</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">解析文件错误.</translation>
+        <translation>解析文件出错。</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开文件进行写入。</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">写文件时发生错误:
+        <translation>写入文件发生错误：
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 地形文件 (*.json)</translation>
     </message>
 </context>
 <context>
@@ -453,7 +467,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+46"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+49"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
@@ -468,7 +482,7 @@
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
@@ -485,17 +499,17 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>显示对象名称(&amp;N)</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+29"/>
         <source>Main Toolbar</source>
         <translation>主工具栏</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Tools</source>
-        <translation type="unfinished">工具</translation>
+        <translation>工具</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -570,47 +584,68 @@
     <message>
         <location line="+193"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>成为一名赞助人</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部保存</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>文档</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>永不(&amp;N)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>对选中对象(&amp;S)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>对所有对象(&amp;A)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>绘制时自动地图</translation>
     </message>
     <message>
-        <location line="-58"/>
+        <location line="+8"/>
+        <source>Paste &amp;in Place</source>
+        <translation>定位粘贴(&amp;i)</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+129"/>
+        <source>Ctrl+Shift+V</source>
+        <translation>Ctrl+Shift+V</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Full Screen</source>
+        <translation>全屏</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>F11</source>
+        <translation>F11</translation>
+    </message>
+    <message>
+        <location line="-80"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>导出(&amp;E)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -625,17 +660,17 @@
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出为图像(&amp;I)...</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>E&amp;xport As...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出为(&amp;X)...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -685,12 +720,12 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation type="unfinished"></translation>
+        <translation>显示图块动画</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>重新载入</translation>
     </message>
     <message>
         <location line="-168"/>
@@ -700,7 +735,7 @@
     <message>
         <location line="-46"/>
         <source>Map &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>地图和属性(&amp;P)</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -763,9 +798,17 @@
         <translation>增加新的自动映射规则</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+570"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+573"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">全部文件 (*)</translation>
+        <translation>全部文件 (*)</translation>
+    </message>
+</context>
+<context>
+    <name>MapDocument</name>
+    <message>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
+        <source>Tile</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -801,14 +844,14 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+32"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+58"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>地图不支持旋转: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+133"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>无效的图块属性&apos;%1&apos;</translation>
     </message>
@@ -825,7 +868,7 @@ Line %1, column %2</source>
     <message>
         <location line="+44"/>
         <location line="+43"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+218"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+219"/>
         <source>Invalid tile: %1</source>
         <translation>无效块: %1</translation>
     </message>
@@ -833,7 +876,7 @@ Line %1, column %2</source>
         <location line="+29"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无效绘制顺序：%1</translation>
     </message>
     <message>
         <location line="+154"/>
@@ -849,7 +892,7 @@ Line %1, column %2</source>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>读取图块 %1 的嵌入式媒体出错</translation>
     </message>
     <message>
         <location line="+176"/>
@@ -879,14 +922,14 @@ Line %1, column %2</source>
         <translation>没有指定图块</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+115"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
         <source>Could not open file for writing.</source>
         <translation>无法打开写文件.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-170"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无效 (负数) 图块ID：%1</translation>
     </message>
 </context>
 <context>
@@ -945,19 +988,19 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>图块层格式：</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished"></translation>
+        <translation>图块渲染顺序：</translation>
     </message>
 </context>
 <context>
     <name>NewTilesetDialog</name>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+231"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+233"/>
         <source>New Tileset</source>
         <translation>新图块</translation>
     </message>
@@ -969,17 +1012,17 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>基于图块集图像</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Collection of Images</source>
-        <translation type="unfinished"></translation>
+        <translation>图像集合</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Type:</source>
-        <translation type="unfinished">类型:</translation>
+        <translation>类型:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -987,12 +1030,12 @@ Line %1, column %2</source>
         <translation>名称(&amp;N):</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+38"/>
         <source>&amp;Browse...</source>
         <translation>浏览(&amp;B)...</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+20"/>
         <source>Use transparent color:</source>
         <translation>设置透明度:</translation>
     </message>
@@ -1002,7 +1045,12 @@ Line %1, column %2</source>
         <translation>块宽度:</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="+38"/>
+        <source>Pick color from image</source>
+        <translation>从图片拾取颜色</translation>
+    </message>
+    <message>
+        <location line="-138"/>
         <location line="+42"/>
         <location line="+26"/>
         <location line="+16"/>
@@ -1013,15 +1061,15 @@ Line %1, column %2</source>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished">图像</translation>
+        <translation>图像</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+22"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>源：</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
         <translation>图块集的边缘间距.</translation>
     </message>
@@ -1048,7 +1096,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑图块集</translation>
     </message>
 </context>
 <context>
@@ -1083,27 +1131,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>对象类型编辑器</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished">文件</translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出对象类型...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>导入对象类型...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>选择对象类型文件...</translation>
     </message>
 </context>
 <context>
@@ -1124,18 +1172,24 @@ Line %1, column %2</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <location line="+43"/>
+        <location line="+10"/>
+        <location line="+46"/>
+        <source> tiles</source>
+        <translation type="unfinished"> 块</translation>
+    </message>
+    <message>
+        <location line="-30"/>
+        <location line="+46"/>
         <source>Wrap</source>
         <translation>延伸</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-39"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+46"/>
         <source>Layers:</source>
         <translation>目标层:</translation>
     </message>
@@ -1175,22 +1229,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>成为赞助人</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>访问 https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>我已是赞助人！</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>以后再说</translation>
     </message>
 </context>
 <context>
@@ -1211,12 +1265,12 @@ Line %1, column %2</source>
         <translation>保存并加载</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-478"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-481"/>
         <source>XML</source>
         <translation>XML</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+79"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (无压缩)</translation>
@@ -1242,25 +1296,25 @@ Line %1, column %2</source>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
-        <translation type="unfinished"></translation>
+        <translation>右下</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished"></translation>
+        <translation>右上</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished"></translation>
+        <translation>左下</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished"></translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
@@ -1270,7 +1324,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</translation>
+        <translation>默认不启用，自从已知引用一个外部 DTD 会导致一些 XML 解析问题。</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1295,7 +1349,7 @@ Line %1, column %2</source>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>启动时打开最后文件</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1305,43 +1359,79 @@ Line %1, column %2</source>
     <message>
         <location line="+29"/>
         <source>Fine grid divisions:</source>
-        <translation type="unfinished"></translation>
+        <translation>精细网格划分：</translation>
     </message>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <translation> 像素</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
+        <translation>对象线宽：</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <location line="+6"/>
+        <source>Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Native</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Fusion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Tiled Fusion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Selection color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Base color:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>更新</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>立即检查</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>自动检查更新</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>插件</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>嵌入式插件</translation>
     </message>
 </context>
 <context>
@@ -1349,22 +1439,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- 使用脚本 %1 读取 %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- 使用脚本 %1 写入 %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本中未捕获的异常。请检查控制台。</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本返回 false。请检查控制台。</translation>
     </message>
 </context>
 <context>
@@ -1372,7 +1462,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>重新载入 Python 脚本</translation>
     </message>
 </context>
 <context>
@@ -1405,13 +1495,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>真</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>假</translation>
     </message>
 </context>
 <context>
@@ -1419,12 +1509,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1696"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>真</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>假</translation>
     </message>
 </context>
 <context>
@@ -1432,7 +1522,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1700"/>
         <source>Clear Char</source>
-        <translation type="unfinished"></translation>
+        <translation>清除字符</translation>
     </message>
 </context>
 <context>
@@ -1440,7 +1530,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1448,22 +1538,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4736"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>红</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>绿</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>蓝</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Alpha</translation>
     </message>
 </context>
 <context>
@@ -1471,97 +1561,97 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-214"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>箭头</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>上箭头</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>十字</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation type="unfinished"></translation>
+        <translation>等待</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation type="unfinished"></translation>
+        <translation>I竖线</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直尺寸</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平尺寸</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>反斜线尺寸</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation type="unfinished"></translation>
+        <translation>斜线尺寸</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size All</source>
-        <translation type="unfinished"></translation>
+        <translation>整体尺寸</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Blank</source>
-        <translation type="unfinished"></translation>
+        <translation>空白</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直分割</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平分割</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>手指点</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>无权</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>手打开</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>手合起</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished"></translation>
+        <translation>这是什么</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>忙</translation>
     </message>
 </context>
 <context>
@@ -1569,12 +1659,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+211"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>选择字体</translation>
     </message>
 </context>
 <context>
@@ -1582,37 +1672,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-362"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation>家族</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Point Size</source>
-        <translation type="unfinished"></translation>
+        <translation>点大小</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>粗体</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>斜体</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>下划线</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>删除线</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Kerning</source>
-        <translation type="unfinished"></translation>
+        <translation>字距</translation>
     </message>
 </context>
 <context>
@@ -1620,7 +1710,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+238"/>
         <source>Clear Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>清除快捷方式</translation>
     </message>
 </context>
 <context>
@@ -1628,17 +1718,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3533"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>语言</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>国家</translation>
     </message>
 </context>
 <context>
@@ -1646,17 +1736,17 @@ Line %1, column %2</source>
     <message>
         <location line="+409"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1664,17 +1754,17 @@ Line %1, column %2</source>
     <message>
         <location line="-319"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1682,17 +1772,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-144"/>
         <source>[%1, %2, %3] (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3] (%4)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>未设置</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>[%1, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2]</translation>
     </message>
 </context>
 <context>
@@ -1700,27 +1790,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1701"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>宽度</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>高度</translation>
     </message>
 </context>
 <context>
@@ -1728,27 +1818,27 @@ Line %1, column %2</source>
     <message>
         <location line="-611"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+120"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>宽度</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>高度</translation>
     </message>
 </context>
 <context>
@@ -1756,17 +1846,17 @@ Line %1, column %2</source>
     <message>
         <location line="-534"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>宽度</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>高度</translation>
     </message>
 </context>
 <context>
@@ -1775,32 +1865,32 @@ Line %1, column %2</source>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;无效&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>[%1, %2, %3, %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3, %4]</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>水平策略</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直策略</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>水平伸展</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直伸展</translation>
     </message>
 </context>
 <context>
@@ -1808,17 +1898,17 @@ Line %1, column %2</source>
     <message>
         <location line="-2280"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>宽度</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>高度</translation>
     </message>
 </context>
 <context>
@@ -1826,18 +1916,18 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+478"/>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>属性</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">值</translation>
+        <translation>值</translation>
     </message>
 </context>
 <context>
     <name>ReplicaIsland::ReplicaIslandPlugin</name>
     <message>
-        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+59"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
         <source>Cannot open Replica Island map file!</source>
         <translation>不能打开 Replica Island地图文件!</translation>
     </message>
@@ -1859,12 +1949,12 @@ Line %1, column %2</source>
     <message>
         <location line="+21"/>
         <source>File ended in middle of layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>文件在图层中间结束了！</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unexpected data at end of file!</source>
-        <translation type="unfinished"></translation>
+        <translation>文件结尾有意外的数据！</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1874,32 +1964,32 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开文件进行写入。</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>您必须在地图上定义一个 background_index 属性！</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存无图块的图层！</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>You must define a type property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>您必须为每个图层定义一个类型属性！</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>您必须为每个图层定义一个 tile_index 属性！</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>您必须为每个图层定义一个 scroll_speed 属性！</translation>
     </message>
 </context>
 <context>
@@ -1916,16 +2006,24 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+6"/>
+        <location line="+33"/>
+        <location line="+32"/>
+        <location line="+23"/>
+        <source> tiles</source>
+        <translation> 块</translation>
+    </message>
+    <message>
+        <location line="-75"/>
         <source>Width:</source>
         <translation>宽度:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+10"/>
         <source>Height:</source>
         <translation>高度:</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+26"/>
         <source>Offset</source>
         <translation>挪动</translation>
     </message>
@@ -1935,9 +2033,14 @@ Line %1, column %2</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+23"/>
         <source>Y:</source>
         <translation>Y:</translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>Remove objects outside of the map</source>
+        <translation>移除地图之外的对象</translation>
     </message>
 </context>
 <context>
@@ -1954,26 +2057,34 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
+    <name>TextEditorDialog</name>
+    <message>
+        <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
+        <source>Edit Text</source>
+        <translation>编辑文本</translation>
+    </message>
+</context>
+<context>
     <name>TileAnimationEditor</name>
     <message>
         <location filename="../src/tiled/tileanimationeditor.ui" line="+14"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>图块动画编辑器</translation>
     </message>
     <message>
         <location line="+99"/>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="+523"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>预览</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::AbstractObjectTool</name>
     <message numerus="yes">
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+182"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+183"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform><byte value="x1d"/>复制<byte value="x1d"/>%n个对象</numerusform>
+            <numerusform>复制 %n 个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1986,62 +2097,62 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>水平翻转</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直翻转</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>提高对象</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>降低对象</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>提高对象到顶层</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>降低对象到最底</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message numerus="yes">
         <location line="+5"/>
@@ -2061,7 +2172,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttiletool.cpp" line="+124"/>
         <source>empty</source>
-        <translation type="unfinished"></translation>
+        <translation>空的</translation>
     </message>
 </context>
 <context>
@@ -2069,13 +2180,13 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: 属性 &apos;%2&apos; = &apos;%3&apos; 没有意义。忽略此属性。</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
         <translatorcomment>层&apos;%1&apos;中是否忘了下划线?</translatorcomment>
-        <translation>Did you forget an underscore in layer &apos;%1&apos;?</translation>
+        <translation>您是否忘记图层 &apos;%1&apos; 中的下划线了？</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -2085,7 +2196,7 @@ Line %1, column %2</source>
     <message>
         <location line="-105"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation type="unfinished">&apos;regions_input&apos;层不能存在超过一次.</translation>
+        <translation>&apos;regions_input&apos; 图层不能出现超过一次。</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2096,27 +2207,27 @@ Line %1, column %2</source>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;regions_output&apos; 图层不能出现超过一次。</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;input_*&apos; 和 &apos;inputnot_*&apos; 图层必须是图块图层。</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有找到图层</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到 &apos;regions&apos; 和 &apos;regions_output&apos; 图层。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到 input_&lt;名称&gt; 图层！</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -2164,32 +2275,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation type="unfinished"></translation>
+        <translation>图块图像</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset</source>
-        <translation type="unfinished">图块</translation>
+        <translation>图块</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished"></translation>
+        <translation>图块图像</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>文件名</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">类型</translation>
+        <translation>类型</translation>
     </message>
 </context>
 <context>
@@ -2197,42 +2308,42 @@ Line %1, column %2</source>
     <message>
         <location line="+66"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>一些文件无法打开</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more files referenced by the map could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>地图引用的一个或多个文件无法找到。您可以在下面帮助定位它们。</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation type="unfinished"></translation>
+        <translation>定位文件...</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Locate File</source>
-        <translation type="unfinished"></translation>
+        <translation>定位文件</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>加载图像出错</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">全部文件 (*)</translation>
+        <translation>所有文件 (*)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>定位外部图块</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">读取图块错误</translation>
+        <translation>读取图块出错</translation>
     </message>
 </context>
 <context>
@@ -2253,9 +2364,9 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::ClipboardManager</name>
     <message>
-        <location filename="../src/tiled/clipboardmanager.cpp" line="+166"/>
+        <location filename="../src/tiled/clipboardmanager.cpp" line="+171"/>
         <source>Paste Objects</source>
-        <translation type="unfinished">粘贴对象</translation>
+        <translation>粘贴对象</translation>
     </message>
 </context>
 <context>
@@ -2386,7 +2497,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+133"/>
+        <location filename="../src/tiled/command.cpp" line="+138"/>
         <source>Unable to create/open %1</source>
         <translation>不能创建/打开%1</translation>
     </message>
@@ -2426,7 +2537,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>调试控制台</translation>
     </message>
 </context>
 <context>
@@ -2434,12 +2545,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+39"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished">插入椭圆形</translation>
+        <translation>插入椭圆形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished">C</translation>
+        <translation>C</translation>
     </message>
 </context>
 <context>
@@ -2455,12 +2566,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+39"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished">插入多边形</translation>
+        <translation>插入多边形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
@@ -2468,12 +2579,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+39"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished">插入折线</translation>
+        <translation>插入折线</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
 </context>
 <context>
@@ -2481,12 +2592,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+39"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">插入矩形</translation>
+        <translation>插入矩形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2494,27 +2605,39 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+79"/>
         <source>Insert Tile</source>
-        <translation type="unfinished">插入图块</translation>
+        <translation>插入图块</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished">T</translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+369"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+412"/>
         <source>%1:
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:
+
+%2</translation>
     </message>
     <message>
-        <location line="+250"/>
+        <location line="+146"/>
+        <source>Copy File Path</source>
+        <translation>复制文件路径</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Open Containing Folder...</source>
+        <translation>打开包含文件夹</translation>
+    </message>
+    <message>
+        <location line="+139"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>图块集列已变更</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2581,13 +2704,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::Eraser</name>
     <message>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
-        <location line="+36"/>
+        <location line="+56"/>
         <source>Eraser</source>
         <translation>橡皮</translation>
     </message>
     <message>
-        <location line="-33"/>
-        <location line="+34"/>
+        <location line="-53"/>
+        <location line="+54"/>
         <source>E</source>
         <translation></translation>
     </message>
@@ -2597,52 +2720,52 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>导出</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>导出为图像</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">%1已经存在.
-你要替换它吗?</translation>
+        <translation>%1 已经存在。
+您要替换它吗？</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>内存不足</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法为此图像分配足够的内存。尝试缩减缩放级别，或者使用 Tiled 的 64 位版本。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>图像太大</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>最终图像的分辨率为 %1 x %2 并且大小为 %3 GB。Tiled 无法创建这么大的图片。请缩减缩放级别。</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Image</source>
-        <translation type="unfinished">图像</translation>
+        <translation>图像</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::FileChangedWarning</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="-553"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-598"/>
         <source>File change detected. Discard changes and reload the map?</source>
-        <translation type="unfinished"></translation>
+        <translation>检测到文件变更。放弃更改并重新载入该地图？</translation>
     </message>
 </context>
 <context>
@@ -2650,7 +2773,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+113"/>
         <source>Choose a File</source>
-        <translation type="unfinished"></translation>
+        <translation>选择一个文件</translation>
     </message>
 </context>
 <context>
@@ -2690,13 +2813,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+38"/>
         <location line="+94"/>
         <source>Offset Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>挪动图层</translation>
     </message>
     <message>
         <location line="-92"/>
         <location line="+93"/>
         <source>M</source>
-        <translation type="unfinished"></translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -2705,19 +2828,19 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+39"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>魔法棒</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+235"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+237"/>
         <location line="+11"/>
         <source>Undo</source>
         <translation>撤销</translation>
@@ -2729,12 +2852,12 @@ Do you want to replace it?</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location line="+586"/>
+        <location line="+594"/>
         <source>Open Map</source>
         <translation>打开地图</translation>
     </message>
     <message>
-        <location line="-497"/>
+        <location line="-505"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -2755,30 +2878,30 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1413"/>
+        <location line="+1464"/>
         <source>Random Mode</source>
         <translation>随机模式</translation>
     </message>
     <message>
-        <location line="-1410"/>
+        <location line="-1461"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1408"/>
+        <location line="+1459"/>
         <source>&amp;Layer</source>
         <translation>图层(&amp;L)</translation>
     </message>
     <message>
-        <location line="-1232"/>
+        <location line="-1279"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>对象类型编辑器</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2791,7 +2914,7 @@ Do you want to replace it?</source>
         <translation>Ctrl+Tab</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>X</source>
         <translation></translation>
     </message>
@@ -2816,30 +2939,45 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+133"/>
         <source>Error Opening Map</source>
         <translation>打开地图错误</translation>
     </message>
     <message>
         <location line="+83"/>
-        <location line="+181"/>
-        <location line="+334"/>
+        <location line="+196"/>
+        <location line="+361"/>
         <source>All Files (*)</source>
         <translation>全部文件 (*)</translation>
     </message>
     <message>
-        <location line="-479"/>
-        <location line="+73"/>
+        <location line="-521"/>
+        <location line="+88"/>
         <source>Error Saving Map</source>
         <translation>保存地图出错</translation>
     </message>
     <message>
-        <location line="-31"/>
+        <location line="-46"/>
         <source>untitled.tmx</source>
         <translation>未命名.tmx</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+12"/>
+        <source>Extension Mismatch</source>
+        <translation>扩展名不匹配</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file extension does not match the chosen file type.</source>
+        <translation>文件拓展名与选择文件类型不一样。</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
+        <translation>当文件被加载的时候，Tiled可能无法自动识别出来。所以你确定要保存成此拓展名吗？</translation>
+    </message>
+    <message>
+        <location line="+45"/>
         <source>Unsaved Changes</source>
         <translation>未保存修改</translation>
     </message>
@@ -2851,13 +2989,13 @@ Do you want to replace it?</source>
     <message>
         <location line="+37"/>
         <source>Exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>已导出到 %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+117"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>导出地图出错</translation>
     </message>
     <message>
         <location line="-80"/>
@@ -2889,17 +3027,17 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>某些导出文件已经存在：</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>您要替换它们吗？</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>覆盖文件</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -2907,22 +3045,22 @@ Please select specific format.</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location line="+592"/>
+        <location line="+620"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+136"/>
         <source>Error Reloading Map</source>
-        <translation type="unfinished"></translation>
+        <translation>重新载入地图出错</translation>
     </message>
     <message>
-        <location line="-654"/>
+        <location line="-670"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location line="+215"/>
+        <location line="+232"/>
         <source>Automatic Mapping Warning</source>
         <translation>自动映射告警</translation>
     </message>
@@ -2932,48 +3070,48 @@ Please select specific format.</source>
         <translation>自动映射错误</translation>
     </message>
     <message>
-        <location line="-893"/>
-        <location line="+1234"/>
+        <location line="-939"/>
+        <location line="+1281"/>
         <source>Views and Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>视图和工具栏</translation>
     </message>
     <message>
-        <location line="-1231"/>
-        <location line="+1232"/>
+        <location line="-1278"/>
+        <location line="+1279"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>图块动画编辑器</translation>
     </message>
     <message>
-        <location line="-1230"/>
-        <location line="+1231"/>
+        <location line="-1277"/>
+        <location line="+1278"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>图块碰撞编辑器</translation>
     </message>
     <message>
-        <location line="-1197"/>
+        <location line="-1244"/>
         <source>Alt+Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Left</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Alt+Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Right</translation>
     </message>
     <message>
-        <location line="+756"/>
+        <location line="+802"/>
         <source>Add External Tileset(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>添加外部图块集</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>添加 %n 个图块集</numerusform>
         </translation>
     </message>
     <message>
@@ -2996,15 +3134,15 @@ Please select specific format.</source>
         <translation>调整大小地图</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+52"/>
         <source>Offset Map</source>
         <translation>挪动地图</translation>
     </message>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>旋转 %n 个对象</numerusform>
         </translation>
     </message>
     <message>
@@ -3028,7 +3166,7 @@ Please select specific format.</source>
         <translation>复制 %1</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Duplicate Layer</source>
         <translation>复制图层</translation>
     </message>
@@ -3050,22 +3188,22 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform><byte value="x1d"/>复制<byte value="x1d"/>%n个对象</numerusform>
+        <translation>
+            <numerusform>复制 %n 个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>移除%n个对象</numerusform>
+        <translation>
+            <numerusform>移除 %n 个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
-            <numerusform>移动%n个对象到层</numerusform>
+        <translation>
+            <numerusform>移动 %n 个对象到图层</numerusform>
         </translation>
     </message>
 </context>
@@ -3140,12 +3278,12 @@ Please select specific format.</source>
     <message>
         <location line="-6"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PgUp</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PgDown</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3180,31 +3318,31 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Layer &amp;Properties...</source>
-        <translation>设置(&amp;P)...</translation>
+        <translation>图层属性(&amp;P)...</translation>
     </message>
     <message numerus="yes">
         <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform><byte value="x1d"/>复制<byte value="x1d"/>%n个对象</numerusform>
+        <translation>
+            <numerusform>复制 %n 个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>移除%n个对象</numerusform>
+        <translation>
+            <numerusform>移除 %n 个对象</numerusform>
         </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>复制对象</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>移除对象</translation>
     </message>
 </context>
 <context>
@@ -3274,13 +3412,13 @@ Please select specific format.</source>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation>45度(交错的)</translation>
+        <translation>等角(交错)</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>六角(交错)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3290,12 +3428,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Memory Usage Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>内存使用警告</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>此地图的图块层每个需要耗费 %L1 GB 的内存。默认不创建。</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3330,37 +3468,37 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
-        <location line="+302"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+309"/>
+        <location line="+300"/>
         <source>Select Objects</source>
         <translation>选择对象</translation>
     </message>
     <message>
-        <location line="-300"/>
-        <location line="+301"/>
+        <location line="-298"/>
+        <location line="+299"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message numerus="yes">
-        <location line="-190"/>
-        <location line="+548"/>
+        <location line="-186"/>
+        <location line="+582"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>移动%n个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+67"/>
+        <location line="+87"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>旋转 %n 个对象</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>调整 %n 个对象尺寸</numerusform>
         </translation>
     </message>
 </context>
@@ -3369,73 +3507,74 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished">增加一个对象类型</translation>
+        <translation>增加物件类型</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>移除物件类型</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>添加属性</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>移除属性</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名属性</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished">写对象类型错误</translation>
+        <translation>写对象类型错误</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>写入 %1 时出错：
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>选择对象类型文件</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished">对象类型文件(*.xml)</translation>
+        <translation>对象类型文件 (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished">读取对象类型错误</translation>
+        <translation>读取对象类型出错</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished">导入对象类型</translation>
+        <translation>导入对象类型</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished">导出对象类型</translation>
+        <translation>导出对象类型</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished">名称:</translation>
+        <translation>名称:</translation>
     </message>
 </context>
 <context>
@@ -3479,7 +3618,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::PatreonDialog</name>
     <message>
-        <location filename="../src/tiled/patreondialog.cpp" line="+66"/>
+        <location filename="../src/tiled/patreondialog.cpp" line="+68"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
@@ -3490,7 +3629,7 @@ Please select specific format.</source>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>我不再是赞助人</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3504,50 +3643,50 @@ Please select specific format.</source>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>我已经是赞助人！</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+62"/>
-        <location line="+107"/>
+        <location line="+118"/>
         <source>System default</source>
         <translation>系统默认</translation>
     </message>
     <message>
-        <location line="-15"/>
+        <location line="-6"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>上次检查：%1</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::PropertiesDock</name>
     <message>
-        <location filename="../src/tiled/propertiesdock.cpp" line="+270"/>
+        <location filename="../src/tiled/propertiesdock.cpp" line="+273"/>
         <source>Name:</source>
-        <translation type="unfinished">名称:</translation>
+        <translation>名称:</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>添加属性</translation>
     </message>
     <message>
         <location line="-50"/>
         <location line="+52"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名属性</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Properties</source>
-        <translation type="unfinished">属性</translation>
+        <translation>属性</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>移除属性</translation>
     </message>
 </context>
 <context>
@@ -3555,32 +3694,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+13"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Top Down</source>
-        <translation type="unfinished"></translation>
+        <translation>从上到下</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义</translation>
     </message>
     <message>
-        <location line="+474"/>
+        <location line="+477"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>列</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>源</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3590,37 +3729,37 @@ Please select specific format.</source>
     <message>
         <location line="+282"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished">读取图块错误</translation>
+        <translation>读取图块集出错</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+140"/>
         <source>Custom Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义属性</translation>
     </message>
     <message>
-        <location line="-608"/>
+        <location line="-631"/>
         <source>Map</source>
-        <translation type="unfinished">地图</translation>
+        <translation>地图</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Tile Layer Format</source>
-        <translation type="unfinished"></translation>
+        <translation>图块层格式</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>图块渲染顺序</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>背景色</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Object</source>
-        <translation type="unfinished">对象</translation>
+        <translation>对象</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3628,76 +3767,76 @@ Please select specific format.</source>
         <location line="+74"/>
         <location line="+60"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location line="-157"/>
         <source>Type</source>
-        <translation type="unfinished">类型</translation>
+        <translation>类型</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+21"/>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>可见</translation>
     </message>
     <message>
-        <location line="-424"/>
-        <location line="+404"/>
+        <location line="-427"/>
+        <location line="+407"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
-        <location line="-403"/>
-        <location line="+404"/>
+        <location line="-406"/>
+        <location line="+407"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
-        <location line="-402"/>
+        <location line="-405"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>奇数</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>偶数</translation>
     </message>
     <message>
-        <location line="+331"/>
+        <location line="+334"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>方向</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+66"/>
         <location line="+125"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>宽度</translation>
     </message>
     <message>
         <location line="-190"/>
         <location line="+66"/>
         <location line="+125"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>高度</translation>
     </message>
     <message>
         <location line="-190"/>
         <location line="+167"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>图块宽度</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>图块高度</translation>
     </message>
     <message>
         <location line="-165"/>
         <source>Tile Side Length (Hex)</source>
-        <translation type="unfinished"></translation>
+        <translation>图块边长 (Hex)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3712,115 +3851,115 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>旋转</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>翻转</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>不透明度</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+9"/>
         <location line="+29"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>水平偏移</translation>
     </message>
     <message>
         <location line="-37"/>
         <location line="+9"/>
         <location line="+29"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直偏移</translation>
     </message>
     <message>
         <location line="-41"/>
         <source>Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>图块图层</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Object Layer</source>
-        <translation type="unfinished">对象层</translation>
+        <translation>对象层</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Color</source>
-        <translation type="unfinished">颜色</translation>
+        <translation>颜色</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drawing Order</source>
-        <translation type="unfinished"></translation>
+        <translation>绘制顺序</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Image Layer</source>
-        <translation type="unfinished">图像图层</translation>
+        <translation>图像图层</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+37"/>
         <location line="+39"/>
         <source>Image</source>
-        <translation type="unfinished">图像</translation>
+        <translation>图像</translation>
     </message>
     <message>
         <location line="-71"/>
         <location line="+39"/>
         <source>Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>透明颜色</translation>
     </message>
     <message>
         <location line="-29"/>
         <source>Tileset</source>
-        <translation type="unfinished">图块</translation>
+        <translation>图块集</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>文件名</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished">绘制偏移</translation>
+        <translation>绘制偏移</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>内边</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>间距</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>图块</translation>
     </message>
     <message>
         <location line="-133"/>
         <location line="+134"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>可能性</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Terrain</source>
-        <translation type="unfinished">地形</translation>
+        <translation>地形</translation>
     </message>
 </context>
 <context>
@@ -3829,26 +3968,26 @@ Please select specific format.</source>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
         <location line="+56"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>选择同个图块</translation>
     </message>
     <message>
         <location line="-53"/>
         <location line="+54"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
-        <location line="+128"/>
+        <location line="+127"/>
         <source>Stamp Brush</source>
         <translation>图章刷</translation>
     </message>
     <message>
-        <location line="-125"/>
-        <location line="+126"/>
+        <location line="-124"/>
+        <location line="+125"/>
         <source>B</source>
         <translation>B</translation>
     </message>
@@ -3871,14 +4010,14 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TerrainDock</name>
     <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+219"/>
+        <location filename="../src/tiled/terraindock.cpp" line="+222"/>
         <source>Terrains</source>
         <translation>地形</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>擦除地形</translation>
     </message>
 </context>
 <context>
@@ -3890,29 +4029,37 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TextPropertyEdit</name>
+    <message>
+        <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::TileAnimationEditor</name>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-58"/>
         <source>Delete Frames</source>
-        <translation type="unfinished"></translation>
+        <translation>删除帧</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+373"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+263"/>
         <source>Delete</source>
-        <translation type="unfinished">删除</translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">剪切</translation>
+        <translation>剪切</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>图块碰撞编辑器</translation>
     </message>
 </context>
 <context>
@@ -3940,20 +4087,20 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>图章</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>可能性</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::TileStampsDock</name>
     <message>
-        <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
+        <location filename="../src/tiled/tilestampsdock.cpp" line="+194"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>删除图章</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3963,17 +4110,17 @@ Please select specific format.</source>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>选择图章文件夹</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>图块图章</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>添加新图章</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3983,28 +4130,28 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>复制图章</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>删除选中</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>设置图章文件夹</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>过滤器</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+708"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+731"/>
         <source>Remove Tileset</source>
         <translation>删除图块集</translation>
     </message>
@@ -4026,7 +4173,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation type="unfinished">新图块</translation>
+        <translation>新图块</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4053,34 +4200,34 @@ Please select specific format.</source>
         <location line="+128"/>
         <location line="+15"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>添加图块</translation>
     </message>
     <message>
         <location line="-142"/>
         <location line="+199"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>移除图块</translation>
     </message>
     <message>
         <location line="-121"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>保存 %1 图块时发生错误</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>Could not load &quot;%1&quot;!</source>
-        <translation type="unfinished"></translation>
+        <translation>无法加载 %1 ！</translation>
     </message>
     <message>
         <location line="+57"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>被移除的图块仍然被地图所使用！</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove all references to these tiles?</source>
-        <translation type="unfinished"></translation>
+        <translation>确定要移除所有关于此图块的引用？</translation>
     </message>
     <message>
         <location line="-207"/>
@@ -4104,13 +4251,13 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+48"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑...</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+615"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+639"/>
         <source>Tile &amp;Properties...</source>
         <translation>图块属性(&amp;P)...</translation>
     </message>
@@ -4135,7 +4282,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Tiled 地图文件 (*.tmx)</translation>
+        <translation>Tiled 地图文件 (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4143,7 +4290,7 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Tiled图块集文件(*.tsx)</translation>
+        <translation>Tiled 图块集文件 (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4223,29 +4370,29 @@ Please select specific format.</source>
         <translation>修改对象层属性</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeproperties.cpp" line="+38"/>
+        <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
         <source>Change %1 Properties</source>
         <translation>%1 属性修改</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Set Property</source>
-        <translation type="unfinished"></translation>
+        <translation>设置属性</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>添加属性</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>移除属性</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名属性</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
@@ -4316,7 +4463,7 @@ Please select specific format.</source>
         <translation>移动图块</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-765"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-788"/>
         <source>Import Tileset</source>
         <translation>导入图块</translation>
     </message>
@@ -4338,7 +4485,7 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑图块集</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -4382,7 +4529,7 @@ Please select specific format.</source>
         <translation>移除地形</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileterrain.cpp" line="+131"/>
+        <location filename="../src/tiled/changetileterrain.cpp" line="+133"/>
         <source>Change Tile Terrain</source>
         <translation>改变Tile地形</translation>
     </message>
@@ -4399,17 +4546,17 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Hide Layer</source>
-        <translation>隐藏层</translation>
+        <translation>隐藏图层</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Layer Opacity</source>
-        <translation>改变层透明度</translation>
+        <translation>改变图层的透明度</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>改变图层的偏移</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
@@ -4429,75 +4576,75 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+69"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>添加图块</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>移除图块</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
         <source>Change Image Layer Position</source>
-        <translation type="unfinished"></translation>
+        <translation>改变图像图层位置</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+44"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>提高对象</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>降低对象</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
+        <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块动画</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
+        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+16"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块碰撞</translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation type="unfinished"></translation>
+        <translation>提高对象到顶部</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>降低对象到最底</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Rotate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>旋转对象</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块宽度</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块高度</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>更改六角边长</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>更改背景色</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4512,43 +4659,52 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>更改方向</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>更改渲染顺序</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图层数据格式</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
+        <location line="+14"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块可能性</translation>
     </message>
     <message>
-        <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="-134"/>
+        <location line="+89"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>调整图块索引</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>更改图块图像</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>替换图块集</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
+        <source>Flip %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+35"/>
+        <location filename="../src/tiled/utils.cpp" line="+37"/>
         <source>Image files</source>
         <translation>图像文件</translation>
     </message>

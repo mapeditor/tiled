@@ -27,7 +27,6 @@
 #include "compression.h"
 
 #include <QFile>
-#include <QFileInfo>
 #include <QSaveFile>
 
 using namespace Droidcraft;
@@ -88,7 +87,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
 bool DroidcraftPlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("dat");
+    return fileName.endsWith(QLatin1String(".dat"), Qt::CaseInsensitive);
 }
 
 // Writer

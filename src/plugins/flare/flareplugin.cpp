@@ -255,7 +255,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
 bool FlarePlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("txt");
+    return fileName.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive);
 }
 
 QString FlarePlugin::nameFilter() const
@@ -295,7 +295,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     Properties::const_iterator it = map->properties().constBegin();
     Properties::const_iterator it_end = map->properties().constEnd();
     for (; it != it_end; ++it) {
-        out << it.key() << "=" << it.value().toString() << "\n";
+        out << it.key() << "=" << toExportValue(it.value()).toString() << "\n";
     }
     out << "\n";
 

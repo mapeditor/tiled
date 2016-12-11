@@ -36,17 +36,28 @@ QString Command::finalCommand() const
     QString finalCommand = command;
 
     // Perform variable replacement
-    MapDocument *mapDocument = DocumentManager::instance()->currentDocument();
-    if (mapDocument) {
+    if (MapDocument *mapDocument = DocumentManager::instance()->currentDocument()) {
         const QString fileName = mapDocument->fileName();
 
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
 
-        MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject());
-        if (currentObject) {
+        QFileInfo fileInfo(fileName);
+        QString mapPath = fileInfo.absolutePath();
+        finalCommand.replace(
+            QLatin1String("%mappath"),
+            QString(QLatin1String("\"%1\"")).arg(mapPath));
+
+        if (const Layer *layer = mapDocument->currentLayer()) {
+            finalCommand.replace(QLatin1String("%layername"),
+                                 QString(QLatin1String("\"%1\"")).arg(layer->name()));
+        }
+
+        if (MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject())) {
             finalCommand.replace(QLatin1String("%objecttype"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
+            finalCommand.replace(QLatin1String("%objectid"),
+                                 QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
         }
     }
 

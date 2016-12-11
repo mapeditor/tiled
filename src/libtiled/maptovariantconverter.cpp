@@ -35,10 +35,8 @@ using namespace Tiled;
 
 static QString colorToString(const QColor &color)
 {
-#if QT_VERSION >= 0x050200
     if (color.alpha() != 255)
         return color.name(QColor::HexArgb);
-#endif
     return color.name();
 }
 
@@ -231,8 +229,14 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
-    for (; it != it_end; ++it)
-        variantMap[it.key()] = it.value();
+    for (; it != it_end; ++it) {
+        QVariant value = toExportValue(it.value());
+
+        if (it.value().userType() == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        variantMap[it.key()] = value;
+    }
 
     return variantMap;
 }
@@ -244,7 +248,7 @@ QVariant MapToVariantConverter::propertyTypesToVariant(const Properties &propert
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it)
-        variantMap[it.key()] = typeToName(it.value().type());
+        variantMap[it.key()] = typeToName(it.value().userType());
 
     return variantMap;
 }
@@ -293,7 +297,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
     objectGroupVariant[QLatin1String("type")] = QLatin1String("objectgroup");
 
     if (objectGroup->color().isValid())
-        objectGroupVariant[QLatin1String("color")] = objectGroup->color().name();
+        objectGroupVariant[QLatin1String("color")] = colorToString(objectGroup->color());
 
     objectGroupVariant[QLatin1String("draworder")] = drawOrderToString(objectGroup->drawOrder());
 
@@ -403,8 +407,14 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        propertiesMap[it.key()] = it.value();
-        propertyTypesMap[it.key()] = typeToName(it.value().type());
+        int type = it.value().userType();
+        QVariant value = toExportValue(it.value());
+
+        if (type == filePathTypeId())
+            value = mMapDir.relativeFilePath(value.toString());
+
+        propertiesMap[it.key()] = value;
+        propertyTypesMap[it.key()] = typeToName(type);
     }
 
     variantMap[QLatin1String("properties")] = propertiesMap;

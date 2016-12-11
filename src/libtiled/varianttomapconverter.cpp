@@ -26,6 +26,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -141,12 +142,17 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     QVariantMap::const_iterator it = propertiesMap.constBegin();
     QVariantMap::const_iterator it_end = propertiesMap.constEnd();
     for (; it != it_end; ++it) {
-        QVariant::Type type = nameToType(propertyTypesMap.value(it.key()).toString());
+        int type = nameToType(propertyTypesMap.value(it.key()).toString());
         if (type == QVariant::Invalid)
             type = QVariant::String;
 
         QVariant value = it.value();
-        value.convert(type);
+
+        if (type == filePathTypeId())
+            value = resolvePath(mMapDir, value);
+
+        value = fromExportValue(value, type);
+
         properties[it.key()] = value;
     }
 
@@ -222,8 +228,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantList terrainsVariantList = variantMap[QLatin1String("terrains")].toList();
     for (int i = 0; i < terrainsVariantList.count(); ++i) {
         QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        tileset->addTerrain(terrainMap[QLatin1String("name")].toString(),
-                            terrainMap[QLatin1String("tile")].toInt());
+        Terrain *terrain = tileset->addTerrain(terrainMap[QLatin1String("name")].toString(),
+                                               terrainMap[QLatin1String("tile")].toInt());
+        terrain->setProperties(extractProperties(terrainMap));
     }
 
     // Read tile terrain and external image information

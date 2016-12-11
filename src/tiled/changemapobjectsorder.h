@@ -38,7 +38,8 @@ public:
                           ObjectGroup *objectGroup,
                           int from,
                           int to,
-                          int count);
+                          int count,
+                          QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

@@ -37,6 +37,10 @@
 
 namespace Tiled {
 
+struct FilePath {
+    QString absolutePath;
+};
+
 /**
  * Collection of properties and their values.
  */
@@ -98,9 +102,16 @@ private:
 };
 
 
-TILEDSHARED_EXPORT QString typeToName(QVariant::Type);
-TILEDSHARED_EXPORT QVariant::Type nameToType(const QString &name);
+TILEDSHARED_EXPORT int filePathTypeId();
+
+TILEDSHARED_EXPORT QString typeToName(int type);
+TILEDSHARED_EXPORT int nameToType(const QString &name);
+
+TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value);
+TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type);
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::FilePath)
 
 #endif // PROPERTIES_H

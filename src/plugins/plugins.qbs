@@ -3,6 +3,7 @@ Project {
 
     references: [
         "csv",
+        "defold",
         "droidcraft",
         "flare",
         "json",
@@ -11,5 +12,6 @@ Project {
         "replicaisland",
         "tengine",
         "tmw",
+        "gmx"
     ]
 }

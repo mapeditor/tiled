@@ -107,7 +107,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
-        foreach (const MapObject *mapObject, selectedObjects)
+        for (const MapObject *mapObject : selectedObjects)
             objectGroup->addObject(mapObject->clone());
         copyLayer = objectGroup;
     } else {
@@ -133,7 +133,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
                                         MapDocument *mapDocument,
                                         const MapView *view,
-                                        PasteMode mode)
+                                        PasteFlags flags)
 {
     Layer *currentLayer = mapDocument->currentLayer();
     if (!currentLayer)
@@ -143,32 +143,38 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     if (!currentObjectGroup)
         return;
 
-    // Determine where to insert the objects
-    const MapRenderer *renderer = mapDocument->renderer();
-    const QPointF center = objectGroup->objectsBoundingRect().center();
+    QPointF insertPos;
 
-    // Take the mouse position if the mouse is on the view, otherwise
-    // take the center of the view.
-    QPoint viewPos;
-    if (view->underMouse())
-        viewPos = view->mapFromGlobal(QCursor::pos());
-    else
-        viewPos = QPoint(view->width() / 2, view->height() / 2);
+    if (!(flags & PasteInPlace)) {
+        // Determine where to insert the objects
+        const MapRenderer *renderer = mapDocument->renderer();
+        const QPointF center = objectGroup->objectsBoundingRect().center();
 
-    const QPointF scenePos = view->mapToScene(viewPos);
-    QPointF insertPos = renderer->screenToPixelCoords(scenePos) - center;
-    SnapHelper(renderer).snap(insertPos);
+        // Take the mouse position if the mouse is on the view, otherwise
+        // take the center of the view.
+        QPoint viewPos;
+        if (view->underMouse())
+            viewPos = view->mapFromGlobal(QCursor::pos());
+        else
+            viewPos = QPoint(view->width() / 2, view->height() / 2);
+
+        const QPointF scenePos = view->mapToScene(viewPos);
+
+        insertPos = renderer->screenToPixelCoords(scenePos) - center;
+        SnapHelper(renderer).snap(insertPos);
+    }
 
     QUndoStack *undoStack = mapDocument->undoStack();
     QList<MapObject*> pastedObjects;
     pastedObjects.reserve(objectGroup->objectCount());
 
     undoStack->beginMacro(tr("Paste Objects"));
-    foreach (const MapObject *mapObject, objectGroup->objects()) {
-        if (mode == NoTileObjects && !mapObject->cell().isEmpty())
+    for (const MapObject *mapObject : objectGroup->objects()) {
+        if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
             continue;
 
         MapObject *objectClone = mapObject->clone();
+        objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
         pastedObjects.append(objectClone);
         undoStack->push(new AddMapObject(mapDocument,

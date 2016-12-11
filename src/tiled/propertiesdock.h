@@ -60,10 +60,11 @@ private slots:
     void tilesetFileNameChanged(Tileset *tileset);
 
     void addProperty();
-    void addProperty(const QString &name, QVariant::Type type);
+    void addProperty(const QString &name, const QVariant &value);
     void removeProperty();
     void renameProperty();
     void renameProperty(const QString &name);
+    void showContextMenu(const QPoint& pos);
 
 private:
     void retranslateUi();

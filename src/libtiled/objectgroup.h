@@ -179,7 +179,10 @@ public:
 
     Layer *clone() const override;
 
-    // Enable easy iteration over cells with range-based for
+    void resetObjectIds();
+    int highestObjectId() const;
+
+    // Enable easy iteration over objects with range-based for
     QList<MapObject*>::iterator begin() { return mObjects.begin(); }
     QList<MapObject*>::iterator end() { return mObjects.end(); }
     QList<MapObject*>::const_iterator begin() const { return mObjects.begin(); }

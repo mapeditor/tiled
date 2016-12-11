@@ -114,7 +114,7 @@ TerrainDock::TerrainDock(QWidget *parent):
 
     QVBoxLayout *horizontal = new QVBoxLayout(w);
     horizontal->setSpacing(0);
-    horizontal->setMargin(5);
+    horizontal->setMargin(0);
     horizontal->addWidget(mTerrainView);
     horizontal->addWidget(mEraseTerrainButton);
 
@@ -168,8 +168,10 @@ void TerrainDock::currentRowChanged(const QModelIndex &index)
 
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
-    if (Terrain *terrain = mTerrainView->terrainAt(index))
+    if (Terrain *terrain = mTerrainView->terrainAt(index)) {
         mMapDocument->setCurrentObject(terrain);
+        emit selectTerrainBrush();
+    }
 }
 
 void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)
@@ -187,6 +189,7 @@ void TerrainDock::eraseTerrainButtonClicked()
 {
     setCurrentTerrain(nullptr);
     mEraseTerrainButton->setChecked(true);
+    emit selectTerrainBrush();
 }
 
 void TerrainDock::setCurrentTerrain(Terrain *terrain)

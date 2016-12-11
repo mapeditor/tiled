@@ -130,6 +130,7 @@ Laete Meireles           (Portuguese, Brazil)
 Lyubomir Vasilev         (Bulgarian)
 Mauricio Muñoz Lucero    (Spanish)
 Nuri Uzunoğlu            (Turkish)
+Peter André Johansen     (Norwegian Bokmål)
 Petr Viktorin            (Czech)
 Porfírio Ribeiro         (Portuguese)
 Sebastian Grillmaier     (German)
@@ -153,9 +154,6 @@ See http://p.yusukekamiyamane.com/
 The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
 http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 
-The rename icon for tilesets is a strong modified version of the
-'new Tileset' icon by Stefan Beller (GPL, CC-BY-SA3)
-
 
 Tilesets:
 
@@ -165,3 +163,4 @@ tmw_desert_spacing.png - (C) The Mana World Development Team, GPL
 sewer_tileset.png - (C) Blues Brothers RPG developers, GPL
 Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)
 hexmini.png - Public Domain, http://opengameart.org/content/pixel-hex-tilesets-enhanced
+buch-outdoor.png - (C) Michele "Buch" Bucelli, CC-BY 3.0, http://opengameart.org/users/buch

@@ -49,7 +49,6 @@ public:
     QVariant attributeValue(const QtProperty *property,
                             const QString &attribute) const override;
 
-    static int filePathTypeId();
     static int tilesetParametersTypeId();
 
 public slots:
@@ -70,9 +69,15 @@ private:
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;
-    QMap<const QtProperty *, QStringList> mSuggestions;
+
+    struct StringAttributes {
+        QStringList suggestions;
+        bool multiline = false;
+    };
+    QMap<const QtProperty *, StringAttributes> mStringAttributes;
 
     const QString mSuggestionsAttribute;
+    const QString mMultilineAttribute;
     QIcon mImageMissingIcon;
     QFileIconProvider mIconProvider;
 };

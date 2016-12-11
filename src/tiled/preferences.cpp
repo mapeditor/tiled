@@ -1,6 +1,7 @@
 /*
  * preferences.cpp
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -71,6 +72,7 @@ Preferences::Preferences()
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
+    mSnapToPixels = boolValue("SnapToPixels");
     mGridColor = colorValue("GridColor", Qt::black);
     mGridFine = intValue("GridFine", 4);
     mObjectLineWidth = realValue("ObjectLineWidth", 2);
@@ -80,6 +82,15 @@ Preferences::Preferences()
     mUseOpenGL = boolValue("OpenGL");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
+#if defined(Q_OS_MAC)
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", SystemDefaultStyle));
+#else
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", TiledStyle));
+#endif
+    mBaseColor = colorValue("BaseColor", Qt::lightGray);
+    mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -158,6 +169,36 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     emit objectLabelVisibilityChanged(visibility);
 }
 
+void Preferences::setApplicationStyle(ApplicationStyle style)
+{
+    if (mApplicationStyle == style)
+        return;
+
+    mApplicationStyle = style;
+    mSettings->setValue(QLatin1String("Interface/ApplicationStyle"), style);
+    emit applicationStyleChanged(style);
+}
+
+void Preferences::setBaseColor(const QColor &color)
+{
+    if (mBaseColor == color)
+        return;
+
+    mBaseColor = color;
+    mSettings->setValue(QLatin1String("Interface/BaseColor"), color.name());
+    emit baseColorChanged(color);
+}
+
+void Preferences::setSelectionColor(const QColor &color)
+{
+    if (mSelectionColor == color)
+        return;
+
+    mSelectionColor = color;
+    mSettings->setValue(QLatin1String("Interface/SelectionColor"), color.name());
+    emit selectionColorChanged(color);
+}
+
 void Preferences::setShowGrid(bool showGrid)
 {
     if (mShowGrid == showGrid)
@@ -212,6 +253,16 @@ void Preferences::setSnapToFineGrid(bool snapToFineGrid)
     mSnapToFineGrid = snapToFineGrid;
     mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
     emit snapToFineGridChanged(mSnapToFineGrid);
+}
+
+void Preferences::setSnapToPixels(bool snapToPixels)
+{
+    if (mSnapToPixels == snapToPixels)
+        return;
+
+    mSnapToPixels = snapToPixels;
+    mSettings->setValue(QLatin1String("Interface/SnapToPixels"), mSnapToPixels);
+    emit snapToPixelsChanged(mSnapToPixels);
 }
 
 void Preferences::setGridColor(QColor gridColor)
@@ -294,7 +345,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
     mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
                         mMapRenderOrder);
 }
-
 
 bool Preferences::dtdEnabled() const
 {

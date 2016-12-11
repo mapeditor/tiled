@@ -46,11 +46,14 @@ public:
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
+    bool smoothImages() const { return mSmoothImages; }
     bool IgnoreVisibility() const { return mIgnoreVisibility; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
+    void setSize(int size) { mSize = size; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
+    void setSmoothImages(bool smoothImages) { mSmoothImages = smoothImages; }
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
@@ -60,7 +63,9 @@ public:
 private:
     qreal mScale;
     int mTileSize;
+    int mSize;
     bool mUseAntiAliasing;
+    bool mSmoothImages;
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 

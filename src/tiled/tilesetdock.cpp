@@ -140,6 +140,30 @@ protected:
 };
 
 
+/**
+ * Qt excludes OS X when implementing mouse wheel for switching tabs. However,
+ * we explicitly want this feature on the tileset tab bar as a possible means
+ * of navigation.
+ */
+class WheelEnabledTabBar : public QTabBar
+{
+public:
+    WheelEnabledTabBar(QWidget *parent = nullptr)
+       : QTabBar(parent)
+    {}
+
+    void wheelEvent(QWheelEvent *event) override
+    {
+        int index = currentIndex();
+        if (index != -1) {
+            index += event->delta() > 0 ? -1 : 1;
+            if (index >= 0 && index < count())
+                setCurrentIndex(index);
+        }
+    }
+};
+
+
 static bool hasTileReferences(MapDocument *mapDocument,
                               std::function<bool(const Cell &)> condition)
 {
@@ -184,7 +208,7 @@ static void removeTileReferences(MapDocument *mapDocument,
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(nullptr),
-    mTabBar(new QTabBar),
+    mTabBar(new WheelEnabledTabBar),
     mViewStack(new QStackedWidget),
     mToolBar(new QToolBar),
     mCurrentTile(nullptr),
@@ -208,6 +232,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     mTabBar->setMovable(true);
     mTabBar->setUsesScrollButtons(true);
+    mTabBar->setExpanding(false);
 
     connect(mTabBar, SIGNAL(currentChanged(int)),
             SLOT(updateActions()));
@@ -223,7 +248,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
-    vertical->setMargin(5);
+    vertical->setMargin(0);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
 
@@ -648,12 +673,10 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
 
 void TilesetDock::tilesetMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050200
-    mTilesets.insert(to, mTilesets.takeAt(from));
+#if QT_VERSION >= 0x050600
+    mTilesets.move(from, to);
 #else
-    SharedTileset tileset = mTilesets.at(from);
-    mTilesets.remove(from);
-    mTilesets.insert(to, tileset);
+    mTilesets.insert(to, mTilesets.takeAt(from));
 #endif
 
     // Move the related tileset views

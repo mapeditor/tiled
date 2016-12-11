@@ -153,9 +153,10 @@ public:
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
-     * the contents by \a offset.
+     * the contents by \a offset. If \a removeObjects is true then all objects
+     * which are outside the map will be removed.
      */
-    void resizeMap(const QSize &size, const QPoint &offset);
+    void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
 
     /**
      * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
@@ -169,7 +170,7 @@ public:
     void flipSelectedObjects(FlipDirection direction);
     void rotateSelectedObjects(RotateDirection direction);
 
-    void addLayer(Layer::TypeFlag layerType);
+    Layer *addLayer(Layer::TypeFlag layerType);
     void duplicateLayer();
     void mergeLayerDown();
     void moveLayerUp(int index);
@@ -189,6 +190,8 @@ public:
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
+    void moveObjectsUp(const QList<MapObject*> &objects);
+    void moveObjectsDown(const QList<MapObject*> &objects);
 
     void setProperty(Object *object, const QString &name, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
@@ -393,6 +396,7 @@ private slots:
 private:
     void setFileName(const QString &fileName);
     void deselectObjects(const QList<MapObject*> &objects);
+    void moveObjectIndex(const MapObject *object, int count);
 
     QString mFileName;
     QString mLastExportFileName;

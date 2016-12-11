@@ -76,10 +76,13 @@ public:
      */
     void copySelection(const MapDocument *mapDocument);
 
-    enum PasteMode {
-        Standard,
-        NoTileObjects,
+    enum PasteFlag {
+        PasteDefault        = 0x0,
+        PasteNoTileObjects  = 0x1,
+        PasteInPlace        = 0x2,
     };
+    Q_DECLARE_FLAGS(PasteFlags, PasteFlag)
+    Q_FLAGS(PasteFlags)
 
     /**
      * Convenience method that deals with some of the logic related to pasting
@@ -88,7 +91,7 @@ public:
     void pasteObjectGroup(const ObjectGroup *objectGroup,
                           MapDocument *mapDocument,
                           const MapView *view,
-                          PasteMode mode = Standard);
+                          PasteFlags flags = PasteDefault);
 
 signals:
     /**
@@ -110,7 +113,9 @@ private:
     static ClipboardManager *mInstance;
 };
 
-#endif // CLIPBOARDMANAGER_H
+Q_DECLARE_OPERATORS_FOR_FLAGS(ClipboardManager::PasteFlags)
 
 } // namespace Internal
 } // namespace Tiled
+
+#endif // CLIPBOARDMANAGER_H

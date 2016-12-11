@@ -1,8 +1,6 @@
 language: cpp
 sudo: required
 dist: trusty
-services:
-  - docker
 
 env:
   global:
@@ -20,31 +18,96 @@ addons:
     build_command: make
     branch_pattern: coverity_scan
 
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#tiled"
+    on_success: change
+    on_failure: always
+    use_notice: true
+    skip_join: true
+
 matrix:
-    include:
-        - os: linux
-          compiler: gcc
-        - os: linux
-          compiler: clang
-          env: QMAKESPEC=linux-clang
-        - os: osx
+  include:
+    - os: linux
+      compiler: gcc
+      env:
+        - MAKEFLAGS=-j2
+      before_install:
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt57-trusty
+        - sudo apt-get update -qq
+        - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev libqt5opengl5-dev
+        - source /opt/*/bin/qt*-env.sh
+        - openssl aes-256-cbc -K $encrypted_498dac83364f_key -iv $encrypted_498dac83364f_iv -in dist/butler_creds.enc -out butler_creds -d
+      script:
+        - mkdir Tiled ; cd Tiled/
+        - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
+        - make
+        - rm -rf src/
+        - find -name Makefile -delete
+        - cd ../
+        - cp LICENSE* COPYING *md Tiled/
+        - cp ./tiled.desktop Tiled/
+        - cp ./src/tiled/images/32x32/tiled.png Tiled/
+        - wget -c "https://update.mapeditor.org/linuxdeployqt/linuxdeployqt-9a1fbab-x86-64.appimage"
+        - chmod a+x linuxdeployqt-9a1fbab-x86-64.appimage
+        - unset LD_LIBRARY_PATH
+        - ./linuxdeployqt-9a1fbab-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
+        - rm -rf Tiled/
+        - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
+      deploy:
+        - provider: releases
+          draft: true
+          api_key:
+            secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
+          file: Tiled*.AppImage
+          file_glob: true
+          on:
+            repo: bjorn/tiled
+            tags: true
+        - provider: script
+          skip_cleanup: true
+          script: curl --upload-file $(ls Tiled*.AppImage) https://transfer.sh/Tiled.AppImage
+          on:
+            all_branches: true
+        - provider: script
+          skip_cleanup: true
+          on:
+            branch: snapshot
+          script: dist/linux/push-to-itch.sh
+    - os: linux
+      compiler: clang
+      env:
+        - QMAKESPEC=linux-clang
+        - MAKEFLAGS=-j2
+      before_install:
+        - sudo apt-get update -qq
+        - sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck xvfb
+      script:
+        - qmake
+        - make
+        - pushd tests/
+        - qmake
+        - make
+        - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a ./`basename $test`||exit 1; popd; done
+        - popd
+      after_script:
+        - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
+    - os: osx
+      before_install:
+        - brew update
+        - brew install qt5
+        - brew link qt5 --force
+      script:
+        - qmake
+        - make
+        - pushd tests/
+        - qmake
+        - make
+        - popd
 
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update           ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install qt5      ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link qt5 --force ; fi
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get update -qq ; fi
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck xvfb ; fi
+before_script:
   - qmake -version
-
-script:
-  - qmake
-  - make
-  - pushd tests/
-  - qmake
-  - make
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a ./`basename $test`||exit 1; popd; done ; fi
-  - popd
-
-after_script:
-  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp` ; fi
+  - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
+  - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
+  - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi

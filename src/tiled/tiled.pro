@@ -7,7 +7,7 @@ TEMPLATE = app
 TARGET = tiled
 target.path = $${PREFIX}/bin
 INSTALLS += target
-win32 {
+win32|!isEmpty(TILED_LINUX_ARCHIVE) {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin
@@ -15,12 +15,16 @@ win32 {
 
 QT += widgets
 
-contains(QT_CONFIG, opengl):!macx: QT += opengl
+contains(QT_CONFIG, opengl):!macx:!minQtVersion(5, 4, 0) {
+    QT += opengl
+}
 
 DEFINES += TILED_VERSION=$${TILED_VERSION}
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
+
+!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
 
 macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
@@ -29,16 +33,27 @@ macx {
     OBJECTIVE_SOURCES += macsupport.mm
 
     sparkle {
-        LIBS += -framework Sparkle -framework AppKit
-        QMAKE_POST_LINK = \
-            mkdir -p $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks && \
-            test -d $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/Sparkle.framework || \
-            cp -a /Library/Frameworks/Sparkle.framework $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks/
-        APP_RESOURCES.path = Contents/Resources
-        APP_RESOURCES.files = ../../dist/dsa_pub.pem
-        QMAKE_BUNDLE_DATA += APP_RESOURCES
+        SPARKLE_DIR = /Library/Frameworks
+
+        !exists($${SPARKLE_DIR}/Sparkle.framework) {
+            error("Sparkle.framework not found at $${SPARKLE_DIR}")
+        }
+
         DEFINES += TILED_SPARKLE
+        LIBS += -framework Sparkle -framework AppKit
+        LIBS += -F$${SPARKLE_DIR}
+        QMAKE_OBJECTIVE_CFLAGS += -F$${SPARKLE_DIR}
         OBJECTIVE_SOURCES += sparkleautoupdater.mm
+
+        APP_RESOURCES.path = Contents/Resources
+        APP_RESOURCES.files = \
+            ../../dist/dsa_pub.pem \
+            images/tmx-icon-mac.icns
+
+        SPARKLE_FRAMEWORK.path = Contents/Frameworks
+        SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
+
+        QMAKE_BUNDLE_DATA += APP_RESOURCES SPARKLE_FRAMEWORK
     }
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
@@ -133,7 +148,6 @@ SOURCES += aboutdialog.cpp \
     mapview.cpp \
     minimap.cpp \
     minimapdock.cpp \
-    movabletabwidget.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
@@ -171,15 +185,19 @@ SOURCES += aboutdialog.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
+    stylehelper.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
+    textpropertyedit.cpp \
+    texteditordialog.cpp \
     thumbnailrenderer.cpp \
     tileanimationdriver.cpp \
     tileanimationeditor.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
+    tiledproxystyle.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
@@ -200,7 +218,10 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    clickablelabel.cpp \
+    imagecolorpickerwidget.cpp \
+    reversingproxymodel.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -236,6 +257,7 @@ HEADERS += aboutdialog.h \
     changetileprobability.h \
     changeselectedarea.h \
     changetileterrain.h \
+    clickablelabel.h \
     clipboardmanager.h \
     colorbutton.h \
     containerhelpers.h \
@@ -264,6 +286,7 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
+    imagecolorpickerwidget.h \
     imagelayeritem.h \
     languagemanager.h \
     layerdock.h \
@@ -281,7 +304,6 @@ HEADERS += aboutdialog.h \
     mapview.h \
     minimap.h \
     minimapdock.h \
-    movabletabwidget.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
@@ -315,6 +337,7 @@ HEADERS += aboutdialog.h \
     resizemap.h \
     resizemapobject.h \
     resizetilelayer.h \
+    reversingproxymodel.h \
     rotatemapobject.h \
     selectionrectangle.h \
     selectsametiletool.h \
@@ -322,15 +345,19 @@ HEADERS += aboutdialog.h \
     sparkleautoupdater.h \
     stampbrush.h \
     standardautoupdater.h \
+    stylehelper.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
     terrainview.h \
+    texteditordialog.h \
+    textpropertyedit.h \
     thumbnailrenderer.h \
     tileanimationdriver.h \
     tileanimationeditor.h \
     tilecollisioneditor.h \
     tiledapplication.h \
+    tiledproxystyle.h \
     tilelayeritem.h \
     tilepainter.h \
     tileselectionitem.h \
@@ -359,6 +386,7 @@ FORMS += aboutdialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
     exportasimagedialog.ui \
+    imagecolorpickerwidget.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
@@ -367,6 +395,7 @@ FORMS += aboutdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
+    texteditordialog.ui \
     tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
@@ -396,6 +425,10 @@ INSTALLS += mimeiconscalable
 mimeinfofile.path = $${PREFIX}/share/mime/packages/
 mimeinfofile.files += ../../mime/tiled.xml
 INSTALLS += mimeinfofile
+
+thumbnailgenerator.path = $${PREFIX}/share/thumbnailers/
+thumbnailgenerator.files += ../../mime/tiled.thumbnailer
+INSTALLS += thumbnailgenerator
 
 desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../tiled.desktop

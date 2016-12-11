@@ -196,7 +196,7 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
     const ObjectGroup *og = static_cast<ObjectGroup*>(other);
 
     ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
-    foreach (const MapObject *mapObject, og->objects())
+    for (const MapObject *mapObject : og->objects())
         merged->addObject(mapObject->clone());
     return merged;
 }
@@ -209,6 +209,29 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
 Layer *ObjectGroup::clone() const
 {
     return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+}
+
+/**
+ * Resets the ids of all objects to 0. Mostly used when new ids should be
+ * assigned after the object group has been cloned.
+ */
+void ObjectGroup::resetObjectIds()
+{
+    const QList<MapObject*> &objects = mObjects;
+    for (MapObject *object : objects)
+        object->resetId();
+}
+
+/**
+ * Returns the highest object id in use by this object group, or 0 if no object
+ * with assigned id exists.
+ */
+int ObjectGroup::highestObjectId() const
+{
+    int id = 0;
+    for (const MapObject *object : mObjects)
+        id = std::max(id, object->id());
+    return id;
 }
 
 ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const

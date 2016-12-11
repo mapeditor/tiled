@@ -10,16 +10,16 @@ DynamicLibrary {
     bundle.isBundle: false
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || project.linuxArchive)
                 return "plugins/tiled"
-            else if (qbs.targetOS.contains("osx"))
+            else if (qbs.targetOS.contains("macos"))
                 return "Tiled.app/Contents/PlugIns"
             else
                 return "lib/tiled/plugins"

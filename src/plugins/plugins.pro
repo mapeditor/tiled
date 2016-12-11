@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS = csv \
+          defold \
           droidcraft \
           flare \
           json \

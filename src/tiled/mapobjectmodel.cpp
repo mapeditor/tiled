@@ -30,8 +30,6 @@
 
 #include <QCoreApplication>
 
-#define GROUPS_IN_DISPLAY_ORDER 1
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -171,8 +169,7 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         case Qt::CheckStateRole: {
             LayerModel *layerModel = mMapDocument->layerModel();
             const int layerIndex = mMap->layers().indexOf(objectGroup);
-            const int row = layerModel->layerIndexToRow(layerIndex);
-            layerModel->setData(layerModel->index(row), value, role);
+            layerModel->setData(layerModel->index(layerIndex), value, role);
             return true;
         }
         case Qt::EditRole: {
@@ -283,13 +280,9 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
                 this, &MapObjectModel::layerAboutToBeRemoved);
 
         for (ObjectGroup *og : mMap->objectGroups()) {
-#if GROUPS_IN_DISPLAY_ORDER
-            mObjectGroups.prepend(og);
-#else
             mObjectGroups.append(og);
-#endif
             mGroups.insert(og, new ObjectOrGroup(og));
-            foreach (MapObject *o, og->objects())
+            for (MapObject *o : og->objects())
                 mObjects.insert(o, new ObjectOrGroup(o));
         }
     }
@@ -306,16 +299,12 @@ void MapObjectModel::layerAdded(int index)
             for (index = index - 1; index >= 0; --index)
                 if ((prev = mMap->layerAt(index)->asObjectGroup()))
                     break;
-#if GROUPS_IN_DISPLAY_ORDER
-            index = prev ? mObjectGroups.indexOf(prev) : mObjectGroups.count();
-#else
             index = prev ? mObjectGroups.indexOf(prev) + 1 : 0;
-#endif
             mObjectGroups.insert(index, og);
             const int row = mObjectGroups.indexOf(og);
             beginInsertRows(QModelIndex(), row, row);
             mGroups.insert(og, new ObjectOrGroup(og));
-            foreach (MapObject *o, og->objects()) {
+            for (MapObject *o : og->objects()) {
                 if (!mObjects.contains(o))
                     mObjects.insert(o, new ObjectOrGroup(o));
             }
@@ -341,7 +330,7 @@ void MapObjectModel::layerAboutToBeRemoved(int index)
         beginRemoveRows(QModelIndex(), row, row);
         mObjectGroups.removeAt(row);
         delete mGroups.take(og);
-        foreach (MapObject *o, og->objects())
+        for (MapObject *o : og->objects())
             delete mObjects.take(o);
 
         endRemoveRows();

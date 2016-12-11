@@ -23,6 +23,7 @@
 
 #include "preferences.h"
 #include "utils.h"
+#include "imagecolorpickerwidget.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -84,9 +85,10 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
     connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
-    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
-            SLOT(tilesetTypeChanged(int)));
-
+    connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->useTransparentColor, &QCheckBox::toggled, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)), SLOT(tilesetTypeChanged(int)));
+    connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
     mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
@@ -201,6 +203,8 @@ void NewTilesetDialog::tryAccept()
                                          "margin and spacing!"));
                 return;
             }
+
+            tileset->syncExpectedColumnsAndRows();
         }
 
         if (mMode == CreateTileset) {
@@ -271,4 +275,29 @@ void NewTilesetDialog::updateOkButton()
         enabled &= !mUi->image->text().isEmpty();
 
     okButton->setEnabled(enabled);
+}
+
+void NewTilesetDialog::updateColorPickerButton()
+{
+    mUi->dropperButton->setEnabled(mUi->useTransparentColor->isChecked() &&
+                                   !mUi->image->text().isEmpty());
+}
+
+/**
+ * Shows the popup window used to select the color from the chosen image.
+ */
+void NewTilesetDialog::pickColorFromImage()
+{
+    auto *popup = new ImageColorPickerWidget(mUi->dropperButton);
+    popup->setAttribute(Qt::WA_DeleteOnClose);
+
+    connect(popup, SIGNAL(colorSelected(QColor)), SLOT(colorSelected(QColor)));
+
+    if (!popup->selectColor(mUi->image->text()))
+        delete popup;
+}
+
+void NewTilesetDialog::colorSelected(QColor color)
+{
+    mUi->colorButton->setColor(color);
 }

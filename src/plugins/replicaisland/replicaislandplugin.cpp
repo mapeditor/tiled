@@ -29,7 +29,6 @@
 
 #include <QtEndian>
 #include <QFile>
-#include <QFileInfo>
 #include <QSaveFile>
 
 using namespace ReplicaIsland;
@@ -211,7 +210,7 @@ QString ReplicaIslandPlugin::nameFilter() const
 bool ReplicaIslandPlugin::supportsFile(const QString &fileName) const
 {
     // Check the file extension first.
-    if (QFileInfo(fileName).suffix() != QLatin1String("bin"))
+    if (!fileName.endsWith(QLatin1String(".bin"), Qt::CaseInsensitive))
         return false;
 
     // Since we may have lots of Android-related *.bin files that aren't

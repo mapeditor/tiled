@@ -21,7 +21,8 @@ public:
      */
     ChangeTileObjectGroup(MapDocument *mapDocument,
                           Tile *tile,
-                          ObjectGroup *objectGroup);
+                          ObjectGroup *objectGroup,
+                          QUndoCommand *parent = nullptr);
 
     ~ChangeTileObjectGroup();
 

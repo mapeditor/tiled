@@ -116,6 +116,9 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
         out << "  TileMaps[name] = data;\n";
         out << " } else {\n";
         out << "  onTileMapLoaded(name,data);\n";
+        out << " }\n";
+        out << " if(typeof module === 'object' && module && module.exports) {\n";
+        out << "  module.exports = data;\n";
         out << " }})(" << nameWriter.result() << ",\n";
     }
     out << writer.result();

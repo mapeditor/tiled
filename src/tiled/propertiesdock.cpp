@@ -40,6 +40,7 @@
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
+#include <QMenu>
 
 namespace Tiled {
 namespace Internal {
@@ -60,6 +61,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
+    mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
     connect(mActionRemoveProperty, SIGNAL(triggered()),
             SLOT(removeProperty()));
 
@@ -83,7 +85,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(5);
+    layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
     layout->addWidget(toolBar);
@@ -91,6 +93,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     setWidget(widget);
 
+    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
+                this, &PropertiesDock::showContextMenu);
     connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
             SLOT(currentItemChanged(QtBrowserItem*)));
 
@@ -213,10 +218,10 @@ void PropertiesDock::addProperty()
 {
     AddPropertyDialog dialog(mPropertyBrowser);
     if (dialog.exec() == AddPropertyDialog::Accepted)
-        addProperty(dialog.propertyName(), dialog.propertyType());
+        addProperty(dialog.propertyName(), dialog.propertyValue());
 }
 
-void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
+void PropertiesDock::addProperty(const QString &name, const QVariant &value)
 {
     if (name.isEmpty())
         return;
@@ -228,7 +233,7 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new SetProperty(mMapDocument,
                                         mMapDocument->currentObjects(),
-                                        name, QVariant(type)));
+                                        name, value));
     }
 
     mPropertyBrowser->editCustomProperty(name);
@@ -237,8 +242,11 @@ void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 void PropertiesDock::removeProperty()
 {
     QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+
     Object *object = mMapDocument->currentObject();
-    if (!item || !object)
+    if (!object)
         return;
 
     const QString name = item->property()->propertyName();
@@ -260,7 +268,7 @@ void PropertiesDock::removeProperty()
 void PropertiesDock::renameProperty()
 {
     QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!item)
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
         return;
 
     const QString oldName = item->property()->propertyName();
@@ -288,6 +296,58 @@ void PropertiesDock::renameProperty(const QString &name)
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
+}
+
+void PropertiesDock::showContextMenu(const QPoint& pos)
+{   
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+    QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
+
+    QString name = item->property()->propertyName();
+    Object *object = mMapDocument->currentObject();
+    QVariant value = object->property(name);
+
+    QMenu contextMenu(mPropertyBrowser);
+    QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
+    QAction *renameAction = contextMenu.addAction(tr("Rename..."));
+    QAction *removeAction = contextMenu.addAction(tr("Remove"));
+
+    renameAction->setEnabled(mActionRenameProperty->isEnabled());
+    removeAction->setEnabled(mActionRemoveProperty->isEnabled());
+    removeAction->setShortcuts(mActionRemoveProperty->shortcuts());
+
+    const QList<int> convertTo {
+        QVariant::Bool,
+        QVariant::Color,
+        QVariant::Double,
+        filePathTypeId(),
+        QVariant::Int,
+        QVariant::String
+    };
+
+    for (int toType : convertTo) {
+        QVariant copy = value;
+        if (value.userType() != toType && copy.convert(toType)) {
+            QAction *action = convertMenu->addAction(typeToName(toType));
+            action->setData(copy);
+        }
+    }
+
+    convertMenu->setEnabled(!convertMenu->actions().isEmpty());
+
+    QAction *selectedItem = contextMenu.exec(globalPos);
+    if (selectedItem == renameAction) {
+        renameProperty();
+    } else if (selectedItem == removeAction) {
+        removeProperty();
+    } else if (selectedItem) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument,
+                                        mMapDocument->currentObjects(),
+                                        name, selectedItem->data()));
+    }
 }
 
 

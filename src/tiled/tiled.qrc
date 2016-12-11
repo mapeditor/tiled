@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
+        <file>images/about-tiled-logo-white.png</file>
         <file>images/16x16/add.png</file>
         <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
@@ -90,5 +91,13 @@
         <file>images/16x16/error.png</file>
         <file>images/22x22/error.png</file>
         <file>images/32x32/error.png</file>
+        <file>images/16x16/stock-tool-color-picker-16.png</file>
+        <file>images/22x22/stock-tool-color-picker-22.png</file>
+        <file>images/dock-close.png</file>
+        <file>images/dock-restore.png</file>
+        <file>images/32x32/layer-tile.png</file>
+        <file>images/32x32/layer-object.png</file>
+        <file>images/dock-close@2x.png</file>
+        <file>images/dock-restore@2x.png</file>
     </qresource>
 </RCC>

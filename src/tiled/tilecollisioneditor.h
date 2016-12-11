@@ -21,6 +21,8 @@
 #ifndef TILECOLLISIONEDITOR_H
 #define TILECOLLISIONEDITOR_H
 
+#include "clipboardmanager.h"
+
 #include <QMainWindow>
 
 namespace Tiled {
@@ -77,6 +79,8 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void pasteInPlace();
+    void paste(ClipboardManager::PasteFlags flags);
     void delete_(Operation operation = Delete);
 
     void selectedObjectsChanged();

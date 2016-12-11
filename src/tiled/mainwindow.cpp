@@ -7,6 +7,7 @@
  * Copyright 2009, Christian Henz <chrhenz@gmx.de>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -28,10 +29,8 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
-#include "addremovemapobject.h"
 #include "automappingmanager.h"
 #include "addremovetileset.h"
-#include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
@@ -41,7 +40,6 @@
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
-#include "erasetiles.h"
 #include "exportasimagedialog.h"
 #include "bucketfilltool.h"
 #include "languagemanager.h"
@@ -67,7 +65,6 @@
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "preferences.h"
-#include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "stampbrush.h"
 #include "terrain.h"
@@ -207,6 +204,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
+#if QT_VERSION >= 0x050600
+    setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
+#endif
+
     Preferences *preferences = Preferences::instance();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
@@ -236,7 +237,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
-#if QT_VERSION >= 0x050500
+#if QT_VERSION == 0x050500
     undoAction->setPriority(QAction::LowPriority);
 #endif
     redoAction->setPriority(QAction::LowPriority);
@@ -308,8 +309,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
+    mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionAutoMapWhileDrawing->setChecked(preferences->automappingDrawing());
+
+#ifdef Q_OS_MAC
+    mUi->actionFullScreen->setShortcuts(QKeySequence::FullScreen);
+#endif
 
     QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
     mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
@@ -371,9 +377,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu  = mLayerMenu->addMenu(tr("&New"));
+    mNewLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mNewLayerMenu->addAction(mActionHandler->actionAddTileLayer());
+    mNewLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
+    mNewLayerMenu->addAction(mActionHandler->actionAddImageLayer());
+    mNewLayerMenu->addSeparator();
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCopy());
+    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCut());
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
@@ -404,10 +415,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
-    connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
-    connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
+    connect(mUi->actionCut, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::cut);
+    connect(mUi->actionCopy, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::copy);
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
-    connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(delete_()));
+    connect(mUi->actionPasteInPlace, SIGNAL(triggered()), SLOT(pasteInPlace()));
+    connect(mUi->actionDelete, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::delete_);
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -421,11 +433,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionSnapToFineGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToFineGrid(bool)));
+    connect(mUi->actionSnapToPixels, SIGNAL(toggled(bool)),
+                preferences, SLOT(setSnapToPixels(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
             preferences, SLOT(setHighlightCurrentLayer(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
+    connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
@@ -477,6 +492,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mNewLayerMenu, "document-new");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
@@ -503,8 +519,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTilesetDock, SIGNAL(newTileset()),
             this, SLOT(newTileset()));
 
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
-            this, SLOT(setTerrainBrush(const Terrain*)));
+    connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
+            mTerrainBrush, &TerrainBrush::setTerrain);
+    connect(mTerrainDock, &TerrainDock::selectTerrainBrush,
+            this, &MainWindow::selectTerrainBrush);
     connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
             mTerrainDock, &TerrainDock::setCurrentTerrain);
 
@@ -598,6 +616,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
     new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
     new QShortcut(tr("Y"), this, SLOT(flipVertically()));
@@ -674,6 +693,9 @@ void MainWindow::changeEvent(QEvent *event)
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
         retranslateUi();
+        break;
+    case QEvent::WindowStateChange:
+        mUi->actionFullScreen->setChecked(isFullScreen());
         break;
     default:
         break;
@@ -904,6 +926,21 @@ bool MainWindow::saveFileAs()
 
     if (fileName.isEmpty())
         return false;
+
+    if (!fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter)) {
+        QMessageBox messageBox(QMessageBox::Warning,
+                               tr("Extension Mismatch"),
+                               tr("The file extension does not match the chosen file type."),
+                               QMessageBox::Yes | QMessageBox::No,
+                               window());
+
+        messageBox.setInformativeText(tr("Tiled may not automatically recognize your file when loading. "
+                                         "Are you sure you want to save with this extension?"));
+
+        int answer = messageBox.exec();
+        if (answer != QMessageBox::Yes)
+            return false;
+    }
 
     MapFormat *format = helper.formatByNameFilter(selectedFilter);
     mMapDocument->setWriterFormat(format);
@@ -1143,45 +1180,17 @@ void MainWindow::closeAllFiles()
         mDocumentManager->closeAllDocuments();
 }
 
-void MainWindow::cut()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    copy();
-
-    QUndoStack *stack = mMapDocument->undoStack();
-    stack->beginMacro(tr("Cut"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            stack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-
-    stack->endMacro();
-}
-
-void MainWindow::copy()
-{
-    if (!mMapDocument)
-        return;
-
-    ClipboardManager::instance()->copySelection(mMapDocument);
-}
-
 void MainWindow::paste()
+{
+    paste(ClipboardManager::PasteDefault);
+}
+
+void MainWindow::pasteInPlace()
+{
+    paste(ClipboardManager::PasteInPlace);
+}
+
+void MainWindow::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mMapDocument)
         return;
@@ -1214,44 +1223,23 @@ void MainWindow::paste()
         mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
-        clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
+        clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view, flags);
     }
 
     if (map)
         tilesetManager->removeReferences(map->tilesets());
 }
 
-void MainWindow::delete_()
-{
-    if (!mMapDocument)
-        return;
-
-    Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Delete"));
-
-    if (tileLayer && !selectedArea.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
-    } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
-            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
-    }
-
-    mActionHandler->selectNone();
-    undoStack->endMacro();
-}
-
 void MainWindow::openPreferences()
 {
-    PreferencesDialog preferencesDialog(this);
-    preferencesDialog.exec();
+    if (!mPreferencesDialog) {
+        mPreferencesDialog = new PreferencesDialog(this);
+        mPreferencesDialog->setAttribute(Qt::WA_DeleteOnClose);
+    }
+
+    mPreferencesDialog->show();
+    mPreferencesDialog->activateWindow();
+    mPreferencesDialog->raise();
 }
 
 void MainWindow::labelVisibilityActionTriggered(QAction *action)
@@ -1282,6 +1270,17 @@ void MainWindow::zoomNormal()
 {
     if (MapView *mapView = mDocumentManager->currentMapView())
         mapView->zoomable()->resetZoom();
+}
+
+void MainWindow::setFullScreen(bool fullScreen)
+{
+    if (isFullScreen() == fullScreen)
+        return;
+
+    if (fullScreen)
+        setWindowState(windowState() | Qt::WindowFullScreen);
+    else
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
 }
 
 bool MainWindow::newTileset(const QString &path)
@@ -1404,7 +1403,7 @@ void MainWindow::resizeMap()
         const QSize &newSize = resizeDialog.newSize();
         const QPoint &offset = resizeDialog.offset();
         if (newSize != map->size() || !offset.isNull())
-            mMapDocument->resizeMap(newSize, offset);
+            mMapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
     }
 }
 
@@ -1482,10 +1481,8 @@ void MainWindow::layerComboActivated(int index)
     if (!mMapDocument)
         return;
 
-    int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
-
-    if (layerIndex != mMapDocument->currentLayerIndex())
-        mMapDocument->setCurrentLayerIndex(layerIndex);
+    if (index != mMapDocument->currentLayerIndex())
+        mMapDocument->setCurrentLayerIndex(index);
 }
 
 void MainWindow::openRecentFile()
@@ -1565,7 +1562,7 @@ void MainWindow::updateActions()
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
-    int layerComboIndex = -1;
+    int layerIndex = -1;
 
     if (mMapDocument) {
         Layer *currentLayer = mMapDocument->currentLayer();
@@ -1574,14 +1571,12 @@ void MainWindow::updateActions()
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
-
-        int layerIndex = mMapDocument->currentLayerIndex();
-        if (layerIndex != -1)
-            layerComboIndex = mMapDocument->layerModel()->layerIndexToRow(layerIndex);
+        layerIndex = mMapDocument->currentLayerIndex();
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
             || objectsSelected;
+    const bool clipboardHasMap = ClipboardManager::instance()->hasMap();
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
@@ -1594,7 +1589,8 @@ void MainWindow::updateActions()
     mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
-    mUi->actionPaste->setEnabled(ClipboardManager::instance()->hasMap());
+    mUi->actionPaste->setEnabled(clipboardHasMap);
+    mUi->actionPasteInPlace->setEnabled(clipboardHasMap);
     mUi->actionDelete->setEnabled(canCopy);
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
@@ -1607,7 +1603,8 @@ void MainWindow::updateActions()
 
     updateZoomLabel(); // for the zoom actions
 
-    mLayerComboBox->setCurrentIndex(layerComboIndex);
+    mLayerComboBox->setEnabled(mMapDocument);
+    mLayerComboBox->setCurrentIndex(layerIndex);
 }
 
 void MainWindow::updateZoomLabel()
@@ -1679,17 +1676,9 @@ void MainWindow::setStamp(const TileStamp &stamp)
     mTilesetDock->selectTilesInStamp(stamp);
 }
 
-/**
- * Sets the terrain brush.
- */
-void MainWindow::setTerrainBrush(const Terrain *terrain)
+void MainWindow::selectTerrainBrush()
 {
-    mTerrainBrush->setTerrain(terrain);
-
-    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mTerrainBrush)
-        mToolManager->selectTool(mTerrainBrush);
+    mToolManager->selectTool(mTerrainBrush);
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
@@ -1699,6 +1688,12 @@ void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 
 void MainWindow::writeSettings()
 {
+#ifdef Q_OS_MAC
+    // See QTBUG-45241
+    if (isFullScreen())
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
+#endif
+
     mSettings.beginGroup(QLatin1String("mainwindow"));
     mSettings.setValue(QLatin1String("geometry"), saveGeometry());
     mSettings.setValue(QLatin1String("state"), saveState());
@@ -1779,6 +1774,7 @@ void MainWindow::retranslateUi()
 
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
+    mNewLayerMenu->setTitle(tr("&New"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
@@ -1836,8 +1832,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     } else {
         mLayerComboBox->setModel(&emptyModel);
     }
-
-    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();

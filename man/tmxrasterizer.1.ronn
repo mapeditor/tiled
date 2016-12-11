@@ -22,6 +22,9 @@ This is very helpful for creating small-scale previews, such as mini-maps.
   * `-t` `--tilesize` SIZE:
     The requested size in pixels at which a tile is rendered.
     Overrides the --scale option.
+  * `--size` SIZE:
+    The output image fits within a SIZE x SIZE square.
+    Overrides the --scale and --tilesize options.
   * `-a` `--anti-aliasing`:
     Smooth the output image using anti-aliasing
   * `--ignore-visibility`:

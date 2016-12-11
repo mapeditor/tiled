@@ -136,6 +136,7 @@ private:
     void applyTerrain();
     void finishTerrainChange();
     Tile *currentTile() const;
+    void setHandScrolling(bool handScrolling);
 
     Zoomable *mZoomable;
     MapDocument *mMapDocument;
@@ -148,6 +149,9 @@ private:
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;
+
+    bool mHandScrolling;
+    QPoint mLastMousePos;
 
     const QIcon mImageMissingIcon;
 };

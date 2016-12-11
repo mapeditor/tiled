@@ -157,6 +157,8 @@ private:
     QLineEdit *m_lineEdit;
 };
 
+QString removeRedundantTrialingZeros(const QString &text);
+
 #if QT_VERSION >= 0x040400
 QT_END_NAMESPACE
 #endif

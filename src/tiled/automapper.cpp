@@ -555,19 +555,17 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
         }
 
         if (anymatch) {
-            int r = 0;
             // choose by chance which group of rule_layers should be used:
-            if (mLayerList.size() > 1)
-                r = qrand() % mLayerList.size();
+            const int r = qrand() % mLayerList.size();
+            const RuleOutput *translationTable = mLayerList.at(r);
 
             if (!mNoOverlappingRules) {
-                copyMapRegion(ruleOutput, QPoint(x, y), mLayerList.at(r));
+                copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
                 ret = ret.united(rbr.translated(QPoint(x, y)));
                 continue;
             }
 
             bool missmatch = false;
-            RuleOutput *translationTable = mLayerList.at(r);
             QList<Layer*> layers = translationTable->keys();
 
             // check if there are no overlaps within this rule.
@@ -592,7 +590,7 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
             if (missmatch)
                 continue;
 
-            copyMapRegion(ruleOutput, QPoint(x, y), mLayerList.at(r));
+            copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
             ret = ret.united(rbr.translated(QPoint(x, y)));
             for (int i = 0; i < translationTable->size(); ++i) {
                 appliedRegions[i] +=
@@ -781,13 +779,11 @@ static bool compareLayerTo(const TileLayer *setLayer,
 void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
                                const RuleOutput *layerTranslation)
 {
-    for (int i = 0; i < layerTranslation->keys().size(); ++i) {
-        Layer *from = layerTranslation->keys().at(i);
+    for (auto it = layerTranslation->begin(), end = layerTranslation->end(); it != end; ++it) {
+        Layer *from = it.key();
         Layer *to = mMapWork->layerAt(layerTranslation->value(from));
         foreach (const QRect &rect, region.rects()) {
-            TileLayer *fromTileLayer = from->asTileLayer();
-            ObjectGroup *fromObjectGroup = from->asObjectGroup();
-            if (fromTileLayer) {
+            if (TileLayer *fromTileLayer = from->asTileLayer()) {
                 TileLayer *toTileLayer = to->asTileLayer();
                 Q_ASSERT(toTileLayer); //TODO check this before in prepareAutomap or such!
                 copyTileRegion(fromTileLayer, rect.x(), rect.y(),
@@ -795,7 +791,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
                                toTileLayer,
                                rect.x() + offset.x(), rect.y() + offset.y());
 
-            } else if (fromObjectGroup) {
+            } else if (ObjectGroup *fromObjectGroup = from->asObjectGroup()) {
                 ObjectGroup *toObjectGroup = to->asObjectGroup();
                 copyObjectRegion(fromObjectGroup, rect.x(), rect.y(),
                                  rect.width(), rect.height(),
@@ -833,21 +829,20 @@ void AutoMapper::copyTileRegion(TileLayer *srcLayer, int srcX, int srcY,
 }
 
 void AutoMapper::copyObjectRegion(ObjectGroup *srcLayer, int srcX, int srcY,
-                                 int width, int height,
-                                 ObjectGroup *dstLayer, int dstX, int dstY)
+                                  int width, int height,
+                                  ObjectGroup *dstLayer, int dstX, int dstY)
 {
     QUndoStack *undo = mMapDocument->undoStack();
     const QRectF rect = QRectF(srcX, srcY, width, height);
     const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
-    QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
+    const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
 
     QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY);
     pixelOffset -= pixelRect.topLeft();
 
-    QList<MapObject*> clones;
-    foreach (MapObject *obj, objects) {
+    for (MapObject *obj : objects) {
         MapObject *clone = obj->clone();
-        clones.append(clone);
+        clone->resetId();
         clone->setX(clone->x() + pixelOffset.x());
         clone->setY(clone->y() + pixelOffset.y());
         undo->push(new AddMapObject(mMapDocument, dstLayer, clone));
@@ -917,11 +912,9 @@ void AutoMapper::cleanUpRuleMapLayers()
 {
     cleanTileLayers();
 
-    QList<RuleOutput*>::const_iterator it;
-    for (it = mLayerList.constBegin(); it != mLayerList.constEnd(); ++it)
-        delete (*it);
-
+    qDeleteAll(mLayerList);
     mLayerList.clear();
+
     // do not delete mLayerRuleRegions, it is owned by the rulesmap
     mLayerInputRegions = nullptr;
     mLayerOutputRegions = nullptr;

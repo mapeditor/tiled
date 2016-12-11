@@ -62,7 +62,10 @@ private slots:
     void nameEdited(const QString &name);
     void tilesetTypeChanged(int index);
     void updateOkButton();
+    void updateColorPickerButton();
     void tryAccept();
+    void pickColorFromImage();
+    void colorSelected(QColor);
 
 private:
     void setMode(Mode mode);
