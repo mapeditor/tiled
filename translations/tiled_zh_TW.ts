@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled地圖編輯器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看AUTHORS檔案取得全部貢獻者名單列表)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;你可以基於GPL(V2或更新版本)進行修改、重新發佈此應用程式.GPL的一份拷貝放在&apos;COPYING&apos;檔案中隨Tiled一起發佈.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled地圖編輯器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看AUTHORS檔案取得全部貢獻者名單列表)&lt;/p&gt;
+&lt;p align="center"&gt;你可以基於GPL(V2或更新版本)進行修改、重新發佈此應用程式.GPL的一份拷貝放在'COPYING'檔案中隨Tiled一起發佈.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -37,7 +37,7 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished">增加屬性</translation>
+        <translation>添加屬性</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -50,32 +50,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+215"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>導出語法 --export-map [格式] &lt;tmx 檔案&gt; &lt;目標檔案&gt;</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>未知格式 （參考 --export-formats）</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
+        <translation>無法確定導出格式。</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有找到此檔案擴展名關聯的導出插件。</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>加載地圖失敗。</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>導出地圖失敗。</translation>
     </message>
 </context>
 <context>
@@ -101,17 +101,17 @@
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>校驗輸入參數</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>不使用硬件加速渲染</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">導出指定 tmx 文件</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -121,12 +121,12 @@
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">打開一個新的實例</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">導出格式：</translation>
     </message>
 </context>
 <context>
@@ -134,17 +134,17 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">非法参数 %1:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>未知長參數 %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">未知短參數 %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -161,7 +161,7 @@
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示幫助信息</translation>
     </message>
 </context>
 <context>
@@ -205,7 +205,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation>無法打開要寫入的檔案</translation>
+        <translation type="unfinished">無法打開要文件。</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -223,7 +223,7 @@
     <message>
         <location line="+69"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法打開文件。</translation>
     </message>
 </context>
 <context>
@@ -845,15 +845,15 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>不被支援的地圖擺向: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>不被支援的地圖擺向: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>無效的圖塊集參數&apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>無效的圖塊集參數'%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -897,22 +897,22 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>不支援壓縮方式&apos;%1&apos;</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>不支援壓縮方式'%1'</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>圖層 &apos;%1&apos; 資料已損壞</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>圖層 '%1' 資料已損壞</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>無法解析圖塊在（%1，%2圖層）&apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>無法解析圖塊在（%1，%2圖層）'%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1113,7 +1113,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>檔案未包含物件類型.</translation>
     </message>
     <message>
@@ -1238,7 +1238,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1645,7 +1645,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>這是什麼</translation>
     </message>
     <message>
@@ -1933,12 +1933,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>無法解析檔案標頭!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>無法解析圖層標頭!</translation>
     </message>
     <message>
@@ -1973,7 +1973,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>無法儲存無圖塊的圖層！</translation>
     </message>
     <message>
@@ -2084,7 +2084,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+183"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
+            <numerusform><byte value="x1d"></byte>複製<byte value="x1d"></byte>%n個物件</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2179,50 +2179,50 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: 屬性 &apos;%2&apos; = &apos;%3&apos; 不具有意義。忽視這個屬性。</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': 屬性 '%2' = '%3' 不具有意義。忽視這個屬性。</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translatorcomment>圖層&apos;%1&apos;中是否忘了底線?</translatorcomment>
-        <translation>Did you forget an underscore in layer &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translatorcomment>圖層'%1'中是否忘了底線?</translatorcomment>
+        <translation>Did you forget an underscore in layer '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>&apos;%1&apos;圖是自動映射的無效層.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>'%1'圖是自動映射的無效層.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos;圖層不能存在超過一次.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input'圖層不能存在超過一次.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos; 圖層必須是圖塊圖層.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*' 圖層必須是圖塊圖層.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos; 圖層不能存在超過一次.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output' 圖層不能存在超過一次.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; 與 &apos;inputnot_*&apos; 圖層必須是圖塊圖層.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*' 與 'inputnot_*' 圖層必須是圖塊圖層.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>找不到 &apos;regions&apos; 或 &apos;regions_input&apos; 圖層.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>找不到 'regions' 或 'regions_input' 圖層.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>找不到 &apos;regions&apos; 或 &apos;regions_output&apos; 圖層.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>找不到 'regions' 或 'regions_output' 圖層.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2413,7 +2413,7 @@ Line %1, column %2</source>
         <location line="+91"/>
         <location line="+69"/>
         <source>&lt;new command&gt;</source>
-        <translation>&lt;新<byte value="x1c"/> 命令&gt;</translation>
+        <translation>&lt;新<byte value="x1c"></byte> 命令&gt;</translation>
     </message>
     <message>
         <location line="-61"/>
@@ -2423,12 +2423,12 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Set the shell command to execute</source>
-        <translation>設定要執行的<byte value="x1c"/>SHELL命令</translation>
+        <translation>設定要執行的<byte value="x1c"></byte>SHELL命令</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation>在命令列表中顯示或隱藏該<byte value="x1c"/>命令</translation>
+        <translation>在命令列表中顯示或隱藏該<byte value="x1c"></byte>命令</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2641,7 +2641,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3189,7 +3189,7 @@ Please select specific format.</source>
         <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
+            <numerusform><byte value="x1d"></byte>複製<byte value="x1d"></byte>%n個物件</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3324,7 +3324,7 @@ Please select specific format.</source>
         <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
+            <numerusform><byte value="x1d"></byte>複製<byte value="x1d"></byte>%n個物件</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3451,7 +3451,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
+        <source>Failed to load tileset image '%1'.</source>
         <translation>無法載入圖塊集圖像%1.</translation>
     </message>
     <message>
@@ -3621,13 +3621,13 @@ Please select specific format.</source>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3641,7 +3641,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4156,7 +4156,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
+        <source>The tileset "%1" is still in use by the map!</source>
         <translation>圖塊集 “%1”仍被地圖使用!</translation>
     </message>
     <message>
@@ -4215,8 +4215,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>無法載入&quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>無法載入"%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4658,17 +4658,17 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>調整方向</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>改變渲染順序</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>改變圖層數據压缩格式</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
@@ -4680,7 +4680,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-134"/>
         <location line="+89"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>調整圖塊z-index</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
@@ -4690,15 +4690,13 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>替換圖塊集</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>翻轉 %n 個對象</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
