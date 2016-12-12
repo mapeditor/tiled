@@ -18,11 +18,7 @@ Product {
     Group {
         name: "Examples"
         prefix: "../examples/"
-        files: [
-            "*.tmx",
-            "*.tsx",
-            "*.png",
-        ]
+        files: ["*.*"]
 
         qbs.install: true
         qbs.installDir: "examples"
@@ -31,13 +27,17 @@ Product {
     Group {
         name: "Examples (automapping)"
         prefix: "../examples/sewer_automap/"
-        files: [
-            "*.txt",
-            "*.png",
-            "*.tmx",
-        ]
+        files: ["*.*"]
         qbs.install: true
         qbs.installDir: "examples/sewer_automap"
+    }
+
+    Group {
+        name: "Examples (Sticker Knight)"
+        prefix: "../examples/sticker-knight/"
+        files: ["*.*"]
+        qbs.install: true
+        qbs.installDir: "examples/sticker-knight"
     }
 
     Group {
