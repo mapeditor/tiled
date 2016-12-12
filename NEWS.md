@@ -1,3 +1,29 @@
+### 0.18.0 (...)
+
+* Added Layer via Copy/Cut actions
+* Added context menu to change custom property type (by Dmitry Hrabrov)
+* Added support for higher precision for custom floating point properties
+* Added %mappath variable to commands (by Jack Roper)
+* Added snapping to pixels (by Mamed Ibrahimov)
+* Added right-click to clear the tile selection
+* Added a context menu action to reset the size of tile objects
+* Added exporter for Game Maker Studio room files (by Jones Blunt)
+* Added Move Up/Down buttons to Objects view (by iskolbin)
+* Added pixel coordinates to status bar for object tools (by iskolbin)
+* Added Sticker Knight platformer example (by Ponywolf)
+* tmxrasterizer: Added --size argument and support local file URLs
+* tmxrasterizer: Use smooth pixmap transform by default
+* Linux: Register tmxrasterizer as thumbnail generator for TMX files
+* Allow scrolling past map edges with mouse wheel
+* Enabled HiDpi scaling and improved the quality of some icons
+* Reversed the order of the objects in the Objects view
+* JSON plugin: Added Node.js support to the JavaScript export
+* Updated TMX schema definition (by assofohdz)
+* Fixed unfinished objects getting saved
+* Fixed OpenGL rendering mode when application is scaled (HiDpi screens)
+* Windows: Fixed console output
+* libtiled-java: Use Maven, deploy to OSSRH and code updates (by Mike Thomas)
+* libtiled-java: Added a basic isometric renderer (by Mike Thomas)
 * Updated Brazilian Portuguese translation (by Laete Meireles)
 
 ### 0.17.2 (28 November 2016)
