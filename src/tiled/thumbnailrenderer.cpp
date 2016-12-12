@@ -76,11 +76,15 @@ static QRectF cellRect(const MapRenderer &renderer,
                        const Cell &cell,
                        const QPointF &tileCoords)
 {
-    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords);
-    QPointF offset = cell.tile->tileset()->tileOffset();
-    QSize size = cell.tile->size();
+    const Tile *tile = cell.tile();
+    if (!tile)
+        return QRectF();
 
-    if (cell.flippedAntiDiagonally)
+    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords);
+    QPointF offset = tile->offset();
+    QSize size = tile->size();
+
+    if (cell.flippedAntiDiagonally())
         std::swap(size.rwidth(), size.rheight());
 
     // This is a correction needed because tileToScreenCoords does not return

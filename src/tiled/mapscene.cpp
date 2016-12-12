@@ -74,10 +74,10 @@ MapScene::MapScene(QObject *parent):
             this, &MapScene::updateDefaultBackgroundColor);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
-    connect(tilesetManager, SIGNAL(repaintTileset(Tileset*)),
-            this, SLOT(tilesetChanged(Tileset*)));
+    connect(tilesetManager, &TilesetManager::tilesetImagesChanged,
+            this, &MapScene::repaintTileset);
+    connect(tilesetManager, &TilesetManager::repaintTileset,
+            this, &MapScene::repaintTileset);
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
@@ -146,10 +146,13 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged()));
-        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
-                this, &MapScene::adaptToTilesetTileSizeChanges);
-        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-                this, &MapScene::adaptToTileSizeChanges);
+        // todo: possibly route this through the TilesetManager and
+        // have the MapScene check if the current map uses the changed tileset.
+        // possibly have it still trigger through the signal
+//        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
+//                this, &MapScene::adaptToTilesetTileSizeChanges);
+//        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+//                this, &MapScene::adaptToTileSizeChanges);
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
         connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
@@ -394,7 +397,7 @@ void MapScene::mapChanged()
         setBackgroundBrush(mDefaultBackgroundColor);
 }
 
-void MapScene::tilesetChanged(Tileset *tileset)
+void MapScene::repaintTileset(Tileset *tileset)
 {
     if (!mMapDocument)
         return;
@@ -489,7 +492,7 @@ void MapScene::adaptToTilesetTileSizeChanges(Tileset *tileset)
 
     for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
-        if (!cell.isEmpty() && cell.tile->tileset() == tileset)
+        if (cell.tileset() == tileset)
             item->syncWithMapObject();
     }
 }
@@ -504,7 +507,7 @@ void MapScene::adaptToTileSizeChanges(Tile *tile)
 
     for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
-        if (cell.tile == tile)
+        if (cell.tile() == tile)
             item->syncWithMapObject();
     }
 }

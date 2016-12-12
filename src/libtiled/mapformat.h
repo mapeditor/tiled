@@ -69,7 +69,9 @@ public:
 
     /**
      * Returns the absolute paths for the files that will be written by
-     * the map writer.
+     * this format for a given map.
+     *
+     * This is supported for Export formats only!
      */
     virtual QStringList outputFiles(const Map *, const QString &fileName) const
     { return QStringList(fileName); }
@@ -101,6 +103,8 @@ public:
  */
 class TILEDSHARED_EXPORT MapFormat : public FileFormat
 {
+    Q_OBJECT
+
 public:
     explicit MapFormat(QObject *parent = nullptr)
         : FileFormat(parent)
@@ -168,14 +172,15 @@ class FormatHelper
 {
 public:
     FormatHelper(FileFormat::Capabilities capabilities,
-                 QString initialFilter)
+                 QString initialFilter = QString())
         : mFilter(std::move(initialFilter))
     {
         PluginManager::each<Format>([this,capabilities](Format *format) {
             if (format->hasCapabilities(capabilities)) {
                 const QString nameFilter = format->nameFilter();
 
-                mFilter += QLatin1String(";;");
+                if (!mFilter.isEmpty())
+                    mFilter += QLatin1String(";;");
                 mFilter += nameFilter;
 
                 mFormats.append(format);

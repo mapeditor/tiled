@@ -582,6 +582,71 @@ void Tileset::setTileImage(Tile *tile,
     }
 }
 
+void Tileset::swap(Tileset &other)
+{
+    std::swap(mFileName, other.mFileName);
+    std::swap(mImageReference, other.mImageReference);
+    std::swap(mTileWidth, other.mTileWidth);
+    std::swap(mTileHeight, other.mTileHeight);
+    std::swap(mTileSpacing, other.mTileSpacing);
+    std::swap(mMargin, other.mMargin);
+    std::swap(mTileOffset, other.mTileOffset);
+    std::swap(mColumnCount, other.mColumnCount);
+    std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
+    std::swap(mExpectedRowCount, other.mExpectedRowCount);
+    std::swap(mTiles, other.mTiles);
+    std::swap(mNextTileId, other.mNextTileId);
+    std::swap(mTerrainTypes, other.mTerrainTypes);
+    std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
+    std::swap(mLoaded, other.mLoaded);
+    std::swap(mBackgroundColor, other.mBackgroundColor);
+
+    // Don't swap mWeakPointer, since it's a reference to this.
+
+    // Update back references from tiles and terrains
+    for (auto tile : mTiles)
+        tile->mTileset = this;
+    for (auto terrain : mTerrainTypes)
+        terrain->mTileset = this;
+
+    for (auto tile : other.mTiles)
+        tile->mTileset = &other;
+    for (auto terrain : other.mTerrainTypes)
+        terrain->mTileset = &other;
+}
+
+SharedTileset Tileset::clone() const
+{
+    SharedTileset c = create(mName, mTileWidth, mTileHeight, mTileSpacing, mMargin);
+
+    // mFileName stays empty
+    c->mImageReference = mImageReference;
+    c->mTileOffset = mTileOffset;
+    c->mColumnCount = mColumnCount;
+    c->mExpectedColumnCount = mExpectedColumnCount;
+    c->mExpectedRowCount = mExpectedRowCount;
+    c->mNextTileId = mNextTileId;
+    c->mTerrainDistancesDirty = mTerrainDistancesDirty;
+    c->mLoaded = mLoaded;
+    c->mBackgroundColor = mBackgroundColor;
+
+    QMapIterator<int, Tile*> tileIterator(mTiles);
+    while (tileIterator.hasNext()) {
+        tileIterator.next();
+
+        const int id = tileIterator.key();
+        const Tile *tile = tileIterator.value();
+
+        c->mTiles.insert(id, tile->clone(c.data()));
+    }
+
+    c->mTerrainTypes.reserve(mTerrainTypes.size());
+    for (Terrain *terrain : mTerrainTypes)
+        c->mTerrainTypes.append(terrain->clone(c.data()));
+
+    return c;
+}
+
 /**
  * Sets tile size to the maximum size.
  */

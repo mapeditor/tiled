@@ -30,8 +30,9 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 
-#include <QSettings>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QSettings>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
@@ -65,6 +66,8 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
 
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();

@@ -20,7 +20,7 @@
 
 #include "changetileanimation.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
 #include <QCoreApplication>
@@ -28,14 +28,14 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileAnimation::ChangeTileAnimation(MapDocument *mapDocument,
+ChangeTileAnimation::ChangeTileAnimation(TilesetDocument *document,
                                          Tile *tile,
                                          const QVector<Frame> &frames,
                                          QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate(
                        "Undo Commands", "Change Tile Animation"),
                    parent)
-    , mMapDocument(mapDocument)
+    , mTilesetDocument(document)
     , mTile(tile)
     , mFrames(frames)
 {
@@ -48,7 +48,7 @@ void ChangeTileAnimation::swap()
     mFrames = frames;
 
     TilesetManager::instance()->resetTileAnimations();
-    mMapDocument->emitTileAnimationChanged(mTile);
+    emit mTilesetDocument->tileAnimationChanged(mTile);
 }
 
 } // namespace Internal

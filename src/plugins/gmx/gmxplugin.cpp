@@ -167,8 +167,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
                 const Cell &cell = tileLayer->cellAt(x, y);
-                const Tile *tile = cell.tile;
-                if(tile) {
+                if (const Tile *tile = cell.tile()) {
                     stream.writeStartElement("tile");
 
                     stream.writeAttribute("bgName", tile->tileset()->name());

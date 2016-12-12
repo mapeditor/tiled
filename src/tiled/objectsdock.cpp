@@ -111,8 +111,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
-            SLOT(documentAboutToClose(MapDocument*)));
+    connect(DocumentManager::instance(), &DocumentManager::documentAboutToClose,
+            this, &ObjectsDock::documentAboutToClose);
 
     connect(mActionMoveUp, &QAction::triggered, this, &ObjectsDock::moveObjectsUp);
     connect(mActionMoveDown, &QAction::triggered, this, &ObjectsDock::moveObjectsDown);
@@ -215,7 +215,7 @@ void ObjectsDock::objectProperties()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     MapObject *mapObject = selectedObjects.first();
     mMapDocument->setCurrentObject(mapObject);
-    mMapDocument->emitEditCurrentObject();
+    emit mMapDocument->editCurrentObject();
 }
 
 void ObjectsDock::saveExpandedGroups()
@@ -241,9 +241,10 @@ void ObjectsDock::restoreExpandedGroups()
     }
 }
 
-void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)
+void ObjectsDock::documentAboutToClose(Document *document)
 {
-    mExpandedGroups.remove(mapDocument);
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+        mExpandedGroups.remove(mapDocument);
 }
 
 ///// ///// ///// ///// /////
@@ -320,7 +321,7 @@ void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
-        mMapDocument->emitEditCurrentObject();
+        emit mMapDocument->editCurrentObject();
     }
 }
 

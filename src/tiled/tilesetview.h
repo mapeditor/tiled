@@ -26,9 +26,12 @@
 #include <QTableView>
 
 namespace Tiled {
+
+class Terrain;
+
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -42,10 +45,11 @@ public:
     TilesetView(QWidget *parent = nullptr);
 
     /**
-     * Sets the map document associated with the tileset to be displayed, which
-     * is needed for the undo support.
+     * Sets the tileset document associated with the tileset to be displayed,
+     * which is needed for the undo support.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
+    TilesetDocument *tilesetDocument() const;
 
     QSize sizeHint() const override;
 
@@ -61,6 +65,8 @@ public:
     qreal scale() const;
 
     bool drawGrid() const { return mDrawGrid; }
+
+    void setModel(QAbstractItemModel *model) override;
 
     /**
      * Convenience method that returns the model as a TilesetModel.
@@ -83,7 +89,7 @@ public:
 
     /**
      * Sets whether terrain editing is enabled.
-     * \sa setTerrainId
+     * \sa setTerrain
      */
     void setEditTerrain(bool enabled);
 
@@ -94,22 +100,19 @@ public:
     void setEraseTerrain(bool erase) { mEraseTerrain = erase; }
     bool isEraseTerrain() const { return mEraseTerrain; }
 
-    /**
-     * The id of the terrain currently being specified. Set to -1 for erasing
-     * terrain info.
-     */
-    int terrainId() const { return mTerrainId; }
+    int terrainId() const;
 
     /**
-     * Sets the id of the terrain to specify on the tiles. An id of -1 allows
-     * for erasing terrain information.
+     * Sets the terrain to paint on the tiles.
      */
-    void setTerrainId(int terrainId);
+    void setTerrain(const Terrain *terrain);
 
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
 
     QIcon imageMissingIcon() const;
+
+    void updateBackgroundColor();
 
 signals:
     void createNewTerrain(Tile *tile);
@@ -125,7 +128,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
 private slots:
-    void createNewTerrain();
+    void addTerrainType();
     void selectTerrainImage();
     void editTileProperties();
     void setDrawGrid(bool drawGrid);
@@ -139,13 +142,13 @@ private:
     void setHandScrolling(bool handScrolling);
 
     Zoomable *mZoomable;
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     bool mDrawGrid;
 
     bool mMarkAnimatedTiles;
     bool mEditTerrain;
     bool mEraseTerrain;
-    int mTerrainId;
+    const Terrain *mTerrain;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;
@@ -155,6 +158,11 @@ private:
 
     const QIcon mImageMissingIcon;
 };
+
+inline TilesetDocument *TilesetView::tilesetDocument() const
+{
+    return mTilesetDocument;
+}
 
 inline bool TilesetView::markAnimatedTiles() const
 {

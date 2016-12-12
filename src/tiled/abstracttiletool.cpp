@@ -113,15 +113,15 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        Tile *tile = nullptr;
+        int tileId = -1;
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
             const QPoint pos = tilePosition() - tileLayer->position();
             if (tileLayer->contains(pos))
-                tile = tileLayer->cellAt(pos).tile;
+                tileId = tileLayer->cellAt(pos).tileId();
         }
 
-        QString tileIdString = tile ? QString::number(tile->id()) : tr("empty");
+        QString tileIdString = tileId >= 0 ? QString::number(tileId) : tr("empty");
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
                       .arg(mTilePosition.x())
                       .arg(mTilePosition.y())

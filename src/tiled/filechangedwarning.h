@@ -1,6 +1,6 @@
 /*
- * tileanimationdriver.h
- * Copyright 2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * filechangedwarning.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,42 +18,37 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILEANIMATIONDRIVER_H
-#define TILED_INTERNAL_TILEANIMATIONDRIVER_H
+#ifndef TILED_INTERNAL_FILECHANGEDWARNING_H
+#define TILED_INTERNAL_FILECHANGEDWARNING_H
 
-#include <QAbstractAnimation>
+#include <QWidget>
+
+class QLabel;
+class QDialogButtonBox;
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
-class TileAnimationDriver : public QAbstractAnimation
+class FileChangedWarning : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TileAnimationDriver(QObject *parent = nullptr);
-
-    int duration() const override;
+    FileChangedWarning(QWidget *parent = nullptr);
 
 signals:
-    /**
-     * Emitted every time a logic update should be made. \a deltaTime is in
-     * milliseconds.
-     */
-    void update(int deltaTime);
+    void reload();
+    void ignore();
 
 protected:
-    void updateCurrentTime(int currentTime) override;
-    void updateState(State newState, State oldState) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
-    int mLastTime;
+    QLabel *mLabel;
+    QDialogButtonBox *mButtons;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TILED_INTERNAL_TILEANIMATIONDRIVER_H
+#endif // TILED_INTERNAL_FILECHANGEDWARNING_H

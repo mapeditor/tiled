@@ -111,7 +111,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
     } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
         // take the stamp from the fill tool
         stamp = fillTool->stamp();
-    } else if (MapDocument *mapDocument = DocumentManager::instance()->currentDocument()) {
+    } else if (MapDocument *mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
         const TileLayer *tileLayer =
                 dynamic_cast<TileLayer*>(mapDocument->currentLayer());
@@ -165,7 +165,7 @@ void TileStampManager::addVariation(const TileStamp &targetStamp)
     if (stamp == targetStamp) // avoid easy mistake of adding duplicates
         return;
 
-    foreach (const TileStampVariation &variation, stamp.variations())
+    for (const TileStampVariation &variation : stamp.variations())
         mTileStampModel->addVariation(targetStamp, variation);
 }
 

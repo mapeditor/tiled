@@ -448,9 +448,9 @@ QString Preferences::lastPath(FileType fileType) const
 
     if (path.isEmpty()) {
         DocumentManager *documentManager = DocumentManager::instance();
-        MapDocument *mapDocument = documentManager->currentDocument();
-        if (mapDocument)
-            path = QFileInfo(mapDocument->fileName()).path();
+        Document *document = documentManager->currentDocument();
+        if (document)
+            path = QFileInfo(document->fileName()).path();
     }
 
     if (path.isEmpty()) {
@@ -466,6 +466,9 @@ QString Preferences::lastPath(FileType fileType) const
  */
 void Preferences::setLastPath(FileType fileType, const QString &path)
 {
+    if (path.isEmpty())
+        return;
+
     mSettings->setValue(lastPathKey(fileType), path);
 }
 

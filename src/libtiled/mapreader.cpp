@@ -272,14 +272,12 @@ Map *MapReaderPrivate::readMap()
                 tileset->loadImage();
         }
 
-        mMap->recomputeDrawMargins();
-
         // Fix up sizes of tile objects
         for (Layer *layer : mMap->layers()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 for (MapObject *object : *objectGroup) {
-                    if (!object->cell().isEmpty()) {
-                        const QSizeF &tileSize = object->cell().tile->size();
+                    if (const Tile *tile = object->cell().tile()) {
+                        const QSizeF tileSize = tile->size();
                         if (object->width() == 0)
                             object->setWidth(tileSize.width());
                         if (object->height() == 0)
@@ -311,6 +309,7 @@ SharedTileset MapReaderPrivate::readTileset()
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
+        QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -321,6 +320,9 @@ SharedTileset MapReaderPrivate::readTileset()
                                       tileSpacing, margin);
 
             tileset->setColumnCount(columns);
+
+            if (!bgColorString.isEmpty())
+                tileset->setBackgroundColor(QColor(bgColorString.toString()));
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {

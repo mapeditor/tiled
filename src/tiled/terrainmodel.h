@@ -85,16 +85,6 @@ public:
                   int role = Qt::DisplayRole) const override;
 
     /**
-     * Allows for changing the name of a terrain.
-     */
-    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-
-    /**
-     * Makes terrain names editable.
-     */
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-
-    /**
      * Returns the tileset at the given \a index, or 0 if there is no tileset.
      */
     Tileset *tilesetAt(const QModelIndex &index) const;
@@ -104,30 +94,19 @@ public:
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 
-    void insertTerrain(Tileset *tileset, int index, Terrain *terrain);
-    Terrain *takeTerrainAt(Tileset *tileset, int index);
-    void setTerrainName(Tileset *tileset, int index, const QString &name);
-    void setTerrainImage(Tileset *tileset, int index, int tileId);
-
-signals:
-    void terrainAdded(Tileset *tileset, int terrainId);
-    void terrainRemoved(Terrain *terrain);
-
-    /**
-     * Emitted when either the name or the image of a terrain changed.
-     */
-    void terrainChanged(Tileset *tileset, int index);
-
 private slots:
     void tilesetAboutToBeAdded(int index);
     void tilesetAdded();
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved();
-    void tilesetNameChanged(Tileset *tileset);
+    void tilesetChanged(Tileset *tileset);
+
+    void terrainAboutToBeAdded(Tileset *tileset, int terrainId);
+    void terrainAdded(Tileset *tileset);
+    void terrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);
+    void terrainRemoved(Tileset *tileset);
 
 private:
-    void emitTerrainChanged(Terrain *terrain);
-
     MapDocument *mMapDocument;
 };
 

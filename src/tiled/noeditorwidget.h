@@ -1,6 +1,6 @@
 /*
- * movetileset.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * noeditorwidget.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,39 +18,38 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVETILESET_H
-#define MOVETILESET_H
+#ifndef TILED_INTERNAL_NOEDITORWIDGET_H
+#define TILED_INTERNAL_NOEDITORWIDGET_H
 
-#include "undocommands.h"
-
-#include <QUndoCommand>
+#include <QWidget>
 
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+namespace Ui {
+class NoEditorWidget;
+}
 
-/**
- * An undo command for moving a tileset from one place to another.
- */
-class MoveTileset : public QUndoCommand
+class NoEditorWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
-    MoveTileset(MapDocument *mapDocument, int from, int to);
+    explicit NoEditorWidget(QWidget *parent = 0);
+    ~NoEditorWidget();
 
-    void undo() override;
-    void redo() override;
+protected:
+    void changeEvent(QEvent *e);
 
-    int id() const override { return Cmd_MoveTileset; }
-    bool mergeWith(const QUndoCommand *other) override;
+private slots:
+    void newMap();
+    void newTileset();
 
 private:
-    MapDocument *mMapDocument;
-    int mFrom;
-    int mTo;
+    Ui::NoEditorWidget *ui;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MOVETILESET_H
+#endif // TILED_INTERNAL_NOEDITORWIDGET_H

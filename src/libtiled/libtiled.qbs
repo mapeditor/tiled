@@ -36,6 +36,8 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "filesystemwatcher.cpp",
+        "filesystemwatcher.h",
         "gidmapper.cpp",
         "gidmapper.h",
         "hexagonalrenderer.cpp",
@@ -76,6 +78,8 @@ DynamicLibrary {
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
         "tile.cpp",
+        "tileanimationdriver.cpp",
+        "tileanimationdriver.h",
         "tiled_global.h",
         "tiled.h",
         "tile.h",
@@ -85,6 +89,8 @@ DynamicLibrary {
         "tileset.h",
         "tilesetformat.cpp",
         "tilesetformat.h",
+        "tilesetmanager.cpp",
+        "tilesetmanager.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
     ]

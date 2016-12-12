@@ -21,14 +21,14 @@
 #ifndef TILESETPARAMETERSEDIT_H
 #define TILESETPARAMETERSEDIT_H
 
-#include "mapdocument.h"
-
 #include <QWidget>
 
 class QLabel;
 
 namespace Tiled {
 namespace Internal {
+
+class TilesetDocument;
 
 /**
  * A widget that allows opening the EditTilesetDialog for changing the tileset
@@ -41,20 +41,20 @@ class TilesetParametersEdit : public QWidget
 public:
     explicit TilesetParametersEdit(QWidget *parent = nullptr);
 
-    void setTileset(const EmbeddedTileset &tileset);
-    const EmbeddedTileset &tileset() const;
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
+    TilesetDocument *tilesetDocument() const;
 
 private slots:
     void buttonClicked();
 
 private:
     QLabel *mLabel;
-    EmbeddedTileset mTileset;
+    TilesetDocument *mTilesetDocument;
 };
 
-inline const EmbeddedTileset &TilesetParametersEdit::tileset() const
+inline TilesetDocument *TilesetParametersEdit::tilesetDocument() const
 {
-    return mTileset;
+    return mTilesetDocument;
 }
 
 } // namespace Internal

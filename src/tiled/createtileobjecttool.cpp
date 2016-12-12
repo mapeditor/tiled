@@ -43,7 +43,7 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
+    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
     QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 

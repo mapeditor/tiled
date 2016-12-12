@@ -47,7 +47,7 @@ namespace Internal {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
-    , mMapDocument(nullptr)
+    , mDocument(nullptr)
     , mPropertyBrowser(new PropertyBrowser)
 {
     setObjectName(QLatin1String("propertiesDock"));
@@ -102,23 +102,21 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     retranslateUi();
 }
 
-void PropertiesDock::setMapDocument(MapDocument *mapDocument)
+void PropertiesDock::setDocument(Document *document)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mDocument)
+        mDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
-    mPropertyBrowser->setMapDocument(mapDocument);
+    mDocument = document;
+    mPropertyBrowser->setDocument(document);
 
-    if (mapDocument) {
-        connect(mapDocument, SIGNAL(currentObjectChanged(Object*)),
+    if (document) {
+        connect(document, SIGNAL(currentObjectChanged(Object*)),
                 SLOT(currentObjectChanged(Object*)));
-        connect(mapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(tilesetFileNameChanged(Tileset*)));
-        connect(mapDocument, SIGNAL(editCurrentObject()),
+        connect(document, SIGNAL(editCurrentObject()),
                 SLOT(bringToFront()));
 
-        currentObjectChanged(mapDocument->currentObject());
+        currentObjectChanged(document->currentObject());
     } else {
         currentObjectChanged(nullptr);
     }
@@ -131,18 +129,16 @@ void PropertiesDock::bringToFront()
     mPropertyBrowser->setFocus();
 }
 
-static bool isExternal(const Object *object)
+static bool isPartOfTileset(const Object *object)
 {
     if (!object)
         return false;
 
     switch (object->typeId()) {
     case Object::TilesetType:
-        return static_cast<const Tileset*>(object)->isExternal();
     case Object::TileType:
-        return static_cast<const Tile*>(object)->tileset()->isExternal();
     case Object::TerrainType:
-        return static_cast<const Terrain*>(object)->tileset()->isExternal();
+        return true;
     default:
         return false;
     }
@@ -167,51 +163,27 @@ void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
 
-    const bool external = isExternal(object);
-    const bool isTileset = object && object->typeId() == Object::TilesetType;
+    bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
+    bool isTileset = isPartOfTileset(object);
+    bool enabled = object && (!isTileset || editingTileset);
 
-    mPropertyBrowser->setEnabled(object && (!external || isTileset));
-    mActionAddProperty->setEnabled(object && !external);
+    mPropertyBrowser->setEnabled(enabled || isTileset);
+    mActionAddProperty->setEnabled(enabled);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    bool external = isExternal(mPropertyBrowser->object());
+    bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
+    bool isTileset = isPartOfTileset(mPropertyBrowser->object());
+    bool enabled = !isTileset || editingTileset;
+
     bool addedByType = item && isAddedByType(mPropertyBrowser->object(),
                                      item->property()->propertyName());
-    bool canModify = isCustomProperty && !external && !addedByType;
+    bool canModify = isCustomProperty && enabled && !addedByType;
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify);
-}
-
-void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
-{
-    Object *object = mMapDocument->currentObject();
-    if (!object)
-        return;
-
-    bool update = false;
-
-    switch (object->typeId()) {
-    case Object::TilesetType:
-        update = object == tileset;
-        break;
-    case Object::TileType:
-        update = static_cast<Tile*>(object)->tileset() == tileset;
-        break;
-    case Object::TerrainType:
-        update = static_cast<Terrain*>(object)->tileset() == tileset;
-        break;
-    default:
-        break;
-    }
-
-    if (update) {
-        currentObjectChanged(object);
-        currentItemChanged(mPropertyBrowser->currentItem());
-    }
 }
 
 void PropertiesDock::addProperty()
@@ -225,14 +197,14 @@ void PropertiesDock::addProperty(const QString &name, const QVariant &value)
 {
     if (name.isEmpty())
         return;
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     if (!object)
         return;
 
     if (!object->hasProperty(name)) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument,
-                                        mMapDocument->currentObjects(),
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new SetProperty(mDocument,
+                                        mDocument->currentObjects(),
                                         name, value));
     }
 
@@ -245,12 +217,12 @@ void PropertiesDock::removeProperty()
     if (!mPropertyBrowser->isCustomPropertyItem(item))
         return;
 
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     if (!object)
         return;
 
     const QString name = item->property()->propertyName();
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mDocument->undoStack();
     QList<QtBrowserItem *> items = item->parent()->children();
     if (items.count() > 1) {
         int currentItemIndex = items.indexOf(item);
@@ -260,8 +232,8 @@ void PropertiesDock::removeProperty()
             mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
         }
     }
-    undoStack->push(new RemoveProperty(mMapDocument,
-                                       mMapDocument->currentObjects(),
+    undoStack->push(new RemoveProperty(mDocument,
+                                       mDocument->currentObjects(),
                                        name));
 }
 
@@ -294,8 +266,8 @@ void PropertiesDock::renameProperty(const QString &name)
     if (oldName == name)
         return;
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
+    QUndoStack *undoStack = mDocument->undoStack();
+    undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
 }
 
 void PropertiesDock::showContextMenu(const QPoint& pos)
@@ -306,7 +278,7 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
 
     QString name = item->property()->propertyName();
-    Object *object = mMapDocument->currentObject();
+    Object *object = mDocument->currentObject();
     QVariant value = object->property(name);
 
     QMenu contextMenu(mPropertyBrowser);
@@ -343,9 +315,9 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     } else if (selectedItem == removeAction) {
         removeProperty();
     } else if (selectedItem) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument,
-                                        mMapDocument->currentObjects(),
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new SetProperty(mDocument,
+                                        mDocument->currentObjects(),
                                         name, selectedItem->data()));
     }
 }

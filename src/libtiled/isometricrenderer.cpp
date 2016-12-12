@@ -66,13 +66,19 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
     if (!object->cell().isEmpty()) {
-        const QPointF bottomCenter = pixelToScreenCoords(object->position());
-        const Tile *tile = object->cell().tile;
-        const QSize imgSize = tile->image().size();
-        const QPoint tileOffset = tile->offset();
-        const QSizeF objectSize = object->size();
-        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+        const QSizeF objectSize { object->size() };
 
+        QSizeF scale { 1.0, 1.0 };
+        QPoint tileOffset;
+
+        if (const Tile *tile = object->cell().tile()) {
+            QSize imgSize = tile->size();
+            scale = QSizeF(objectSize.width() / imgSize.width(),
+                           objectSize.height() / imgSize.height());
+            tileOffset = tile->offset();
+        }
+
+        const QPointF bottomCenter = pixelToScreenCoords(object->position());
         return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
                       bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                       objectSize.width(),
@@ -237,7 +243,9 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    renderer.render(cell, QPointF(x, (float)y / 2), QSizeF(0, 0),
+                    Tile *tile = cell.tile();
+                    QSize size = tile ? tile->size() : map()->tileSize();
+                    renderer.render(cell, QPointF(x, (float)y / 2), size,
                                     CellRenderer::BottomLeft);
                 }
             }
@@ -286,15 +294,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        const Tile *tile = cell.tile;
-        const QSize imgSize = tile->size();
         const QPointF pos = pixelToScreenCoords(object->position());
-        const QPointF tileOffset = tile->offset();
 
         CellRenderer(painter).render(cell, pos, object->size(),
                                      CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
+            QSizeF imgSize;
+            QPointF tileOffset;
+
+            if (const Tile *tile = cell.tile()) {
+                imgSize = tile->size();
+                tileOffset = tile->offset();
+            } else {
+                imgSize = object->size();
+            }
+
             QRectF rect(QPointF(pos.x() - imgSize.width() / 2 + tileOffset.x(),
                                 pos.y() - imgSize.height() + tileOffset.y()),
                         imgSize);

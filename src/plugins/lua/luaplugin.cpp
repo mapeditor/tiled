@@ -89,6 +89,22 @@ QString LuaPlugin::errorString() const
     return mError;
 }
 
+static void writeColor(LuaTableWriter &writer,
+                       const char *name,
+                       const QColor &color)
+{
+    // Example: backgroundcolor = { 255, 200, 100 }
+    writer.writeStartTable(name);
+    writer.setSuppressNewlines(true);
+    writer.writeValue(color.red());
+    writer.writeValue(color.green());
+    writer.writeValue(color.blue());
+    if (color.alpha() != 255)
+        writer.writeValue(color.alpha());
+    writer.writeEndTable();
+    writer.setSuppressNewlines(false);
+}
+
 void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 {
     writer.writeStartReturnTable();
@@ -119,18 +135,8 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     }
 
     const QColor &backgroundColor = map->backgroundColor();
-    if (backgroundColor.isValid()) {
-        // Example: backgroundcolor = { 255, 200, 100 }
-        writer.writeStartTable("backgroundcolor");
-        writer.setSuppressNewlines(true);
-        writer.writeValue(backgroundColor.red());
-        writer.writeValue(backgroundColor.green());
-        writer.writeValue(backgroundColor.blue());
-        if (backgroundColor.alpha() != 255)
-            writer.writeValue(backgroundColor.alpha());
-        writer.writeEndTable();
-        writer.setSuppressNewlines(false);
-    }
+    if (backgroundColor.isValid())
+        writeColor(writer, "backgroundcolor", backgroundColor);
 
     writeProperties(writer, map->properties());
 
@@ -235,6 +241,10 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
         writer.writeKeyAndValue("transparentcolor",
                                 tileset->transparentColor().name());
     }
+
+    const QColor &backgroundColor = tileset->backgroundColor();
+    if (backgroundColor.isValid())
+        writeColor(writer, "backgroundcolor", backgroundColor);
 
     const QPoint offset = tileset->tileOffset();
     writer.writeStartTable("tileoffset");

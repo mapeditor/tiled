@@ -1,6 +1,6 @@
 /*
- * tileanimationdriver.cpp
- * Copyright 2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * actionmanager.h
+ * Copyright 2016, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,41 +18,43 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tileanimationdriver.h"
+#ifndef TILED_INTERNAL_ACTIONMANAGER_H
+#define TILED_INTERNAL_ACTIONMANAGER_H
+
+#include "id.h"
+
+#include <QObject>
+
+class QAction;
 
 namespace Tiled {
 namespace Internal {
 
-TileAnimationDriver::TileAnimationDriver(QObject *parent)
-    : QAbstractAnimation(parent)
-    , mLastTime(0)
+class MainWindow;
+
+/**
+ * Manager of global actions.
+ */
+class ActionManager : public QObject
 {
-    setLoopCount(-1); // loop forever
-}
+    Q_OBJECT
 
-int TileAnimationDriver::duration() const
-{
-    return 1000;
-}
+public:
+    static void registerAction(QAction *action, Id id);
 
-void TileAnimationDriver::updateCurrentTime(int currentTime)
-{
-    int elapsed = currentTime - mLastTime;
-    if (elapsed < 0)
-        elapsed += 1000;
+    static QAction *action(Id id);
 
-    mLastTime = currentTime;
+signals:
+    void actionAdded(Id id);
 
-    emit update(elapsed);
-}
+private:
+    explicit ActionManager(QObject *parent = nullptr);
+    ~ActionManager();
 
-void TileAnimationDriver::updateState(State newState, State oldState)
-{
-    Q_UNUSED(oldState)
-
-    if (newState == Stopped)
-        mLastTime = 0;
-}
+    friend class Tiled::Internal::MainWindow;   // creation
+};
 
 } // namespace Internal
 } // namespace Tiled
+
+#endif // TILED_INTERNAL_ACTIONMANAGER_H

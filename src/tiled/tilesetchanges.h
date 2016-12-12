@@ -35,21 +35,19 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class RenameTileset : public QUndoCommand
 {
 public:
-    RenameTileset(MapDocument *mapDocument,
-                  Tileset *tileset,
+    RenameTileset(TilesetDocument *tilesetDocument,
                   const QString &newName);
 
     void undo() override;
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
+    TilesetDocument *mTilesetDocument;
     QString mOldName;
     QString mNewName;
 };
@@ -57,8 +55,7 @@ private:
 class ChangeTilesetTileOffset : public QUndoCommand
 {
 public:
-    ChangeTilesetTileOffset(MapDocument *mapDocument,
-                            Tileset *tileset,
+    ChangeTilesetTileOffset(TilesetDocument *tilesetDocument,
                             QPoint tileOffset);
 
     void undo() override;
@@ -68,8 +65,7 @@ public:
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
+    TilesetDocument *mTilesetDocument;
     QPoint mOldTileOffset;
     QPoint mNewTileOffset;
 };
@@ -95,8 +91,7 @@ struct TilesetParameters
 class ChangeTilesetParameters : public QUndoCommand
 {
 public:
-    ChangeTilesetParameters(MapDocument *mapDocument,
-                            Tileset &tileset,
+    ChangeTilesetParameters(TilesetDocument *tilesetDocument,
                             const TilesetParameters &parameters);
 
     void undo() override;
@@ -105,7 +100,7 @@ public:
 private:
     void apply(const TilesetParameters &parameters);
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tileset &mTileset;
     TilesetParameters mOldParameters;
     TilesetParameters mNewParameters;
@@ -114,8 +109,7 @@ private:
 class ChangeTilesetColumnCount : public QUndoCommand
 {
 public:
-    ChangeTilesetColumnCount(MapDocument *mapDocument,
-                             Tileset &tileset,
+    ChangeTilesetColumnCount(TilesetDocument *tilesetDocument,
                              int columnCount);
 
     void undo() override { swap(); }
@@ -124,9 +118,25 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tileset &mTileset;
     int mColumnCount;
+};
+
+class ChangeTilesetBackgroundColor : public QUndoCommand
+{
+public:
+    ChangeTilesetBackgroundColor(TilesetDocument *tilesetDocument,
+                                 const QColor &color);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    TilesetDocument *mTilesetDocument;
+    QColor mColor;
 };
 
 } // namespace Internal

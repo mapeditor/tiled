@@ -21,6 +21,8 @@
 #ifndef CHANGEMAPOBJECT_H
 #define CHANGEMAPOBJECT_H
 
+#include "tilelayer.h"
+
 #include <QUndoCommand>
 #include <QVector>
 
@@ -79,29 +81,21 @@ private:
 };
 
 
-struct MapObjectChange
+struct MapObjectCell
 {
     MapObject *object;
-
-    union {
-        Tile *tile;
-    };
+    Cell cell;
 };
 
-class ChangeMapObjects : public QUndoCommand
+class ChangeMapObjectCells : public QUndoCommand
 {
 public:
-    enum ChangeProperty {
-        ChangeTile
-    };
-
     /**
      * Creates an undo command that applies the given map object changes.
      */
-    ChangeMapObjects(MapDocument *mapDocument,
-                     const QVector<MapObjectChange> &changes,
-                     ChangeProperty property,
-                     QUndoCommand *parent = nullptr);
+    ChangeMapObjectCells(MapDocument *mapDocument,
+                         const QVector<MapObjectCell> &changes,
+                         QUndoCommand *parent = nullptr);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -110,8 +104,7 @@ private:
     void swap();
 
     MapObjectModel *mMapObjectModel;
-    QVector<MapObjectChange> mChanges;
-    ChangeProperty mProperty;
+    QVector<MapObjectCell> mChanges;
 };
 
 } // namespace Internal

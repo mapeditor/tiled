@@ -34,6 +34,8 @@
 
 #include "layer.h"
 #include "tiled.h"
+#include "tile.h"
+#include "tileset.h"
 
 #include <QMargins>
 #include <QString>
@@ -53,42 +55,83 @@ class Cell
 {
 public:
     Cell() :
-        tile(nullptr),
-        flippedHorizontally(false),
-        flippedVertically(false),
-        flippedAntiDiagonally(false)
+        _tileset(nullptr),
+        _tileId(-1),
+        _flippedHorizontally(false),
+        _flippedVertically(false),
+        _flippedAntiDiagonally(false)
     {}
 
     explicit Cell(Tile *tile) :
-        tile(tile),
-        flippedHorizontally(false),
-        flippedVertically(false),
-        flippedAntiDiagonally(false)
+        _tileset(tile ? tile->tileset() : nullptr),
+        _tileId(tile ? tile->id() : -1),
+        _flippedHorizontally(false),
+        _flippedVertically(false),
+        _flippedAntiDiagonally(false)
     {}
 
-    bool isEmpty() const { return tile == nullptr; }
+    bool isEmpty() const { return _tileset == nullptr; }
 
     bool operator == (const Cell &other) const
     {
-        return tile == other.tile
-                && flippedHorizontally == other.flippedHorizontally
-                && flippedVertically == other.flippedVertically
-                && flippedAntiDiagonally == other.flippedAntiDiagonally;
+        return _tileset == other._tileset
+                && _tileId == other._tileId
+                && _flippedHorizontally == other._flippedHorizontally
+                && _flippedVertically == other._flippedVertically
+                && _flippedAntiDiagonally == other._flippedAntiDiagonally;
     }
 
     bool operator != (const Cell &other) const
     {
-        return tile != other.tile
-                || flippedHorizontally != other.flippedHorizontally
-                || flippedVertically != other.flippedVertically
-                || flippedAntiDiagonally != other.flippedAntiDiagonally;
+        return _tileset != other._tileset
+                || _tileId != other._tileId
+                || _flippedHorizontally != other._flippedHorizontally
+                || _flippedVertically != other._flippedVertically
+                || _flippedAntiDiagonally != other._flippedAntiDiagonally;
     }
 
-    Tile *tile;
-    bool flippedHorizontally;
-    bool flippedVertically;
-    bool flippedAntiDiagonally;
+    Tileset *tileset() const { return _tileset; }
+    int tileId() const { return _tileId; }
+
+    bool flippedHorizontally() const { return _flippedHorizontally; }
+    bool flippedVertically() const { return _flippedVertically; }
+    bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
+
+    void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
+    void setFlippedVertically(bool f) { _flippedVertically = f; }
+    void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
+
+    Tile *tile() const;
+    void setTile(Tile *tile);
+    void setTile(Tileset *tileset, int tileId);
+
+private:
+    Tileset *_tileset;
+    int _tileId;
+    bool _flippedHorizontally;
+    bool _flippedVertically;
+    bool _flippedAntiDiagonally;
 };
+
+inline Tile *Cell::tile() const
+{
+    return _tileset ? _tileset->findTile(_tileId) : nullptr;
+}
+
+inline void Cell::setTile(Tile *tile)
+{
+    if (tile)
+        setTile(tile->tileset(), tile->id());
+    else
+        setTile(nullptr, -1);
+}
+
+inline void Cell::setTile(Tileset *tileset, int tileId)
+{
+    _tileset = tileset;
+    _tileId = tileId;
+}
+
 
 /**
  * A tile layer is a grid of cells. Each cell refers to a specific tile, and

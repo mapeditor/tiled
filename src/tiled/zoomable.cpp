@@ -171,7 +171,7 @@ void Zoomable::setZoomFactors(const QVector<qreal>& factors)
     mZoomFactors = factors;
 }
 
-void Zoomable::connectToComboBox(QComboBox *comboBox)
+void Zoomable::setComboBox(QComboBox *comboBox)
 {
     if (mComboBox) {
         mComboBox->disconnect(this);

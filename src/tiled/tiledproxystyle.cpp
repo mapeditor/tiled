@@ -170,14 +170,6 @@ static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseC
 
 namespace QStyleHelper {
 
-static QColor backgroundColor(const QPalette &pal, const QWidget* widget)
-{
-    if (qobject_cast<const QScrollBar *>(widget) && widget->parent() &&
-            qobject_cast<const QAbstractScrollArea *>(widget->parent()->parent()))
-        return widget->parentWidget()->parentWidget()->palette().color(QPalette::Base);
-    return pal.color(QPalette::Base);
-}
-
 static qreal dpiScaled(qreal value)
 {
 #ifdef Q_OS_MAC
@@ -558,7 +550,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
             if (!(option->state & State_Horizontal))
                 gradient = QLinearGradient(rect.left(), rect.center().y(),
                                            rect.right(), rect.center().y());
-            gradient.setColorAt(0, option->palette.window().color().lighter(104));
+            gradient.setColorAt(0, option->palette.window().color());
             gradient.setColorAt(1, option->palette.window().color().darker(104));
             painter->fillRect(option->rect, gradient);
 
@@ -582,9 +574,6 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                 }
-                // All top toolbar lines draw a light line at the top.
-                painter->setPen(light);
-                painter->drawLine(option->rect.topLeft(), option->rect.topRight());
             } else if (toolBar->toolBarArea == Qt::BottomToolBarArea) {
                 if (toolBar->positionOfLine == QStyleOptionToolBar::End
                         || toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
@@ -836,7 +825,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             QColor arrowColor = option->palette.foreground().color();
             arrowColor.setAlpha(220);
 
-            const QColor bgColor = QStyleHelper::backgroundColor(option->palette, widget);
+            const QColor bgColor = mPalette.color(QPalette::Base);
             const bool isDarkBg = bgColor.red() < 128 && bgColor.green() < 128 && bgColor.blue() < 128;
 
             // Paint groove

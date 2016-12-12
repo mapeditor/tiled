@@ -49,7 +49,9 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
+class TilesetDocument;
 class TilesetView;
 class TileStamp;
 class Zoomable;
@@ -98,8 +100,6 @@ signals:
      */
     void tilesetsDropped(const QStringList &paths);
 
-    void newTileset();
-
 protected:
     void changeEvent(QEvent *e) override;
 
@@ -113,13 +113,8 @@ private slots:
 
     void updateActions();
     void updateCurrentTiles();
-    void indexPressed(const QModelIndex &index);
 
-    void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
-    void tilesetRemoved(Tileset *tileset);
-    void tilesetMoved(int from, int to);
-    void tilesetReplaced(int index, Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
 
     void tileImageSourceChanged(Tile *tile);
@@ -127,17 +122,11 @@ private slots:
 
     void removeTileset();
     void removeTileset(int index);
-    void moveTileset(int from, int to);
 
-    void editTilesetProperties();
-    void importTileset();
+    void newTileset();
+    void editTileset();
+    void embedTileset();
     void exportTileset();
-
-    void editTerrain();
-    void addTiles();
-    void removeTiles();
-
-    void documentAboutToClose(MapDocument *mapDocument);
 
     void refreshTilesetMenu();
 
@@ -146,16 +135,22 @@ private:
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
+    void updateTilesets();
+
     Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
+    void createTilesetView(int index, TilesetDocument *tilesetDocument);
+    void deleteTilesetView(int index);
+    void moveTilesetView(int from, int to);
     void setupTilesetModel(TilesetView *view, Tileset *tileset);
 
     MapDocument *mMapDocument;
 
     // Shared tileset references because the dock wants to add new tiles
     QVector<SharedTileset> mTilesets;
+    QList<TilesetDocument *> mTilesetDocuments;
 
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
@@ -165,15 +160,10 @@ private:
     const Terrain *mTerrain;
 
     QAction *mNewTileset;
-    QAction *mImportTileset;
+    QAction *mEmbedTileset;
     QAction *mExportTileset;
-    QAction *mPropertiesTileset;
+    QAction *mEditTileset;
     QAction *mDeleteTileset;
-    QAction *mEditTerrain;
-    QAction *mAddTiles;
-    QAction *mRemoveTiles;
-
-    QMap<MapDocument *, QString> mCurrentTilesets;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu

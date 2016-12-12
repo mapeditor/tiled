@@ -49,11 +49,9 @@ static bool isTileObject(MapObject *mapObject)
 
 static bool isResizedTileObject(MapObject *mapObject)
 {
-    const auto &cell = mapObject->cell();
-    if (cell.isEmpty())
-        return false;
-
-    return mapObject->size() != cell.tile->size();
+    if (const auto tile = mapObject->cell().tile())
+        return mapObject->size() != tile->size();
+    return false;
 }
 
 
@@ -158,7 +156,7 @@ void AbstractObjectTool::resetTileSize()
 
         commands << new ResizeMapObject(mapDocument(),
                                         mapObject,
-                                        mapObject->cell().tile->size(),
+                                        mapObject->cell().tile()->size(),
                                         mapObject->size());
     }
 
@@ -278,7 +276,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (action == propertiesAction) {
         MapObject *mapObject = selectedObjects.first();
         mapDocument()->setCurrentObject(mapObject);
-        mapDocument()->emitEditCurrentObject();
+        emit mapDocument()->editCurrentObject();
         return;
     }
 

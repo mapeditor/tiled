@@ -507,7 +507,7 @@ void MapDocumentActionHandler::layerProperties()
 {
     if (mMapDocument) {
         mMapDocument->setCurrentObject(mMapDocument->currentLayer());
-        mMapDocument->emitEditCurrentObject();
+        emit mMapDocument->editCurrentObject();
     }
 }
 

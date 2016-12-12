@@ -58,7 +58,14 @@
      </property>
      <addaction name="actionClearRecentFiles"/>
     </widget>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>&amp;New</string>
+     </property>
+     <addaction name="actionNewMap"/>
+     <addaction name="actionNewTileset"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
@@ -99,7 +106,6 @@
     <property name="title">
      <string>&amp;Map</string>
     </property>
-    <addaction name="actionNewTileset"/>
     <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
@@ -138,38 +144,18 @@
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
    </widget>
+   <widget class="QMenu" name="menuTileset">
+    <property name="title">
+     <string>Tileset</string>
+    </property>
+    <addaction name="actionTilesetProperties"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
+   <addaction name="menuTileset"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <property name="windowTitle">
-    <string>Main Toolbar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
-   <addaction name="separator"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="toolsToolBar">
-   <property name="windowTitle">
-    <string>Tools</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -260,7 +246,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>Map &amp;Properties</string>
+    <string>Map &amp;Properties...</string>
    </property>
   </action>
   <action name="actionAutoMap">
@@ -291,20 +277,7 @@
     <string>Save &amp;As...</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New...</string>
-   </property>
-  </action>
   <action name="actionNewTileset">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
    <property name="text">
     <string>New &amp;Tileset...</string>
    </property>
@@ -538,6 +511,11 @@
     <string>AutoMap While Drawing</string>
    </property>
   </action>
+  <action name="actionNewMap">
+   <property name="text">
+    <string>New Map...</string>
+   </property>
+  </action>
   <action name="actionPasteInPlace">
    <property name="enabled">
     <bool>false</bool>
@@ -566,6 +544,15 @@
    </property>
    <property name="text">
     <string>Snap To &amp;Pixels</string>
+   </property>
+  </action>
+  <action name="actionTilesetProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tileset &amp;Properties...</string>
    </property>
   </action>
  </widget>

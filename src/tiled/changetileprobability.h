@@ -29,16 +29,16 @@ class Tile;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileProbability : public QUndoCommand
 {
 public:
-    ChangeTileProbability(MapDocument *mapDocument,
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
                           const QList<Tile*> &tiles,
                           float probability);
 
-    ChangeTileProbability(MapDocument *mapDocument,
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
                           const QList<Tile*> &tiles,
                           const QList<float> &probabilities,
                           QUndoCommand *parent = nullptr);
@@ -49,7 +49,7 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     QList<Tile*> mTiles;
     QList<float> mProbabilities;
 };

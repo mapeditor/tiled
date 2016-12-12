@@ -178,7 +178,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
@@ -241,11 +241,12 @@
  </widget>
  <tabstops>
   <tabstop>orientation</tabstop>
+  <tabstop>layerFormat</tabstop>
+  <tabstop>renderOrder</tabstop>
   <tabstop>mapWidth</tabstop>
   <tabstop>mapHeight</tabstop>
   <tabstop>tileWidth</tabstop>
   <tabstop>tileHeight</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -256,8 +257,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>255</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -272,8 +273,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>323</x>
+     <y>315</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

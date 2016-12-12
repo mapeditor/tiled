@@ -150,6 +150,7 @@ QModelIndex TilesetModel::tileIndex(const Tile *tile) const
 
     const int columnCount = TilesetModel::columnCount();
     const int tileIndex = mTileIds.indexOf(tile->id());
+    // todo: this assertion was hit when testing tileset image size changes
     Q_ASSERT(tileIndex != -1);
 
     const int row = tileIndex / columnCount;

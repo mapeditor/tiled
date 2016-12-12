@@ -47,6 +47,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantMap mapVariant;
 
+    mapVariant[QLatin1String("type")] = QLatin1String("map");
     mapVariant[QLatin1String("version")] = 1.0;
     mapVariant[QLatin1String("orientation")] = orientationToString(map->orientation());
     mapVariant[QLatin1String("renderorder")] = renderOrderToString(map->renderOrder());
@@ -125,6 +126,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         return tilesetVariant;
     }
 
+    // Include a 'type' property if we are writing the tileset to its own file
+    if (firstGid == 0)
+        tilesetVariant[QLatin1String("type")] = QLatin1String("tileset");
+
     tilesetVariant[QLatin1String("name")] = tileset->name();
     tilesetVariant[QLatin1String("tilewidth")] = tileset->tileWidth();
     tilesetVariant[QLatin1String("tileheight")] = tileset->tileHeight();
@@ -132,6 +137,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     tilesetVariant[QLatin1String("margin")] = tileset->margin();
     tilesetVariant[QLatin1String("tilecount")] = tileset->tileCount();
     tilesetVariant[QLatin1String("columns")] = tileset->columnCount();
+
+    const QColor bgColor = tileset->backgroundColor();
+    if (bgColor.isValid())
+        tilesetVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
 
     addProperties(tilesetVariant, tileset->properties());
 

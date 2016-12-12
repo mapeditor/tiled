@@ -29,12 +29,12 @@ class Tile;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileImageSource : public QUndoCommand
 {
 public:
-    ChangeTileImageSource(MapDocument *mapDocument,
+    ChangeTileImageSource(TilesetDocument *tilesetDocument,
                           Tile *tile,
                           const QString &imageSource);
 
@@ -44,7 +44,7 @@ public:
 private:
     void apply(const QString &imageSource);
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     QString mOldImageSource;
     QString mNewImageSource;

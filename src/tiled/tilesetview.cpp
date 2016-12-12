@@ -22,15 +22,18 @@
 
 #include "changetileterrain.h"
 #include "map.h"
-#include "mapdocument.h"
 #include "preferences.h"
+#include "stylehelper.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
+#include <QApplication>
 #include <QCoreApplication>
 #include <QGesture>
 #include <QGestureEvent>
@@ -355,11 +358,11 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(nullptr)
-    , mMapDocument(nullptr)
+    , mTilesetDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
     , mEraseTerrain(false)
-    , mTerrainId(-1)
+    , mTerrain(nullptr)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
     , mHandScrolling(false)
@@ -388,13 +391,16 @@ TilesetView::TilesetView(QWidget *parent)
 
     grabGesture(Qt::PinchGesture);
 
-    connect(prefs, SIGNAL(showTilesetGridChanged(bool)),
-            SLOT(setDrawGrid(bool)));
+    connect(prefs, &Preferences::showTilesetGridChanged,
+            this, &TilesetView::setDrawGrid);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &TilesetView::updateBackgroundColor);
 }
 
-void TilesetView::setMapDocument(MapDocument *mapDocument)
+void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    mMapDocument = mapDocument;
+    mTilesetDocument = tilesetDocument;
 }
 
 QSize TilesetView::sizeHint() const
@@ -445,6 +451,12 @@ qreal TilesetView::scale() const
     return mZoomable ? mZoomable->scale() : 1;
 }
 
+void TilesetView::setModel(QAbstractItemModel *model)
+{
+    QTableView::setModel(model);
+    updateBackgroundColor();
+}
+
 void TilesetView::setMarkAnimatedTiles(bool enabled)
 {
     if (mMarkAnimatedTiles == enabled)
@@ -475,12 +487,21 @@ void TilesetView::setEditTerrain(bool enabled)
     viewport()->update();
 }
 
-void TilesetView::setTerrainId(int terrainId)
+/**
+ * The id of the terrain currently being specified. Returns -1 when no terrain
+ * is set (used for erasing terrain info).
+ */
+int TilesetView::terrainId() const
 {
-    if (mTerrainId == terrainId)
+     return mTerrain ? mTerrain->id() : -1;
+}
+
+void TilesetView::setTerrain(const Terrain *terrain)
+{
+    if (mTerrain == terrain)
         return;
 
-    mTerrainId = terrainId;
+    mTerrain = terrain;
     if (mEditTerrain)
         viewport()->update();
 }
@@ -612,7 +633,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     Tile *tile = model->tileAt(index);
 
-    const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
@@ -626,18 +646,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::Clear);
 
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            addTerrain->setEnabled(!isExternal);
-            connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
+            connect(addTerrain, SIGNAL(triggered()), SLOT(addTerrainType()));
 
-            if (mTerrainId != -1) {
+            if (mTerrain) {
                 QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-                setImage->setEnabled(!isExternal);
                 connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
             }
-        } else {
+        } else if (mTilesetDocument) {
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
-            tileProperties->setEnabled(!isExternal);
             Utils::setThemeIcon(tileProperties, "document-properties");
             connect(tileProperties, SIGNAL(triggered()),
                     SLOT(editTileProperties()));
@@ -657,7 +674,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
-void TilesetView::createNewTerrain()
+void TilesetView::addTerrainType()
 {
     if (Tile *tile = currentTile())
         emit createNewTerrain(tile);
@@ -671,12 +688,14 @@ void TilesetView::selectTerrainImage()
 
 void TilesetView::editTileProperties()
 {
+    Q_ASSERT(mTilesetDocument);
+
     Tile *tile = currentTile();
     if (!tile)
         return;
 
-    mMapDocument->setCurrentObject(tile);
-    mMapDocument->emitEditCurrentObject();
+    mTilesetDocument->setCurrentObject(tile);
+    emit mTilesetDocument->editCurrentObject();
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
@@ -703,13 +722,13 @@ void TilesetView::applyTerrain()
 
     unsigned terrain = setTerrainCorner(tile->terrain(),
                                         mHoveredCorner,
-                                        mEraseTerrain ? 0xFF : mTerrainId);
+                                        mEraseTerrain ? 0xFF : terrainId());
 
     if (terrain == tile->terrain())
         return;
 
-    QUndoCommand *command = new ChangeTileTerrain(mMapDocument, tile, terrain);
-    mMapDocument->undoStack()->push(command);
+    QUndoCommand *command = new ChangeTileTerrain(mTilesetDocument, tile, terrain);
+    mTilesetDocument->undoStack()->push(command);
     mTerrainChanged = true;
 }
 
@@ -719,7 +738,7 @@ void TilesetView::finishTerrainChange()
         return;
 
     // Prevent further merging since mouse was released
-    mMapDocument->undoStack()->push(new ChangeTileTerrain);
+    mTilesetDocument->undoStack()->push(new ChangeTileTerrain);
     mTerrainChanged = false;
 }
 
@@ -740,4 +759,19 @@ void TilesetView::setHandScrolling(bool handScrolling)
         setCursor(QCursor(Qt::ClosedHandCursor));
     else
         unsetCursor();
+}
+
+void TilesetView::updateBackgroundColor()
+{
+    QColor base = QApplication::palette().dark().color();
+
+    if (TilesetModel *model = tilesetModel()) {
+        Tileset *tileset = model->tileset();
+        if (tileset->backgroundColor().isValid())
+            base = tileset->backgroundColor();
+    }
+
+    QPalette p = palette();
+    p.setColor(QPalette::Base, base);
+    setPalette(p);
 }

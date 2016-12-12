@@ -28,12 +28,12 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileAnimation : public QUndoCommand
 {
 public:
-    ChangeTileAnimation(MapDocument *mapDocument,
+    ChangeTileAnimation(TilesetDocument *document,
                         Tile *tile,
                         const QVector<Frame> &frames,
                         QUndoCommand *parent = nullptr);
@@ -44,7 +44,7 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     QVector<Frame> mFrames;
 };

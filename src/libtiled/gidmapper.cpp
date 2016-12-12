@@ -70,9 +70,9 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
     Cell result;
 
     // Read out the flags
-    result.flippedHorizontally = (gid & FlippedHorizontallyFlag);
-    result.flippedVertically = (gid & FlippedVerticallyFlag);
-    result.flippedAntiDiagonally = (gid & FlippedAntiDiagonallyFlag);
+    result.setFlippedHorizontally(gid & FlippedHorizontallyFlag);
+    result.setFlippedVertically(gid & FlippedVerticallyFlag);
+    result.setFlippedAntiDiagonally(gid & FlippedAntiDiagonallyFlag);
 
     // Clear the flags
     gid &= ~(FlippedHorizontallyFlag |
@@ -94,7 +94,7 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
             int tileId = gid - i.key();
             Tileset *tileset = i.value();
 
-            result.tile = tileset->findOrCreateTile(tileId);
+            result.setTile(tileset, tileId);
 
             ok = true;
         }
@@ -112,7 +112,7 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     if (cell.isEmpty())
         return 0;
 
-    const Tileset *tileset = cell.tile->tileset();
+    const Tileset *tileset = cell.tileset();
 
     // Find the first GID for the tileset
     QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
@@ -123,12 +123,12 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     if (i == i_end) // tileset not found
         return 0;
 
-    unsigned gid = i.key() + cell.tile->id();
-    if (cell.flippedHorizontally)
+    unsigned gid = i.key() + cell.tileId();
+    if (cell.flippedHorizontally())
         gid |= FlippedHorizontallyFlag;
-    if (cell.flippedVertically)
+    if (cell.flippedVertically())
         gid |= FlippedVerticallyFlag;
-    if (cell.flippedAntiDiagonally)
+    if (cell.flippedAntiDiagonally())
         gid |= FlippedAntiDiagonallyFlag;
 
     return gid;

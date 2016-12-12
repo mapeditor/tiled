@@ -346,8 +346,8 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
 
         if (mIsRandom) {
             for (const Cell &cell : *variation.tileLayer()) {
-                if (!cell.isEmpty())
-                    mRandomCellPicker.add(cell, cell.tile->probability());
+                if (const Tile *tile = cell.tile())
+                    mRandomCellPicker.add(cell, tile->probability());
             }
         }
     }

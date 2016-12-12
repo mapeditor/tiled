@@ -28,6 +28,7 @@
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
+#include "documentmanager.h"
 #include "flipmapobjects.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
@@ -43,7 +44,6 @@
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
-#include "pluginmanager.h"
 #include "rangeset.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
@@ -53,6 +53,7 @@
 #include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 
@@ -63,16 +64,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapDocument::MapDocument(Map *map, const QString &fileName):
-    mFileName(fileName),
-    mMap(map),
-    mLayerModel(new LayerModel(this)),
-    mCurrentObject(map),
-    mRenderer(nullptr),
-    mMapObjectModel(new MapObjectModel(this)),
-    mTerrainModel(new TerrainModel(this, this)),
-    mUndoStack(new QUndoStack(this))
+MapDocument::MapDocument(Map *map, const QString &fileName)
+    : Document(MapDocumentType, fileName)
+    , mMap(map)
+    , mLayerModel(new LayerModel(this))
+    , mRenderer(nullptr)
+    , mMapObjectModel(new MapObjectModel(this))
+    , mTerrainModel(new TerrainModel(this, this))
 {
+    mCurrentObject = map;
+
     createRenderer();
 
     mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
@@ -106,11 +107,6 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     connect(mMapObjectModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(onObjectsMoved(QModelIndex,int,int,QModelIndex,int)));
 
-    connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
-            SLOT(onTerrainRemoved(Terrain*)));
-
-    connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
-
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(mMap->tilesets());
@@ -124,11 +120,6 @@ MapDocument::~MapDocument()
 
     delete mRenderer;
     delete mMap;
-}
-
-bool MapDocument::save(QString *error)
-{
-    return save(fileName(), error);
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -149,60 +140,36 @@ bool MapDocument::save(const QString &fileName, QString *error)
     setFileName(fileName);
     mLastSaved = QFileInfo(fileName).lastModified();
 
+    // Mark TilesetDocuments for embedded tilesets as saved
+    auto documentManager = DocumentManager::instance();
+    for (const SharedTileset &tileset : mMap->tilesets()) {
+        if (TilesetDocument *tilesetDocument = documentManager->findTilesetDocument(tileset))
+            if (tilesetDocument->isEmbedded())
+                tilesetDocument->setClean();
+    }
+
     emit saved();
     return true;
 }
 
 MapDocument *MapDocument::load(const QString &fileName,
-                               MapFormat *mapFormat,
+                               MapFormat *format,
                                QString *error)
 {
-    TmxMapFormat tmxMapFormat;
-
-    if (!mapFormat && !tmxMapFormat.supportsFile(fileName)) {
-        // Try to find a plugin that implements support for this format
-        auto formats = PluginManager::objects<MapFormat>();
-        for (MapFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                mapFormat = format;
-                break;
-            }
-        }
-    }
-
-    Map *map = nullptr;
-    QString errorString;
-    if (mapFormat) {
-        map = mapFormat->read(fileName);
-        errorString = mapFormat->errorString();
-    } else {
-        map = tmxMapFormat.read(fileName);
-        errorString = tmxMapFormat.errorString();
-    }
+    Map *map = format->read(fileName);
 
     if (!map) {
         if (error)
-            *error = errorString;
+            *error = format->errorString();;
         return nullptr;
     }
 
-    MapDocument *mapDocument = new MapDocument(map, fileName);
-    if (mapFormat) {
-        mapDocument->setReaderFormat(mapFormat);
-        if (mapFormat->hasCapabilities(MapFormat::Write))
-            mapDocument->setWriterFormat(mapFormat);
-    }
-    return mapDocument;
-}
+    MapDocument *document = new MapDocument(map, fileName);
+    document->setReaderFormat(format);
+    if (format->hasCapabilities(MapFormat::Write))
+        document->setWriterFormat(format);
 
-void MapDocument::setFileName(const QString &fileName)
-{
-    if (mFileName == fileName)
-        return;
-
-    QString oldFileName = mFileName;
-    mFileName = fileName;
-    emit fileNameChanged(fileName, oldFileName);
+    return document;
 }
 
 MapFormat *MapDocument::readerFormat() const
@@ -215,7 +182,7 @@ void MapDocument::setReaderFormat(MapFormat *format)
     mReaderFormat = format;
 }
 
-MapFormat *MapDocument::writerFormat() const
+FileFormat *MapDocument::writerFormat() const
 {
     return mWriterFormat;
 }
@@ -246,14 +213,6 @@ QString MapDocument::displayName() const
         displayName = tr("untitled.tmx");
 
     return displayName;
-}
-
-/**
- * Returns whether the map has unsaved changes.
- */
-bool MapDocument::isModified() const
-{
-    return !mUndoStack->isClean();
 }
 
 void MapDocument::setCurrentLayerIndex(int index)
@@ -577,22 +536,6 @@ void MapDocument::insertTileset(int index, const SharedTileset &tileset)
     emit tilesetAdded(index, tileset.data());
 }
 
-static bool isFromTileset(Object *object, Tileset *tileset)
-{
-    if (!object)
-        return false;
-
-    if (object->typeId() == Object::TileType
-            && tileset == static_cast<Tile*>(object)->tileset())
-        return true;
-
-    if (object->typeId() == Object::TerrainType
-            && tileset == static_cast<Terrain*>(object)->tileset())
-        return true;
-
-    return false;
-}
-
 /**
  * Removes the tileset at the given \a index from this map. Emits the
  * appropriate signal.
@@ -605,26 +548,11 @@ void MapDocument::removeTilesetAt(int index)
     emit tilesetAboutToBeRemoved(index);
 
     SharedTileset tileset = mMap->tilesets().at(index);
-
-    if (tileset.data() == mCurrentObject || isFromTileset(mCurrentObject, tileset.data()))
-        setCurrentObject(nullptr);
-
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset.data());
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);
-}
-
-void MapDocument::moveTileset(int from, int to)
-{
-    if (from == to)
-        return;
-
-    SharedTileset tileset = mMap->tilesets().at(from);
-    mMap->removeTilesetAt(from);
-    mMap->insertTileset(to, tileset);
-    emit tilesetMoved(from, to);
 }
 
 /**
@@ -637,29 +565,17 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
 {
     SharedTileset oldTileset = mMap->tilesetAt(index);
 
-    mMap->replaceTileset(oldTileset, tileset);
-
-    // Try to keep the current object valid
-    if (mCurrentObject == oldTileset.data()) {
-        setCurrentObject(tileset.data());
-
-    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TileType) {
-        Tile *tile = static_cast<Tile*>(mCurrentObject);
-        if (tile->tileset() == oldTileset.data())
-            setCurrentObject(tileset->findTile(tile->id()));
-
-    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TerrainType) {
-        Terrain *terrain = static_cast<Terrain*>(mCurrentObject);
-        if (terrain->tileset() == oldTileset.data())
-            setCurrentObject(tileset->terrain(terrain->id()));
-    }
-
+    bool added = mMap->replaceTileset(oldTileset, tileset);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReference(tileset);
+    if (added)
+        tilesetManager->addReference(tileset);
     tilesetManager->removeReference(oldTileset);
 
-    emit tilesetReplaced(index, tileset.data());
+    if (added)
+        emit tilesetReplaced(index, tileset.data(), oldTileset.data());
+    else
+        emit tilesetRemoved(oldTileset.data());
 
     return oldTileset;
 }
@@ -682,38 +598,16 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
         setCurrentObject(selectedObjects.first());
 }
 
-void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
-{
-    mSelectedTiles = selectedTiles;
-    emit selectedTilesChanged();
-}
-
-void MapDocument::setCurrentObject(Object *object)
-{
-    if (object == mCurrentObject)
-        return;
-
-    mCurrentObject = object;
-    emit currentObjectChanged(object);
-}
-
 QList<Object*> MapDocument::currentObjects() const
 {
-    QList<Object*> objects;
-    if (mCurrentObject) {
-        if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            const auto &selectedObjects = mSelectedObjects;
-            for (MapObject *mapObj : selectedObjects)
-                objects.append(mapObj);
-        } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            const auto &selectedTiles = mSelectedTiles;
-            for (Tile *tile : selectedTiles)
-                objects.append(tile);
-        } else {
-            objects.append(mCurrentObject);
-        }
+    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
+        QList<Object*> objects;
+        for (MapObject *mapObj : mSelectedObjects)
+            objects.append(mapObj);
+        return objects;
     }
-    return objects;
+
+    return Document::currentObjects();
 }
 
 /**
@@ -731,16 +625,19 @@ void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
     const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
+    QVector<SharedTileset> addedTilesets;
     TilesetManager *tilesetManager = TilesetManager::instance();
 
-    // Add tilesets that are not yet part of this map
-    for (const SharedTileset &tileset : map->tilesets()) {
+    // Iterate over a copy because map->replaceTileset may invalidate iterator
+    const QVector<SharedTileset> tilesets = map->tilesets();
+    for (const SharedTileset &tileset : tilesets) {
         if (existingTilesets.contains(tileset))
             continue;
 
         SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
-        if (!replacement) {
+        if (!replacement && !addedTilesets.contains(replacement)) {
             undoCommands.append(new AddTileset(this, tileset));
+            addedTilesets.append(replacement);
             continue;
         }
 
@@ -756,10 +653,9 @@ void MapDocument::unifyTilesets(Map *map)
             }
         }
 
-        tilesetManager->addReference(replacement);
+        if (map->replaceTileset(tileset, replacement))
+            tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
-
-        map->replaceTileset(tileset, replacement);
     }
 
     if (!undoCommands.isEmpty()) {
@@ -784,7 +680,9 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
     const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
-    for (const SharedTileset &tileset : map->tilesets()) {
+    // Iterate over a copy because map->replaceTileset may invalidate iterator
+    const QVector<SharedTileset> tilesets = map->tilesets();
+    for (const SharedTileset &tileset : tilesets) {
         // tileset already added
         if (existingTilesets.contains(tileset))
             continue;
@@ -799,23 +697,10 @@ void MapDocument::unifyTilesets(Map *map, QVector<SharedTileset> &missingTileset
         }
 
         // replacement tileset found, change given map
-        tilesetManager->addReference(replacement);
+        if (map->replaceTileset(tileset, replacement))
+            tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
-
-        map->replaceTileset(tileset, replacement);
     }
-}
-
-/**
- * Emits the tileset changed signal. This signal is currently used when adding
- * or removing tiles from a tileset.
- *
- * @todo Emit more specific signals.
- */
-void MapDocument::emitTilesetChanged(Tileset *tileset)
-{
-    Q_ASSERT(contains(mMap->tilesets(), tileset));
-    emit tilesetChanged(tileset);
 }
 
 /**
@@ -906,12 +791,6 @@ void MapDocument::onLayerRemoved(int index)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
-void MapDocument::onTerrainRemoved(Terrain *terrain)
-{
-    if (terrain == mCurrentObject)
-        setCurrentObject(nullptr);
-}
-
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
     // Unset the current object when it was part of this list of objects
@@ -925,27 +804,6 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 
     if (removedCount > 0)
         emit selectedObjectsChanged();
-}
-
-void MapDocument::setTilesetFileName(Tileset *tileset,
-                                     const QString &fileName)
-{
-    tileset->setFileName(fileName);
-    emit tilesetFileNameChanged(tileset);
-}
-
-void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
-{
-    tileset->setName(name);
-    emit tilesetNameChanged(tileset);
-}
-
-void MapDocument::setTilesetTileOffset(Tileset *tileset,
-                                       const QPoint &tileOffset)
-{
-    tileset->setTileOffset(tileOffset);
-    mMap->recomputeDrawMargins();
-    emit tilesetTileOffsetChanged(tileset);
 }
 
 void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
@@ -1086,32 +944,6 @@ void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
 
     if (command->childCount() > 0)
         mUndoStack->push(command.take());
-}
-
-void MapDocument::setProperty(Object *object,
-                              const QString &name,
-                              const QVariant &value)
-{
-    const bool hadProperty = object->hasProperty(name);
-
-    object->setProperty(name, value);
-
-    if (hadProperty)
-        emit propertyChanged(object, name);
-    else
-        emit propertyAdded(object, name);
-}
-
-void MapDocument::setProperties(Object *object, const Properties &properties)
-{
-    object->setProperties(properties);
-    emit propertiesChanged(object);
-}
-
-void MapDocument::removeProperty(Object *object, const QString &name)
-{
-    object->removeProperty(name);
-    emit propertyRemoved(object, name);
 }
 
 void MapDocument::createRenderer()
