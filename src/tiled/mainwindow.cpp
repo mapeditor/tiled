@@ -237,10 +237,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                                 mActionHandler->actionSelectNone());
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
 
-    // todo: Turn into Command menu
-//    mCommandButton = new CommandButton(this);
-//    mUi->mainToolBar->addWidget(mCommandButton);
-
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
 
@@ -1495,7 +1491,6 @@ void MainWindow::updateActions()
     mUi->actionDelete->setEnabled(canCopy);
 
     mUi->menuMap->menuAction()->setVisible(mapDocument);
-//    mUi->actionNewTileset->setEnabled(mapDocument);
     mUi->actionAddExternalTileset->setEnabled(mapDocument);
     mUi->actionResizeMap->setEnabled(mapDocument);
     mUi->actionOffsetMap->setEnabled(mapDocument);
@@ -1506,8 +1501,6 @@ void MainWindow::updateActions()
     mUi->actionTilesetProperties->setEnabled(tilesetDocument);
 
     mLayerMenu->menuAction()->setVisible(mapDocument);
-
-//    mCommandButton->setEnabled(mapDocument);
 }
 
 void MainWindow::updateZoomable()

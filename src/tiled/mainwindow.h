@@ -51,7 +51,6 @@ namespace Internal {
 
 class ActionManager;
 class AutomappingManager;
-class CommandButton;
 class DocumentManager;
 class MapDocumentActionHandler;
 class MapScene;
@@ -207,7 +206,6 @@ private:
     QDockWidget *mUndoDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
-    CommandButton *mCommandButton;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

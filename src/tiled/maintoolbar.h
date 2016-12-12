@@ -28,6 +28,7 @@ class QToolButton;
 namespace Tiled {
 namespace Internal {
 
+class CommandButton;
 class Document;
 
 class MainToolBar : public QToolBar
@@ -51,6 +52,7 @@ private:
     QAction *mSaveAction;
     QAction *mUndoAction;
     QAction *mRedoAction;
+    CommandButton *mCommandButton;
 };
 
 } // namespace Internal

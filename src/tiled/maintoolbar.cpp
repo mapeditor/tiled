@@ -21,6 +21,7 @@
 #include "maintoolbar.h"
 
 #include "actionmanager.h"
+#include "commandbutton.h"
 #include "documentmanager.h"
 #include "utils.h"
 
@@ -35,6 +36,7 @@ namespace Internal {
 
 MainToolBar::MainToolBar(QWidget *parent)
     : QToolBar(parent)
+    , mCommandButton(new CommandButton(this))
 {
     setObjectName(QLatin1String("MainToolBar"));
     setWindowTitle(tr("Main Toolbar"));
@@ -89,6 +91,8 @@ MainToolBar::MainToolBar(QWidget *parent)
     addSeparator();
     addAction(mUndoAction);
     addAction(mRedoAction);
+    addSeparator();
+    addWidget(mCommandButton);
 
     DocumentManager *documentManager = DocumentManager::instance();
     connect(mOpenAction, SIGNAL(triggered(bool)), documentManager, SLOT(openFile()));
@@ -124,6 +128,7 @@ void MainToolBar::onOrientationChanged(Qt::Orientation orientation)
 void MainToolBar::currentDocumentChanged(Document *document)
 {
     mSaveAction->setEnabled(document);
+    mCommandButton->setEnabled(document && !document->fileName().isEmpty());
 }
 
 void MainToolBar::retranslateUi()
