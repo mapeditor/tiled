@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versie %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Auteursrecht 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;U kan dit programma verspreiden en/of wijzigen onder de bepalingen van de GPL (versie 2 of later). Een kopie van de GPL is te vinden in het meegeleverde bestand &apos;COPYING&apos;.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versie %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Auteursrecht 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
+&lt;p align="center"&gt;U kan dit programma verspreiden en/of wijzigen onder de bepalingen van de GPL (versie 2 of later). Een kopie van de GPL is te vinden in het meegeleverde bestand 'COPYING'.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Geen unique bestandsextensie. Kan export formaat niet bepalen.</translation>
     </message>
     <message>
@@ -357,12 +357,12 @@
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation>Fout tijdens het laden van tileset &apos;%1&apos;, volledige pad &apos;%2&apos;. Bestand niet gevonden!</translation>
+        <translation>Fout tijdens het laden van tileset '%1', volledige pad '%2'. Bestand niet gevonden!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation>Geen tilesets gevonden voor &quot;layer&quot; segment.</translation>
+        <translation>Geen tilesets gevonden voor "layer" segment.</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -372,7 +372,7 @@
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Dit is geen geldige Flare map. Er moet tenminste een &quot;header&quot; segment, een &quot;tileset&quot; segment en een tilelaag aanwezig zijn.</translation>
+        <translation>Dit is geen geldige Flare map. Er moet tenminste een "header" segment, een "tileset" segment en een tilelaag aanwezig zijn.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -390,12 +390,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker room bestanden (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -657,7 +657,7 @@
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Magnetisch Pixelraster</translation>
     </message>
     <message>
         <location line="-300"/>
@@ -862,15 +862,15 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Niet ondersteunde map orientatie: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Niet ondersteunde map orientatie: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Ongeldige tileset parameters voor tileset: &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Ongeldige tileset parameters voor tileset: '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Compressie methode &apos;%1&apos; wordt niet ondersteund</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Compressie methode '%1' wordt niet ondersteund</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Corrupte tile data voor laag &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Corrupte tile data voor laag '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Kon de tile bij (%1,%2) op laag &apos;%3&apos; niet lezen</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Kon de tile bij (%1,%2) op laag '%3' niet lezen</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>Bestand bevat geen object types.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Ik ondersteun Tiled!</translation>
     </message>
     <message>
@@ -1474,7 +1474,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation>Script gaf &quot;false&quot; terug. Controleer de console.</translation>
+        <translation>Script gaf "false" terug. Controleer de console.</translation>
     </message>
 </context>
 <context>
@@ -1665,7 +1665,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Wat is Dit</translation>
     </message>
     <message>
@@ -1953,12 +1953,12 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Fout tijdens het parsen van het begin van het bestand!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Fout tijdens het parsen van het begin van een laag!</translation>
     </message>
     <message>
@@ -1989,27 +1989,27 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation>De map heeft geen &quot;background_index&quot; eigenschap!</translation>
+        <translation>De map heeft geen "background_index" eigenschap!</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Kan alleen tilelagen opslaan!</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>You must define a type property on each layer!</source>
-        <translation>Iedere laag moet een &quot;type&quot; eigenschap hebben!</translation>
+        <translation>Iedere laag moet een "type" eigenschap hebben!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation>Iedere laag moet een &quot;tile_index&quot; eigenschap hebben!</translation>
+        <translation>Iedere laag moet een "tile_index" eigenschap hebben!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation>Iedere laag moet een &quot;scroll_speed&quot; eigenschap hebben!</translation>
+        <translation>Iedere laag moet een "scroll_speed" eigenschap hebben!</translation>
     </message>
 </context>
 <context>
@@ -2104,7 +2104,7 @@ Regel %1, colom %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Grootte Resetten</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2208,49 +2208,49 @@ Regel %1, colom %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Eigenschap &apos;%2&apos; = &apos;%3&apos; betekent niks. Deze eigenschap wordt genegeerd.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Eigenschap '%2' = '%3' betekent niks. Deze eigenschap wordt genegeerd.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Ben je een underscore vergeten in laag &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Ben je een underscore vergeten in laag '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Laag &apos;%1&apos; wordt niet herkend als een geldige Automapping laag.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Laag '%1' wordt niet herkend als een geldige Automapping laag.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos; laag mag maar één keer voorkomen.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input' laag mag maar één keer voorkomen.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos; lagen moeten tilelagen zijn.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*' lagen moeten tilelagen zijn.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos; laag mag maar één keer voorkomen.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output' laag mag maar één keer voorkomen.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; en &apos;inputnot_*&apos; lagen moeten tilelagen zijn.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*' en 'inputnot_*' lagen moeten tilelagen zijn.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Geen &apos;regions&apos; of &apos;regions_input&apos; laag gevonden.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Geen 'regions' of 'regions_input' laag gevonden.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Geen &apos;regions&apos; of &apos;regions_output&apos; laag gevonden.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Geen 'regions' of 'regions_output' laag gevonden.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2418,17 +2418,17 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+1"/>
         <source>You do not have any commands setup.</source>
-        <translation>U heeft nog geen commando&apos;s opgezet.</translation>
+        <translation>U heeft nog geen commando's opgezet.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit commands...</source>
-        <translation>Commando&apos;s Bewerken...</translation>
+        <translation>Commando's Bewerken...</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Edit Commands...</source>
-        <translation>Commando&apos;s Bewerken...</translation>
+        <translation>Commando's Bewerken...</translation>
     </message>
 </context>
 <context>
@@ -2520,7 +2520,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+44"/>
         <source>Edit Commands</source>
-        <translation>Commando&apos;s Bewerken</translation>
+        <translation>Commando's Bewerken</translation>
     </message>
 </context>
 <context>
@@ -2670,8 +2670,8 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Het aantal kolommen in de tileset &apos;%1&apos; lijkt zich te hebben veranderd van %2 naar %3. Wil je de tile referenties hierop aanpassen?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Het aantal kolommen in de tileset '%1' lijkt zich te hebben veranderd van %2 naar %3. Wil je de tile referenties hierop aanpassen?</translation>
     </message>
 </context>
 <context>
@@ -2928,7 +2928,7 @@ Moet het bestand vervangen worden?</translation>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nieuw</translation>
     </message>
     <message>
         <location line="-1210"/>
@@ -3241,19 +3241,15 @@ Kies een specifiek bestandsformaat.</translation>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Object Verhogen</numerusform>
+        <numerusform></numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Object Verlagen</numerusform>
+        <numerusform></numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3310,12 +3306,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-12"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3335,29 +3331,29 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+68"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tilelaag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Objectlaag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Afbeelding Laag</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag via Kopieren</translation>
     </message>
     <message>
         <location line="-196"/>
         <location line="+196"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag via Knippen</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -3392,12 +3388,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+44"/>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
@@ -3532,9 +3528,9 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
+        <source>Failed to load tileset image '%1'.</source>
         <translation>Fout tijdens het laden van tileset afbeelding:
-&apos;%1&apos;.</translation>
+'%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3695,12 +3691,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten Verhogen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten Verlagen</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3718,7 +3714,7 @@ Kies een specifiek bestandsformaat.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Bedankt voor uw ondersteuning!&lt;/h3&gt;
@@ -3728,7 +3724,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Ik steun Tiled niet meer</translation>
     </message>
     <message>
@@ -3746,7 +3742,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Ik ondersteun Tiled al!</translation>
     </message>
 </context>
@@ -3785,17 +3781,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-71"/>
         <source>Convert To</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteren Naar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hernoemen...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -3975,7 +3971,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation>Omdraaien</translation>
+        <translation>Spiegeling</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4276,8 +4272,8 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>De tileset &quot;%1&quot; is nog in gebruik!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>De tileset "%1" is nog in gebruik!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4335,8 +4331,8 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>Fout bij het openen van &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>Fout bij het openen van "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
