@@ -1,3 +1,5 @@
+* Updated Brazilian Portuguese translation (by Laete Meireles)
+
 ### 0.17.2 (28 November 2016)
 
 * Fixed bug with editing type and name for multiple objects
