@@ -130,12 +130,9 @@ private slots:
     void closeFile();
     void closeAllFiles();
 
-    void cut();
-    void copy();
     void paste();
     void pasteInPlace();
     void paste(ClipboardManager::PasteFlags flags);
-    void delete_(); // 'delete' is a reserved word
     void openPreferences();
 
     void labelVisibilityActionTriggered(QAction *action);
@@ -255,6 +252,7 @@ private:
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
+    QMenu *mNewLayerMenu;
     QAction *mViewsAndToolbarsMenu;
     QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;

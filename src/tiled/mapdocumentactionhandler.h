@@ -42,6 +42,11 @@ class MapDocumentActionHandler : public QObject
 {
     Q_OBJECT
 
+    enum LayerViaVariant {
+        ViaCopy,
+        ViaCut,
+    };
+
 public:
     explicit MapDocumentActionHandler(QObject *parent = nullptr);
     ~MapDocumentActionHandler();
@@ -60,6 +65,8 @@ public:
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
     QAction *actionAddImageLayer() const { return mActionAddImageLayer; }
+    QAction *actionLayerViaCopy() const { return mActionLayerViaCopy; }
+    QAction *actionLayerViaCut() const { return mActionLayerViaCut; }
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
@@ -79,6 +86,10 @@ signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
 public slots:
+    void cut();
+    void copy();
+    void delete_(); // 'delete' is a reserved word
+
     void selectAll();
     void selectNone();
 
@@ -89,6 +100,10 @@ public slots:
     void addTileLayer();
     void addObjectGroup();
     void addImageLayer();
+    void layerViaCopy() { layerVia(ViaCopy); }
+    void layerViaCut() { layerVia(ViaCut); }
+    void layerVia(LayerViaVariant variant);
+
     void duplicateLayer();
     void mergeLayerDown();
     void selectPreviousLayer();
@@ -116,6 +131,8 @@ private:
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
     QAction *mActionAddImageLayer;
+    QAction *mActionLayerViaCopy;
+    QAction *mActionLayerViaCut;
     QAction *mActionDuplicateLayer;
     QAction *mActionMergeLayerDown;
     QAction *mActionRemoveLayer;

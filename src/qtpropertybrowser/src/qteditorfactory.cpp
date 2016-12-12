@@ -756,7 +756,28 @@ void QtCheckBoxFactory::disconnectPropertyManager(QtBoolPropertyManager *manager
 
 // QtDoubleSpinBoxFactory
 
-class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<QDoubleSpinBox>
+class DoubleSpinBoxAnyPrecision : public QDoubleSpinBox
+{
+    Q_OBJECT
+
+public:
+    explicit DoubleSpinBoxAnyPrecision(QWidget *parent = nullptr)
+        : QDoubleSpinBox(parent)
+    {}
+
+    QString textFromValue(double val) const override
+    {
+        QString text = QDoubleSpinBox::textFromValue(val);
+
+        // remove redundant trailing 0's in case of high precision
+        if (decimals() > 3)
+            return removeRedundantTrialingZeros(text);
+
+        return text;
+    }
+};
+
+class QtDoubleSpinBoxFactoryPrivate : public EditorFactoryPrivate<DoubleSpinBoxAnyPrecision>
 {
     QtDoubleSpinBoxFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtDoubleSpinBoxFactory)
@@ -772,10 +793,8 @@ public:
 
 void QtDoubleSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, double value)
 {
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         if (editor->value() != value) {
             editor->blockSignals(true);
             editor->setValue(value);
@@ -794,10 +813,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotRangeChanged(QtProperty *property,
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setRange(min, max);
         editor->setValue(manager->value(property));
@@ -814,10 +831,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotSingleStepChanged(QtProperty *property, 
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setSingleStep(step);
         editor->blockSignals(false);
@@ -833,9 +848,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotReadOnlyChanged( QtProperty *property, b
     if (!manager)
         return;
 
-    QListIterator<QDoubleSpinBox *> itEditor(m_createdEditors[property]);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setReadOnly(readOnly);
         editor->blockSignals(false);
@@ -851,10 +865,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
     if (!manager)
         return;
 
-    QList<QDoubleSpinBox *> editors = m_createdEditors[property];
-    QListIterator<QDoubleSpinBox *> itEditor(editors);
-    while (itEditor.hasNext()) {
-        QDoubleSpinBox *editor = itEditor.next();
+    const auto editors = m_createdEditors[property];
+    for (auto editor : editors) {
         editor->blockSignals(true);
         editor->setDecimals(prec);
         editor->setValue(manager->value(property));
@@ -865,8 +877,8 @@ void QtDoubleSpinBoxFactoryPrivate::slotDecimalsChanged(QtProperty *property, in
 void QtDoubleSpinBoxFactoryPrivate::slotSetValue(double value)
 {
     QObject *object = q_ptr->sender();
-    const QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itcend = m_editorToProperty.constEnd();
-    for (QMap<QDoubleSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
+    const auto itcend = m_editorToProperty.constEnd();
+    for (auto itEditor = m_editorToProperty.constBegin(); itEditor != itcend; ++itEditor) {
         if (itEditor.key() == object) {
             QtProperty *property = itEditor.value();
             QtDoublePropertyManager *manager = q_ptr->propertyManager(property);
