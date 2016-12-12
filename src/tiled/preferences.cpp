@@ -372,6 +372,7 @@ void Preferences::setLanguage(const QString &language)
                         mLanguage);
 
     LanguageManager::instance()->installTranslators();
+    emit languageChanged();
 }
 
 bool Preferences::reloadTilesetsOnChange() const

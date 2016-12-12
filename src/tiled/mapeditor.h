@@ -102,10 +102,6 @@ public slots:
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
 
-protected:
-    // todo: consider how to get this event here from the main window
-//    void changeEvent(QEvent *event) override;
-
 private slots:
     void currentWidgetChanged();
 

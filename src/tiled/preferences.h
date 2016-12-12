@@ -178,6 +178,8 @@ signals:
 
     void useOpenGLChanged(bool useOpenGL);
 
+    void languageChanged();
+
     void objectTypesChanged();
 
     void mapsDirectoryChanged();

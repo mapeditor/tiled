@@ -168,6 +168,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
             this, &TilesetEditor::updateTilesetView);
 
     retranslateUi();
+    connect(Preferences::instance(), &Preferences::languageChanged, this, &TilesetEditor::retranslateUi);
 }
 
 void TilesetEditor::saveState()
@@ -405,7 +406,6 @@ void TilesetEditor::setCurrentTile(Tile *tile)
 
 void TilesetEditor::retranslateUi()
 {
-    // todo: hook this up to language switching
     mTilesetToolBar->setWindowTitle(tr("Tileset"));
 
     mAddTiles->setText(tr("Add Tiles"));

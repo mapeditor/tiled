@@ -260,6 +260,7 @@ MapEditor::MapEditor(QObject *parent)
 
     setupQuickStamps();
     retranslateUi();
+    connect(Preferences::instance(), &Preferences::languageChanged, this, &MapEditor::retranslateUi);
 
     QSettings *settings = Preferences::instance()->settings();
     mMapStates = settings->value(QLatin1String(MAPSTATES_KEY)).toMap();
