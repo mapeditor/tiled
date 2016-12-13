@@ -94,7 +94,8 @@ Following entries are integrated solutions for specific game engines. They are t
 
 ### Corona SDK
 
-* [Lime](https://github.com/OutlawGameTools/Lime2DTileEngine) is a 2D engine for making tile-based games with Corona SDK and Tiled
+* [PonyTiled](https://github.com/ponywolf/ponytiled) is a simple Tiled Map Loader for Corona SDK ([forum announcement](http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826))
+* [Dusk Engine](https://github.com/GymbylCoding/Dusk-Engine) is a fully featured Tiled map game engine for Corona SDK
 
 ### Flixel
 * Lithander demonstrated his [Flash TMX parser combined with Flixel rendering](http://blog.pixelpracht.net/?p=59)
