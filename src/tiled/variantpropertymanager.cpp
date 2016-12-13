@@ -129,7 +129,10 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
 
         if (typeId == filePathTypeId()) {
             FilePath filePath = value.value<FilePath>();
-            return QFileInfo(filePath.absolutePath).fileName();
+            QString path = filePath.absolutePath;
+            if (path.endsWith(QLatin1Char('/')))
+                path.chop(1);
+            return QFileInfo(path).fileName();
         }
 
         if (typeId == tilesetParametersTypeId()) {
