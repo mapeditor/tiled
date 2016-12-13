@@ -103,6 +103,10 @@ Following entries are integrated solutions for specific game engines. They are t
 ### Game Maker
 * [Tiled2GM Converter](http://gmc.yoyogames.com/index.php?showtopic=539494) by Dmi7ry
 
+### Godot
+
+* [Tiled Map Importer](https://godotengine.org/asset-library/asset/25) imports each map as Godot scene which can be instanced or inherited ([forum announcement](http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1))
+
 ### Haxe
 * [HaxePunk](https://github.com/HaxePunk/tiled) Tiled Loader for HaxePunk
 * [HaxeFlixel](https://github.com/HaxeFlixel/flixel-addons/tree/dev/flixel/addons/editors/tiled)
