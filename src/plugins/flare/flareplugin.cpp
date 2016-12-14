@@ -36,9 +36,43 @@
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
+#include <QTextCodec>
+#include <qnumeric.h>
 
 using namespace Flare;
 using namespace Tiled;
+
+
+static QString escape(const QVariant &variant)
+{
+    QString str = variant.toString();
+    QString res;
+    res.reserve(str.length());
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] == QLatin1Char('\b')) {
+            res += QLatin1String("\\b");
+        } else if (str[i] == QLatin1Char('\f')) {
+            res += QLatin1String("\\f");
+        } else if (str[i] == QLatin1Char('\n')) {
+            res += QLatin1String("\\n");
+        } else if (str[i] == QLatin1Char('\r')) {
+            res += QLatin1String("\\r");
+        } else if (str[i] == QLatin1Char('\t')) {
+            res += QLatin1String("\\t");
+        } else if (str[i] == QLatin1Char('\"')) {
+            res += QLatin1String("\\\"");
+        } else if (str[i] == QLatin1Char('\\')) {
+            res += QLatin1String("\\\\");
+        } else if (str[i] == QLatin1Char('/')) {
+            res += QLatin1String("\\/");
+        } else if (str[i].unicode() > 127) {
+            res += QLatin1String("\\u") + QString::number(str[i].unicode(), 16).rightJustified(4, QLatin1Char('0'));
+        } else {
+            res += str[i];
+        }
+    }
+    return res;
+}
 
 FlarePlugin::FlarePlugin()
 {
@@ -70,6 +104,12 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     bool tilesetsSectionFound = false;
     bool headerSectionFound = false;
     bool tilelayerSectionFound = false; // tile layer or objects
+    QColor color;
+    color.setBlue(0);
+    color.setRed(0);
+    color.setGreen(0);
+    color.setAlpha(0);
+    bool colorRead = false;
 
     while (!stream.atEnd()) {
         line = stream.readLine();
@@ -101,8 +141,27 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     map->setTileHeight(value.toInt());
                 else if (key == QLatin1String("orientation"))
                     map->setOrientation(orientationFromString(value));
+                else if (key == QLatin1String("backgroundColorR")){
+                    color.setRed(value.toInt());
+                    colorRead = true;
+                }
+                else if (key == QLatin1String("backgroundColorB")){
+                    color.setBlue(value.toInt());
+                    colorRead = true;
+                }
+                else if (key == QLatin1String("backgroundColorG")){
+                    color.setGreen(value.toInt());
+                    colorRead = true;
+                }
+                else if (key == QLatin1String("backgroundColorA")){
+                    color.setAlpha(value.toInt());
+                    colorRead = true;
+                }
                 else
                     map->setProperty(key, value);
+            }
+            if(colorRead){
+                map->setBackgroundColor(color);
             }
         } else if (sectionName == QLatin1String("tilesets")) {
             tilesetsSectionFound = true;
@@ -373,10 +432,16 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
-                    Properties::const_iterator it = o->properties().constBegin();
-                    Properties::const_iterator it_end = o->properties().constEnd();
-                    for (; it != it_end; ++it) {
-                        out << it.key() << "=" << it.value().toString() << "\n";
+                    QVariantMap propsMap = o->properties();
+                    for (QVariantMap::const_iterator it = propsMap.constBegin(); it != propsMap.constEnd(); ++it) {
+                        const char* a = it->typeName();
+                        if(strcmp(a, "Tiled::FilePath") == 0){
+                            QString z = escape(it.value());
+                            out << it.key() << "=" << z << "\n";
+                        }
+                        else{
+                            out << it.key() << "=" << it.value().toString() << "\n";
+                        }
                     }
                     out << "\n";
                 }
