@@ -278,6 +278,8 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
+	QColor backgroundColor;
+	backgroundColor = map->backgroundColor();
     out.setCodec("UTF-8");
 
     const int mapWidth = map->width();
@@ -290,6 +292,10 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
+	out << "backgroundColorR=" << backgroundColor.red() << "\n";
+	out << "backgroundColorG=" << backgroundColor.green() << "\n";
+	out << "backgroundColorB=" << backgroundColor.blue() << "\n";
+	out << "backgroundColorA=" << backgroundColor.alpha() << "\n";
 
     // write all properties for this map
     Properties::const_iterator it = map->properties().constBegin();
@@ -333,7 +339,13 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     out << ",";
                 out << "\n";
             }
-            out << "\n";
+            //Write all properties for this layer
+			Properties::const_iterator it = tileLayer->properties().constBegin();
+			Properties::const_iterator it_end = tileLayer->properties().constEnd();
+			for (; it != it_end; ++it) {
+				out << it.key() << "=" << it.value().toString() << "\n";
+			}
+			out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             for (const MapObject *o : group->objects()) {
