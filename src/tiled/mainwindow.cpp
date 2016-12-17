@@ -1053,43 +1053,8 @@ void MainWindow::pasteInPlace()
 
 void MainWindow::paste(ClipboardManager::PasteFlags flags)
 {
-    auto mapDocument = qobject_cast<MapDocument*>(mDocument);
-    if (!mapDocument)
-        return;
-
-    Layer *currentLayer = mapDocument->currentLayer();
-    if (!currentLayer)
-        return;
-
-    ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
-    if (!map)
-        return;
-
-    // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1)
-        return;
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(map->tilesets());
-
-    mapDocument->unifyTilesets(map.data());
-    Layer *layer = map->layerAt(0);
-
-    if (layer->isTileLayer()) {
-        // Reset selection and paste into the stamp brush
-        mActionHandler->selectNone();
-//        Map *stamp = map.take(); // TileStamp will take ownership
-//        setStamp(TileStamp(stamp));
-//        tilesetManager->removeReferences(stamp->tilesets());
-//        mToolManager->selectTool(mStampBrush);
-    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        const MapView *view = mDocumentManager->currentMapView();
-        clipboardManager->pasteObjectGroup(objectGroup, mapDocument, view, flags);
-    }
-
-    if (map)
-        tilesetManager->removeReferences(map->tilesets());
+    if (auto *mapEditor = qobject_cast<MapEditor*>(mDocumentManager->currentEditor()))
+        mapEditor->paste(flags);
 }
 
 void MainWindow::openPreferences()

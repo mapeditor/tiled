@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QVariant>
 
+#include "clipboardmanager.h"
 #include "editor.h"
 #include "tiled.h"
 
@@ -90,6 +91,8 @@ public:
 
 public slots:
     void setSelectedTool(AbstractTool *tool);
+
+    void paste(ClipboardManager::PasteFlags flags);
 
     void flipHorizontally() { flip(FlipHorizontally); }
     void flipVertically() { flip(FlipVertically); }

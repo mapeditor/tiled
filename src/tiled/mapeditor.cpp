@@ -36,6 +36,7 @@
 #include "layeroffsettool.h"
 #include "magicwandtool.h"
 #include "maintoolbar.h"
+#include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapsdock.h"
 #include "mapview.h"
@@ -52,6 +53,7 @@
 #include "tile.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"
+#include "tilesetmanager.h"
 #include "tilestamp.h"
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
@@ -492,6 +494,46 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
     }
+}
+
+void MapEditor::paste(ClipboardManager::PasteFlags flags)
+{
+    if (!mCurrentMapDocument)
+        return;
+
+    Layer *currentLayer = mCurrentMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    ClipboardManager *clipboardManager = ClipboardManager::instance();
+    QScopedPointer<Map> map(clipboardManager->map());
+    if (!map)
+        return;
+
+    // We can currently only handle maps with a single layer
+    if (map->layerCount() != 1)
+        return;
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReferences(map->tilesets());
+
+    mCurrentMapDocument->unifyTilesets(map.data());
+    Layer *layer = map->layerAt(0);
+
+    if (layer->isTileLayer()) {
+        // Reset selection and paste into the stamp brush
+        MapDocumentActionHandler::instance()->selectNone();
+        Map *stamp = map.take(); // TileStamp will take ownership
+        setStamp(TileStamp(stamp));
+        tilesetManager->removeReferences(stamp->tilesets());
+        mToolManager->selectTool(mStampBrush);
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        const MapView *view = currentMapView();
+        clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);
+    }
+
+    if (map)
+        tilesetManager->removeReferences(map->tilesets());
 }
 
 void MapEditor::flip(FlipDirection direction)
