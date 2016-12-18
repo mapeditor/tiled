@@ -294,7 +294,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
-    out << "backgroundColor=" << backgroundColor.name(QColor::HexArgb) << "\n";
+    out << "backgroundColorARGB=" << backgroundColor.name(QColor::HexArgb) << "\n";
 
     // write all properties for this map
     Properties::const_iterator it = map->properties().constBegin();
