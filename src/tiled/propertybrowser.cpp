@@ -348,9 +348,8 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
         QtVariantProperty *property = mNameToProperty.take(name);
 
         // First move up or down the currently selected item
-        const QList<QtBrowserItem *> propertyItems = items(property);
-        if (propertyItems.size() == 1) {
-            QtBrowserItem *item = propertyItems.first();
+        QtBrowserItem *item = currentItem();
+        if (item && item->property() == property) {
             const QList<QtBrowserItem *> siblings = item->parent()->children();
             if (siblings.count() > 1) {
                 int currentItemIndex = siblings.indexOf(item);
