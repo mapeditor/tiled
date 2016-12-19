@@ -91,6 +91,7 @@
 #include "tmxmapformat.h"
 #include "layeroffsettool.h"
 #include "magicwandtool.h"
+#include "painttilelayer.h"
 #include "selectsametiletool.h"
 
 #ifdef Q_OS_MAC
@@ -1215,12 +1216,29 @@ void MainWindow::paste(ClipboardManager::PasteFlags flags)
     Layer *layer = map->layerAt(0);
 
     if (layer->isTileLayer()) {
-        // Reset selection and paste into the stamp brush
-        mActionHandler->selectNone();
-        Map *stamp = map.take(); // TileStamp will take ownership
-        setStamp(TileStamp(stamp));
-        tilesetManager->removeReferences(stamp->tilesets());
-        mToolManager->selectTool(mStampBrush);
+        if (flags & ClipboardManager::PasteInPlace) {
+            TileLayer *source = static_cast<TileLayer*>(layer);
+            TileLayer *target = currentLayer->asTileLayer();
+
+            if (target) {
+                // Paste onto the current layer, using the same position as where
+                // the copied piece came from.
+                auto undoStack = mMapDocument->undoStack();
+                undoStack->push(new PaintTileLayer(mMapDocument,
+                                                   target,
+                                                   source->x(),
+                                                   source->y(),
+                                                   source));
+            }
+        } else {
+            // Reset selection and paste into the stamp brush
+            mActionHandler->selectNone();
+            layer->setPosition(0, 0);   // Make sure the tile layer is at origin
+            Map *stamp = map.take();    // TileStamp will take ownership
+            setStamp(TileStamp(stamp));
+            tilesetManager->removeReferences(stamp->tilesets());
+            mToolManager->selectTool(mStampBrush);
+        }
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view, flags);

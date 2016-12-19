@@ -68,7 +68,7 @@ public:
     /**
      * Sets the given map on the clipboard.
      */
-    void setMap(const Map *map);
+    void setMap(const Map &map);
 
     /**
      * Convenience method to copy the current selection to the clipboard.
