@@ -78,12 +78,12 @@ Map *ClipboardManager::map() const
     return format.fromByteArray(data);
 }
 
-void ClipboardManager::setMap(const Map *map)
+void ClipboardManager::setMap(const Map &map)
 {
     TmxMapFormat format;
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(map));
+    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(&map));
 
     mClipboard->setMimeData(mimeData);
 }
@@ -101,9 +101,12 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     Layer *copyLayer = nullptr;
 
     if (!selectedArea.isEmpty() && tileLayer) {
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+
         // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(selectedArea.translated(-tileLayer->x(),
-                                                             -tileLayer->y()));
+        copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+        copyLayer->setPosition(area.boundingRect().topLeft());
+
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
@@ -127,7 +130,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     copyMap.addLayer(copyLayer);
 
-    setMap(&copyMap);
+    setMap(copyMap);
 }
 
 void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,

@@ -43,6 +43,7 @@
 #include "minimapdock.h"
 #include "objectsdock.h"
 #include "objectselectiontool.h"
+#include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "selectsametiletool.h"
@@ -521,12 +522,29 @@ void MapEditor::paste(ClipboardManager::PasteFlags flags)
     Layer *layer = map->layerAt(0);
 
     if (layer->isTileLayer()) {
-        // Reset selection and paste into the stamp brush
-        MapDocumentActionHandler::instance()->selectNone();
-        Map *stamp = map.take(); // TileStamp will take ownership
-        setStamp(TileStamp(stamp));
-        tilesetManager->removeReferences(stamp->tilesets());
-        mToolManager->selectTool(mStampBrush);
+        if (flags & ClipboardManager::PasteInPlace) {
+            TileLayer *source = static_cast<TileLayer*>(layer);
+            TileLayer *target = currentLayer->asTileLayer();
+
+            if (target) {
+                // Paste onto the current layer, using the same position as where
+                // the copied piece came from.
+                auto undoStack = mCurrentMapDocument->undoStack();
+                undoStack->push(new PaintTileLayer(mCurrentMapDocument,
+                                                   target,
+                                                   source->x(),
+                                                   source->y(),
+                                                   source));
+            }
+        } else {
+            // Reset selection and paste into the stamp brush
+            MapDocumentActionHandler::instance()->selectNone();
+            layer->setPosition(0, 0);   // Make sure the tile layer is at origin
+            Map *stamp = map.take();    // TileStamp will take ownership
+            setStamp(TileStamp(stamp));
+            tilesetManager->removeReferences(stamp->tilesets());
+            mToolManager->selectTool(mStampBrush);
+        }
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mCurrentMapDocument, view, flags);

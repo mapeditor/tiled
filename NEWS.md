@@ -1,6 +1,7 @@
 ### 0.18.0 (...)
 
 * Added Layer via Copy/Cut actions
+* Added support for Paste in Place action for tile layers
 * Added context menu to change custom property type (by Dmitry Hrabrov)
 * Added support for higher precision for custom floating point properties
 * Added %mappath variable to commands (by Jack Roper)
@@ -21,6 +22,7 @@
 * Updated TMX schema definition (by assofohdz)
 * Fixed unfinished objects getting saved
 * Fixed OpenGL rendering mode when application is scaled (HiDpi screens)
+* Fixed Remove and Rename actions for predefined properties
 * Windows: Fixed console output
 * libtiled-java: Use Maven, deploy to OSSRH and code updates (by Mike Thomas)
 * libtiled-java: Added a basic isometric renderer (by Mike Thomas)

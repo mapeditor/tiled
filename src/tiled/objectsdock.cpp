@@ -222,10 +222,12 @@ void ObjectsDock::saveExpandedGroups()
 {
     mExpandedGroups[mMapDocument].clear();
 
+    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const auto &objectGroups = mMapDocument->map()->objectGroups();
+
     for (ObjectGroup *og : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
+        const QModelIndex index = proxyModel->mapFromSource(sourceIndex);
         if (mObjectsView->isExpanded(index))
             mExpandedGroups[mMapDocument].append(og);
     }
@@ -296,7 +298,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
         synchronizeSelectedItems();
     } else {
-        setModel(nullptr);
+        mProxyModel->setSourceModel(nullptr);
     }
 }
 

@@ -34,7 +34,6 @@ class Tileset;
 namespace Internal {
 
 class Document;
-class MapDocument;
 class PropertyBrowser;
 
 class PropertiesDock : public QDockWidget
@@ -57,7 +56,7 @@ protected:
 
 private slots:
     void currentObjectChanged(Object *object);
-    void currentItemChanged(QtBrowserItem *item);
+    void updateActions();
 
     void addProperty();
     void addProperty(const QString &name, const QVariant &value);
