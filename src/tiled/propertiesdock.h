@@ -56,7 +56,7 @@ protected:
 
 private slots:
     void currentObjectChanged(Object *object);
-    void currentItemChanged(QtBrowserItem *item);
+    void updateActions();
     void tilesetFileNameChanged(Tileset *tileset);
 
     void addProperty();

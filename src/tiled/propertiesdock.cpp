@@ -95,9 +95,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
-                this, &PropertiesDock::showContextMenu);
-    connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
-            SLOT(currentItemChanged(QtBrowserItem*)));
+            this, &PropertiesDock::showContextMenu);
+    connect(mPropertyBrowser, &PropertyBrowser::currentItemChanged,
+            this, &PropertiesDock::updateActions);
 
     retranslateUi();
 }
@@ -117,6 +117,11 @@ void PropertiesDock::setMapDocument(MapDocument *mapDocument)
                 SLOT(tilesetFileNameChanged(Tileset*)));
         connect(mapDocument, SIGNAL(editCurrentObject()),
                 SLOT(bringToFront()));
+
+        connect(mapDocument, &MapDocument::propertyAdded,
+                this, &PropertiesDock::updateActions);
+        connect(mapDocument, &MapDocument::propertyRemoved,
+                this, &PropertiesDock::updateActions);
 
         currentObjectChanged(mapDocument->currentObject());
     } else {
@@ -148,18 +153,12 @@ static bool isExternal(const Object *object)
     }
 }
 
-static bool isAddedByType(Object *object, const QString &name)
+static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
-    if (!object || object->typeId() != Object::MapObjectType)
-        return false;
-
-    const QString objectType = static_cast<MapObject*>(object)->type();
-    const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
-    for (const ObjectType &type : objectTypes) {
-        if (type.name == objectType)
-            return type.defaultProperties.contains(name);
+    for (Object *obj : objects) {
+        if (obj->hasProperty(name))
+            return true;
     }
-
     return false;
 }
 
@@ -174,13 +173,13 @@ void PropertiesDock::currentObjectChanged(Object *object)
     mActionAddProperty->setEnabled(object && !external);
 }
 
-void PropertiesDock::currentItemChanged(QtBrowserItem *item)
+void PropertiesDock::updateActions()
 {
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    bool external = isExternal(mPropertyBrowser->object());
-    bool addedByType = item && isAddedByType(mPropertyBrowser->object(),
-                                     item->property()->propertyName());
-    bool canModify = isCustomProperty && !external && !addedByType;
+    bool canModify = isCustomProperty &&
+            !isExternal(mPropertyBrowser->object()) &&
+            anyObjectHasProperty(mMapDocument->currentObjects(), item->property()->propertyName());
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify);
@@ -210,7 +209,7 @@ void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 
     if (update) {
         currentObjectChanged(object);
-        currentItemChanged(mPropertyBrowser->currentItem());
+        updateActions();
     }
 }
 
@@ -251,15 +250,6 @@ void PropertiesDock::removeProperty()
 
     const QString name = item->property()->propertyName();
     QUndoStack *undoStack = mMapDocument->undoStack();
-    QList<QtBrowserItem *> items = item->parent()->children();
-    if (items.count() > 1) {
-        int currentItemIndex = items.indexOf(item);
-        if (item == items.last()) {
-            mPropertyBrowser->setCurrentItem(items.at(currentItemIndex - 1));
-        } else {
-            mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
-        }
-    }
     undoStack->push(new RemoveProperty(mMapDocument,
                                        mMapDocument->currentObjects(),
                                        name));

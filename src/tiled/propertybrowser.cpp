@@ -308,30 +308,69 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
     updatePropertyColor(name);
 }
 
+static QVariant predefinedPropertyValue(Object *object, const QString &name)
+{
+    if (object->typeId() != Object::MapObjectType)
+        return false;
+
+    const QString currentType = static_cast<MapObject*>(object)->type();
+    const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
+    for (const ObjectType &type : objectTypes) {
+        if (type.name == currentType)
+            if (type.defaultProperties.contains(name))
+                return type.defaultProperties.value(name);
+    }
+    return QVariant();
+}
+
+static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
+{
+    for (Object *obj : objects) {
+        if (obj->hasProperty(name))
+            return true;
+    }
+    return false;
+}
+
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 {
     if (!mMapDocument->currentObjects().contains(object))
         return;
-    if (mObject == object) {
-        bool deleteProperty = true;
-        for (Object *obj : mMapDocument->currentObjects()) {
-            if (mObject == obj)
-                continue;
-            if (obj->properties().contains(name)) {
-                deleteProperty = false;
-                break;
+
+    QVariant predefinedValue = predefinedPropertyValue(mObject, name);
+
+    if (!predefinedValue.isValid() &&
+            !anyObjectHasProperty(mMapDocument->currentObjects(), name)) {
+        // It's not a predefined property and no other selected objects have
+        // this property, so delete it.
+        QtVariantProperty *property = mNameToProperty.take(name);
+
+        // First move up or down the currently selected item
+        const QList<QtBrowserItem *> propertyItems = items(property);
+        if (propertyItems.size() == 1) {
+            QtBrowserItem *item = propertyItems.first();
+            const QList<QtBrowserItem *> siblings = item->parent()->children();
+            if (siblings.count() > 1) {
+                int currentItemIndex = siblings.indexOf(item);
+                if (item == siblings.last()) {
+                    setCurrentItem(siblings.at(currentItemIndex - 1));
+                } else {
+                    setCurrentItem(siblings.at(currentItemIndex + 1));
+                }
             }
         }
-        if (deleteProperty) {
-            // No other selected objects have this property so delete it.
-            delete mNameToProperty.take(name);
-        } else {
-            // Another selected object still has this property, so just clear the value.
-            mUpdating = true;
-            mNameToProperty[name]->setValue(QString());
-            mUpdating = false;
-        }
+
+        delete property;
+        return;
     }
+
+    if (mObject == object) {
+        // Property deleted from the current object, so reset the value.
+        mUpdating = true;
+        mNameToProperty[name]->setValue(predefinedValue);
+        mUpdating = false;
+    }
+
     updatePropertyColor(name);
 }
 
@@ -1284,6 +1323,7 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
         if (obj == mObject)
             continue;
         if (obj->property(propertyName) != propertyValue) {
+            property->setNameColor(textColor);
             property->setValueColor(disabledTextColor);
             return;
         }

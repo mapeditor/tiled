@@ -22,6 +22,7 @@
 * Updated TMX schema definition (by assofohdz)
 * Fixed unfinished objects getting saved
 * Fixed OpenGL rendering mode when application is scaled (HiDpi screens)
+* Fixed Remove and Rename actions for predefined properties
 * Windows: Fixed console output
 * libtiled-java: Use Maven, deploy to OSSRH and code updates (by Mike Thomas)
 * libtiled-java: Added a basic isometric renderer (by Mike Thomas)
