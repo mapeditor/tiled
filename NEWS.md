@@ -1,4 +1,4 @@
-### 0.18.0 (...)
+### 0.18.0 (20 December 2016)
 
 * Added Layer via Copy/Cut actions
 * Added support for Paste in Place action for tile layers
@@ -26,7 +26,7 @@
 * Windows: Fixed console output
 * libtiled-java: Use Maven, deploy to OSSRH and code updates (by Mike Thomas)
 * libtiled-java: Added a basic isometric renderer (by Mike Thomas)
-* Updated Brazilian Portuguese translation (by Laete Meireles)
+* Updated Brazilian Portuguese, Chinese, Czech, Dutch, Hebrew, Norwegian Bokmål and Spanish translations
 
 ### 0.17.2 (28 November 2016)
 
