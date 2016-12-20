@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja no arquivo AUTHORS a lista completa de todos os que contribuiram com o projeto)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Você pode modificar e redistribuir este programa sob os termos da GPL (versão 2 ou posterior). Uma cópia da GPL se encontra no arquivo &apos;COPYING&apos; distribuído com o Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja no arquivo AUTHORS a lista completa de todos os que contribuiram com o projeto)&lt;/p&gt;
+&lt;p align="center"&gt;Você pode modificar e redistribuir este programa sob os termos da GPL (versão 2 ou posterior). Uma cópia da GPL se encontra no arquivo 'COPYING' distribuído com o Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -42,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished">Nome da propriedade</translation>
+        <translation>Nome da propriedade</translation>
     </message>
 </context>
 <context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Extensão de arquivo não-exclusivo. Não é possível determinar o formato de exportação correto.</translation>
     </message>
     <message>
@@ -390,12 +390,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Não foi possível abrir o arquivo para escrita.</translation>
+        <translation>Não foi possível abrir o arquivo para escrita.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos room do GameMaker (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -636,28 +636,28 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished">Colar no Lugar...</translation>
+        <translation>Colar &amp;no Lugar</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+124"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished">Tela Cheia</translation>
+        <translation>Tela Cheia</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F11</source>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar Para &amp;Pixels</translation>
     </message>
     <message>
         <location line="-300"/>
@@ -687,7 +687,7 @@
     <message>
         <location line="+8"/>
         <source>&amp;Snap to Grid</source>
-        <translation>&amp;Alinhar à Grade</translation>
+        <translation>&amp;Ajustar à Grade</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -862,15 +862,15 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Orientação de mapa não suportada: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Orientação de mapa não suportada: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parametros de tileset inválidos para o tileset &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Parametros de tileset inválidos para o tileset '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Método de compressão &apos;%1&apos; não suportado</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Método de compressão '%1' não suportado</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Dados corrompidos na camada &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Dados corrompidos na camada '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Não foi possivel ler o tile em (%1,%2) na camada &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Não foi possivel ler o tile em (%1,%2) na camada '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>O arquivo não contém tipos de objetos.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Eu já sou um patrono!</translation>
     </message>
     <message>
@@ -1392,25 +1392,25 @@ Linha %1, coluna %2</translation>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished">Temas</translation>
+        <translation>Tema</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+67"/>
         <location line="+122"/>
         <source>Native</source>
-        <translation type="unfinished">Nativo</translation>
+        <translation>Nativo</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusão</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Tiled Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusão Tiled</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
@@ -1420,12 +1420,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>Style:</source>
-        <translation type="unfinished">Estilo:</translation>
+        <translation>Estilo:</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation type="unfinished">Cor de base:</translation>
+        <translation>Cor base:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1436,7 +1436,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished">Verificar Agora</translation>
+        <translation>Verificar Agora</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1665,7 +1665,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>O que é isso</translation>
     </message>
     <message>
@@ -1953,12 +1953,12 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Não foi possivel analisar o cabeçalho do arquivo!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Não foi possivel analisar o cabeçalho da camada!</translation>
     </message>
     <message>
@@ -1993,7 +1993,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Não é possível salvar camada que não é de tile!</translation>
     </message>
     <message>
@@ -2081,7 +2081,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished">Editar texto</translation>
+        <translation>Editar Texto</translation>
     </message>
 </context>
 <context>
@@ -2104,7 +2104,7 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Redefinir Tamanho do Tile</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2208,49 +2208,49 @@ Linha %1, coluna %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Propriedade &apos;%2&apos; = &apos;%3&apos; não faz sentido. Ignorando essa propriedade.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Propriedade '%2' = '%3' não faz sentido. Ignorando essa propriedade.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Você esqueceu um sublinhado na camada &apos;%1&apos; ?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Você esqueceu um sublinhado na camada '%1' ?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Camada &apos;%1&apos; não é reconhecida como uma camada válida para Automapeamento.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Camada '%1' não é reconhecida como uma camada válida para Automapeamento.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>A camada &apos;regions_input&apos; não pode aparecer mais de uma vez.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>A camada 'regions_input' não pode aparecer mais de uma vez.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>As camadas &apos;regions_*&apos; devem ser camadas de tiles.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>As camadas 'regions_*' devem ser camadas de tiles.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>A camada &apos;regions_output&apos; não pode aparecer mais de uma vez.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>A camada 'regions_output' não pode aparecer mais de uma vez.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
         <translation>As camadas input_* e inputnot_* devem ser camadas de tiles.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Não foi encontrada camada &apos;regions&apos; ou &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Não foi encontrada camada 'regions' ou 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Não foi encontrada camada &apos;regions&apos; ou &apos;regions_output&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Não foi encontrada camada 'regions' ou 'regions_output'.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2670,8 +2670,8 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>O número de colunas do tile no tileset &apos;%1&apos; parece ter mudado de %2 para %3. Você deseja ajustar as referências do tile?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>O número de colunas do tile no tileset '%1' parece ter mudado de %2 para %3. Você deseja ajustar as referências do tile?</translation>
     </message>
 </context>
 <context>
@@ -2928,12 +2928,12 @@ Deseja substituí-lo?</translation>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Novo</translation>
     </message>
     <message>
         <location line="-1210"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished">Editor de Tipos de Objetos</translation>
+        <translation>Editor de Tipos de Objetos</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3532,8 +3532,8 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Falha ao carregar imagem de tileset &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Falha ao carregar imagem de tileset '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3717,7 +3717,7 @@ Por favor selecione o formato específico.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Obrigado pela ajuda!&lt;/h3&gt;
@@ -3727,7 +3727,7 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Eu não sou mais um patrono</translation>
     </message>
     <message>
@@ -3745,7 +3745,7 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Eu já sou um patrono!</translation>
     </message>
 </context>
@@ -4275,7 +4275,7 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
+        <source>The tileset "%1" is still in use by the map!</source>
         <translation>O tileset %1 ainda está sendo usado no mapa!</translation>
     </message>
     <message>
@@ -4334,8 +4334,8 @@ Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>Não foi possível carregar &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>Não foi possível carregar "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4814,11 +4814,9 @@ Por favor selecione o formato específico.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>Girar %n Objeto</numerusform>
-            <numerusform>Girar %n Objetos</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Girar %n Objeto(s)</numerusform>
+        <numerusform>Girar %n Objetos</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>

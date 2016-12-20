@@ -6,20 +6,24 @@ Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 Other contributors:
 
 Stefan Beller
-Samuli Tuomola
 Erik Schilling
+Samuli Tuomola
 Jeff Bland
 Petr Viktorin
-mauve
+Jake Petroules
 Mamed Ibrahimov
-Martin Ziel
 Mauricio Muñoz Lucero
+Yohann Ferreira
+mauve
+Alex Vega (semtiko)
+Martin Ziel
+Hiroki Utsunomiya
+Mike Thomas
 Parker Miller
 seeseekey
-Yohann Ferreira
-Alex Vega (semtiko)
 Roderic Morris
-Hiroki Utsunomiya
+Will Luongo
+Michael Bickel
 Porfírio Ribeiro
 Sean Humeniuk
 Ben Longbons
@@ -29,20 +33,25 @@ Mikolai Fajer
 zhaosting
 Alejandro Cámara
 Oskar Wiksten
+Peter André Johansen
 Tamir Atias (KonoM)
 Tim Baker
 Hendrik Brummermann
-Jake Petroules
 Mohammad Mehdi Salem Naraghi
 Omnomnobot
+wayfu
 Andrew G. Crowell
+Cheuk Yin Ng
 Clint Bellanger
 Dennis Honeyman
+Henrik Heino
+Laete Meireles
 Michael Woerister
 Sebastian Pidek
 Yehnan Chiang
 Alexander Kuhrt
 Andreas Abraham
+Bilge Theall
 Champi080
 Christian Henz
 Christoph Schnackenberg
@@ -53,25 +62,37 @@ Janis Kirsteins
 Kenney Phillis
 Maus
 Nathan Tolbert
+Niek
 Pierre-David Bélanger
 Porfirio
+Przemysław Grzywacz
+Seanba
 Wodann
 juniperbrew
+nuriu
 tolbert
-wayfu
 zigal
 Aban
 Adam Rippon
+Ahmad Hamdani
 Alessandro Portale
 Alex Koz
 Alexei Bratuhin
 Andrew Motrenko
+Ansis Māliņš
 Antonio Ricci
+Ava Brumfield
 Bin Wu
 Brandon Dillon
+Brian Cain
+CaptainFrog
+Carisius
 Dennis Hostetler
+Dmitry Hrabrov
 Dmitry Marakasov
 Dobes Vandermeer
+Dylan Wilson
+Eduardo Medeiros Pereira
 Edward Hutchins
 Emmanuel Barroga
 Eric Kidd
@@ -79,14 +100,21 @@ Firas Assaad
 Flyte
 Gornova
 Gregory Nickonov
+Guilherme Rodrigues Caetano
 Hanmac
 Harri Berglund
 Harry Hsiao
-Ian Langworth
+Hermann Döppes
+Ian Langworth ☠
+Jack Roper
 Jared Adams
 Joel Leclerc
+Johel Ernesto Guerrero Peña
+JonesBlunt
 Juan Rodriguez
+Justas Bistrickas
 Justin Jacobs
+Kimmo Rundelin
 Kody Kurtz
 Kyle Delaney
 Lennert Raesch
@@ -96,31 +124,59 @@ Mark van Rij
 Mattia Basaglia
 Michael Aquilina
 Michael Williams
+Mohammed SLIMANI
+Nikita Razdobreev
+Nuri Uzunoğlu
+Okami
 Oliver Zell
+Phil Hagelberg
 Postremus
-Przemysław Grzywacz
+Prayag Verma
+Robert Maes
 Roberto Raggi
-Seanba
+RyanSchmittDev
+Sausage Johnson
+Sebastian Grillmaier
 Sébastien BURILLARD
 Todd Carnes
+Tom Linthwaite
+Tomasz Kubiak
 Vincent Petithory
 Vsevolod Klementjev
 Wade Brainerd
 Xenodora
+YFdyh000
 Ying-Chun Liu (PaulLiu)
+Zach Reizner
+Zachary Jia
 arntro-4
+assofohdz
+bitJericho
+buckle2000
 devnewton
+endlesstravel
+endstation
+fireraccoon
+iskolbin
+kekd.ck
 leeonix
+luan-cestari
 mhussa
 mogemimi
+nykm
+ranjak
+tomerdaniel
 
 
 Translators:
 
+Ahmad Hamdani            (Czech)
 Alex Vega                (Russian)
 Antonio Ricci            (Italian)
+Bilge Theall             (Chinese)
 Bin Wu                   (Chinese)
 Damene Abdelkader        (Arabic, Algeria)
+Eduardo Medeiros Pereira (Portuguese, Brazil)
 Gornova                  (Italian)
 Hiroki Utsunomiya        (Japanese)
 Jonatas de Moraes Junior (Portuguese, Brazil)
@@ -139,6 +195,7 @@ seeseekey                (German)
 Tamir Atias (KonoM)      (Hebrew)
 Thorbjørn Lindeijer      (Dutch)
 Tomasz Kubiak            (Polish)
+Tomer Daniel             (Hebrew)
 Yohann Ferreira          (French)
 Zhao Sting               (Chinese)
 

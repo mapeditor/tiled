@@ -7,7 +7,6 @@ Product {
 
     // Disabled languages because they're too outdated
     excludeFiles: [
-        "tiled_he.ts",
         "tiled_lv.ts",
     ]
 

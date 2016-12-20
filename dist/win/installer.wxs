@@ -170,6 +170,7 @@
               <File Id="fil5D0F7497E05278ABCA30DE9CE4F56E77" Source="$(var.InstallRoot)\translations\tiled_en.qm" />
               <File Id="filC018335544F53B73675E2FB664EC5FD3" Source="$(var.InstallRoot)\translations\tiled_es.qm" />
               <File Id="fil594E5E839EC4145E8B4B931A2C493B0A" Source="$(var.InstallRoot)\translations\tiled_fr.qm" />
+              <File Id="filB841080212B940E99F0A87530E861878" Source="$(var.InstallRoot)\translations\tiled_he.qm" />
               <File Id="fil4F6A21C501F8FD2F62A48F9F675562F0" Source="$(var.InstallRoot)\translations\tiled_it.qm" />
               <File Id="fil474CB8EA4ACE7F46CDE67A76BD4C7898" Source="$(var.InstallRoot)\translations\tiled_ja.qm" />
               <File Id="filB8359F4627FE4AF698E2DECFCB44C230" Source="$(var.InstallRoot)\translations\tiled_nb.qm" />
