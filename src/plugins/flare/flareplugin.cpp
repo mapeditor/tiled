@@ -271,7 +271,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     int w,h;
                     if (map->orientation() == Map::Orthogonal) {
                         x = (loc[0].toFloat())*map->tileWidth();
-                        y = (loc[1].toFloat() - 1)*map->tileHeight();
+                        y = (loc[1].toFloat())*map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt()*map->tileWidth();
                             h = loc[3].toInt()*map->tileHeight();
