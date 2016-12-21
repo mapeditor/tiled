@@ -424,7 +424,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         QRect bounds = paintedRegion.boundingRect();
         
-        // LUCA-TODO: Again, it feels like there needs 
+        // LUCA-TODO: Again, it feels like this should be the layer tile size or the map's
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height(),
