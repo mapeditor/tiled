@@ -333,7 +333,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 
     typedef QScopedPointer<TileLayer> TileLayerPtr;
 
-    // TODO: Obviously do this properly later...
+    // LUCA-TODO: Obviously do this properly later...
     TileLayerPtr tileLayer(new TileLayer(name,
                                          variantMap[QLatin1String("x")].toInt(),
                                          variantMap[QLatin1String("y")].toInt(),
@@ -521,7 +521,7 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 {
     typedef QScopedPointer<ImageLayer> ImageLayerPtr;
 
-    // TODO: Do this properly later...
+    // LUCA-TODO: Do this properly later...
     ImageLayerPtr imageLayer(new ImageLayer(variantMap[QLatin1String("name")].toString(),
                                             variantMap[QLatin1String("x")].toInt(),
                                             variantMap[QLatin1String("y")].toInt(),

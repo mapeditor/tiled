@@ -4805,7 +4805,7 @@ _wrap_PyTiledTileLayer__tp_init(PyTiledTileLayer *self, PyObject *args, PyObject
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
         return -1;
     }
-    // TODO: Do this properly later... i.e. tilesizes should not be 0.
+    // LUCA-TODO: Do this properly later... i.e. tilesizes should not be 0.
     self->obj = new Tiled::TileLayer(QString::fromUtf8(name), x, y, w, h, 0, 0);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;

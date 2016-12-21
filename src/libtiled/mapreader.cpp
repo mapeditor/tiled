@@ -552,7 +552,7 @@ TileLayer *MapReaderPrivate::readLayer()
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
 
-    // TODO: This up properly obviously
+    // LUCA-TODO: This up properly obviously
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height, 0, 0);
     readLayerAttributes(*tileLayer, atts);
 
