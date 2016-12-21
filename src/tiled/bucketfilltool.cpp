@@ -157,12 +157,13 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
     if (!mFillOverlay) {
         // Create a new overlay region
+        // LUCA-TODO: Fix this....
         const QRect fillBounds = mFillRegion.boundingRect();
         mFillOverlay = SharedTileLayer(new TileLayer(QString(),
                                                      fillBounds.x(),
                                                      fillBounds.y(),
                                                      fillBounds.width(),
-                                                     fillBounds.height()));
+                                                     fillBounds.height(), 0, 0));
     }
 
     // Paint the new overlay

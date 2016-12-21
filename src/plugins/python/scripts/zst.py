@@ -62,7 +62,8 @@ class ZST(Plugin):
         tsets[pal].setTransparentColor(QColor(img.color(0)))
         tsets[pal].loadFromImage(img, 'script')
 
-      la = Tiled.TileLayer('Back', 0,0, 64,32)
+      # LUCA-TODO: Fix this obviously, tile sizes should not be 0, 0
+      la = Tiled.TileLayer('Back', 0,0, 64,32, 0, 0)
       la.setMap(m)
       fh.seek(tilemapbase)
 

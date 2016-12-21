@@ -349,7 +349,9 @@ bool AutoMapper::setupMissingLayers()
         const int index =  mMapWork->layerCount();
         TileLayer *tilelayer = new TileLayer(name, 0, 0,
                                              mMapWork->width(),
-                                             mMapWork->height());
+                                             mMapWork->height(),
+                                             mMapWork->tileWidth(),
+                                             mMapWork->tileHeight());
         mMapDocument->undoStack()->push(
                     new AddLayer(mMapDocument, index, tilelayer));
         mAddedTileLayers.append(name);
@@ -362,7 +364,9 @@ bool AutoMapper::setupMissingLayers()
         const int index =  mMapWork->layerCount();
         ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0,
                                                    mMapWork->width(),
-                                                   mMapWork->height());
+                                                   mMapWork->height(),
+                                                   mMapWork->tileWidth(),
+                                                   mMapWork->tileHeight());
         mMapDocument->undoStack()->push(
                     new AddLayer(mMapDocument, index, objectGroup));
         mAddedTileLayers.append(name);

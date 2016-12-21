@@ -382,7 +382,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
 
         auto map = mMapDocument->map();
         sourceLayer = static_cast<TileLayer*>(currentLayer);
-        auto newTileLayer = new TileLayer(name, 0, 0, map->width(), map->height());
+        auto newTileLayer = new TileLayer(name, 0, 0, map->width(), map->height(), map->tileWidth(), map->tileHeight());
         newTileLayer->setCells(0, 0, sourceLayer, selectedArea);
 
         newLayer = newTileLayer;
@@ -395,7 +395,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
 
         auto map = mMapDocument->map();
         auto currentObjectGroup = static_cast<ObjectGroup*>(currentLayer);
-        auto newObjectGroup = new ObjectGroup(name, 0, 0, map->width(), map->height());
+        auto newObjectGroup = new ObjectGroup(name, 0, 0, map->width(), map->height(), map->tileWidth(), map->tileHeight());
         newObjectGroup->setDrawOrder(currentObjectGroup->drawOrder());
         newObjectGroup->setColor(currentObjectGroup->color());
 

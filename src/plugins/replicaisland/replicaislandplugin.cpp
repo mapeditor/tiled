@@ -104,8 +104,9 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         }
 
         // Create a layer object.
+        // LUCA-TODO: Change this so TileLayer defaults to a tile size
         TileLayer *layer =
-            new TileLayer(layerTypeToName(type), 0, 0, width, height);
+            new TileLayer(layerTypeToName(type), 0, 0, width, height, 0, 0);
         layer->setProperty("type", QString::number(type));
         layer->setProperty("tile_index", QString::number(tileIndex));
         layer->setProperty("scroll_speed", QString::number(scrollSpeed, 'f'));

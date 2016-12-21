@@ -34,8 +34,8 @@
 
 using namespace Tiled;
 
-ImageLayer::ImageLayer(const QString &name, int x, int y, int width, int height):
-    Layer(ImageLayerType, name, x, y, width, height)
+ImageLayer::ImageLayer(const QString &name, int x, int y, int width, int height, int tileWidth, int tileHeight):
+    Layer(ImageLayerType, name, x, y, width, height, tileWidth, tileHeight)
 {
 }
 
@@ -75,7 +75,7 @@ bool ImageLayer::isEmpty() const
 
 Layer *ImageLayer::clone() const
 {
-    return initializeClone(new ImageLayer(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new ImageLayer(mName, mX, mY, mWidth, mHeight, mTileWidth, mTileHeight));
 }
 
 ImageLayer *ImageLayer::initializeClone(ImageLayer *clone) const

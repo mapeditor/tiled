@@ -59,18 +59,18 @@ class PK2(Plugin):
     maps.append(m)
 
     # -- background image
-    lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])
+    lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3], 32, 32)
     img = QImage()
     imgfile = dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile)
     img.load(imgfile, 'BMP')
     lai.loadFromImage(img, imgfile)
 
     # -- layers
-    la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
+    la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3], 32, 32)
     la1.setMap(m)
     lay1.doTiles(t, la1, bb)
 
-    la2 = Tiled.TileLayer('Front', 0,0, bb[2], bb[3])
+    la2 = Tiled.TileLayer('Front', 0,0, bb[2], bb[3], 32, 32)
     la2.setMap(m)
     lay2.doTiles(t, la2, bb)
 
@@ -99,7 +99,7 @@ class PK2(Plugin):
 
       #print spr
 
-    la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
+    la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3], 32, 32)
     la3.setMap(m)
     lay3.doSprites(la3, bb)
 

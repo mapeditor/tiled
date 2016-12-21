@@ -34,8 +34,8 @@
 
 using namespace Tiled;
 
-TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
-    : Layer(TileLayerType, name, x, y, width, height)
+TileLayer::TileLayer(const QString &name, int x, int y, int width, int height, int tileWidth, int tileHeight)
+    : Layer(TileLayerType, name, x, y, width, height, tileWidth, tileHeight)
     , mGrid(width * height)
     , mUsedTilesetsDirty(false)
 {
@@ -138,7 +138,7 @@ TileLayer *TileLayer::copy(const QRegion &region) const
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      bounds.width(), bounds.height());
+                                      bounds.width(), bounds.height(), tileWidth(), tileHeight());
 
     for (const QRect &rect : area.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
@@ -438,7 +438,7 @@ bool TileLayer::isEmpty() const
  */
 Layer *TileLayer::clone() const
 {
-    return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight, mTileWidth, mTileHeight));
 }
 
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const

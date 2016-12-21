@@ -146,7 +146,7 @@ public:
     /**
      * Constructor.
      */
-    TileLayer(const QString &name, int x, int y, int width, int height);
+    TileLayer(const QString &name, int x, int y, int width, int height, int tileWidth, int tileHeight);
 
     QMargins drawMargins() const;
 

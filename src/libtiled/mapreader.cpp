@@ -552,7 +552,8 @@ TileLayer *MapReaderPrivate::readLayer()
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
 
-    TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
+    // TODO: This up properly obviously
+    TileLayer *tileLayer = new TileLayer(name, x, y, width, height, 0, 0);
     readLayerAttributes(*tileLayer, atts);
 
     while (xml.readNextStartElement()) {
@@ -712,7 +713,8 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
 
-    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
+    // LUCA-TODO: Fix this...
+    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height, 0, 0);
     readLayerAttributes(*objectGroup, atts);
 
     const QString color = atts.value(QLatin1String("color")).toString();
@@ -753,7 +755,8 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
 
-    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
+    // LUCA-TODO: Do this properly
+    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height, 0, 0);
     readLayerAttributes(*imageLayer, atts);
 
     // Image layer pixel position moved from x/y to offsetx/offsety for

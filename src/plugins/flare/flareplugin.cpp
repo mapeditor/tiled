@@ -157,7 +157,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
                 if (key == QLatin1String("type")) {
                     tilelayer = new TileLayer(value, 0, 0,
-                                              map->width(),map->height());
+                                              map->width(),map->height(), map->tileWidth(), map->tileHeight());
                     map->addLayer(tilelayer);
                 } else if (key == QLatin1String("format")) {
                     if (value == QLatin1String("dec")) {
@@ -187,7 +187,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         } else {
             if (newsection) {
                 if (map->indexOfLayer(sectionName) == -1) {
-                    objectgroup = new ObjectGroup(sectionName, 0,0,map->width(), map->height());
+                    objectgroup = new ObjectGroup(sectionName, 0,0,map->width(), map->height(), map->tileWidth(), map->tileHeight());
                     map->addLayer(objectgroup);
                 } else {
                     objectgroup = dynamic_cast<ObjectGroup*>(map->layerAt(map->indexOfLayer(sectionName)));

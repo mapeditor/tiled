@@ -332,10 +332,12 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     const QVariant dataVariant = variantMap[QLatin1String("data")];
 
     typedef QScopedPointer<TileLayer> TileLayerPtr;
+
+    // TODO: Obviously do this properly later...
     TileLayerPtr tileLayer(new TileLayer(name,
                                          variantMap[QLatin1String("x")].toInt(),
                                          variantMap[QLatin1String("y")].toInt(),
-                                         width, height));
+                                         width, height, 0, 0));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();
@@ -433,11 +435,13 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 {
     typedef QScopedPointer<ObjectGroup> ObjectGroupPtr;
+
+    // LUCA-TODO: Propertly do this...
     ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QLatin1String("name")].toString(),
                                                variantMap[QLatin1String("x")].toInt(),
                                                variantMap[QLatin1String("y")].toInt(),
                                                variantMap[QLatin1String("width")].toInt(),
-                                               variantMap[QLatin1String("height")].toInt()));
+                                               variantMap[QLatin1String("height")].toInt(), 0, 0));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();
@@ -516,11 +520,13 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 {
     typedef QScopedPointer<ImageLayer> ImageLayerPtr;
+
+    // TODO: Do this properly later...
     ImageLayerPtr imageLayer(new ImageLayer(variantMap[QLatin1String("name")].toString(),
                                             variantMap[QLatin1String("x")].toInt(),
                                             variantMap[QLatin1String("y")].toInt(),
                                             variantMap[QLatin1String("width")].toInt(),
-                                            variantMap[QLatin1String("height")].toInt()));
+                                            variantMap[QLatin1String("height")].toInt(), 0, 0));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();

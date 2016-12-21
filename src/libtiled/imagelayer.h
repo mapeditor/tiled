@@ -50,7 +50,7 @@ public:
     /**
      * Constructor.
      */
-    ImageLayer(const QString &name, int x, int y, int width, int height);
+    ImageLayer(const QString &name, int x, int y, int width, int height, int tileWidth, int tileHeight);
 
     /**
      * Destructor.

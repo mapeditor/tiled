@@ -488,11 +488,14 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     // create a stamp for the terrain block
     QRegion brushRegion;
+
+    // LUCA-TODO: Tilesize can't be 0, 0, figure out what it actually is here
+        //   It seems like it should be the same as the current tile layer
     SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(),
                                                           brushRect.left(),
                                                           brushRect.top(),
                                                           brushRect.width(),
-                                                          brushRect.height()));
+                                                          brushRect.height(), 0, 0));
 
     for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
         for (int x = brushRect.left(); x <= brushRect.right(); ++x) {

@@ -362,9 +362,12 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
+
+        // LUCA-TODO: Tilesize can't be 0, 0, figure out what it actually is here
+        //   It seems like it should be the same as the current tile layer
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+                                              bounds.width(), bounds.height(), 0, 0));
 
         for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
@@ -409,9 +412,12 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         }
 
         QRect bounds = paintedRegion.boundingRect();
+        
+        // LUCA-TODO: Tilesize can't be 0, 0, figure out what it actually is here
+        //   It seems like it should be the same as the current tile layer
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+                                              bounds.width(), bounds.height(), 0, 0));
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);

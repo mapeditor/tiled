@@ -469,9 +469,11 @@ void TilesetDock::updateCurrentTiles()
     }
 
     // Create a tile layer from the current selection
+    // LUCA-TODO: Do this properly...
     TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
                                          maxX - minX + 1,
-                                         maxY - minY + 1);
+                                         maxY - minY + 1,
+                                         0, 0);
 
     const TilesetModel *model = view->tilesetModel();
     for (const QModelIndex &index : indexes) {

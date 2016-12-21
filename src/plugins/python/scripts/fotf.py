@@ -44,7 +44,8 @@ class Fury(Plugin):
     t = Tiled.Tileset('DECOR', 16,16, 0, 0)
     t.loadFromImage(fr.readtilegfx(gfxf), '')
 
-    l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h)
+    # LUCA-TODO: Check if this is correct with the creator
+    l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h, 16, 16)
     l.setMap(m)
     fr.populatetiles(l, t)
     # have to pass ownership so can't add tileset before populating layer

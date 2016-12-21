@@ -80,7 +80,9 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                 const QRect boundingRect(region.boundingRect());
                 auto changedLayer = new TileLayer(QString(), 0, 0,
                                                   boundingRect.width(),
-                                                  boundingRect.height());
+                                                  boundingRect.height(),
+                                                  tileLayer->tileWidth(),
+                                                  tileLayer->tileHeight());
 
                 for (const QRect &rect : region.rects()) {
                     for (int x = rect.left(); x <= rect.right(); ++x) {

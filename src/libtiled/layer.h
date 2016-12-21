@@ -64,7 +64,7 @@ public:
      * Constructor.
      */
     Layer(TypeFlag type, const QString &name, int x, int y,
-          int width, int height);
+          int width, int height, int tileWidth, int tileHeight);
 
     /**
      * Returns the type of this layer.
@@ -158,7 +158,25 @@ public:
      */
     QSize size() const { return QSize(mWidth, mHeight); }
 
+
     void setSize(const QSize &size);
+
+    /**
+     * Returns the width of the tiles this layer.
+     */
+    int tileWidth() const { return mTileWidth; }
+
+    /**
+     * Returns the height of the tiles this layer.
+     */
+    int tileHeight() const { return mTileHeight; }
+
+    /**
+     * Returns the size of tiles this layer.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+
+    void setTileSize(const QSize &size);
 
     /**
      * Returns the bounds of this layer.
@@ -227,6 +245,8 @@ protected:
     int mY;
     int mWidth;
     int mHeight;
+    int mTileWidth;
+    int mTileHeight;
     QPointF mOffset;
     float mOpacity;
     bool mVisible;
@@ -241,6 +261,15 @@ inline void Layer::setSize(const QSize &size)
 {
     mWidth = size.width();
     mHeight = size.height();
+}
+
+/**
+ * Sets the size of the tiles in this layer.
+ */
+inline void Layer::setTileSize(const QSize &size)
+{
+    mTileWidth = size.width();
+    mTileHeight = size.height();
 }
 
 /**

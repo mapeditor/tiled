@@ -94,7 +94,9 @@ class Mappy(Plugin, FMPPicklerMixin):
     for c in ['LYR'+str(i) for i in range(7,0,-1)]+['BODY']:
       if not chunks.has_key(c): continue
       print 'populating',c
-      lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
+
+      # LUCA-TODO: Make sure this is correct with bjorn
+      lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight, hd.blockwidth, hd.blockheight)
       lvl = list(FMPLayer.unpack(hd, chunks[c].data))
       FMPLayer.populate(lay, blks, tset, hd, lvl)
       m.addLayer(lay)
