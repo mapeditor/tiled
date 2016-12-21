@@ -354,9 +354,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         return;
 
     /**
-     * Since stamps are now reliant on the tile sizes of a layer
-     * this method can't work if there is no current tile layer, the
-     * stamp doesn't work.
+     * Try to use currentLayer's tile size, otherwise map's tilesize
      */
      Map* map = mapDocument()->map();
      QSize tileSize(map->tileWidth(), map->tileHeight());
