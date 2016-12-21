@@ -353,17 +353,21 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
     if (mStamp.isEmpty())
         return;
 
+    /**
+     * Since stamps are now reliant on the tile sizes of a layer
+     * this method can't work if there is no current tile layer, the
+     * stamp doesn't work.
+     */
+     Map* map = mapDocument()->map();
+     QSize tileSize(map->tileWidth(), map->tileHeight());
+     Layer* currentLayer = mapDocument()->currentLayer();
+     if (currentLayer) {
+        tileSize.setWidth(currentLayer->tileWidth());
+        tileSize.setHeight(currentLayer->tileHeight());
+    }
+
     if (mIsRandom) {
         if (mRandomCellPicker.isEmpty())
-            return;
-
-        /**
-         * Since stamps are now reliant on the tile sizes of a layer
-         * this method can't work if there is no current tile layer, the
-         * stamp doesn't work.
-         */
-         Layer* currentLayer = mapDocument()->currentLayer();
-         if (!currentLayer)
             return;
 
         QRegion paintedRegion;
@@ -376,8 +380,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height(),
-                                              currentLayer->tileWidth(), 
-                                              currentLayer->tileHeight()));
+                                              tileSize.width(), tileSize.height()));
 
         for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
@@ -423,11 +426,11 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         QRect bounds = paintedRegion.boundingRect();
         
-        // LUCA-TODO: Tilesize can't be 0, 0, figure out what it actually is here
-        //   It seems like it should be the same as the current tile layer
+        // LUCA-TODO: Again, it feels like there needs 
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height(), 0, 0));
+                                              bounds.width(), bounds.height(),
+                                              tileSize.width(), tileSize.height()));
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
