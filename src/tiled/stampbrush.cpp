@@ -357,17 +357,27 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         if (mRandomCellPicker.isEmpty())
             return;
 
+        /**
+         * Since stamps are now reliant on the tile sizes of a layer
+         * this method can't work if there is no current tile layer, the
+         * stamp doesn't work.
+         */
+         Layer* currentLayer = mapDocument()->currentLayer();
+         if (!currentLayer)
+            return;
+
         QRegion paintedRegion;
         foreach (const QPoint p, list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
 
-        // LUCA-TODO: Tilesize can't be 0, 0, figure out what it actually is here
-        //   It seems like it should be the same as the current tile layer
+        // LUCA-TODO: The preview should copy the current layer's tile sizes I believe.
         SharedTileLayer preview(new TileLayer(QString(),
                                               bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height(), 0, 0));
+                                              bounds.width(), bounds.height(),
+                                              currentLayer->tileWidth(), 
+                                              currentLayer->tileHeight()));
 
         for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
