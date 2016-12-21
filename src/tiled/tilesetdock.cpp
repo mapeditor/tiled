@@ -469,11 +469,17 @@ void TilesetDock::updateCurrentTiles()
     }
 
     // Create a tile layer from the current selection
-    // LUCA-TODO: Do this properly...
+    /* LUCA-TODO: This is an educated guess, since map document 
+     * changes everytime a new tileset is added, removed or changed
+     * I assume, the tile layer's tile sizes should be the same as the parent map's.
+     * Once the tile size per layer is implemented, you can probably optimize this code
+     * because you won't need a separate map object to change grids and tile sizes.
+     */
+    Map* map = mMapDocument->map();
     TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
                                          maxX - minX + 1,
                                          maxY - minY + 1,
-                                         0, 0);
+                                         map->tileWidth(), map->tileHeight());
 
     const TilesetModel *model = view->tilesetModel();
     for (const QModelIndex &index : indexes) {
