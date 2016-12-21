@@ -1,4 +1,8 @@
+
+{% include header_small.html %}
+
 <h1>{{ page.title }}</h1>
+<p><i>{{ page.date | date_to_long_string }}</i></p>
 {{ content }}
 
 <div id='discourse-comments'></div>
@@ -13,3 +17,5 @@
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
   })();
 </script>
+
+{% include footer.html %}
