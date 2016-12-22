@@ -186,16 +186,16 @@ void NewMapDialog::refreshPixelSize()
 
     switch (map.orientation()) {
     case Map::Isometric:
-        size = IsometricRenderer(&map).mapSize();
+        size = IsometricRenderer::MapSize(&map);
         break;
     case Map::Staggered:
-        size = StaggeredRenderer(&map).mapSize();
+        size = StaggeredRenderer::MapSize(&map);
         break;
     case Map::Hexagonal:
-        size = HexagonalRenderer(&map).mapSize();
+        size = HexagonalRenderer::MapSize(&map);
         break;
     default:
-        size = OrthogonalRenderer(&map).mapSize();
+        size = OrthogonalRenderer::MapSize(&map);
         break;
     }
 
