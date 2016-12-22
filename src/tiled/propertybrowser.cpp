@@ -560,6 +560,9 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parent);
+    addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
@@ -875,6 +878,21 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
             offset.setY(val.toDouble());
 
         command = new SetLayerOffset(mMapDocument, layerIndex, offset);
+        break;
+    }
+    case TileWidthProperty:
+    case TileHeightProperty: {
+        QSize tileSize = layer->tileSize();
+
+        if (id == TileWidthProperty)
+            tileSize.setWidth(val.toInt());
+        else
+            tileSize.setHeight(val.toInt());
+
+        layer->setTileSize(tileSize);
+
+        // LUCA-TODO: Write the undo command!
+        //command = 
     }
     default:
         switch (layer->layerType()) {
@@ -1187,6 +1205,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
+        mIdToProperty[TileWidthProperty]->setValue(layer->tileWidth());
+        mIdToProperty[TileHeightProperty]->setValue(layer->tileHeight());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
