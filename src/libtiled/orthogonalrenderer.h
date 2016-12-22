@@ -44,6 +44,8 @@ public:
 
     QSize mapSize() const override;
 
+    static QSize MapSize(const Map* map);
+
     QRect boundingRect(const QRect &rect) const override;
 
     QRectF boundingRect(const MapObject *object) const override;

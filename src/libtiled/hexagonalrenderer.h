@@ -72,6 +72,8 @@ public:
 
     QSize mapSize() const override;
 
+    static QSize MapSize(const Map* map);
+
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,

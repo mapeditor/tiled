@@ -38,10 +38,15 @@
 
 using namespace Tiled;
 
+QSize OrthogonalRenderer::MapSize(const Map* map)
+{
+    return QSize(map->width() * map->tileWidth(),
+                 map->height() * map->tileHeight());
+}
+
 QSize OrthogonalRenderer::mapSize() const
 {
-    return QSize(map()->width() * map()->tileWidth(),
-                 map()->height() * map()->tileHeight());
+    return OrthogonalRenderer::MapSize(map());
 }
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
