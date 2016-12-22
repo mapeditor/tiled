@@ -24,6 +24,7 @@
 #include "undocommands.h"
 
 #include <QPointF>
+#include <QSize>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -100,6 +101,30 @@ private:
     int mLayerIndex;
     QPointF mOldOffset;
     QPointF mNewOffset;
+};
+
+/**
+ * Used for changing the layer tile size
+ */
+class SetLayerTileSize : public QUndoCommand
+{
+public:
+    SetLayerTileSize(MapDocument *mapDocument,
+                     int layerIndex,
+                     const QSize &tileSize);
+
+    void undo() override { setTileSize(mOldTileSize); }
+    void redo() override { setTileSize(mNewTileSize); }
+
+    int id() const override { return Cmd_ChangeLayerTileSize; }
+
+private:
+    void setTileSize(const QSize &tileSize);
+
+    MapDocument *mMapDocument;
+    int mLayerIndex;
+    QSize mOldTileSize;
+    QSize mNewTileSize;
 };
 
 } // namespace Internal

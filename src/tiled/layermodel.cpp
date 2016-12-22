@@ -237,6 +237,19 @@ void LayerModel::setLayerOffset(int layerIndex, const QPointF &offset)
 }
 
 /**
+ * Sets the tile size of the layer at the given index.
+ */
+void LayerModel::setLayerTileSize(int layerIndex, const QSize &tileSize)
+{
+    Layer *layer = mMap->layerAt(layerIndex);
+    if (layer->tileSize() == tileSize)
+        return;
+
+    layer->setTileSize(tileSize);
+    emit layerChanged(layerIndex);
+}
+
+/**
  * Renames the layer at the given index.
  */
 void LayerModel::renameLayer(int layerIndex, const QString &name)

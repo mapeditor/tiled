@@ -74,6 +74,7 @@ public:
     void setLayerVisible(int layerIndex, bool visible);
     void setLayerOpacity(int layerIndex, float opacity);
     void setLayerOffset(int layerIndex, const QPointF &offset);
+    void setLayerTileSize(int layerIndex, const QSize &tileSize);
 
     void renameLayer(int index, const QString &name);
 

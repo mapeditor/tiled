@@ -100,6 +100,23 @@ void SetLayerOffset::setOffset(const QPointF &offset)
     mMapDocument->layerModel()->setLayerOffset(mLayerIndex, offset);
 }
 
+SetLayerTileSize::SetLayerTileSize(MapDocument *mapDocument,
+                                   int layerIndex,
+                                   const QSize &tileSize)
+    : mMapDocument(mapDocument)
+    , mLayerIndex(layerIndex)
+    , mOldTileSize(mMapDocument->map()->layerAt(layerIndex)->tileSize())
+    , mNewTileSize(tileSize)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer TileSize"));
+}
+
+void SetLayerTileSize::setTileSize(const QSize &tileSize)
+{
+    mMapDocument->layerModel()->setLayerTileSize(mLayerIndex, tileSize);
+}
+
 
 } // namespace Internal
 } // namespace Tiled
