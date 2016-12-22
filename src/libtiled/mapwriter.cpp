@@ -484,12 +484,18 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
     if (y != 0)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
 
+    // LUCA-TODO: Do attributes
     if (layer.layerType() == Layer::TileLayerType) {
         w.writeAttribute(QLatin1String("width"),
                          QString::number(layer.width()));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(layer.height()));
     }
+
+    w.writeAttribute(QLatin1String("tileWidth"),
+                     QString::number(layer.tileWidth()));
+    w.writeAttribute(QLatin1String("tileHeight"),
+                     QString::number(layer.tileHeight()));
 
     if (!layer.isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));

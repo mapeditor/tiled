@@ -551,9 +551,11 @@ TileLayer *MapReaderPrivate::readLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
+    const int tileWidth = atts.value(QLatin1String("tileWidth")).toInt();
+    const int tileHeight = atts.value(QLatin1String("tileHeight")).toInt();
 
     // LUCA-TODO: This up properly obviously
-    TileLayer *tileLayer = new TileLayer(name, x, y, width, height, 0, 0);
+    TileLayer *tileLayer = new TileLayer(name, x, y, width, height, tileWidth, tileHeight);
     readLayerAttributes(*tileLayer, atts);
 
     while (xml.readNextStartElement()) {
@@ -712,9 +714,11 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
+    const int tileWidth = atts.value(QLatin1String("tileWidth")).toInt();
+    const int tileHeight = atts.value(QLatin1String("tileHeight")).toInt();
 
     // LUCA-TODO: Fix this...
-    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height, 0, 0);
+    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height, tileWidth, tileHeight);
     readLayerAttributes(*objectGroup, atts);
 
     const QString color = atts.value(QLatin1String("color")).toString();
@@ -754,9 +758,11 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
+    const int tileWidth = atts.value(QLatin1String("tileWidth")).toInt();
+    const int tileHeight = atts.value(QLatin1String("tileHeight")).toInt();
 
     // LUCA-TODO: Do this properly
-    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height, 0, 0);
+    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height, tileWidth, tileHeight);
     readLayerAttributes(*imageLayer, atts);
 
     // Image layer pixel position moved from x/y to offsetx/offsety for
