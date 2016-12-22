@@ -889,10 +889,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
         else
             tileSize.setHeight(val.toInt());
 
-        layer->setTileSize(tileSize);
-
-        // LUCA-TODO: Write the undo command!
-        //command = 
+        command = new SetLayerTileSize(mMapDocument, layerIndex, tileSize);
     }
     default:
         switch (layer->layerType()) {
