@@ -198,6 +198,10 @@ public:
      */
     QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
 
+    int activeLayerIndex() const { return mActiveLayerIndex; }
+
+    void setActiveLayerIndex(int activeLayerIndex);
+
     int hexSideLength() const;
     void setHexSideLength(int hexSideLength);
 
@@ -393,11 +397,16 @@ private:
     mutable QMargins mDrawMargins;
     mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
+    int mActiveLayerIndex;
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
 };
 
+inline void Map::setActiveLayerIndex(int activeLayerIndex)
+{
+    mActiveLayerIndex = activeLayerIndex;
+}
 
 inline int Map::hexSideLength() const
 {
