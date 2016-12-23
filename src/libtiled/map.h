@@ -260,6 +260,8 @@ public:
     QList<ObjectGroup*> objectGroups() const;
     QList<TileLayer*> tileLayers() const;
 
+    void syncLayersToMap();
+
     /**
      * Adds a layer to this map.
      */

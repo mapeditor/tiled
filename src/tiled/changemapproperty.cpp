@@ -132,12 +132,14 @@ void ChangeMapProperty::swap()
     case TileWidth: {
         const int tileWidth = map->tileWidth();
         map->setTileWidth(mIntValue);
+        map->syncLayersToMap();
         mIntValue = tileWidth;
         break;
     }
     case TileHeight: {
         const int tileHeight = map->tileHeight();
         map->setTileHeight(mIntValue);
+        map->syncLayersToMap();
         mIntValue = tileHeight;
         break;
     }

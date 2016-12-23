@@ -195,6 +195,13 @@ QList<TileLayer*> Map::tileLayers() const
     return layers;
 }
 
+void Map::syncLayersToMap()
+{
+    for (Layer* layer : mLayers) {
+        layer->syncLayerToMap(this);
+    }
+}
+
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);
