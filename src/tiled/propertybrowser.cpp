@@ -892,6 +892,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
             tileSize.setHeight(val.toInt());
 
         command = new SetLayerTileSize(mMapDocument, layerIndex, tileSize);
+        break;
     }
     default:
         switch (layer->layerType()) {

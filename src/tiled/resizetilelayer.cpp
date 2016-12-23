@@ -75,8 +75,9 @@ Layer *ResizeTileLayer::swapLayer(Layer *layer)
     Layer *replaced = layerModel->takeLayerAt(mIndex);
     layerModel->insertLayer(mIndex, layer);
 
-    if (mIndex == currentIndex)
+    if (mIndex == currentIndex) {
         mMapDocument->setCurrentLayerIndex(mIndex);
+    }
 
     return replaced;
 }

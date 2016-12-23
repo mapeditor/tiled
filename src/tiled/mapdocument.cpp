@@ -219,7 +219,6 @@ void MapDocument::setCurrentLayerIndex(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
 
-    const bool changed = mCurrentLayerIndex != index;
     mCurrentLayerIndex = index;
     mMap->setFocusedLayerIndex(index);
 
@@ -235,7 +234,10 @@ void MapDocument::setCurrentLayerIndex(int index)
      */
     emit currentLayerIndexChanged(mCurrentLayerIndex);
 
-    if (changed && mCurrentLayerIndex != -1)
+    // Removed the "changed" constant because if the index stays the same
+    // but the currentLayer has changed, then we need to set the current object
+    // this is a result of the new tile size properties
+    if (mCurrentLayerIndex != -1)
         setCurrentObject(currentLayer());
 }
 
