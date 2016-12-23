@@ -20,12 +20,10 @@
 
 #include "changelayer.h"
 
-#include "tilelayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 
-#include <math.h>
 #include <QCoreApplication>
 
 namespace Tiled {
@@ -116,17 +114,7 @@ SetLayerTileSize::SetLayerTileSize(MapDocument *mapDocument,
     Map* map = mMapDocument->map();
     mResizedLayer = map->layerAt(index)->clone();
     mResizedLayer->setTileSize(tileSize);
-
-    const QSize newSize = {
-        (int)round(((float)map->width()*(float)map->tileWidth())/(float)tileSize.width()),
-        (int)round(((float)map->height()*(float)map->tileHeight())/(float)tileSize.height())
-    };
-
-    if (mResizedLayer->asTileLayer()) {
-        mResizedLayer->asTileLayer()->resize(newSize, QPoint(0, 0));
-    } else {
-        mResizedLayer->setSize(newSize);
-    }
+    mResizedLayer->syncLayerToMap(map);
 }
 
 SetLayerTileSize::~SetLayerTileSize()

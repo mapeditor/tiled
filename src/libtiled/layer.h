@@ -113,6 +113,11 @@ public:
     void setMap(Map *map) { mMap = map; }
 
     /**
+     * Syncs the size of the layer to the size of the map
+     */
+    void syncLayerToMap(Map* map);
+
+    /**
      * Returns the x position of this layer (in tiles).
      */
     int x() const { return mX; }

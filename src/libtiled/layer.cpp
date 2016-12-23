@@ -28,11 +28,12 @@
  */
 
 #include "layer.h"
-
+#include "map.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 
+#include <math.h>
 
 using namespace Tiled;
 
@@ -71,6 +72,20 @@ Layer *Layer::initializeClone(Layer *clone) const
     clone->mVisible = mVisible;
     clone->setProperties(properties());
     return clone;
+}
+
+void Layer::syncLayerToMap(Map* map)
+{
+    const QSize newSize = {
+        (int)round(((float)map->width()*(float)map->tileWidth())/(float)tileWidth()),
+        (int)round(((float)map->height()*(float)map->tileHeight())/(float)tileHeight())
+    };
+
+    if (asTileLayer()) {
+        asTileLayer()->resize(newSize, QPoint(0, 0));
+    } else {
+        setSize(newSize);
+    }
 }
 
 TileLayer *Layer::asTileLayer()
