@@ -357,7 +357,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
      * Try to use currentLayer's tile size, otherwise map's tilesize
      */
      Map* map = mapDocument()->map();
-     QSize tileSize = map->focusedTileSize();
+     QSize tileSize = map->tileSize(true);
 
     if (mIsRandom) {
         if (mRandomCellPicker.isEmpty())

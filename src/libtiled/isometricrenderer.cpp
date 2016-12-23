@@ -41,9 +41,9 @@ using namespace Tiled;
 QSize IsometricRenderer::MapSize(const Map* map)
 {
     // Map width and height contribute equally in both directions
-    const int side = map->focusedHeight() + map->focusedWidth();
-    return QSize(side * map->focusedTileWidth() / 2,
-                 side * map->focusedTileHeight() / 2);
+    const int side = map->height(true) + map->width(true);
+    return QSize(side * map->tileWidth(true) / 2,
+                 side * map->tileHeight(true) / 2);
 }
 
 QSize IsometricRenderer::mapSize() const
@@ -53,10 +53,10 @@ QSize IsometricRenderer::mapSize() const
 
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
 
-    const int originX = map()->focusedHeight() * tileWidth / 2;
+    const int originX = map()->height(true) * tileWidth / 2;
     const QPoint pos((rect.x() - (rect.y() + rect.height()))
                      * tileWidth / 2 + originX,
                      (rect.x() + rect.y()) * tileHeight / 2);
@@ -148,8 +148,8 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
                                  QColor gridColor) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
 
     QRect r = rect.toAlignedRect();
     r.adjust(-tileWidth / 2, -tileHeight / 2,
@@ -157,9 +157,9 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     const int startX = qMax(qreal(0), screenToTileCoords(r.topLeft()).x());
     const int startY = qMax(qreal(0), screenToTileCoords(r.topRight()).y());
-    const int endX = qMin(qreal(map()->focusedWidth()),
+    const int endX = qMin(qreal(map()->width(true)),
                           screenToTileCoords(r.bottomRight()).x());
-    const int endY = qMin(qreal(map()->focusedHeight()),
+    const int endY = qMin(qreal(map()->height(true)),
                           screenToTileCoords(r.bottomLeft()).y());
 
     gridColor.setAlpha(128);
@@ -249,7 +249,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
                     Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->focusedTileSize();
+                    QSize size = tile ? tile->size() : map()->tileSize(true);
                     renderer.render(cell, QPointF(x, (float)y / 2), size,
                                     CellRenderer::BottomLeft);
                 }
@@ -353,8 +353,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
 
             // LUCA-TODO: Not sure if this needs to changed to layer-based
-            float tw = map()->focusedTileWidth();
-            float th = map()->focusedTileHeight();
+            float tw = map()->tileWidth(true);
+            float th = map()->tileHeight(true);
             QPointF transformScale(1, 1);
             if (tw > th)
                 transformScale = QPointF(1, th/tw);
@@ -465,22 +465,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
 QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileHeight = map()->tileHeight(true);
 
     return QPointF(x / tileHeight, y / tileHeight);
 }
 
 QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileHeight = map()->tileHeight(true);
 
     return QPointF(x * tileHeight, y * tileHeight);
 }
 
 QPointF IsometricRenderer::screenToTileCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
 
     x -= map()->height() * tileWidth / 2;
     const qreal tileY = y / tileHeight;
@@ -492,8 +492,8 @@ QPointF IsometricRenderer::screenToTileCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::tileToScreenCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
     const int originX = map()->height() * tileWidth / 2;
 
     return QPointF((x - y) * tileWidth / 2 + originX,
@@ -502,10 +502,10 @@ QPointF IsometricRenderer::tileToScreenCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::screenToPixelCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
 
-    x -= map()->focusedHeight() * tileWidth / 2;
+    x -= map()->height(true) * tileWidth / 2;
     const qreal tileY = y / tileHeight;
     const qreal tileX = x / tileWidth;
 
@@ -515,9 +515,9 @@ QPointF IsometricRenderer::screenToPixelCoords(qreal x, qreal y) const
 
 QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
-    const int originX = map()->focusedHeight() * tileWidth / 2;
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
+    const int originX = map()->height(true) * tileWidth / 2;
     const qreal tileY = y / tileHeight;
     const qreal tileX = x / tileHeight;
 
@@ -537,8 +537,8 @@ QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRectF &rect) const
 
 QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
 {
-    const int tileWidth = map()->focusedTileWidth();
-    const int tileHeight = map()->focusedTileHeight();
+    const int tileWidth = map()->tileWidth(true);
+    const int tileHeight = map()->tileHeight(true);
 
     const QPointF topRight = tileToScreenCoords(rect.topRight());
     const QPointF bottomRight = tileToScreenCoords(rect.bottomRight());

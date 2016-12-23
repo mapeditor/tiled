@@ -152,6 +152,7 @@ public:
      * Returns the width of this map in tiles.
      */
     int width() const { return mWidth; }
+    int width(bool focused) const { return focused && focusedLayer() ? focusedLayer()->width() : mWidth; }
 
     /**
      * Sets the width of this map in tiles.
@@ -162,6 +163,7 @@ public:
      * Returns the height of this map in tiles.
      */
     int height() const { return mHeight; }
+    int height(bool focused) const { return focused && focusedLayer() ? focusedLayer()->height() : mHeight; }
 
     /**
      * Sets the height of this map in tiles.
@@ -172,11 +174,13 @@ public:
      * Returns the size of this map. Provided for convenience.
      */
     QSize size() const { return QSize(mWidth, mHeight); }
+    QSize size(bool focused) const { return QSize(width(focused), height(focused)); }
 
     /**
      * Returns the tile width of this map.
      */
     int tileWidth() const { return mTileWidth; }
+    int tileWidth(bool focused) const { return focused && focusedLayer() ? focusedLayer()->tileWidth() : mTileWidth; }
 
     /**
      * Sets the width of one tile.
@@ -187,6 +191,7 @@ public:
      * Returns the tile height used by this map.
      */
     int tileHeight() const { return mTileHeight; }
+    int tileHeight(bool focused) const { return focused && focusedLayer() ? focusedLayer()->tileHeight() : mTileHeight; }
 
     /**
      * Sets the height of one tile.
@@ -197,17 +202,11 @@ public:
      * Returns the size of one tile. Provided for convenience.
      */
     QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
-
-    int focusedTileWidth() const { return focusedSize(0); }
-    int focusedTileHeight() const { return focusedSize(1); }
-    QSize focusedTileSize() const { return QSize(focusedTileWidth(), focusedTileHeight()); }
-
-    int focusedWidth() const { return focusedSize(2); }
-    int focusedHeight() const { return focusedSize(3); }
-    QSize focusedSize() const { return QSize(focusedWidth(), focusedHeight()); }
+    QSize tileSize(bool focused) const { return QSize(tileWidth(focused), tileHeight(focused)); }
 
     int focusedLayerIndex() const { return mFocusedLayerIndex; }
     void setFocusedLayerIndex(int focusedLayerIndex);
+    Layer* focusedLayer() const { return focusedLayerIndex() != -1 ? layerAt(focusedLayerIndex()) : nullptr; };
 
     int hexSideLength() const;
     void setHexSideLength(int hexSideLength);
@@ -392,8 +391,6 @@ private:
     void adoptLayer(Layer *layer);
 
     void recomputeDrawMargins() const;
-
-    int focusedSize(int side) const;
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;

@@ -236,25 +236,6 @@ void Map::adoptLayer(Layer *layer)
     }
 }
 
-int Map::focusedSize(int side) const
-{
-    Q_ASSERT(side == 0 || side == 1 || side == 2 || side == 3);
-
-    int index = focusedLayerIndex();
-    bool valid = index > -1 && index < layerCount();
-
-    switch (side) {
-    case 0:
-        return valid ? layerAt(index)->tileWidth() : tileWidth();
-    case 1:
-        return valid ? layerAt(index)->tileHeight() : tileHeight();
-    case 2:
-        return valid ? layerAt(index)->width() : width();
-    }
-
-    return valid ? layerAt(index)->height() : height();
-}
-
 Layer *Map::takeLayerAt(int index)
 {
     Layer *layer = mLayers.takeAt(index);
