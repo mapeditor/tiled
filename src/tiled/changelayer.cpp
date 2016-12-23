@@ -20,11 +20,12 @@
 
 #include "changelayer.h"
 
-#include "layer.h"
+#include "tilelayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 
+#include <math.h>
 #include <QCoreApplication>
 
 namespace Tiled {
@@ -101,20 +102,65 @@ void SetLayerOffset::setOffset(const QPointF &offset)
 }
 
 SetLayerTileSize::SetLayerTileSize(MapDocument *mapDocument,
-                                   int layerIndex,
+                                   int index,
                                    const QSize &tileSize)
     : mMapDocument(mapDocument)
-    , mLayerIndex(layerIndex)
-    , mOldTileSize(mMapDocument->map()->layerAt(layerIndex)->tileSize())
-    , mNewTileSize(tileSize)
+    , mIndex(index)
+    , mOriginalLayer(nullptr)
 {
+    Q_ASSERT(mIndex != -1);
+
     setText(QCoreApplication::translate("Undo Commands",
                                         "Change Layer TileSize"));
+
+    Map* map = mMapDocument->map();
+    mResizedLayer = map->layerAt(index)->clone();
+    mResizedLayer->setTileSize(tileSize);
+
+    const QSize newSize = {
+        (int)round(((float)map->width()*(float)map->tileWidth())/(float)tileSize.width()),
+        (int)round(((float)map->height()*(float)map->tileHeight())/(float)tileSize.height())
+    };
+
+    if (mResizedLayer->asTileLayer()) {
+        mResizedLayer->asTileLayer()->resize(newSize, QPoint(0, 0));
+    } else {
+        mResizedLayer->setSize(newSize);
+    }
 }
 
-void SetLayerTileSize::setTileSize(const QSize &tileSize)
+SetLayerTileSize::~SetLayerTileSize()
 {
-    mMapDocument->layerModel()->setLayerTileSize(mLayerIndex, tileSize);
+    delete mResizedLayer;
+    delete mOriginalLayer;
+}
+
+void SetLayerTileSize::undo()
+{
+    Q_ASSERT(!mResizedLayer);
+    mResizedLayer = swapLayer(mOriginalLayer);
+    mOriginalLayer = nullptr;
+}
+
+void SetLayerTileSize::redo()
+{
+    Q_ASSERT(!mOriginalLayer);
+    mOriginalLayer = swapLayer(mResizedLayer);
+    mResizedLayer = nullptr;
+}
+
+Layer *SetLayerTileSize::swapLayer(Layer *layer)
+{
+    const int currentIndex = mMapDocument->currentLayerIndex();
+
+    LayerModel *layerModel = mMapDocument->layerModel();
+    Layer *replaced = layerModel->takeLayerAt(mIndex);
+    layerModel->insertLayer(mIndex, layer);
+
+    if (mIndex == currentIndex)
+        mMapDocument->setCurrentLayerIndex(mIndex);
+
+    return replaced;
 }
 
 

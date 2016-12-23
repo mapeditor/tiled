@@ -198,6 +198,10 @@ public:
      */
     QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
 
+    int focusedTileWidth() const { return focusedTileSize(0); }
+    int focusedTileHeight() const { return focusedTileSize(1); }
+    QSize focusedTileSize() { return QSize(focusedTileWidth(), focusedTileHeight()); }
+
     int focusedLayerIndex() const { return mFocusedLayerIndex; }
     void setFocusedLayerIndex(int focusedLayerIndex);
 
@@ -382,6 +386,8 @@ private:
     void adoptLayer(Layer *layer);
 
     void recomputeDrawMargins() const;
+
+    int focusedTileSize(int side) const;
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;

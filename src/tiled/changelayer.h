@@ -22,6 +22,7 @@
 #define CHANGELAYER_H
 
 #include "undocommands.h"
+#include "layer.h"
 
 #include <QPointF>
 #include <QSize>
@@ -113,18 +114,20 @@ public:
                      int layerIndex,
                      const QSize &tileSize);
 
-    void undo() override { setTileSize(mOldTileSize); }
-    void redo() override { setTileSize(mNewTileSize); }
+    ~SetLayerTileSize();
+
+    void undo() override;
+    void redo() override;
 
     int id() const override { return Cmd_ChangeLayerTileSize; }
 
 private:
-    void setTileSize(const QSize &tileSize);
+    Layer *swapLayer(Layer *layer);
 
     MapDocument *mMapDocument;
-    int mLayerIndex;
-    QSize mOldTileSize;
-    QSize mNewTileSize;
+    int mIndex;
+    Layer *mOriginalLayer;
+    Layer *mResizedLayer;
 };
 
 } // namespace Internal

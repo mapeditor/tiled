@@ -561,6 +561,8 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
 
+    addProperty(WidthProperty, QVariant::Int, tr("Width"), parent)->setEnabled(false);
+    addProperty(HeightProperty, QVariant::Int, tr("Height"), parent)->setEnabled(false);
     addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parent);
     addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parent);
 }
@@ -1202,6 +1204,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
+        mIdToProperty[WidthProperty]->setValue(layer->width());
+        mIdToProperty[HeightProperty]->setValue(layer->height());
         mIdToProperty[TileWidthProperty]->setValue(layer->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(layer->tileHeight());
 
