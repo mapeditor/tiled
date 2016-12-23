@@ -198,9 +198,13 @@ public:
      */
     QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
 
-    int focusedTileWidth() const { return focusedTileSize(0); }
-    int focusedTileHeight() const { return focusedTileSize(1); }
+    int focusedTileWidth() const { return focusedSize(0); }
+    int focusedTileHeight() const { return focusedSize(1); }
     QSize focusedTileSize() const { return QSize(focusedTileWidth(), focusedTileHeight()); }
+
+    int focusedWidth() const { return focusedSize(2); }
+    int focusedHeight() const { return focusedSize(3); }
+    QSize focusedSize() const { return QSize(focusedWidth(), focusedHeight()); }
 
     int focusedLayerIndex() const { return mFocusedLayerIndex; }
     void setFocusedLayerIndex(int focusedLayerIndex);
@@ -389,7 +393,7 @@ private:
 
     void recomputeDrawMargins() const;
 
-    int focusedTileSize(int side) const;
+    int focusedSize(int side) const;
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;

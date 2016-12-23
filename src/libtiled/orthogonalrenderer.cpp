@@ -40,8 +40,8 @@ using namespace Tiled;
 
 QSize OrthogonalRenderer::MapSize(const Map* map)
 {
-    return QSize(map->width() * map->focusedTileWidth(),
-                 map->height() * map->focusedTileHeight());
+    return QSize(map->focusedWidth() * map->focusedTileWidth(),
+                 map->focusedHeight() * map->focusedTileHeight());
 }
 
 QSize OrthogonalRenderer::mapSize() const
@@ -185,9 +185,9 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin(qCeil(rect.right()),
-                          map()->width() * tileWidth + 1);
+                          map()->focusedWidth() * tileWidth + 1);
     const int endY = qMin(qCeil(rect.bottom()),
-                          map()->height() * tileHeight + 1);
+                          map()->focusedHeight() * tileHeight + 1);
 
     gridColor.setAlpha(128);
 
