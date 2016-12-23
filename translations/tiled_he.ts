@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>על Tiled</translation>
+        <translation>אודות Tiled</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -60,7 +60,7 @@
     <message>
         <location line="+12"/>
         <source>Non-unique file extension. Can't determine correct export format.</source>
-        <translation>סיומת קובץ לא משויכת. לא ניתן לקבוע תבנית יצוא.</translation>
+        <translation>סיומת הקובץ איננה ייחודית. לא ניתן לקבוע את תבנית הייצוא הנכונה.</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -83,7 +83,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Properties</source>
-        <translation>ערכים</translation>
+        <translation>מאפיינים</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -182,7 +182,7 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation>שמור הכל כ %1</translation>
+        <translation>שמור הכל כ־%1</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -192,7 +192,7 @@
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation>קבצי מפות Tiled (*.tmx)</translation>
+        <translation>קובצי מפות Tiled (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -210,7 +210,7 @@
     <message>
         <location line="+75"/>
         <source>CSV files (*.csv)</source>
-        <translation>קבצי CSV</translation>
+        <translation>קובצי CSV ‏(‎*.csv‏)</translation>
     </message>
 </context>
 <context>
@@ -218,7 +218,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+59"/>
         <source>Defold files (*.tilemap)</source>
-        <translation>קבצי Defold</translation>
+        <translation>קובצי Defold ‏(‎*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -241,7 +241,7 @@
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation>המפה חייבת להיות בגודל של 48x48 משבצות!</translation>
+        <translation>המפה חייבת להיות בגודל של 48×48 משבצות!</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -251,7 +251,7 @@
     <message>
         <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation>קובץ מפת Droidcraft (*.dat(</translation>
+        <translation>קובץ מפת Droidcraft‏ (‎*.dat‏)</translation>
     </message>
 </context>
 <context>
@@ -271,7 +271,7 @@
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation>החזר</translation>
+        <translation>בצע שוב</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -329,12 +329,12 @@
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation>כלול רק שכבות &amp;נראות</translation>
+        <translation>כלול רק שכבות &amp;גלויות</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation>שימוש ברמת הה&amp;גדלה הנוכחית</translation>
+        <translation>שימוש ברמת ההגדלה ה&amp;נוכחית</translation>
     </message>
     <message>
         <location line="+10"/>
