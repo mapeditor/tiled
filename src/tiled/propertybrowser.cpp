@@ -563,8 +563,8 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 
     addProperty(WidthProperty, QVariant::Int, tr("Width"), parent)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), parent)->setEnabled(false);
-    addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parent);
-    addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parent);
+    addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parent)->setAttribute(QLatin1String("minimum"), 1);
+    addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parent)->setAttribute(QLatin1String("minimum"), 1);
 }
 
 void PropertyBrowser::addTileLayerProperties()
