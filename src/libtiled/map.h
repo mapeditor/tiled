@@ -200,7 +200,7 @@ public:
 
     int focusedTileWidth() const { return focusedTileSize(0); }
     int focusedTileHeight() const { return focusedTileSize(1); }
-    QSize focusedTileSize() { return QSize(focusedTileWidth(), focusedTileHeight()); }
+    QSize focusedTileSize() const { return QSize(focusedTileWidth(), focusedTileHeight()); }
 
     int focusedLayerIndex() const { return mFocusedLayerIndex; }
     void setFocusedLayerIndex(int focusedLayerIndex);

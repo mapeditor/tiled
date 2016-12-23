@@ -221,6 +221,7 @@ void MapDocument::setCurrentLayerIndex(int index)
 
     const bool changed = mCurrentLayerIndex != index;
     mCurrentLayerIndex = index;
+    mMap->setFocusedLayerIndex(index);
 
     /* This function always sends the following signal, even if the index
      * didn't actually change. This is because the selected index in the layer

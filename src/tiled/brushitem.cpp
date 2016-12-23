@@ -170,7 +170,7 @@ void BrushItem::updateBoundingRect()
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
-        QSize tileSize = mMapDocument->map()->tileSize();
+        QSize tileSize = mMapDocument->map()->focusedTileSize();
 
         QMargins drawMargins = mTileLayer->drawMargins();
         drawMargins.setTop(drawMargins.top() - tileSize.height());

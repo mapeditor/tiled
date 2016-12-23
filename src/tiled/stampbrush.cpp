@@ -260,8 +260,8 @@ void StampBrush::endCapture()
         Map *stamp = new Map(map->orientation(),
                              capture->width(),
                              capture->height(),
-                             map->tileWidth(),
-                             map->tileHeight());
+                             capture->tileWidth(),
+                             capture->tileHeight());
 
         // Add tileset references to map
         foreach (const SharedTileset &tileset, capture->usedTilesets())
@@ -357,12 +357,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
      * Try to use currentLayer's tile size, otherwise map's tilesize
      */
      Map* map = mapDocument()->map();
-     QSize tileSize(map->tileWidth(), map->tileHeight());
-     Layer* currentLayer = mapDocument()->currentLayer();
-     if (currentLayer) {
-        tileSize.setWidth(currentLayer->tileWidth());
-        tileSize.setHeight(currentLayer->tileHeight());
-    }
+     QSize tileSize = map->focusedTileSize();
 
     if (mIsRandom) {
         if (mRandomCellPicker.isEmpty())

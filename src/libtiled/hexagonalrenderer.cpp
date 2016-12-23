@@ -42,8 +42,8 @@
 using namespace Tiled;
 
 HexagonalRenderer::RenderParams::RenderParams(const Map *map)
-    : tileWidth(map->tileWidth() & ~1)
-    , tileHeight(map->tileHeight() & ~1)
+    : tileWidth(map->focusedTileWidth() & ~1)
+    , tileHeight(map->focusedTileWidth() & ~1)
     , sideLengthX(0)
     , sideLengthY(0)
     , staggerX(map->staggerAxis() == Map::StaggerX)
@@ -315,7 +315,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                     if (!cell.isEmpty()) {
                         Tile *tile = cell.tile();
-                        QSize size = tile ? tile->size() : map()->tileSize();
+                        QSize size = tile ? tile->size() : map()->focusedTileSize();
                         renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                     }
                 }
@@ -359,7 +359,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                 if (!cell.isEmpty()) {
                     Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
+                    QSize size = tile ? tile->size() : map()->focusedTileSize();
                     renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                 }
 

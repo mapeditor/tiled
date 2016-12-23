@@ -40,8 +40,8 @@ using namespace Tiled;
 
 QSize OrthogonalRenderer::MapSize(const Map* map)
 {
-    return QSize(map->width() * map->tileWidth(),
-                 map->height() * map->tileHeight());
+    return QSize(map->width() * map->focusedTileWidth(),
+                 map->height() * map->focusedTileHeight());
 }
 
 QSize OrthogonalRenderer::mapSize() const
@@ -51,8 +51,8 @@ QSize OrthogonalRenderer::mapSize() const
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = map()->focusedTileWidth();
+    const int tileHeight = map()->focusedTileHeight();
 
     return QRect(rect.x() * tileWidth,
                  rect.y() * tileHeight,
@@ -176,8 +176,8 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
                                   QColor gridColor) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = map()->focusedTileWidth();
+    const int tileHeight = map()->focusedTileHeight();
 
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
@@ -215,8 +215,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const QRectF &exposed) const
 {
 
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = layer->tileWidth();
+    const int tileHeight = layer->tileHeight();
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
@@ -285,7 +285,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             Tile *tile = cell.tile();
-            QSize size = tile ? tile->size() : map()->tileSize();
+            QSize size = tile ? tile->size() : map()->focusedTileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
                             size,
@@ -457,26 +457,26 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
 QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
-    return QPointF(x / map()->tileWidth(),
-                   y / map()->tileHeight());
+    return QPointF(x / map()->focusedTileWidth(),
+                   y / map()->focusedTileHeight());
 }
 
 QPointF OrthogonalRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
-    return QPointF(x * map()->tileWidth(),
-                   y * map()->tileHeight());
+    return QPointF(x * map()->focusedTileWidth(),
+                   y * map()->focusedTileHeight());
 }
 
 QPointF OrthogonalRenderer::screenToTileCoords(qreal x, qreal y) const
 {
-    return QPointF(x / map()->tileWidth(),
-                   y / map()->tileHeight());
+    return QPointF(x / map()->focusedTileWidth(),
+                   y / map()->focusedTileHeight());
 }
 
 QPointF OrthogonalRenderer::tileToScreenCoords(qreal x, qreal y) const
 {
-    return QPointF(x * map()->tileWidth(),
-                   y * map()->tileHeight());
+    return QPointF(x * map()->focusedTileWidth(),
+                   y * map()->focusedTileHeight());
 }
 
 QPointF OrthogonalRenderer::screenToPixelCoords(qreal x, qreal y) const
