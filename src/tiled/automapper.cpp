@@ -131,6 +131,17 @@ bool AutoMapper::setupRuleMapTileLayers()
 
     QString error;
 
+    // Force all layers to have the same dimensions of their map
+    foreach(Layer* layer, mMapRules->layers()) {
+        if (layer->width() != mMapRules->width()
+         || layer->height() != mMapRules->height()
+         || layer->tileWidth() != mMapRules->tileWidth()
+         || layer->tileHeight() != mMapRules->tileHeight()) {
+            error += tr("All layers must have the same width, height, tileWidth and tileHeight of the map.")
+                     + QLatin1Char('\n');
+        }
+    }
+
     foreach (Layer *layer, mMapRules->layers()) {
         const QString layerName = layer->name();
 
