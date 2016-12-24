@@ -198,7 +198,7 @@ QList<TileLayer*> Map::tileLayers() const
 void Map::syncLayersToMap()
 {
     for (Layer* layer : mLayers) {
-        layer->syncLayerToMap(this);
+        layer->syncLayerToMap(this, layer->tileSize());
     }
 }
 

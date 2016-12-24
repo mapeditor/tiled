@@ -74,11 +74,12 @@ Layer *Layer::initializeClone(Layer *clone) const
     return clone;
 }
 
-void Layer::syncLayerToMap(Map* map)
+void Layer::syncLayerToMap(Map* map, const QSize &tileSize)
 {
+    setTileSize(tileSize);
     const QSize newSize = {
-        (int)round(((float)map->width()*(float)map->tileWidth())/(float)tileWidth()),
-        (int)round(((float)map->height()*(float)map->tileHeight())/(float)tileHeight())
+        (int)round(((float)map->width()*(float)map->tileWidth())/(float)tileSize.width()),
+        (int)round(((float)map->height()*(float)map->tileHeight())/(float)tileSize.height())
     };
 
     if (asTileLayer()) {

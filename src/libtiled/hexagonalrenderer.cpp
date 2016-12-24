@@ -43,7 +43,7 @@ using namespace Tiled;
 
 HexagonalRenderer::RenderParams::RenderParams(const Map *map)
     : tileWidth(map->tileWidth(true) & ~1)
-    , tileHeight(map->tileWidth(true) & ~1)
+    , tileHeight(map->tileHeight(true) & ~1)
     , sideLengthX(0)
     , sideLengthY(0)
     , staggerX(map->staggerAxis() == Map::StaggerX)

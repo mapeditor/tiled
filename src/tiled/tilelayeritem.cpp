@@ -52,8 +52,8 @@ void TileLayerItem::syncWithTileLayer()
 
     QMargins margins = mLayer->drawMargins();
     if (const Map *map = mLayer->map()) {
-        margins.setTop(margins.top() - map->tileHeight());
-        margins.setRight(margins.right() - map->tileWidth());
+        margins.setTop(margins.top() - map->tileHeight(true));
+        margins.setRight(margins.right() - map->tileWidth(true));
     }
 
     mBoundingRect = boundingRect.adjusted(-margins.left(),

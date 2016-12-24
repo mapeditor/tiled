@@ -113,8 +113,7 @@ SetLayerTileSize::SetLayerTileSize(MapDocument *mapDocument,
 
     Map* map = mMapDocument->map();
     mResizedLayer = map->layerAt(index)->clone();
-    mResizedLayer->setTileSize(tileSize);
-    mResizedLayer->syncLayerToMap(map);
+    mResizedLayer->syncLayerToMap(map, tileSize);
 }
 
 SetLayerTileSize::~SetLayerTileSize()

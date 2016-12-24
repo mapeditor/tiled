@@ -115,7 +115,7 @@ public:
     /**
      * Syncs the size of the layer to the size of the map
      */
-    void syncLayerToMap(Map* map);
+    void syncLayerToMap(Map* map, const QSize &tileSize);
 
     /**
      * Returns the x position of this layer (in tiles).
