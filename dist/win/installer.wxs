@@ -24,10 +24,10 @@
 
   <?if $(var.Platform) = x64 ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?define SystemDir = "C:\windows\SysWOW64" ?>
+  <?define SystemDir = "C:\windows\system32" ?>
   <?else ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?define SystemDir = "C:\windows\system32" ?>
+  <?define SystemDir = "C:\windows\SysWOW64" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
