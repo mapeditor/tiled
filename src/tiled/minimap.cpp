@@ -176,7 +176,11 @@ void MiniMap::renderMapToImage()
     }
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QRect r = contentsRect();
+#if QT_VERSION >= 0x050600
+    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
+#else
+    const QSize viewSize = contentsRect().size() * devicePixelRatio();
+#endif
     QSize mapSize = renderer->mapSize();
 
     if (mapSize.isEmpty()) {
@@ -189,8 +193,8 @@ void MiniMap::renderMapToImage()
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) r.width() / mapSize.width(),
-                       (qreal) r.height() / mapSize.height());
+    qreal scale = qMin((qreal) viewSize.width() / mapSize.width(),
+                       (qreal) viewSize.height() / mapSize.height());
 
     // Allocate a new image when the size changed
     const QSize imageSize = mapSize * scale;
@@ -219,7 +223,7 @@ void MiniMap::renderMapToImage()
     painter.translate(margins.left(), margins.top());
     renderer->setPainterScale(scale);
 
-    foreach (const Layer *layer, mMapDocument->map()->layers()) {
+    for (const Layer *layer : mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
             continue;
 

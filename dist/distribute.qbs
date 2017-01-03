@@ -238,9 +238,9 @@ Product {
             if (qbs.toolchain.contains("mingw"))
                 return FileInfo.joinPaths(cpp.toolchainInstallPath) + "/"
             else if (qbs.architecture === "x86_64")
-                return "C:/windows/SysWOW64/"
-            else
                 return "C:/windows/system32/"
+            else
+                return "C:/windows/SysWOW64/"
         }
         files: {
             if (qbs.toolchain.contains("mingw")) {
