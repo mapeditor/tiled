@@ -454,15 +454,15 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
 
             // Holding Alt forces moving current selection
             // Holding Shift forces selection rectangle
-            if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
-                    !(modifiers & Qt::ShiftModifier)) {
-                startMoving(pos, modifiers);
-            } else if (mClickedOriginIndicator) {
+            if (mClickedOriginIndicator) {
                 startMovingOrigin(pos);
             } else if (mClickedRotateHandle) {
                 startRotating(pos);
             } else if (mClickedResizeHandle) {
                 startResizing();
+            } else if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
+                       !(modifiers & Qt::ShiftModifier)) {
+                startMoving(pos, modifiers);
             } else {
                 startSelecting();
             }
@@ -1405,7 +1405,7 @@ void ObjectSelectionTool::refreshCursor()
     case NoAction: {
         const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
 
-        if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection)) &&
+        if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
                 !(mModifiers & Qt::ShiftModifier)) {
             cursorShape = Qt::SizeAllCursor;
         }
