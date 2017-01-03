@@ -21,6 +21,7 @@
 #include "gmxplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
@@ -29,7 +30,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QSaveFile>
 #include <QXmlStreamWriter>
 
 using namespace Tiled;
@@ -77,13 +77,13 @@ GmxPlugin::GmxPlugin()
 
 bool GmxPlugin::write(const Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    QXmlStreamWriter stream(&file);
+    QXmlStreamWriter stream(file.device());
 
     stream.setAutoFormatting(true);
     stream.setAutoFormattingIndent(2);

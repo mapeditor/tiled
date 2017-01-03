@@ -21,15 +21,15 @@
 #include "droidcraftplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilelayer.h"
 #include "compression.h"
 
 #include <QFile>
-#include <QSaveFile>
 
-using namespace Droidcraft;
+namespace Droidcraft {
 
 DroidcraftPlugin::DroidcraftPlugin()
 {
@@ -125,13 +125,13 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     QByteArray compressed = compress(uncompressed, Gzip);
 
     // Write QByteArray
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    file.write(compressed);
+    file.device()->write(compressed);
 
     if (!file.commit()) {
         mError = file.errorString();
@@ -150,3 +150,5 @@ QString DroidcraftPlugin::errorString() const
 {
     return mError;
 }
+
+} // namespace Droidcraft

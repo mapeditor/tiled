@@ -36,6 +36,7 @@
 #include "mapobject.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -44,7 +45,6 @@
 #include <QBuffer>
 #include <QCoreApplication>
 #include <QDir>
-#include <QSaveFile>
 #include <QXmlStreamWriter>
 
 using namespace Tiled;
@@ -73,7 +73,7 @@ public:
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
-    bool openFile(QIODevice *file);
+    bool openFile(SaveFile *file);
 
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
@@ -107,7 +107,7 @@ MapWriterPrivate::MapWriterPrivate()
 {
 }
 
-bool MapWriterPrivate::openFile(QIODevice *file)
+bool MapWriterPrivate::openFile(SaveFile *file)
 {
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
@@ -677,13 +677,13 @@ void MapWriter::writeMap(const Map *map, QIODevice *device,
 
 bool MapWriter::writeMap(const Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeMap(map, &file, QFileInfo(fileName).absolutePath());
+    writeMap(map, file.device(), QFileInfo(fileName).absolutePath());
 
-    if (file.error() != QFile::NoError) {
+    if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();
         return false;
     }
@@ -704,13 +704,18 @@ void MapWriter::writeTileset(const Tileset &tileset, QIODevice *device,
 
 bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
 {
-    QFile file(fileName);
+    SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeTileset(tileset, &file, QFileInfo(fileName).absolutePath());
+    writeTileset(tileset, file.device(), QFileInfo(fileName).absolutePath());
 
-    if (file.error() != QFile::NoError) {
+    if (file.error() != QFileDevice::NoError) {
+        d->mError = file.errorString();
+        return false;
+    }
+
+    if (!file.commit()) {
         d->mError = file.errorString();
         return false;
     }

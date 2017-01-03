@@ -23,6 +23,7 @@
 
 #include "maptovariantconverter.h"
 #include "varianttomapconverter.h"
+#include "savefile.h"
 
 #include "qjsonparser/json.h"
 
@@ -30,7 +31,6 @@
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QSaveFile>
 #include <QTextStream>
 
 namespace Json {
@@ -88,7 +88,7 @@ Tiled::Map *JsonMapFormat::read(const QString &fileName)
 
 bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
@@ -107,7 +107,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-    QTextStream out(&file);
+    QTextStream out(file.device());
     if (mSubFormat == JavaScript) {
         // Trim and escape name
         JsonWriter nameWriter;
@@ -129,7 +129,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
     }
     out.flush();
 
-    if (file.error() != QFile::NoError) {
+    if (file.error() != QFileDevice::NoError) {
         mError = tr("Error while writing file:\n%1").arg(file.errorString());
         return false;
     }
@@ -259,7 +259,7 @@ bool JsonTilesetFormat::supportsFile(const QString &fileName) const
 bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
                               const QString &fileName)
 {
-    QSaveFile file(fileName);
+    Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
@@ -278,11 +278,11 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
         return false;
     }
 
-    QTextStream out(&file);
+    QTextStream out(file.device());
     out << writer.result();
     out.flush();
 
-    if (file.error() != QFile::NoError) {
+    if (file.error() != QFileDevice::NoError) {
         mError = tr("Error while writing file:\n%1").arg(file.errorString());
         return false;
     }

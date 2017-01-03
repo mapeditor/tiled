@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "map.h"
 #include "preferences.h"
+#include "savefile.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
 #include "tileselectiontool.h"
@@ -39,7 +40,6 @@
 #include <QDirIterator>
 #include <QJsonDocument>
 #include <QRegularExpression>
-#include <QSaveFile>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -325,14 +325,14 @@ void TileStampManager::saveStamp(const TileStamp &stamp)
     }
 
     QString filePath = stampsDir.filePath(stamp.fileName());
-    QSaveFile file(filePath);
+    SaveFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << "Failed to open stamp file for writing" << filePath;
         return;
     }
 
     QJsonObject stampJson = stamp.toJson(QFileInfo(filePath).dir());
-    file.write(QJsonDocument(stampJson).toJson(QJsonDocument::Compact));
+    file.device()->write(QJsonDocument(stampJson).toJson(QJsonDocument::Compact));
 
     if (!file.commit())
         qDebug() << "Failed to write stamp" << filePath;

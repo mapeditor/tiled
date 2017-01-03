@@ -46,6 +46,7 @@ SOURCES += compression.cpp \
     plugin.cpp \
     pluginmanager.cpp \
     properties.cpp \
+    savefile.cpp \
     staggeredrenderer.cpp \
     tile.cpp \
     tileanimationdriver.cpp \
@@ -76,6 +77,7 @@ HEADERS += compression.h \
     plugin.h \
     pluginmanager.h \
     properties.h \
+    savefile.h \
     staggeredrenderer.h \
     terrain.h \
     tile.h \

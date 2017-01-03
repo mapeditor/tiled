@@ -92,6 +92,9 @@ public:
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
 
+    bool safeSavingEnabled() const;
+    void setSafeSavingEnabled(bool enabled);
+
     QString language() const;
     void setLanguage(const QString &language);
 
@@ -220,6 +223,7 @@ private:
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
+    bool mSafeSavingEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
@@ -253,6 +257,11 @@ inline QColor Preferences::baseColor() const
 inline QColor Preferences::selectionColor() const
 {
     return mSelectionColor;
+}
+
+inline bool Preferences::safeSavingEnabled() const
+{
+    return mSafeSavingEnabled;
 }
 
 inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const

@@ -75,6 +75,8 @@ DynamicLibrary {
         "pluginmanager.h",
         "properties.cpp",
         "properties.h",
+        "savefile.cpp",
+        "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
         "tile.cpp",

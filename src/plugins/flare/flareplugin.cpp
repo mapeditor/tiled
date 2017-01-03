@@ -25,20 +25,21 @@
 #include "gidmapper.h"
 #include "map.h"
 #include "mapobject.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "objectgroup.h"
 
-#include <QSaveFile>
 #include <QFileInfo>
 #include <QDir>
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
 
-using namespace Flare;
 using namespace Tiled;
+
+namespace Flare {
 
 FlarePlugin::FlarePlugin()
 {
@@ -270,14 +271,14 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    QTextStream out(&file);
+    QTextStream out(file.device());
     out.setCodec("UTF-8");
 
     const int mapWidth = map->width();
@@ -379,3 +380,5 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     return true;
 }
+
+} // namespace Flare

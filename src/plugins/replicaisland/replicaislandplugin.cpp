@@ -22,6 +22,7 @@
 #include "replicaislandplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilelayer.h"
@@ -29,7 +30,6 @@
 
 #include <QtEndian>
 #include <QFile>
-#include <QSaveFile>
 
 using namespace ReplicaIsland;
 
@@ -234,14 +234,14 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
     using namespace Tiled;
 
     // Open up a temporary file for saving the level.
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
     // Create an output stream for serializing data.
-    QDataStream out(&file);
+    QDataStream out(file.device());
     out.setByteOrder(QDataStream::LittleEndian);
     out.setFloatingPointPrecision(QDataStream::SinglePrecision);
 

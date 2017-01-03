@@ -33,13 +33,6 @@
           <string>Saving and Loading</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="reloadTilesetImages">
-            <property name="text">
-             <string>&amp;Reload tileset images when they change</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableDtd">
             <property name="toolTip">
@@ -55,8 +48,22 @@
             <property name="text">
              <string>Open last files on startup</string>
             </property>
-            <property name="checked">
-             <bool>true</bool>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="reloadTilesetImages">
+            <property name="text">
+             <string>&amp;Reload tileset images when they change</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="safeSaving">
+            <property name="toolTip">
+             <string>Turn this off if you're having trouble saving your files.</string>
+            </property>
+            <property name="text">
+             <string>Use safe writing of files</string>
             </property>
            </widget>
           </item>
@@ -383,14 +390,22 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
+  <tabstop>openLastFiles</tabstop>
+  <tabstop>safeSaving</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
   <tabstop>gridFine</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>styleCombo</tabstop>
+  <tabstop>selectionColor</tabstop>
+  <tabstop>baseColor</tabstop>
+  <tabstop>checkForUpdate</tabstop>
+  <tabstop>autoUpdateCheckBox</tabstop>
+  <tabstop>pluginList</tabstop>
  </tabstops>
  <resources/>
  <connections>

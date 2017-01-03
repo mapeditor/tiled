@@ -87,6 +87,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setReloadTilesetsOnChanged);
     connect(mUi->openLastFiles, &QCheckBox::toggled,
             preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->safeSaving, &QCheckBox::toggled,
+            preferences, &Preferences::setSafeSavingEnabled);
 
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
@@ -148,6 +150,7 @@ void PreferencesDialog::fromPreferences()
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
+    mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 

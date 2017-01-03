@@ -20,15 +20,15 @@
 
 #include "objecttypes.h"
 
+#include "properties.h"
+#include "savefile.h"
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
-#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include "properties.h"
 
 namespace Tiled {
 namespace Internal {
@@ -38,7 +38,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 {
     mError.clear();
 
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "Could not open file for writing.");
@@ -47,7 +47,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 
     const QDir fileDir(QFileInfo(fileName).path());
 
-    QXmlStreamWriter writer(&file);
+    QXmlStreamWriter writer(file.device());
 
     writer.setAutoFormatting(true);
     writer.setAutoFormattingIndent(1);

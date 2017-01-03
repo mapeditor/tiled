@@ -25,6 +25,7 @@
 #include "languagemanager.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
+#include "savefile.h"
 #include "tilesetmanager.h"
 
 #include <QDebug>
@@ -60,10 +61,13 @@ Preferences::Preferences()
     mMapRenderOrder = static_cast<Map::RenderOrder>
             (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
+    mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
     mSettings->endGroup();
+
+    SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
@@ -355,6 +359,13 @@ void Preferences::setDtdEnabled(bool enabled)
 {
     mDtdEnabled = enabled;
     mSettings->setValue(QLatin1String("Storage/DtdEnabled"), enabled);
+}
+
+void Preferences::setSafeSavingEnabled(bool enabled)
+{
+    mSafeSavingEnabled = enabled;
+    mSettings->setValue(QLatin1String("Storage/SafeSavingEnabled"), enabled);
+    SaveFile::setSafeSavingEnabled(enabled);
 }
 
 QString Preferences::language() const

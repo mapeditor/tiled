@@ -26,6 +26,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
+#include "savefile.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -33,7 +34,6 @@
 
 #include <QFile>
 #include <QCoreApplication>
-#include <QSaveFile>
 
 /**
  * See below for an explanation of the different formats. One of these needs
@@ -43,8 +43,9 @@
 //#define POLYGON_FORMAT_PAIRS
 //#define POLYGON_FORMAT_OPTIMAL
 
-using namespace Lua;
 using namespace Tiled;
+
+namespace Lua {
 
 LuaPlugin::LuaPlugin()
 {
@@ -52,7 +53,7 @@ LuaPlugin::LuaPlugin()
 
 bool LuaPlugin::write(const Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
@@ -61,12 +62,12 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
 
     mMapDir = QFileInfo(fileName).path();
 
-    LuaTableWriter writer(&file);
+    LuaTableWriter writer(file.device());
     writer.writeStartDocument();
     writeMap(writer, map);
     writer.writeEndDocument();
 
-    if (file.error() != QFile::NoError) {
+    if (file.error() != QFileDevice::NoError) {
         mError = file.errorString();
         return false;
     }
@@ -553,3 +554,5 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
     writer.writeEndTable();
 }
+
+} // namespace Lua

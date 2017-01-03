@@ -23,15 +23,15 @@
 
 #include "tokendefines.h"
 
-#include <QSaveFile>
-#include <QTextStream>
-
 #include "layer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
+
+#include <QTextStream>
 
 #include <cmath>
 
@@ -119,15 +119,15 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     map_h["tile_set"] = "";
 
     QString result = replaceTags(QLatin1String(map_t), map_h);
-    QSaveFile mapFile(fileName);
+    Tiled::SaveFile mapFile(fileName);
     if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
-    QTextStream stream(&mapFile);
+    QTextStream stream(mapFile.device());
     stream << result;
 
-    if (mapFile.error() != QSaveFile::NoError) {
+    if (mapFile.error() != QFileDevice::NoError) {
         mError = mapFile.errorString();
         return false;
     }
