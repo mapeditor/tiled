@@ -36,9 +36,59 @@
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
+#include <QTextCodec>
+#include <qnumeric.h>
 
 using namespace Flare;
 using namespace Tiled;
+
+int hexToDecimal(const std::string& hex){
+   int value = 0;
+   int i = hex.size() - 1;
+   for (int pos = 0; pos < hex.size(); pos++){
+       int modifier = 0;
+       char x = hex[pos];
+       switch (x){
+       case '0':
+       case '1':
+       case '2':
+       case '3':
+       case '4':
+       case '5':
+       case '6':
+       case '7':
+       case '8':
+       case '9':
+           modifier = x - 48;
+           break;
+       case 'a':
+       case 'b':
+       case 'c':
+       case 'd':
+       case 'e':
+       case 'f':
+           modifier = x - 87;
+           break;
+       default:
+           throw "Uknown hex character!";
+           break;
+       }
+       value += modifier * pow(16, i);
+       i--;
+   }
+   return value;
+}
+
+QColor enrichColorInformation(const QString& colorHex){
+    QColor color;
+    std::string hexVal = colorHex.toStdString();
+    int startHex = hexVal.find('#') + 1;
+    color.setAlpha(hexToDecimal(hexVal.substr(startHex, 2)));
+    color.setRed(hexToDecimal(hexVal.substr(startHex + 2, 2)));
+    color.setGreen(hexToDecimal(hexVal.substr(startHex + 4, 2)));
+    color.setBlue(hexToDecimal(hexVal.substr(startHex + 6, 2)));
+    return color;
+}
 
 FlarePlugin::FlarePlugin()
 {
@@ -70,6 +120,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     bool tilesetsSectionFound = false;
     bool headerSectionFound = false;
     bool tilelayerSectionFound = false; // tile layer or objects
+    QColor backgroundColor;
 
     while (!stream.atEnd()) {
         line = stream.readLine();
@@ -101,6 +152,10 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     map->setTileHeight(value.toInt());
                 else if (key == QLatin1String("orientation"))
                     map->setOrientation(orientationFromString(value));
+                else if (key == QLatin1String("backgroundColor")){
+                    backgroundColor = enrichColorInformation(value);
+                    map->setBackgroundColor(backgroundColor);
+                }
                 else
                     map->setProperty(key, value);
             }
@@ -215,8 +270,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     float x,y;
                     int w,h;
                     if (map->orientation() == Map::Orthogonal) {
-                        x = loc[0].toFloat()*map->tileWidth();
-                        y = loc[1].toFloat()*map->tileHeight();
+                        x = (loc[0].toFloat())*map->tileWidth();
+                        y = (loc[1].toFloat())*map->tileHeight();
                         if (loc.size() > 3) {
                             w = loc[2].toInt()*map->tileWidth();
                             h = loc[3].toInt()*map->tileHeight();
@@ -278,6 +333,8 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
+	QColor backgroundColor;
+	backgroundColor = map->backgroundColor();
     out.setCodec("UTF-8");
 
     const int mapWidth = map->width();
@@ -290,6 +347,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
+    out << "backgroundColor=" << backgroundColor.name(QColor::HexArgb) << "\n";
 
     // write all properties for this map
     Properties::const_iterator it = map->properties().constBegin();
@@ -333,7 +391,18 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     out << ",";
                 out << "\n";
             }
-            out << "\n";
+            //Write all properties for this layer
+			Properties::const_iterator it = tileLayer->properties().constBegin();
+			Properties::const_iterator it_end = tileLayer->properties().constEnd();
+			for (; it != it_end; ++it) {
+                if(it->userType() == filePathTypeId()){
+                    out << it.key() << "=" << mapDir.relativeFilePath(toExportValue(it.value()).toString()) << "\n";
+                }
+                else{
+                    out << it.key() << "=" << it.value().toString() << "\n";
+                }
+			}
+			out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             for (const MapObject *o : group->objects()) {
@@ -361,10 +430,14 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
-                    Properties::const_iterator it = o->properties().constBegin();
-                    Properties::const_iterator it_end = o->properties().constEnd();
-                    for (; it != it_end; ++it) {
-                        out << it.key() << "=" << it.value().toString() << "\n";
+                    QVariantMap propsMap = o->properties();
+                    for (QVariantMap::const_iterator it = propsMap.constBegin(); it != propsMap.constEnd(); ++it) {
+                        if(it->userType() == filePathTypeId()){
+                            out << it.key() << "=" << mapDir.relativeFilePath(toExportValue(it.value()).toString()) << "\n";
+                        }
+                        else{
+                            out << it.key() << "=" << toExportValue(it.value()).toString() << "\n";
+                        }
                     }
                     out << "\n";
                 }
