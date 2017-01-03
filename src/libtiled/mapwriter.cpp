@@ -213,14 +213,28 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
         firstGid += tileset->nextTileId();
     }
 
-    for (const Layer *layer : map.layers()) {
+    for (Layer *layer : map.layers()) {
         const Layer::TypeFlag type = layer->layerType();
+
+        // This puts a "custom property" of the tile height and tile width in all layers
+        QVariant qtilewidth(layer->tileWidth());
+        qtilewidth.convert(QVariant::Int);
+        QVariant qtileheight(layer->tileHeight());
+        qtileheight.convert(QVariant::Int);
+        QString stilewidth = QLatin1String("tilewidth");
+        QString stileheight = QLatin1String("tileheight");
+        layer->setProperty(stilewidth, qtilewidth);
+        layer->setProperty(stileheight, qtileheight);
+
         if (type == Layer::TileLayerType)
             writeTileLayer(w, *static_cast<const TileLayer*>(layer));
         else if (type == Layer::ObjectGroupType)
             writeObjectGroup(w, *static_cast<const ObjectGroup*>(layer));
         else if (type == Layer::ImageLayerType)
             writeImageLayer(w, *static_cast<const ImageLayer*>(layer));
+
+        layer->removeProperty(stilewidth);
+        layer->removeProperty(stileheight);
     }
 
     w.writeEndElement();
@@ -484,7 +498,6 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
     if (y != 0)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
 
-    // LUCA-TODO: Do attributes
     if (layer.layerType() == Layer::TileLayerType) {
         w.writeAttribute(QLatin1String("width"),
                          QString::number(layer.width()));
