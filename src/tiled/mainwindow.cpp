@@ -234,6 +234,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuEdit->insertAction(mUi->actionPreferences,
                                 mActionHandler->actionSelectAll());
     mUi->menuEdit->insertAction(mUi->actionPreferences,
+                                mActionHandler->actionSelectInverse());
+    mUi->menuEdit->insertAction(mUi->actionPreferences,
                                 mActionHandler->actionSelectNone());
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
 
