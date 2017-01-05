@@ -56,6 +56,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
+    mActionSelectInverse = new QAction(this);
     mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
@@ -130,6 +131,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
     connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
+    connect(mActionSelectInverse, SIGNAL(triggered()), SLOT(selectInverse()));
     connect(mActionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
     connect(mActionCropToSelection, SIGNAL(triggered()),
             SLOT(cropToSelection()));
@@ -170,6 +172,7 @@ MapDocumentActionHandler::~MapDocumentActionHandler()
 void MapDocumentActionHandler::retranslateUi()
 {
     mActionSelectAll->setText(tr("Select &All"));
+    mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
     mActionCropToSelection->setText(tr("&Crop to Selection"));
     mActionAddTileLayer->setText(tr("&Tile Layer"));
@@ -299,16 +302,64 @@ void MapDocumentActionHandler::selectAll()
     }
 }
 
+void MapDocumentActionHandler::selectInverse()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *layer = mMapDocument->currentLayer();
+    if (!layer)
+        return;
+
+    if (TileLayer *tileLayer = layer->asTileLayer()) {
+        QRegion all(tileLayer->x(), tileLayer->y(),
+                  tileLayer->width(), tileLayer->height());
+
+        /*if (mMapDocument->selectedArea().isEmpty()) {
+            selectAll();
+        } else if(mMapDocument->selectedArea() == all) {
+            selectNone();
+        } else {*/
+            QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
+            mMapDocument->undoStack()->push(command);
+        /*}*/
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        QList<MapObject*> allObjects = objectGroup->objects();
+        QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
+        QList<MapObject*> notSelectedObjects;
+
+        QList<MapObject*>::iterator i;
+        for(i=allObjects.begin(); i != allObjects.end(); ++i)
+        {
+            if(!selectedObjects.contains(*i))
+            {
+                notSelectedObjects.append(*i);
+            }
+        }
+
+        mMapDocument->setSelectedObjects(notSelectedObjects);
+    }
+}
+
 void MapDocumentActionHandler::selectNone()
 {
     if (!mMapDocument)
         return;
 
-    if (mMapDocument->selectedArea().isEmpty())
+    Layer *layer = mMapDocument->currentLayer();
+    if (!layer)
         return;
 
-    QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
-    mMapDocument->undoStack()->push(command);
+    if (layer->asTileLayer()) {
+        if (mMapDocument->selectedArea().isEmpty())
+            return;
+
+        QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
+        mMapDocument->undoStack()->push(command);
+    } else if (layer->asObjectGroup()) {
+        QList<MapObject*> emptyListOfObjects;
+        mMapDocument->setSelectedObjects(emptyListOfObjects);
+    }
 }
 
 void MapDocumentActionHandler::copyPosition()
@@ -555,7 +606,19 @@ void MapDocumentActionHandler::updateActions()
     }
 
     mActionSelectAll->setEnabled(map);
-    mActionSelectNone->setEnabled(!selection.isEmpty());
+
+    if(currentLayer) {
+        if (currentLayer->asTileLayer()) {
+            mActionSelectNone->setEnabled(!selection.isEmpty());
+        } else if (currentLayer->asObjectGroup()) {
+            mActionSelectNone->setEnabled(mMapDocument->selectedObjects().count() > 0);
+        } else {
+            mActionSelectNone->setEnabled(false);
+        }
+    } else {
+        mActionSelectNone->setEnabled(false);
+    }
+
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
 
