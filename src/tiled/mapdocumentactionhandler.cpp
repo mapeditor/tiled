@@ -315,25 +315,16 @@ void MapDocumentActionHandler::selectInverse()
         QRegion all(tileLayer->x(), tileLayer->y(),
                   tileLayer->width(), tileLayer->height());
 
-        /*if (mMapDocument->selectedArea().isEmpty()) {
-            selectAll();
-        } else if(mMapDocument->selectedArea() == all) {
-            selectNone();
-        } else {*/
-            QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
-            mMapDocument->undoStack()->push(command);
-        /*}*/
+        QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
+        mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         QList<MapObject*> allObjects = objectGroup->objects();
         QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
         QList<MapObject*> notSelectedObjects;
 
-        QList<MapObject*>::iterator i;
-        for(i=allObjects.begin(); i != allObjects.end(); ++i)
-        {
-            if(!selectedObjects.contains(*i))
-            {
-                notSelectedObjects.append(*i);
+        for (auto& mapObject : allObjects) {
+            if(!selectedObjects.contains(mapObject)) {
+                notSelectedObjects.append(mapObject);
             }
         }
 
@@ -357,8 +348,7 @@ void MapDocumentActionHandler::selectNone()
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
         mMapDocument->undoStack()->push(command);
     } else if (layer->asObjectGroup()) {
-        QList<MapObject*> emptyListOfObjects;
-        mMapDocument->setSelectedObjects(emptyListOfObjects);
+        mMapDocument->setSelectedObjects(QList<MapObject*>());
     }
 }
 
@@ -607,11 +597,11 @@ void MapDocumentActionHandler::updateActions()
 
     mActionSelectAll->setEnabled(map);
 
-    if(currentLayer) {
+    if (currentLayer) {
         if (currentLayer->asTileLayer()) {
             mActionSelectNone->setEnabled(!selection.isEmpty());
         } else if (currentLayer->asObjectGroup()) {
-            mActionSelectNone->setEnabled(mMapDocument->selectedObjects().count() > 0);
+            mActionSelectNone->setEnabled(selectedObjectsCount  > 0);
         } else {
             mActionSelectNone->setEnabled(false);
         }
