@@ -59,6 +59,7 @@ public:
     MapDocument *mapDocument() const { return mMapDocument; }
 
     QAction *actionSelectAll() const { return mActionSelectAll; }
+    QAction *actionSelectInverse() const { return mActionSelectInverse; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
 
@@ -91,6 +92,7 @@ public slots:
     void delete_(); // 'delete' is a reserved word
 
     void selectAll();
+    void selectInverse();
     void selectNone();
 
     void copyPosition();
@@ -125,6 +127,7 @@ private:
     MapDocument *mMapDocument;
 
     QAction *mActionSelectAll;
+    QAction *mActionSelectInverse;
     QAction *mActionSelectNone;
     QAction *mActionCropToSelection;
 
