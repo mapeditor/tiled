@@ -318,12 +318,12 @@ void MapDocumentActionHandler::selectInverse()
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
         mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        QList<MapObject*> allObjects = objectGroup->objects();
+        const auto &allObjects = objectGroup->objects();
         QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
         QList<MapObject*> notSelectedObjects;
 
-        for (auto& mapObject : allObjects) {
-            if(!selectedObjects.contains(mapObject)) {
+        for (auto mapObject : allObjects) {
+            if (!selectedObjects.contains(mapObject)) {
                 notSelectedObjects.append(mapObject);
             }
         }
