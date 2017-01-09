@@ -86,7 +86,8 @@ class SetLayerOffset : public QUndoCommand
 public:
     SetLayerOffset(MapDocument *mapDocument,
                    int layerIndex,
-                   const QPointF &offset);
+                   const QPointF &offset,
+                   QUndoCommand *parent = nullptr);
 
     void undo() override { setOffset(mOldOffset); }
     void redo() override { setOffset(mNewOffset); }

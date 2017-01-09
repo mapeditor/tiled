@@ -85,8 +85,10 @@ void SetLayerOpacity::setOpacity(float opacity)
 
 SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
                                int layerIndex,
-                               const QPointF &offset)
-    : mMapDocument(mapDocument)
+                               const QPointF &offset,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mLayerIndex(layerIndex)
     , mOldOffset(mMapDocument->map()->layerAt(layerIndex)->offset())
     , mNewOffset(offset)

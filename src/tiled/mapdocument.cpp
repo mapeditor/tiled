@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "changelayer.h"
 #include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
@@ -292,14 +293,15 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer
-    mUndoStack->beginMacro(tr("Resize Map"));
-    for (int i = 0; i < mMap->layerCount(); ++i) {
-        Layer *layer = mMap->layerAt(i);
+    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
+
+    for (int layerIndex = 0; layerIndex < mMap->layerCount(); ++layerIndex) {
+        Layer *layer = mMap->layerAt(layerIndex);
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            mUndoStack->push(new ResizeTileLayer(this, tileLayer, size, offset));
+            new ResizeTileLayer(this, tileLayer, size, offset, command);
             break;
         }
         case Layer::ObjectGroupType: {
@@ -309,25 +311,30 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             if (removeObjects) {
                 for (MapObject *o : objectGroup->objects()) {
                     if (!visibleIn(visibleArea, o, mRenderer)) {
-                        mUndoStack->push(new RemoveMapObject(this, o));
+                        new RemoveMapObject(this, o, command);
                     } else {
                         QPointF oldPos = o->position();
                         QPointF newPos = oldPos + pixelOffset;
-                        mUndoStack->push(new MoveMapObject(this, o, newPos, oldPos));
+                        new MoveMapObject(this, o, newPos, oldPos, command);
                     }
                 }
             }
             break;
         }
         case Layer::ImageLayerType:
-            // Currently not adjusted when resizing the map
+            // Adjust image layer by changing its offset
+            auto imageLayer = static_cast<ImageLayer*>(layer);
+            new SetLayerOffset(this, layerIndex,
+                               imageLayer->offset() + pixelOffset,
+                               command);
             break;
         }
     }
 
-    mUndoStack->push(new ResizeMap(this, size));
-    mUndoStack->push(new ChangeSelectedArea(this, movedSelection));
-    mUndoStack->endMacro();
+    new ResizeMap(this, size, command);
+    new ChangeSelectedArea(this, movedSelection, command);
+
+    mUndoStack->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
 }
