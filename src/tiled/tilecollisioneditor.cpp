@@ -172,6 +172,9 @@ void TileCollisionEditor::setTile(Tile *tile)
     mMapScene->disableSelectedTool();
     MapDocument *previousDocument = mMapScene->mapDocument();
 
+    mMapView->setEnabled(tile);
+    mPropertiesDock->setEnabled(tile);
+
     if (tile) {
         Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
         map->addTileset(tile->sharedTileset());
@@ -207,8 +210,6 @@ void TileCollisionEditor::setTile(Tile *tile)
                 this, &TileCollisionEditor::selectedObjectsChanged);
 
     } else {
-        mMapView->setEnabled(false);
-        mPropertiesDock->setEnabled(false);
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
         mPropertiesDock->setDocument(nullptr);
