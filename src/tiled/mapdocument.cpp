@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "changelayer.h"
 #include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
@@ -335,8 +336,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
-    for (int i = 0; i < mMap->layerCount(); ++i) {
-        Layer *layer = mMap->layerAt(i);
+    for (int layerIndex = 0; layerIndex < mMap->layerCount(); ++layerIndex) {
+        Layer *layer = mMap->layerAt(layerIndex);
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -362,7 +363,11 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             break;
         }
         case Layer::ImageLayerType:
-            // Currently not adjusted when resizing the map
+            // Adjust image layer by changing its offset
+            auto imageLayer = static_cast<ImageLayer*>(layer);
+            new SetLayerOffset(this, layerIndex,
+                               imageLayer->offset() + pixelOffset,
+                               command);
             break;
         }
     }

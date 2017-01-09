@@ -21,6 +21,7 @@
 
 #include "offsetlayer.h"
 
+#include "imagelayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -53,18 +54,22 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     case Layer::TileLayerType:
         static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
-    case Layer::ObjectGroupType: {
-        // Object groups need offset and bounds converted to pixel units
+    case Layer::ObjectGroupType:
+    case Layer::ImageLayerType: {
+        // Object groups and image layers need offset and bounds converted to pixel units
         MapRenderer *renderer = mapDocument->renderer();
         const QPointF origin = renderer->tileToPixelCoords(QPointF());
         const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
-        static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+
+        if (mOffsetLayer->layerType() == Layer::ObjectGroupType) {
+            static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+        } else {
+            // (wrapping not supported for image layers)
+            mOffsetLayer->setOffset(mOffsetLayer->offset() + pixelOffset);
+        }
         break;
     }
-    case Layer::ImageLayerType:
-        // Nothing done for the image layer at the moment
-        break;
     }
 }
 
