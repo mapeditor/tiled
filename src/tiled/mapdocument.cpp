@@ -333,14 +333,15 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer
-    mUndoStack->beginMacro(tr("Resize Map"));
+    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
+
     for (int i = 0; i < mMap->layerCount(); ++i) {
         Layer *layer = mMap->layerAt(i);
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
-            mUndoStack->push(new ResizeTileLayer(this, tileLayer, size, offset));
+            new ResizeTileLayer(this, tileLayer, size, offset, command);
             break;
         }
         case Layer::ObjectGroupType: {
@@ -350,11 +351,11 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             if (removeObjects) {
                 for (MapObject *o : objectGroup->objects()) {
                     if (!visibleIn(visibleArea, o, mRenderer)) {
-                        mUndoStack->push(new RemoveMapObject(this, o));
+                        new RemoveMapObject(this, o, command);
                     } else {
                         QPointF oldPos = o->position();
                         QPointF newPos = oldPos + pixelOffset;
-                        mUndoStack->push(new MoveMapObject(this, o, newPos, oldPos));
+                        new MoveMapObject(this, o, newPos, oldPos, command);
                     }
                 }
             }
@@ -366,9 +367,10 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
         }
     }
 
-    mUndoStack->push(new ResizeMap(this, size));
-    mUndoStack->push(new ChangeSelectedArea(this, movedSelection));
-    mUndoStack->endMacro();
+    new ResizeMap(this, size, command);
+    new ChangeSelectedArea(this, movedSelection, command);
+
+    mUndoStack->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
 }

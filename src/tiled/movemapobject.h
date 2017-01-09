@@ -37,12 +37,14 @@ class MoveMapObject : public QUndoCommand
 public:
     MoveMapObject(MapDocument *mapDocument,
                   MapObject *mapObject,
-                  const QPointF &oldPos);
+                  const QPointF &oldPos,
+                  QUndoCommand *parent = nullptr);
 
     MoveMapObject(MapDocument *mapDocument,
                   MapObject *mapObject,
                   const QPointF &newPos,
-                  const QPointF &oldPos);
+                  const QPointF &oldPos,
+                  QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

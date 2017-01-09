@@ -33,9 +33,11 @@ using namespace Tiled::Internal;
 ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
                                  TileLayer *layer,
                                  const QSize &size,
-                                 const QPoint &offset)
+                                 const QPoint &offset,
+                                 QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Resize Layer"))
+                                               "Resize Layer"),
+                   parent)
     , mMapDocument(mapDocument)
     , mIndex(mapDocument->map()->layers().indexOf(layer))
     , mOriginalLayer(nullptr)
