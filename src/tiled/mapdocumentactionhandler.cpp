@@ -57,6 +57,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
     mActionSelectInverse = new QAction(this);
+    mActionSelectInverse->setShortcut(tr("Ctrl+I"));
     mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
@@ -312,21 +313,18 @@ void MapDocumentActionHandler::selectInverse()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRegion all(tileLayer->x(), tileLayer->y(),
-                  tileLayer->width(), tileLayer->height());
+        QRegion all(tileLayer->bounds());
 
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
         mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const auto &allObjects = objectGroup->objects();
-        QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
+        const auto &selectedObjects = mMapDocument->selectedObjects();
         QList<MapObject*> notSelectedObjects;
 
-        for (auto mapObject : allObjects) {
-            if (!selectedObjects.contains(mapObject)) {
+        for (auto mapObject : allObjects)
+            if (!selectedObjects.contains(mapObject))
                 notSelectedObjects.append(mapObject);
-            }
-        }
 
         mMapDocument->setSelectedObjects(notSelectedObjects);
     }
