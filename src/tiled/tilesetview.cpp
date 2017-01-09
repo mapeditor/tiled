@@ -175,7 +175,11 @@ static void paintCorners(QPainter *painter,
 
 static void setCosmeticPen(QPainter *painter, const QBrush &brush, qreal width)
 {
+#if QT_VERSION >= 0x050600
     QPen pen(brush, width * painter->device()->devicePixelRatioF());
+#else
+    QPen pen(brush, width * painter->device()->devicePixelRatio());
+#endif
     pen.setCosmetic(true);
     painter->setPen(pen);
 }
