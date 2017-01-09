@@ -126,6 +126,8 @@ private:
         BackgroundColorProperty,
         TileWidthProperty,
         TileHeightProperty,
+        GridWidthProperty,
+        GridHeightProperty,
         OrientationProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
@@ -204,6 +206,7 @@ private:
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
+    QStringList mTilesetOrientationNames;
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;

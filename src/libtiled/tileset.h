@@ -63,6 +63,16 @@ class TILEDSHARED_EXPORT Tileset : public Object
 {
 public:
     /**
+     * The orientation of the tileset determines the projection used in the
+     * TileCollisionEditor and for the terrain information overlay of the
+     * TilesetView.
+     */
+    enum Orientation {
+        Orthogonal,
+        Isometric,
+    };
+
+    /**
      * Creates a new tileset with the given parameters. Using this function
      * makes sure the internal weak pointer is initialized, which enables the
      * sharedPointer() function.
@@ -116,6 +126,12 @@ public:
 
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
+
+    Orientation orientation() const;
+    void setOrientation(Orientation orientation);
+
+    QSize gridSize() const;
+    void setGridSize(QSize gridSize);
 
     const QMap<int, Tile*> &tiles() const;
     inline Tile *findTile(int id) const;
@@ -189,6 +205,23 @@ public:
 
     SharedTileset clone() const;
 
+    /**
+     * Helper function that converts the tileset orientation to a string value.
+     * Useful for map writers.
+     *
+     * @return The tileset orientation as a lowercase string.
+     */
+    static QString orientationToString(Orientation);
+
+    /**
+     * Helper function that converts a string to a tileset orientation enumerator.
+     * Useful for map readers.
+     *
+     * @return The tileset orientation matching the given string, or
+     *         Tileset::Orthogonal if the string is unrecognized.
+     */
+    static Orientation orientationFromString(const QString &);
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();
@@ -201,6 +234,8 @@ private:
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
+    Orientation mOrientation;
+    QSize mGridSize;
     int mColumnCount;
     int mExpectedColumnCount;
     int mExpectedRowCount;
@@ -311,6 +346,39 @@ inline QPoint Tileset::tileOffset() const
 inline void Tileset::setTileOffset(QPoint offset)
 {
     mTileOffset = offset;
+}
+
+/**
+ * Returns the orientation of the tiles in this tileset.
+ */
+inline Tileset::Orientation Tileset::orientation() const
+{
+    return mOrientation;
+}
+
+/**
+ * @see orientation
+ */
+inline void Tileset::setOrientation(Orientation orientation)
+{
+    mOrientation = orientation;
+}
+
+/**
+ * Returns the grid size that is used when the tileset has Isometric
+ * orientation.
+ */
+inline QSize Tileset::gridSize() const
+{
+    return mGridSize;
+}
+
+/**
+ * @see gridSize
+ */
+inline void Tileset::setGridSize(QSize gridSize)
+{
+    mGridSize = gridSize;
 }
 
 /**

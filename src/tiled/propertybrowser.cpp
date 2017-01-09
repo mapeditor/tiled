@@ -49,7 +49,6 @@
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
 #include "tilesetterrainmodel.h"
-#include "tmxmapformat.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
@@ -90,6 +89,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
+
+    mTilesetOrientationNames.append(mOrientationNames.at(0));
+    mTilesetOrientationNames.append(mOrientationNames.at(1));
 
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
@@ -619,8 +621,6 @@ void PropertyBrowser::addTilesetProperties()
         auto property = addProperty(FileNameProperty, filePathTypeId(), tr("Filename"), groupProperty);
 
         QString filter = QCoreApplication::translate("MainWindow", "All Files (*)");
-        filter += QLatin1String(";;");
-        filter += TsxTilesetFormat().nameFilter();
         FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
 
         property->setAttribute(QStringLiteral("filter"), helper.filter());
@@ -634,6 +634,21 @@ void PropertyBrowser::addTilesetProperties()
 
     QtVariantProperty *backgroundProperty = addProperty(BackgroundColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     backgroundProperty->setEnabled(mTilesetDocument);
+
+    QtVariantProperty *orientationProperty =
+            addProperty(OrientationProperty,
+                        QtVariantPropertyManager::enumTypeId(),
+                        tr("Orientation"),
+                        groupProperty);
+
+    orientationProperty->setAttribute(QLatin1String("enumNames"), mTilesetOrientationNames);
+
+    QtVariantProperty *gridWidthProperty = addProperty(GridWidthProperty, QVariant::Int, tr("Grid Width"), groupProperty);
+    gridWidthProperty->setEnabled(mTilesetDocument);
+    gridWidthProperty->setAttribute(QLatin1String("minimum"), 1);
+    QtVariantProperty *gridHeightProperty = addProperty(GridHeightProperty, QVariant::Int, tr("Grid Height"), groupProperty);
+    gridHeightProperty->setEnabled(mTilesetDocument);
+    gridHeightProperty->setAttribute(QLatin1String("minimum"), 1);
 
     QtVariantProperty *columnsProperty = addProperty(ColumnCountProperty, QVariant::Int, tr("Columns"), groupProperty);
     columnsProperty->setAttribute(QLatin1String("minimum"), 1);
@@ -984,6 +999,29 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
         undoStack->push(new ChangeTilesetTileOffset(mTilesetDocument,
                                                     val.toPoint()));
         break;
+    case OrientationProperty: {
+        Q_ASSERT(mTilesetDocument);
+        auto orientation = static_cast<Tileset::Orientation>(val.toInt());
+        undoStack->push(new ChangeTilesetOrientation(mTilesetDocument,
+                                                     orientation));
+        break;
+    }
+    case GridWidthProperty: {
+        Q_ASSERT(mTilesetDocument);
+        QSize gridSize = tileset->gridSize();
+        gridSize.setWidth(val.toInt());
+        undoStack->push(new ChangeTilesetGridSize(mTilesetDocument,
+                                                  gridSize));
+        break;
+    }
+    case GridHeightProperty: {
+        Q_ASSERT(mTilesetDocument);
+        QSize gridSize = tileset->gridSize();
+        gridSize.setHeight(val.toInt());
+        undoStack->push(new ChangeTilesetGridSize(mTilesetDocument,
+                                                  gridSize));
+        break;
+    }
     case ColumnCountProperty:
         Q_ASSERT(mTilesetDocument);
         undoStack->push(new ChangeTilesetColumnCount(mTilesetDocument,
@@ -1216,6 +1254,9 @@ void PropertyBrowser::updateProperties()
 
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+        mIdToProperty[OrientationProperty]->setValue(tileset->orientation());
+        mIdToProperty[GridWidthProperty]->setValue(tileset->gridSize().width());
+        mIdToProperty[GridHeightProperty]->setValue(tileset->gridSize().height());
         mIdToProperty[ColumnCountProperty]->setValue(tileset->columnCount());
         mIdToProperty[ColumnCountProperty]->setEnabled(mTilesetDocument && tileset->isCollection());
 

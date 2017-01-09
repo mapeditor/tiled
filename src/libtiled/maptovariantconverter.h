@@ -51,7 +51,7 @@ public:
     QVariant toVariant(const Tileset &tileset, const QDir &directory);
 
 private:
-    QVariant toVariant(const Tileset *tileset, int firstGid) const;
+    QVariant toVariant(const Tileset &tileset, int firstGid) const;
     QVariant toVariant(const Properties &properties) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const TileLayer *tileLayer,

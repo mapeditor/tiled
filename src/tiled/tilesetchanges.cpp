@@ -21,7 +21,6 @@
 
 #include "tilesetchanges.h"
 
-#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
@@ -102,8 +101,7 @@ ChangeTilesetParameters::ChangeTilesetParameters(TilesetDocument *tilesetDocumen
                                                  const TilesetParameters &parameters)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Edit Tileset"))
     , mTilesetDocument(tilesetDocument)
-    , mTileset(*tilesetDocument->tileset())
-    , mOldParameters(mTileset)
+    , mOldParameters(*tilesetDocument->tileset())
     , mNewParameters(parameters)
 {
 }
@@ -120,22 +118,24 @@ void ChangeTilesetParameters::redo()
 
 void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
 {
-    QString oldImageSource = mTileset.imageSource();
+    Tileset &tileset = *mTilesetDocument->tileset();
 
-    mTileset.setImageSource(parameters.imageSource);
-    mTileset.setTransparentColor(parameters.transparentColor);
-    mTileset.setTileSize(parameters.tileSize);
-    mTileset.setTileSpacing(parameters.tileSpacing);
-    mTileset.setMargin(parameters.margin);
+    QString oldImageSource = tileset.imageSource();
+
+    tileset.setImageSource(parameters.imageSource);
+    tileset.setTransparentColor(parameters.transparentColor);
+    tileset.setTileSize(parameters.tileSize);
+    tileset.setTileSpacing(parameters.tileSpacing);
+    tileset.setMargin(parameters.margin);
 
     auto tilesetManager = TilesetManager::instance();
 
-    if (oldImageSource != mTileset.imageSource())
-        tilesetManager->tilesetImageSourceChanged(mTileset, oldImageSource);
-    if (mTileset.loadImage())
-        emit tilesetManager->tilesetImagesChanged(&mTileset);
+    if (oldImageSource != tileset.imageSource())
+        tilesetManager->tilesetImageSourceChanged(tileset, oldImageSource);
+    if (tileset.loadImage())
+        emit tilesetManager->tilesetImagesChanged(&tileset);
 
-    emit mTilesetDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
 
@@ -143,18 +143,19 @@ ChangeTilesetColumnCount::ChangeTilesetColumnCount(TilesetDocument *tilesetDocum
                                                    int columnCount)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Columns"))
     , mTilesetDocument(tilesetDocument)
-    , mTileset(*tilesetDocument->tileset())
     , mColumnCount(columnCount)
 {
 }
 
 void ChangeTilesetColumnCount::swap()
 {
-    int oldColumnCount = mTileset.columnCount();
-    mTileset.setColumnCount(mColumnCount);
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    int oldColumnCount = tileset.columnCount();
+    tileset.setColumnCount(mColumnCount);
     mColumnCount = oldColumnCount;
 
-    emit mTilesetDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
 ChangeTilesetBackgroundColor::ChangeTilesetBackgroundColor(TilesetDocument *tilesetDocument,
@@ -172,6 +173,46 @@ void ChangeTilesetBackgroundColor::swap()
     QColor color = tileset.backgroundColor();
     tileset.setBackgroundColor(mColor);
     mColor = color;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+
+ChangeTilesetOrientation::ChangeTilesetOrientation(TilesetDocument *tilesetDocument,
+                                                   Tileset::Orientation orientation)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Orientation"))
+    , mTilesetDocument(tilesetDocument)
+    , mOrientation(orientation)
+{
+}
+
+void ChangeTilesetOrientation::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    Tileset::Orientation orientation = tileset.orientation();
+    tileset.setOrientation(mOrientation);
+    mOrientation = orientation;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+
+ChangeTilesetGridSize::ChangeTilesetGridSize(TilesetDocument *tilesetDocument,
+                                             QSize gridSize)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Grid Size"))
+    , mTilesetDocument(tilesetDocument)
+    , mGridSize(gridSize)
+{
+}
+
+void ChangeTilesetGridSize::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    QSize gridSize = tileset.gridSize();
+    tileset.setGridSize(mGridSize);
+    mGridSize = gridSize;
 
     emit mTilesetDocument->tilesetChanged(&tileset);
 }

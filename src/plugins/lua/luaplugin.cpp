@@ -253,6 +253,13 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeKeyAndValue("y", offset.y());
     writer.writeEndTable();
 
+    const QSize gridSize = tileset->gridSize();
+    writer.writeStartTable("grid");
+    writer.writeKeyAndValue("orientation", Tileset::orientationToString(tileset->orientation()));
+    writer.writeKeyAndValue("width", gridSize.width());
+    writer.writeKeyAndValue("height", gridSize.height());
+    writer.writeEndTable();
+
     writeProperties(writer, tileset->properties());
 
     writer.writeStartTable("terrains");

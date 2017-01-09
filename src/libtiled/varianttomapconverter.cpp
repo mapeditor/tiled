@@ -188,6 +188,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int spacing = variantMap[QLatin1String("spacing")].toInt();
     const int margin = variantMap[QLatin1String("margin")].toInt();
     const QVariantMap tileOffset = variantMap[QLatin1String("tileoffset")].toMap();
+    const QVariantMap grid = variantMap[QLatin1String("grid")].toMap();
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
     const int columns = tileOffset[QLatin1String("columns")].toInt();
@@ -205,6 +206,16 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
+
+    if (!grid.isEmpty()) {
+        const QString orientation = grid[QLatin1String("orientation")].toString();
+        const QSize gridSize(grid[QLatin1String("width")].toInt(),
+                             grid[QLatin1String("height")].toInt());
+
+        tileset->setOrientation(Tileset::orientationFromString(orientation));
+        if (!gridSize.isEmpty())
+            tileset->setGridSize(gridSize);
+    }
 
     if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
         tileset->setBackgroundColor(QColor(bgColor));
