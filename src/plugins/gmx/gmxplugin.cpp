@@ -132,15 +132,26 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 // Tile objects have bottom-left origin in Tiled, so the
                 // position needs to be translated for top-left origin in
                 // GameMaker, taking into account the rotation.
-                QPointF origin(0, -object->height());
-                origin = QTransform().rotate(object->rotation()).map(origin);
-                pos += origin;
+                QTransform transform;
+                transform.rotate(object->rotation());
 
-                // For tile objects we can support scaling
+                pos += transform.map(QPointF(0, -object->height()));
+
+                // For tile objects we can support scaling and flipping, though
+                // flipping in combination with rotation doesn't work in GameMaker.
                 if (auto tile = object->cell().tile) {
                     const QSize tileSize = tile->size();
                     scaleX = object->width() / tileSize.width();
                     scaleY = object->height() / tileSize.height();
+
+                    if (object->cell().flippedHorizontally) {
+                        scaleX *= -1;
+                        pos += transform.map(QPointF(object->width(), 0));
+                    }
+                    if (object->cell().flippedVertically) {
+                        scaleY *= -1;
+                        pos += transform.map(QPointF(0, object->height()));
+                    }
                 }
             }
 
@@ -190,9 +201,23 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                         stream.writeStartElement("tile");
 
+                        int pixelX = x * map->tileWidth();
+                        int pixelY = y * map->tileHeight();
+                        qreal scaleX = 1;
+                        qreal scaleY = 1;
+
+                        if (cell.flippedHorizontally) {
+                            scaleX = -1;
+                            pixelX += tile->width();
+                        }
+                        if (cell.flippedVertically) {
+                            scaleY = -1;
+                            pixelY += tile->height();
+                        }
+
                         stream.writeAttribute("bgName", tileset->name());
-                        stream.writeAttribute("x", QString::number(x * map->tileWidth()));
-                        stream.writeAttribute("y", QString::number(y * map->tileHeight()));
+                        stream.writeAttribute("x", QString::number(pixelX));
+                        stream.writeAttribute("y", QString::number(pixelY));
                         stream.writeAttribute("w", QString::number(tile->width()));
                         stream.writeAttribute("h", QString::number(tile->height()));
 
@@ -203,6 +228,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                         stream.writeAttribute("id", QString::number(++tileId));
                         stream.writeAttribute("depth", depth);
+
+                        stream.writeAttribute("scaleX", QString::number(scaleX));
+                        stream.writeAttribute("scaleY", QString::number(scaleY));
 
                         stream.writeEndElement();
                     }
@@ -232,14 +260,25 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                     const Tileset *tileset = tile->tileset();
 
                     const QSize tileSize = tile->size();
-                    const qreal scaleX = object->width() / tileSize.width();
-                    const qreal scaleY = object->height() / tileSize.height();
+                    qreal scaleX = object->width() / tileSize.width();
+                    qreal scaleY = object->height() / tileSize.height();
+                    qreal x = object->x();
+                    qreal y = object->y() - object->height();
+
+                    if (object->cell().flippedHorizontally) {
+                        scaleX *= -1;
+                        x += object->width();
+                    }
+                    if (object->cell().flippedVertically) {
+                        scaleY *= -1;
+                        y += object->height();
+                    }
 
                     stream.writeStartElement("tile");
 
                     stream.writeAttribute("bgName", tileset->name());
-                    stream.writeAttribute("x", QString::number(qRound(object->x())));
-                    stream.writeAttribute("y", QString::number(qRound(object->y() - object->height())));
+                    stream.writeAttribute("x", QString::number(qRound(x)));
+                    stream.writeAttribute("y", QString::number(qRound(y)));
                     stream.writeAttribute("w", QString::number(tile->width()));
                     stream.writeAttribute("h", QString::number(tile->height()));
 
