@@ -124,11 +124,39 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // The type is used to refer to the name of the object
             stream.writeAttribute("objName", sanitizeName(object->type()));
 
-            QPoint base(0, object->height());
-            base = QTransform().rotate(-object->rotation()).map(base);
+            QPointF pos = object->position();
+            qreal scaleX = 1;
+            qreal scaleY = 1;
 
-            stream.writeAttribute("x", QString::number((int)(object->x()) + base.x()));
-            stream.writeAttribute("y", QString::number((int)(object->y()) - base.y()));
+            if (!object->cell().isEmpty()) {
+                // Tile objects have bottom-left origin in Tiled, so the
+                // position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                QTransform transform;
+                transform.rotate(object->rotation());
+
+                pos += transform.map(QPointF(0, -object->height()));
+
+                // For tile objects we can support scaling and flipping, though
+                // flipping in combination with rotation doesn't work in GameMaker.
+                if (auto tile = object->cell().tile()) {
+                    const QSize tileSize = tile->size();
+                    scaleX = object->width() / tileSize.width();
+                    scaleY = object->height() / tileSize.height();
+
+                    if (object->cell().flippedHorizontally()) {
+                        scaleX *= -1;
+                        pos += transform.map(QPointF(object->width(), 0));
+                    }
+                    if (object->cell().flippedVertically()) {
+                        scaleY *= -1;
+                        pos += transform.map(QPointF(0, object->height()));
+                    }
+                }
+            }
+
+            stream.writeAttribute("x", QString::number(qRound(pos.x())));
+            stream.writeAttribute("y", QString::number(qRound(pos.y())));
 
             // Include object ID in the name when necessary because duplicates are not allowed
             if (object->name().isEmpty()) {
@@ -143,6 +171,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("scaleX", QString::number(scaleX));
+            stream.writeAttribute("scaleY", QString::number(scaleY));
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
 
             stream.writeEndElement();
@@ -158,35 +188,116 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     int currentLayer = map->layers().size();
 
     for (const Layer *layer : map->layers()) {
-        if (layer->layerType() != Layer::TileLayerType)
-            continue;
-
         QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), currentLayer));
 
-        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-        for (int y = 0; y < tileLayer->height(); ++y) {
-            for (int x = 0; x < tileLayer->width(); ++x) {
-                const Cell &cell = tileLayer->cellAt(x, y);
-                if (const Tile *tile = cell.tile()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<const TileLayer*>(layer);
+            for (int y = 0; y < tileLayer->height(); ++y) {
+                for (int x = 0; x < tileLayer->width(); ++x) {
+                    const Cell &cell = tileLayer->cellAt(x, y);
+                    if (const Tile *tile = cell.tile()) {
+                        const Tileset *tileset = tile->tileset();
+
+                        stream.writeStartElement("tile");
+
+                        int pixelX = x * map->tileWidth();
+                        int pixelY = y * map->tileHeight();
+                        qreal scaleX = 1;
+                        qreal scaleY = 1;
+
+                        if (cell.flippedHorizontally()) {
+                            scaleX = -1;
+                            pixelX += tile->width();
+                        }
+                        if (cell.flippedVertically()) {
+                            scaleY = -1;
+                            pixelY += tile->height();
+                        }
+
+                        stream.writeAttribute("bgName", tileset->name());
+                        stream.writeAttribute("x", QString::number(pixelX));
+                        stream.writeAttribute("y", QString::number(pixelY));
+                        stream.writeAttribute("w", QString::number(tile->width()));
+                        stream.writeAttribute("h", QString::number(tile->height()));
+
+                        int xInTilesetGrid = tile->id() % tileset->columnCount();
+                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                        stream.writeAttribute("xo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid));
+                        stream.writeAttribute("yo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid));
+
+                        stream.writeAttribute("id", QString::number(++tileId));
+                        stream.writeAttribute("depth", depth);
+
+                        stream.writeAttribute("scaleX", QString::number(scaleX));
+                        stream.writeAttribute("scaleY", QString::number(scaleY));
+
+                        stream.writeEndElement();
+                    }
+                }
+            }
+            break;
+        }
+
+        case Layer::ObjectGroupType: {
+            auto objectGroup = static_cast<const ObjectGroup*>(layer);
+            auto objects = objectGroup->objects();
+
+            // Make sure the objects export in the rendering order
+            if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
+                qStableSort(objects.begin(), objects.end(),
+                            [](const MapObject *a, const MapObject *b) { return a->y() < b->y(); });
+            }
+
+            foreach (const MapObject *object, objects) {
+                // Objects with types are already exported as instances
+                if (!object->type().isEmpty())
+                    continue;
+
+                // Non-typed tile objects are exported as tiles. Rotation is
+                // not supported here, but scaling is.
+                if (const Tile *tile = object->cell().tile()) {
+                    const Tileset *tileset = tile->tileset();
+
+                    const QSize tileSize = tile->size();
+                    qreal scaleX = object->width() / tileSize.width();
+                    qreal scaleY = object->height() / tileSize.height();
+                    qreal x = object->x();
+                    qreal y = object->y() - object->height();
+
+                    if (object->cell().flippedHorizontally()) {
+                        scaleX *= -1;
+                        x += object->width();
+                    }
+                    if (object->cell().flippedVertically()) {
+                        scaleY *= -1;
+                        y += object->height();
+                    }
+
                     stream.writeStartElement("tile");
 
-                    stream.writeAttribute("bgName", tile->tileset()->name());
-                    stream.writeAttribute("x", QString::number((int)(x * map->tileWidth())));
-                    stream.writeAttribute("y", QString::number((int)(y * map->tileHeight())));
+                    stream.writeAttribute("bgName", tileset->name());
+                    stream.writeAttribute("x", QString::number(qRound(x)));
+                    stream.writeAttribute("y", QString::number(qRound(y)));
                     stream.writeAttribute("w", QString::number(tile->width()));
                     stream.writeAttribute("h", QString::number(tile->height()));
 
-                    int xInTilesetGrid = tile->id() % tile->tileset()->columnCount();
-                    int yInTilesetGrid = (int)(tile->id() / tile->tileset()->columnCount());
-                    stream.writeAttribute("xo", QString::number(tile->tileset()->margin() + (tile->tileset()->tileSpacing() + tile->tileset()->tileWidth()) * xInTilesetGrid));
-                    stream.writeAttribute("yo", QString::number(tile->tileset()->margin() + (tile->tileset()->tileSpacing() + tile->tileset()->tileHeight()) * yInTilesetGrid));
+                    int xInTilesetGrid = tile->id() % tileset->columnCount();
+                    int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                    stream.writeAttribute("xo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid));
+                    stream.writeAttribute("yo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid));
 
-                    stream.writeAttribute("depth", depth);
                     stream.writeAttribute("id", QString::number(++tileId));
+                    stream.writeAttribute("depth", depth);
+
+                    stream.writeAttribute("scaleX", QString::number(scaleX));
+                    stream.writeAttribute("scaleY", QString::number(scaleY));
 
                     stream.writeEndElement();
                 }
             }
+            break;
+        }
         }
 
         currentLayer--;
@@ -217,7 +328,6 @@ QString GmxPlugin::errorString() const
 {
     return mError;
 }
-
 
 QString GmxPlugin::nameFilter() const
 {
