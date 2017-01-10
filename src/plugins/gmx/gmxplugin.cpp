@@ -124,11 +124,28 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // The type is used to refer to the name of the object
             stream.writeAttribute("objName", sanitizeName(object->type()));
 
-            QPoint base(0, object->height());
-            base = QTransform().rotate(-object->rotation()).map(base);
+            QPointF pos = object->position();
+            qreal scaleX = 1;
+            qreal scaleY = 1;
 
-            stream.writeAttribute("x", QString::number((int)(object->x()) + base.x()));
-            stream.writeAttribute("y", QString::number((int)(object->y()) - base.y()));
+            if (!object->cell().isEmpty()) {
+                // Tile objects have bottom-left origin in Tiled, so the
+                // position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                QPointF origin(0, -object->height());
+                origin = QTransform().rotate(object->rotation()).map(origin);
+                pos += origin;
+
+                // For tile objects we can support scaling
+                if (auto tile = object->cell().tile) {
+                    const QSize tileSize = tile->size();
+                    scaleX = object->width() / tileSize.width();
+                    scaleY = object->height() / tileSize.height();
+                }
+            }
+
+            stream.writeAttribute("x", QString::number(qRound(pos.x())));
+            stream.writeAttribute("y", QString::number(qRound(pos.y())));
 
             // Include object ID in the name when necessary because duplicates are not allowed
             if (object->name().isEmpty()) {
@@ -143,6 +160,8 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                 stream.writeAttribute("name", name);
             }
 
+            stream.writeAttribute("scaleX", QString::number(scaleX));
+            stream.writeAttribute("scaleY", QString::number(scaleY));
             stream.writeAttribute("rotation", QString::number(-object->rotation()));
 
             stream.writeEndElement();
