@@ -69,7 +69,7 @@ public:
     /**
      * Constructor with some parameters.
      */
-    ObjectGroup(const QString &name, int x, int y, int width, int height);
+    ObjectGroup(const QString &name, int x, int y);
 
     /**
      * Destructor.

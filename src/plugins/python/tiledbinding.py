@@ -133,12 +133,13 @@ cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',
     transfer_ownership=False)])
 cls_cell.add_method('isEmpty', 'bool', [])
-cls_cell.add_instance_attribute('tile', retval('Tiled::Tile*', 
-    is_const=True), is_const=True)
+cls_cell.add_method('tile', retval('Tiled::Tile*',reference_existing_object=True), [])
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
     ('int','w'), ('int','h')])
+cls_tilelayer.add_method('width', 'int', [])
+cls_tilelayer.add_method('height', 'int', [])
 cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
     [('int','x'),('int','y')])
 cls_tilelayer.add_method('setCell', None, [('int','x'),('int','y'),
@@ -148,8 +149,7 @@ cls_tilelayer.add_method('referencesTileset', 'bool',
 cls_tilelayer.add_method('isEmpty', 'bool', [])
 
 cls_imagelayer = tiled.add_class('ImageLayer', cls_layer)
-cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
-    ('int','w'), ('int','h')])
+cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_imagelayer.add_method('loadFromImage', 'bool',
     [('const QImage&','img'),('QString','file')])
 cls_imagelayer.add_method('image', retval('const QPixmap&'), [])
@@ -189,8 +189,7 @@ cls_mapobject.add_method('type', 'QString', [])
 cls_mapobject.add_method('setType', None, [('QString','n')])
 
 cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
-cls_objectgroup.add_constructor([('QString','name'),
-    ('int','x'), ('int','y'), ('int','w'), ('int','h')])
+cls_objectgroup.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_objectgroup.add_method('addObject', None,
     [param('MapObject*','object',transfer_ownership=True)])
 cls_objectgroup.add_method('insertObject', None,
@@ -231,8 +230,6 @@ cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
 cls_layer.add_method('setY', None, [('int','y')])
 cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
-cls_layer.add_method('width', 'int', [])
-cls_layer.add_method('height', 'int', [])
 cls_layer.add_method('asTileLayer',
     retval('Tiled::TileLayer*',reference_existing_object=True), [], is_virtual=True)
 cls_layer.add_method('asObjectGroup',

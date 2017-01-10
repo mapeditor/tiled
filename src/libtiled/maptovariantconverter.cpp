@@ -276,6 +276,9 @@ QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer,
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
 
+    tileLayerVariant[QLatin1String("width")] = tileLayer->width();
+    tileLayerVariant[QLatin1String("height")] = tileLayer->height();
+
     addLayerAttributes(tileLayerVariant, tileLayer);
 
     switch (format) {
@@ -396,8 +399,6 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
                                                const Layer *layer) const
 {
     layerVariant[QLatin1String("name")] = layer->name();
-    layerVariant[QLatin1String("width")] = layer->width();
-    layerVariant[QLatin1String("height")] = layer->height();
     layerVariant[QLatin1String("x")] = layer->x();
     layerVariant[QLatin1String("y")] = layer->y();
     layerVariant[QLatin1String("visible")] = layer->isVisible();

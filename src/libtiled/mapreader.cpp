@@ -731,10 +731,8 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     const QString name = atts.value(QLatin1String("name")).toString();
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
-    const int width = atts.value(QLatin1String("width")).toInt();
-    const int height = atts.value(QLatin1String("height")).toInt();
 
-    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
+    ObjectGroup *objectGroup = new ObjectGroup(name, x, y);
     readLayerAttributes(*objectGroup, atts);
 
     const QString color = atts.value(QLatin1String("color")).toString();
@@ -772,10 +770,8 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     const QString name = atts.value(QLatin1String("name")).toString();
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
-    const int width = atts.value(QLatin1String("width")).toInt();
-    const int height = atts.value(QLatin1String("height")).toInt();
 
-    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
+    ImageLayer *imageLayer = new ImageLayer(name, x, y);
     readLayerAttributes(*imageLayer, atts);
 
     // Image layer pixel position moved from x/y to offsetx/offsety for

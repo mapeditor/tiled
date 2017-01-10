@@ -360,9 +360,7 @@ bool AutoMapper::setupMissingLayers()
             continue;
 
         const int index =  mMapWork->layerCount();
-        ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0,
-                                                   mMapWork->width(),
-                                                   mMapWork->height());
+        ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0);
         mMapDocument->undoStack()->push(
                     new AddLayer(mMapDocument, index, objectGroup));
         mAddedTileLayers.append(name);

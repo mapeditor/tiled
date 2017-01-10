@@ -420,11 +420,11 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
         break;
     case Layer::ObjectGroupType:
         name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);
-        layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
+        layer = new ObjectGroup(name, 0, 0);
         break;
     case Layer::ImageLayerType:
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
-        layer = new ImageLayer(name, 0, 0, mMap->width(), mMap->height());
+        layer = new ImageLayer(name, 0, 0);
         break;
     }
     Q_ASSERT(layer);

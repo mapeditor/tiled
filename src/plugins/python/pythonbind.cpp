@@ -3777,30 +3777,6 @@ _wrap_PyTiledLayer_setOpacity(PyTiledLayer *self, PyObject *args, PyObject *kwar
 
 
 PyObject *
-_wrap_PyTiledLayer_height(PyTiledLayer *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->height();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledLayer_width(PyTiledLayer *self)
-{
-    PyObject *py_retval;
-    int retval;
-
-    retval = self->obj->width();
-    py_retval = Py_BuildValue((char *) "i", retval);
-    return py_retval;
-}
-
-
-PyObject *
 _wrap_PyTiledLayer_isVisible(PyTiledLayer *self)
 {
     PyObject *py_retval;
@@ -3899,8 +3875,6 @@ static PyMethodDef PyTiledLayer_methods[] = {
     {(char *) "setX", (PyCFunction) _wrap_PyTiledLayer_setX, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "asObjectGroup", (PyCFunction) _wrap_PyTiledLayer_asObjectGroup, METH_NOARGS, NULL },
     {(char *) "setOpacity", (PyCFunction) _wrap_PyTiledLayer_setOpacity, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "height", (PyCFunction) _wrap_PyTiledLayer_height, METH_NOARGS, NULL },
-    {(char *) "width", (PyCFunction) _wrap_PyTiledLayer_width, METH_NOARGS, NULL },
     {(char *) "isVisible", (PyCFunction) _wrap_PyTiledLayer_isVisible, METH_NOARGS, NULL },
     {(char *) "y", (PyCFunction) _wrap_PyTiledLayer_y, METH_NOARGS, NULL },
     {(char *) "x", (PyCFunction) _wrap_PyTiledLayer_x, METH_NOARGS, NULL },
@@ -4635,31 +4609,6 @@ PyTypeObject PyTiledMap_Type = {
 
 
 
-static PyObject* _wrap_PyTiledCell__get_tile(PyTiledCell *self, void * PYBINDGEN_UNUSED(closure))
-{
-    PyObject *py_retval;
-    PyTiledTile *py_Tile;
-
-    if (!(self->obj->tile())) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-    py_Tile = PyObject_New(PyTiledTile, &PyTiledTile_Type);
-    py_Tile->obj = new Tiled::Tile((*self->obj->tile()));
-    py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_retval = Py_BuildValue((char *) "N", py_Tile);
-    return py_retval;
-}
-static PyGetSetDef PyTiledCell__getsets[] = {
-    {
-        (char*) "tile", /* attribute name */
-        (getter) _wrap_PyTiledCell__get_tile, /* C function to get the attribute */
-        (setter) NULL, /* C function to set the attribute */
-        NULL, /* optional doc string */
-        NULL /* optional additional data for getter and setter */
-    },
-    { NULL, NULL, NULL, NULL, NULL }
-};
 
 static int
 _wrap_PyTiledCell__tp_init(PyTiledCell *self, PyObject *args, PyObject *kwargs)
@@ -4679,6 +4628,26 @@ _wrap_PyTiledCell__tp_init(PyTiledCell *self, PyObject *args, PyObject *kwargs)
 
 
 PyObject *
+_wrap_PyTiledCell_tile(PyTiledCell *self)
+{
+    PyObject *py_retval;
+    Tiled::Tile *retval;
+    PyTiledTile *py_Tile;
+
+    retval = self->obj->tile();
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_Tile = PyObject_New(PyTiledTile, &PyTiledTile_Type);
+    py_Tile->obj = retval;
+    py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_Tile);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledCell_isEmpty(PyTiledCell *self)
 {
     PyObject *py_retval;
@@ -4690,6 +4659,7 @@ _wrap_PyTiledCell_isEmpty(PyTiledCell *self)
 }
 
 static PyMethodDef PyTiledCell_methods[] = {
+    {(char *) "tile", (PyCFunction) _wrap_PyTiledCell_tile, METH_NOARGS, NULL },
     {(char *) "isEmpty", (PyCFunction) _wrap_PyTiledCell_isEmpty, METH_NOARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
@@ -4769,7 +4739,7 @@ PyTypeObject PyTiledCell_Type = {
     (iternextfunc)NULL,     /* tp_iternext */
     (struct PyMethodDef*)PyTiledCell_methods, /* tp_methods */
     (struct PyMemberDef*)0,              /* tp_members */
-    PyTiledCell__getsets,                     /* tp_getset */
+    0,                     /* tp_getset */
     NULL,                              /* tp_base */
     NULL,                              /* tp_dict */
     (descrgetfunc)NULL,    /* tp_descr_get */
@@ -4831,6 +4801,51 @@ _wrap_PyTiledTileLayer_referencesTileset(PyTiledTileLayer *self, PyObject *args,
 
 
 PyObject *
+_wrap_PyTiledTileLayer_cellAt(PyTiledTileLayer *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int x;
+    int y;
+    const char *keywords[] = {"x", "y", NULL};
+    PyTiledCell *py_Cell;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ii", (char **) keywords, &x, &y)) {
+        return NULL;
+    }
+    Tiled::Cell retval = self->obj->cellAt(x, y);
+    py_Cell = PyObject_New(PyTiledCell, &PyTiledCell_Type);
+    py_Cell->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_Cell->obj = new Tiled::Cell(retval);
+    py_retval = Py_BuildValue((char *) "N", py_Cell);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledTileLayer_height(PyTiledTileLayer *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->height();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledTileLayer_width(PyTiledTileLayer *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->width();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledTileLayer_setCell(PyTiledTileLayer *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -4860,32 +4875,13 @@ _wrap_PyTiledTileLayer_isEmpty(PyTiledTileLayer *self)
     return py_retval;
 }
 
-
-PyObject *
-_wrap_PyTiledTileLayer_cellAt(PyTiledTileLayer *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    int x;
-    int y;
-    const char *keywords[] = {"x", "y", NULL};
-    PyTiledCell *py_Cell;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ii", (char **) keywords, &x, &y)) {
-        return NULL;
-    }
-    Tiled::Cell retval = self->obj->cellAt(x, y);
-    py_Cell = PyObject_New(PyTiledCell, &PyTiledCell_Type);
-    py_Cell->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_Cell->obj = new Tiled::Cell(retval);
-    py_retval = Py_BuildValue((char *) "N", py_Cell);
-    return py_retval;
-}
-
 static PyMethodDef PyTiledTileLayer_methods[] = {
     {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledTileLayer_referencesTileset, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "cellAt", (PyCFunction) _wrap_PyTiledTileLayer_cellAt, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "height", (PyCFunction) _wrap_PyTiledTileLayer_height, METH_NOARGS, NULL },
+    {(char *) "width", (PyCFunction) _wrap_PyTiledTileLayer_width, METH_NOARGS, NULL },
     {(char *) "setCell", (PyCFunction) _wrap_PyTiledTileLayer_setCell, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "isEmpty", (PyCFunction) _wrap_PyTiledTileLayer_isEmpty, METH_NOARGS, NULL },
-    {(char *) "cellAt", (PyCFunction) _wrap_PyTiledTileLayer_cellAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 
@@ -4993,14 +4989,12 @@ _wrap_PyTiledImageLayer__tp_init(PyTiledImageLayer *self, PyObject *args, PyObje
     Py_ssize_t name_len;
     int x;
     int y;
-    int w;
-    int h;
-    const char *keywords[] = {"name", "x", "y", "w", "h", NULL};
+    const char *keywords[] = {"name", "x", "y", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#ii", (char **) keywords, &name, &name_len, &x, &y)) {
         return -1;
     }
-    self->obj = new Tiled::ImageLayer(QString::fromUtf8(name), x, y, w, h);
+    self->obj = new Tiled::ImageLayer(QString::fromUtf8(name), x, y);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
 }
@@ -5690,14 +5684,12 @@ _wrap_PyTiledObjectGroup__tp_init(PyTiledObjectGroup *self, PyObject *args, PyOb
     Py_ssize_t name_len;
     int x;
     int y;
-    int w;
-    int h;
-    const char *keywords[] = {"name", "x", "y", "w", "h", NULL};
+    const char *keywords[] = {"name", "x", "y", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#ii", (char **) keywords, &name, &name_len, &x, &y)) {
         return -1;
     }
-    self->obj = new Tiled::ObjectGroup(QString::fromUtf8(name), x, y, w, h);
+    self->obj = new Tiled::ObjectGroup(QString::fromUtf8(name), x, y);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
 }

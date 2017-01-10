@@ -148,6 +148,28 @@ public:
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
 
+    /**
+     * Returns the width of this layer.
+     */
+    int width() const { return mWidth; }
+
+    /**
+     * Returns the height of this layer.
+     */
+    int height() const { return mHeight; }
+
+    /**
+     * Returns the size of this layer.
+     */
+    QSize size() const { return QSize(mWidth, mHeight); }
+
+    void setSize(const QSize &size);
+
+    /**
+     * Returns the bounds of this layer.
+     */
+    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
+
     QMargins drawMargins() const;
 
     bool contains(int x, int y) const;
@@ -286,11 +308,22 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
+    int mWidth;
+    int mHeight;
     QVector<Cell> mGrid;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
 
+
+/**
+ * Sets the size of this layer.
+ */
+inline void TileLayer::setSize(const QSize &size)
+{
+    mWidth = size.width();
+    mHeight = size.height();
+}
 
 /**
  * Returns whether (x, y) is inside this map layer.

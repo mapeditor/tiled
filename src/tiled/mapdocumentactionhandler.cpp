@@ -432,9 +432,8 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         if (selectedObjects.isEmpty())
             return;
 
-        auto map = mMapDocument->map();
         auto currentObjectGroup = static_cast<ObjectGroup*>(currentLayer);
-        auto newObjectGroup = new ObjectGroup(name, 0, 0, map->width(), map->height());
+        auto newObjectGroup = new ObjectGroup(name, 0, 0);
         newObjectGroup->setDrawOrder(currentObjectGroup->drawOrder());
         newObjectGroup->setColor(currentObjectGroup->color());
 

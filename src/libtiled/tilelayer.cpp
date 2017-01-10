@@ -35,7 +35,9 @@
 using namespace Tiled;
 
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
-    : Layer(TileLayerType, name, x, y, width, height)
+    : Layer(TileLayerType, name, x, y)
+    , mWidth(width)
+    , mHeight(height)
     , mGrid(width * height)
     , mUsedTilesetsDirty(false)
 {

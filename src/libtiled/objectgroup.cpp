@@ -40,14 +40,13 @@
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
-    : Layer(ObjectGroupType, QString(), 0, 0, 0, 0)
+    : Layer(ObjectGroupType, QString(), 0, 0)
     , mDrawOrder(TopDownOrder)
 {
 }
 
-ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height)
-    : Layer(ObjectGroupType, name, x, y, width, height)
+ObjectGroup::ObjectGroup(const QString &name, int x, int y)
+    : Layer(ObjectGroupType, name, x, y)
     , mDrawOrder(TopDownOrder)
 {
 }
@@ -206,7 +205,7 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  */
 Layer *ObjectGroup::clone() const
 {
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new ObjectGroup(mName, mX, mY));
 }
 
 /**

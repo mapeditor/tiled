@@ -409,10 +409,3 @@ Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
     }
     return renderOrder;
 }
-
-Map *Map::fromLayer(Layer *layer)
-{
-    Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
-    result->addLayer(layer);
-    return result;
-}
