@@ -140,6 +140,8 @@ private:
      * When drawing circles this will be the midpoint.
      */
     int mLineReferenceX, mLineReferenceY;
+
+    int mMapOrientation;
 };
 
 } // namespace Internal
