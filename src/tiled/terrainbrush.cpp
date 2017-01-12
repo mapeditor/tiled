@@ -383,12 +383,11 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         QPoint leftPoint(x-1, y);
         QPoint rightPoint(x+1, y);
 
-        StaggeredRenderer* renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
-        if (renderer) {
-            upPoint = renderer->topRight(p.x(),p.y());
-            bottomPoint = renderer->bottomLeft(p.x(),p.y());
-            leftPoint = renderer->topLeft(p.x(),p.y());
-            rightPoint = renderer->bottomRight(p.x(),p.y());
+        if (auto renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
+            upPoint = renderer->topRight(x, y);
+            bottomPoint = renderer->bottomLeft(x, y);
+            leftPoint = renderer->topLeft(x, y);
+            rightPoint = renderer->bottomRight(x, y);
         }
 
         int upperIndex = upPoint.y()*layerWidth + upPoint.x();
