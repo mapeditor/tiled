@@ -372,11 +372,16 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         int x = p.x(), y = p.y();
         int i = y*layerWidth + x;
 
+        // if we have already considered this point, skip to the next
+        // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
+        if (checked[i])
+            continue;
+
         // to support isometric staggered, make edges into variables
-        QPoint upPoint(p.x(),p.y()-1);
-        QPoint bottomPoint(p.x(),p.y()+1);
-        QPoint leftPoint(p.x()-1,p.y());
-        QPoint rightPoint(p.x()+1,p.y());
+        QPoint upPoint(x, y-1);
+        QPoint bottomPoint(x, y+1);
+        QPoint leftPoint(x-1, y);
+        QPoint rightPoint(x+1, y);
 
         StaggeredRenderer* renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
         if (renderer) {
@@ -390,12 +395,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         int bottomIndex = bottomPoint.y()*layerWidth + bottomPoint.x();
         int leftIndex = leftPoint.y()*layerWidth + leftPoint.x();
         int rightIndex = rightPoint.y()*layerWidth + rightPoint.x();
-
-
-        // if we have already considered this point, skip to the next
-        // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
-        if (checked[i])
-            continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile();
         const unsigned currentTerrain = ::terrain(tile);
