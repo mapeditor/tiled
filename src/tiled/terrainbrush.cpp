@@ -373,32 +373,24 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         int i = y*layerWidth + x;
 
         // to support isometric staggered, make edges into variables
-        int upperID = i - layerWidth;
-        int bottomID = i + layerWidth;
-        int leftID = i - 1;
-        int rightID = i + 1;
-
         QPoint upPoint(p.x(),p.y()-1);
         QPoint bottomPoint(p.x(),p.y()+1);
-        QPoint leftPoint(p.x()-1,p.y()-1);
+        QPoint leftPoint(p.x()-1,p.y());
         QPoint rightPoint(p.x()+1,p.y());
 
-        if(mapDocument() && mapDocument()->map() && mapDocument()->map()->orientation() == Map::Staggered){
-            StaggeredRenderer* renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
-            if(renderer){
-                upPoint = renderer->topRight(p.x(),p.y());
-                upperID = upPoint.y()*layerWidth + upPoint.x();
-
-                bottomPoint = renderer->bottomLeft(p.x(),p.y());
-                bottomID = bottomPoint.y()*layerWidth + bottomPoint.x();
-
-                leftPoint = renderer->topLeft(p.x(),p.y());
-                leftID = leftPoint.y()*layerWidth + leftPoint.x();
-
-                rightPoint = renderer->bottomRight(p.x(),p.y());
-                rightID = rightPoint.y()*layerWidth + rightPoint.x();
-            }
+        StaggeredRenderer* renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
+        if (renderer) {
+            upPoint = renderer->topRight(p.x(),p.y());
+            bottomPoint = renderer->bottomLeft(p.x(),p.y());
+            leftPoint = renderer->topLeft(p.x(),p.y());
+            rightPoint = renderer->bottomRight(p.x(),p.y());
         }
+
+        int upperIndex = upPoint.y()*layerWidth + upPoint.x();
+        int bottomIndex = bottomPoint.y()*layerWidth + bottomPoint.x();
+        int leftIndex = leftPoint.y()*layerWidth + leftPoint.x();
+        int rightIndex = rightPoint.y()*layerWidth + rightPoint.x();
+
 
         // if we have already considered this point, skip to the next
         // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
@@ -458,20 +450,20 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
-            if (currentLayer->contains(upPoint) && upperID >= 0 && upperID < numTiles && checked[upperID]) {
-                preferredTerrain = (::terrain(newTerrain[upperID]) << 16) | (preferredTerrain & 0x0000FFFF);
+            if (currentLayer->contains(upPoint) && checked[upperIndex]) {
+                preferredTerrain = (::terrain(newTerrain[upperIndex]) << 16) | (preferredTerrain & 0x0000FFFF);
                 mask |= 0xFFFF0000;
             }
-            if (currentLayer->contains(bottomPoint) && bottomID >= 0 && bottomID < numTiles && checked[bottomID]) {
-                preferredTerrain = (::terrain(newTerrain[bottomID]) >> 16) | (preferredTerrain & 0xFFFF0000);
+            if (currentLayer->contains(bottomPoint) && checked[bottomIndex]) {
+                preferredTerrain = (::terrain(newTerrain[bottomIndex]) >> 16) | (preferredTerrain & 0xFFFF0000);
                 mask |= 0x0000FFFF;
             }
-            if (currentLayer->contains(leftPoint) && leftID >= 0 && leftID < numTiles && checked[leftID]) {
-                preferredTerrain = ((::terrain(newTerrain[leftID]) << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
+            if (currentLayer->contains(leftPoint) && checked[leftIndex]) {
+                preferredTerrain = ((::terrain(newTerrain[leftIndex]) << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
                 mask |= 0xFF00FF00;
             }
-            if (currentLayer->contains(rightPoint) && rightID >= 0 && rightID < numTiles && checked[rightID]) {
-                preferredTerrain = ((::terrain(newTerrain[rightID]) >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
+            if (currentLayer->contains(rightPoint) && checked[rightIndex]) {
+                preferredTerrain = ((::terrain(newTerrain[rightIndex]) >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
         }
@@ -493,22 +485,22 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         brushRect |= QRect(p, p);
 
         // consider surrounding tiles if terrain constraints were not satisfied
-        if (currentLayer->contains(upPoint) && upperID >= 0 && upperID < numTiles && !checked[upperID]) {
+        if (currentLayer->contains(upPoint) && !checked[upperIndex]) {
             const Tile *above = currentLayer->cellAt(upPoint).tile();
             if (topEdge(paste) != bottomEdge(above))
                 transitionList.append(upPoint);
         }
-        if (currentLayer->contains(bottomPoint) && bottomID >= 0 && bottomID < numTiles && !checked[bottomID]) {
+        if (currentLayer->contains(bottomPoint) && !checked[bottomIndex]) {
             const Tile *below = currentLayer->cellAt(bottomPoint).tile();
             if (bottomEdge(paste) != topEdge(below))
                 transitionList.append(bottomPoint);
         }
-        if (currentLayer->contains(leftPoint) && leftID >= 0 && leftID < numTiles && !checked[leftID]) {
+        if (currentLayer->contains(leftPoint) && !checked[leftIndex]) {
             const Tile *left = currentLayer->cellAt(leftPoint).tile();
             if (leftEdge(paste) != rightEdge(left))
                 transitionList.append(leftPoint);
         }
-        if (currentLayer->contains(rightPoint) && rightID >= 0 && rightID < numTiles && !checked[rightID]) {
+        if (currentLayer->contains(rightPoint) && !checked[rightIndex]) {
             const Tile *right = currentLayer->cellAt(rightPoint).tile();
             if (rightEdge(paste) != leftEdge(right))
                 transitionList.append(rightPoint);
