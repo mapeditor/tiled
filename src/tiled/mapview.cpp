@@ -34,11 +34,7 @@
 #include <QScrollBar>
 
 #ifndef QT_NO_OPENGL
-#if QT_VERSION >= 0x050400
 #include <QOpenGLWidget>
-#else
-#include <QGLWidget>
-#endif
 #endif
 
 using namespace Tiled::Internal;
@@ -104,7 +100,6 @@ void MapView::adjustScale(qreal scale)
 void MapView::setUseOpenGL(bool useOpenGL)
 {
 #ifndef QT_NO_OPENGL
-#if QT_VERSION >= 0x050400
     if (useOpenGL) {
         if (!qobject_cast<QOpenGLWidget*>(viewport())) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
@@ -119,19 +114,6 @@ void MapView::setUseOpenGL(bool useOpenGL)
         if (qobject_cast<QOpenGLWidget*>(viewport()))
             setViewport(nullptr);
     }
-#else
-    if (useOpenGL && QGLFormat::hasOpenGL()) {
-        if (!qobject_cast<QGLWidget*>(viewport())) {
-            QGLFormat format = QGLFormat::defaultFormat();
-            format.setDepth(false);         // No need for a depth buffer
-            format.setSampleBuffers(true);  // Enable anti-aliasing
-            setViewport(new QGLWidget(format));
-        }
-    } else {
-        if (qobject_cast<QGLWidget*>(viewport()))
-            setViewport(nullptr);
-    }
-#endif
 
     QWidget *v = viewport();
     if (mMode == StaticContents)
