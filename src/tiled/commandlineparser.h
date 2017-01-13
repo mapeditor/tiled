@@ -105,7 +105,7 @@ public:
     const QStringList &filesToOpen() const { return mFilesToOpen; }
 
 private:
-    void showHelp();
+    void showHelp() const;
 
     bool handleLongOption(const QString &longName);
     bool handleShortOption(QChar c);

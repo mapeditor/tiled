@@ -136,7 +136,7 @@ public:
         const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
 
         // Create a child item for each object
-        foreach (MapObject *object, objectGroup->objects()) {
+        for (MapObject *object : objectGroup->objects()) {
             MapObjectItem *item = new MapObjectItem(object, renderer, this);
             if (drawOrder == ObjectGroup::TopDownOrder)
                 item->setZValue(item->y());
@@ -159,7 +159,7 @@ public:
         setFlag(QGraphicsItem::ItemHasNoContents);
 
         // Create a child item for each layer
-        foreach (Layer *layer, map->layers()) {
+        for (Layer *layer : map->layers()) {
             if (TileLayer *tileLayer = layer->asTileLayer()) {
                 new TileLayerItem(tileLayer, renderer, this);
             } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
@@ -209,7 +209,7 @@ bool TmxViewer::viewMap(const QString &fileName)
     MapReader reader;
     mMap = reader.readMap(fileName);
     if (!mMap) {
-        qWarning() << "Error:" << qPrintable(reader.errorString());
+        qWarning().noquote() << "Error:" << reader.errorString();
         return false;
     }
 

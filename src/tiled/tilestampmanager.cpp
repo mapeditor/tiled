@@ -252,7 +252,7 @@ void TileStampManager::loadStamps()
             QJsonParseError error;
             document = QJsonDocument::fromJson(data, &error);
             if (error.error != QJsonParseError::NoError) {
-                qDebug() << "Failed to parse stamp file:" << qPrintable(error.errorString());
+                qDebug().noquote() << "Failed to parse stamp file:" << error.errorString();
                 continue;
             }
         }
