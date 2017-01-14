@@ -38,7 +38,6 @@ matrix:
         - sudo apt-get update -qq
         - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev
         - source /opt/*/bin/qt*-env.sh
-        - openssl aes-256-cbc -K $encrypted_498dac83364f_key -iv $encrypted_498dac83364f_iv -in dist/butler_creds.enc -out butler_creds -d
       script:
         - mkdir Tiled ; cd Tiled/
         - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
@@ -74,6 +73,7 @@ matrix:
         - provider: script
           skip_cleanup: true
           on:
+            repo: bjorn/tiled
             branch: snapshot
           script: dist/linux/push-to-itch.sh
     - os: linux
