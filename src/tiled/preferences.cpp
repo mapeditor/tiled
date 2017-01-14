@@ -598,11 +598,7 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
 
 static QString dataLocation()
 {
-#if QT_VERSION >= 0x050400
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-#else
-    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#endif
 }
 
 QString Preferences::stampsDirectory() const

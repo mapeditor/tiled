@@ -28,13 +28,8 @@
 
 #include <QSortFilterProxyModel>
 
-#if !defined(QT_NO_OPENGL) && QT_VERSION < 0x050400
-#include <QGLFormat>
-#endif
-
 using namespace Tiled;
 using namespace Tiled::Internal;
-
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : QDialog(parent)
@@ -46,8 +41,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
 #if defined(QT_NO_OPENGL)
     mUi->openGL->setEnabled(false);
-#elif QT_VERSION < 0x050400
-    mUi->openGL->setEnabled(QGLFormat::hasOpenGL());
 #else
     mUi->openGL->setEnabled(true);
 #endif

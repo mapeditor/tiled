@@ -4,7 +4,7 @@ TiledQtGuiApplication {
     name: "tmxviewer"
 
     Depends { name: "libtiled" }
-    Depends { name: "Qt"; submodules: ["widgets"] }
+    Depends { name: "Qt"; submodules: ["widgets"]; versionAtLeast: "5.4" }
 
     cpp.includePaths: ["."]
 

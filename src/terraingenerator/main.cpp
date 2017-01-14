@@ -80,8 +80,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning() << "Terrain Generator"
-               << qPrintable(QCoreApplication::applicationVersion());
+    qWarning().noquote() << "Terrain Generator"
+                         << QCoreApplication::applicationVersion();
 }
 
 static bool parseCommandLineArguments(CommandLineOptions &options)
@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
         targetTileset = reader.readTileset(options.target);
         if (!targetTileset) {
             qFatal("Error reading target tileset:\n%s",
-                   qPrintable(reader.errorString()));
+                   qUtf8Printable(reader.errorString()));
         }
 
         // Remove empty tiles from the end of the tileset
@@ -401,8 +401,8 @@ int main(int argc, char *argv[])
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
             qFatal("Error reading source tileset '%s':\n%s",
-                   qPrintable(sourceFileName),
-                   qPrintable(reader.errorString()));
+                   qUtf8Printable(sourceFileName),
+                   qUtf8Printable(reader.errorString()));
         }
         sources.append(source);
     }
@@ -448,7 +448,7 @@ int main(int argc, char *argv[])
             foreach (const QString &terrainName, combine)
                 if (!terrains.contains(terrainName))
                     qFatal("Terrain %s is in combine list, however it wasn't defined by any tileset.",
-                           qPrintable(terrainName));
+                           qUtf8Printable(terrainName));
         }
     }
 

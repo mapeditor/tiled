@@ -120,7 +120,7 @@ bool PluginManager::loadPlugin(PluginFile *plugin)
 
         return true;
     } else {
-        qWarning() << "Error:" << qPrintable(plugin->loader->errorString());
+        qWarning().noquote() << "Error:" << plugin->loader->errorString();
         return false;
     }
 }
@@ -226,7 +226,7 @@ void PluginManager::loadPlugins()
             instance = loader->instance();
 
             if (!instance)
-                qWarning() << "Error:" << qPrintable(loader->errorString());
+                qWarning().noquote() << "Error:" << loader->errorString();
         }
 
         mPlugins.append(PluginFile(state, instance, loader, defaultEnable));
