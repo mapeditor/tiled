@@ -37,6 +37,7 @@ LayerModel::LayerModel(QObject *parent):
     mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
     mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
+    // todo: add mGroupLayerIcon (folder?)
 {
     mTileLayerIcon.addFile(QLatin1String(":images/32x32/layer-tile.png"));
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
@@ -73,6 +74,8 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
             return mObjectGroupIcon;
         case Layer::ImageLayerType:
             return mImageLayerIcon;
+        case Layer::GroupLayerType:
+            return mGroupLayerIcon;
         }
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;

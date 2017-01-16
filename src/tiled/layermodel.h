@@ -94,6 +94,7 @@ private:
     QIcon mTileLayerIcon;
     QIcon mObjectGroupIcon;
     QIcon mImageLayerIcon;
+    QIcon mGroupLayerIcon;
 };
 
 /**

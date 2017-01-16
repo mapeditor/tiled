@@ -298,6 +298,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             }
             break;
         }
+
+        case Layer::ImageLayerType:
+            // todo: maybe export as backgrounds?
+            break;
+
+        case Layer::GroupLayerType:
+            // todo: recursively export group layers
+            break;
         }
 
         currentLayer--;

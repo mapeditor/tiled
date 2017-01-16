@@ -21,6 +21,7 @@
 
 #include "maptovariantconverter.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -95,6 +96,8 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
         case Layer::ImageLayerType:
             layerVariants << toVariant(static_cast<const ImageLayer*>(layer));
             break;
+        case Layer::GroupLayerType:
+            layerVariants << toVariant(static_cast<const GroupLayer*>(layer));
         }
     }
     mapVariant[QLatin1String("layers")] = layerVariants;
@@ -393,6 +396,17 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer *imageLayer) const
         imageLayerVariant[QLatin1String("transparentcolor")] = transColor.name();
 
     return imageLayerVariant;
+}
+
+QVariant MapToVariantConverter::toVariant(const GroupLayer *groupLayer) const
+{
+    QVariantMap groupLayerVariant;
+
+    addLayerAttributes(groupLayerVariant, groupLayer);
+
+    // todo
+
+    return groupLayerVariant;
 }
 
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,

@@ -187,6 +187,8 @@ QtGuiApplication {
         "flipmapobjects.h",
         "geometry.cpp",
         "geometry.h",
+        "grouplayeritem.cpp",
+        "grouplayeritem.h",
         "id.cpp",
         "id.h",
         "imagecolorpickerwidget.cpp",

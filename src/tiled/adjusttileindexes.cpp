@@ -118,6 +118,10 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
 
         case Layer::ImageLayerType:
             break;
+
+        case Layer::GroupLayerType:
+            // todo: recursive
+            break;
         }
     }
 

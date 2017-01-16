@@ -70,6 +70,10 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
         }
         break;
     }
+    case Layer::GroupLayerType: {
+        // todo: apply the offset to each layer in the group?
+        break;
+    }
     }
 }
 

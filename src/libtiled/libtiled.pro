@@ -30,6 +30,7 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 SOURCES += compression.cpp \
     filesystemwatcher.cpp \
     gidmapper.cpp \
+    grouplayer.cpp \
     hexagonalrenderer.cpp \
     imagelayer.cpp \
     imagereference.cpp \
@@ -58,6 +59,7 @@ SOURCES += compression.cpp \
 HEADERS += compression.h \
     filesystemwatcher.h \
     gidmapper.h \
+    grouplayer.h \
     hexagonalrenderer.h \
     imagelayer.h \
     imagereference.h \

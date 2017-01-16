@@ -22,6 +22,7 @@
 
 #include "luatablewriter.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -165,6 +166,9 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
             break;
         case Layer::ImageLayerType:
             writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
+            break;
+        case Layer::GroupLayerType:
+            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer));
             break;
         }
     }
@@ -445,6 +449,11 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writeProperties(writer, imageLayer->properties());
 
     writer.writeEndTable();
+}
+
+void LuaPlugin::writeGroupLayer(LuaTableWriter &, const GroupLayer *)
+{
+    // todo
 }
 
 static const char *toString(MapObject::Shape shape)

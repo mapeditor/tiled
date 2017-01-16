@@ -29,6 +29,8 @@
 
 namespace Tiled {
 
+class GroupLayer;
+
 /**
  * Converts Map instances to QVariant. Meant to be used together with
  * JsonWriter.
@@ -58,6 +60,7 @@ private:
                        Map::LayerDataFormat format) const;
     QVariant toVariant(const ObjectGroup *objectGroup) const;
     QVariant toVariant(const ImageLayer *imageLayer) const;
+    QVariant toVariant(const GroupLayer *groupLayer) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Layer *layer) const;

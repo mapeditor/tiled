@@ -220,12 +220,8 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (ObjectGroup *group = layer->asObjectGroup()) {
-        for (MapObject *o : group->objects()) {
-            if (o->id() == 0)
-                o->setId(takeNextObjectId());
-        }
-    }
+    if (ObjectGroup *group = layer->asObjectGroup())
+        initializeObjectIds(*group);
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -296,6 +292,14 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
             return true;
 
     return false;
+}
+
+void Map::initializeObjectIds(ObjectGroup &objectGroup)
+{
+    for (MapObject *o : objectGroup) {
+        if (o->id() == 0)
+            o->setId(takeNextObjectId());
+    }
 }
 
 

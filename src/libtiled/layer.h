@@ -55,7 +55,8 @@ public:
     enum TypeFlag {
         TileLayerType   = 0x01,
         ObjectGroupType = 0x02,
-        ImageLayerType  = 0x04
+        ImageLayerType  = 0x04,
+        GroupLayerType  = 0x08
     };
 
     enum { AnyLayerType = 0xFF };
@@ -109,7 +110,7 @@ public:
      * Sets the map this layer is part of. Should only be called from the
      * Map class.
      */
-    void setMap(Map *map) { mMap = map; }
+    virtual void setMap(Map *map) { mMap = map; }
 
     /**
      * Returns the x position of this layer (in tiles).

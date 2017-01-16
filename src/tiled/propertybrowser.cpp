@@ -562,14 +562,15 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -577,8 +578,6 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
 
     addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
 
@@ -606,8 +605,14 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     addProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addGroupLayerProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Group Layer"));
+    addLayerProperties(groupProperty);
     addProperty(groupProperty);
 }
 
@@ -896,6 +901,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
         case Layer::TileLayerType:   applyTileLayerValue(id, val);   break;
         case Layer::ObjectGroupType: applyObjectGroupValue(id, val); break;
         case Layer::ImageLayerType:  applyImageLayerValue(id, val);  break;
+        case Layer::GroupLayerType:  applyGroupLayerValue(id, val);  break;
         }
         break;
     }
@@ -969,7 +975,13 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     }
 }
 
-void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
+void PropertyBrowser::applyGroupLayerValue(PropertyId id, const QVariant &val)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(val)
+}
+
+void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
 {
     Tileset *tileset = static_cast<Tileset*>(mObject);
     QUndoStack *undoStack = mDocument->undoStack();
@@ -1140,6 +1152,7 @@ void PropertyBrowser::addProperties()
         case Layer::TileLayerType:      addTileLayerProperties();   break;
         case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
         case Layer::ImageLayerType:     addImageLayerProperties();  break;
+        case Layer::GroupLayerType:     addGroupLayerProperties();  break;
         }
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
@@ -1236,10 +1249,13 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
         }
-        case Layer::ImageLayerType:
+        case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { imageLayer->imageSource() }));
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
+            break;
+        }
+        case Layer::GroupLayerType:
             break;
         }
         break;

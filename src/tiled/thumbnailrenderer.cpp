@@ -205,6 +205,10 @@ QImage ThumbnailRenderer::render(const QSize &size) const
             mRenderer->drawImageLayer(&painter, imageLayer);
             break;
         }
+        case Layer::GroupLayerType: {
+            // todo: recursively render the layers within this group
+            break;
+        }
         }
 
         painter.translate(-layer->offset());

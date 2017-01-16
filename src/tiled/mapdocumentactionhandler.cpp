@@ -77,6 +77,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddObjectGroup->setIcon(addObjectLayerIcon);
     mActionAddImageLayer = new QAction(this);
     mActionAddImageLayer->setIcon(addImageLayerIcon);
+    mActionAddGroupLayer = new QAction(this);
 
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
@@ -141,6 +142,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionAddObjectGroup, SIGNAL(triggered()),
             SLOT(addObjectGroup()));
     connect(mActionAddImageLayer, SIGNAL(triggered()), SLOT(addImageLayer()));
+    connect(mActionAddGroupLayer, SIGNAL(triggered()), SLOT(addGroupLayer()));
     connect(mActionLayerViaCopy, &QAction::triggered, this, &MapDocumentActionHandler::layerViaCopy);
     connect(mActionLayerViaCut, &QAction::triggered, this, &MapDocumentActionHandler::layerViaCut);
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
@@ -180,6 +182,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionAddTileLayer->setText(tr("&Tile Layer"));
     mActionAddObjectGroup->setText(tr("&Object Layer"));
     mActionAddImageLayer->setText(tr("&Image Layer"));
+    mActionAddGroupLayer->setText(tr("&Group Layer"));
     mActionLayerViaCopy->setText(tr("Layer via Copy"));
     mActionLayerViaCut->setText(tr("Layer via Cut"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
@@ -231,6 +234,7 @@ QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
     newLayerMenu->addAction(actionAddTileLayer());
     newLayerMenu->addAction(actionAddObjectGroup());
     newLayerMenu->addAction(actionAddImageLayer());
+    newLayerMenu->addAction(actionAddGroupLayer());
     newLayerMenu->addSeparator();
     newLayerMenu->addAction(actionLayerViaCopy());
     newLayerMenu->addAction(actionLayerViaCut());
@@ -419,6 +423,12 @@ void MapDocumentActionHandler::addImageLayer()
 {
      if (mMapDocument)
          mMapDocument->addLayer(Layer::ImageLayerType);
+}
+
+void MapDocumentActionHandler::addGroupLayer()
+{
+    if (mMapDocument)
+        mMapDocument->addLayer(Layer::GroupLayerType);
 }
 
 void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVariant variant)

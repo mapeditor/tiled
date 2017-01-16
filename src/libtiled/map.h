@@ -237,6 +237,9 @@ public:
     int imageLayerCount() const
     { return layerCount(Layer::ImageLayerType); }
 
+    int groupLayerCount() const
+    { return layerCount(Layer::GroupLayerType); }
+
     /**
      * Returns the layer at the specified index.
      */
@@ -364,6 +367,7 @@ public:
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
+    void initializeObjectIds(ObjectGroup &objectGroup);
 
 private:
     void adoptLayer(Layer *layer);

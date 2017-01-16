@@ -25,6 +25,8 @@
 
 #include "abstracttool.h"
 #include "containerhelpers.h"
+#include "grouplayer.h"
+#include "grouplayeritem.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -235,9 +237,13 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 {
     QGraphicsItem *layerItem = nullptr;
 
-    if (TileLayer *tl = layer->asTileLayer()) {
-        layerItem = new TileLayerItem(tl, mMapDocument);
-    } else if (ObjectGroup *og = layer->asObjectGroup()) {
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+        layerItem = new TileLayerItem(static_cast<TileLayer*>(layer), mMapDocument);
+        break;
+
+    case Layer::ObjectGroupType: {
+        auto og = static_cast<ObjectGroup*>(layer);
         const ObjectGroup::DrawOrder drawOrder = og->drawOrder();
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         int objectIndex = 0;
@@ -253,8 +259,17 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
             ++objectIndex;
         }
         layerItem = ogItem;
-    } else if (ImageLayer *il = layer->asImageLayer()) {
-        layerItem = new ImageLayerItem(il, mMapDocument);
+        break;
+    }
+
+    case Layer::ImageLayerType:
+        layerItem = new ImageLayerItem(static_cast<ImageLayer*>(layer), mMapDocument);
+        break;
+
+    case Layer::GroupLayerType:
+        // todo: process child layers
+        layerItem = new GroupLayerItem(static_cast<GroupLayer*>(layer));
+        break;
     }
 
     Q_ASSERT(layerItem);

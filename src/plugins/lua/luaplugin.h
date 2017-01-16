@@ -31,6 +31,7 @@
 #include <QObject>
 
 namespace Tiled {
+class GroupLayer;
 class MapObject;
 class ObjectGroup;
 class Properties;
@@ -66,6 +67,7 @@ private:
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
+    void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
 
     QString mError;

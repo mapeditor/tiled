@@ -30,6 +30,7 @@
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
+#include "grouplayer.h"
 #include "flipmapobjects.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
@@ -321,13 +322,18 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             }
             break;
         }
-        case Layer::ImageLayerType:
+        case Layer::ImageLayerType: {
             // Adjust image layer by changing its offset
             auto imageLayer = static_cast<ImageLayer*>(layer);
             new SetLayerOffset(this, layerIndex,
                                imageLayer->offset() + pixelOffset,
                                command);
             break;
+        }
+        case Layer::GroupLayerType: {
+            // todo: recursively resize layers in this group
+            break;
+        }
         }
     }
 
@@ -425,6 +431,10 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     case Layer::ImageLayerType:
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0);
+        break;
+    case Layer::GroupLayerType:
+        name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
+        layer = new GroupLayer(name, 0, 0);
         break;
     }
     Q_ASSERT(layer);
