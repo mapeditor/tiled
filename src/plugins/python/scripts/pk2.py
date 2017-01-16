@@ -67,11 +67,9 @@ class PK2(Plugin):
 
     # -- layers
     la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
-    la1.setMap(m)
     lay1.doTiles(t, la1, bb)
 
     la2 = Tiled.TileLayer('Front', 0,0, bb[2], bb[3])
-    la2.setMap(m)
     lay2.doTiles(t, la2, bb)
 
     sprdir = dirname(f)+'/../../sprites/'
@@ -100,7 +98,6 @@ class PK2(Plugin):
       #print spr
 
     la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
-    la3.setMap(m)
     lay3.doSprites(la3, bb)
 
     m.addLayer(lai)

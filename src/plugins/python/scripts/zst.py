@@ -63,7 +63,6 @@ class ZST(Plugin):
         tsets[pal].loadFromImage(img, 'script')
 
       la = Tiled.TileLayer('Back', 0,0, 64,32)
-      la.setMap(m)
       fh.seek(tilemapbase)
 
       for y in range(la.height()):

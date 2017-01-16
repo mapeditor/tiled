@@ -3674,25 +3674,6 @@ _wrap_PyTiledLayer_asTileLayer(PyTiledLayer *self)
 
 
 PyObject *
-_wrap_PyTiledLayer_setMap(PyTiledLayer *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    PyTiledMap *map;
-    Tiled::Map *map_ptr;
-    const char *keywords[] = {"map", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledMap_Type, &map)) {
-        return NULL;
-    }
-    map_ptr = (map ? map->obj : NULL);
-    self->obj->setMap(map_ptr);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
 _wrap_PyTiledLayer_name(PyTiledLayer *self)
 {
     PyObject *py_retval;
@@ -3869,7 +3850,6 @@ static PyMethodDef PyTiledLayer_methods[] = {
     {(char *) "opacity", (PyCFunction) _wrap_PyTiledLayer_opacity, METH_NOARGS, NULL },
     {(char *) "map", (PyCFunction) _wrap_PyTiledLayer_map, METH_NOARGS, NULL },
     {(char *) "asTileLayer", (PyCFunction) _wrap_PyTiledLayer_asTileLayer, METH_NOARGS, NULL },
-    {(char *) "setMap", (PyCFunction) _wrap_PyTiledLayer_setMap, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "name", (PyCFunction) _wrap_PyTiledLayer_name, METH_NOARGS, NULL },
     {(char *) "setName", (PyCFunction) _wrap_PyTiledLayer_setName, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setX", (PyCFunction) _wrap_PyTiledLayer_setX, METH_KEYWORDS|METH_VARARGS, NULL },

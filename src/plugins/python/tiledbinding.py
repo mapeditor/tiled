@@ -223,8 +223,6 @@ cls_layer.add_method('setOpacity', None, [('float','opacity')])
 cls_layer.add_method('isVisible', 'bool', [])
 cls_layer.add_method('setVisible', None, [('bool','visible')])
 cls_layer.add_method('map', retval('Tiled::Map*',reference_existing_object=True), [])
-cls_layer.add_method('setMap', None,
-    [param('Tiled::Map*','map',transfer_ownership=False)])
 cls_layer.add_method('x', 'int', [])
 cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
