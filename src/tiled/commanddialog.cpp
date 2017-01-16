@@ -37,6 +37,7 @@ CommandDialog::CommandDialog(QWidget *parent)
     , mUi(new Ui::CommandDialog)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());

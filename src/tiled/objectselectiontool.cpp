@@ -39,6 +39,7 @@
 #include "snaphelper.h"
 #include "tile.h"
 #include "tileset.h"
+#include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
@@ -172,7 +173,7 @@ public:
         setZValue(10000 + 1);
     }
 
-    QRectF boundingRect() const override { return QRectF(-9, -9, 18, 18); }
+    QRectF boundingRect() const override { return Utils::dpiScaled(QRectF(-9, -9, 18, 18)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 };
 
@@ -184,6 +185,7 @@ void OriginIndicator::paint(QPainter *painter,
         QLine(-8,0, 8,0),
         QLine(0,-8, 0,8),
     };
+    painter->scale(Utils::defaultDpiScale(), Utils::defaultDpiScale());
     painter->setPen(QPen(mUnderMouse ? Qt::white : Qt::lightGray, 1, Qt::DashLine));
     painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
     painter->translate(1, 1);
@@ -216,7 +218,7 @@ public:
         mArrow = transform.map(mArrow);
     }
 
-    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    QRectF boundingRect() const override { return Utils::dpiScaled(mArrow.boundingRect().adjusted(-1, -1, 1, 1)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
@@ -229,6 +231,7 @@ void RotateHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     QPen pen(mUnderMouse ? Qt::black : Qt::lightGray, 1);
     QColor brush(mUnderMouse ? Qt::white : Qt::black);
 
+    painter->scale(Utils::defaultDpiScale(), Utils::defaultDpiScale());
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(pen);
     painter->setBrush(brush);
@@ -277,7 +280,7 @@ public:
     bool resizingLimitHorizontal() const { return mResizingLimitHorizontal; }
     bool resizingLimitVertical() const { return mResizingLimitVertical; }
     
-    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    QRectF boundingRect() const override { return Utils::dpiScaled(mArrow.boundingRect().adjusted(-1, -1, 1, 1)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
@@ -295,6 +298,7 @@ void ResizeHandle::paint(QPainter *painter,
     QPen pen(mUnderMouse ? Qt::black : Qt::lightGray, 1);
     QColor brush(mUnderMouse ? Qt::white : Qt::black);
 
+    painter->scale(Utils::defaultDpiScale(), Utils::defaultDpiScale());
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(pen);
     painter->setBrush(brush);

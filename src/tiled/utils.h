@@ -61,6 +61,13 @@ void setThemeIcon(T *t, const char *name)
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+qreal defaultDpiScale();
+qreal dpiScaled(qreal value);
+QSize dpiScaled(QSize value);
+QPoint dpiScaled(QPoint value);
+QRectF dpiScaled(QRectF value);
+QSize smallIconSize();
+
 } // namespace Utils
 } // namespace Tiled
 

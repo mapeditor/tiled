@@ -36,6 +36,7 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     , mUi(new Ui::ResizeDialog)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     Preferences *prefs = Preferences::instance();

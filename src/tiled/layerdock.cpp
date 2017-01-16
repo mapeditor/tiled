@@ -30,6 +30,7 @@
 #include "mapdocumentactionhandler.h"
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
+#include "utils.h"
 
 #include <QBoxLayout>
 #include <QApplication>
@@ -77,7 +78,7 @@ LayerDock::LayerDock(QWidget *parent):
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);
     buttonContainer->setMovable(false);
-    buttonContainer->setIconSize(QSize(16, 16));
+    buttonContainer->setIconSize(Utils::smallIconSize());
 
     buttonContainer->addWidget(mNewLayerButton);
     buttonContainer->addAction(handler->actionMoveLayerUp());
@@ -233,7 +234,7 @@ LayerView::LayerView(QWidget *parent)
 
 QSize LayerView::sizeHint() const
 {
-    return QSize(130, 100);
+    return Utils::dpiScaled(QSize(130, 100));
 }
 
 void LayerView::setMapDocument(MapDocument *mapDocument)

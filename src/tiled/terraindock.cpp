@@ -124,7 +124,7 @@ TerrainDock::TerrainDock(QWidget *parent)
             this, SLOT(expandRows(QModelIndex,int,int)));
 
     mEraseTerrainButton = new QPushButton(this);
-    mEraseTerrainButton->setIconSize(QSize(16, 16));
+    mEraseTerrainButton->setIconSize(Utils::smallIconSize());
     mEraseTerrainButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
     mEraseTerrainButton->setCheckable(true);
     mEraseTerrainButton->setAutoExclusive(true);
@@ -140,7 +140,7 @@ TerrainDock::TerrainDock(QWidget *parent)
 
     mToolBar->setFloatable(false);
     mToolBar->setMovable(false);
-    mToolBar->setIconSize(QSize(16, 16));
+    mToolBar->setIconSize(Utils::smallIconSize());
 
     mToolBar->addAction(mAddTerrainType);
     mToolBar->addAction(mRemoveTerrainType);

@@ -32,6 +32,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tilelayer.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QCursor>
@@ -94,7 +95,7 @@ void MiniMap::setMapDocument(MapDocument *map)
 
 QSize MiniMap::sizeHint() const
 {
-    return QSize(200, 200);
+    return Utils::dpiScaled(QSize(200, 200));
 }
 
 void MiniMap::scheduleMapImageUpdate()

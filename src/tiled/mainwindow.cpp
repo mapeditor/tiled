@@ -1536,7 +1536,7 @@ void MainWindow::readSettings()
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
-        resize(1200, 700);
+        resize(Utils::dpiScaled(QSize(1200, 700)));
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mSettings.endGroup();

@@ -442,7 +442,7 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 
 QSize TilesetView::sizeHint() const
 {
-    return QSize(130, 100);
+    return Utils::dpiScaled(QSize(130, 100));
 }
 
 int TilesetView::sizeHintForColumn(int column) const

@@ -23,6 +23,7 @@
 #include "flexiblescrollbar.h"
 #include "mapscene.h"
 #include "preferences.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QApplication>
@@ -247,6 +248,8 @@ void MapView::wheelEvent(QWheelEvent *event)
         int lines = QApplication::wheelScrollLines();
         pixels.setX(int(steps.x() * lines * hBar->singleStep()));
         pixels.setY(int(steps.y() * lines * vBar->singleStep()));
+    } else {
+        pixels = Utils::dpiScaled(pixels);
     }
 
     if (!pixels.isNull()) {

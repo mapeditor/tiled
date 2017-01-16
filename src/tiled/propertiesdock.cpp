@@ -78,7 +78,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(16, 16));
+    toolBar->setIconSize(Utils::smallIconSize());
     toolBar->addAction(mActionAddProperty);
     toolBar->addAction(mActionRemoveProperty);
     toolBar->addAction(mActionRenameProperty);
