@@ -40,6 +40,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QCursor>
+#include <QMenu>
 #include <QtCore/qmath.h>
 
 using namespace Tiled;
@@ -215,6 +216,26 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     }
 
     emit mapDocumentChanged(mMapDocument);
+}
+
+/**
+ * Creates the new layer menu, which is used in several places.
+ */
+QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
+{
+    QMenu *newLayerMenu = new QMenu(tr("&New"), parent);
+
+    newLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    Utils::setThemeIcon(newLayerMenu, "document-new");
+
+    newLayerMenu->addAction(actionAddTileLayer());
+    newLayerMenu->addAction(actionAddObjectGroup());
+    newLayerMenu->addAction(actionAddImageLayer());
+    newLayerMenu->addSeparator();
+    newLayerMenu->addAction(actionLayerViaCopy());
+    newLayerMenu->addAction(actionLayerViaCut());
+
+    return newLayerMenu;
 }
 
 void MapDocumentActionHandler::cut()

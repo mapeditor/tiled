@@ -243,14 +243,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                                mActionHandler->actionCropToSelection());
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
-    mNewLayerMenu  = mLayerMenu->addMenu(tr("&New"));
-    mNewLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
-    mNewLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mNewLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
-    mNewLayerMenu->addAction(mActionHandler->actionAddImageLayer());
-    mNewLayerMenu->addSeparator();
-    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCopy());
-    mNewLayerMenu->addAction(mActionHandler->actionLayerViaCut());
+    mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
+    mLayerMenu->addMenu(mNewLayerMenu);
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
@@ -361,7 +355,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
-    setThemeIcon(mNewLayerMenu, "document-new");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 

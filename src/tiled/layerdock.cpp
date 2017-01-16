@@ -30,7 +30,6 @@
 #include "mapdocumentactionhandler.h"
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
-#include "utils.h"
 
 #include <QBoxLayout>
 #include <QApplication>
@@ -68,24 +67,19 @@ LayerDock::LayerDock(QWidget *parent):
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    QMenu *newLayerMenu = new QMenu(this);
-    newLayerMenu->addAction(handler->actionAddTileLayer());
-    newLayerMenu->addAction(handler->actionAddObjectGroup());
-    newLayerMenu->addAction(handler->actionAddImageLayer());
+    QMenu *newLayerMenu = handler->createNewLayerMenu(this);
 
-    const QIcon newIcon(QLatin1String(":/images/16x16/document-new.png"));
-    QToolButton *newLayerButton = new QToolButton;
-    newLayerButton->setPopupMode(QToolButton::InstantPopup);
-    newLayerButton->setMenu(newLayerMenu);
-    newLayerButton->setIcon(newIcon);
-    Utils::setThemeIcon(newLayerButton, "document-new");
+    mNewLayerButton = new QToolButton;
+    mNewLayerButton->setPopupMode(QToolButton::InstantPopup);
+    mNewLayerButton->setMenu(newLayerMenu);
+    mNewLayerButton->setIcon(newLayerMenu->icon());
 
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(QSize(16, 16));
 
-    buttonContainer->addWidget(newLayerButton);
+    buttonContainer->addWidget(mNewLayerButton);
     buttonContainer->addAction(handler->actionMoveLayerUp());
     buttonContainer->addAction(handler->actionMoveLayerDown());
     buttonContainer->addAction(handler->actionDuplicateLayer());
@@ -216,6 +210,7 @@ void LayerDock::retranslateUi()
 {
     setWindowTitle(tr("Layers"));
     mOpacityLabel->setText(tr("Opacity:"));
+    mNewLayerButton->setToolTip(tr("New Layer"));
 }
 
 
@@ -314,9 +309,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
     QMenu menu;
-    menu.addAction(handler->actionAddTileLayer());
-    menu.addAction(handler->actionAddObjectGroup());
-    menu.addAction(handler->actionAddImageLayer());
+
+    menu.addMenu(handler->createNewLayerMenu(&menu));
 
     if (proxyIndex.isValid()) {
         menu.addAction(handler->actionDuplicateLayer());
