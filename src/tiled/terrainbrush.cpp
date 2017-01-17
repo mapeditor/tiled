@@ -51,6 +51,7 @@ TerrainBrush::TerrainBrush(QObject *parent)
     , mPaintX(0), mPaintY(0)
     , mIsActive(false)
     , mBrushBehavior(Free)
+    , mMirrorDiagonally(false)
     , mLineReferenceX(0)
     , mLineReferenceY(0)
 {
@@ -149,6 +150,8 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
                      mBrushBehavior == LineStartSet)) {
         mBrushBehavior = lineMode ? Line : Free;
     }
+
+    mMirrorDiagonally = modifiers & Qt::AltModifier;
 
     setBrushMode((modifiers & Qt::ControlModifier) ? PaintVertex : PaintTile);
     updateBrush(tilePosition());
@@ -349,19 +352,22 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     memset(checked, 0, numTiles);
 
     // create a consideration list, and push the start points
-    QList<QPoint> transitionList;
-    int initialTiles = 0;
+    QVector<QPoint> transitionList;
 
-    if (list) {
-        // if we were supplied a list of start points
-        foreach (const QPoint &p, *list) {
-            transitionList.append(p);
-            ++initialTiles;
-        }
-    } else {
+    if (list) // if we were supplied a list of start points
+        transitionList = *list;
+    else
         transitionList.append(cursorPos);
-        initialTiles = 1;
+
+    if (mMirrorDiagonally) {
+        for (int i = 0, e = transitionList.size(); i < e; ++i) {
+            const auto &p = transitionList.at(i);
+            transitionList.append(QPoint(currentLayer->height() - p.y() - 1,
+                                         currentLayer->width() - p.x() - 1));
+        }
     }
+
+    int initialTiles = transitionList.size();
 
     QRect brushRect(cursorPos, cursorPos);
 
