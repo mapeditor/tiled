@@ -28,15 +28,15 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "randompicker.h"
+#include "staggeredrenderer.h"
+#include "terrain.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "tile.h"
-#include "terrain.h"
 
-#include <math.h>
 #include <QVector>
+
 #include <climits>
-#include <staggeredrenderer.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -360,10 +360,13 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         transitionList.append(cursorPos);
 
     if (mMirrorDiagonally) {
+        const int w = currentLayer->width();
+        const int h = currentLayer->height();
+
         for (int i = 0, e = transitionList.size(); i < e; ++i) {
             const auto &p = transitionList.at(i);
-            transitionList.append(QPoint(currentLayer->height() - p.y() - 1,
-                                         currentLayer->width() - p.x() - 1));
+            transitionList.append(QPoint(w - p.x() - 1,
+                                         h - p.y() - 1));
         }
     }
 
