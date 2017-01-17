@@ -153,26 +153,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     }
     writer.writeEndTable();
 
-    writer.writeStartTable("layers");
-    for (const Layer *layer : map->layers()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            writeTileLayer(writer,
-                           static_cast<const TileLayer*>(layer),
-                           map->layerDataFormat());
-            break;
-        case Layer::ObjectGroupType:
-            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
-            break;
-        case Layer::ImageLayerType:
-            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
-            break;
-        case Layer::GroupLayerType:
-            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer));
-            break;
-        }
-    }
-    writer.writeEndTable();
+    writeLayers(writer, map->layers(), map->layerDataFormat());
 
     writer.writeEndTable();
 }
@@ -339,6 +320,30 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeEndTable(); // tileset
 }
 
+void LuaPlugin::writeLayers(LuaTableWriter &writer,
+                            const QList<Layer *> &layers,
+                            Map::LayerDataFormat format)
+{
+    writer.writeStartTable("layers");
+    for (const Layer *layer : layers) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format);
+            break;
+        case Layer::ObjectGroupType:
+            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
+            break;
+        case Layer::GroupLayerType:
+            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format);
+            break;
+        }
+    }
+    writer.writeEndTable();
+}
+
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format)
@@ -451,9 +456,26 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeGroupLayer(LuaTableWriter &, const GroupLayer *)
+void LuaPlugin::writeGroupLayer(LuaTableWriter &writer,
+                                const GroupLayer *groupLayer,
+                                Map::LayerDataFormat format)
 {
-    // todo
+    writer.writeStartTable();
+
+    writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("name", groupLayer->name());
+    writer.writeKeyAndValue("visible", groupLayer->isVisible());
+    writer.writeKeyAndValue("opacity", groupLayer->opacity());
+
+    const QPointF offset = groupLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
+    writeProperties(writer, groupLayer->properties());
+
+    writeLayers(writer, groupLayer->layers(), format);
+
+    writer.writeEndTable();
 }
 
 static const char *toString(MapObject::Shape shape)

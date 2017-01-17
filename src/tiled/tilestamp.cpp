@@ -280,7 +280,7 @@ QJsonObject TileStamp::toJson(const QDir &dir) const
     QJsonArray variations;
     for (const TileStampVariation &variation : d->variations) {
         MapToVariantConverter converter;
-        QVariant mapVariant = converter.toVariant(variation.map, dir);
+        QVariant mapVariant = converter.toVariant(*variation.map, dir);
         QJsonValue mapJson = QJsonValue::fromVariant(mapVariant);
 
         QJsonObject variationJson;

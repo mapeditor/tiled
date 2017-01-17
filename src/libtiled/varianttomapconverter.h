@@ -30,6 +30,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 class Map;
 class ObjectGroup;
@@ -83,6 +84,7 @@ private:
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
+    GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
 

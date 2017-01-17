@@ -21,6 +21,7 @@
 
 #include "varianttomapconverter.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -325,6 +326,8 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
         layer = toObjectGroup(variantMap);
     else if (variantMap[QLatin1String("type")] == QLatin1String("imagelayer"))
         layer = toImageLayer(variantMap);
+    else if (variantMap[QLatin1String("type")] == QLatin1String("group"))
+        layer = toGroupLayer(variantMap);
 
     if (layer) {
         layer->setProperties(extractProperties(variantMap));
@@ -550,6 +553,31 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     }
 
     return imageLayer.take();
+}
+
+GroupLayer *VariantToMapConverter::toGroupLayer(const QVariantMap &variantMap)
+{
+    const QString name = variantMap[QLatin1String("name")].toString();
+    const int x = variantMap[QLatin1String("x")].toInt();
+    const int y = variantMap[QLatin1String("y")].toInt();
+    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
+    const bool visible = variantMap[QLatin1String("visible")].toBool();
+
+    QScopedPointer<GroupLayer> groupLayer(new GroupLayer(name, x, y));
+
+    groupLayer->setOpacity(opacity);
+    groupLayer->setVisible(visible);
+
+    const auto layerVariants = variantMap[QLatin1String("layers")].toList();
+    for (const QVariant &layerVariant : layerVariants) {
+        Layer *layer = toLayer(layerVariant);
+        if (!layer)
+            return nullptr;
+
+        groupLayer->addLayer(layer);
+    }
+
+    return groupLayer.take();
 }
 
 QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const

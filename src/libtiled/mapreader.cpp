@@ -32,6 +32,7 @@
 
 #include "compression.h"
 #include "gidmapper.h"
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
 #include "map.h"
@@ -85,8 +86,10 @@ private:
     void readTilesetTerrainTypes(Tileset &tileset);
     ImageReference readImage();
 
-    TileLayer *readLayer();
-    void readLayerData(TileLayer &tileLayer);
+    Layer *tryReadLayer();
+
+    TileLayer *readTileLayer();
+    void readTileLayerData(TileLayer &tileLayer);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
                                Map::LayerDataFormat format);
@@ -108,6 +111,9 @@ private:
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
     QPolygonF readPolygon();
+
+    GroupLayer *readGroupLayer();
+
     QVector<Frame> readAnimationFrames();
 
     Properties readProperties();
@@ -248,16 +254,12 @@ Map *MapReaderPrivate::readMap()
         mMap->setBackgroundColor(QColor(bgColorString.toString()));
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("properties"))
+        if (Layer *layer = tryReadLayer())
+            mMap->addLayer(layer);
+        else if (xml.name() == QLatin1String("properties"))
             mMap->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("tileset"))
             mMap->addTileset(readTileset());
-        else if (xml.name() == QLatin1String("layer"))
-            mMap->addLayer(readLayer());
-        else if (xml.name() == QLatin1String("objectgroup"))
-            mMap->addLayer(readObjectGroup());
-        else if (xml.name() == QLatin1String("imagelayer"))
-            mMap->addLayer(readImageLayer());
         else
             readUnknownElement();
     }
@@ -518,6 +520,22 @@ ImageReference MapReaderPrivate::readImage()
     return image;
 }
 
+Layer *MapReaderPrivate::tryReadLayer()
+{
+    Q_ASSERT(xml.isStartElement());
+
+    if (xml.name() == QLatin1String("layer"))
+        return readTileLayer();
+    else if (xml.name() == QLatin1String("objectgroup"))
+        return readObjectGroup();
+    else if (xml.name() == QLatin1String("imagelayer"))
+        return readImageLayer();
+    else if (xml.name() == QLatin1String("group"))
+        return readGroupLayer();
+    else
+        return nullptr;
+}
+
 void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
@@ -563,7 +581,7 @@ static void readLayerAttributes(Layer &layer,
     layer.setOffset(offset);
 }
 
-TileLayer *MapReaderPrivate::readLayer()
+TileLayer *MapReaderPrivate::readTileLayer()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("layer"));
 
@@ -581,7 +599,7 @@ TileLayer *MapReaderPrivate::readLayer()
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
-            readLayerData(*tileLayer);
+            readTileLayerData(*tileLayer);
         else
             readUnknownElement();
     }
@@ -589,7 +607,7 @@ TileLayer *MapReaderPrivate::readLayer()
     return tileLayer;
 }
 
-void MapReaderPrivate::readLayerData(TileLayer &tileLayer)
+void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
@@ -900,6 +918,30 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     xml.skipCurrentElement();
     return polygon;
+}
+
+GroupLayer *MapReaderPrivate::readGroupLayer()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("group"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int x = atts.value(QLatin1String("x")).toInt();
+    const int y = atts.value(QLatin1String("y")).toInt();
+
+    GroupLayer *groupLayer = new GroupLayer(name, x, y);
+    readLayerAttributes(*groupLayer, atts);
+
+    while (xml.readNextStartElement()) {
+        if (Layer *layer = tryReadLayer())
+            groupLayer->addLayer(layer);
+        else if (xml.name() == QLatin1String("properties"))
+            groupLayer->mergeProperties(readProperties());
+        else
+            readUnknownElement();
+    }
+
+    return groupLayer;
 }
 
 QVector<Frame> MapReaderPrivate::readAnimationFrames()
