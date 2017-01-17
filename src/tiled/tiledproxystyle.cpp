@@ -389,8 +389,9 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             proxy()->drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
 
         QColor textColor = option->palette.text().color();
-        QPen foregroundPen(textColor, 1.25, Qt::SolidLine, Qt::RoundCap);
-        QPen shadowPen(QColor(0, 0, 0, 200), 1.25, Qt::SolidLine, Qt::RoundCap);
+        qreal penWidth = Utils::dpiScaled(1.25);
+        QPen foregroundPen(textColor, penWidth, Qt::SolidLine, Qt::RoundCap);
+        QPen shadowPen(QColor(0, 0, 0, 200), penWidth, Qt::SolidLine, Qt::RoundCap);
 
         if (!mIsDark) {
             if (!hovered && !(option->state & State_Selected))
@@ -404,7 +405,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             }
         }
 
-        QRect iconRect(0, 0, 8, 8);
+        QRect iconRect = Utils::dpiScaled(QRectF(0, 0, 8, 8)).toRect();
         iconRect.moveCenter(option->rect.center());
 
         const QPoint lines[] = {
@@ -857,9 +858,11 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 QColor sliderColor = getSliderColor(option->palette, isDarkBg);
 
-                QRect sliderRect = scrollBarSlider.adjusted(3, 2, -3, -3);
+                int margin = qRound(Utils::dpiScaled(2));
+
+                QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
-                    sliderRect = scrollBarSlider.adjusted(2, 3, -3, -3);
+                    sliderRect = scrollBarSlider.adjusted(margin, margin + 1, -margin - 1, -margin - 1);
                 painter->setPen(QPen(getSliderOutline(option->palette, isDarkBg)));
                 if (sunken && scrollBar->activeSubControls & SC_ScrollBarSlider) {
                     QLinearGradient sunkenGradient = gradient;
@@ -1030,17 +1033,17 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
             int widgetHeight = 0;
             int padding = 0;
             if (!tab->leftButtonSize.isEmpty()) {
-                padding += 4;
+                padding += Utils::dpiScaled(4);
                 widgetWidth += tab->leftButtonSize.width();
                 widgetHeight += tab->leftButtonSize.height();
             }
             if (!tab->rightButtonSize.isEmpty()) {
-                padding += 4;
+                padding += Utils::dpiScaled(4);
                 widgetWidth += tab->rightButtonSize.width();
                 widgetHeight += tab->rightButtonSize.height();
             }
             if (!tab->icon.isNull())
-                padding += 4;
+                padding += Utils::dpiScaled(4);
             if (verticalTabs(tab->shape)) {
                 size = QSize(qMax(maxWidgetWidth, qMax(fm.height(), iconSize.height()) + vframe),
                         fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe + widgetHeight + padding);
