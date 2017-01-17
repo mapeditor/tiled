@@ -470,7 +470,8 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     }
     Q_ASSERT(layer);
 
-    const int index = mMap->layerCount();
+    const int index = mCurrentLayerIndex >= 0 ? mCurrentLayerIndex + 1
+                                              : mMap->layerCount();
     mUndoStack->push(new AddLayer(this, index, layer));
     setCurrentLayerIndex(index);
 
