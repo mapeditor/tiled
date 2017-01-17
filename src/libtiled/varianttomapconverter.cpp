@@ -91,7 +91,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
         map->setBackgroundColor(QColor(bgColor));
 
-    foreach (const QVariant &tilesetVariant, variantMap[QLatin1String("tilesets")].toList()) {
+    const auto tilesetVariants = variantMap[QLatin1String("tilesets")].toList();
+    for (const QVariant &tilesetVariant : tilesetVariants) {
         SharedTileset tileset = toTileset(tilesetVariant);
         if (!tileset)
             return nullptr;
@@ -99,7 +100,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->addTileset(tileset);
     }
 
-    foreach (const QVariant &layerVariant, variantMap[QLatin1String("layers")].toList()) {
+    const auto layerVariants = variantMap[QLatin1String("layers")].toList();
+    for (const QVariant &layerVariant : layerVariants) {
         Layer *layer = toLayer(layerVariant);
         if (!layer)
             return nullptr;
@@ -391,7 +393,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
         int y = 0;
         bool ok;
 
-        foreach (const QVariant &gidVariant, dataVariantList) {
+        for (const QVariant &gidVariant : dataVariantList) {
             const unsigned gid = gidVariant.toUInt(&ok);
             if (!ok) {
                 mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
@@ -465,7 +467,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         }
     }
 
-    foreach (const QVariant &objectVariant, variantMap[QLatin1String("objects")].toList()) {
+    const auto objectVariants = variantMap[QLatin1String("objects")].toList();
+    for (const QVariant &objectVariant : objectVariants) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
         const QString name = objectVariantMap[QLatin1String("name")].toString();
@@ -552,7 +555,8 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
 {
     QPolygonF polygon;
-    foreach (const QVariant &pointVariant, variant.toList()) {
+    const auto pointVariants = variant.toList();
+    for (const QVariant &pointVariant : pointVariants) {
         const QVariantMap pointVariantMap = pointVariant.toMap();
         const qreal pointX = pointVariantMap[QLatin1String("x")].toReal();
         const qreal pointY = pointVariantMap[QLatin1String("y")].toReal();
