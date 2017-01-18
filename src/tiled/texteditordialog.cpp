@@ -31,6 +31,7 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
     , mUi(new Ui::TextEditorDialog)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     Utils::restoreGeometry(this);

@@ -25,6 +25,7 @@
 #include <QObject>
 
 class QAction;
+class QMenu;
 
 namespace Tiled {
 
@@ -82,6 +83,8 @@ public:
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
     QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
+
+    QMenu *createNewLayerMenu(QWidget *parent) const;
 
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);

@@ -198,7 +198,7 @@ MapsView::MapsView(QWidget *parent)
 
 QSize MapsView::sizeHint() const
 {
-    return QSize(130, 100);
+    return Utils::dpiScaled(QSize(130, 100));
 }
 
 void MapsView::mousePressEvent(QMouseEvent *event)

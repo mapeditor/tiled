@@ -133,6 +133,7 @@ private:
      */
     BrushBehavior mBrushBehavior;
     BrushMode mBrushMode;
+    bool mMirrorDiagonally;
 
     /**
      * The starting position needed for drawing lines and circles.

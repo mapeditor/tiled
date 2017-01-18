@@ -37,7 +37,8 @@ public:
      * the given \a selection.
      */
     ChangeSelectedArea(MapDocument *mapDocument,
-                        const QRegion &selection);
+                       const QRegion &selection,
+                       QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;

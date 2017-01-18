@@ -367,7 +367,6 @@ void MapEditor::setCurrentDocument(Document *document)
         mWidgetStack->setCurrentWidget(mapView);
 
     mLayerDock->setMapDocument(mapDocument);
-    mToolManager->setMapDocument(mapDocument);
 
     if (mZoomable) {
         mZoomable->setComboBox(nullptr);
@@ -408,6 +407,9 @@ void MapEditor::setCurrentDocument(Document *document)
         mapScene->disableSelectedTool();
         mViewWithTool = nullptr;
     }
+
+    mToolManager->setMapDocument(mapDocument);
+
     if (mapView) {
         MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);

@@ -56,7 +56,8 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    foreach (QAction *action, mActionGroup->actions()) {
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
         AbstractTool *tool = action->data().value<AbstractTool*>();
         tool->setMapDocument(mapDocument);
     }
@@ -105,7 +106,8 @@ void ToolManager::selectTool(AbstractTool *tool)
     if (tool && !tool->isEnabled()) // Refuse to select disabled tools
         return;
 
-    foreach (QAction *action, mActionGroup->actions()) {
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->trigger();
             return;
@@ -113,7 +115,7 @@ void ToolManager::selectTool(AbstractTool *tool)
     }
 
     // The given tool was not found. Don't select any tool.
-    foreach (QAction *action, mActionGroup->actions())
+    for (QAction *action : actions)
         action->setChecked(false);
     setSelectedTool(nullptr);
 }
@@ -126,7 +128,8 @@ void ToolManager::actionTriggered(QAction *action)
 void ToolManager::retranslateTools()
 {
     // Allow the tools to adapt to the new language
-    foreach (QAction *action, mActionGroup->actions()) {
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
         AbstractTool *tool = action->data().value<AbstractTool*>();
         tool->languageChanged();
 
@@ -142,7 +145,8 @@ void ToolManager::toolEnabledChanged(bool enabled)
 {
     AbstractTool *tool = qobject_cast<AbstractTool*>(sender());
 
-    foreach (QAction *action, mActionGroup->actions()) {
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->setEnabled(enabled);
             break;
@@ -185,7 +189,8 @@ void ToolManager::selectEnabledTool()
 
 AbstractTool *ToolManager::firstEnabledTool() const
 {
-    foreach (QAction *action, mActionGroup->actions())
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions)
         if (AbstractTool *tool = action->data().value<AbstractTool*>())
             if (tool->isEnabled())
                 return tool;

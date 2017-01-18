@@ -62,8 +62,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning() << "TMX Map Viewer"
-            << qPrintable(QApplication::applicationVersion());
+    qWarning().noquote() << "TMX Map Viewer"
+                         << QApplication::applicationVersion();
 }
 
 static void parseCommandLineArguments(CommandLineOptions &options)

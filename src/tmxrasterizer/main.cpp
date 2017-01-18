@@ -87,8 +87,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning() << "TMX Map Rasterizer"
-            << qPrintable(QCoreApplication::applicationVersion());
+    qWarning().noquote() << "TMX Map Rasterizer"
+                         << QCoreApplication::applicationVersion();
 }
 
 static void parseCommandLineArguments(CommandLineOptions &options)

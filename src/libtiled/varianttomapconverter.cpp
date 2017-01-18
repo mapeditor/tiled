@@ -91,7 +91,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
         map->setBackgroundColor(QColor(bgColor));
 
-    foreach (const QVariant &tilesetVariant, variantMap[QLatin1String("tilesets")].toList()) {
+    const auto tilesetVariants = variantMap[QLatin1String("tilesets")].toList();
+    for (const QVariant &tilesetVariant : tilesetVariants) {
         SharedTileset tileset = toTileset(tilesetVariant);
         if (!tileset)
             return nullptr;
@@ -99,7 +100,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->addTileset(tileset);
     }
 
-    foreach (const QVariant &layerVariant, variantMap[QLatin1String("layers")].toList()) {
+    const auto layerVariants = variantMap[QLatin1String("layers")].toList();
+    for (const QVariant &layerVariant : layerVariants) {
         Layer *layer = toLayer(layerVariant);
         if (!layer)
             return nullptr;
@@ -188,6 +190,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int spacing = variantMap[QLatin1String("spacing")].toInt();
     const int margin = variantMap[QLatin1String("margin")].toInt();
     const QVariantMap tileOffset = variantMap[QLatin1String("tileoffset")].toMap();
+    const QVariantMap grid = variantMap[QLatin1String("grid")].toMap();
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
     const int columns = tileOffset[QLatin1String("columns")].toInt();
@@ -205,6 +208,16 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
+
+    if (!grid.isEmpty()) {
+        const QString orientation = grid[QLatin1String("orientation")].toString();
+        const QSize gridSize(grid[QLatin1String("width")].toInt(),
+                             grid[QLatin1String("height")].toInt());
+
+        tileset->setOrientation(Tileset::orientationFromString(orientation));
+        if (!gridSize.isEmpty())
+            tileset->setGridSize(gridSize);
+    }
 
     if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
         tileset->setBackgroundColor(QColor(bgColor));
@@ -380,7 +393,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
         int y = 0;
         bool ok;
 
-        foreach (const QVariant &gidVariant, dataVariantList) {
+        for (const QVariant &gidVariant : dataVariantList) {
             const unsigned gid = gidVariant.toUInt(&ok);
             if (!ok) {
                 mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
@@ -435,9 +448,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
     typedef QScopedPointer<ObjectGroup> ObjectGroupPtr;
     ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QLatin1String("name")].toString(),
                                                variantMap[QLatin1String("x")].toInt(),
-                                               variantMap[QLatin1String("y")].toInt(),
-                                               variantMap[QLatin1String("width")].toInt(),
-                                               variantMap[QLatin1String("height")].toInt()));
+                                               variantMap[QLatin1String("y")].toInt()));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();
@@ -456,7 +467,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         }
     }
 
-    foreach (const QVariant &objectVariant, variantMap[QLatin1String("objects")].toList()) {
+    const auto objectVariants = variantMap[QLatin1String("objects")].toList();
+    for (const QVariant &objectVariant : objectVariants) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
         const QString name = objectVariantMap[QLatin1String("name")].toString();
@@ -518,9 +530,7 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     typedef QScopedPointer<ImageLayer> ImageLayerPtr;
     ImageLayerPtr imageLayer(new ImageLayer(variantMap[QLatin1String("name")].toString(),
                                             variantMap[QLatin1String("x")].toInt(),
-                                            variantMap[QLatin1String("y")].toInt(),
-                                            variantMap[QLatin1String("width")].toInt(),
-                                            variantMap[QLatin1String("height")].toInt()));
+                                            variantMap[QLatin1String("y")].toInt()));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();
@@ -545,7 +555,8 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
 {
     QPolygonF polygon;
-    foreach (const QVariant &pointVariant, variant.toList()) {
+    const auto pointVariants = variant.toList();
+    for (const QVariant &pointVariant : pointVariants) {
         const QVariantMap pointVariantMap = pointVariant.toMap();
         const qreal pointX = pointVariantMap[QLatin1String("x")].toReal();
         const qreal pointY = pointVariantMap[QLatin1String("y")].toReal();

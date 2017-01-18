@@ -79,8 +79,9 @@ int TmxRasterizer::render(const QString &mapFileName,
     MapReader reader;
     map = reader.readMap(mapFileName);
     if (!map) {
-        qWarning().nospace() << "Error while reading " << mapFileName << ":\n"
-                             << qPrintable(reader.errorString());
+        qWarning("Error while reading \"%s\":\n%s",
+                 qUtf8Printable(mapFileName),
+                 qUtf8Printable(reader.errorString()));
         return 1;
     }
 
@@ -161,8 +162,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         imageWriter.setFormat("png");
 
     if (!imageWriter.write(image)) {
-        qWarning().nospace() << "Error while writing " << imageFileName << ": "
-                             << qPrintable(imageWriter.errorString());
+        qWarning("Error while writing \"%s\": %s",
+                 qUtf8Printable(imageFileName),
+                 qUtf8Printable(imageWriter.errorString()));
         return 1;
     }
 

@@ -86,7 +86,7 @@ void ColorDelegate::paint(QPainter *painter,
 QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &,
                               const QModelIndex &) const
 {
-    return QSize(50, 20);
+    return Utils::dpiScaled(QSize(50, 20));
 }
 
 
@@ -99,6 +99,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     , mUpdating(false)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
 
     mUi->objectTypesTable->setModel(mObjectTypesModel);
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
@@ -137,12 +138,12 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     Utils::setThemeIcon(mRemovePropertyAction, "remove");
 
     QToolBar *objectTypesToolBar = new QToolBar(this);
-    objectTypesToolBar->setIconSize(QSize(16, 16));
+    objectTypesToolBar->setIconSize(Utils::smallIconSize());
     objectTypesToolBar->addAction(mAddObjectTypeAction);
     objectTypesToolBar->addAction(mRemoveObjectTypeAction);
 
     QToolBar *propertiesToolBar = new QToolBar(this);
-    propertiesToolBar->setIconSize(QSize(16, 16));
+    propertiesToolBar->setIconSize(Utils::smallIconSize());
     propertiesToolBar->addAction(mAddPropertyAction);
     propertiesToolBar->addAction(mRemovePropertyAction);
     propertiesToolBar->addAction(mRenamePropertyAction);

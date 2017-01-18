@@ -80,6 +80,7 @@ private:
 
     SharedTileset readTileset();
     void readTilesetTile(Tileset &tileset);
+    void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
     ImageReference readImage();
@@ -333,6 +334,8 @@ SharedTileset MapReaderPrivate::readTileset()
                     int y = oa.value(QLatin1String("y")).toInt();
                     tileset->setTileOffset(QPoint(x, y));
                     xml.skipCurrentElement();
+                } else if (xml.name() == QLatin1String("grid")) {
+                    readTilesetGrid(*tileset);
                 } else if (xml.name() == QLatin1String("properties")) {
                     tileset->mergeProperties(readProperties());
                 } else if (xml.name() == QLatin1String("image")) {
@@ -446,6 +449,25 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 
         tile->setFrames(frames);
     }
+}
+
+void MapReaderPrivate::readTilesetGrid(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("grid"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+
+    const QString orientation = atts.value(QLatin1String("orientation")).toString();
+    const int width = atts.value(QLatin1String("width")).toInt();
+    const int height = atts.value(QLatin1String("height")).toInt();
+
+    tileset.setOrientation(Tileset::orientationFromString(orientation));
+
+    const QSize gridSize(width, height);
+    if (!gridSize.isEmpty())
+        tileset.setGridSize(gridSize);
+
+    xml.skipCurrentElement();
 }
 
 void MapReaderPrivate::readTilesetImage(Tileset &tileset)
@@ -709,10 +731,8 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     const QString name = atts.value(QLatin1String("name")).toString();
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
-    const int width = atts.value(QLatin1String("width")).toInt();
-    const int height = atts.value(QLatin1String("height")).toInt();
 
-    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
+    ObjectGroup *objectGroup = new ObjectGroup(name, x, y);
     readLayerAttributes(*objectGroup, atts);
 
     const QString color = atts.value(QLatin1String("color")).toString();
@@ -750,10 +770,8 @@ ImageLayer *MapReaderPrivate::readImageLayer()
     const QString name = atts.value(QLatin1String("name")).toString();
     const int x = atts.value(QLatin1String("x")).toInt();
     const int y = atts.value(QLatin1String("y")).toInt();
-    const int width = atts.value(QLatin1String("width")).toInt();
-    const int height = atts.value(QLatin1String("height")).toInt();
 
-    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
+    ImageLayer *imageLayer = new ImageLayer(name, x, y);
     readLayerAttributes(*imageLayer, atts);
 
     // Image layer pixel position moved from x/y to offsetx/offsety for

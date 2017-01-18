@@ -45,7 +45,6 @@ class Fury(Plugin):
     t.loadFromImage(fr.readtilegfx(gfxf), '')
 
     l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h)
-    l.setMap(m)
     fr.populatetiles(l, t)
     # have to pass ownership so can't add tileset before populating layer
     m.addTileset(t)

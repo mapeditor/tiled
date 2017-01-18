@@ -4,7 +4,7 @@ StaticLibrary {
     name: "qtsingleapplication"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: ["widgets", "network"] }
+    Depends { name: "Qt"; submodules: ["widgets", "network"]; versionAtLeast: "5.4" }
 
     cpp.includePaths: ["src"]
     cpp.cxxLanguageVersion: "c++11"

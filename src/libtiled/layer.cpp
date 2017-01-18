@@ -36,15 +36,12 @@
 
 using namespace Tiled;
 
-Layer::Layer(TypeFlag type, const QString &name, int x, int y,
-             int width, int height) :
+Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
     mName(name),
     mLayerType(type),
     mX(x),
     mY(y),
-    mWidth(width),
-    mHeight(height),
     mOpacity(1.0f),
     mVisible(true),
     mMap(nullptr)

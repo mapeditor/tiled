@@ -43,6 +43,8 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mTileHeight(tileHeight),
     mTileSpacing(tileSpacing),
     mMargin(margin),
+    mOrientation(Orthogonal),
+    mGridSize(tileWidth, tileHeight),
     mColumnCount(0),
     mExpectedColumnCount(0),
     mExpectedRowCount(0),
@@ -591,6 +593,8 @@ void Tileset::swap(Tileset &other)
     std::swap(mTileSpacing, other.mTileSpacing);
     std::swap(mMargin, other.mMargin);
     std::swap(mTileOffset, other.mTileOffset);
+    std::swap(mOrientation, other.mOrientation);
+    std::swap(mGridSize, other.mGridSize);
     std::swap(mColumnCount, other.mColumnCount);
     std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
     std::swap(mExpectedRowCount, other.mExpectedRowCount);
@@ -622,6 +626,8 @@ SharedTileset Tileset::clone() const
     // mFileName stays empty
     c->mImageReference = mImageReference;
     c->mTileOffset = mTileOffset;
+    c->mOrientation = mOrientation;
+    c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
     c->mExpectedColumnCount = mExpectedColumnCount;
     c->mExpectedRowCount = mExpectedRowCount;
@@ -663,4 +669,26 @@ void Tileset::updateTileSize()
     }
     mTileWidth = maxWidth;
     mTileHeight = maxHeight;
+}
+
+
+QString Tileset::orientationToString(Tileset::Orientation orientation)
+{
+    switch (orientation) {
+    default:
+    case Tileset::Orthogonal:
+        return QLatin1String("orthogonal");
+        break;
+    case Tileset::Isometric:
+        return QLatin1String("isometric");
+        break;
+    }
+}
+
+Tileset::Orientation Tileset::orientationFromString(const QString &string)
+{
+    Orientation orientation = Orthogonal;
+    if (string == QLatin1String("isometric"))
+        orientation = Isometric;
+    return orientation;
 }

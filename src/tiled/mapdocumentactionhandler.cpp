@@ -40,6 +40,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QCursor>
+#include <QMenu>
 #include <QtCore/qmath.h>
 
 using namespace Tiled;
@@ -57,6 +58,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
     mActionSelectInverse = new QAction(this);
+    mActionSelectInverse->setShortcut(tr("Ctrl+I"));
     mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
@@ -216,6 +218,26 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     emit mapDocumentChanged(mMapDocument);
 }
 
+/**
+ * Creates the new layer menu, which is used in several places.
+ */
+QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
+{
+    QMenu *newLayerMenu = new QMenu(tr("&New"), parent);
+
+    newLayerMenu->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    Utils::setThemeIcon(newLayerMenu, "document-new");
+
+    newLayerMenu->addAction(actionAddTileLayer());
+    newLayerMenu->addAction(actionAddObjectGroup());
+    newLayerMenu->addAction(actionAddImageLayer());
+    newLayerMenu->addSeparator();
+    newLayerMenu->addAction(actionLayerViaCopy());
+    newLayerMenu->addAction(actionLayerViaCut());
+
+    return newLayerMenu;
+}
+
 void MapDocumentActionHandler::cut()
 {
     if (!mMapDocument)
@@ -312,21 +334,18 @@ void MapDocumentActionHandler::selectInverse()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRegion all(tileLayer->x(), tileLayer->y(),
-                  tileLayer->width(), tileLayer->height());
+        QRegion all(tileLayer->bounds());
 
         QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all - mMapDocument->selectedArea());
         mMapDocument->undoStack()->push(command);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const auto &allObjects = objectGroup->objects();
-        QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
+        const auto &selectedObjects = mMapDocument->selectedObjects();
         QList<MapObject*> notSelectedObjects;
 
-        for (auto mapObject : allObjects) {
-            if (!selectedObjects.contains(mapObject)) {
+        for (auto mapObject : allObjects)
+            if (!selectedObjects.contains(mapObject))
                 notSelectedObjects.append(mapObject);
-            }
-        }
 
         mMapDocument->setSelectedObjects(notSelectedObjects);
     }
@@ -434,9 +453,8 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         if (selectedObjects.isEmpty())
             return;
 
-        auto map = mMapDocument->map();
         auto currentObjectGroup = static_cast<ObjectGroup*>(currentLayer);
-        auto newObjectGroup = new ObjectGroup(name, 0, 0, map->width(), map->height());
+        auto newObjectGroup = new ObjectGroup(name, 0, 0);
         newObjectGroup->setDrawOrder(currentObjectGroup->drawOrder());
         newObjectGroup->setColor(currentObjectGroup->color());
 

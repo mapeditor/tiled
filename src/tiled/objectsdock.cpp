@@ -87,7 +87,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
-    toolBar->setIconSize(QSize(16, 16));
+    toolBar->setIconSize(Utils::smallIconSize());
 
     toolBar->addAction(mActionNewLayer);
     toolBar->addAction(handler->actionDuplicateObjects());
@@ -272,7 +272,7 @@ ObjectsView::ObjectsView(QWidget *parent)
 
 QSize ObjectsView::sizeHint() const
 {
-    return QSize(130, 100);
+    return Utils::dpiScaled(QSize(130, 100));
 }
 
 void ObjectsView::setMapDocument(MapDocument *mapDoc)

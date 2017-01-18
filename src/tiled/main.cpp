@@ -132,8 +132,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << qPrintable(QApplication::applicationDisplayName())
-                   << qPrintable(QApplication::applicationVersion());
+        qWarning().noquote() << QApplication::applicationDisplayName()
+                             << QApplication::applicationVersion();
         quit = true;
     }
 }
@@ -157,11 +157,11 @@ void CommandLineHandler::showExportFormats()
 {
     PluginManager::instance()->loadPlugins();
 
-    qWarning() << qPrintable(tr("Export formats:"));
-    auto formats = PluginManager::objects<MapFormat>();
+    qWarning().noquote() << tr("Export formats:");
+    const auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning() << " " << format->nameFilter();
+            qWarning(" %s", qUtf8Printable(format->nameFilter()));
     }
 
     quit = true;
@@ -226,8 +226,7 @@ int main(int argc, char *argv[])
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.filesToOpen().length() < 2) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Export syntax is --export-map [format] <tmx file> <target file>"));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
             return 1;
         }
         int index = 0;
@@ -249,8 +248,7 @@ int main(int argc, char *argv[])
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "Format not recognized (see --export-formats)"));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
                 return 1;
             }
         } else {
@@ -261,16 +259,14 @@ int main(int argc, char *argv[])
                     continue;
                 if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                     if (chosenFormat) {
-                        qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                             "Non-unique file extension. Can't determine correct export format."));
+                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
                         return 1;
                     }
                     chosenFormat = format;
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "No exporter found for target file."));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
                 return 1;
             }
         }
@@ -279,8 +275,7 @@ int main(int argc, char *argv[])
         MapReader reader;
         QScopedPointer<Map> map(reader.readMap(sourceFile));
         if (!map) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to load source map."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
@@ -288,8 +283,7 @@ int main(int argc, char *argv[])
         bool success = chosenFormat->write(map.data(), targetFile);
 
         if (!success) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to export map to target file."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
             return 1;
         }
         return 0;

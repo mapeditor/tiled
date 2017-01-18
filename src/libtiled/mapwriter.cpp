@@ -289,6 +289,14 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
+    if (tileset.orientation() != Tileset::Orthogonal || tileset.gridSize() != tileset.tileSize()) {
+        w.writeStartElement(QLatin1String("grid"));
+        w.writeAttribute(QLatin1String("orientation"), Tileset::orientationToString(tileset.orientation()));
+        w.writeAttribute(QLatin1String("width"), QString::number(tileset.gridSize().width()));
+        w.writeAttribute(QLatin1String("height"), QString::number(tileset.gridSize().height()));
+        w.writeEndElement();
+    }
+
     // Write the tileset properties
     writeProperties(w, tileset.properties());
 
@@ -485,10 +493,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("y"), QString::number(y));
 
     if (layer.layerType() == Layer::TileLayerType) {
+        auto &tileLayer = static_cast<const TileLayer&>(layer);
         w.writeAttribute(QLatin1String("width"),
-                         QString::number(layer.width()));
+                         QString::number(tileLayer.width()));
         w.writeAttribute(QLatin1String("height"),
-                         QString::number(layer.height()));
+                         QString::number(tileLayer.height()));
     }
 
     if (!layer.isVisible())

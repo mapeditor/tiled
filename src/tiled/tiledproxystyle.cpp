@@ -20,6 +20,8 @@
 
 #include "tiledproxystyle.h"
 
+#include "utils.h"
+
 #include <QAbstractScrollArea>
 #include <QMainWindow>
 #include <QPainter>
@@ -31,8 +33,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-Q_GUI_EXPORT int qt_defaultDpiX();
 
 /*
  * Below there are a lot of helper functions which are copied from various
@@ -168,21 +168,6 @@ static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseC
     return gradient;
 }
 
-namespace QStyleHelper {
-
-static qreal dpiScaled(qreal value)
-{
-#ifdef Q_OS_MAC
-    // On mac the DPI is always 72 so we should not scale it
-    return value;
-#else
-    static const qreal scale = qreal(qt_defaultDpiX()) / 96.0;
-    return value * scale;
-#endif
-}
-
-} // namespace QStyleHelper
-
 static QColor getOutlineColor(const QPalette &pal)
 {
     return pal.window().color().darker(140);
@@ -235,6 +220,12 @@ static QColor getTabFrameColor(const QPalette &pal)
     return getButtonColor(pal).lighter(104);
 }
 
+static qreal roundedRectRadius()
+{
+    static qreal radius = Utils::dpiScaled(2.0);
+    return radius;
+}
+
 
 TiledProxyStyle::TiledProxyStyle(const QPalette &palette, QStyle *style)
     : QProxyStyle(style)
@@ -269,7 +260,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         painter->translate(0.5, 0.5);
         painter->setPen(mergedColors(getOutlineColor(option->palette), tabFrameColor));
         painter->setBrush(mergedColors(option->palette.window().color(), tabFrameColor));
-        painter->drawRoundedRect(frame, 2.0, 2.0);
+        painter->drawRoundedRect(frame, roundedRectRadius(), roundedRectRadius());
         painter->restore();
         break;
     }
@@ -360,7 +351,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             painter->drawRect(rect);
 
             QColor checkMarkColor = option->palette.text().color().darker(120);
-            const int checkMarkPadding = QStyleHelper::dpiScaled(3);
+            const int checkMarkPadding = Utils::dpiScaled(3);
 
             if (checkbox->state & State_NoChange) {
                 gradient = QLinearGradient(rect.topLeft(), rect.bottomLeft());
@@ -374,7 +365,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 painter->drawRect(rect.adjusted(checkMarkPadding, checkMarkPadding, -checkMarkPadding, -checkMarkPadding));
 
             } else if (checkbox->state & (State_On)) {
-                QPen checkPen = QPen(checkMarkColor, QStyleHelper::dpiScaled(1.8));
+                QPen checkPen = QPen(checkMarkColor, Utils::dpiScaled(1.8));
                 checkMarkColor.setAlpha(210);
                 painter->translate(-1, 0.5);
                 painter->setPen(checkPen);
@@ -398,8 +389,9 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             proxy()->drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
 
         QColor textColor = option->palette.text().color();
-        QPen foregroundPen(textColor, 1.25, Qt::SolidLine, Qt::RoundCap);
-        QPen shadowPen(QColor(0, 0, 0, 200), 1.25, Qt::SolidLine, Qt::RoundCap);
+        qreal penWidth = Utils::dpiScaled(1.25);
+        QPen foregroundPen(textColor, penWidth, Qt::SolidLine, Qt::RoundCap);
+        QPen shadowPen(QColor(0, 0, 0, 200), penWidth, Qt::SolidLine, Qt::RoundCap);
 
         if (!mIsDark) {
             if (!hovered && !(option->state & State_Selected))
@@ -413,7 +405,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             }
         }
 
-        QRect iconRect(0, 0, 8, 8);
+        QRect iconRect = Utils::dpiScaled(QRectF(0, 0, 8, 8)).toRect();
         iconRect.moveCenter(option->rect.center());
 
         const QPoint lines[] = {
@@ -499,15 +491,15 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         QLinearGradient gradient = qt_fusion_gradient(option->rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
         painter->setPen(Qt::transparent);
         painter->setBrush(isDown ? QBrush(downColor) : gradient);
-        painter->drawRoundedRect(r, 2.0, 2.0);
+        painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
         painter->setBrush(Qt::NoBrush);
 
         // Outline
         painter->setPen(!isEnabled ? QPen(darkOutline.lighter(115)) : QPen(darkOutline));
-        painter->drawRoundedRect(r, 2.0, 2.0);
+        painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
 
         painter->setPen(innerContrastLine());
-        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), 2.0, 2.0);
+        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
 
         painter->restore();
         break;
@@ -866,9 +858,11 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 QColor sliderColor = getSliderColor(option->palette, isDarkBg);
 
-                QRect sliderRect = scrollBarSlider.adjusted(3, 2, -3, -3);
+                int margin = qRound(Utils::dpiScaled(2));
+
+                QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
-                    sliderRect = scrollBarSlider.adjusted(2, 3, -3, -3);
+                    sliderRect = scrollBarSlider.adjusted(margin, margin + 1, -margin - 1, -margin - 1);
                 painter->setPen(QPen(getSliderOutline(option->palette, isDarkBg)));
                 if (sunken && scrollBar->activeSubControls & SC_ScrollBarSlider) {
                     QLinearGradient sunkenGradient = gradient;
@@ -889,9 +883,9 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing, true);
                 painter->translate(0.5, 0.5);
-                painter->drawRoundedRect(sliderRect, 2, 2);
+                painter->drawRoundedRect(sliderRect, roundedRectRadius(), roundedRectRadius());
                 painter->setPen(innerContrastLine());
-                painter->drawRoundedRect(sliderRect.adjusted(1, 1, -1, -1), 2, 2);
+                painter->drawRoundedRect(sliderRect.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
                 painter->restore();
             }
 
@@ -1017,12 +1011,12 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     switch (type) {
     case CT_MenuBarItem:            // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(QStyleHelper::dpiScaled(16.),
-                          QStyleHelper::dpiScaled(5.));
+            size += QSize(Utils::dpiScaled(16.),
+                          Utils::dpiScaled(5.));
         break;
     case CT_ItemViewItem:           // give item view items a little more space
         size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
-        size += QSize(0, QStyleHelper::dpiScaled(2.));
+        size += QSize(0, Utils::dpiScaled(2.));
         break;
     case CT_TabBarTab:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
@@ -1039,17 +1033,17 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
             int widgetHeight = 0;
             int padding = 0;
             if (!tab->leftButtonSize.isEmpty()) {
-                padding += 4;
+                padding += Utils::dpiScaled(4);
                 widgetWidth += tab->leftButtonSize.width();
                 widgetHeight += tab->leftButtonSize.height();
             }
             if (!tab->rightButtonSize.isEmpty()) {
-                padding += 4;
+                padding += Utils::dpiScaled(4);
                 widgetWidth += tab->rightButtonSize.width();
                 widgetHeight += tab->rightButtonSize.height();
             }
             if (!tab->icon.isNull())
-                padding += 4;
+                padding += Utils::dpiScaled(4);
             if (verticalTabs(tab->shape)) {
                 size = QSize(qMax(maxWidgetWidth, qMax(fm.height(), iconSize.height()) + vframe),
                         fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe + widgetHeight + padding);
@@ -1079,7 +1073,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             bool selected = tab->state & State_Selected;
             int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
             int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = QStyleHelper::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
+            int hpadding = Utils::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
 
             bool verticalTabs = tab->shape == QTabBar::RoundedEast
                     || tab->shape == QTabBar::RoundedWest

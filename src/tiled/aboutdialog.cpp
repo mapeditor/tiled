@@ -22,6 +22,7 @@
 #include "aboutdialog.h"
 
 #include "tiledproxystyle.h"
+#include "utils.h"
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -31,6 +32,8 @@ using namespace Tiled::Internal;
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
+    logo->setMinimumWidth(Utils::dpiScaled(logo->minimumWidth()));
+    textBrowser->setMinimumHeight(Utils::dpiScaled(160));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     const QString html = QCoreApplication::translate(

@@ -57,6 +57,7 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
     , mCurrentScale(currentScale)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);

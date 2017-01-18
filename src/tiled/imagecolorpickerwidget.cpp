@@ -22,6 +22,8 @@
 #include "imagecolorpickerwidget.h"
 #include "ui_imagecolorpickerwidget.h"
 
+#include "utils.h"
+
 #include <QDesktopWidget>
 #include <QMouseEvent>
 
@@ -37,7 +39,7 @@ ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
     connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
     connect(mUi->imageArea, SIGNAL(mouseReleased(QMouseEvent*)), SLOT(onMouseRelease(QMouseEvent*)));
 
-    mPreviewIcon = QPixmap(96, 24);
+    mPreviewIcon = QPixmap(Utils::dpiScaled(QSize(96, 24)));
     mPreviewIcon.fill(Qt::transparent);
     mUi->preview->setPixmap(mPreviewIcon);
 }

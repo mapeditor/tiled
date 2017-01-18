@@ -77,7 +77,7 @@ public:
         : QToolButton(parent)
     {
         setArrowType(Qt::DownArrow);
-        setIconSize(QSize(16, 16));
+        setIconSize(Utils::smallIconSize());
         setPopupMode(QToolButton::InstantPopup);
         setAutoRaise(true);
 
@@ -211,7 +211,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mDeleteTileset, SIGNAL(triggered()), SLOT(removeTileset()));
 
     mToolBar->addAction(mNewTileset);
-    mToolBar->setIconSize(QSize(16, 16));
+    mToolBar->setIconSize(Utils::smallIconSize());
     mToolBar->addAction(mEmbedTileset);
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mEditTileset);

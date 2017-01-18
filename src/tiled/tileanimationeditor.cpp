@@ -268,6 +268,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mPreviewUnusedTime(0)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
 
     Zoomable *zoomable = new Zoomable(this);
     zoomable->setComboBox(mUi->zoomComboBox);
@@ -303,7 +304,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    mUi->horizontalSplitter->setSizes(QList<int>() << 128 << 512);
+    mUi->horizontalSplitter->setSizes(QList<int>()
+                                      << Utils::dpiScaled(128)
+                                      << Utils::dpiScaled(512));
 }
 
 TileAnimationEditor::~TileAnimationEditor()

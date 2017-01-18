@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>451</width>
+    <width>452</width>
     <height>476</height>
    </rect>
   </property>
@@ -45,6 +45,9 @@
        </property>
        <property name="pixmap">
         <pixmap resource="tiled.qrc">:/images/about-tiled-logo.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>

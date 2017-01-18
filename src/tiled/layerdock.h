@@ -31,7 +31,6 @@
 class QAbstractProxyModel;
 class QLabel;
 class QModelIndex;
-class QTreeView;
 class QUndoStack;
 
 namespace Tiled {
@@ -71,6 +70,7 @@ private:
 
     QLabel *mOpacityLabel;
     QSlider *mOpacitySlider;
+    QToolButton *mNewLayerButton;
     LayerView *mLayerView;
     MapDocument *mMapDocument;
     bool mUpdatingSlider;
