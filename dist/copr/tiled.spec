@@ -1,5 +1,5 @@
 Name:           tiled
-Version:        0.16.0
+Version:        0.18.0
 Epoch:          1
 Release:        1%{?dist}
 Summary:        Tiled Map Editor
@@ -91,6 +91,16 @@ URL:            http://www.mapeditor.org
 Requires:       %{name} = %{epoch}:%{version}-%{release}
 %description plugin-defold
 A plugin for tiled which allows to export maps as .tilemap Defold maps.
+
+%{pluginwarning}
+
+%package plugin-gmx
+Summary:        GameMaker Studio plugin for Tiled
+License:        GPLv2+
+URL:            http://www.mapeditor.org
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+%description plugin-gmx
+A plugin for tiled which allows to export maps as GameMaker Studio room files.
 
 %{pluginwarning}
 
@@ -192,7 +202,14 @@ fi
 %files plugin-defold
 %{_libdir}/%{name}/plugins/libdefold.so
 
+%files plugin-gmx
+%{_libdir}/%{name}/plugins/libgmx.so
+
 %changelog
+* Sun Jan 22 2017 Erik Schilling <ablu.erikschilling@googlemail.com> - 0.18.0-1
+- Added subpackage for gmx plugin
+- New upstream release 0.18.0
+
 * Sun Jul 24 2016 Erik Schilling <ablu.erikschilling@googlemail.com> - 0.17.0-1
 - Added subpackage for defold plugin
 
