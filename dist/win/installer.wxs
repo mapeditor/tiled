@@ -24,10 +24,8 @@
 
   <?if $(var.Platform) = x64 ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?define SystemDir = "C:\windows\system32" ?>
   <?else ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?define SystemDir = "C:\windows\SysWOW64" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
@@ -36,7 +34,8 @@
 
     <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
              Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
-             Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+             Languages='1033' Compressed='yes' SummaryCodepage='1252'
+             InstallScope='perMachine' />
 
     <MajorUpgrade AllowDowngrades="yes" />
 
@@ -94,8 +93,8 @@
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
-            <File Id="MSVCP120" Source="$(var.SystemDir)\MSVCP120.DLL"/>
-            <File Id="MSVCR120" Source="$(var.SystemDir)\MSVCR120.DLL"/>
+            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
+            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
             <?endif?>
 
             <?ifdef Sparkle ?>
