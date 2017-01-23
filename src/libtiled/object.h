@@ -120,7 +120,7 @@ public:
     { mProperties.remove(name); }
 
 private:
-    TypeId mTypeId;
+    const TypeId mTypeId;
     Properties mProperties;
 };
 
