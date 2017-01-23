@@ -1,3 +1,19 @@
+### 0.18.1 (23 January 2017)
+
+* Fixed terrain brush for isometric staggered maps (by Clyde)
+* Fixed crash when resizing map causes objects to get removed
+* Fixed crash when duplicating an object layer
+* Fixed position of image layer after Resize or Offset Map
+* Fixed the quality of the minimap on HiDpi displays
+* Fixed Alt-drag behavior to not override resize handles
+* When adding a new layer, insert it above the current one
+* GmxPlugin: Fixed positioning for non-tile objects and support scaling
+* GmxPlugin: Export tile objects without a type as tiles
+* GmxPlugin: Support horizontal and vertical flipping
+* Windows: Fixed encoding problems with command-line output
+* Windows: Fixed the architecture of shipped MSVC DLLs
+* Updated Chinese translation (by Clyde)
+
 ### 0.18.0 (20 December 2016)
 
 * Added Layer via Copy/Cut actions

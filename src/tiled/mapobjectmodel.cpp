@@ -300,9 +300,8 @@ void MapObjectModel::layerAdded(int index)
                 if ((prev = mMap->layerAt(index)->asObjectGroup()))
                     break;
             index = prev ? mObjectGroups.indexOf(prev) + 1 : 0;
+            beginInsertRows(QModelIndex(), index, index);
             mObjectGroups.insert(index, og);
-            const int row = mObjectGroups.indexOf(og);
-            beginInsertRows(QModelIndex(), row, row);
             mGroups.insert(og, new ObjectOrGroup(og));
             for (MapObject *o : og->objects()) {
                 if (!mObjects.contains(o))
