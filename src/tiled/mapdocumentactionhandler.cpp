@@ -224,7 +224,7 @@ void MapDocumentActionHandler::cut()
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+    const QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
 
     copy();
 
@@ -234,7 +234,7 @@ void MapDocumentActionHandler::cut()
     if (tileLayer && !selectedArea.isEmpty()) {
         stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
     } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
+        for (MapObject *mapObject : selectedObjects)
             stack->push(new RemoveMapObject(mMapDocument, mapObject));
     }
 
@@ -260,7 +260,7 @@ void MapDocumentActionHandler::delete_()
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mMapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+    const auto selectedObjects = mMapDocument->selectedObjects();
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Delete"));
@@ -268,7 +268,7 @@ void MapDocumentActionHandler::delete_()
     if (tileLayer && !selectedArea.isEmpty()) {
         undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
     } else if (!selectedObjects.isEmpty()) {
-        foreach (MapObject *mapObject, selectedObjects)
+        for (MapObject *mapObject : selectedObjects)
             undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
     }
 
