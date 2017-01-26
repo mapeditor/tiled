@@ -34,10 +34,10 @@ matrix:
       env:
         - MAKEFLAGS=-j2
       before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt571-trusty
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev
-        - source /opt/qt57/bin/qt57-env.sh
+        - sudo apt-get -y install qt58base qt58svg qt58tools binutils zlib1g-dev
+        - source /opt/qt58/bin/qt58-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
         - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
@@ -113,4 +113,5 @@ before_script:
   - qmake -version
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
+  - if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi
   - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi
