@@ -9,11 +9,13 @@
 
 namespace Orx {
 
+///////////////////////////////////////////////////////////////////////////////
 struct Vector2i {
     int m_X;
     int m_Y;
 };
 
+///////////////////////////////////////////////////////////////////////////////
 struct Vector3f {
     float m_X;
     float m_Y;
@@ -23,7 +25,7 @@ struct Vector3f {
 ///////////////////////////////////////////////////////////////////////////////
 template<typename T>
 struct string_converter {
-    static std::string to_string( T & value) {
+    static std::string to_string(T value) {
         return std::to_string(value);
     }
 };
@@ -83,15 +85,20 @@ protected:
     template<typename T>
     static void serialize_object_list(std::stringstream & ss, const std::string & name, T & container) {
         int element_count = container.size();
-        auto last = std::prev(container.end());
         if (element_count)
             {
-            ss << "ChildList = ";
-            for (auto it = container.begin(); it != container.end(); ++it)
+            auto last = std::prev(container.end());
+            if (element_count)
                 {
-                ss << (*it)->m_name;
-                if (it != last)
-                    ss << " # ";
+                ss << "ChildList = ";
+                for (auto it = container.begin(); it != container.end(); ++it)
+                    {
+                    ss << (*it)->m_name;
+                    if (it != last)
+                        ss << " # ";
+                    else
+                        ss << std::endl;
+                    }
                 }
             }
         }
@@ -115,6 +122,14 @@ class Object;
 typedef std::shared_ptr<Object>     ObjectPtr;
 typedef std::vector<ObjectPtr>      ObjectPtrs;
 
+class GroupObject;
+typedef std::shared_ptr<GroupObject> GroupObjectPtr;
+typedef std::vector<GroupObjectPtr>  GroupObjectPtrs;
+
+class Prefab;
+typedef std::shared_ptr<Prefab>     PrefabPtr;
+typedef std::vector<PrefabPtr>      PrefabPtrs;
+
 class Graphic;
 typedef std::shared_ptr<Graphic>    GraphicPtr;
 typedef std::vector<GraphicPtr>     GraphicPtrs;
@@ -131,6 +146,7 @@ public:
     std::string     m_Texture;
     Vector2i        m_Origin;
     Vector2i        m_Size;
+    int             m_TiledId;
 
 public:
     virtual void serialize(std::stringstream & ss)
@@ -139,6 +155,29 @@ public:
         serialize_value(ss, "Texture", m_Texture);
         serialize_value(ss, "TextureOrigin", m_Origin);
         serialize_value(ss, "TextureSize", m_Size);
+        ss << std::endl;
+        }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+class Prefab : public OrxObject
+{
+public:
+    CONSTRUCT_ORX_OBJ(Prefab)
+
+public:
+    GraphicPtr      m_Graphic;
+    int             m_TiledId;
+    int             m_UseCount; // used to generate object names when this obj is a prefab
+
+public:
+    virtual void serialize(std::stringstream & ss) {
+        serialize_name(ss);
+
+        if (m_Graphic)
+            serialize_value(ss, "Graphic", m_Graphic->m_name);
+
+        ss << std::endl;
         }
 };
 
@@ -151,10 +190,9 @@ public:
 public:
     GraphicPtr      m_Graphic;
     Vector3f        m_Position;
-    Vector3f        m_Rotation;
+    float           m_Rotation;
     ObjectPtrs      m_Children;
-
-
+    int             m_TiledId;
 
 public:
     virtual void serialize(std::stringstream & ss) {
@@ -166,9 +204,26 @@ public:
         serialize_value(ss, "Position", m_Position);
         serialize_value(ss, "Rotation", m_Rotation);
         serialize_object_list(ss, "ChildList", m_Children);
+
+        ss << std::endl;
         }
 };
 
+///////////////////////////////////////////////////////////////////////////////
+class GroupObject : public Object
+{
+public:
+    GroupObject() {};
+    GroupObject(const std::string & name) : Object(name) {}
+    GroupObject(const std::string & name, const std::string & parent) : Object(name, parent) {}
+
+public:
+    virtual void serialize(std::stringstream & ss) {
+        serialize_name(ss);
+        serialize_object_list(ss, "ChildList", m_Children);
+        ss << std::endl;
+        }
+};
 
 
 }

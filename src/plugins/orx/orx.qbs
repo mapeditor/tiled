@@ -4,7 +4,6 @@ TiledPlugin {
     cpp.defines: ["ORX_LIBRARY"]
 
     files: [
-        "orx_objects.cpp",
         "orx_objects.h",
         "plugin.json",
         "orx_global.h",
