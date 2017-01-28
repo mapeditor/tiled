@@ -50,7 +50,7 @@ QModelIndex ReversingProxyModel::index(int row, int column, const QModelIndex &p
 
     const QModelIndex sourceParent = mapToSource(parent);
     const QModelIndex sourceIndex = sourceModel()->index(rows - row - 1, column, sourceParent);
-    return createIndex(row, column, sourceIndex.internalPointer());
+    return createIndex(row, column, sourceIndex.internalId());
 }
 
 QModelIndex ReversingProxyModel::parent(const QModelIndex &child) const
@@ -260,12 +260,15 @@ void ReversingProxyModel::sourceDataChanged(const QModelIndex &topLeft, const QM
     Q_ASSERT(bottomRight.isValid() ? bottomRight.model() == sourceModel() : true);
 
     const QModelIndex sourceParent = topLeft.parent();
+    const QModelIndex bottomLeft = sourceModel()->index(bottomRight.row(), topLeft.column(), sourceParent);
+    const QModelIndex topRight = sourceModel()->index(topLeft.row(), bottomRight.column(), sourceParent);
+
     const int rows = sourceModel()->rowCount(sourceParent);
     const int proxyTop = rows - bottomRight.row() - 1;
     const int proxyBottom = rows - topLeft.row() - 1;
 
-    const QModelIndex proxyTopLeft = mapFromSource(sourceModel()->index(proxyTop, topLeft.column(), sourceParent));
-    const QModelIndex proxyBottomRight = mapFromSource(sourceModel()->index(proxyBottom, bottomRight.column(), sourceParent));
+    const QModelIndex proxyTopLeft = createIndex(proxyTop, topLeft.column(), bottomLeft.internalId());
+    const QModelIndex proxyBottomRight = createIndex(proxyBottom, bottomRight.column(), topRight.internalId());
 
     dataChanged(proxyTopLeft, proxyBottomRight, roles);
 }
