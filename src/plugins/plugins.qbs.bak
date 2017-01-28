@@ -12,7 +12,6 @@ Project {
         "replicaisland",
         "tengine",
         "tmw",
-        "gmx",
-        "orx"
+        "gmx"
     ]
 }
