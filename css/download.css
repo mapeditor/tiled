@@ -1,5 +1,3 @@
-@import url('base.css');
-
 .downloads {
     list-style: none;
 }
@@ -17,4 +15,3 @@
     height: 32px;
     margin-right: 6px;
 }
-
