@@ -101,7 +101,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0)
         return QVariant();
 
-    const Layer *layer = mMap->layerAt(index.row());
+    Layer *layer = toLayer(index);
 
     switch (role) {
     case Qt::DisplayRole:
@@ -208,7 +208,7 @@ QModelIndex LayerModel::index(Layer *layer) const
     if (auto parentLayer = layer->parentLayer()) {
         int row = parentLayer->layers().indexOf(layer);
         Q_ASSERT(row != -1);
-        createIndex(row, 0, parentLayer);
+        return createIndex(row, 0, parentLayer);
     }
 
     int row = mMap->layers().indexOf(layer);

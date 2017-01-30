@@ -1,6 +1,6 @@
 /*
  * layerdock.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
@@ -220,9 +220,7 @@ LayerView::LayerView(QWidget *parent)
     , mMapDocument(nullptr)
     , mProxyModel(new ReversingProxyModel(this))
 {
-    setRootIsDecorated(false);
     setHeaderHidden(true);
-    setItemsExpandable(false);
     setUniformRowHeights(true);
     setModel(mProxyModel);
 
@@ -307,6 +305,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
 
     menu.addMenu(handler->createNewLayerMenu(&menu));
+    menu.addMenu(handler->createGroupLayerMenu(&menu));
 
     if (proxyIndex.isValid()) {
         menu.addAction(handler->actionDuplicateLayer());

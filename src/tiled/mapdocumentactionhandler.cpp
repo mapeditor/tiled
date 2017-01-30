@@ -1,6 +1,6 @@
 /*
  * mapdocumentactionhandler.cpp
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
@@ -80,6 +80,15 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddImageLayer->setIcon(addImageLayerIcon);
     mActionAddGroupLayer = new QAction(this);
 
+    mActionLayerViaCopy = new QAction(this);
+    mActionLayerViaCopy->setShortcut(tr("Ctrl+J"));
+
+    mActionLayerViaCut = new QAction(this);
+    mActionLayerViaCut->setShortcut(tr("Ctrl+Shift+J"));
+
+    mActionGroupLayers = new QAction(this);
+    mActionUngroupLayers = new QAction(this);
+
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
     mActionDuplicateLayer->setIcon(
@@ -90,12 +99,6 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionRemoveLayer = new QAction(this);
     mActionRemoveLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
-
-    mActionLayerViaCopy = new QAction(this);
-    mActionLayerViaCopy->setShortcut(tr("Ctrl+J"));
-
-    mActionLayerViaCut = new QAction(this);
-    mActionLayerViaCut->setShortcut(tr("Ctrl+Shift+J"));
 
     mActionSelectPreviousLayer = new QAction(this);
     mActionSelectPreviousLayer->setShortcut(tr("Ctrl+PgUp"));
@@ -146,6 +149,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionAddGroupLayer, SIGNAL(triggered()), SLOT(addGroupLayer()));
     connect(mActionLayerViaCopy, &QAction::triggered, this, &MapDocumentActionHandler::layerViaCopy);
     connect(mActionLayerViaCut, &QAction::triggered, this, &MapDocumentActionHandler::layerViaCut);
+    connect(mActionGroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::groupLayers);
+    connect(mActionUngroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::ungroupLayers);
+
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
     connect(mActionMergeLayerDown, SIGNAL(triggered()),
@@ -180,12 +186,16 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
     mActionCropToSelection->setText(tr("&Crop to Selection"));
+
     mActionAddTileLayer->setText(tr("&Tile Layer"));
     mActionAddObjectGroup->setText(tr("&Object Layer"));
     mActionAddImageLayer->setText(tr("&Image Layer"));
     mActionAddGroupLayer->setText(tr("&Group Layer"));
     mActionLayerViaCopy->setText(tr("Layer via Copy"));
     mActionLayerViaCut->setText(tr("Layer via Cut"));
+    mActionGroupLayers->setText(tr("&Group Layer"));
+    mActionUngroupLayers->setText(tr("&Ungroup Layer"));
+
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
@@ -243,6 +253,16 @@ QMenu *MapDocumentActionHandler::createNewLayerMenu(QWidget *parent) const
     newLayerMenu->addAction(actionLayerViaCut());
 
     return newLayerMenu;
+}
+
+QMenu *MapDocumentActionHandler::createGroupLayerMenu(QWidget *parent) const
+{
+    QMenu *groupLayerMenu = new QMenu(tr("&Group"), parent);
+
+    groupLayerMenu->addAction(actionGroupLayers());
+    groupLayerMenu->addAction(actionUngroupLayers());
+
+    return groupLayerMenu;
 }
 
 void MapDocumentActionHandler::cut()
@@ -522,6 +542,18 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         mMapDocument->setSelectedObjects(newObjects);
 }
 
+void MapDocumentActionHandler::groupLayers()
+{
+    if (mMapDocument)
+        mMapDocument->groupLayer(mMapDocument->currentLayer());
+}
+
+void MapDocumentActionHandler::ungroupLayers()
+{
+    if (mMapDocument)
+        mMapDocument->ungroupLayer(mMapDocument->currentLayer());
+}
+
 void MapDocumentActionHandler::duplicateLayer()
 {
     if (mMapDocument)
@@ -667,6 +699,9 @@ void MapDocumentActionHandler::updateActions()
                                             (currentLayer->isTileLayer() && !selection.isEmpty()));
     mActionLayerViaCopy->setEnabled(usableSelection);
     mActionLayerViaCut->setEnabled(usableSelection);
+
+    mActionGroupLayers->setEnabled(currentLayer);
+    mActionUngroupLayers->setEnabled(currentLayer && (currentLayer->isGroupLayer() || currentLayer->parentLayer()));
 
     const bool hasPreviousLayer = currentLayerIndex >= 0
             && currentLayerIndex < siblingLayerCount - 1;

@@ -1,6 +1,6 @@
 /*
  * mapdocument.h
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
@@ -135,6 +135,8 @@ public:
     void rotateSelectedObjects(RotateDirection direction);
 
     Layer *addLayer(Layer::TypeFlag layerType);
+    void groupLayer(Layer *layer);
+    void ungroupLayer(Layer *layer);
     void duplicateLayer();
     void mergeLayerDown();
     void moveLayerUp(Layer *layer);

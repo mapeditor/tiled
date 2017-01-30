@@ -1,6 +1,6 @@
 /*
  * mapdocument.cpp
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
  * This file is part of Tiled.
@@ -30,15 +30,15 @@
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
-#include "grouplayer.h"
 #include "flipmapobjects.h"
+#include "grouplayer.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
-#include "mapobjectmodel.h"
 #include "map.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 #include "movelayer.h"
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
@@ -47,6 +47,7 @@
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "rangeset.h"
+#include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
@@ -436,6 +437,61 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     emit editLayerNameRequested();
 
     return layer;
+}
+
+/**
+ * Creates a new group layer, putting the given \a layer inside the group.
+ */
+void MapDocument::groupLayer(Layer *layer)
+{
+    if (!layer)
+        return;
+
+    Q_ASSERT(layer->map() == mMap);
+
+    QString name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
+    auto groupLayer = new GroupLayer(name, 0, 0);
+    auto parentLayer = layer->parentLayer();
+    const int index = layer->siblingIndex() + 1;
+    mUndoStack->beginMacro(tr("Group Layer"));
+    mUndoStack->push(new AddLayer(this, index, groupLayer, parentLayer));
+    mUndoStack->push(new ReparentLayers(this, QList<Layer*>() << layer, groupLayer, 0));
+    mUndoStack->endMacro();
+}
+
+/**
+ * Ungroups the given \a layer. If the layer itself is a group layer, then this
+ * group is ungrouped. Otherwise, if the layer is part of a group layer, then
+ * it is removed from the group.
+ */
+void MapDocument::ungroupLayer(Layer *layer)
+{
+    if (!layer)
+        return;
+
+    GroupLayer *groupLayer = layer->asGroupLayer();
+    QList<Layer *> layers;
+
+    if (groupLayer) {
+        layers = groupLayer->layers();
+    } else if (layer->parentLayer()) {
+        layers.append(layer);
+        groupLayer = layer->parentLayer();
+    } else {
+        // No ungrouping possible
+        return;
+    }
+
+    GroupLayer *targetParent = groupLayer->parentLayer();
+    int groupIndex = groupLayer->siblingIndex();
+
+    mUndoStack->beginMacro(tr("Ungroup Layer"));
+    mUndoStack->push(new ReparentLayers(this, layers, targetParent, groupIndex + 1));
+
+    if (groupLayer->layerCount() == 0)
+        mUndoStack->push(new RemoveLayer(this, groupIndex, targetParent));
+
+    mUndoStack->endMacro();
 }
 
 /**
