@@ -202,6 +202,8 @@ QtGuiApplication {
         "languagemanager.h",
         "layerdock.cpp",
         "layerdock.h",
+        "layeritem.cpp",
+        "layeritem.h",
         "layermodel.cpp",
         "layermodel.h",
         "layeroffsettool.cpp",

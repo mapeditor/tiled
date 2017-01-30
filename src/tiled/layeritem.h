@@ -1,6 +1,6 @@
 /*
- * objectgroupitem.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * layeritem.h
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,25 +18,29 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "objectgroupitem.h"
+#ifndef LAYERITEM_H
+#define LAYERITEM_H
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+#include <QGraphicsItem>
 
-ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup, QGraphicsItem *parent)
-    : LayerItem(objectGroup, parent)
+namespace Tiled {
+
+class Layer;
+
+namespace Internal {
+
+class LayerItem : public QGraphicsItem
 {
-    // Since we don't do any painting, we can spare us the call to paint()
-    setFlag(QGraphicsItem::ItemHasNoContents);
-}
+public:
+    LayerItem(Layer *layer, QGraphicsItem *parent = nullptr);
 
-QRectF ObjectGroupItem::boundingRect() const
-{
-    return QRectF();
-}
+    Layer *layer() const { return mLayer; }
 
-void ObjectGroupItem::paint(QPainter *,
-                            const QStyleOptionGraphicsItem *,
-                            QWidget *)
-{
-}
+private:
+    Layer *mLayer;
+};
+
+} // namespace Internal
+} // namespace Tiled
+
+#endif // LAYERITEM_H

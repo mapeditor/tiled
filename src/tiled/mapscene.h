@@ -42,6 +42,7 @@ class Tileset;
 namespace Internal {
 
 class AbstractTool;
+class LayerItem;
 class MapDocument;
 class MapObjectItem;
 class MapScene;
@@ -179,7 +180,8 @@ private slots:
     void syncAllObjectItems();
 
 private:
-    QGraphicsItem *createLayerItem(Layer *layer);
+    void createLayerItems(const QList<Layer *> &layers);
+    LayerItem *createLayerItem(Layer *layer);
 
     void updateDefaultBackgroundColor();
     void updateSceneRect();
@@ -197,7 +199,7 @@ private:
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;
-    QMap<Layer*, QGraphicsItem*> mLayerItems;
+    QMap<Layer*, LayerItem*> mLayerItems;
     QGraphicsRectItem *mDarkRectangle;
     QColor mDefaultBackgroundColor;
     ObjectSelectionItem *mObjectSelectionItem;

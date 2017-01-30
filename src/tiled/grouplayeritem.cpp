@@ -20,19 +20,14 @@
 
 #include "grouplayeritem.h"
 
-#include "grouplayer.h"
-
 namespace Tiled {
 namespace Internal {
 
-GroupLayerItem::GroupLayerItem(GroupLayer *groupLayer)
-    : mGroupLayer(groupLayer)
+GroupLayerItem::GroupLayerItem(GroupLayer *groupLayer, QGraphicsItem *parent)
+    : LayerItem(groupLayer, parent)
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
-
-    setOpacity(groupLayer->opacity());
-    setPos(groupLayer->offset());
 }
 
 QRectF GroupLayerItem::boundingRect() const

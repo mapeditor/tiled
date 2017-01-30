@@ -1,6 +1,6 @@
 /*
  * mapscene.cpp
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -82,15 +82,12 @@ MapScene::MapScene(QObject *parent):
             this, &MapScene::repaintTileset);
 
     Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
-    connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
-            SLOT(setShowTileObjectOutlines(bool)));
-    connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
-    connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
-            SLOT(setHighlightCurrentLayer(bool)));
-    connect(prefs, SIGNAL(gridColorChanged(QColor)), SLOT(update()));
-    connect(prefs, SIGNAL(objectLineWidthChanged(qreal)),
-            SLOT(setObjectLineWidth(qreal)));
+    connect(prefs, &Preferences::showGridChanged, this, &MapScene::setGridVisible);
+    connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapScene::setShowTileObjectOutlines);
+    connect(prefs, &Preferences::objectTypesChanged, this, &MapScene::syncAllObjectItems);
+    connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapScene::setHighlightCurrentLayer);
+    connect(prefs, SIGNAL(gridColorChanged(QColor)), this, SLOT(update()));
+    connect(prefs, &Preferences::objectLineWidthChanged, this, &MapScene::setObjectLineWidth);
 
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
@@ -157,16 +154,16 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 //                this, &MapScene::adaptToTileSizeChanges);
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
-        connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
-                this, SLOT(objectsInserted(ObjectGroup*,int,int)));
-        connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
-                this, SLOT(objectsRemoved(QList<MapObject*>)));
-        connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
-                this, SLOT(objectsChanged(QList<MapObject*>)));
-        connect(mMapDocument, SIGNAL(objectsIndexChanged(ObjectGroup*,int,int)),
-                this, SLOT(objectsIndexChanged(ObjectGroup*,int,int)));
-        connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
-                this, SLOT(updateSelectedObjectItems()));
+        connect(mMapDocument, &MapDocument::objectsInserted,
+                this, &MapScene::objectsInserted);
+        connect(mMapDocument, &MapDocument::objectsRemoved,
+                this, &MapScene::objectsRemoved);
+        connect(mMapDocument, &MapDocument::objectsChanged,
+                this, &MapScene::objectsChanged);
+        connect(mMapDocument, &MapDocument::objectsIndexChanged,
+                this, &MapScene::objectsIndexChanged);
+        connect(mMapDocument, &MapDocument::selectedObjectsChanged,
+                this, &MapScene::updateSelectedObjectItems);
     }
 
     refreshScene();
@@ -212,15 +209,7 @@ void MapScene::refreshScene()
     else
         setBackgroundBrush(mDefaultBackgroundColor);
 
-    int layerIndex = 0;
-    // todo: make recursive
-    for (Layer *layer : map->layers()) {
-        QGraphicsItem *layerItem = createLayerItem(layer);
-        layerItem->setZValue(layerIndex);
-        addItem(layerItem);
-        mLayerItems.insert(layer, layerItem);
-        ++layerIndex;
-    }
+    createLayerItems(map->layers());
 
     TileSelectionItem *tileSelectionItem = new TileSelectionItem(mMapDocument);
     tileSelectionItem->setZValue(10000 - 2);
@@ -233,9 +222,20 @@ void MapScene::refreshScene()
     updateCurrentLayerHighlight();
 }
 
-QGraphicsItem *MapScene::createLayerItem(Layer *layer)
+void MapScene::createLayerItems(const QList<Layer *> &layers)
 {
-    QGraphicsItem *layerItem = nullptr;
+    int layerIndex = 0;
+
+    for (Layer *layer : layers) {
+        LayerItem *layerItem = createLayerItem(layer);
+        layerItem->setZValue(layerIndex);
+        ++layerIndex;
+    }
+}
+
+LayerItem *MapScene::createLayerItem(Layer *layer)
+{
+    LayerItem *layerItem = nullptr;
 
     switch (layer->layerType()) {
     case Layer::TileLayerType:
@@ -267,7 +267,6 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
         break;
 
     case Layer::GroupLayerType:
-        // todo: process child layers
         layerItem = new GroupLayerItem(static_cast<GroupLayer*>(layer));
         break;
     }
@@ -275,6 +274,17 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     Q_ASSERT(layerItem);
 
     layerItem->setVisible(layer->isVisible());
+
+    if (layer->parentLayer())
+        layerItem->setParentItem(mLayerItems.value(layer->parentLayer()));
+    else
+        addItem(layerItem);
+
+    mLayerItems.insert(layer, layerItem);
+
+    if (GroupLayer *groupLayer = layer->asGroupLayer())
+        createLayerItems(groupLayer->layers());
+
     return layerItem;
 }
 
@@ -309,29 +319,64 @@ void MapScene::updateCurrentLayerHighlight()
     const auto currentLayer = mMapDocument->currentLayer();
 
     if (!mHighlightCurrentLayer || !currentLayer) {
-        mDarkRectangle->setVisible(false);
+        if (mDarkRectangle->isVisible()) {
+            mDarkRectangle->setVisible(false);
 
-        // Restore opacity for all layers
-        // todo: iterate all layers
-        for (int i = 0; i < mLayerItems.size(); ++i) {
-            Layer *layer = mMapDocument->map()->layerAt(i);
-            mLayerItems.value(layer)->setOpacity(layer->opacity());
+            // Restore opacity for all layers
+            const auto layerItems = mLayerItems;
+            for (auto layerItem : layerItems)
+                layerItem->setOpacity(layerItem->layer()->opacity());
         }
 
         return;
     }
 
     // Darken layers below the current layer
-    // todo: support layer hierarchy
-    const int currentLayerIndex = mMapDocument->layerIndex(currentLayer);
-    mDarkRectangle->setZValue(currentLayerIndex - 0.5);
+    const int siblingIndex = currentLayer->siblingIndex();
+    const auto parentLayer = currentLayer->parentLayer();
+    const auto parentItem = mLayerItems.value(parentLayer);
+
+    mDarkRectangle->setParentItem(parentItem);
+    mDarkRectangle->setZValue(siblingIndex - 0.5);
     mDarkRectangle->setVisible(true);
 
     // Set layers above the current layer to half opacity
-    for (int i = 1; i < mMapDocument->map()->layerCount(); ++i) {
-        Layer *layer = mMapDocument->map()->layerAt(i);
-        const qreal multiplier = (currentLayerIndex < i) ? opacityFactor : 1;
-        mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
+    Layer *layer = mMapDocument->map()->layerAt(0);
+    auto layers = mMapDocument->map()->layers();
+    int layerIndex = 0;
+    qreal multiplier = 1;
+
+    while (layer) {
+        const bool isCurrent = layer == currentLayer;
+
+        GroupLayer *groupLayer = layer->asGroupLayer();
+        if (!groupLayer)
+            mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
+
+        // Advance to next layer, depth-first
+        if (groupLayer && groupLayer->layerCount() > 0) {
+            layers = groupLayer->layers();
+            layerIndex = 0;
+        } else {
+            ++layerIndex;
+
+            if (isCurrent)
+                multiplier = opacityFactor;
+
+            if (layerIndex == layers.size()) {
+                if (GroupLayer *groupLayer = layer->parentLayer()) {
+                    if (currentLayer == groupLayer)
+                        multiplier = opacityFactor;
+
+                    layerIndex = groupLayer->siblingIndex() + 1;
+                    layers = groupLayer->siblings();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        layer = layers.at(layerIndex);
     }
 }
 
@@ -432,15 +477,11 @@ void MapScene::tileLayerDrawMarginsChanged(TileLayer *tileLayer)
 
 void MapScene::layerAdded(Layer *layer)
 {
-    // todo: in case of layer having a parent, parent onto the GroupLayerItem
-    QGraphicsItem *layerItem = createLayerItem(layer);
-    addItem(layerItem);
-    mLayerItems.insert(layer, layerItem);
+    createLayerItem(layer);
 
-    // todo: fixme
     int z = 0;
-    for (QGraphicsItem *item : mLayerItems)
-        item->setZValue(z++);
+    for (auto sibling : layer->siblings())
+        mLayerItems.value(sibling)->setZValue(z++);
 }
 
 void MapScene::layerRemoved(Layer *layer)
@@ -474,7 +515,7 @@ static bool isAbove(Layer *layerA, Layer *layerB)
         GroupLayer *parentB = layerB->parentLayer();
 
         if (parentA == parentB) {
-            const auto &layers = parentA ? parentA->layers() : layerA->map()->layers();
+            const auto &layers = layerA->siblings();
             const int indexA = layers.indexOf(layerA);
             const int indexB = layers.indexOf(layerB);
             return indexB > indexA;

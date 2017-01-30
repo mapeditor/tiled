@@ -77,6 +77,19 @@ int Layer::siblingIndex() const
 }
 
 /**
+ * Returns the list of siblings of this layer, including this layer.
+ */
+QList<Layer *> Layer::siblings() const
+{
+    if (mParentLayer)
+        return mParentLayer->layers();
+    if (mMap)
+        return mMap->layers();
+
+    return QList<Layer *>();
+}
+
+/**
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *

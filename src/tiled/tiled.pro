@@ -140,6 +140,7 @@ SOURCES += aboutdialog.cpp \
     imagelayeritem.cpp \
     languagemanager.cpp \
     layerdock.cpp \
+    layeritem.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
     magicwandtool.cpp \
@@ -302,6 +303,7 @@ HEADERS += aboutdialog.h \
     imagelayeritem.h \
     languagemanager.h \
     layerdock.h \
+    layeritem.h \
     layermodel.h \
     layeroffsettool.h \
     macsupport.h \

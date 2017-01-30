@@ -21,30 +21,31 @@
 #ifndef GROUPLAYERITEM_H
 #define GROUPLAYERITEM_H
 
-#include <QGraphicsItem>
+#include "layeritem.h"
+
+#include "grouplayer.h"
 
 namespace Tiled {
-
-class GroupLayer;
-
 namespace Internal {
 
-class GroupLayerItem : public QGraphicsItem
+class GroupLayerItem : public LayerItem
 {
 public:
-    GroupLayerItem(GroupLayer *groupLayer);
+    GroupLayerItem(GroupLayer *groupLayer, QGraphicsItem *parent = nullptr);
 
-    GroupLayer *groupLayer() const { return mGroupLayer; }
+    GroupLayer *groupLayer() const;
 
     // QGraphicsItem
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
-
-private:
-    GroupLayer *mGroupLayer;
 };
+
+inline GroupLayer *GroupLayerItem::groupLayer() const
+{
+    return static_cast<GroupLayer*>(layer());
+}
 
 } // namespace Internal
 } // namespace Tiled

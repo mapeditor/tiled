@@ -114,6 +114,7 @@ public:
 
     int depth() const;
     int siblingIndex() const;
+    QList<Layer*> siblings() const;
 
     /**
      * Returns the x position of this layer (in tiles).
