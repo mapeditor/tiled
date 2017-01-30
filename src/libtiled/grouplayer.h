@@ -41,7 +41,6 @@ public:
     void insertLayer(int index, Layer *layer);
     Layer *takeLayerAt(int index);
 
-    void setMap(Map *map) override;
     bool isEmpty() const override;
     QSet<SharedTileset> usedTilesets() const override;
     bool referencesTileset(const Tileset *tileset) const override;
@@ -57,6 +56,7 @@ public:
     QList<Layer*>::const_iterator end() const { return mLayers.end(); }
 
 protected:
+    void setMap(Map *map) override;
     GroupLayer *initializeClone(GroupLayer *clone) const;
 
 private:

@@ -346,18 +346,22 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         return;
 
     const QModelIndexList selectedProxyRows = selectionModel()->selectedRows();
-    int currentLayerIndex = -1;
+    ObjectGroup *singleObjectGroup = nullptr;
+    bool multipleObjectGroups = false;
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
         if (ObjectGroup *og = mapObjectModel()->toLayer(index)) {
-            int index = mMapDocument->map()->layers().indexOf(og);
-            if (currentLayerIndex == -1)
-                currentLayerIndex = index;
-            else if (currentLayerIndex != index)
-                currentLayerIndex = -2;
+            if (!multipleObjectGroups) {
+                if (!singleObjectGroup) {
+                    singleObjectGroup = og;
+                } else if (singleObjectGroup != og) {
+                    singleObjectGroup = nullptr;
+                    multipleObjectGroups = true;
+                }
+            }
         }
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
@@ -365,8 +369,8 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
 
     // Switch the current object layer if only one object layer (and/or its objects)
     // are included in the current selection.
-    if (currentLayerIndex >= 0 && currentLayerIndex != mMapDocument->currentLayerIndex())
-        mMapDocument->setCurrentLayerIndex(currentLayerIndex);
+    if (singleObjectGroup)
+        mMapDocument->setCurrentLayer(singleObjectGroup);
 
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;

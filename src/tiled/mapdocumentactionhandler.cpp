@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -208,14 +209,16 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     updateActions();
 
     if (mMapDocument) {
-        connect(mapDocument, SIGNAL(layerRemoved(int)),
-                SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-                SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
-                SLOT(updateActions()));
+        connect(mapDocument, &MapDocument::layerAdded,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::layerRemoved,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::currentLayerChanged,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::selectedAreaChanged,
+                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::selectedObjectsChanged,
+                this, &MapDocumentActionHandler::updateActions);
     }
 
     emit mapDocumentChanged(mMapDocument);
@@ -483,8 +486,9 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         return;
     }
 
-    auto newLayerIndex = mMapDocument->currentLayerIndex() + 1;
-    auto addLayer = new AddLayer(mMapDocument, newLayerIndex, newLayer);
+    auto parentLayer = currentLayer->parentLayer();
+    auto newLayerIndex = mMapDocument->layerIndex(currentLayer) + 1;
+    auto addLayer = new AddLayer(mMapDocument, newLayerIndex, newLayer, parentLayer);
     addLayer->setText(name);
 
     auto undoStack = mMapDocument->undoStack();
@@ -512,7 +516,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
         undoStack->endMacro();
     }
 
-    mMapDocument->setCurrentLayerIndex(newLayerIndex);
+    mMapDocument->setCurrentLayer(newLayer);
 
     if (!newObjects.isEmpty())
         mMapDocument->setSelectedObjects(newObjects);
@@ -533,43 +537,54 @@ void MapDocumentActionHandler::mergeLayerDown()
 void MapDocumentActionHandler::selectPreviousLayer()
 {
     if (mMapDocument) {
-        const int currentLayer = mMapDocument->currentLayerIndex();
-        if (currentLayer < mMapDocument->map()->layerCount() - 1)
-            mMapDocument->setCurrentLayerIndex(currentLayer + 1);
+        // todo: these actions should be able to navigate the hierarchy as expected
+        const auto currentLayer = mMapDocument->currentLayer();
+        if (currentLayer) {
+            const auto parentLayer = currentLayer->parentLayer();
+            const auto &layers = parentLayer ? parentLayer->layers() : mMapDocument->map()->layers();
+            const int index = layers.indexOf(currentLayer);
+            if (index < layers.size() - 1)
+                mMapDocument->setCurrentLayer(layers.at(index + 1));
+        }
     }
 }
 
 void MapDocumentActionHandler::selectNextLayer()
 {
     if (mMapDocument) {
-        const int currentLayer = mMapDocument->currentLayerIndex();
-        if (currentLayer > 0)
-            mMapDocument->setCurrentLayerIndex(currentLayer - 1);
+        const auto currentLayer = mMapDocument->currentLayer();
+        if (currentLayer) {
+            const auto parentLayer = currentLayer->parentLayer();
+            const auto &layers = parentLayer ? parentLayer->layers() : mMapDocument->map()->layers();
+            const int index = layers.indexOf(currentLayer);
+            if (index > 0)
+                mMapDocument->setCurrentLayer(layers.at(index - 1));
+        }
     }
 }
 
 void MapDocumentActionHandler::moveLayerUp()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerUp(mMapDocument->currentLayerIndex());
+        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
 }
 
 void MapDocumentActionHandler::moveLayerDown()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerDown(mMapDocument->currentLayerIndex());
+        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
 }
 
 void MapDocumentActionHandler::removeLayer()
 {
     if (mMapDocument)
-        mMapDocument->removeLayer(mMapDocument->currentLayerIndex());
+        mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
-        mMapDocument->toggleOtherLayers(mMapDocument->currentLayerIndex());
+        mMapDocument->toggleOtherLayers(mMapDocument->currentLayer());
 }
 
 void MapDocumentActionHandler::layerProperties()
@@ -604,6 +619,7 @@ void MapDocumentActionHandler::updateActions()
 {
     Map *map = nullptr;
     int currentLayerIndex = -1;
+    int siblingLayerCount = 0;
     Layer *currentLayer = nullptr;
     QRegion selection;
     int selectedObjectsCount = 0;
@@ -611,14 +627,17 @@ void MapDocumentActionHandler::updateActions()
 
     if (mMapDocument) {
         map = mMapDocument->map();
-        currentLayerIndex = mMapDocument->currentLayerIndex();
         currentLayer = mMapDocument->currentLayer();
+        const auto parentLayer = currentLayer ? currentLayer->parentLayer() : nullptr;
+        const auto &layers = parentLayer ? parentLayer->layers() : mMapDocument->map()->layers();
+        currentLayerIndex = layers.indexOf(currentLayer);
+        siblingLayerCount = layers.size();
         selection = mMapDocument->selectedArea();
         selectedObjectsCount = mMapDocument->selectedObjects().count();
 
         if (currentLayerIndex > 0) {
-            Layer *upper = map->layerAt(currentLayerIndex);
-            Layer *lower = map->layerAt(currentLayerIndex - 1);
+            Layer *upper = layers.at(currentLayerIndex);
+            Layer *lower = layers.at(currentLayerIndex - 1);
             canMergeDown = lower->canMergeWith(upper);
         }
     }
@@ -649,20 +668,20 @@ void MapDocumentActionHandler::updateActions()
     mActionLayerViaCopy->setEnabled(usableSelection);
     mActionLayerViaCut->setEnabled(usableSelection);
 
-    const int layerCount = map ? map->layerCount() : 0;
     const bool hasPreviousLayer = currentLayerIndex >= 0
-            && currentLayerIndex < layerCount - 1;
+            && currentLayerIndex < siblingLayerCount - 1;
     const bool hasNextLayer = currentLayerIndex > 0;
 
-    mActionDuplicateLayer->setEnabled(currentLayerIndex >= 0);
+    // todo: many of these actions should become aware of the layer hierarchy
+    mActionDuplicateLayer->setEnabled(currentLayer);
     mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayerUp->setEnabled(hasPreviousLayer);
     mActionMoveLayerDown->setEnabled(hasNextLayer);
-    mActionToggleOtherLayers->setEnabled(layerCount > 1);
-    mActionRemoveLayer->setEnabled(currentLayerIndex >= 0);
-    mActionLayerProperties->setEnabled(currentLayerIndex >= 0);
+    mActionToggleOtherLayers->setEnabled(currentLayer);
+    mActionRemoveLayer->setEnabled(currentLayer);
+    mActionLayerProperties->setEnabled(currentLayer);
 
     mActionDuplicateObjects->setEnabled(selectedObjectsCount > 0);
     mActionRemoveObjects->setEnabled(selectedObjectsCount > 0);

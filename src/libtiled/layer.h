@@ -41,6 +41,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Map;
 class ImageLayer;
 class ObjectGroup;
@@ -107,10 +108,12 @@ public:
     Map *map() const { return mMap; }
 
     /**
-     * Sets the map this layer is part of. Should only be called from the
-     * Map class.
+     * Returns the parent layer, if any.
      */
-    virtual void setMap(Map *map) { mMap = map; }
+    GroupLayer *parentLayer() const { return mParentLayer; }
+
+    int depth() const;
+    int siblingIndex() const;
 
     /**
      * Returns the x position of this layer (in tiles).
@@ -190,13 +193,22 @@ public:
     bool isTileLayer() const { return mLayerType == TileLayerType; }
     bool isObjectGroup() const { return mLayerType == ObjectGroupType; }
     bool isImageLayer() const { return mLayerType == ImageLayerType; }
+    bool isGroupLayer() const { return mLayerType == GroupLayerType; }
 
     // These actually return this layer cast to one of its subclasses.
     TileLayer *asTileLayer();
     ObjectGroup *asObjectGroup();
     ImageLayer *asImageLayer();
+    GroupLayer *asGroupLayer();
 
 protected:
+    /**
+     * Sets the map this layer is part of. Should only be called from the
+     * Map class.
+     */
+    virtual void setMap(Map *map) { mMap = map; }
+    void setParentLayer(GroupLayer *groupLayer) { mParentLayer = groupLayer; }
+
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
@@ -207,6 +219,10 @@ protected:
     float mOpacity;
     bool mVisible;
     Map *mMap;
+    GroupLayer *mParentLayer;
+
+    friend class Map;
+    friend class GroupLayer;
 };
 
 

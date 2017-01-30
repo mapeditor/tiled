@@ -35,7 +35,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
-                         int index,
+                         Layer *layer,
                          const QPoint &offset,
                          const QRect &bounds,
                          bool wrapX,
@@ -43,11 +43,10 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Offset Layer"))
     , mMapDocument(mapDocument)
-    , mIndex(index)
+    , mDone(false)
     , mOriginalLayer(nullptr)
 {
     // Create the offset layer (once)
-    Layer *layer = mMapDocument->map()->layerAt(mIndex);
     mOffsetLayer = layer->clone();
 
     switch (mOffsetLayer->layerType()) {
@@ -79,34 +78,24 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
 
 OffsetLayer::~OffsetLayer()
 {
-    delete mOriginalLayer;
-    delete mOffsetLayer;
+    if (mDone)
+        delete mOriginalLayer;
+    else
+        delete mOffsetLayer;
 }
 
 void OffsetLayer::undo()
 {
-    Q_ASSERT(!mOffsetLayer);
-    mOffsetLayer = swapLayer(mOriginalLayer);
-    mOriginalLayer = nullptr;
+    Q_ASSERT(mDone);
+    LayerModel *layerModel = mMapDocument->layerModel();
+    layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
+    mDone = false;
 }
 
 void OffsetLayer::redo()
 {
-    Q_ASSERT(!mOriginalLayer);
-    mOriginalLayer = swapLayer(mOffsetLayer);
-    mOffsetLayer = nullptr;
-}
-
-Layer *OffsetLayer::swapLayer(Layer *layer)
-{
-    const int currentIndex = mMapDocument->currentLayerIndex();
-
+    Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    Layer *replaced = layerModel->takeLayerAt(mIndex);
-    layerModel->insertLayer(mIndex, layer);
-
-    if (mIndex == currentIndex)
-        mMapDocument->setCurrentLayerIndex(mIndex);
-
-    return replaced;
+    layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
+    mDone = true;
 }

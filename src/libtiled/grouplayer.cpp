@@ -48,6 +48,7 @@ void GroupLayer::insertLayer(int index, Layer *layer)
 
 void GroupLayer::adoptLayer(Layer *layer)
 {
+    layer->setParentLayer(this);
     layer->setMap(map());
 
     if (map())
@@ -59,15 +60,8 @@ Layer *GroupLayer::takeLayerAt(int index)
 {
     Layer *layer = mLayers.takeAt(index);
     layer->setMap(nullptr);
+    layer->setParentLayer(nullptr);
     return layer;
-}
-
-void GroupLayer::setMap(Map *map)
-{
-    // todo: What about initializing object IDs?
-    Layer::setMap(map);
-    for (Layer *layer : mLayers)
-        layer->setMap(map);
 }
 
 bool GroupLayer::isEmpty() const
@@ -117,6 +111,14 @@ Layer *GroupLayer::mergedWith(Layer *) const
 Layer *GroupLayer::clone() const
 {
     return initializeClone(new GroupLayer(mName, mX, mY));
+}
+
+void GroupLayer::setMap(Map *map)
+{
+    // todo: What about initializing object IDs?
+    Layer::setMap(map);
+    for (Layer *layer : mLayers)
+        layer->setMap(map);
 }
 
 GroupLayer *GroupLayer::initializeClone(GroupLayer *clone) const

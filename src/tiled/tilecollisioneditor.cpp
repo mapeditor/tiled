@@ -207,7 +207,7 @@ void TileCollisionEditor::setTile(Tile *tile)
         mToolManager->setMapDocument(mapDocument);
         mPropertiesDock->setDocument(mapDocument);
 
-        mapDocument->setCurrentLayerIndex(1);
+        mapDocument->setCurrentLayer(objectGroup);
 
         mMapScene->enableSelectedTool();
 
@@ -275,7 +275,7 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
     LayerModel *layerModel = dummyDocument->layerModel();
     dummyDocument->undoStack()->clear();
 
-    delete layerModel->takeLayerAt(1);
+    delete layerModel->takeLayerAt(nullptr, 1);
 
     ObjectGroup *objectGroup;
     if (tile->objectGroup())
@@ -285,8 +285,8 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
     objectGroup->setDrawOrder(ObjectGroup::IndexOrder);
 
-    layerModel->insertLayer(1, objectGroup);
-    dummyDocument->setCurrentLayerIndex(1);
+    layerModel->insertLayer(nullptr, 1, objectGroup);
+    dummyDocument->setCurrentLayer(objectGroup);
 
     mSynchronizing = false;
 }

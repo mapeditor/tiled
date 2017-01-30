@@ -29,10 +29,11 @@
 
 #include "layer.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
+#include "map.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
-
 
 using namespace Tiled;
 
@@ -44,8 +45,35 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mY(y),
     mOpacity(1.0f),
     mVisible(true),
-    mMap(nullptr)
+    mMap(nullptr),
+    mParentLayer(nullptr)
 {
+}
+
+/**
+ * Returns the depth of this layer in the hierarchy.
+ */
+int Layer::depth() const
+{
+    int d = 0;
+    GroupLayer *p = mParentLayer;
+    while (p) {
+        ++d;
+        p = p->parentLayer();
+    }
+    return d;
+}
+
+/**
+ * Returns the index of this layer among its siblings.
+ */
+int Layer::siblingIndex() const
+{
+    if (mParentLayer)
+        return mParentLayer->layers().indexOf(const_cast<Layer*>(this));
+    if (mMap)
+        return mMap->layers().indexOf(const_cast<Layer*>(this));
+    return 0;
 }
 
 /**
@@ -81,4 +109,9 @@ ObjectGroup *Layer::asObjectGroup()
 ImageLayer *Layer::asImageLayer()
 {
     return isImageLayer() ? static_cast<ImageLayer*>(this) : nullptr;
+}
+
+GroupLayer *Layer::asGroupLayer()
+{
+    return isGroupLayer() ? static_cast<GroupLayer*>(this) : nullptr;
 }

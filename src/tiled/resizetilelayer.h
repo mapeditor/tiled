@@ -56,10 +56,8 @@ public:
     void redo() override;
 
 private:
-    Layer *swapLayer(Layer *layer);
-
     MapDocument *mMapDocument;
-    int mIndex;
+    bool mDone;
     TileLayer *mOriginalLayer;
     TileLayer *mResizedLayer;
 };

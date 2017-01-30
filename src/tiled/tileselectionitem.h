@@ -24,6 +24,9 @@
 #include <QGraphicsObject>
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -49,9 +52,9 @@ private slots:
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
 
-    void layerChanged(int index);
+    void layerChanged(Layer *layer);
 
-    void currentLayerIndexChanged();
+    void currentLayerChanged(Layer *layer);
 
 private:
     void updateBoundingRect();

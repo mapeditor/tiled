@@ -26,6 +26,8 @@
 
 namespace Tiled {
 
+class GroupLayer;
+class Layer;
 class MapObject;
 
 namespace Internal {
@@ -49,9 +51,9 @@ public:
 private slots:
     void selectedObjectsChanged();
     void mapChanged();
-    void layerAdded(int index);
-    void layerAboutToBeRemoved(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
+    void layerChanged(Layer *layer);
     void syncOverlayItems(const QList<MapObject *> &objects);
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);

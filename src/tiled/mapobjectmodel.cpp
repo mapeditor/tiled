@@ -21,8 +21,9 @@
 #include "mapobjectmodel.h"
 
 #include "changemapobject.h"
-#include "map.h"
+#include "grouplayer.h"
 #include "layermodel.h"
+#include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -168,15 +169,13 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         switch (role) {
         case Qt::CheckStateRole: {
             LayerModel *layerModel = mMapDocument->layerModel();
-            const int layerIndex = mMap->layers().indexOf(objectGroup);
-            layerModel->setData(layerModel->index(layerIndex), value, role);
+            layerModel->setData(layerModel->index(objectGroup), value, role);
             return true;
         }
         case Qt::EditRole: {
             const QString newName = value.toString();
             if (objectGroup->name() != newName) {
-                const int layerIndex = mMap->layers().indexOf(objectGroup);
-                RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
+                RenameLayer *rename = new RenameLayer(mMapDocument, objectGroup,
                                                       newName);
                 mMapDocument->undoStack()->push(rename);
             }
@@ -290,9 +289,12 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
     endResetModel();
 }
 
-void MapObjectModel::layerAdded(int index)
+void MapObjectModel::layerAdded(Layer *layer)
 {
-    Layer *layer = mMap->layerAt(index);
+    int index = mMap->layers().indexOf(layer);
+    if (index == -1)
+        return; // todo: nested object groups not supported yet
+
     if (ObjectGroup *og = layer->asObjectGroup()) {
         if (!mGroups.contains(og)) {
             ObjectGroup *prev = nullptr;
@@ -313,17 +315,22 @@ void MapObjectModel::layerAdded(int index)
     }
 }
 
-void MapObjectModel::layerChanged(int index)
+void MapObjectModel::layerChanged(Layer *layer)
 {
-    Layer *layer = mMap->layerAt(index);
+    if (layer->parentLayer())
+        return; // todo: nested object groups not supported yet
+
     if (ObjectGroup *og = layer->asObjectGroup()) {
         QModelIndex index = this->index(og);
         emit dataChanged(index, index);
     }
 }
 
-void MapObjectModel::layerAboutToBeRemoved(int index)
+void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
+    if (groupLayer)
+        return; // todo: nested object groups not supported yet
+
     Layer *layer = mMap->layerAt(index);
     if (ObjectGroup *og = layer->asObjectGroup()) {
         const int row = mObjectGroups.indexOf(og);

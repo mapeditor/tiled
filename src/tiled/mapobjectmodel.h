@@ -26,6 +26,8 @@
 
 namespace Tiled {
 
+class GroupLayer;
+class Layer;
 class MapObject;
 class Map;
 class ObjectGroup;
@@ -109,9 +111,9 @@ signals:
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:
-    void layerAdded(int index);
-    void layerChanged(int index);
-    void layerAboutToBeRemoved(int index);
+    void layerAdded(Layer *layer);
+    void layerChanged(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
 
 private:
     MapDocument *mMapDocument;

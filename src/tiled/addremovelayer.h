@@ -1,6 +1,6 @@
 /*
  * addremovelayer.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -26,6 +26,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 
 namespace Internal {
@@ -38,7 +39,8 @@ class MapDocument;
 class AddRemoveLayer : public QUndoCommand
 {
 public:
-    AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer);
+    AddRemoveLayer(MapDocument *mapDocument, int index, Layer *layer,
+                   GroupLayer *parentLayer);
 
     ~AddRemoveLayer();
 
@@ -49,6 +51,7 @@ protected:
 private:
     MapDocument *mMapDocument;
     Layer *mLayer;
+    GroupLayer *mParentLayer;
     int mIndex;
 };
 
@@ -59,10 +62,11 @@ class AddLayer : public AddRemoveLayer
 {
 public:
     /**
-     * Creates an undo command that adds the \a layer at \a index.
+     * Creates an undo command that adds the \a layer to \a parentLayer at
+     * \a index.
      */
-    AddLayer(MapDocument *mapDocument, int index, Layer *layer)
-        : AddRemoveLayer(mapDocument, index, layer)
+    AddLayer(MapDocument *mapDocument, int index, Layer *layer, GroupLayer *parentLayer)
+        : AddRemoveLayer(mapDocument, index, layer, parentLayer)
     {
         setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
     }
@@ -83,8 +87,8 @@ public:
     /**
      * Creates an undo command that removes the layer at \a index.
      */
-    RemoveLayer(MapDocument *mapDocument, int index)
-        : AddRemoveLayer(mapDocument, index, nullptr)
+    RemoveLayer(MapDocument *mapDocument, int index, GroupLayer *parentLayer)
+        : AddRemoveLayer(mapDocument, index, nullptr, parentLayer)
     {
         setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
     }

@@ -26,7 +26,8 @@
 #include "tilelayer.h"
 #include "ui_offsetmapdialog.h"
 
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
@@ -47,27 +48,27 @@ OffsetMapDialog::~OffsetMapDialog()
     delete mUi;
 }
 
-QList<int> OffsetMapDialog::affectedLayerIndexes() const
+QList<Layer *> OffsetMapDialog::affectedLayers() const
 {
-    QList<int> layerIndexes;
+    QList<Layer *> layers;
     const Map *map = mMapDocument->map();
 
+    // todo: fix this to iterate over all layers
     switch (layerSelection()) {
     case AllVisibleLayers:
         for (int i = 0; i < map->layerCount(); i++)
             if (map->layerAt(i)->isVisible())
-                layerIndexes.append(i);
+                layers.append(map->layerAt(i));
         break;
     case AllLayers:
-        for (int i = 0; i < map->layerCount(); i++)
-            layerIndexes.append(i);
+        layers.append(map->layers());
         break;
     case SelectedLayer:
-        layerIndexes.append(mMapDocument->currentLayerIndex());
+        layers.append(mMapDocument->currentLayer());
         break;
     }
 
-    return layerIndexes;
+    return layers;
 }
 
 QRect OffsetMapDialog::affectedBoundingRect() const
@@ -132,3 +133,6 @@ void OffsetMapDialog::disableBoundsSelectionCurrentArea()
     mUi->boundsSelection->setEnabled(false);
     mUi->boundsSelection->setCurrentIndex(0);
 }
+
+} // namespace Internal
+} // namespace Tiled

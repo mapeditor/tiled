@@ -1247,7 +1247,7 @@ void MainWindow::offsetMap()
 
     OffsetMapDialog offsetDialog(mapDocument, this);
     if (offsetDialog.exec()) {
-        const QList<int> layerIndexes = offsetDialog.affectedLayerIndexes();
+        const auto layerIndexes = offsetDialog.affectedLayers();
         if (layerIndexes.empty())
             return;
 
@@ -1597,7 +1597,7 @@ void MainWindow::documentChanged(Document *document)
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
 
     if (mapDocument) {
-        connect(mapDocument, &MapDocument::currentLayerIndexChanged,
+        connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MainWindow::updateActions);
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MainWindow::updateActions);

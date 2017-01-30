@@ -20,17 +20,20 @@
 
 #include "movelayer.h"
 
+#include "grouplayer.h"
 #include "layer.h"
 #include "layermodel.h"
+#include "map.h"
 #include "mapdocument.h"
 
 #include <QCoreApplication>
 
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
-MoveLayer::MoveLayer(MapDocument *mapDocument, int index, Direction direction):
+MoveLayer::MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction):
     mMapDocument(mapDocument),
-    mIndex(index),
+    mLayer(layer),
     mDirection(direction)
 {
     setText((direction == Down) ?
@@ -48,25 +51,27 @@ void MoveLayer::undo()
     moveLayer();
 }
 
+// todo: this code should be able to move a layer through the whole hierachy
 void MoveLayer::moveLayer()
 {
-    const int currentIndex = mMapDocument->currentLayerIndex();
-    const bool selectedBefore = (mIndex == currentIndex);
-    const int prevIndex = mIndex;
+    const auto currentLayer = mMapDocument->currentLayer();
+    const bool selectedBefore = (mLayer == currentLayer);
 
     LayerModel *layerModel = mMapDocument->layerModel();
-    Layer *layer = layerModel->takeLayerAt(mIndex);
+    const auto parentLayer = mLayer->parentLayer();
 
-    // Change the direction and index to swap undo/redo
-    mIndex = (mDirection == Down) ? mIndex - 1 : mIndex + 1;
+    const int index = mLayer->siblingIndex();
+    const int insertionIndex = (mDirection == Down) ? index - 1 : index + 1;
+
+    layerModel->takeLayerAt(parentLayer, index);
+    layerModel->insertLayer(parentLayer, insertionIndex, mLayer);
+
+    // Change the direction
     mDirection = (mDirection == Down) ? Up : Down;
 
-    const bool selectedAfter = (mIndex == currentIndex);
-
-    layerModel->insertLayer(mIndex, layer);
-
-    // Set the layer that is now supposed to be selected
-    mMapDocument->setCurrentLayerIndex(
-                selectedBefore ? mIndex :
-                                 (selectedAfter ? prevIndex : currentIndex));
+    if (selectedBefore)
+        mMapDocument->setCurrentLayer(mLayer);
 }
+
+} // namespace Tiled
+} // namespace Internal

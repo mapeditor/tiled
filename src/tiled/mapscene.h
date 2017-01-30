@@ -152,15 +152,15 @@ private slots:
      */
     void repaintRegion(const QRegion &region, Layer *layer);
 
-    void currentLayerIndexChanged();
+    void currentLayerChanged();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
     void tileLayerDrawMarginsChanged(TileLayer *tileLayer);
 
-    void layerAdded(int index);
-    void layerRemoved(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
@@ -197,13 +197,12 @@ private:
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;
-    QVector<QGraphicsItem*> mLayerItems;
+    QMap<Layer*, QGraphicsItem*> mLayerItems;
     QGraphicsRectItem *mDarkRectangle;
     QColor mDefaultBackgroundColor;
     ObjectSelectionItem *mObjectSelectionItem;
 
-    typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
-    ObjectItems mObjectItems;
+    QMap<MapObject*, MapObjectItem*> mObjectItems;
     QSet<MapObjectItem*> mSelectedObjectItems;
 };
 

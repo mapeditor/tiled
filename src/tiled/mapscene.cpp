@@ -130,24 +130,24 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         renderer->setObjectLineWidth(mObjectLineWidth);
         renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
 
-        connect(mMapDocument, SIGNAL(mapChanged()),
-                this, SLOT(mapChanged()));
+        connect(mMapDocument, &MapDocument::mapChanged,
+                this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::regionChanged,
                 this, &MapScene::repaintRegion);
-        connect(mMapDocument, SIGNAL(tileLayerDrawMarginsChanged(TileLayer*)),
-                this, SLOT(tileLayerDrawMarginsChanged(TileLayer*)));
-        connect(mMapDocument, SIGNAL(layerAdded(int)),
-                this, SLOT(layerAdded(int)));
-        connect(mMapDocument, SIGNAL(layerRemoved(int)),
-                this, SLOT(layerRemoved(int)));
-        connect(mMapDocument, SIGNAL(layerChanged(int)),
-                this, SLOT(layerChanged(int)));
-        connect(mMapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
-                this, SLOT(objectGroupChanged(ObjectGroup*)));
-        connect(mMapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
-                this, SLOT(imageLayerChanged(ImageLayer*)));
-        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                this, SLOT(currentLayerIndexChanged()));
+        connect(mMapDocument, &MapDocument::tileLayerDrawMarginsChanged,
+                this, &MapScene::tileLayerDrawMarginsChanged);
+        connect(mMapDocument, &MapDocument::layerAdded,
+                this, &MapScene::layerAdded);
+        connect(mMapDocument, &MapDocument::layerRemoved,
+                this, &MapScene::layerRemoved);
+        connect(mMapDocument, &MapDocument::layerChanged,
+                this, &MapScene::layerChanged);
+        connect(mMapDocument, &MapDocument::objectGroupChanged,
+                this, &MapScene::objectGroupChanged);
+        connect(mMapDocument, &MapDocument::imageLayerChanged,
+                this, &MapScene::imageLayerChanged);
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
+                this, &MapScene::currentLayerChanged);
         // todo: possibly route this through the TilesetManager and
         // have the MapScene check if the current map uses the changed tileset.
         // possibly have it still trigger through the signal
@@ -206,7 +206,6 @@ void MapScene::refreshScene()
     updateSceneRect();
 
     const Map *map = mMapDocument->map();
-    mLayerItems.resize(map->layerCount());
 
     if (map->backgroundColor().isValid())
         setBackgroundBrush(map->backgroundColor());
@@ -214,11 +213,12 @@ void MapScene::refreshScene()
         setBackgroundBrush(mDefaultBackgroundColor);
 
     int layerIndex = 0;
+    // todo: make recursive
     for (Layer *layer : map->layers()) {
         QGraphicsItem *layerItem = createLayerItem(layer);
         layerItem->setZValue(layerIndex);
         addItem(layerItem);
-        mLayerItems[layerIndex] = layerItem;
+        mLayerItems.insert(layer, layerItem);
         ++layerIndex;
     }
 
@@ -306,29 +306,32 @@ void MapScene::updateCurrentLayerHighlight()
     if (!mMapDocument)
         return;
 
-    const int currentLayerIndex = mMapDocument->currentLayerIndex();
+    const auto currentLayer = mMapDocument->currentLayer();
 
-    if (!mHighlightCurrentLayer || currentLayerIndex == -1) {
+    if (!mHighlightCurrentLayer || !currentLayer) {
         mDarkRectangle->setVisible(false);
 
         // Restore opacity for all layers
+        // todo: iterate all layers
         for (int i = 0; i < mLayerItems.size(); ++i) {
-            const Layer *layer = mMapDocument->map()->layerAt(i);
-            mLayerItems.at(i)->setOpacity(layer->opacity());
+            Layer *layer = mMapDocument->map()->layerAt(i);
+            mLayerItems.value(layer)->setOpacity(layer->opacity());
         }
 
         return;
     }
 
     // Darken layers below the current layer
+    // todo: support layer hierarchy
+    const int currentLayerIndex = mMapDocument->layerIndex(currentLayer);
     mDarkRectangle->setZValue(currentLayerIndex - 0.5);
     mDarkRectangle->setVisible(true);
 
     // Set layers above the current layer to half opacity
-    for (int i = 1; i < mLayerItems.size(); ++i) {
-        const Layer *layer = mMapDocument->map()->layerAt(i);
+    for (int i = 1; i < mMapDocument->map()->layerCount(); ++i) {
+        Layer *layer = mMapDocument->map()->layerAt(i);
         const qreal multiplier = (currentLayerIndex < i) ? opacityFactor : 1;
-        mLayerItems.at(i)->setOpacity(layer->opacity() * multiplier);
+        mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
     }
 }
 
@@ -380,7 +383,7 @@ void MapScene::disableSelectedTool()
     mActiveTool = nullptr;
 }
 
-void MapScene::currentLayerIndexChanged()
+void MapScene::currentLayerChanged()
 {
     updateCurrentLayerHighlight();
 
@@ -423,42 +426,78 @@ void MapScene::repaintTileset(Tileset *tileset)
 
 void MapScene::tileLayerDrawMarginsChanged(TileLayer *tileLayer)
 {
-    const int index = mMapDocument->map()->layers().indexOf(tileLayer);
-    TileLayerItem *item = static_cast<TileLayerItem*>(mLayerItems.at(index));
+    TileLayerItem *item = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
     item->syncWithTileLayer();
 }
 
-void MapScene::layerAdded(int index)
+void MapScene::layerAdded(Layer *layer)
 {
-    Layer *layer = mMapDocument->map()->layerAt(index);
+    // todo: in case of layer having a parent, parent onto the GroupLayerItem
     QGraphicsItem *layerItem = createLayerItem(layer);
     addItem(layerItem);
-    mLayerItems.insert(index, layerItem);
+    mLayerItems.insert(layer, layerItem);
 
+    // todo: fixme
     int z = 0;
     for (QGraphicsItem *item : mLayerItems)
         item->setZValue(z++);
 }
 
-void MapScene::layerRemoved(int index)
+void MapScene::layerRemoved(Layer *layer)
 {
-    delete mLayerItems.at(index);
-    mLayerItems.remove(index);
+    delete mLayerItems.take(layer);
+}
+
+// Returns whether layerB is drawn above layerA
+static bool isAbove(Layer *layerA, Layer *layerB)
+{
+    int depthA = layerA->depth();
+    int depthB = layerB->depth();
+
+    // Make sure to start comparing at a common depth
+    while (depthA > 0 && depthA > depthB) {
+        layerA = layerA->parentLayer();
+        --depthA;
+    }
+    while (depthB > 0 && depthB > depthA) {
+        layerB = layerB->parentLayer();
+        --depthB;
+    }
+
+    // One of the layers is a child of the other
+    if (layerA == layerB)
+        return false;
+
+    // Move upwards until the layers have the same parent
+    while (true) {
+        GroupLayer *parentA = layerA->parentLayer();
+        GroupLayer *parentB = layerB->parentLayer();
+
+        if (parentA == parentB) {
+            const auto &layers = parentA ? parentA->layers() : layerA->map()->layers();
+            const int indexA = layers.indexOf(layerA);
+            const int indexB = layers.indexOf(layerB);
+            return indexB > indexA;
+        }
+
+        layerA = parentA;
+        layerB = parentB;
+    }
 }
 
 /**
  * A layer has changed. This can mean that the layer visibility, opacity or
  * offset changed.
  */
-void MapScene::layerChanged(int index)
+void MapScene::layerChanged(Layer *layer)
 {
-    const Layer *layer = mMapDocument->map()->layerAt(index);
-    QGraphicsItem *layerItem = mLayerItems.at(index);
+    QGraphicsItem *layerItem = mLayerItems.value(layer);
+    Q_ASSERT(layerItem);
 
     layerItem->setVisible(layer->isVisible());
 
     qreal multiplier = 1;
-    if (mHighlightCurrentLayer && mMapDocument->currentLayerIndex() < index)
+    if (mHighlightCurrentLayer && isAbove(mMapDocument->currentLayer(), layer))
         multiplier = opacityFactor;
 
     layerItem->setOpacity(layer->opacity() * multiplier);
@@ -486,8 +525,7 @@ void MapScene::objectGroupChanged(ObjectGroup *objectGroup)
  */
 void MapScene::imageLayerChanged(ImageLayer *imageLayer)
 {
-    const int index = mMapDocument->map()->layers().indexOf(imageLayer);
-    ImageLayerItem *item = static_cast<ImageLayerItem*>(mLayerItems.at(index));
+    ImageLayerItem *item = static_cast<ImageLayerItem*>(mLayerItems.value(imageLayer));
 
     item->syncWithImageLayer();
     item->update();
@@ -573,7 +611,7 @@ void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 void MapScene::objectsRemoved(const QList<MapObject*> &objects)
 {
     for (MapObject *o : objects) {
-        ObjectItems::iterator i = mObjectItems.find(o);
+        auto i = mObjectItems.find(o);
         Q_ASSERT(i != mObjectItems.end());
 
         mSelectedObjectItems.remove(i.value());
