@@ -92,10 +92,14 @@ public:
      */
     void setOpacity(float opacity) { mOpacity = opacity; }
 
+    float affectiveOpacity() const;
+
     /**
      * Returns the visibility of this layer.
      */
     bool isVisible() const { return mVisible; }
+
+    bool isHidden() const;
 
     /**
      * Sets the visibility of this layer.
@@ -149,6 +153,8 @@ public:
 
     void setOffset(const QPointF &offset);
     QPointF offset() const;
+
+    QPointF totalOffset() const;
 
     virtual bool isEmpty() const = 0;
 
@@ -266,6 +272,9 @@ public:
 
     Layer *next();
     Layer *previous();
+
+    void toFront();
+    void toBack();
 
 private:
     const Map *mMap;

@@ -51,6 +51,31 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
 }
 
 /**
+ * Returns the effective opacity, which is the opacity multiplied by the
+ * opacity of any parent layers.
+ */
+float Layer::affectiveOpacity() const
+{
+    auto opacity = mOpacity;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        opacity *= layer->opacity();
+    return opacity;
+}
+
+/**
+ * Returns whether this layer is hidden. A visible layer may still be hidden,
+ * when one of its parent layers is not visible.
+ */
+bool Layer::isHidden() const
+{
+    const Layer *layer = this;
+    while (layer && layer->isVisible())
+        layer = layer->parentLayer();
+    return layer;      // encountered an invisible layer
+}
+
+/**
  * Returns the depth of this layer in the hierarchy.
  */
 int Layer::depth() const
@@ -87,6 +112,19 @@ QList<Layer *> Layer::siblings() const
         return mMap->layers();
 
     return QList<Layer *>();
+}
+
+/**
+ * Computes the total offset. which is the offset including the offset of all
+ * parent layers.
+ */
+QPointF Layer::totalOffset() const
+{
+    auto offset = mOffset;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        offset += layer->offset();
+    return offset;
 }
 
 /**
@@ -212,6 +250,19 @@ Layer *LayerIterator::previous()
 
     return layer;
 }
+
+void LayerIterator::toFront()
+{
+    mCurrentLayer = nullptr;
+    mSiblingIndex = -1;
+}
+
+void LayerIterator::toBack()
+{
+    mCurrentLayer = nullptr;
+    mSiblingIndex = mMap ? mMap->layerCount() : -1;
+}
+
 
 /**
  * Returns the global layer index for the given \a layer. Obtained by iterating

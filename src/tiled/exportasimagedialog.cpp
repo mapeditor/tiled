@@ -217,12 +217,15 @@ void ExportAsImageDialog::accept()
 
     painter.translate(margins.left(), margins.top());
 
-    for (const Layer *layer : mMapDocument->map()->layers()) {
-        if (visibleLayersOnly && !layer->isVisible())
+    LayerIterator iterator(mMapDocument->map());
+    while (Layer *layer = iterator.next()) {
+        if (visibleLayersOnly && layer->isHidden())
             continue;
 
-        painter.setOpacity(layer->opacity());
-        painter.translate(layer->offset());
+        const auto offset = layer->totalOffset();
+
+        painter.setOpacity(layer->affectiveOpacity());
+        painter.translate(offset);
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -264,11 +267,11 @@ void ExportAsImageDialog::accept()
         }
 
         case Layer::GroupLayerType:
-            // todo: recursive
+            // Recursion handled by LayerIterator
             break;
         }
 
-        painter.translate(-layer->offset());
+        painter.translate(-offset);
     }
 
     if (drawTileGrid) {

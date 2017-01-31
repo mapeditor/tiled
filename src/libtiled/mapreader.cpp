@@ -276,7 +276,8 @@ Map *MapReaderPrivate::readMap()
         }
 
         // Fix up sizes of tile objects
-        for (Layer *layer : mMap->layers()) {
+        LayerIterator iterator(mMap.data());
+        while (Layer *layer = iterator.next()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 for (MapObject *object : *objectGroup) {
                     if (const Tile *tile = object->cell().tile()) {

@@ -108,8 +108,13 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     stream.writeStartElement("instances");
 
     QSet<QString> usedNames;
+    int layerCount = 0;
 
-    for (const Layer *layer : map->layers()) {
+    // Write out object instances
+    LayerIterator iterator(map);
+    while (const Layer *layer = iterator.next()) {
+        ++layerCount;
+
         if (layer->layerType() != Layer::ObjectGroupType)
             continue;
 
@@ -185,10 +190,11 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     stream.writeStartElement("tiles");
 
     uint tileId = 0u;
-    int currentLayer = map->layers().size();
 
-    for (const Layer *layer : map->layers()) {
-        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), currentLayer));
+    // Write out tile instances
+    iterator.toFront();
+    while (const Layer *layer = iterator.next()) {
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), layerCount));
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -304,11 +310,11 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             break;
 
         case Layer::GroupLayerType:
-            // todo: recursively export group layers
+            // Recursion handled by LayerIterator
             break;
         }
 
-        currentLayer--;
+        --layerCount;
     }
 
     stream.writeEndElement();

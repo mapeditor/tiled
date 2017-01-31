@@ -288,7 +288,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
-    for (Layer *layer : mMap->layers()) {
+    LayerIterator iterator(mMap);
+    while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
@@ -321,7 +322,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             break;
         }
         case Layer::GroupLayerType: {
-            // todo: recursively resize layers in this group
+            // Recursion handled by LayerIterator
             break;
         }
         }
