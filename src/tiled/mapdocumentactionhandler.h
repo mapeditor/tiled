@@ -76,13 +76,11 @@ public:
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
-    QAction *actionSelectPreviousLayer() const
-    { return mActionSelectPreviousLayer; }
+    QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
     QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
-    QAction *actionToggleOtherLayers() const
-    { return mActionToggleOtherLayers; }
+    QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }

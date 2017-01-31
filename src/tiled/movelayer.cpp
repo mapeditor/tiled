@@ -51,26 +51,52 @@ void MoveLayer::undo()
     moveLayer();
 }
 
-// todo: this code should be able to move a layer through the whole hierachy
 void MoveLayer::moveLayer()
 {
+    LayerIterator iterator(mLayer);
+    if (mDirection == Down)
+        iterator.previous();
+    else
+        iterator.next();
+
+    Q_ASSERT(iterator.currentLayer());
+
+    const auto parent = mLayer->parentLayer();
+    const int index = mLayer->siblingIndex();
+
+    auto insertionParent = iterator.currentLayer()->parentLayer();
+    int insertionIndex = iterator.currentSiblingIndex();
+
+    if (mDirection == Down) {
+        if (insertionParent != parent) {
+            // Index adjustment to make sure we insert above (but exiting the group)
+            ++insertionIndex;
+        } else if (iterator.currentLayer()->isGroupLayer()) {
+            // Enter the group from the top
+            insertionParent = static_cast<GroupLayer*>(iterator.currentLayer());
+            insertionIndex = insertionParent->layerCount();
+        }
+    } else {
+        if (index + 1 == mLayer->siblings().size()) {
+            // When existing a group make sure we insert above
+            ++insertionIndex;
+        } else if (iterator.currentLayer()->isGroupLayer()) {
+            // Enter the group from the bottom
+            insertionParent = static_cast<GroupLayer*>(iterator.currentLayer());
+            insertionIndex = 0;
+        }
+    }
+
     const auto currentLayer = mMapDocument->currentLayer();
-    const bool selectedBefore = (mLayer == currentLayer);
 
     LayerModel *layerModel = mMapDocument->layerModel();
-    const auto parentLayer = mLayer->parentLayer();
-
-    const int index = mLayer->siblingIndex();
-    const int insertionIndex = (mDirection == Down) ? index - 1 : index + 1;
-
-    layerModel->takeLayerAt(parentLayer, index);
-    layerModel->insertLayer(parentLayer, insertionIndex, mLayer);
+    layerModel->takeLayerAt(parent, index);
+    layerModel->insertLayer(insertionParent, insertionIndex, mLayer);
 
     // Change the direction
     mDirection = (mDirection == Down) ? Up : Down;
 
-    if (selectedBefore)
-        mMapDocument->setCurrentLayer(mLayer);
+    mMapDocument->setCurrentLayer(currentLayer);
 }
 
 } // namespace Tiled

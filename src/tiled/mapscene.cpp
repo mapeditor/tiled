@@ -340,43 +340,17 @@ void MapScene::updateCurrentLayerHighlight()
     mDarkRectangle->setZValue(siblingIndex - 0.5);
     mDarkRectangle->setVisible(true);
 
-    // Set layers above the current layer to half opacity
-    Layer *layer = mMapDocument->map()->layerAt(0);
-    auto layers = mMapDocument->map()->layers();
-    int layerIndex = 0;
+    // Set layers above the current layer to reduced opacity
+    LayerIterator iterator(mMapDocument->map());
     qreal multiplier = 1;
 
-    while (layer) {
-        const bool isCurrent = layer == currentLayer;
-
+    while (Layer *layer = iterator.next()) {
         GroupLayer *groupLayer = layer->asGroupLayer();
         if (!groupLayer)
             mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
 
-        // Advance to next layer, depth-first
-        if (groupLayer && groupLayer->layerCount() > 0) {
-            layers = groupLayer->layers();
-            layerIndex = 0;
-        } else {
-            ++layerIndex;
-
-            if (isCurrent)
-                multiplier = opacityFactor;
-
-            if (layerIndex == layers.size()) {
-                if (GroupLayer *groupLayer = layer->parentLayer()) {
-                    if (currentLayer == groupLayer)
-                        multiplier = opacityFactor;
-
-                    layerIndex = groupLayer->siblingIndex() + 1;
-                    layers = groupLayer->siblings();
-                } else {
-                    break;
-                }
-            }
-        }
-
-        layer = layers.at(layerIndex);
+        if (layer == currentLayer)
+            multiplier = opacityFactor;
     }
 }
 

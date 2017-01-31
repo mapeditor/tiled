@@ -243,6 +243,84 @@ inline QPointF Layer::offset() const
     return mOffset;
 }
 
+
+/**
+ * An iterator for iterating over the layers of a map. When iterating forward,
+ * group layers are traversed after their children.
+ *
+ * Modifying the layer hierarchy while an iterator is active will lead to
+ * undefined results!
+ */
+class TILEDSHARED_EXPORT LayerIterator
+{
+public:
+    LayerIterator(const Map *map);
+    LayerIterator(Layer *start);
+
+    Layer *currentLayer() const;
+    int currentSiblingIndex() const;
+
+    bool hasNextSibling() const;
+    bool hasPreviousSibling() const;
+    bool hasParent() const;
+
+    Layer *next();
+    Layer *previous();
+
+private:
+    const Map *mMap;
+    Layer *mCurrentLayer;
+    int mSiblingIndex;
+};
+
+
+/**
+ * Iterate the given map, starting from the first layer.
+ */
+inline LayerIterator::LayerIterator(const Map *map)
+    : mMap(map)
+    , mCurrentLayer(nullptr)
+    , mSiblingIndex(-1)
+{}
+
+/**
+ * Iterate the layer's map, starting at the given \a layer.
+ */
+inline LayerIterator::LayerIterator(Layer *start)
+    : mMap(start ? start->map() : nullptr)
+    , mCurrentLayer(start)
+    , mSiblingIndex(start ? start->siblingIndex() : -1)
+{}
+
+inline Layer *LayerIterator::currentLayer() const
+{
+    return mCurrentLayer;
+}
+
+inline int LayerIterator::currentSiblingIndex() const
+{
+    return mSiblingIndex;
+}
+
+inline bool LayerIterator::hasNextSibling() const
+{
+    if (!mCurrentLayer)
+        return false;
+
+    return mSiblingIndex + 1 < mCurrentLayer->siblings().size();
+}
+
+inline bool LayerIterator::hasPreviousSibling() const
+{
+    return mSiblingIndex > 0;
+}
+
+inline bool LayerIterator::hasParent() const
+{
+    return mCurrentLayer && mCurrentLayer->parentLayer();
+}
+
+
 } // namespace Tiled
 
 #endif // LAYER_H

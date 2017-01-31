@@ -278,7 +278,8 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
 
-        for (ObjectGroup *og : mMap->objectGroups()) {
+        const auto objectGroups = mMap->objectGroups();
+        for (ObjectGroup *og : objectGroups) {
             mObjectGroups.append(og);
             mGroups.insert(og, new ObjectOrGroup(og));
             for (MapObject *o : og->objects())

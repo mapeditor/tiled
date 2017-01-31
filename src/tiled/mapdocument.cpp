@@ -530,9 +530,7 @@ void MapDocument::mergeLayerDown()
     if (index < 1)
         return;
 
-    const auto &layers = parentLayer ? parentLayer->layers() : mMap->layers();
-
-    Layer *lowerLayer = layers.at(index - 1);
+    Layer *lowerLayer = mCurrentLayer->siblings().at(index - 1);
 
     if (!lowerLayer->canMergeWith(mCurrentLayer))
         return;
@@ -547,26 +545,22 @@ void MapDocument::mergeLayerDown()
 }
 
 /**
- * Moves the given \a layer up, when it is not already at the top of its siblings.
+ * Moves the given \a layer up, when it is not already at the top of the map.
  */
 void MapDocument::moveLayerUp(Layer *layer)
 {
-    // todo: support hierarchy
-    const int index = layer->siblingIndex();
-    if (index < 0 || index >= mMap->layerCount() - 1)   // fixme
+    if (!LayerIterator(layer).next())
         return;
 
     mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Up));
 }
 
 /**
- * Moves the given \a layer up, when it is not already at the bottom of its siblings.
+ * Moves the given \a layer up, when it is not already at the bottom of the map.
  */
 void MapDocument::moveLayerDown(Layer *layer)
 {
-    // todo: support hierarchy
-    const int index = layer->siblingIndex();
-    if (index < 1 || index >= mMap->layerCount())   // fixme
+    if (!LayerIterator(layer).previous())
         return;
 
     mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Down));

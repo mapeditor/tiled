@@ -252,7 +252,6 @@ public:
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
-    QList<Layer*> layers(Layer::TypeFlag type) const;
     QList<ObjectGroup*> objectGroups() const;
     QList<TileLayer*> tileLayers() const;
 
