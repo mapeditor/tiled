@@ -44,33 +44,32 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                                                "Offset Layer"))
     , mMapDocument(mapDocument)
     , mDone(false)
-    , mOriginalLayer(nullptr)
+    , mOriginalLayer(layer)
+    , mOffsetLayer(nullptr)
 {
-    // Create the offset layer (once)
-    mOffsetLayer = layer->clone();
-
-    switch (mOffsetLayer->layerType()) {
+    switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
+        mOffsetLayer = layer->clone();
         static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
     case Layer::ObjectGroupType:
-    case Layer::ImageLayerType: {
-        // Object groups and image layers need offset and bounds converted to pixel units
+        mOffsetLayer = layer->clone();
+        // fall through
+    case Layer::ImageLayerType:
+    case Layer::GroupLayerType: {
+        // These layers need offset and bounds converted to pixel units
         MapRenderer *renderer = mapDocument->renderer();
         const QPointF origin = renderer->tileToPixelCoords(QPointF());
         const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
 
-        if (mOffsetLayer->layerType() == Layer::ObjectGroupType) {
+        if (mOriginalLayer->layerType() == Layer::ObjectGroupType) {
             static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
         } else {
-            // (wrapping not supported for image layers)
-            mOffsetLayer->setOffset(mOffsetLayer->offset() + pixelOffset);
+            // (wrapping not supported for image layers and group layers)
+            mOldOffset = mOriginalLayer->offset();
+            mNewOffset = mOldOffset + pixelOffset;
         }
-        break;
-    }
-    case Layer::GroupLayerType: {
-        // todo: apply the offset to each layer in the group?
         break;
     }
     }
@@ -78,17 +77,22 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
 
 OffsetLayer::~OffsetLayer()
 {
-    if (mDone)
-        delete mOriginalLayer;
-    else
-        delete mOffsetLayer;
+    if (mOffsetLayer) {
+        if (mDone)
+            delete mOriginalLayer;
+        else
+            delete mOffsetLayer;
+    }
 }
 
 void OffsetLayer::undo()
 {
     Q_ASSERT(mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
+    if (mOffsetLayer)
+        layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
+    else
+        layerModel->setLayerOffset(mOriginalLayer, mOldOffset);
     mDone = false;
 }
 
@@ -96,6 +100,9 @@ void OffsetLayer::redo()
 {
     Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
+    if (mOffsetLayer)
+        layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
+    else
+        layerModel->setLayerOffset(mOriginalLayer, mNewOffset);
     mDone = true;
 }

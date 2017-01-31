@@ -1247,11 +1247,11 @@ void MainWindow::offsetMap()
 
     OffsetMapDialog offsetDialog(mapDocument, this);
     if (offsetDialog.exec()) {
-        const auto layerIndexes = offsetDialog.affectedLayers();
-        if (layerIndexes.empty())
+        const auto layers = offsetDialog.affectedLayers();
+        if (layers.empty())
             return;
 
-        mapDocument->offsetMap(layerIndexes,
+        mapDocument->offsetMap(layers,
                                offsetDialog.offset(),
                                offsetDialog.affectedBoundingRect(),
                                offsetDialog.wrapX(),

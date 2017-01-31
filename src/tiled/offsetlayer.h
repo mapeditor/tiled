@@ -61,6 +61,8 @@ private:
     bool mDone;
     Layer *mOriginalLayer;
     Layer *mOffsetLayer;
+    QPointF mOldOffset;
+    QPointF mNewOffset;
 };
 
 } // namespace Internal

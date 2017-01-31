@@ -51,17 +51,19 @@ OffsetMapDialog::~OffsetMapDialog()
 QList<Layer *> OffsetMapDialog::affectedLayers() const
 {
     QList<Layer *> layers;
-    const Map *map = mMapDocument->map();
 
-    // todo: fix this to iterate over all layers
+    LayerIterator iterator(mMapDocument->map());
+
     switch (layerSelection()) {
     case AllVisibleLayers:
-        for (int i = 0; i < map->layerCount(); i++)
-            if (map->layerAt(i)->isVisible())
-                layers.append(map->layerAt(i));
+        while (Layer *layer = iterator.next())
+            if (!layer->isGroupLayer() && layer->isVisible())
+                layers.append(layer);
         break;
     case AllLayers:
-        layers.append(map->layers());
+        while (Layer *layer = iterator.next())
+            if (!layer->isGroupLayer())
+                layers.append(layer);
         break;
     case SelectedLayer:
         layers.append(mMapDocument->currentLayer());
