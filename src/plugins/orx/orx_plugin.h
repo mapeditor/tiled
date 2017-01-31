@@ -53,22 +53,6 @@ public:
     QString nameFilter() const override;
     QString errorString() const override;
 
-    static QString normalize_name(const QString & name);
-    static QString get_tile_name(const Tiled::Tile * tile);
-    static Orx::GraphicPtr build_tile(Tiled::Tile * tile);
-    static Orx::PrefabPtr build_prefab(const std::string & name, int id, Orx::GraphicPtr graphic);
-    static Orx::PrefabPtr get_prefab(Orx::PrefabPtrs & prefabs, int tile_id);
-    static Orx::GraphicPtr get_graphic(Orx::GraphicPtrs & graphics, int tile_id);
-    static Orx::ObjectPtr build_object(const Tiled::Cell * cell, Orx::PrefabPtrs & prefabs, Orx::GraphicPtrs & graphics);
-    static Orx::ObjectPtr build_object(const Tiled::MapObject * map_object, Orx::PrefabPtrs & prefabs, Orx::GraphicPtrs & graphics);
-    static bool process_tilesets(const Tiled::Map * map, Orx::PrefabPtrs & prefabs, Orx::GraphicPtrs & graphics);
-    static bool process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr map_object, Orx::PrefabPtrs & prefabs, Orx::ObjectPtrs & objects, Orx::GraphicPtrs & graphics);
-    static bool process_object_group(const Tiled::ObjectGroup * layer, Orx::ObjectPtr map_object, Orx::PrefabPtrs & prefabs, Orx::ObjectPtrs & objects, Orx::GraphicPtrs & graphics);
-    static bool process_image_layer(const Tiled::ImageLayer * layer, Orx::ObjectPtr map_object, Orx::PrefabPtrs & prefabs, Orx::ObjectPtrs & objects, Orx::GraphicPtrs & graphics);
-    static bool process_layers(const Tiled::Map * map, Orx::PrefabPtrs & prefabs, Orx::ObjectPtrs & objects, Orx::GraphicPtrs & graphics);
-
-
-
 private:
     QString mError;
 };

@@ -7,7 +7,13 @@
 #include <memory>
 #include <vector>
 
+
+
 namespace Orx {
+
+std::string normalize_name(const std::string & name);
+std::string get_name_from_file(const std::string & name);
+
 
 ///////////////////////////////////////////////////////////////////////////////
 struct Vector2i {
@@ -134,16 +140,43 @@ class Graphic;
 typedef std::shared_ptr<Graphic>    GraphicPtr;
 typedef std::vector<GraphicPtr>     GraphicPtrs;
 
+class Image;
+typedef std::shared_ptr<Image>      ImagePtr;
+typedef std::vector<ImagePtr>       ImagePtrs;
+
+///////////////////////////////////////////////////////////////////////////////
+class Image : public OrxObject
+{
+public:
+    Image() : m_UseCount(0) {}
+    Image(const std::string & filename) : m_Texture(filename), m_UseCount(0), OrxObject(get_name_from_file(filename) + "Graphic") {}
+
+public:
+    std::string     m_Texture;
+    int             m_UseCount;
+
+public:
+    int Use() { return m_UseCount++; }
+
+    virtual void serialize(std::stringstream & ss)
+        {
+        serialize_name(ss);
+        serialize_value(ss, "Texture", m_Texture);
+        ss << std::endl;
+        }
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
 class Graphic : public OrxObject
 {
 public:
-    CONSTRUCT_ORX_OBJ(Graphic)
+    Graphic(ImagePtr image) :
+        m_Image(image),
+        OrxObject(image->m_name + "_" + string_converter<int>::to_string(image->Use()), image->m_name) {};
 
 public:
-    std::string     m_Texture;
+    ImagePtr        m_Image;
     Vector2i        m_Origin;
     Vector2i        m_Size;
     int             m_TiledId;
@@ -152,7 +185,6 @@ public:
     virtual void serialize(std::stringstream & ss)
         {
         serialize_name(ss);
-        serialize_value(ss, "Texture", m_Texture);
         serialize_value(ss, "TextureOrigin", m_Origin);
         serialize_value(ss, "TextureSize", m_Size);
         ss << std::endl;
@@ -163,7 +195,9 @@ public:
 class Prefab : public OrxObject
 {
 public:
-    CONSTRUCT_ORX_OBJ(Prefab)
+    Prefab() {};
+    Prefab(const std::string & name) : OrxObject(name) {}
+    Prefab(const std::string & name, const std::string & parent) : OrxObject(name, parent) {}
 
 public:
     GraphicPtr      m_Graphic;
@@ -185,7 +219,9 @@ public:
 class Object : public OrxObject
 {
 public:
-    CONSTRUCT_ORX_OBJ(Object)
+    Object() {};
+    Object(const std::string & name) : OrxObject(name) {}
+    Object(const std::string & name, const std::string & parent) : OrxObject(name, parent) {}
 
 public:
     GraphicPtr      m_Graphic;
