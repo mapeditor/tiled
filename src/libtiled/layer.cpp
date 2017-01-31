@@ -35,7 +35,7 @@
 #include "objectgroup.h"
 #include "tilelayer.h"
 
-using namespace Tiled;
+namespace Tiled {
 
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
@@ -212,3 +212,36 @@ Layer *LayerIterator::previous()
 
     return layer;
 }
+
+/**
+ * Returns the global layer index for the given \a layer. Obtained by iterating
+ * the layer's map while incrementing the index until layer is found.
+ */
+int globalIndex(Layer *layer)
+{
+    if (!layer)
+        return -1;
+
+    LayerIterator counter(layer->map());
+    int index = 0;
+    while (counter.next() && counter.currentLayer() != layer)
+        ++index;
+
+    return index;
+}
+
+/**
+ * Returns the layer at the given global \a index.
+ *
+ * \sa globalIndex()
+ */
+Layer *layerAtGlobalIndex(const Map *map, int index)
+{
+    LayerIterator counter(map);
+    while (counter.next() && index > 0)
+        --index;
+
+    return counter.currentLayer();
+}
+
+} // namespace Tiled

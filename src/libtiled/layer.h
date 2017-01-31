@@ -321,6 +321,9 @@ inline bool LayerIterator::hasParent() const
 }
 
 
+TILEDSHARED_EXPORT int globalIndex(Layer *layer);
+TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
+
 } // namespace Tiled
 
 #endif // LAYER_H

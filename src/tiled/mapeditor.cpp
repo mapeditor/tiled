@@ -316,10 +316,9 @@ void MapEditor::addDocument(Document *document)
         view->horizontalScrollBar()->setSliderPosition(hor);
         view->verticalScrollBar()->setSliderPosition(ver);
 
-        // todo: find a way to restore selected layer
-        int layer = mapState.value(QLatin1String("selectedLayer")).toInt();
-        if (layer > 0 && layer < mapDocument->map()->layerCount())
-            mapDocument->setCurrentLayer(mapDocument->map()->layerAt(layer));
+        int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
+        if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
+            mapDocument->setCurrentLayer(layer);
     }
 }
 
@@ -337,8 +336,7 @@ void MapEditor::removeDocument(Document *document)
         mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
         mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
         mapState.insert(QLatin1String("scrollY"), mapView->verticalScrollBar()->sliderPosition());
-        // todo: find a good way to store a layer reference now that it is a hierarchy
-        mapState.insert(QLatin1String("selectedLayer"), mapDocument->layerIndex(mapDocument->currentLayer()));
+        mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
         mMapStates.insert(mapDocument->fileName(), mapState);
 
         Preferences *prefs = Preferences::instance();
