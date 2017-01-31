@@ -4,6 +4,7 @@
 #include <QDataStream>
 #include <QFileInfo>
 #include <QDir>
+#include <QTextStream>
 
 namespace Orx {
 
@@ -19,39 +20,40 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
     bool ret = true;
 
     m_filename = fileName;
+    QFile outFile(fileName);
+    outFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
-    std::stringstream ss;
-    // get all tilesets and convert to orx object prefabs with graphic
-    ret = process_tilesets(map);
-
-    // get all layers and build the map object
-    if (ret)
-        ret = process_layers(map);
-
-    if (ret)
+    if(outFile.isOpen())
     {
-        for (auto obj : m_images)
-            obj->serialize(ss);
+        SerializationContext context;
 
-        for (auto obj : m_graphics)
-            obj->serialize(ss);
+        QTextStream ss(&outFile);
+        // get all tilesets and convert to orx object prefabs with graphic
+        ret = process_tilesets(map);
 
-        for (auto obj : m_prefabs)
-            obj->serialize(ss);
+        // get all layers and build the map object
+        if (ret)
+            ret = process_layers(map);
 
-        for (auto obj : m_objects)
-            obj->serialize(ss);
-
-        std::ofstream outFile;
-        outFile.open(fileName.toStdString());
-        if (outFile.is_open())
+        if (ret)
         {
-            outFile << ss.rdbuf();
-            outFile.close();
+            for (auto obj : m_images)
+                obj->serialize(context, ss);
+
+            for (auto obj : m_graphics)
+                obj->serialize(context, ss);
+
+            for (auto obj : m_prefabs)
+                obj->serialize(context, ss);
+
+            for (auto obj : m_objects)
+                obj->serialize(context, ss);
+            }
+
+        outFile.close();
         }
-        else
-            ret = false;
-    }
+    else
+        ret = false;
 
     return ret;
 }
@@ -68,17 +70,37 @@ QString orxExporter::get_relative_filename(const QString & filename)
 ///////////////////////////////////////////////////////////////////////////////
 QString orxExporter::get_tile_name(const Tiled::Tile * tile)
 {
-    QString tile_filename = tile->imageSource();
+    QString tile_filename;
+    if (tile->imageSource().isEmpty() == false)
+        tile_filename = tile->imageSource();
+    else
+        tile_filename = tile->tileset()->imageSource();
+
     QFileInfo fi(tile_filename);
-    return QString(normalize_name(fi.baseName().toStdString()).c_str());
+    tile_filename = fi.baseName();
+    tile_filename = OrxObject::normalize_name(tile_filename);
+    return tile_filename;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 Orx::GraphicPtr orxExporter::build_tile(Tiled::Tile * tile, Orx::ImagePtr image)
 {
     QString name = get_tile_name(tile);
+    QString parent;
 
-    Orx::GraphicPtr tile_graphic = std::make_shared<Orx::Graphic>(image);
+    if (tile->imageSource().isEmpty())
+    {
+        name = OrxObject::get_name_from_file(image->m_Texture) + GRAPHIC_POSTFIX + "_";
+        name += QString("%1").arg(image->GetNext(), 4, 10, QChar('0'));
+        parent = image->m_Name;
+    }
+    else
+    {
+        name = OrxObject::get_name_from_file(tile->imageSource()) + GRAPHIC_POSTFIX;
+
+    }
+
+    Orx::GraphicPtr tile_graphic = std::make_shared<Orx::Graphic>(name, parent);
     tile_graphic->m_Origin.m_X = tile->offset().x();
     tile_graphic->m_Origin.m_Y = tile->offset().y();
     tile_graphic->m_Size.m_X = tile->width();
@@ -89,17 +111,16 @@ Orx::GraphicPtr orxExporter::build_tile(Tiled::Tile * tile, Orx::ImagePtr image)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Orx::PrefabPtr orxExporter::build_prefab(const std::string & name, int id, GraphicPtr graphic)
+Orx::PrefabPtr orxExporter::build_prefab(const QString & name, int id, GraphicPtr graphic)
 {
     Orx::PrefabPtr obj = std::make_shared<Orx::Prefab>(name);
     obj->m_TiledId = id;
     obj->m_Graphic = graphic;
-    obj->m_UseCount = 0;
     return obj;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Orx::ImagePtr orxExporter::get_image(std::string image_file)
+Orx::ImagePtr orxExporter::get_image(QString image_file)
 {
     Orx::ImagePtr ptr;
 
@@ -109,6 +130,7 @@ Orx::ImagePtr orxExporter::get_image(std::string image_file)
     else
     {
         ptr = std::make_shared<Orx::Image>(image_file);
+        m_images.push_back(ptr);
     }
 
     return ptr;
@@ -152,9 +174,8 @@ Orx::ObjectPtr orxExporter::build_object(const Tiled::Cell * cell)
         if (prefab_ptr)
         {
             // ok, we have the prefab. create object and place in the map
-            std::string cell_name = prefab_ptr->m_name + string_converter<int>::to_string(++prefab_ptr->m_UseCount);
-            item_obj = std::make_shared<Orx::Object>(cell_name);
-            item_obj->m_parent = prefab_ptr->m_name;
+            QString cell_name = prefab_ptr->m_Name + QString("%1").arg(prefab_ptr->GetNext(), 4, 10, QChar('0'));
+            item_obj = std::make_shared<Orx::Object>(cell_name, prefab_ptr->m_Name);
             item_obj->m_TiledId = tile->id();
 
             if (graphic_ptr)
@@ -180,9 +201,8 @@ Orx::ObjectPtr orxExporter::build_object(const Tiled::MapObject * map_object)
         if (prefab_ptr)
         {
             // ok, we have the prefab. create object and place in the map
-            std::string cell_name = prefab_ptr->m_name + "_" + string_converter<int>::to_string(map_object->id());
-            item_obj = std::make_shared<Orx::Object>(cell_name);
-            item_obj->m_parent = prefab_ptr->m_name;
+            QString cell_name = prefab_ptr->m_Name + QString("%1").arg(prefab_ptr->GetNext(), 4, 10, QChar('0'));
+            item_obj = std::make_shared<Orx::Object>(cell_name, prefab_ptr->m_Name);
             item_obj->m_TiledId = tile->id();
             item_obj->m_Position.m_X = map_object->position().x();
             item_obj->m_Position.m_Y = map_object->position().y();
@@ -195,9 +215,6 @@ Orx::ObjectPtr orxExporter::build_object(const Tiled::MapObject * map_object)
     }
 
     return item_obj;
-
-
-    return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -205,26 +222,43 @@ bool orxExporter::process_tilesets(const Tiled::Map * map)
 {
     bool ret = true;
 
+    // get each tileset in the map
     Q_FOREACH(Tiled::SharedTileset tset, map->tilesets())
     {
-        for(auto e : tset->tiles().toStdMap())
+        // check if the tileset is a collection of images or uses a single image as atlas
+        if (tset->isCollection())
         {
+            // generate all tiles
+            for(auto e : tset->tiles().toStdMap())
+            {
+                int tile_id = e.first;
+                Tiled::Tile * tile = e.second;
 
-            get the name of the tile
-            build the name of the image
-            build the name of the graphic@image
-            build the name of the prefab
+                // generate an atlas for every tile
+                Orx::ImagePtr image = get_image(tile->imageSource());
 
-            int tile_id = e.first;
-            Tiled::Tile * tile = e.second;
+                Orx::GraphicPtr tile_graphic = build_tile(tile, image);
+                m_graphics.push_back(tile_graphic);
 
-            Orx::ImagePtr image = get_image(tset->imageSource().toStdString());
+                Orx::PrefabPtr tile_obj = build_prefab(get_tile_name(tile), tile_id, tile_graphic);
+                m_prefabs.push_back(tile_obj);
+            }
+        }
+        else
+        {
+            // generate a single atlas and use it for all tiles
+            Orx::ImagePtr image = get_image(tset->imageSource());
+            for(auto e : tset->tiles().toStdMap())
+            {
+                int tile_id = e.first;
+                Tiled::Tile * tile = e.second;
 
-            Orx::GraphicPtr tile_graphic = build_tile(tile, image);
-            m_graphics.push_back(tile_graphic);
+                Orx::GraphicPtr tile_graphic = build_tile(tile, image);
+                m_graphics.push_back(tile_graphic);
 
-            Orx::PrefabPtr tile_obj = build_prefab(get_tile_name(tile).toStdString(), tile_id, tile_graphic);
-            m_prefabs.push_back(tile_obj);
+                Orx::PrefabPtr tile_obj = build_prefab(get_tile_name(tile), tile_id, tile_graphic);
+                m_prefabs.push_back(tile_obj);
+            }
         }
     }
 
@@ -237,7 +271,8 @@ bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::Object
     bool ret = true;
 
     // crate layer object, add to objects object and add as child of map object
-    Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(normalize_name(layer->name().toStdString()));
+    QString name = OrxObject::normalize_name(layer->name());
+    Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(name);
 
     // get all items of the layer
     const int width = layer->width();
@@ -277,7 +312,8 @@ bool orxExporter::process_object_group(const Tiled::ObjectGroup * layer, Orx::Ob
     bool ret = true;
 
     // crate layer object, add to objects object and add as child of map object
-    Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(normalize_name(layer->name().toStdString()));
+    QString name = OrxObject::normalize_name(layer->name());
+    Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(name);
     Q_FOREACH(Tiled::MapObject * map_object, layer->objects())
     {
         Orx::ObjectPtr item_obj = build_object(map_object);
@@ -286,11 +322,11 @@ bool orxExporter::process_object_group(const Tiled::ObjectGroup * layer, Orx::Ob
             m_objects.push_back(item_obj);
             layer_object->m_Children.push_back(item_obj);
         }
-        else
-        {
-            ret = false;
-            break;
-        }
+//        else
+//        {
+//            ret = false;
+//            break;
+//        }
 
     }
 

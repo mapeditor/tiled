@@ -1,0 +1,23 @@
+#ifndef ORX_POINT_VECTOR_H
+#define ORX_POINT_VECTOR_H
+
+
+namespace Orx {
+
+///////////////////////////////////////////////////////////////////////////////
+struct Vector2i {
+    int m_X;
+    int m_Y;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+struct Vector3f {
+    float m_X;
+    float m_Y;
+    float m_Z;
+};
+
+
+}
+
+#endif // ORX_POINT_VECTOR_H
