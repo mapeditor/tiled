@@ -186,7 +186,6 @@ int main(int argc, char *argv[])
 
 #if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
