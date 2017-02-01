@@ -5,6 +5,10 @@
 <p><i>{{ page.date | date_to_long_string }}</i></p>
 {{ content }}
 
+{% if page.blogger_orig_url %}
+<hr/>
+<p><i>This is an imported post. For comments see <a href="{{ page.blogger_orig_url }}">the original post on Blogger</a>.</i></p>
+{% else %}
 <div id='discourse-comments'></div>
 
 <script type="text/javascript">
@@ -17,5 +21,6 @@
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
   })();
 </script>
+{% endif %}
 
 {% include footer.html %}
