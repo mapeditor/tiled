@@ -677,6 +677,7 @@ void MapDocumentActionHandler::updateActions()
     mActionUngroupLayers->setEnabled(currentLayer && (currentLayer->isGroupLayer() || currentLayer->parentLayer()));
 
     const bool hasPreviousLayer = LayerIterator(currentLayer).previous();
+    const bool canMoveLayerDown = LayerIterator(currentLayer).previous(LayerIterator::DontEnterGroups);
     const bool hasNextLayer = LayerIterator(currentLayer).next();
 
     mActionDuplicateLayer->setEnabled(currentLayer);
@@ -684,7 +685,7 @@ void MapDocumentActionHandler::updateActions()
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayerUp->setEnabled(hasNextLayer);
-    mActionMoveLayerDown->setEnabled(hasPreviousLayer);
+    mActionMoveLayerDown->setEnabled(canMoveLayerDown);
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayer->setEnabled(currentLayer);
     mActionLayerProperties->setEnabled(currentLayer);

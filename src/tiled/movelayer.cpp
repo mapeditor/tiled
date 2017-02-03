@@ -55,7 +55,7 @@ void MoveLayer::moveLayer()
 {
     LayerIterator iterator(mLayer);
     if (mDirection == Down)
-        iterator.previous();
+        iterator.previous(LayerIterator::DontEnterGroups);
     else
         iterator.next();
 
