@@ -685,7 +685,7 @@ void MapDocumentActionHandler::updateActions()
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayerUp->setEnabled(hasNextLayer);
     mActionMoveLayerDown->setEnabled(hasPreviousLayer);
-    mActionToggleOtherLayers->setEnabled(currentLayer);
+    mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayer->setEnabled(currentLayer);
     mActionLayerProperties->setEnabled(currentLayer);
 

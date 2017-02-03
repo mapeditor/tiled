@@ -170,13 +170,6 @@ GroupLayer *Layer::asGroupLayer()
 
 Layer *LayerIterator::next()
 {
-    // Traverse to parent layer if last child
-    if (mCurrentLayer && mSiblingIndex == mCurrentLayer->siblings().size() - 1) {
-        mCurrentLayer = mCurrentLayer->parentLayer();
-        mSiblingIndex = mCurrentLayer ? mCurrentLayer->siblingIndex() : -1;
-        return mCurrentLayer;
-    }
-
     if (!mCurrentLayer) {
         // Traverse to the first layer of the map
         if (mMap && mSiblingIndex == -1 && mMap->layerCount() > 0) {
@@ -187,9 +180,17 @@ Layer *LayerIterator::next()
         return nullptr;
     }
 
-    // Traverse to next sibling
     const auto siblings = mCurrentLayer->siblings();
     int index = mSiblingIndex + 1;
+
+    // Traverse to parent layer if last child
+    if (index == siblings.size()) {
+        mCurrentLayer = mCurrentLayer->parentLayer();
+        mSiblingIndex = mCurrentLayer ? mCurrentLayer->siblingIndex() : -1;
+        return mCurrentLayer;
+    }
+
+    // Traverse to next sibling
     Layer *layer = siblings.at(index);
 
     // If next layer is a group, traverse to its first child

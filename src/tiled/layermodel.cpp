@@ -355,21 +355,37 @@ void LayerModel::renameLayer(Layer *layer, const QString &name)
 }
 
 /**
+ * Collects sibling layers, including siblings of all parents.
+ */
+static QList<Layer *> collectAllSiblings(Layer *layer)
+{
+    QList<Layer *> collected;
+
+    while (layer) {
+        const auto& siblings = layer->siblings();
+        for (Layer *sibling : siblings) {
+            if (sibling != layer)
+                collected.append(sibling);
+        }
+        layer = layer->parentLayer();
+    }
+
+    return collected;
+}
+
+/**
   * Show or hide all other layers except the given \a layer.
   * If any other layer is visible then all layers will be hidden, otherwise
   * the layers will be shown.
   */
 void LayerModel::toggleOtherLayers(Layer *layer)
 {
-    if (mMap->layerCount() <= 1) // No other layers
+    const auto& otherLayers = collectAllSiblings(layer);
+    if (otherLayers.isEmpty())
         return;
 
     bool visibility = true;
-    // todo: make smart about visibility (and recursive)
-    for (Layer *l : mMap->layers()) {
-        if (l == layer)
-            continue;
-
+    for (Layer *l : otherLayers) {
         if (l->isVisible()) {
             visibility = false;
             break;
@@ -382,10 +398,7 @@ void LayerModel::toggleOtherLayers(Layer *layer)
     else
         undoStack->beginMacro(tr("Hide Other Layers"));
 
-    for (Layer *l : mMap->layers()) {
-        if (l == layer)
-            continue;
-
+    for (Layer *l : otherLayers) {
         if (visibility != l->isVisible())
             undoStack->push(new SetLayerVisible(mMapDocument, l, visibility));
     }
