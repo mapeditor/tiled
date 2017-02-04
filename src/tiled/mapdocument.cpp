@@ -429,7 +429,8 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     }
     Q_ASSERT(layer);
 
-    const int index = mMap->layerCount();
+    const int index = mCurrentLayerIndex >= 0 ? mCurrentLayerIndex + 1
+                                              : mMap->layerCount();
     mUndoStack->push(new AddLayer(this, index, layer));
     setCurrentLayerIndex(index);
 
@@ -840,7 +841,8 @@ void MapDocument::removeObjects(const QList<MapObject *> &objects)
         return;
 
     mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    for (MapObject *mapObject : objects)
+    const auto objectsCopy = objects;   // original list may get modified
+    for (MapObject *mapObject : objectsCopy)
         mUndoStack->push(new RemoveMapObject(this, mapObject));
     mUndoStack->endMacro();
 }
@@ -854,7 +856,8 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
     mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
                               objects.size()));
 
-    for (MapObject *mapObject : objects) {
+    const auto objectsCopy = objects;   // original list may get modified
+    for (MapObject *mapObject : objectsCopy) {
         if (mapObject->objectGroup() == objectGroup)
             continue;
 

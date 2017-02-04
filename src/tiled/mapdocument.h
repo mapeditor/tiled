@@ -324,7 +324,6 @@ private:
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
-    Object *mCurrentObject;             /**< Current properties object. */
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;

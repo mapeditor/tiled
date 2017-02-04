@@ -33,9 +33,10 @@ WindowsInstallerPackage {
             "RootDir=" + project.sourceDirectory
         ];
 
-        if (qbs.toolchain.contains("mingw")) {
+        if (qbs.toolchain.contains("mingw"))
             defs.push("MingwDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."));
-        }
+        else if (qbs.toolchain.contains("msvc"))
+            defs.push("VcInstallDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, "../.."));
 
         if (project.sparkleEnabled)
             defs.push("Sparkle");
