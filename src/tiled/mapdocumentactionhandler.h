@@ -59,6 +59,8 @@ public:
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
+    QAction *actionGotoTile() const { return mActionGotoTile; }
+
     QAction *actionSelectAll() const { return mActionSelectAll; }
     QAction *actionSelectInverse() const { return mActionSelectInverse; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
@@ -123,11 +125,15 @@ public slots:
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
 
+    void gotoTile();
+
 private slots:
     void updateActions();
 
 private:
     MapDocument *mMapDocument;
+
+    QAction *mActionGotoTile;
 
     QAction *mActionSelectAll;
     QAction *mActionSelectInverse;

@@ -187,6 +187,8 @@ QtGuiApplication {
         "flipmapobjects.h",
         "geometry.cpp",
         "geometry.h",
+        "gotodialog.cpp",
+        "gotodialog.h",
         "id.cpp",
         "id.h",
         "imagecolorpickerwidget.cpp",
