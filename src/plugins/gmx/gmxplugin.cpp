@@ -215,16 +215,30 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                             pixelY += tile->height();
                         }
 
-                        stream.writeAttribute("bgName", tileset->name());
+                        QString bgName;
+                        int xo = 0;
+                        int yo = 0;
+
+                        if (tileset->isCollection()) {
+                            bgName = QFileInfo(tile->imageSource()).baseName();
+                        } else {
+                            bgName = tileset->name();
+
+                            int xInTilesetGrid = tile->id() % tileset->columnCount();
+                            int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+
+                            xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
+                            yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
+                        }
+
+                        stream.writeAttribute("bgName", bgName);
                         stream.writeAttribute("x", QString::number(pixelX));
                         stream.writeAttribute("y", QString::number(pixelY));
                         stream.writeAttribute("w", QString::number(tile->width()));
                         stream.writeAttribute("h", QString::number(tile->height()));
 
-                        int xInTilesetGrid = tile->id() % tileset->columnCount();
-                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
-                        stream.writeAttribute("xo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid));
-                        stream.writeAttribute("yo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid));
+                        stream.writeAttribute("xo", QString::number(xo));
+                        stream.writeAttribute("yo", QString::number(yo));
 
                         stream.writeAttribute("id", QString::number(++tileId));
                         stream.writeAttribute("depth", depth);
@@ -276,16 +290,30 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                     stream.writeStartElement("tile");
 
-                    stream.writeAttribute("bgName", tileset->name());
+                    QString bgName;
+                    int xo = 0;
+                    int yo = 0;
+
+                    if (tileset->isCollection()) {
+                        bgName = QFileInfo(tile->imageSource()).baseName();
+                    } else {
+                        bgName = tileset->name();
+
+                        int xInTilesetGrid = tile->id() % tileset->columnCount();
+                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+
+                        xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
+                        yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;
+                    }
+
+                    stream.writeAttribute("bgName", bgName);
                     stream.writeAttribute("x", QString::number(qRound(x)));
                     stream.writeAttribute("y", QString::number(qRound(y)));
                     stream.writeAttribute("w", QString::number(tile->width()));
                     stream.writeAttribute("h", QString::number(tile->height()));
 
-                    int xInTilesetGrid = tile->id() % tileset->columnCount();
-                    int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
-                    stream.writeAttribute("xo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid));
-                    stream.writeAttribute("yo", QString::number(tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid));
+                    stream.writeAttribute("xo", QString::number(xo));
+                    stream.writeAttribute("yo", QString::number(yo));
 
                     stream.writeAttribute("id", QString::number(++tileId));
                     stream.writeAttribute("depth", depth);
