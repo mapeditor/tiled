@@ -550,7 +550,7 @@ void MapDocument::mergeLayerDown()
  */
 void MapDocument::moveLayerUp(Layer *layer)
 {
-    if (!LayerIterator(layer).next())
+    if (!layer || !MoveLayer::canMoveUp(*layer))
         return;
 
     mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Up));
@@ -561,7 +561,7 @@ void MapDocument::moveLayerUp(Layer *layer)
  */
 void MapDocument::moveLayerDown(Layer *layer)
 {
-    if (!LayerIterator(layer).previous(LayerIterator::DontEnterGroups))
+    if (!layer || !MoveLayer::canMoveDown(*layer))
         return;
 
     mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Down));

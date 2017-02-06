@@ -260,11 +260,6 @@ inline QPointF Layer::offset() const
 class TILEDSHARED_EXPORT LayerIterator
 {
 public:
-    enum NavigationFlag {
-        DontEnterGroups = 0x1,
-    };
-    Q_DECLARE_FLAGS(NavigationFlags, NavigationFlag)
-
     LayerIterator(const Map *map);
     LayerIterator(Layer *start);
 
@@ -275,8 +270,8 @@ public:
     bool hasPreviousSibling() const;
     bool hasParent() const;
 
-    Layer *next(NavigationFlags flags = NavigationFlags());
-    Layer *previous(NavigationFlags flags = NavigationFlags());
+    Layer *next();
+    Layer *previous();
 
     void toFront();
     void toBack();
@@ -339,7 +334,5 @@ TILEDSHARED_EXPORT int globalIndex(Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::LayerIterator::NavigationFlags)
 
 #endif // LAYER_H

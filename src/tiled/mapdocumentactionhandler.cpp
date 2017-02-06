@@ -33,6 +33,7 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapview.h"
+#include "movelayer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "utils.h"
@@ -677,14 +678,15 @@ void MapDocumentActionHandler::updateActions()
     mActionUngroupLayers->setEnabled(currentLayer && (currentLayer->isGroupLayer() || currentLayer->parentLayer()));
 
     const bool hasPreviousLayer = LayerIterator(currentLayer).previous();
-    const bool canMoveLayerDown = LayerIterator(currentLayer).previous(LayerIterator::DontEnterGroups);
     const bool hasNextLayer = LayerIterator(currentLayer).next();
+    const bool canMoveLayerUp = currentLayer && MoveLayer::canMoveUp(*currentLayer);
+    const bool canMoveLayerDown = currentLayer && MoveLayer::canMoveDown(*currentLayer);
 
     mActionDuplicateLayer->setEnabled(currentLayer);
     mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
-    mActionMoveLayerUp->setEnabled(hasNextLayer);
+    mActionMoveLayerUp->setEnabled(canMoveLayerUp);
     mActionMoveLayerDown->setEnabled(canMoveLayerDown);
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayer->setEnabled(currentLayer);

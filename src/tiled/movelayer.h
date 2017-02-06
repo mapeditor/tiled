@@ -49,8 +49,11 @@ public:
      */
     MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction);
 
-    void undo() override;
-    void redo() override;
+    void undo() override { moveLayer(); }
+    void redo() override { moveLayer(); }
+
+    static bool canMoveUp(const Layer &layer);
+    static bool canMoveDown(const Layer &layer);
 
 private:
     void moveLayer();

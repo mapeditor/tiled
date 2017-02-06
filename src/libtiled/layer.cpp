@@ -168,7 +168,7 @@ GroupLayer *Layer::asGroupLayer()
 }
 
 
-Layer *LayerIterator::next(NavigationFlags flags)
+Layer *LayerIterator::next()
 {
     if (!mCurrentLayer) {
         // Traverse to the first layer of the map
@@ -194,15 +194,13 @@ Layer *LayerIterator::next(NavigationFlags flags)
     Layer *layer = siblings.at(index);
 
     // If next layer is a group, traverse to its first child
-    if (!flags.testFlag(DontEnterGroups)) {
-        while (layer->isGroupLayer()) {
-            auto groupLayer = static_cast<GroupLayer*>(layer);
-            if (groupLayer->layerCount() > 0) {
-                index = 0;
-                layer = groupLayer->layerAt(0);
-            } else {
-                break;
-            }
+    while (layer->isGroupLayer()) {
+        auto groupLayer = static_cast<GroupLayer*>(layer);
+        if (groupLayer->layerCount() > 0) {
+            index = 0;
+            layer = groupLayer->layerAt(0);
+        } else {
+            break;
         }
     }
 
@@ -212,7 +210,7 @@ Layer *LayerIterator::next(NavigationFlags flags)
     return layer;
 }
 
-Layer *LayerIterator::previous(NavigationFlags flags)
+Layer *LayerIterator::previous()
 {
     Layer *layer = mCurrentLayer;
     int index = mSiblingIndex - 1;
@@ -226,7 +224,7 @@ Layer *LayerIterator::previous(NavigationFlags flags)
         }
     } else {
         // Traverse down to last child if applicable
-        if (layer->isGroupLayer() && !flags.testFlag(DontEnterGroups)) {
+        if (layer->isGroupLayer()) {
             auto groupLayer = static_cast<GroupLayer*>(layer);
             if (groupLayer->layerCount() > 0) {
                 mSiblingIndex = groupLayer->layerCount() - 1;

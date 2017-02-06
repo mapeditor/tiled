@@ -41,48 +41,46 @@ MoveLayer::MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction
             QCoreApplication::translate("Undo Commands", "Raise Layer"));
 }
 
-void MoveLayer::redo()
+bool MoveLayer::canMoveUp(const Layer &layer)
 {
-    moveLayer();
+    return layer.parentLayer() || layer.siblingIndex() < layer.siblings().size() - 1;
 }
 
-void MoveLayer::undo()
+bool MoveLayer::canMoveDown(const Layer &layer)
 {
-    moveLayer();
+    return layer.parentLayer() || layer.siblingIndex() > 0;
 }
 
 void MoveLayer::moveLayer()
 {
-    LayerIterator iterator(mLayer);
-    if (mDirection == Down)
-        iterator.previous(LayerIterator::DontEnterGroups);
-    else
-        iterator.next();
-
-    Q_ASSERT(iterator.currentLayer());
-
     const auto parent = mLayer->parentLayer();
+    const auto siblings = mLayer->siblings();
     const int index = mLayer->siblingIndex();
 
-    auto insertionParent = iterator.currentLayer()->parentLayer();
-    int insertionIndex = iterator.currentSiblingIndex();
+    // Common case is just to move up/down among siblings
+    GroupLayer *insertionParent = parent;
+    int insertionIndex = mDirection == Down ? index - 1 : index + 1;
 
     if (mDirection == Down) {
-        if (insertionParent != parent) {
-            // Index adjustment to make sure we insert above (but exiting the group)
-            ++insertionIndex;
-        } else if (iterator.currentLayer()->isGroupLayer()) {
+        if (insertionIndex < 0) {
+            // Moving down when already first child means moving into parent below the group
+            Q_ASSERT(insertionParent);
+            insertionIndex = insertionParent->siblingIndex();
+            insertionParent = insertionParent->parentLayer();
+        } else if (siblings.at(insertionIndex)->isGroupLayer()) {
             // Enter the group from the top
-            insertionParent = static_cast<GroupLayer*>(iterator.currentLayer());
+            insertionParent = static_cast<GroupLayer*>(siblings.at(insertionIndex));
             insertionIndex = insertionParent->layerCount();
         }
     } else {
-        if (index + 1 == mLayer->siblings().size()) {
-            // When existing a group make sure we insert above
-            ++insertionIndex;
-        } else if (iterator.currentLayer()->isGroupLayer()) {
+        if (insertionIndex >= siblings.size()) {
+            // Moving up when already at last child means moving into parent above the group
+            Q_ASSERT(insertionParent);
+            insertionIndex = insertionParent->siblingIndex() + 1;
+            insertionParent = insertionParent->parentLayer();
+        } else if (siblings.at(insertionIndex)->isGroupLayer()) {
             // Enter the group from the bottom
-            insertionParent = static_cast<GroupLayer*>(iterator.currentLayer());
+            insertionParent = static_cast<GroupLayer*>(siblings.at(insertionIndex));
             insertionIndex = 0;
         }
     }
