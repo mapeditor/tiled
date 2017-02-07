@@ -212,6 +212,7 @@ private:
 
     QMenu *mLayerMenu;
     QMenu *mNewLayerMenu;
+    QMenu *mGroupLayerMenu;
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
