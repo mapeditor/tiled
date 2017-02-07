@@ -746,7 +746,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
         transform = rotateAt(pos, object->rotation());
     }
 
-    QPointF offset = object->objectGroup()->offset();
+    QPointF offset = object->objectGroup()->totalOffset();
     if (!offset.isNull())
         transform *= QTransform::fromTranslate(offset.x(), offset.y());
 
@@ -1071,7 +1071,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
     foreach (const MovingObject &object, mMovingObjects) {
         MapObject *mapObject = object.item->mapObject();
-        const QPointF offset = mapObject->objectGroup()->offset();
+        const QPointF offset = mapObject->objectGroup()->totalOffset();
 
         const QPointF oldRelPos = object.oldItemPosition + offset - mOrigin;
         const qreal sn = std::sin(angleDiff);
@@ -1178,7 +1178,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     foreach (const MovingObject &object, mMovingObjects) {
         MapObject *mapObject = object.item->mapObject();
-        const QPointF offset = mapObject->objectGroup()->offset();
+        const QPointF offset = mapObject->objectGroup()->totalOffset();
 
         const QPointF oldRelPos = object.oldItemPosition + offset - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
@@ -1228,7 +1228,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * offset. We will un-apply it to these variables since the resize for
      * single items happens in local coordinate space.
      */
-    QPointF offset = mapObject->objectGroup()->offset();
+    QPointF offset = mapObject->objectGroup()->totalOffset();
 
     /* These transformations undo and redo the object rotation, which is always
      * applied in screen space.

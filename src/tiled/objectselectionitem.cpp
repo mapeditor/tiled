@@ -154,7 +154,7 @@ void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
 
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos + mObject->objectGroup()->offset());
+    setPos(pixelPos + mObject->objectGroup()->totalOffset());
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -246,7 +246,7 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
 
-    setPos(pos + mObject->objectGroup()->offset());
+    setPos(pos + mObject->objectGroup()->totalOffset());
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();

@@ -106,7 +106,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
             continue;
 
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-        const QPointF offset = tileLayer->offset();
+        const QPointF offset = tileLayer->totalOffset();
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {

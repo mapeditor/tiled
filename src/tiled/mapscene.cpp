@@ -367,7 +367,7 @@ void MapScene::repaintRegion(const QRegion &region, Layer *layer)
                             margins.right(),
                             margins.bottom());
 
-        boundingRect.translate(layer->offset());
+        boundingRect.translate(layer->totalOffset());
 
         update(boundingRect);
     }
@@ -751,7 +751,7 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 
     // Take into account the offset of the current layer
     if (Layer *layer = mMapDocument->currentLayer()) {
-        offset = layer->offset();
+        offset = layer->totalOffset();
         painter->translate(offset);
     }
 
