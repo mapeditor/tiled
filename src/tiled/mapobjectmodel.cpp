@@ -30,7 +30,8 @@
 #include "objectgroup.h"
 #include "renamelayer.h"
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QStyle>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -40,7 +41,6 @@ MapObjectModel::MapObjectModel(QObject *parent):
     mMapDocument(nullptr),
     mMap(nullptr),
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
-    // todo: add mGroupLayerIcon (folder?)
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
 }
@@ -140,7 +140,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                 if (layer->isObjectGroup())
                     return mObjectGroupIcon;
                 else
-                    return mGroupLayerIcon;
+                    return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
             }
             return QVariant();
         case Qt::CheckStateRole:
