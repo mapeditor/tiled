@@ -71,6 +71,10 @@ public:
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
 
+    QAction *addTilesAction() const;
+    QAction *removeTilesAction() const;
+    QAction *editTerrainAction() const;
+
     TileAnimationEditor *tileAnimationEditor() const;
     TileCollisionEditor *tileCollisionEditor() const;
 
@@ -125,6 +129,21 @@ private:
 
     Tile *mCurrentTile;
 };
+
+inline QAction *TilesetEditor::addTilesAction() const
+{
+    return mAddTiles;
+}
+
+inline QAction *TilesetEditor::removeTilesAction() const
+{
+    return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::editTerrainAction() const
+{
+    return mEditTerrain;
+}
 
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
 {

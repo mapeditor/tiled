@@ -368,17 +368,23 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
+    mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
     mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
     mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
-    mUi->menuView->insertSeparator(mUi->actionShowGrid);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileAnimationEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileCollisionEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
+    mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->addTilesAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->removeTilesAction());
+    mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
 
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
             this, &MainWindow::updateViewsAndToolbarsMenu);

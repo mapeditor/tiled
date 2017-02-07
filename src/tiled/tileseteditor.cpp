@@ -135,6 +135,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
     mEditTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
     mEditTerrain->setCheckable(true);
+    mEditTerrain->setIconVisibleInMenu(false);
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -196,6 +197,8 @@ void TilesetEditor::addDocument(Document *document)
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
     view->setZoomable(new Zoomable(this));
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     Tileset *tileset = tilesetDocument->tileset().data();
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
