@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTTOMAPCONVERTER_H
-#define VARIANTTOMAPCONVERTER_H
+#pragma once
 
 #include "gidmapper.h"
 
@@ -98,5 +97,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // VARIANTTOMAPCONVERTER_H

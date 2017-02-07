@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DROIDCRAFT_GLOBAL_H
-#define DROIDCRAFT_GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -28,5 +27,3 @@
 #else
 #  define DROIDCRAFTSHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#endif // DROIDCRAFT_GLOBAL_H

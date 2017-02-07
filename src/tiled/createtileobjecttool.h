@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATETILEOBJECTTOOL_H
-#define CREATETILEOBJECTTOOL_H
+#pragma once
 
 #include "createobjecttool.h"
 
@@ -48,5 +47,3 @@ protected:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATETILEOBJECTTOOL_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVELAYER_H
-#define MOVELAYER_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -65,5 +64,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVELAYER_H

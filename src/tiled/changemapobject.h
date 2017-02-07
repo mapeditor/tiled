@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECT_H
-#define CHANGEMAPOBJECT_H
+#pragma once
 
 #include "tilelayer.h"
 
@@ -109,5 +108,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEMAPOBJECT_H

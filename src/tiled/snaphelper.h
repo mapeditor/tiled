@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SNAPHELPER_H
-#define SNAPHELPER_H
+#pragma once
 
 #include "maprenderer.h"
 
@@ -47,5 +46,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SNAPHELPER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GROUPLAYER_H
-#define GROUPLAYER_H
+#pragma once
 
 #include "layer.h"
 
@@ -77,5 +76,3 @@ inline Layer *GroupLayer::layerAt(int index) const
 }
 
 } // namespace Tiled
-
-#endif // GROUPLAYER_H

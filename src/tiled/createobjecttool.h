@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEOBJECTTOOL_H
-#define CREATEOBJECTTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
@@ -85,5 +84,3 @@ protected:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATEOBJECTTOOL_H

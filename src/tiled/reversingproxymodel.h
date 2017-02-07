@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REVERSINGPROXYMODEL_H
-#define REVERSINGPROXYMODEL_H
+#pragma once
 
 #include <QAbstractProxyModel>
 
@@ -77,5 +76,3 @@ private:
 
 } // namespace Tiled
 } // namespace Internal
-
-#endif // REVERSINGPROXYMODEL_H

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTPROPERTYMANAGER_H
-#define VARIANTPROPERTYMANAGER_H
+#pragma once
 
 #include <QtVariantPropertyManager>
 
@@ -84,5 +83,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // VARIANTPROPERTYMANAGER_H

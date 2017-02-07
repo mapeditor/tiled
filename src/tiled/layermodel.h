@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERMODEL_H
-#define LAYERMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 #include <QIcon>
@@ -112,5 +111,3 @@ inline MapDocument *LayerModel::mapDocument() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERMODEL_H

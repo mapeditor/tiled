@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPDOCUMENT_H
-#define MAPDOCUMENT_H
+#pragma once
 
 #include "document.h"
 #include "layer.h"
@@ -395,5 +394,3 @@ inline void MapDocument::emitEditLayerNameRequested()
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPDOCUMENT_H

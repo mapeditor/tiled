@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOKENDEFINES_H
-#define TOKENDEFINES_H
+#pragma once
 
 static const char cell_t[] =
 "  cell {\n\
@@ -44,5 +43,3 @@ static const char map_t[] =
 {{layers}}\n\
 material: \"{{material}}\"\n\
 blend_mode: {{blend_mode}}\n";
-
-#endif // TOKENDEFINES_H

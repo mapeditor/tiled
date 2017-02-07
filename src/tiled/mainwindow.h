@@ -21,8 +21,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include "clipboardmanager.h"
 #include "consoledock.h"
@@ -232,5 +231,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAINWINDOW_H

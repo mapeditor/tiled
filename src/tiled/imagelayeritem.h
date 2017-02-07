@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IMAGELAYERITEM_H
-#define IMAGELAYERITEM_H
+#pragma once
 
 #include "layeritem.h"
 
@@ -75,5 +74,3 @@ inline ImageLayer *ImageLayerItem::imageLayer() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // IMAGELAYERITEM_H

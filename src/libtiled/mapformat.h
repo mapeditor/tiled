@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPFORMAT_H
-#define MAPFORMAT_H
+#pragma once
 
 #include "pluginmanager.h"
 
@@ -205,5 +204,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPFORMAT_H

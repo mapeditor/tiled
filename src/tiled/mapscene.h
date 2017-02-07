@@ -21,8 +21,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSCENE_H
-#define MAPSCENE_H
+#pragma once
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -210,5 +209,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSCENE_H

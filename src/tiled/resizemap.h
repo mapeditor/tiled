@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEMAP_H
-#define RESIZEMAP_H
+#pragma once
 
 #include <QSize>
 #include <QUndoCommand>
@@ -52,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEMAP_H

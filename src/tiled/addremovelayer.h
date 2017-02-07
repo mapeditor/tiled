@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVELAYER_H
-#define ADDREMOVELAYER_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QUndoCommand>
@@ -102,5 +101,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVELAYER_H

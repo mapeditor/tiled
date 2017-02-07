@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTGROUPITEM_H
-#define OBJECTGROUPITEM_H
+#pragma once
 
 #include "layeritem.h"
 
@@ -55,5 +54,3 @@ inline ObjectGroup *ObjectGroupItem::objectGroup() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTGROUPITEM_H

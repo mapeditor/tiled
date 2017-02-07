@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZELAYER_H
-#define RESIZELAYER_H
+#pragma once
 
 #include <QPoint>
 #include <QSize>
@@ -64,5 +63,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZELAYER_H

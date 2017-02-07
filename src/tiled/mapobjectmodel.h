@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPOBJECTMODEL_H
-#define MAPOBJECTMODEL_H
+#pragma once
 
 #include <QAbstractItemModel>
 #include <QIcon>
@@ -115,5 +114,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPOBJECTMODEL_H

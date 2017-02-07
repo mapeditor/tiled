@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPARENTLAYERS_H
-#define REPARENTLAYERS_H
+#pragma once
 
 #include <QUndoCommand>
 #include <QVector>
@@ -64,5 +63,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // REPARENTLAYERS_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSDOCK_H
-#define MAPSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -86,5 +85,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSDOCK_H

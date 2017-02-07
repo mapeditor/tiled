@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESELECTIONITEM_H
-#define TILESELECTIONITEM_H
+#pragma once
 
 #include <QGraphicsObject>
 
@@ -65,5 +64,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESELECTIONITEM_H

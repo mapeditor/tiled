@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PYTHONPLUGIN_H
-#define PYTHONPLUGIN_H
+#pragma once
 
 #ifdef __MINGW32__
 #include <cmath> // included before Python.h to fix ::hypot not declared issue
@@ -137,5 +136,3 @@ PyMODINIT_FUNC inittiled(void);
 extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);
-
-#endif // PYTHONPLUGIN_H

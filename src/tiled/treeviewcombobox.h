@@ -23,8 +23,7 @@
 **
 ****************************************************************************/
 
-#ifndef TREEVIEWCOMBOBOX_H
-#define TREEVIEWCOMBOBOX_H
+#pragma once
 
 #include <QComboBox>
 #include <QTreeView>
@@ -78,5 +77,3 @@ inline QModelIndex TreeViewComboBox::currentModelIndex() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TREEVIEWCOMBOBOX_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSDOCK_H
-#define OBJECTSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -110,5 +109,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTSDOCK_H

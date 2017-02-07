@@ -28,8 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
 #include "layer.h"
 #include "object.h"
@@ -486,5 +485,3 @@ TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 Q_DECLARE_METATYPE(Tiled::Map::Orientation)
 Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
 Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)
-
-#endif // MAP_H

@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include "object.h"
 
@@ -302,5 +301,3 @@ inline bool Tile::imageLoaded() const
 }
 
 } // namespace Tiled
-
-#endif // TILE_H

@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILESETMANAGER_H
-#define TILESETMANAGER_H
+#pragma once
 
 #include "tileset.h"
 
@@ -167,5 +166,3 @@ inline bool TilesetManager::reloadTilesetsOnChange() const
 { return mReloadTilesetsOnChange; }
 
 } // namespace Tiled
-
-#endif // TILESETMANAGER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LUAPLUGIN_H
-#define LUAPLUGIN_H
+#pragma once
 
 #include "lua_global.h"
 
@@ -80,5 +79,3 @@ private:
 };
 
 } // namespace Lua
-
-#endif // LUAPLUGIN_H

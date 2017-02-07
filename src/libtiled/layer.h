@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LAYER_H
-#define LAYER_H
+#pragma once
 
 #include "object.h"
 #include "tileset.h"
@@ -335,5 +334,3 @@ TILEDSHARED_EXPORT int globalIndex(Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled
-
-#endif // LAYER_H

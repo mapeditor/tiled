@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTYBROWSER_H
-#define PROPERTYBROWSER_H
+#pragma once
 
 #include <QHash>
 #include <QUndoCommand>
@@ -229,5 +228,3 @@ inline void PropertyBrowser::retranslateUi()
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PROPERTYBROWSER_H

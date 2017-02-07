@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TMXMAPFORMAT_H
-#define TMXMAPFORMAT_H
+#pragma once
 
 #include "mapformat.h"
 #include "tilesetformat.h"
@@ -100,5 +99,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TMXMAPFORMAT_H

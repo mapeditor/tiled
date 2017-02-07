@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_FLEXIBLESCROLLBAR_H
-#define TILED_INTERNAL_FLEXIBLESCROLLBAR_H
+#pragma once
 
 #include <QScrollBar>
 
@@ -53,5 +52,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_FLEXIBLESCROLLBAR_H

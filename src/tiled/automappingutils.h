@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPINGUTILS_H
-#define AUTOMAPPINGUTILS_H
+#pragma once
 
 #include <QRegion>
 
@@ -43,5 +42,3 @@ QRegion tileRegionOfObjectGroup(ObjectGroup *layer);
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPINGUTILS_H

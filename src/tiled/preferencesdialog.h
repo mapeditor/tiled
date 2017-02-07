@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PREFERENCESDIALOG_H
-#define PREFERENCESDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -67,5 +66,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PREFERENCESDIALOG_H

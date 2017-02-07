@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETVIEW_H
-#define TILESETVIEW_H
+#pragma once
 
 #include "tilesetmodel.h"
 
@@ -173,5 +172,3 @@ inline bool TilesetView::markAnimatedTiles() const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::TilesetView *)
-
-#endif // TILESETVIEW_H

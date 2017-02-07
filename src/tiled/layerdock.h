@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERDOCK_H
-#define LAYERDOCK_H
+#pragma once
 
 #include "mapdocument.h"
 
@@ -109,5 +108,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERDOCK_H

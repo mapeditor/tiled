@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EDITPOLYGONTOOL_H
-#define EDITPOLYGONTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
@@ -107,5 +106,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // EDITPOLYGONTOOL_H

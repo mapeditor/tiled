@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_EDITOR_H
-#define TILED_INTERNAL_EDITOR_H
+#pragma once
 
 #include <QObject>
 
@@ -57,5 +56,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_EDITOR_H

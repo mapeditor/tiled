@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERITEM_H
-#define LAYERITEM_H
+#pragma once
 
 #include <QGraphicsItem>
 
@@ -42,5 +41,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERITEM_H

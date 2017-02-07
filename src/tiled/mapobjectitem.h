@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPOBJECTITEM_H
-#define MAPOBJECTITEM_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QGraphicsItem>
@@ -108,5 +107,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPOBJECTITEM_H

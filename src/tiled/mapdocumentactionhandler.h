@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPDOCUMENTACTIONHANDLER_H
-#define MAPDOCUMENTACTIONHANDLER_H
+#pragma once
 
 #include <QObject>
 
@@ -167,5 +166,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPDOCUMENTACTIONHANDLER_H

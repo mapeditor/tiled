@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGELAYER_H
-#define CHANGELAYER_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -108,5 +107,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGELAYER_H

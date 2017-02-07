@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OFFSETLAYER_H
-#define OFFSETLAYER_H
+#pragma once
 
 #include <QRect>
 #include <QPoint>
@@ -67,5 +66,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OFFSETLAYER_H

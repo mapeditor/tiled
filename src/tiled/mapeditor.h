@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_MAPEDITOR_H
-#define TILED_INTERNAL_MAPEDITOR_H
+#pragma once
 
 #include <QHash>
 #include <QMap>
@@ -175,5 +174,3 @@ inline MapView *MapEditor::currentMapView() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_MAPEDITOR_H

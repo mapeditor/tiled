@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEMULTIPOINTBJECTTOOL_H
-#define CREATEMULTIPOINTBJECTTOOL_H
+#pragma once
 
 #include "createobjecttool.h"
 
@@ -49,5 +48,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATEMULTIPOINTBJECTTOOL_H

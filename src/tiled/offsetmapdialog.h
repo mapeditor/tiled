@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -75,5 +74,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OFFSETMAPDIALOG_H

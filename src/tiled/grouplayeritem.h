@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GROUPLAYERITEM_H
-#define GROUPLAYERITEM_H
+#pragma once
 
 #include "layeritem.h"
 
@@ -49,5 +48,3 @@ inline GroupLayer *GroupLayerItem::groupLayer() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // GROUPLAYERITEM_H

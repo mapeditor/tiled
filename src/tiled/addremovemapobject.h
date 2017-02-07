@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVEMAPOBJECT_H
-#define ADDREMOVEMAPOBJECT_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -91,5 +90,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVEMAPOBJECT_H

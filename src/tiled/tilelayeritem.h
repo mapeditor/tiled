@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#pragma once
 
 #include "layeritem.h"
 
@@ -74,5 +73,3 @@ inline TileLayer *TileLayerItem::tileLayer() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILELAYERITEM_H

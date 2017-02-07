@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPTOVARIANTCONVERTER_H
-#define MAPTOVARIANTCONVERTER_H
+#pragma once
 
 #include <QDir>
 #include <QVariant>
@@ -73,5 +72,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPTOVARIANTCONVERTER_H

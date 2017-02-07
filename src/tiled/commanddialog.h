@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDDIALOG_H
-#define COMMANDDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QTreeView>
@@ -86,5 +85,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMANDDIALOG_H

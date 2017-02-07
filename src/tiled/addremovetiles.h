@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETILES_H
-#define ADDREMOVETILES_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -87,5 +86,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_ADDREMOVETILES_H

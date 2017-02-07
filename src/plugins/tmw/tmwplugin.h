@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TMWPLUGIN_H
-#define TMWPLUGIN_H
+#pragma once
 
 #include "tmw_global.h"
 
@@ -46,5 +45,3 @@ private:
 };
 
 } // namespace Tmw
-
-#endif // TMWPLUGIN_H

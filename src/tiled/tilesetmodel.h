@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETMODEL_H
-#define TILESETMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 
@@ -148,5 +147,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETMODEL_H

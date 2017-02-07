@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONVERTERCONTROL_H
-#define CONVERTERCONTROL_H
+#pragma once
 
 #include <QString>
 #include <QObject>
@@ -38,5 +37,3 @@ public:
     QString automappingRuleFileVersion(const QString &fileName);
     void convertV1toV2(const QString &fileName);
 };
-
-#endif // CONVERTERCONTROL_H

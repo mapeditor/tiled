@@ -28,8 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPOBJECT_H
-#define MAPOBJECT_H
+#pragma once
 
 #include "object.h"
 #include "tiled.h"
@@ -289,5 +288,3 @@ inline void MapObject::setBounds(const QRectF &bounds)
 }
 
 } // namespace Tiled
-
-#endif // MAPOBJECT_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMELAYER_H
-#define RENAMELAYER_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -51,5 +50,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RENAMELAYER_H
