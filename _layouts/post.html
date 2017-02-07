@@ -13,7 +13,11 @@
 
 <script type="text/javascript">
   DiscourseEmbed = { discourseUrl: 'http://discourse.mapeditor.org/',
+{% if page.topic_id %}
+                     topicId: {{ page.topic_id }} };
+{% else %}
                      discourseEmbedUrl: '{{ site.url }}{{ page.url }}' };
+{% endif %}
 
   (function() {
     var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
