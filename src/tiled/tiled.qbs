@@ -29,7 +29,7 @@ QtGuiApplication {
         else
             return ["$ORIGIN/../lib"];
     }
-    cpp.useCxxPrecompiledHeader: true
+    cpp.useCxxPrecompiledHeader: qbs.buildVariant != "debug"
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
