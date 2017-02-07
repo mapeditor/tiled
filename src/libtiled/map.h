@@ -369,6 +369,8 @@ public:
     void initializeObjectIds(ObjectGroup &objectGroup);
 
 private:
+    friend class GroupLayer;    // so it cal call adoptLayer
+
     void adoptLayer(Layer *layer);
 
     void recomputeDrawMargins() const;

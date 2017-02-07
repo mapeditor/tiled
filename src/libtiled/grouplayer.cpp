@@ -49,11 +49,11 @@ void GroupLayer::insertLayer(int index, Layer *layer)
 void GroupLayer::adoptLayer(Layer *layer)
 {
     layer->setParentLayer(this);
-    layer->setMap(map());
 
     if (map())
-        if (ObjectGroup *group = layer->asObjectGroup())
-            map()->initializeObjectIds(*group);
+        map()->adoptLayer(layer);
+    else
+        layer->setMap(nullptr);
 }
 
 Layer *GroupLayer::takeLayerAt(int index)
@@ -115,10 +115,15 @@ Layer *GroupLayer::clone() const
 
 void GroupLayer::setMap(Map *map)
 {
-    // todo: What about initializing object IDs?
     Layer::setMap(map);
-    for (Layer *layer : mLayers)
-        layer->setMap(map);
+
+    if (map) {
+        for (Layer *layer : mLayers)
+            map->adoptLayer(layer);
+    } else {
+        for (Layer *layer : mLayers)
+            layer->setMap(nullptr);
+    }
 }
 
 GroupLayer *GroupLayer::initializeClone(GroupLayer *clone) const
