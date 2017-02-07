@@ -338,8 +338,8 @@ void MapObjectModel::layerAdded(Layer *layer)
         const auto &siblings = layer->siblings();
 
         Layer *prev = nullptr;
-        for (int index = siblings.indexOf(layer) - 1; index >= 0; --index) {
-            auto sibling = siblings.at(index);
+        for (int i = siblings.indexOf(layer) - 1; i >= 0; --i) {
+            auto sibling = siblings.at(i);
             if (sibling->isObjectGroup() || sibling->isGroupLayer()) {
                 prev = sibling;
                 break;
