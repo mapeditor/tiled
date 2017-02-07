@@ -156,8 +156,8 @@ void PropertyBrowser::setDocument(Document *document)
                 SLOT(objectsChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
                 SLOT(objectsTypeChanged(QList<MapObject*>)));
-        connect(mapDocument, SIGNAL(layerChanged(int)),
-                SLOT(layerChanged(int)));
+        connect(mapDocument, &MapDocument::layerChanged,
+                this, &PropertyBrowser::layerChanged);
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
                 SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
@@ -245,9 +245,9 @@ void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
             updateCustomProperties();
 }
 
-void PropertyBrowser::layerChanged(int index)
+void PropertyBrowser::layerChanged(Layer *layer)
 {
-    if (mObject == mMapDocument->map()->layerAt(index))
+    if (mObject == layer)
         updateProperties();
 }
 
@@ -562,14 +562,15 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -577,8 +578,6 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
 
     addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
 
@@ -606,8 +605,14 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     addProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addGroupLayerProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Group Layer"));
+    addLayerProperties(groupProperty);
     addProperty(groupProperty);
 }
 
@@ -867,18 +872,17 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 {
     Layer *layer = static_cast<Layer*>(mObject);
-    const int layerIndex = mMapDocument->map()->layers().indexOf(layer);
     QUndoCommand *command = nullptr;
 
     switch (id) {
     case NameProperty:
-        command = new RenameLayer(mMapDocument, layerIndex, val.toString());
+        command = new RenameLayer(mMapDocument, layer, val.toString());
         break;
     case VisibleProperty:
-        command = new SetLayerVisible(mMapDocument, layerIndex, val.toBool());
+        command = new SetLayerVisible(mMapDocument, layer, val.toBool());
         break;
     case OpacityProperty:
-        command = new SetLayerOpacity(mMapDocument, layerIndex, val.toDouble());
+        command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
         break;
     case OffsetXProperty:
     case OffsetYProperty: {
@@ -889,13 +893,14 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
         else
             offset.setY(val.toDouble());
 
-        command = new SetLayerOffset(mMapDocument, layerIndex, offset);
+        command = new SetLayerOffset(mMapDocument, layer, offset);
     }
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:   applyTileLayerValue(id, val);   break;
         case Layer::ObjectGroupType: applyObjectGroupValue(id, val); break;
         case Layer::ImageLayerType:  applyImageLayerValue(id, val);  break;
+        case Layer::GroupLayerType:  applyGroupLayerValue(id, val);  break;
         }
         break;
     }
@@ -969,7 +974,13 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     }
 }
 
-void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
+void PropertyBrowser::applyGroupLayerValue(PropertyId id, const QVariant &val)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(val)
+}
+
+void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
 {
     Tileset *tileset = static_cast<Tileset*>(mObject);
     QUndoStack *undoStack = mDocument->undoStack();
@@ -1140,6 +1151,7 @@ void PropertyBrowser::addProperties()
         case Layer::TileLayerType:      addTileLayerProperties();   break;
         case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
         case Layer::ImageLayerType:     addImageLayerProperties();  break;
+        case Layer::GroupLayerType:     addGroupLayerProperties();  break;
         }
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
@@ -1236,10 +1248,13 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
         }
-        case Layer::ImageLayerType:
+        case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { imageLayer->imageSource() }));
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
+            break;
+        }
+        case Layer::GroupLayerType:
             break;
         }
         break;

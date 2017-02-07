@@ -35,6 +35,7 @@ namespace Tiled {
 
 class Object;
 class ImageLayer;
+class Layer;
 class Map;
 class MapObject;
 class ObjectGroup;
@@ -89,7 +90,7 @@ private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
     void objectsTypeChanged(const QList<MapObject*> &objects);
-    void layerChanged(int index);
+    void layerChanged(Layer *layer);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
@@ -154,6 +155,7 @@ private:
     void addTileLayerProperties();
     void addObjectGroupProperties();
     void addImageLayerProperties();
+    void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
     void addTerrainProperties();
@@ -165,6 +167,7 @@ private:
     void applyTileLayerValue(PropertyId id, const QVariant &val);
     void applyObjectGroupValue(PropertyId id, const QVariant &val);
     void applyImageLayerValue(PropertyId id, const QVariant &val);
+    void applyGroupLayerValue(PropertyId id, const QVariant &val);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);

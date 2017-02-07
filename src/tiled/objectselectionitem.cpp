@@ -20,12 +20,13 @@
 
 #include "objectselectionitem.h"
 
-#include "objectgroup.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "tile.h"
 
@@ -153,7 +154,7 @@ void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
 
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos + mObject->objectGroup()->offset());
+    setPos(pixelPos + mObject->objectGroup()->totalOffset());
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -245,7 +246,7 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
 
-    setPos(pos + mObject->objectGroup()->offset());
+    setPos(pos + mObject->objectGroup()->totalOffset());
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
@@ -342,9 +343,9 @@ void ObjectSelectionItem::mapChanged()
     syncOverlayItems(mMapDocument->selectedObjects());
 }
 
-void ObjectSelectionItem::layerAdded(int index)
+void ObjectSelectionItem::layerAdded(Layer *layer)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    ObjectGroup *objectGroup = layer->asObjectGroup();
     if (!objectGroup)
         return;
 
@@ -363,9 +364,10 @@ void ObjectSelectionItem::layerAdded(int index)
     }
 }
 
-void ObjectSelectionItem::layerAboutToBeRemoved(int index)
+void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    auto layer = parentLayer ? parentLayer->layerAt(index) : mMapDocument->map()->layerAt(index);
+    auto objectGroup = layer->asObjectGroup();
     if (!objectGroup)
         return;
 
@@ -374,9 +376,9 @@ void ObjectSelectionItem::layerAboutToBeRemoved(int index)
             delete mObjectLabels.take(object);
 }
 
-void ObjectSelectionItem::layerChanged(int index)
+void ObjectSelectionItem::layerChanged(Layer *layer)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    ObjectGroup *objectGroup = layer->asObjectGroup();
     if (!objectGroup)
         return;
 

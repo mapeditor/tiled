@@ -237,6 +237,9 @@ public:
     int imageLayerCount() const
     { return layerCount(Layer::ImageLayerType); }
 
+    int groupLayerCount() const
+    { return layerCount(Layer::GroupLayerType); }
+
     /**
      * Returns the layer at the specified index.
      */
@@ -249,7 +252,6 @@ public:
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
-    QList<Layer*> layers(Layer::TypeFlag type) const;
     QList<ObjectGroup*> objectGroups() const;
     QList<TileLayer*> tileLayers() const;
 
@@ -364,8 +366,11 @@ public:
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
+    void initializeObjectIds(ObjectGroup &objectGroup);
 
 private:
+    friend class GroupLayer;    // so it cal call adoptLayer
+
     void adoptLayer(Layer *layer);
 
     void recomputeDrawMargins() const;

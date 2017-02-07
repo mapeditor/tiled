@@ -106,7 +106,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
             continue;
 
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-        const QPointF offset = tileLayer->offset();
+        const QPointF offset = tileLayer->totalOffset();
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
@@ -160,12 +160,15 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
     mRenderer->setPainterScale(scale);
 
-    for (const Layer *layer : mMap->layers()) {
-        if (mVisibleLayersOnly && !layer->isVisible())
+    LayerIterator iterator(mMap);
+    while (const Layer *layer = iterator.next()) {
+        if (mVisibleLayersOnly && layer->isHidden())
             continue;
 
-        painter.setOpacity(layer->opacity());
-        painter.translate(layer->offset());
+        const auto offset = layer->totalOffset();
+
+        painter.setOpacity(layer->affectiveOpacity());
+        painter.translate(offset);
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -205,9 +208,13 @@ QImage ThumbnailRenderer::render(const QSize &size) const
             mRenderer->drawImageLayer(&painter, imageLayer);
             break;
         }
+        case Layer::GroupLayerType: {
+            // Recursion handled by LayerIterator
+            break;
+        }
         }
 
-        painter.translate(-layer->offset());
+        painter.translate(-offset);
     }
 
     return image;

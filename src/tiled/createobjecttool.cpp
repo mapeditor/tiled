@@ -107,7 +107,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
     if (mNewMapObjectItem) {
-        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->offset();
+        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
         mouseMovedWhileCreatingObject(pos - offset, modifiers);
     }
 }
@@ -129,7 +129,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF offsetPos = event->scenePos() - objectGroup->offset();
+    const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
     QPointF pixelCoords;
 
     /* TODO: calculate the tile offset with a polymorphic behaviour object
@@ -169,7 +169,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     mNewMapObjectGroup->addObject(newMapObject);
 
     mNewMapObjectGroup->setColor(objectGroup->color());
-    mNewMapObjectGroup->setOffset(objectGroup->offset());
+    mNewMapObjectGroup->setOffset(objectGroup->totalOffset());
 
     mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 

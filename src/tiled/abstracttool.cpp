@@ -83,7 +83,7 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         disconnect(mMapDocument, &MapDocument::layerChanged,
                    this, &AbstractTool::updateEnabledState);
-        disconnect(mMapDocument, &MapDocument::currentLayerIndexChanged,
+        disconnect(mMapDocument, &MapDocument::currentLayerChanged,
                    this, &AbstractTool::updateEnabledState);
     }
 
@@ -94,7 +94,7 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::layerChanged,
                 this, &AbstractTool::updateEnabledState);
-        connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &AbstractTool::updateEnabledState);
     }
     updateEnabledState();

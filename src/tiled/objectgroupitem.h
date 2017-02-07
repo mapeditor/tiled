@@ -21,12 +21,11 @@
 #ifndef OBJECTGROUPITEM_H
 #define OBJECTGROUPITEM_H
 
-#include <QGraphicsItem>
+#include "layeritem.h"
+
+#include "objectgroup.h"
 
 namespace Tiled {
-
-class ObjectGroup;
-
 namespace Internal {
 
 /**
@@ -35,10 +34,10 @@ namespace Internal {
  *
  * @see MapObjectItem
  */
-class ObjectGroupItem : public QGraphicsItem
+class ObjectGroupItem : public LayerItem
 {
 public:
-    ObjectGroupItem(ObjectGroup *objectGroup);
+    ObjectGroupItem(ObjectGroup *objectGroup, QGraphicsItem *parent = nullptr);
 
     ObjectGroup *objectGroup() const;
 
@@ -47,14 +46,11 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
-
-private:
-    ObjectGroup *mObjectGroup;
 };
 
 inline ObjectGroup *ObjectGroupItem::objectGroup() const
 {
-    return mObjectGroup;
+    return static_cast<ObjectGroup*>(layer());
 }
 
 } // namespace Internal

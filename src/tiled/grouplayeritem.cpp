@@ -1,6 +1,6 @@
 /*
- * renamelayer.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * grouplayeritem.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,38 +18,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMELAYER_H
-#define RENAMELAYER_H
-
-#include <QUndoCommand>
+#include "grouplayeritem.h"
 
 namespace Tiled {
-
-class Layer;
-
 namespace Internal {
 
-class MapDocument;
-
-class RenameLayer : public QUndoCommand
+GroupLayerItem::GroupLayerItem(GroupLayer *groupLayer, QGraphicsItem *parent)
+    : LayerItem(groupLayer, parent)
 {
-public:
-    RenameLayer(MapDocument *mapDocument,
-                Layer *layer,
-                const QString &name);
+    // Since we don't do any painting, we can spare us the call to paint()
+    setFlag(QGraphicsItem::ItemHasNoContents);
+}
 
-    void undo() override;
-    void redo() override;
+QRectF GroupLayerItem::boundingRect() const
+{
+    return QRectF();
+}
 
-private:
-    void swapName();
-
-    MapDocument *mMapDocument;
-    Layer *mLayer;
-    QString mName;
-};
+void GroupLayerItem::paint(QPainter *,
+                           const QStyleOptionGraphicsItem *,
+                           QWidget *)
+{
+}
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RENAMELAYER_H

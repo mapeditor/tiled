@@ -29,12 +29,13 @@
 
 #include "layer.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
+#include "map.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 
-
-using namespace Tiled;
+namespace Tiled {
 
 Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     Object(LayerType),
@@ -44,8 +45,97 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mY(y),
     mOpacity(1.0f),
     mVisible(true),
-    mMap(nullptr)
+    mMap(nullptr),
+    mParentLayer(nullptr)
 {
+}
+
+/**
+ * Returns the effective opacity, which is the opacity multiplied by the
+ * opacity of any parent layers.
+ */
+float Layer::affectiveOpacity() const
+{
+    auto opacity = mOpacity;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        opacity *= layer->opacity();
+    return opacity;
+}
+
+/**
+ * Returns whether this layer is hidden. A visible layer may still be hidden,
+ * when one of its parent layers is not visible.
+ */
+bool Layer::isHidden() const
+{
+    const Layer *layer = this;
+    while (layer && layer->isVisible())
+        layer = layer->parentLayer();
+    return layer;      // encountered an invisible layer
+}
+
+/**
+ * Returns whether the given \a candidate is this layer or one of its parents.
+ */
+bool Layer::isParentOrSelf(const Layer *candidate) const
+{
+    const Layer *layer = this;
+    while (layer != candidate && layer->parentLayer())
+        layer = layer->parentLayer();
+    return layer == candidate;
+}
+
+/**
+ * Returns the depth of this layer in the hierarchy.
+ */
+int Layer::depth() const
+{
+    int d = 0;
+    GroupLayer *p = mParentLayer;
+    while (p) {
+        ++d;
+        p = p->parentLayer();
+    }
+    return d;
+}
+
+/**
+ * Returns the index of this layer among its siblings.
+ */
+int Layer::siblingIndex() const
+{
+    if (mParentLayer)
+        return mParentLayer->layers().indexOf(const_cast<Layer*>(this));
+    if (mMap)
+        return mMap->layers().indexOf(const_cast<Layer*>(this));
+    return 0;
+}
+
+/**
+ * Returns the list of siblings of this layer, including this layer.
+ */
+QList<Layer *> Layer::siblings() const
+{
+    if (mParentLayer)
+        return mParentLayer->layers();
+    if (mMap)
+        return mMap->layers();
+
+    return QList<Layer *>();
+}
+
+/**
+ * Computes the total offset. which is the offset including the offset of all
+ * parent layers.
+ */
+QPointF Layer::totalOffset() const
+{
+    auto offset = mOffset;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        offset += layer->offset();
+    return offset;
 }
 
 /**
@@ -82,3 +172,140 @@ ImageLayer *Layer::asImageLayer()
 {
     return isImageLayer() ? static_cast<ImageLayer*>(this) : nullptr;
 }
+
+GroupLayer *Layer::asGroupLayer()
+{
+    return isGroupLayer() ? static_cast<GroupLayer*>(this) : nullptr;
+}
+
+
+Layer *LayerIterator::next()
+{
+    if (!mCurrentLayer) {
+        // Traverse to the first layer of the map
+        if (mMap && mSiblingIndex == -1 && mMap->layerCount() > 0) {
+            mCurrentLayer = mMap->layerAt(0);
+            mSiblingIndex = 0;
+            return mCurrentLayer;
+        }
+        return nullptr;
+    }
+
+    const auto siblings = mCurrentLayer->siblings();
+    int index = mSiblingIndex + 1;
+
+    // Traverse to parent layer if last child
+    if (index == siblings.size()) {
+        mCurrentLayer = mCurrentLayer->parentLayer();
+        mSiblingIndex = mCurrentLayer ? mCurrentLayer->siblingIndex() : -1;
+        return mCurrentLayer;
+    }
+
+    // Traverse to next sibling
+    Layer *layer = siblings.at(index);
+
+    // If next layer is a group, traverse to its first child
+    while (layer->isGroupLayer()) {
+        auto groupLayer = static_cast<GroupLayer*>(layer);
+        if (groupLayer->layerCount() > 0) {
+            index = 0;
+            layer = groupLayer->layerAt(0);
+        } else {
+            break;
+        }
+    }
+
+    mCurrentLayer = layer;
+    mSiblingIndex = index;
+
+    return layer;
+}
+
+Layer *LayerIterator::previous()
+{
+    Layer *layer = mCurrentLayer;
+    int index = mSiblingIndex - 1;
+
+    if (!layer) {
+        // Traverse to the last layer of the map if at the end
+        if (mMap && index < mMap->layerCount() && mMap->layerCount() > 0) {
+            layer = mMap->layerAt(index);
+        } else {
+            return nullptr;
+        }
+    } else {
+        // Traverse down to last child if applicable
+        if (layer->isGroupLayer()) {
+            auto groupLayer = static_cast<GroupLayer*>(layer);
+            if (groupLayer->layerCount() > 0) {
+                mSiblingIndex = groupLayer->layerCount() - 1;
+                mCurrentLayer = groupLayer->layerAt(mSiblingIndex);
+                return mCurrentLayer;
+            }
+        }
+
+        // Traverse to previous sibling (possibly of a parent)
+        do {
+            if (index >= 0) {
+                const auto siblings = layer->siblings();
+                layer = siblings.at(index);
+                break;
+            }
+
+            layer = layer->parentLayer();
+            if (layer)
+                index = layer->siblingIndex() - 1;
+        } while (layer);
+    }
+
+    mCurrentLayer = layer;
+    mSiblingIndex = index;
+
+    return layer;
+}
+
+void LayerIterator::toFront()
+{
+    mCurrentLayer = nullptr;
+    mSiblingIndex = -1;
+}
+
+void LayerIterator::toBack()
+{
+    mCurrentLayer = nullptr;
+    mSiblingIndex = mMap ? mMap->layerCount() : -1;
+}
+
+
+/**
+ * Returns the global layer index for the given \a layer. Obtained by iterating
+ * the layer's map while incrementing the index until layer is found.
+ */
+int globalIndex(Layer *layer)
+{
+    if (!layer)
+        return -1;
+
+    LayerIterator counter(layer->map());
+    int index = 0;
+    while (counter.next() && counter.currentLayer() != layer)
+        ++index;
+
+    return index;
+}
+
+/**
+ * Returns the layer at the given global \a index.
+ *
+ * \sa globalIndex()
+ */
+Layer *layerAtGlobalIndex(const Map *map, int index)
+{
+    LayerIterator counter(map);
+    while (counter.next() && index > 0)
+        --index;
+
+    return counter.currentLayer();
+}
+
+} // namespace Tiled

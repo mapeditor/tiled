@@ -20,21 +20,14 @@
 
 #include "objectgroupitem.h"
 
-#include "map.h"
-#include "mapobjectitem.h"
-#include "objectgroup.h"
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
-    mObjectGroup(objectGroup)
+ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup, QGraphicsItem *parent)
+    : LayerItem(objectGroup, parent)
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
-
-    setOpacity(objectGroup->opacity());
-    setPos(objectGroup->offset());
 }
 
 QRectF ObjectGroupItem::boundingRect() const

@@ -134,11 +134,13 @@ SOURCES += aboutdialog.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
+    grouplayeritem.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
     languagemanager.cpp \
     layerdock.cpp \
+    layeritem.cpp \
     layermodel.cpp \
     layeroffsettool.cpp \
     magicwandtool.cpp \
@@ -180,6 +182,7 @@ SOURCES += aboutdialog.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
+    reparentlayers.cpp \
     replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
@@ -223,6 +226,7 @@ SOURCES += aboutdialog.cpp \
     tilestampsdock.cpp \
     tmxmapformat.cpp \
     toolmanager.cpp \
+    treeviewcombobox.cpp \
     undodock.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
@@ -294,11 +298,13 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
+    grouplayeritem.h \
     id.h \
     imagecolorpickerwidget.h \
     imagelayeritem.h \
     languagemanager.h \
     layerdock.h \
+    layeritem.h \
     layermodel.h \
     layeroffsettool.h \
     macsupport.h \
@@ -342,6 +348,7 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
+    reparentlayers.h \
     replacetileset.h \
     resizedialog.h \
     resizehelper.h \
@@ -386,6 +393,7 @@ HEADERS += aboutdialog.h \
     tilestampsdock.h \
     tmxmapformat.h \
     toolmanager.h \
+    treeviewcombobox.h \
     undocommands.h \
     undodock.h \
     utils.h \

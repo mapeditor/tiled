@@ -1,6 +1,6 @@
 /*
- * renamelayer.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * layeritem.h
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,10 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMELAYER_H
-#define RENAMELAYER_H
+#ifndef LAYERITEM_H
+#define LAYERITEM_H
 
-#include <QUndoCommand>
+#include <QGraphicsItem>
 
 namespace Tiled {
 
@@ -29,27 +29,18 @@ class Layer;
 
 namespace Internal {
 
-class MapDocument;
-
-class RenameLayer : public QUndoCommand
+class LayerItem : public QGraphicsItem
 {
 public:
-    RenameLayer(MapDocument *mapDocument,
-                Layer *layer,
-                const QString &name);
+    LayerItem(Layer *layer, QGraphicsItem *parent = nullptr);
 
-    void undo() override;
-    void redo() override;
+    Layer *layer() const { return mLayer; }
 
 private:
-    void swapName();
-
-    MapDocument *mMapDocument;
     Layer *mLayer;
-    QString mName;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // RENAMELAYER_H
+#endif // LAYERITEM_H

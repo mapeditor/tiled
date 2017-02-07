@@ -52,6 +52,7 @@ class MapView;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
+class ReversingProxyModel;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
@@ -59,6 +60,8 @@ class TilesetDock;
 class TileStamp;
 class TileStampManager;
 class ToolManager;
+class TreeViewComboBox;
+class UncheckableItemsModel;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -112,7 +115,7 @@ private slots:
 
     void updateStatusInfoLabel(const QString &statusInfo);
 
-    void layerComboActivated(int index);
+    void layerComboActivated();
     void updateLayerComboIndex();
 
 private:
@@ -135,7 +138,11 @@ private:
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     QDockWidget *mTileStampsDock;
-    QComboBox *mLayerComboBox;
+
+    TreeViewComboBox *mLayerComboBox;
+    UncheckableItemsModel *mUncheckableProxyModel;
+    ReversingProxyModel *mReversingProxyModel;
+
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;

@@ -68,7 +68,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->offset();
+        offsetPos -= layer->totalOffset();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = (int) std::floor(tilePosF.x());
@@ -80,13 +80,13 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     if (mApplyingChange)    // avoid recursion
         return;
 
-    const int currentLayerIndex = mapDocument()->currentLayerIndex();
+    auto currentLayer = mapDocument()->currentLayer();
 
-    if (currentLayerIndex != -1) {
+    if (currentLayer) {
         QPointF newOffset = mOldOffset + (pos - mMouseStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
         mApplyingChange = true;
-        mapDocument()->layerModel()->setLayerOffset(currentLayerIndex, newOffset);
+        mapDocument()->layerModel()->setLayerOffset(currentLayer, newOffset);
         mApplyingChange = false;
     }
 }
@@ -112,12 +112,12 @@ void LayerOffsetTool::mouseReleased(QGraphicsSceneMouseEvent *)
 
     if (Layer *layer = mapDocument()->currentLayer()) {
         const QPointF newOffset = layer->offset();
-        const int currentLayerIndex = mapDocument()->currentLayerIndex();
+        auto currentLayer = mapDocument()->currentLayer();
         mApplyingChange = true;
-        mapDocument()->layerModel()->setLayerOffset(currentLayerIndex, mOldOffset);
+        mapDocument()->layerModel()->setLayerOffset(currentLayer, mOldOffset);
         mapDocument()->undoStack()->push(
                     new SetLayerOffset(mapDocument(),
-                                       currentLayerIndex,
+                                       currentLayer,
                                        newOffset));
         mApplyingChange = false;
     }

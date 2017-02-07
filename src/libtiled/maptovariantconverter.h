@@ -29,6 +29,8 @@
 
 namespace Tiled {
 
+class GroupLayer;
+
 /**
  * Converts Map instances to QVariant. Meant to be used together with
  * JsonWriter.
@@ -42,7 +44,7 @@ public:
      * Converts the given \s map to a QVariant. The \a mapDir is used to
      * construct relative paths to external resources.
      */
-    QVariant toVariant(const Map *map, const QDir &mapDir);
+    QVariant toVariant(const Map &map, const QDir &mapDir);
 
     /**
      * Converts the given \s tileset to a QVariant. The \a directory is used to
@@ -54,13 +56,14 @@ private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
     QVariant toVariant(const Properties &properties) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
-    QVariant toVariant(const TileLayer *tileLayer,
-                       Map::LayerDataFormat format) const;
-    QVariant toVariant(const ObjectGroup *objectGroup) const;
-    QVariant toVariant(const ImageLayer *imageLayer) const;
+    QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
+    QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
+    QVariant toVariant(const ObjectGroup &objectGroup) const;
+    QVariant toVariant(const ImageLayer &imageLayer) const;
+    QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
-                            const Layer *layer) const;
+                            const Layer &layer) const;
 
     void addProperties(QVariantMap &variantMap,
                        const Properties &properties) const;
