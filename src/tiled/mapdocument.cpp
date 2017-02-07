@@ -829,6 +829,22 @@ void MapDocument::onLayerAdded(Layer *layer)
         setCurrentLayer(layer);
 }
 
+static void collectObjects(Layer *layer, QList<MapObject*> &objects)
+{
+    switch (layer->layerType()) {
+    case Layer::ObjectGroupType:
+        objects.append(static_cast<ObjectGroup*>(layer)->objects());
+        break;
+    case Layer::GroupLayerType:
+        for (auto childLayer : *static_cast<GroupLayer*>(layer))
+            collectObjects(childLayer, objects);
+        break;
+    case Layer::ImageLayerType:
+    case Layer::TileLayerType:
+        break;
+    }
+}
+
 void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
     Layer *layer = groupLayer ? groupLayer->layerAt(index) : mMap->layerAt(index);
@@ -836,15 +852,19 @@ void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
         setCurrentObject(nullptr);
 
     // Deselect any objects on this layer when necessary
-    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
-        deselectObjects(og->objects());
+    if (layer->isObjectGroup() || layer->isGroupLayer()) {
+        QList<MapObject*> objects;
+        collectObjects(layer, objects);
+        deselectObjects(objects);
+    }
 
     emit layerAboutToBeRemoved(groupLayer, index);
 }
 
 void MapDocument::onLayerRemoved(Layer *layer)
 {
-    // todo: check currentLayer behavior when deleting it
+    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer))
+        setCurrentLayer(nullptr);
 
     emit layerRemoved(layer);
 }

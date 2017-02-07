@@ -116,6 +116,7 @@ public:
      */
     GroupLayer *parentLayer() const { return mParentLayer; }
 
+    bool isParentOrSelf(const Layer *candidate) const;
     int depth() const;
     int siblingIndex() const;
     QList<Layer*> siblings() const;

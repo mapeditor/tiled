@@ -76,6 +76,17 @@ bool Layer::isHidden() const
 }
 
 /**
+ * Returns whether the given \a candidate is this layer or one of its parents.
+ */
+bool Layer::isParentOrSelf(const Layer *candidate) const
+{
+    const Layer *layer = this;
+    while (layer != candidate && layer->parentLayer())
+        layer = layer->parentLayer();
+    return layer == candidate;
+}
+
+/**
  * Returns the depth of this layer in the hierarchy.
  */
 int Layer::depth() const
