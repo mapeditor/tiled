@@ -641,7 +641,7 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     delete mCurrentTiles;
     mCurrentTiles = tiles;
 
-    if (tiles) {
+    if (tiles && mMapDocument) {
         // Create a tile stamp with these tiles
         Map *map = mMapDocument->map();
         Map *stamp = new Map(map->orientation(),
