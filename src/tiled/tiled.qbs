@@ -387,6 +387,8 @@ QtGuiApplication {
         "tmxmapformat.h",
         "toolmanager.cpp",
         "toolmanager.h",
+        "treeviewcombobox.cpp",
+        "treeviewcombobox.h",
         "undocommands.h",
         "undodock.cpp",
         "undodock.h",

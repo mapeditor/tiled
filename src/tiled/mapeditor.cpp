@@ -46,6 +46,7 @@
 #include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "reversingproxymodel.h"
 #include "selectsametiletool.h"
 #include "stampbrush.h"
 #include "terrain.h"
@@ -59,6 +60,7 @@
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "toolmanager.h"
+#include "treeviewcombobox.h"
 #include "zoomable.h"
 
 #include <QComboBox>
@@ -81,25 +83,6 @@ static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
 namespace Internal {
-
-namespace {
-
-/**
- * A model that is always empty.
- */
-class EmptyModel : public QAbstractListModel
-{
-public:
-    EmptyModel(QObject *parent = nullptr)
-        : QAbstractListModel(parent)
-    {}
-
-    int rowCount(const QModelIndex &) const override
-    { return 0; }
-
-    QVariant data(const QModelIndex &, int) const override
-    { return QVariant(); }
-};
 
 /**
  * A proxy model that makes sure no items are checked or checkable.
@@ -129,11 +112,6 @@ public:
     }
 };
 
-static EmptyModel emptyModel;
-static UncheckableItemsModel uncheckableLayerModel;
-
-} // anonymous namespace
-
 
 MapEditor::MapEditor(QObject *parent)
     : Editor(parent)
@@ -146,7 +124,9 @@ MapEditor::MapEditor(QObject *parent)
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
-    , mLayerComboBox(new QComboBox)
+    , mLayerComboBox(new TreeViewComboBox)
+    , mUncheckableProxyModel(new UncheckableItemsModel(this))
+    , mReversingProxyModel(new ReversingProxyModel(this))
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
@@ -219,10 +199,12 @@ MapEditor::MapEditor(QObject *parent)
     mMapsDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 
+    mUncheckableProxyModel->setSourceModel(mReversingProxyModel);
+    mLayerComboBox->setModel(mUncheckableProxyModel);
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(mLayerComboBox, SIGNAL(activated(int)),
-            this, SLOT(layerComboActivated(int)));
+    connect(mLayerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            this, &MapEditor::layerComboActivated);
 
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
@@ -392,10 +374,9 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable->setComboBox(mZoomComboBox);
         }
 
-        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
-        mLayerComboBox->setModel(&uncheckableLayerModel);
+        mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
-        mLayerComboBox->setModel(&emptyModel);
+        mReversingProxyModel->setSourceModel(nullptr);
     }
 
     mLayerComboBox->setEnabled(mapDocument);
@@ -635,28 +616,33 @@ void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
     mStatusInfoLabel->setText(statusInfo);
 }
 
-void MapEditor::layerComboActivated(int index)
+void MapEditor::layerComboActivated()
 {
-    if (index == -1)
-        return;
     if (!mCurrentMapDocument)
         return;
 
-    // todo: figure out how to work with a tree in the layer combo box
-    mCurrentMapDocument->setCurrentLayer(mCurrentMapDocument->map()->layerAt(index));
+    const QModelIndex comboIndex = mLayerComboBox->currentModelIndex();
+    const QModelIndex reversedIndex = mUncheckableProxyModel->mapToSource(comboIndex);
+    const QModelIndex sourceIndex = mReversingProxyModel->mapToSource(reversedIndex);
+    Layer *layer = mCurrentMapDocument->layerModel()->toLayer(sourceIndex);
+    if (!layer)
+        return;
+
+    mCurrentMapDocument->setCurrentLayer(layer);
 }
 
 void MapEditor::updateLayerComboIndex()
 {
-    // todo: figure out how to work with a tree in the layer combo box
-    int layerIndex = -1;
+    QModelIndex index;
 
     if (mCurrentMapDocument) {
         const auto currentLayer = mCurrentMapDocument->currentLayer();
-        layerIndex = mCurrentMapDocument->layerIndex(currentLayer);
+        const QModelIndex sourceIndex = mCurrentMapDocument->layerModel()->index(currentLayer);
+        const QModelIndex reversedIndex = mReversingProxyModel->mapFromSource(sourceIndex);
+        index = mUncheckableProxyModel->mapFromSource(reversedIndex);
     }
 
-    mLayerComboBox->setCurrentIndex(layerIndex);
+    mLayerComboBox->setCurrentModelIndex(index);
 }
 
 void MapEditor::setupQuickStamps()
