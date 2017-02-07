@@ -69,7 +69,7 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
-    bool shouldDrawLayer(Layer *layer);
+    bool shouldDrawLayer(const Layer *layer);
 
 };
 
