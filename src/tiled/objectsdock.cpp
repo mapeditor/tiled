@@ -21,6 +21,7 @@
 #include "objectsdock.h"
 
 #include "documentmanager.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -313,8 +314,8 @@ void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
-    else if (ObjectGroup *objectGroup = mapObjectModel()->toObjectGroup(index))
-        mMapDocument->setCurrentObject(objectGroup);
+    else if (Layer *layer = mapObjectModel()->toLayer(index))
+        mMapDocument->setCurrentObject(layer);
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
@@ -353,7 +354,7 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
-        if (ObjectGroup *og = mapObjectModel()->toLayer(index)) {
+        if (ObjectGroup *og = mapObjectModel()->toObjectGroupContext(index)) {
             if (!multipleObjectGroups) {
                 if (!singleObjectGroup) {
                     singleObjectGroup = og;

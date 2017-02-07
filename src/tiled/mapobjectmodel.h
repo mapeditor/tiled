@@ -1,6 +1,7 @@
 /*
  * mapobjectmodel.h
  * Copyright 2012, Tim Baker <treectrl@hotmail.com>
+ * Copyright 2012-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -50,22 +51,6 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    struct ObjectOrGroup
-    {
-        ObjectOrGroup(ObjectGroup *g)
-            : mGroup(g)
-            , mObject(nullptr)
-        {
-        }
-        ObjectOrGroup(MapObject *o)
-            : mGroup(nullptr)
-            , mObject(o)
-        {
-        }
-        ObjectGroup *mGroup;
-        MapObject *mObject;
-    };
-
     MapObjectModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
@@ -81,12 +66,14 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    QModelIndex index(ObjectGroup *og) const;
-    QModelIndex index(MapObject *o, int column = 0) const;
+    QModelIndex index(Layer *layer) const;
+    QModelIndex index(MapObject *mapObject, int column = 0) const;
 
-    ObjectGroup *toObjectGroup(const QModelIndex &index) const;
+    Layer *toLayer(const QModelIndex &index) const;
     MapObject *toMapObject(const QModelIndex &index) const;
-    ObjectGroup *toLayer(const QModelIndex &index) const;
+    ObjectGroup *toObjectGroup(const QModelIndex &index) const;
+    GroupLayer *toGroupLayer(const QModelIndex &index) const;
+    ObjectGroup *toObjectGroupContext(const QModelIndex &index) const;
 
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
@@ -118,11 +105,13 @@ private slots:
 private:
     MapDocument *mMapDocument;
     Map *mMap;
-    QList<ObjectGroup*> mObjectGroups;
-    QMap<MapObject*, ObjectOrGroup*> mObjects;
-    QMap<ObjectGroup*, ObjectOrGroup*> mGroups;
+
+    // cache
+    mutable QMap<GroupLayer*, QList<Layer*>> mFilteredLayers;
+    QList<Layer *> &filteredChildLayers(GroupLayer *parentLayer) const;
 
     QIcon mObjectGroupIcon;
+    QIcon mGroupLayerIcon;
 };
 
 } // namespace Internal
