@@ -62,6 +62,9 @@ MapObject::MapObject(const QString &name, const QString &type,
 {
 }
 
+/**
+ * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+ */
 QRectF MapObject::boundsUseTile() const
 {
     // FIXME: This is outdated code:
@@ -106,6 +109,10 @@ Alignment MapObject::alignment() const
     return BottomLeft;
 }
 
+/**
+ * Flip this object in the given \a direction. This doesn't change the size
+ * of the object.
+ */
 void MapObject::flip(FlipDirection direction)
 {
     if (!mCell.isEmpty()) {
@@ -128,6 +135,10 @@ void MapObject::flip(FlipDirection direction)
     }
 }
 
+/**
+ * Returns a duplicate of this object. The caller is responsible for the
+ * ownership of this newly created object.
+ */
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
