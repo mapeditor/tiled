@@ -44,7 +44,8 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 void FlipMapObjects::flip()
 {
     // TODO: Flip them properly as a group
-    foreach (MapObject *object, mMapObjects)
+    const auto &objects = mMapObjects;
+    for (MapObject *object : objects)
         object->flip(mFlipDirection);
 
     mMapDocument->mapObjectModel()->emitObjectsChanged(mMapObjects);
