@@ -541,12 +541,22 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
 
-    if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
+    auto mapObject = static_cast<const MapObject*>(mObject);
+
+    if (!mapObject->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
                 addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
                                tr("Flipping"), groupProperty);
 
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
+    }
+
+    if (mapObject->shape() == MapObject::Text) {
+        addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
+//        addProperty(TextAlignmentProperty, VariantPropertyManager::flagTypeId(), tr("Alignment"), groupProperty);
+        addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
+        addProperty(WordWrapProperty, QVariant::Bool, tr("Word Wrap"), groupProperty);
+        addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
     }
 
     addProperty(groupProperty);
@@ -780,19 +790,25 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     QUndoCommand *command = nullptr;
 
     switch (id) {
-    case NameProperty:
-        command = new ChangeMapObject(mMapDocument, mapObject,
-                                      mIdToProperty[NameProperty]->value().toString(),
-                                      mapObject->type());
+    default: {
+        MapObject::Property property;
+
+        switch (id) {
+        case NameProperty:          property = MapObject::NameProperty; break;
+        case TypeProperty:          property = MapObject::TypeProperty; break;
+        case VisibleProperty:       property = MapObject::VisibleProperty; break;
+        case TextProperty:          property = MapObject::TextProperty; break;
+        case FontProperty:          property = MapObject::TextFontProperty; break;
+        case TextAlignmentProperty: property = MapObject::TextAlignmentProperty; break;
+        case WordWrapProperty:      property = MapObject::TextWordWrapProperty; break;
+        case ColorProperty:         property = MapObject::TextColorProperty; break;
+        default:
+            return nullptr; // unrecognized property
+        }
+
+        command = new ChangeMapObject(mMapDocument, mapObject, property, val);
         break;
-    case TypeProperty:
-        command = new ChangeMapObject(mMapDocument, mapObject,
-                                      mapObject->name(),
-                                      mIdToProperty[TypeProperty]->value().toString());
-        break;
-    case VisibleProperty:
-        command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
-        break;
+    }
     case XProperty: {
         const QPointF oldPos = mapObject->position();
         const QPointF newPos(val.toReal(), oldPos.y());
@@ -838,9 +854,8 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
                                          QList<MapObject*>() << mapObject,
                                          FlipVertically);
         }
-    }
-    default:
         break;
+    }
     }
 
     return command;
@@ -851,18 +866,16 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     MapObject *mapObject = static_cast<MapObject*>(mObject);
 
     QUndoCommand *command = applyMapObjectValueTo(id, val, mapObject);
+    if (!command)
+        return;
 
     mDocument->undoStack()->beginMacro(command->text());
     mDocument->undoStack()->push(command);
 
-    //Used to share non-custom properties.
-    QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
-    if (selectedObjects.size() > 1) {
-        for (MapObject *obj : selectedObjects) {
-            if (obj != mapObject) {
-                if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
-                    mDocument->undoStack()->push(cmd);
-            }
+    for (MapObject *obj : mMapDocument->selectedObjects()) {
+        if (obj != mapObject) {
+            if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
+                mDocument->undoStack()->push(cmd);
         }
     }
 
@@ -1159,11 +1172,13 @@ void PropertyBrowser::addProperties()
     case Object::TerrainType:           addTerrainProperties(); break;
     }
 
-    // Make sure the color properties are collapsed, to save space
+    // Make sure the color and font properties are collapsed, to save space
     if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
         setExpanded(items(colorProperty).first(), false);
     if (QtProperty *colorProperty = mIdToProperty.value(BackgroundColorProperty))
         setExpanded(items(colorProperty).first(), false);
+    if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
+        setExpanded(items(fontProperty).first(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1226,6 +1241,15 @@ void PropertyBrowser::updateProperties()
             if (mapObject->cell().flippedVertically())
                 flippingFlags |= 2;
             property->setValue(flippingFlags);
+        }
+
+        if (mapObject->shape() == MapObject::Text) {
+            const auto& textData = mapObject->textData();
+            mIdToProperty[TextProperty]->setValue(textData.text);
+            mIdToProperty[FontProperty]->setValue(textData.font);
+//            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
+            mIdToProperty[WordWrapProperty]->setValue(textData.wordWrap);
+            mIdToProperty[ColorProperty]->setValue(textData.color);
         }
         break;
     }

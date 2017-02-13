@@ -111,6 +111,7 @@ private:
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
     QPolygonF readPolygon();
+    TextData readObjectText();
 
     GroupLayer *readGroupLayer();
 
@@ -876,6 +877,9 @@ MapObject *MapReaderPrivate::readObject()
         } else if (xml.name() == QLatin1String("ellipse")) {
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
+        } else if (xml.name() == QLatin1String("text")) {
+            object->setTextData(readObjectText());
+            object->setShape(MapObject::Text);
         } else {
             readUnknownElement();
         }
@@ -897,7 +901,7 @@ QPolygonF MapReaderPrivate::readPolygon()
     QPolygonF polygon;
     bool ok = true;
 
-    foreach (const QString &point, pointsList) {
+    for (const QString &point : pointsList) {
         const int commaPos = point.indexOf(QLatin1Char(','));
         if (commaPos == -1) {
             ok = false;
@@ -919,6 +923,63 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     xml.skipCurrentElement();
     return polygon;
+}
+
+static int intAttribute(const QXmlStreamAttributes& atts, const char *name, int def)
+{
+    bool ok = false;
+    int value = atts.value(QLatin1String(name)).toInt(&ok);
+    return ok ? value : def;
+}
+
+TextData MapReaderPrivate::readObjectText()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("text"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+
+    TextData textData;
+
+    if (atts.hasAttribute(QLatin1String("fontfamily")))
+        textData.font = QFont(atts.value(QLatin1String("fontfamily")).toString());
+
+    if (atts.hasAttribute(QLatin1String("pixelsize")))
+        textData.font.setPixelSize(atts.value(QLatin1String("pixelsize")).toInt());
+
+    textData.wordWrap = intAttribute(atts, "wrap", 0) == 1;
+    textData.font.setBold(intAttribute(atts, "bold", 0) == 1);
+    textData.font.setItalic(intAttribute(atts, "italic", 0) == 1);
+    textData.font.setUnderline(intAttribute(atts, "underline", 0) == 1);
+    textData.font.setStrikeOut(intAttribute(atts, "strikeout", 0) == 1);
+    textData.font.setKerning(intAttribute(atts, "kerning", 1) == 1);
+
+    QStringRef colorString = atts.value(QLatin1String("color"));
+    if (!colorString.isEmpty())
+        textData.color = QColor(colorString.toString());
+
+    Qt::Alignment alignment = 0;
+
+    QStringRef hAlignString = atts.value(QLatin1String("halign"));
+    if (hAlignString == QLatin1String("center"))
+        alignment |= Qt::AlignHCenter;
+    else if (hAlignString == QLatin1String("right"))
+        alignment |= Qt::AlignRight;
+    else
+        alignment |= Qt::AlignLeft;
+
+    QStringRef vAlignString = atts.value(QLatin1String("valign"));
+    if (vAlignString == QLatin1String("center"))
+        alignment |= Qt::AlignVCenter;
+    else if (vAlignString == QLatin1String("bottom"))
+        alignment |= Qt::AlignBottom;
+    else
+        alignment |= Qt::AlignTop;
+
+    textData.alignment = alignment;
+
+    textData.text = xml.readElementText();
+
+    return textData;
 }
 
 GroupLayer *MapReaderPrivate::readGroupLayer()

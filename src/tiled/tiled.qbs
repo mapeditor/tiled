@@ -160,6 +160,8 @@ QtGuiApplication {
         "createrectangleobjecttool.h",
         "createscalableobjecttool.cpp",
         "createscalableobjecttool.h",
+        "createtextobjecttool.cpp",
+        "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
         "document.cpp",

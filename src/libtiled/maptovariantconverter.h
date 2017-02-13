@@ -29,6 +29,7 @@
 namespace Tiled {
 
 class GroupLayer;
+class TextData;
 
 /**
  * Converts Map instances to QVariant. Meant to be used together with
@@ -58,6 +59,7 @@ private:
     QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
     QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
+    QVariant toVariant(const TextData &textData) const;
     QVariant toVariant(const ImageLayer &imageLayer) const;
     QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
 

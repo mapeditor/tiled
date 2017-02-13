@@ -36,12 +36,7 @@ class CreateObjectTool : public AbstractObjectTool
     Q_OBJECT
 
 public:
-    enum CreationMode {
-        CreateTile,
-        CreateGeometry
-    };
-
-    CreateObjectTool(CreationMode mode, QObject *parent = nullptr);
+    CreateObjectTool(QObject *parent = nullptr);
     ~CreateObjectTool();
 
     void activate(MapScene *scene) override;
@@ -68,7 +63,7 @@ protected:
     virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
 
 
-    virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    virtual bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     virtual MapObject *createNewMapObject() = 0;
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
@@ -79,7 +74,6 @@ protected:
     MapObjectItem *mNewMapObjectItem;
     MapObjectItem *mOverlayPolygonItem;
     Tile *mTile;
-    CreationMode mMode;
 };
 
 } // namespace Internal

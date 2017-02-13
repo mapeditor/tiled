@@ -1,6 +1,6 @@
 /*
- * createmultipointobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * createtextobjecttool.h
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,27 +23,24 @@
 #include "createobjecttool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
-class CreateMultipointObjectTool : public CreateObjectTool
+class CreateTextObjectTool : public CreateObjectTool
 {
     Q_OBJECT
 
 public:
-    CreateMultipointObjectTool(QObject *parent);
-    ~CreateMultipointObjectTool();
+    CreateTextObjectTool(QObject *parent);
 
-    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    void languageChanged() override;
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-private:
-    MapObject *mOverlayPolygonObject;
-    ObjectGroup *mOverlayObjectGroup;
+    MapObject *createNewMapObject() override;
 };
 
 } // namespace Internal

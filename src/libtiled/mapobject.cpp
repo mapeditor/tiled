@@ -33,7 +33,42 @@
 #include "objectgroup.h"
 #include "tile.h"
 
-using namespace Tiled;
+#include <QFontMetricsF>
+
+namespace Tiled {
+
+TextData::TextData()
+    : font(QStringLiteral("sans-serif"))
+{
+    font.setPixelSize(16);
+}
+
+int TextData::flags() const
+{
+    return wordWrap ? (alignment | Qt::TextWordWrap) : alignment;
+}
+
+QTextOption TextData::textOption() const
+{
+    QTextOption option(alignment);
+
+    if (wordWrap)
+        option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    else
+        option.setWrapMode(QTextOption::ManualWrap);
+
+    return option;
+}
+
+/**
+ * Returns the size of the text when drawn without wrapping.
+ */
+QSizeF TextData::textSize() const
+{
+    QFontMetricsF fontMetrics(font);
+    return fontMetrics.size(0, text);
+}
+
 
 MapObject::MapObject():
     Object(MapObjectType),
@@ -60,6 +95,14 @@ MapObject::MapObject(const QString &name, const QString &type,
     mRotation(0.0f),
     mVisible(true)
 {
+}
+
+/**
+ * Sets the text data associated with this object.
+ */
+void MapObject::setTextData(const TextData &textData)
+{
+    mTextData = textData;
 }
 
 /**
@@ -109,6 +152,37 @@ Alignment MapObject::alignment() const
     return BottomLeft;
 }
 
+QVariant MapObject::mapObjectProperty(Property property) const
+{
+    switch (property) {
+    case NameProperty:          return mName;
+    case TypeProperty:          return mType;
+    case VisibleProperty:       return mVisible;
+    case TextProperty:          return mTextData.text;
+    case TextFontProperty:      return mTextData.font;
+    case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
+    case TextWordWrapProperty:  return mTextData.wordWrap;
+    case TextColorProperty:     return mTextData.color;
+    }
+    return QVariant();
+}
+
+void MapObject::setMapObjectProperty(Property property, const QVariant &value)
+{
+    switch (property) {
+    case NameProperty:          mName = value.toString(); break;
+    case TypeProperty:          mType = value.toString(); break;
+    case VisibleProperty:       mVisible = value.toBool(); break;
+    case TextProperty:          mTextData.text = value.toString(); break;
+    case TextFontProperty:
+        mTextData.font = value.value<QFont>();
+        break;
+    case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
+    case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
+    case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
+    }
+}
+
 /**
  * Flip this object in the given \a direction. This doesn't change the size
  * of the object.
@@ -144,6 +218,7 @@ MapObject *MapObject::clone() const
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
     o->setId(mId);
     o->setProperties(properties());
+    o->setTextData(mTextData);
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
@@ -151,3 +226,5 @@ MapObject *MapObject::clone() const
     o->setVisible(mVisible);
     return o;
 }
+
+} // namespace Tiled

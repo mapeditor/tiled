@@ -363,10 +363,13 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup &objectGroup) const
          *       ...
          *   ]
          */
-        const QPolygonF &polygon = object->polygon();
-        if (!polygon.isEmpty()) {
+        switch (object->shape()) {
+        case MapObject::Rectangle:
+            break;
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
             QVariantList pointVariants;
-            for (const QPointF &point : polygon) {
+            for (const QPointF &point : object->polygon()) {
                 QVariantMap pointVariant;
                 pointVariant[QLatin1String("x")] = point.x();
                 pointVariant[QLatin1String("y")] = point.y();
@@ -377,16 +380,63 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup &objectGroup) const
                 objectVariant[QLatin1String("polygon")] = pointVariants;
             else
                 objectVariant[QLatin1String("polyline")] = pointVariants;
+            break;
         }
-
-        if (object->shape() == MapObject::Ellipse)
+        case MapObject::Ellipse:
             objectVariant[QLatin1String("ellipse")] = true;
+            break;
+        case MapObject::Text:
+            objectVariant[QLatin1String("text")] = toVariant(object->textData());
+            break;
+        }
 
         objectVariants << objectVariant;
     }
 
     objectGroupVariant[QLatin1String("objects")] = objectVariants;
     return objectGroupVariant;
+}
+
+QVariant MapToVariantConverter::toVariant(const TextData &textData) const
+{
+    QVariantMap textVariant;
+
+    textVariant[QLatin1String("text")] = textData.text;
+
+    if (textData.font.family() != QLatin1String("sans-serif"))
+        textVariant[QLatin1String("fontfamily")] = textData.font.family();
+    if (textData.font.pixelSize() >= 0 && textData.font.pixelSize() != 16)
+        textVariant[QLatin1String("pixelsize")] = textData.font.pixelSize();
+    if (textData.wordWrap)
+        textVariant[QLatin1String("wrap")] = textData.wordWrap;
+    if (textData.color != Qt::black)
+        textVariant[QLatin1String("color")] = colorToString(textData.color);
+    if (textData.font.bold())
+        textVariant[QLatin1String("bold")] = textData.font.bold();
+    if (textData.font.italic())
+        textVariant[QLatin1String("italic")] = textData.font.italic();
+    if (textData.font.underline())
+        textVariant[QLatin1String("underline")] = textData.font.underline();
+    if (textData.font.strikeOut())
+        textVariant[QLatin1String("strikeout")] = textData.font.strikeOut();
+    if (!textData.font.kerning())
+        textVariant[QLatin1String("kerning")] = textData.font.kerning();
+
+    if (!textData.alignment.testFlag(Qt::AlignLeft)) {
+        if (textData.alignment.testFlag(Qt::AlignHCenter))
+            textVariant[QLatin1String("halign")] = QLatin1String("center");
+        else if (textData.alignment.testFlag(Qt::AlignRight))
+            textVariant[QLatin1String("halign")] = QLatin1String("right");
+    }
+
+    if (!textData.alignment.testFlag(Qt::AlignTop)) {
+        if (textData.alignment.testFlag(Qt::AlignVCenter))
+            textVariant[QLatin1String("valign")] = QLatin1String("center");
+        else if (textData.alignment.testFlag(Qt::AlignBottom))
+            textVariant[QLatin1String("valign")] = QLatin1String("bottom");
+    }
+
+    return textVariant;
 }
 
 QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const

@@ -40,7 +40,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
+CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
                          QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
                          QKeySequence(tr("O")),
@@ -50,7 +50,6 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mNewMapObjectItem(nullptr)
     , mOverlayPolygonItem(nullptr)
     , mTile(nullptr)
-    , mMode(mode)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
@@ -130,24 +129,12 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
-    QPointF pixelCoords;
 
-    /* TODO: calculate the tile offset with a polymorphic behaviour object
-     * that is instantiated by the corresponded ObjectTool
-     */
-    if (mMode == CreateTile) {
-        if (!mTile)
-            return;
-
-        const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        pixelCoords = renderer->screenToPixelCoords(offsetPos + diff);
-    } else {
-        pixelCoords = renderer->screenToPixelCoords(offsetPos);
-    }
-
+    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
     SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
 
-    startNewMapObject(pixelCoords, objectGroup);
+    if (startNewMapObject(pixelCoords, objectGroup))
+        mouseMovedWhileCreatingObject(offsetPos, event->modifiers());
 }
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -156,14 +143,15 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mouseReleasedWhileCreatingObject(event);
 }
 
-void CreateObjectTool::startNewMapObject(const QPointF &pos,
+bool CreateObjectTool::startNewMapObject(const QPointF &pos,
                                          ObjectGroup *objectGroup)
 {
     Q_ASSERT(!mNewMapObjectItem);
 
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
-        return;
+        return false;
+
     newMapObject->setPosition(pos);
 
     mNewMapObjectGroup->addObject(newMapObject);
@@ -174,6 +162,8 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
+
+    return true;
 }
 
 MapObject *CreateObjectTool::clearNewMapObjectItem()

@@ -1,6 +1,6 @@
 /*
- * createtileobjecttool.cpp
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * createtextobjecttool.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,33 +18,32 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "createtileobjecttool.h"
+#include "createtextobjecttool.h"
 
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "snaphelper.h"
-#include "tile.h"
 #include "utils.h"
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
-CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
+CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     : CreateObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
-    Utils::setThemeIcon(this, "insert-image");
+    setIcon(QIcon(QLatin1String(":images/24x24/insert-text.png")));
+    Utils::setThemeIcon(this, "insert-text");
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-    const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
-    const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
+    const MapObject *mapObject = mNewMapObjectItem->mapObject();
+    const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
     QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 
     SnapHelper(renderer, modifiers).snap(pixelCoords);
@@ -52,44 +51,37 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
     mNewMapObjectItem->setZValue(10000); // sync may change it
-    mNewMapObjectItem->setOpacity(0.75);
 }
 
-void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+void CreateTextObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
 }
 
-void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+void CreateTextObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();
 }
 
-bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+void CreateTextObjectTool::languageChanged()
 {
-    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
-        return false;
-
-    mNewMapObjectItem->setOpacity(0.75);
-    return true;
+    setName(tr("Insert Text"));
+    setShortcut(QKeySequence(tr("X")));
 }
 
-void CreateTileObjectTool::languageChanged()
+MapObject *CreateTextObjectTool::createNewMapObject()
 {
-    setName(tr("Insert Tile"));
-    setShortcut(QKeySequence(tr("T")));
-}
-
-MapObject *CreateTileObjectTool::createNewMapObject()
-{
-    if (!mTile)
-        return nullptr;
+    TextData textData;
+    textData.text = tr("Hello World");
 
     MapObject *newMapObject = new MapObject;
-    newMapObject->setShape(MapObject::Rectangle);
-    newMapObject->setCell(Cell(mTile));
-    newMapObject->setSize(mTile->size());
+    newMapObject->setShape(MapObject::Text);
+    newMapObject->setTextData(textData);
+    newMapObject->setSize(textData.textSize());
     return newMapObject;
 }
+
+} // namespace Internal
+} // namespace Tiled

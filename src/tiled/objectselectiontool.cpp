@@ -659,6 +659,9 @@ static QRectF pixelBounds(const MapObject *object)
         const QPolygonF polygon = object->polygon().translated(pos);
         return polygon.boundingRect();
     }
+    case MapObject::Text:
+        Q_ASSERT(false);  // text objects only have screen bounds
+        break;
     }
 
     return QRectF();
@@ -666,7 +669,22 @@ static QRectF pixelBounds(const MapObject *object)
 
 static bool resizeInPixelSpace(const MapObject *object)
 {
-    return object->cell().isEmpty();
+    return object->cell().isEmpty() && object->shape() != MapObject::Text;
+}
+
+static bool canResizeAbsolute(const MapObject *object)
+{
+    switch (object->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+    case MapObject::Text:
+        return true;
+    case MapObject::Polygon:
+    case MapObject::Polyline:
+        return false;
+    }
+
+    return false;
 }
 
 /* This function returns the actual bounds of the object, as opposed to the
@@ -721,6 +739,10 @@ static QRectF objectBounds(const MapObject *object,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon);
             return transform.map(screenPolygon).boundingRect();
+        }
+        case MapObject::Text: {
+            const auto rect = renderer->boundingRect(object);
+            return transform.mapRect(rect);
         }
         }
     }
@@ -1267,8 +1289,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * preserving the aspect ratio.
      */
     if (mClickedResizeHandle->resizingOrigin() == resizingOrigin &&
-            (mapObject->shape() == MapObject::Rectangle ||
-             mapObject->shape() == MapObject::Ellipse) && !preserveAspect) {
+            canResizeAbsolute(mapObject) && !preserveAspect) {
 
         QRectF newBounds = QRectF(newPos, newSize);
         align(newBounds, mapObject->alignment());

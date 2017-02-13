@@ -72,6 +72,8 @@ private:
     void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
                          Tiled::Map::LayerDataFormat);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
+    void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
+    void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
 
     QString mError;
     QDir mMapDir;     // The directory in which the map is being saved

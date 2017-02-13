@@ -22,6 +22,7 @@
 #pragma once
 
 #include "gidmapper.h"
+#include "mapobject.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -86,6 +87,7 @@ private:
     GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
+    TextData toTextData(const QVariantMap &variant) const;
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 

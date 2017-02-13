@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "mapobject.h"
 #include "tilelayer.h"
 
 #include <QUndoCommand>
@@ -39,13 +40,13 @@ class ChangeMapObject : public QUndoCommand
 {
 public:
     /**
-     * Creates an undo command that sets the given \a object's \a name and
-     * \a type.
+     * Creates an undo command that sets the given \a object's \a property to
+     * \a value.
      */
     ChangeMapObject(MapDocument *mapDocument,
                     MapObject *object,
-                    const QString &name,
-                    const QString &type);
+                    MapObject::Property property,
+                    const QVariant &value);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -55,28 +56,8 @@ private:
 
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    QString mName;
-    QString mType;
-};
-
-/**
- * Used for changing object visibility.
- */
-class SetMapObjectVisible : public QUndoCommand
-{
-public:
-    SetMapObjectVisible(MapDocument *mapDocument,
-                        MapObject *mapObject,
-                        bool visible);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    MapObjectModel *mMapObjectModel;
-    MapObject *mMapObject;
-    bool mOldVisible;
-    bool mNewVisible;
+    MapObject::Property mProperty;
+    QVariant mValue;
 };
 
 

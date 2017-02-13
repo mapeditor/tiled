@@ -26,7 +26,6 @@
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "objectgroup.h"
 #include "renamelayer.h"
 
@@ -165,9 +164,10 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
             const bool visible = (c == Qt::Checked);
             if (visible != mapObject->isVisible()) {
-                QUndoCommand *command = new SetMapObjectVisible(mMapDocument,
-                                                                mapObject,
-                                                                visible);
+                QUndoCommand *command = new ChangeMapObject(mMapDocument,
+                                                            mapObject,
+                                                            MapObject::VisibleProperty,
+                                                            visible);
                 mMapDocument->undoStack()->push(command);
             }
             return true;
@@ -178,14 +178,14 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
                 QUndoStack *undo = mMapDocument->undoStack();
                 undo->beginMacro(tr("Change Object Name"));
                 undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               s, mapObject->type()));
+                                               MapObject::NameProperty, s));
                 undo->endMacro();
             }
             if (index.column() == 1 && s != mapObject->type()) {
                 QUndoStack *undo = mMapDocument->undoStack();
                 undo->beginMacro(tr("Change Object Type"));
                 undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               mapObject->name(), s));
+                                               MapObject::TypeProperty, s));
                 undo->endMacro();
             }
             return true;
@@ -442,31 +442,6 @@ void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects)
     emit objectsChanged(objects);
 }
 
-void MapObjectModel::setObjectName(MapObject *o, const QString &name)
-{
-    if (o->name() == name)
-        return;
-
-    o->setName(name);
-    QModelIndex index = this->index(o);
-    emit dataChanged(index, index);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectType(MapObject *o, const QString &type)
-{
-    if (o->type() == type)
-        return;
-
-    o->setType(type);
-    QModelIndex index = this->index(o, 1);
-    emit dataChanged(index, index);
-
-    QList<MapObject*> objects = QList<MapObject*>() << o;
-    emit objectsChanged(objects);
-    emit objectsTypeChanged(objects);
-}
-
 void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
 {
     if (o->polygon() == polygon)
@@ -503,13 +478,31 @@ void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
-void MapObjectModel::setObjectVisible(MapObject *o, bool visible)
+void MapObjectModel::setObjectProperty(MapObject *o,
+                                       MapObject::Property property,
+                                       const QVariant &value)
 {
-    if (o->isVisible() == visible)
+    if (o->mapObjectProperty(property) == value)
         return;
 
-    o->setVisible(visible);
-    QModelIndex index = this->index(o);
-    emit dataChanged(index, index);
+    o->setMapObjectProperty(property, value);
+
+    // Notify views about certain property changes
+    switch (property) {
+    case MapObject::NameProperty:
+    case MapObject::VisibleProperty: {
+        QModelIndex index = this->index(o, 0);
+        emit dataChanged(index, index);
+        break;
+    }
+    case MapObject::TypeProperty: {
+        QModelIndex index = this->index(o, 1);
+        emit dataChanged(index, index);
+        break;
+    }
+    default:
+        break;
+    }
+
     emit objectsChanged(QList<MapObject*>() << o);
 }

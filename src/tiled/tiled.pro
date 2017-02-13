@@ -121,6 +121,7 @@ SOURCES += aboutdialog.cpp \
     createpolylineobjecttool.cpp \
     createrectangleobjecttool.cpp \
     createscalableobjecttool.cpp \
+    createtextobjecttool.cpp \
     createtileobjecttool.cpp \
     document.cpp \
     documentmanager.cpp \
@@ -285,6 +286,7 @@ HEADERS += aboutdialog.h \
     createpolylineobjecttool.h \
     createrectangleobjecttool.h \
     createscalableobjecttool.h \
+    createtextobjecttool.h \
     createtileobjecttool.h \
     document.h \
     documentmanager.h \

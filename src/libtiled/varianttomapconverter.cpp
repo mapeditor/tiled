@@ -24,7 +24,6 @@
 #include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
-#include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
 #include "terrain.h"
@@ -35,7 +34,7 @@
 
 #include <QScopedPointer>
 
-using namespace Tiled;
+namespace Tiled {
 
 static QString resolvePath(const QDir &dir, const QVariant &variant)
 {
@@ -512,6 +511,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QVariant polylineVariant = objectVariantMap[QLatin1String("polyline")];
         const QVariant polygonVariant = objectVariantMap[QLatin1String("polygon")];
+        const QVariant textVariant = objectVariantMap[QLatin1String("text")];
 
         if (polygonVariant.isValid()) {
             object->setShape(MapObject::Polygon);
@@ -523,6 +523,10 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         }
         if (objectVariantMap.contains(QLatin1String("ellipse")))
             object->setShape(MapObject::Ellipse);
+        if (textVariant.isValid()) {
+            object->setTextData(toTextData(textVariant.toMap()));
+            object->setShape(MapObject::Text);
+        }
     }
 
     return objectGroup.take();
@@ -593,8 +597,59 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
     return polygon;
 }
 
+TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
+{
+    TextData textData;
+
+    const QString family = variant[QLatin1String("fontfamily")].toString();
+    const int pixelSize = variant[QLatin1String("pixelsize")].toInt();
+
+    if (!family.isEmpty())
+        textData.font = QFont(family);
+    if (pixelSize > 0)
+        textData.font.setPixelSize(pixelSize);
+
+    textData.wordWrap = variant[QLatin1String("wrap")].toInt() == 1;
+    textData.font.setBold(variant[QLatin1String("bold")].toInt() == 1);
+    textData.font.setItalic(variant[QLatin1String("italic")].toInt() == 1);
+    textData.font.setUnderline(variant[QLatin1String("underline")].toInt() == 1);
+    textData.font.setStrikeOut(variant[QLatin1String("strikeout")].toInt() == 1);
+    if (variant.contains(QLatin1String("kerning")))
+        textData.font.setKerning(variant[QLatin1String("kerning")].toInt() == 1);
+
+    QString colorString = variant[QLatin1String("color")].toString();
+    if (!colorString.isEmpty())
+        textData.color = QColor(colorString);
+
+    Qt::Alignment alignment = 0;
+
+    QString hAlignString = variant[QLatin1String("halign")].toString();
+    if (hAlignString == QLatin1String("center"))
+        alignment |= Qt::AlignHCenter;
+    else if (hAlignString == QLatin1String("right"))
+        alignment |= Qt::AlignRight;
+    else
+        alignment |= Qt::AlignLeft;
+
+    QString vAlignString = variant[QLatin1String("valign")].toString();
+    if (vAlignString == QLatin1String("center"))
+        alignment |= Qt::AlignVCenter;
+    else if (vAlignString == QLatin1String("bottom"))
+        alignment |= Qt::AlignBottom;
+    else
+        alignment |= Qt::AlignTop;
+
+    textData.alignment = alignment;
+
+    textData.text = variant[QLatin1String("text")].toString();
+
+    return textData;
+}
+
 Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMap) const
 {
     return toProperties(variantMap[QLatin1String("properties")],
                         variantMap[QLatin1String("propertytypes")]);
 }
+
+} // namespace Tiled

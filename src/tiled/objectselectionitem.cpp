@@ -112,6 +112,8 @@ static QRectF objectBounds(const MapObject *object,
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon);
             return screenPolygon.boundingRect();
         }
+        case MapObject::Text:
+            return renderer->boundingRect(object);
         }
     }
 

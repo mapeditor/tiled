@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "mapobject.h"
+
 #include <QAbstractItemModel>
 #include <QIcon>
 
@@ -82,13 +84,12 @@ public:
     void moveObjects(ObjectGroup *og, int from, int to, int count);
     void emitObjectsChanged(const QList<MapObject *> &objects);
 
-    void setObjectName(MapObject *o, const QString &name);
-    void setObjectType(MapObject *o, const QString &type);
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
     void setObjectRotation(MapObject *o, qreal rotation);
-    void setObjectVisible(MapObject *o, bool visible);
+
+    void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);

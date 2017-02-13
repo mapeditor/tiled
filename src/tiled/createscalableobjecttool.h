@@ -33,7 +33,7 @@ public:
     CreateScalableObjectTool(QObject *parent);
 
 protected:
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;

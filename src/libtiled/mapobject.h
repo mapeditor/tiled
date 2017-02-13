@@ -34,15 +34,38 @@
 #include "tiled.h"
 #include "tilelayer.h"
 
+#include <QFont>
 #include <QPolygonF>
+#include <QRectF>
 #include <QSizeF>
 #include <QString>
-#include <QRectF>
+#include <QTextOption>
 
 namespace Tiled {
 
 class ObjectGroup;
 class Tile;
+
+struct TILEDSHARED_EXPORT TextData
+{
+    enum FontAttributes {
+        FontFamily  = 0x1,
+        FontSize    = 0x2,
+        FontStyle   = 0x8
+    };
+
+    TextData();
+
+    QString text;
+    QFont font;
+    QColor color = Qt::black;
+    Qt::Alignment alignment = Qt::AlignTop | Qt::AlignLeft;
+    bool wordWrap = true;
+
+    int flags() const;
+    QTextOption textOption() const;
+    QSizeF textSize() const;
+};
 
 /**
  * An object on a map. Objects are positioned and scaled using floating point
@@ -60,12 +83,30 @@ public:
      * Enumerates the different object shapes. Rectangle is the default shape.
      * When a polygon is set, the shape determines whether it should be
      * interpreted as a filled polygon or a line.
+     *
+     * Text objects contain arbitrary text, contained withih their rectangle
+     * (in screen coordinates).
      */
     enum Shape {
         Rectangle,
         Polygon,
         Polyline,
-        Ellipse
+        Ellipse,
+        Text
+    };
+
+    /**
+     * Can be used to get/set property values using QVariant.
+     */
+    enum Property {
+        NameProperty,
+        TypeProperty,
+        VisibleProperty,
+        TextProperty,
+        TextFontProperty,
+        TextAlignmentProperty,
+        TextWordWrapProperty,
+        TextColorProperty
     };
 
     MapObject();
@@ -105,6 +146,9 @@ public:
 
     void setBounds(const QRectF &bounds);
 
+    const TextData &textData() const;
+    void setTextData(const TextData &textData);
+
     const QPolygonF &polygon() const;
     void setPolygon(const QPolygonF &polygon);
 
@@ -128,6 +172,9 @@ public:
     bool isVisible() const;
     void setVisible(bool visible);
 
+    QVariant mapObjectProperty(Property property) const;
+    void setMapObjectProperty(Property property, const QVariant &value);
+
     void flip(FlipDirection direction);
 
     MapObject *clone() const;
@@ -138,6 +185,7 @@ private:
     QString mType;
     QPointF mPos;
     QSizeF mSize;
+    TextData mTextData;
     QPolygonF mPolygon;
     Shape mShape;
     Cell mCell;
@@ -277,6 +325,12 @@ inline void MapObject::setBounds(const QRectF &bounds)
 }
 
 /**
+ * Returns the text associated with this object, when it is a text object.
+ */
+inline const TextData &MapObject::textData() const
+{ return mTextData; }
+
+/**
  * Returns the polygon associated with this object. Returns an empty
  * polygon when no polygon is associated with this object.
  */
@@ -357,3 +411,7 @@ inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
 
 } // namespace Tiled
+
+#if QT_VERSION < 0x050500
+Q_DECLARE_METATYPE(Qt::Alignment)
+#endif

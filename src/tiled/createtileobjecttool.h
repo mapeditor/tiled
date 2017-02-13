@@ -41,7 +41,7 @@ protected:
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
     MapObject *createNewMapObject() override;
 };
 
