@@ -192,31 +192,37 @@ QString QtPropertyBrowserUtils::colorValueText(const QColor &c)
     }
 }
 
-QPixmap QtPropertyBrowserUtils::fontValuePixmap(const QFont &font)
+QPixmap QtPropertyBrowserUtils::fontValuePixmap(const QFont &font, int size)
 {
     QFont f = font;
-    QImage img(16, 16, QImage::Format_ARGB32_Premultiplied);
+    QImage img(size, size, QImage::Format_ARGB32_Premultiplied);
     img.fill(0);
     QPainter p(&img);
     p.setRenderHint(QPainter::TextAntialiasing, true);
     p.setRenderHint(QPainter::Antialiasing, true);
-    f.setPointSize(13);
+    f.setPixelSize(img.height() - 2);
     p.setFont(f);
     QTextOption t;
     t.setAlignment(Qt::AlignCenter);
-    p.drawText(QRect(0, 0, 16, 16), QString(QLatin1Char('A')), t);
+    p.drawText(img.rect(), QString(QLatin1Char('A')), t);
     return QPixmap::fromImage(img);
 }
 
 QIcon QtPropertyBrowserUtils::fontValueIcon(const QFont &f)
 {
-    return QIcon(fontValuePixmap(f));
+    QIcon icon(fontValuePixmap(f, 16));
+    icon.addPixmap(fontValuePixmap(f, 32));
+    return icon;
 }
 
 QString QtPropertyBrowserUtils::fontValueText(const QFont &f)
 {
+    int size = f.pointSize();
+    if (size == -1)
+        size = f.pixelSize();
+
     return QCoreApplication::translate("QtPropertyBrowserUtils", "[%1, %2]")
-           .arg(f.family()).arg(f.pointSize());
+           .arg(f.family()).arg(size);
 }
 
 
