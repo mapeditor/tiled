@@ -128,15 +128,22 @@
      <addaction name="actionLabelsForSelectedObjects"/>
      <addaction name="actionLabelsForAllObjects"/>
     </widget>
+    <widget class="QMenu" name="menuSnapping">
+     <property name="title">
+      <string>Snapping</string>
+     </property>
+     <addaction name="actionSnapNothing"/>
+     <addaction name="actionSnapToGrid"/>
+     <addaction name="actionSnapToFineGrid"/>
+     <addaction name="actionSnapToPixels"/>
+    </widget>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
-    <addaction name="actionSnapToGrid"/>
-    <addaction name="actionSnapToFineGrid"/>
-    <addaction name="actionSnapToPixels"/>
+    <addaction name="menuSnapping"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -543,7 +550,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Snap To &amp;Pixels</string>
+    <string>Snap to &amp;Pixels</string>
    </property>
   </action>
   <action name="actionTilesetProperties">
@@ -553,6 +560,17 @@
    </property>
    <property name="text">
     <string>Tileset &amp;Properties...</string>
+   </property>
+  </action>
+  <action name="actionSnapNothing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No Snapping</string>
    </property>
   </action>
  </widget>

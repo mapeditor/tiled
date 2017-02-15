@@ -182,6 +182,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
 
+    auto snappingGroup = new QActionGroup(this);
+    mUi->actionSnapNothing->setActionGroup(snappingGroup);
+    mUi->actionSnapToGrid->setActionGroup(snappingGroup);
+    mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
+    mUi->actionSnapToPixels->setActionGroup(snappingGroup);
+
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
