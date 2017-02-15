@@ -1,5 +1,6 @@
 #include "gotodialog.h"
 
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -19,7 +20,7 @@ using namespace Tiled;
 GotoDialog *GotoDialog::mInstance;
 
 GotoDialog::GotoDialog(QWidget *parent, Qt::WindowFlags f )
-    : QDialog(parent,Qt::Tool)
+    : QDialog(parent, f)
 {
     setWindowTitle(tr("Go to"));
 
@@ -55,7 +56,7 @@ GotoDialog* GotoDialog::showDialog()
 {
     if (!mInstance) {
         QWidget* parentWidget = QApplication::activeWindow();
-        mInstance = new GotoDialog(parentWidget);
+        mInstance = new GotoDialog(parentWidget, Qt::Tool);
     }
 
     mInstance->show();

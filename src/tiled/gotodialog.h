@@ -12,7 +12,7 @@ signals:
         void changeCoordinates(int x, int y);
 
 public:
-        GotoDialog(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+        GotoDialog(QWidget *parent = Q_NULLPTR, Qt::WindowFlags flags = Qt::WindowFlags());
         static GotoDialog *instance() { return mInstance; }
         static GotoDialog *showDialog();
 
