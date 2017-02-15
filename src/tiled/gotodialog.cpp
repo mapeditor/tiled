@@ -6,6 +6,15 @@
 #include <QPushButton>
 #include <QIntValidator>
 #include <QString>
+#include "documentmanager.h"
+#include "mapview.h"
+#include "mapscene.h"
+#include "mapreader.h"
+#include "mapdocument.h"
+#include "maprenderer.h"
+
+using namespace Tiled::Internal;
+using namespace Tiled;
 
 GotoDialog *GotoDialog::mInstance;
 
@@ -47,7 +56,6 @@ GotoDialog* GotoDialog::showDialog()
     if (!mInstance) {
         QWidget* parentWidget = QApplication::activeWindow();
         mInstance = new GotoDialog(parentWidget);
-        //connect(gotoDialog, &GotoDialog::changeCoordinates, this, &Dialog::updateCoordinates);
     }
 
     mInstance->show();
@@ -59,10 +67,27 @@ GotoDialog* GotoDialog::showDialog()
 
 void GotoDialog::goToCoordinates()
 {
-    /*QString textX = lineEditX->text();
+    QString textX = lineEditX->text();
     QString textY = lineEditY->text();
 
-    emit changeCoordinates(textX.toInt(),textY.toInt());*/
+    MapView *mapView = DocumentManager::instance()->currentMapView();
+
+    if (mapView) {
+        MapDocument *mapDocument = mapView->mapScene()->mapDocument();
+        MapRenderer *renderer = mapDocument->renderer();
+        QPointF point = renderer->tileToScreenCoords(textX.toDouble(),textY.toDouble());
+        QSize size = mapView->viewport()->geometry().size();
+        QPoint origin(point.x() - size.width()/2.0, point.y() - size.height()/2.0f);
+
+        QRectF rect(origin,size);
+
+        if (!mapView->sceneRect().contains(rect)) {
+            QRectF newRect = mapView->sceneRect().united(rect);
+            mapView->setSceneRect(newRect);
+        }
+
+        mapView->centerOn(point);
+    }
 
     close();
 }
