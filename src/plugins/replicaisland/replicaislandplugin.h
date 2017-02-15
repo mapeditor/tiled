@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPLICAISLANDPLUGIN_H
-#define REPLICAISLANDPLUGIN_H
+#pragma once
 
 #include "replicaisland_global.h"
 
@@ -74,5 +73,3 @@ private:
 };
 
 } // namespace ReplicaIsland
-
-#endif // REPLICAISLANDPLUGIN_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPVIEW_H
-#define MAPVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 #include <QPinchGesture>
@@ -96,5 +95,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPVIEW_H

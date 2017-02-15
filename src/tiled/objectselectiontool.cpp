@@ -659,6 +659,9 @@ static QRectF pixelBounds(const MapObject *object)
         const QPolygonF polygon = object->polygon().translated(pos);
         return polygon.boundingRect();
     }
+    case MapObject::Text:
+        Q_ASSERT(false);  // text objects only have screen bounds
+        break;
     }
 
     return QRectF();
@@ -666,7 +669,22 @@ static QRectF pixelBounds(const MapObject *object)
 
 static bool resizeInPixelSpace(const MapObject *object)
 {
-    return object->cell().isEmpty();
+    return object->cell().isEmpty() && object->shape() != MapObject::Text;
+}
+
+static bool canResizeAbsolute(const MapObject *object)
+{
+    switch (object->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+    case MapObject::Text:
+        return true;
+    case MapObject::Polygon:
+    case MapObject::Polyline:
+        return false;
+    }
+
+    return false;
 }
 
 /* This function returns the actual bounds of the object, as opposed to the
@@ -722,6 +740,10 @@ static QRectF objectBounds(const MapObject *object,
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon);
             return transform.map(screenPolygon).boundingRect();
         }
+        case MapObject::Text: {
+            const auto rect = renderer->boundingRect(object);
+            return transform.mapRect(rect);
+        }
         }
     }
 
@@ -746,7 +768,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
         transform = rotateAt(pos, object->rotation());
     }
 
-    QPointF offset = object->objectGroup()->offset();
+    QPointF offset = object->objectGroup()->totalOffset();
     if (!offset.isNull())
         transform *= QTransform::fromTranslate(offset.x(), offset.y());
 
@@ -1071,7 +1093,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
     foreach (const MovingObject &object, mMovingObjects) {
         MapObject *mapObject = object.item->mapObject();
-        const QPointF offset = mapObject->objectGroup()->offset();
+        const QPointF offset = mapObject->objectGroup()->totalOffset();
 
         const QPointF oldRelPos = object.oldItemPosition + offset - mOrigin;
         const qreal sn = std::sin(angleDiff);
@@ -1178,7 +1200,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     foreach (const MovingObject &object, mMovingObjects) {
         MapObject *mapObject = object.item->mapObject();
-        const QPointF offset = mapObject->objectGroup()->offset();
+        const QPointF offset = mapObject->objectGroup()->totalOffset();
 
         const QPointF oldRelPos = object.oldItemPosition + offset - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
@@ -1228,7 +1250,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * offset. We will un-apply it to these variables since the resize for
      * single items happens in local coordinate space.
      */
-    QPointF offset = mapObject->objectGroup()->offset();
+    QPointF offset = mapObject->objectGroup()->totalOffset();
 
     /* These transformations undo and redo the object rotation, which is always
      * applied in screen space.
@@ -1267,8 +1289,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * preserving the aspect ratio.
      */
     if (mClickedResizeHandle->resizingOrigin() == resizingOrigin &&
-            (mapObject->shape() == MapObject::Rectangle ||
-             mapObject->shape() == MapObject::Ellipse) && !preserveAspect) {
+            canResizeAbsolute(mapObject) && !preserveAspect) {
 
         QRectF newBounds = QRectF(newPos, newSize);
         align(newBounds, mapObject->alignment());

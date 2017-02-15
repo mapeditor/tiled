@@ -21,8 +21,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINDOCK_H
-#define TERRAINDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QMap>
@@ -117,5 +116,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TERRAINDOCK_H

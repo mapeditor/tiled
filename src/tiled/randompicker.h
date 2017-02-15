@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_RANDOMPICKER_H
-#define TILED_INTERNAL_RANDOMPICKER_H
+#pragma once
 
 #include <QMap>
 
@@ -76,5 +75,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_RANDOMPICKER_H

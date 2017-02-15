@@ -161,25 +161,18 @@ void Map::recomputeDrawMargins() const
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
        if (layer->layerType() == type)
            count++;
     return count;
 }
 
-QList<Layer*> Map::layers(Layer::TypeFlag type) const
-{
-    QList<Layer*> layers;
-    for (Layer *layer : mLayers)
-        if (layer->layerType() == type)
-            layers.append(layer);
-    return layers;
-}
-
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (ObjectGroup *og = layer->asObjectGroup())
             layers.append(og);
     return layers;
@@ -188,7 +181,8 @@ QList<ObjectGroup*> Map::objectGroups() const
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (TileLayer *tl = layer->asTileLayer())
             layers.append(tl);
     return layers;
@@ -220,12 +214,8 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (ObjectGroup *group = layer->asObjectGroup()) {
-        for (MapObject *o : group->objects()) {
-            if (o->id() == 0)
-                o->setId(takeNextObjectId());
-        }
-    }
+    if (ObjectGroup *group = layer->asObjectGroup())
+        initializeObjectIds(*group);
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -296,6 +286,14 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
             return true;
 
     return false;
+}
+
+void Map::initializeObjectIds(ObjectGroup &objectGroup)
+{
+    for (MapObject *o : objectGroup) {
+        if (o->id() == 0)
+            o->setId(takeNextObjectId());
+    }
 }
 
 

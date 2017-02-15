@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTILETOOL_H
-#define ABSTRACTTILETOOL_H
+#pragma once
 
 #include "abstracttool.h"
 
@@ -127,5 +126,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ABSTRACTTILETOOL_H

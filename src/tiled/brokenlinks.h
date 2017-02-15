@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_BROKENLINKS_H
-#define TILED_INTERNAL_BROKENLINKS_H
+#pragma once
 
 #include "tileset.h"
 
@@ -149,5 +148,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_BROKENLINKS_H

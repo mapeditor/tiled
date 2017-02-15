@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TERRAIN_H
-#define TERRAIN_H
+#pragma once
 
 #include "object.h"
 #include "tileset.h"
@@ -186,5 +185,3 @@ inline Terrain *Terrain::clone(Tileset *tileset) const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Terrain*)
-
-#endif // TERRAIN_H

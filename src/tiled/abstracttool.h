@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTOOL_H
-#define ABSTRACTTOOL_H
+#pragma once
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -238,5 +237,3 @@ inline bool AbstractTool::isEnabled() const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
-
-#endif // ABSTRACTTOOL_H

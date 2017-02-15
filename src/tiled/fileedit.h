@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILEEDIT_H
-#define FILEEDIT_H
+#pragma once
 
 #include <QValidator>
 #include <QWidget>
@@ -68,5 +67,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // FILEEDIT_H

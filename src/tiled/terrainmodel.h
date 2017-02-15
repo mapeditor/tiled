@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINMODEL_H
-#define TERRAINMODEL_H
+#pragma once
 
 #include <QAbstractItemModel>
 #include <tileset.h>
@@ -112,5 +111,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TERRAINMODEL_H

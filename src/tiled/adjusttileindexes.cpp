@@ -70,7 +70,8 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
     QVector<MapObjectCell> objectChanges;
 
     // Adjust tile references from map layers
-    for (Layer *layer : mapDocument->map()->layers()) {
+    LayerIterator iterator(mapDocument->map());
+    while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
@@ -117,6 +118,7 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
             break;
 
         case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
             break;
         }
     }

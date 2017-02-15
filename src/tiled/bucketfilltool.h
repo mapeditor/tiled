@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BUCKETFILLTOOL_H
-#define BUCKETFILLTOOL_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "randompicker.h"
@@ -118,5 +117,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // BUCKETFILLTOOL_H

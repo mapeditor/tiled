@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEIMAGELAYERPROPERTIES_H
-#define CHANGEIMAGELAYERPROPERTIES_H
+#pragma once
 
 #include <QColor>
 #include <QString>
@@ -65,5 +64,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEIMAGELAYERPROPERTIES_H

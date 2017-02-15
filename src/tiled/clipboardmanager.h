@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIPBOARDMANAGER_H
-#define CLIPBOARDMANAGER_H
+#pragma once
 
 #include <QObject>
 
@@ -117,5 +116,3 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(ClipboardManager::PasteFlags)
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CLIPBOARDMANAGER_H

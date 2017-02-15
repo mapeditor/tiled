@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILESETEDITOR_H
-#define TILED_INTERNAL_TILESETEDITOR_H
+#pragma once
 
 #include "editor.h"
 
@@ -71,6 +70,10 @@ public:
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
+
+    QAction *addTilesAction() const;
+    QAction *removeTilesAction() const;
+    QAction *editTerrainAction() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
     TileCollisionEditor *tileCollisionEditor() const;
@@ -127,6 +130,21 @@ private:
     Tile *mCurrentTile;
 };
 
+inline QAction *TilesetEditor::addTilesAction() const
+{
+    return mAddTiles;
+}
+
+inline QAction *TilesetEditor::removeTilesAction() const
+{
+    return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::editTerrainAction() const
+{
+    return mEditTerrain;
+}
+
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
 {
     return mTileAnimationEditor;
@@ -139,5 +157,3 @@ inline TileCollisionEditor *TilesetEditor::tileCollisionEditor() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILESETEDITOR_H

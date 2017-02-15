@@ -27,6 +27,7 @@
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
+#include "createtextobjecttool.h"
 #include "createtileobjecttool.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -46,6 +47,7 @@
 #include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "reversingproxymodel.h"
 #include "selectsametiletool.h"
 #include "stampbrush.h"
 #include "terrain.h"
@@ -59,6 +61,7 @@
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "toolmanager.h"
+#include "treeviewcombobox.h"
 #include "zoomable.h"
 
 #include <QComboBox>
@@ -81,25 +84,6 @@ static const char MAPSTATES_KEY[] = "MapEditor/MapStates";
 
 namespace Tiled {
 namespace Internal {
-
-namespace {
-
-/**
- * A model that is always empty.
- */
-class EmptyModel : public QAbstractListModel
-{
-public:
-    EmptyModel(QObject *parent = nullptr)
-        : QAbstractListModel(parent)
-    {}
-
-    int rowCount(const QModelIndex &) const override
-    { return 0; }
-
-    QVariant data(const QModelIndex &, int) const override
-    { return QVariant(); }
-};
 
 /**
  * A proxy model that makes sure no items are checked or checkable.
@@ -129,11 +113,6 @@ public:
     }
 };
 
-static EmptyModel emptyModel;
-static UncheckableItemsModel uncheckableLayerModel;
-
-} // anonymous namespace
-
 
 MapEditor::MapEditor(QObject *parent)
     : Editor(parent)
@@ -146,7 +125,9 @@ MapEditor::MapEditor(QObject *parent)
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
-    , mLayerComboBox(new QComboBox)
+    , mLayerComboBox(new TreeViewComboBox)
+    , mUncheckableProxyModel(new UncheckableItemsModel(this))
+    , mReversingProxyModel(new ReversingProxyModel(this))
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
@@ -178,6 +159,7 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
+    CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
@@ -194,6 +176,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
@@ -219,10 +202,12 @@ MapEditor::MapEditor(QObject *parent)
     mMapsDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 
+    mUncheckableProxyModel->setSourceModel(mReversingProxyModel);
+    mLayerComboBox->setModel(mUncheckableProxyModel);
     mLayerComboBox->setMinimumContentsLength(10);
     mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    connect(mLayerComboBox, SIGNAL(activated(int)),
-            this, SLOT(layerComboActivated(int)));
+    connect(mLayerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+            this, &MapEditor::layerComboActivated);
 
     mMainWindow->statusBar()->addPermanentWidget(mLayerComboBox);
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
@@ -316,9 +301,9 @@ void MapEditor::addDocument(Document *document)
         view->horizontalScrollBar()->setSliderPosition(hor);
         view->verticalScrollBar()->setSliderPosition(ver);
 
-        int layer = mapState.value(QLatin1String("selectedLayer")).toInt();
-        if (layer > 0 && layer < mapDocument->map()->layerCount())
-            mapDocument->setCurrentLayerIndex(layer);
+        int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
+        if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
+            mapDocument->setCurrentLayer(layer);
     }
 }
 
@@ -336,7 +321,7 @@ void MapEditor::removeDocument(Document *document)
         mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
         mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
         mapState.insert(QLatin1String("scrollY"), mapView->verticalScrollBar()->sliderPosition());
-        mapState.insert(QLatin1String("selectedLayer"), mapDocument->currentLayerIndex());
+        mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
         mMapStates.insert(mapDocument->fileName(), mapState);
 
         Preferences *prefs = Preferences::instance();
@@ -380,7 +365,7 @@ void MapEditor::setCurrentDocument(Document *document)
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {
-        connect(mapDocument, &MapDocument::currentLayerIndexChanged,
+        connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
 //        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
 //                SLOT(updateActions()));
@@ -392,10 +377,9 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable->setComboBox(mZoomComboBox);
         }
 
-        uncheckableLayerModel.setSourceModel(mapDocument->layerModel());
-        mLayerComboBox->setModel(&uncheckableLayerModel);
+        mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
-        mLayerComboBox->setModel(&emptyModel);
+        mReversingProxyModel->setSourceModel(nullptr);
     }
 
     mLayerComboBox->setEnabled(mapDocument);
@@ -635,25 +619,33 @@ void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
     mStatusInfoLabel->setText(statusInfo);
 }
 
-void MapEditor::layerComboActivated(int index)
+void MapEditor::layerComboActivated()
 {
-    if (index == -1)
-        return;
     if (!mCurrentMapDocument)
         return;
 
-    if (index != mCurrentMapDocument->currentLayerIndex())
-        mCurrentMapDocument->setCurrentLayerIndex(index);
+    const QModelIndex comboIndex = mLayerComboBox->currentModelIndex();
+    const QModelIndex reversedIndex = mUncheckableProxyModel->mapToSource(comboIndex);
+    const QModelIndex sourceIndex = mReversingProxyModel->mapToSource(reversedIndex);
+    Layer *layer = mCurrentMapDocument->layerModel()->toLayer(sourceIndex);
+    if (!layer)
+        return;
+
+    mCurrentMapDocument->setCurrentLayer(layer);
 }
 
 void MapEditor::updateLayerComboIndex()
 {
-    int layerIndex = -1;
+    QModelIndex index;
 
-    if (mCurrentMapDocument)
-        layerIndex = mCurrentMapDocument->currentLayerIndex();
+    if (mCurrentMapDocument) {
+        const auto currentLayer = mCurrentMapDocument->currentLayer();
+        const QModelIndex sourceIndex = mCurrentMapDocument->layerModel()->index(currentLayer);
+        const QModelIndex reversedIndex = mReversingProxyModel->mapFromSource(sourceIndex);
+        index = mUncheckableProxyModel->mapFromSource(reversedIndex);
+    }
 
-    mLayerComboBox->setCurrentIndex(layerIndex);
+    mLayerComboBox->setCurrentModelIndex(index);
 }
 
 void MapEditor::setupQuickStamps()

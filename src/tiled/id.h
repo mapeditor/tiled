@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ID_H
-#define ID_H
+#pragma once
 
 #include <QLatin1String>
 
@@ -50,5 +49,3 @@ inline uint qHash(Id id)
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ID_H

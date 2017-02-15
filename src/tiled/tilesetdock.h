@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETDOCK_H
-#define TILESETDOCK_H
+#pragma once
 
 #include "tileset.h"
 
@@ -179,5 +178,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETDOCK_H

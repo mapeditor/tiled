@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDDATAMODEL_H
-#define COMMANDDATAMODEL_H
+#pragma once
 
 #include "command.h"
 
@@ -184,5 +183,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMANDDATAMODEL_H

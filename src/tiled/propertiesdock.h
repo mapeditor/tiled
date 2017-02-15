@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTIESDOCK_H
-#define PROPERTIESDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QVariant>
@@ -77,5 +76,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PROPERTIESDOCK_H

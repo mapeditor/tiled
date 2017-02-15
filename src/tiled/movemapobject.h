@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVEMAPOBJECT_H
-#define MOVEMAPOBJECT_H
+#pragma once
 
 #include <QUndoCommand>
 #include <QPointF>
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVEMAPOBJECT_H

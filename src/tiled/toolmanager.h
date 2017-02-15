@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOOLMANAGER_H
-#define TOOLMANAGER_H
+#pragma once
 
 #include <QObject>
 
@@ -96,5 +95,3 @@ inline AbstractTool *ToolManager::selectedTool() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TOOLMANAGER_H

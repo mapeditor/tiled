@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JSONPLUGIN_H
-#define JSONPLUGIN_H
+#pragma once
 
 #include "json_global.h"
 
@@ -95,5 +94,3 @@ protected:
 };
 
 } // namespace Json
-
-#endif // JSONPLUGIN_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CSVPLUGIN_H
-#define CSVPLUGIN_H
+#pragma once
 
 #include "mapformat.h"
 
@@ -47,5 +46,3 @@ private:
 };
 
 } // namespace Csv
-
-#endif // CSVPLUGIN_H

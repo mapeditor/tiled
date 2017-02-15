@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILEANIMATIONEDITOR_H
-#define TILED_INTERNAL_TILEANIMATIONEDITOR_H
+#pragma once
 
 #include <QDialog>
 #include <QModelIndex>
@@ -92,5 +91,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILEANIMATIONEDITOR_H

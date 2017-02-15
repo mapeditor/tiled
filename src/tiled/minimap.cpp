@@ -224,12 +224,15 @@ void MiniMap::renderMapToImage()
     painter.translate(margins.left(), margins.top());
     renderer->setPainterScale(scale);
 
-    for (const Layer *layer : mMapDocument->map()->layers()) {
-        if (visibleLayersOnly && !layer->isVisible())
+    LayerIterator iterator(mMapDocument->map());
+    while (const Layer *layer = iterator.next()) {
+        if (visibleLayersOnly && layer->isHidden())
             continue;
 
-        painter.setOpacity(layer->opacity());
-        painter.translate(layer->offset());
+        const auto offset = layer->totalOffset();
+
+        painter.setOpacity(layer->affectiveOpacity());
+        painter.translate(offset);
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
@@ -264,7 +267,7 @@ void MiniMap::renderMapToImage()
             renderer->drawImageLayer(&painter, imageLayer);
         }
 
-        painter.translate(-layer->offset());
+        painter.translate(-offset);
     }
 
     if (drawTileGrid) {

@@ -1,6 +1,6 @@
 /*
  * layerdock.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
@@ -115,7 +115,7 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &LayerDock::updateOpacitySlider);
         connect(mMapDocument, &MapDocument::layerChanged,
                 this, &LayerDock::layerChanged);
@@ -142,7 +142,7 @@ void LayerDock::changeEvent(QEvent *e)
 void LayerDock::updateOpacitySlider()
 {
     const bool enabled = mMapDocument &&
-                         mMapDocument->currentLayerIndex() != -1;
+                         mMapDocument->currentLayer() != nullptr;
 
     mOpacitySlider->setEnabled(enabled);
     mOpacityLabel->setEnabled(enabled);
@@ -157,9 +157,9 @@ void LayerDock::updateOpacitySlider()
     mUpdatingSlider = false;
 }
 
-void LayerDock::layerChanged(int index)
+void LayerDock::layerChanged(Layer *layer)
 {
-    if (index != mMapDocument->currentLayerIndex())
+    if (layer != mMapDocument->currentLayer())
         return;
 
     // Don't update the slider when we're the ones changing the layer opacity
@@ -175,10 +175,10 @@ void LayerDock::editLayerName()
         return;
 
     const LayerModel *layerModel = mMapDocument->layerModel();
-    const int currentLayerIndex = mMapDocument->currentLayerIndex();
+    const auto currentLayer = mMapDocument->currentLayer();
 
     raise();
-    mLayerView->editLayerModelIndex(layerModel->index(currentLayerIndex));
+    mLayerView->editLayerModelIndex(layerModel->index(currentLayer));
 }
 
 void LayerDock::sliderValueChanged(int opacity)
@@ -191,16 +191,14 @@ void LayerDock::sliderValueChanged(int opacity)
     if (mUpdatingSlider)
         return;
 
-    const int layerIndex = mMapDocument->currentLayerIndex();
-    if (layerIndex == -1)
+    const auto layer = mMapDocument->currentLayer();
+    if (!layer)
         return;
 
-    const Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-
-    if ((int) (layer->opacity() * 100) != opacity) {
-        mChangingLayerOpacity = true;
+    if (static_cast<int>(layer->opacity() * 100) != opacity) {
         LayerModel *layerModel = mMapDocument->layerModel();
-        layerModel->setData(layerModel->index(layerIndex),
+        mChangingLayerOpacity = true;
+        layerModel->setData(layerModel->index(layer),
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
         mChangingLayerOpacity = false;
@@ -222,9 +220,7 @@ LayerView::LayerView(QWidget *parent)
     , mMapDocument(nullptr)
     , mProxyModel(new ReversingProxyModel(this))
 {
-    setRootIsDecorated(false);
     setHeaderHidden(true);
-    setItemsExpandable(false);
     setUniformRowHeights(true);
     setModel(mProxyModel);
 
@@ -257,14 +253,14 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mProxyModel->setSourceModel(mMapDocument->layerModel());
 
-        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                this, SLOT(currentLayerIndexChanged(int)));
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
+                this, &LayerView::currentLayerChanged);
 
         QItemSelectionModel *s = selectionModel();
         connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this, SLOT(currentRowChanged(QModelIndex)));
 
-        currentLayerIndexChanged(mMapDocument->currentLayerIndex());
+        currentLayerChanged(mMapDocument->currentLayer());
     } else {
         mProxyModel->setSourceModel(nullptr);
     }
@@ -277,8 +273,9 @@ void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
 
 void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 {
+    const LayerModel *layerModel = mMapDocument->layerModel();
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
-    mMapDocument->setCurrentLayerIndex(index.row());
+    mMapDocument->setCurrentLayer(layerModel->toLayer(index));
 }
 
 void LayerView::indexPressed(const QModelIndex &proxyIndex)
@@ -290,14 +287,10 @@ void LayerView::indexPressed(const QModelIndex &proxyIndex)
     }
 }
 
-void LayerView::currentLayerIndexChanged(int index)
+void LayerView::currentLayerChanged(Layer *layer)
 {
-    if (index > -1) {
-        const LayerModel *layerModel = mMapDocument->layerModel();
-        setCurrentIndex(mProxyModel->mapFromSource(layerModel->index(index, 0)));
-    } else {
-        setCurrentIndex(QModelIndex());
-    }
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    setCurrentIndex(mProxyModel->mapFromSource(layerModel->index(layer)));
 }
 
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
@@ -312,6 +305,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
 
     menu.addMenu(handler->createNewLayerMenu(&menu));
+    menu.addMenu(handler->createGroupLayerMenu(&menu));
 
     if (proxyIndex.isValid()) {
         menu.addAction(handler->actionDuplicateLayer());
@@ -334,12 +328,14 @@ void LayerView::keyPressEvent(QKeyEvent *event)
     if (!mMapDocument)
         return;
 
+    const LayerModel *layerModel = mMapDocument->layerModel();
     const QModelIndex index = mProxyModel->mapToSource(currentIndex());
-    if (!index.isValid())
+    auto layer = layerModel->toLayer(index);
+    if (!layer)
         return;
 
     if (event->key() == Qt::Key_Delete) {
-        mMapDocument->removeLayer(index.row());
+        mMapDocument->removeLayer(layer);
         return;
     }
 

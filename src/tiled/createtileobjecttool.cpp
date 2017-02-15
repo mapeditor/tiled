@@ -32,7 +32,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
-    : CreateObjectTool(CreateObjectTool::CreateTile, parent)
+    : CreateObjectTool(parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
     Utils::setThemeIcon(this, "insert-image");
@@ -67,11 +67,13 @@ void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseE
         finishNewMapObject();
 }
 
-void CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
-    CreateObjectTool::startNewMapObject(pos, objectGroup);
-    if (mNewMapObjectItem)
-        mNewMapObjectItem->setOpacity(0.75);
+    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
+        return false;
+
+    mNewMapObjectItem->setOpacity(0.75);
+    return true;
 }
 
 void CreateTileObjectTool::languageChanged()

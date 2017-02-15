@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GMXPLUGIN_H
-#define GMXPLUGIN_H
+#pragma once
 
 #include "mapformat.h"
 
@@ -46,5 +45,3 @@ private:
 };
 
 } // namespace Gmx
-
-#endif // GMXPLUGIN_H

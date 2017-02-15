@@ -32,6 +32,7 @@
 
 #include "compression.h"
 #include "gidmapper.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "imagelayer.h"
@@ -83,11 +84,14 @@ private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
     void writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                       unsigned firstGid);
+    void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer &layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
+    void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
+    void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
@@ -213,15 +217,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
         firstGid += tileset->nextTileId();
     }
 
-    for (const Layer *layer : map.layers()) {
-        const Layer::TypeFlag type = layer->layerType();
-        if (type == Layer::TileLayerType)
-            writeTileLayer(w, *static_cast<const TileLayer*>(layer));
-        else if (type == Layer::ObjectGroupType)
-            writeObjectGroup(w, *static_cast<const ObjectGroup*>(layer));
-        else if (type == Layer::ImageLayerType)
-            writeImageLayer(w, *static_cast<const ImageLayer*>(layer));
-    }
+    writeLayers(w, map.layers());
 
     w.writeEndElement();
 }
@@ -410,6 +406,26 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     w.writeEndElement();
 }
 
+void MapWriterPrivate::writeLayers(QXmlStreamWriter &w, const QList<Layer*> &layers)
+{
+    for (const Layer *layer : layers) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            writeTileLayer(w, *static_cast<const TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType:
+            writeObjectGroup(w, *static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            writeImageLayer(w, *static_cast<const ImageLayer*>(layer));
+            break;
+        case Layer::GroupLayerType:
+            writeGroupLayer(w, *static_cast<const GroupLayer*>(layer));
+            break;
+        }
+    }
+}
+
 void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
                                       const TileLayer &tileLayer)
 {
@@ -572,15 +588,18 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     writeProperties(w, mapObject.properties());
 
-    const QPolygonF &polygon = mapObject.polygon();
-    if (!polygon.isEmpty()) {
+    switch (mapObject.shape()) {
+    case MapObject::Rectangle:
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline: {
         if (mapObject.shape() == MapObject::Polygon)
             w.writeStartElement(QLatin1String("polygon"));
         else
             w.writeStartElement(QLatin1String("polyline"));
 
         QString points;
-        for (const QPointF &point : polygon) {
+        for (const QPointF &point : mapObject.polygon()) {
             points.append(QString::number(point.x()));
             points.append(QLatin1Char(','));
             points.append(QString::number(point.y()));
@@ -589,11 +608,58 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         points.chop(1);
         w.writeAttribute(QLatin1String("points"), points);
         w.writeEndElement();
+        break;
+    }
+    case MapObject::Ellipse:
+        w.writeEmptyElement(QLatin1String("ellipse"));
+        break;
+    case MapObject::Text: {
+        writeObjectText(w, mapObject.textData());
+        break;
+    }
     }
 
-    if (mapObject.shape() == MapObject::Ellipse)
-        w.writeEmptyElement(QLatin1String("ellipse"));
+    w.writeEndElement();
+}
 
+void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &textData)
+{
+    w.writeStartElement(QLatin1String("text"));
+
+    if (textData.font.family() != QLatin1String("sans-serif"))
+        w.writeAttribute(QLatin1String("fontfamily"), textData.font.family());
+    if (textData.font.pixelSize() >= 0 && textData.font.pixelSize() != 16)
+        w.writeAttribute(QLatin1String("pixelsize"), QString::number(textData.font.pixelSize()));
+    if (textData.wordWrap)
+        w.writeAttribute(QLatin1String("wrap"), QLatin1String("1"));
+    if (textData.color != Qt::black)
+        w.writeAttribute(QLatin1String("color"), colorToString(textData.color));
+    if (textData.font.bold())
+        w.writeAttribute(QLatin1String("bold"), QLatin1String("1"));
+    if (textData.font.italic())
+        w.writeAttribute(QLatin1String("italic"), QLatin1String("1"));
+    if (textData.font.underline())
+        w.writeAttribute(QLatin1String("underline"), QLatin1String("1"));
+    if (textData.font.strikeOut())
+        w.writeAttribute(QLatin1String("strikeout"), QLatin1String("1"));
+    if (!textData.font.kerning())
+        w.writeAttribute(QLatin1String("kerning"), QLatin1String("0"));
+
+    if (!textData.alignment.testFlag(Qt::AlignLeft)) {
+        if (textData.alignment.testFlag(Qt::AlignHCenter))
+            w.writeAttribute(QLatin1String("halign"), QLatin1String("center"));
+        else if (textData.alignment.testFlag(Qt::AlignRight))
+            w.writeAttribute(QLatin1String("halign"), QLatin1String("right"));
+    }
+
+    if (!textData.alignment.testFlag(Qt::AlignTop)) {
+        if (textData.alignment.testFlag(Qt::AlignVCenter))
+            w.writeAttribute(QLatin1String("valign"), QLatin1String("center"));
+        else if (textData.alignment.testFlag(Qt::AlignBottom))
+            w.writeAttribute(QLatin1String("valign"), QLatin1String("bottom"));
+    }
+
+    w.writeCharacters(textData.text);
     w.writeEndElement();
 }
 
@@ -628,6 +694,18 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     }
 
     writeProperties(w, imageLayer.properties());
+
+    w.writeEndElement();
+}
+
+void MapWriterPrivate::writeGroupLayer(QXmlStreamWriter &w,
+                                       const GroupLayer &groupLayer)
+{
+    w.writeStartElement(QLatin1String("group"));
+    writeLayerAttributes(w, groupLayer);
+
+    writeProperties(w, groupLayer.properties());
+    writeLayers(w, groupLayer.layers());
 
     w.writeEndElement();
 }

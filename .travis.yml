@@ -40,7 +40,7 @@ matrix:
         - source /opt/qt58/bin/qt58-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
-        - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
+        - qmake ../tiled.pro TILED_VERSION=$TILED_VERSION TILED_LINUX_ARCHIVE=true
         - make
         - rm -rf src/
         - find -name Makefile -delete

@@ -19,8 +19,7 @@
 * this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LAYEROFFSETTOOL_H
-#define LAYEROFFSETTOOL_H
+#pragma once
 
 #include "abstracttool.h"
 
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYEROFFSETTOOL_H

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNDODOCK_H
-#define UNDODOCK_H
+#pragma once
 
 #include <QDockWidget>
 
@@ -51,5 +50,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // UNDODOCK_H

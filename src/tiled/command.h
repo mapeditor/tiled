@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_H
-#define COMMAND_H
+#pragma once
 
 #include <QString>
 #include <QProcess>
@@ -90,5 +89,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMAND_H

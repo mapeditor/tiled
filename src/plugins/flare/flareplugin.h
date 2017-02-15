@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLAREPLUGIN_H
-#define FLAREPLUGIN_H
+#pragma once
 
 #include "flare_global.h"
 
@@ -52,5 +51,3 @@ private:
 };
 
 } // namespace Flare
-
-#endif // FLAREPLUGIN_H

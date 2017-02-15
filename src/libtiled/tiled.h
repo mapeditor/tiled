@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_H
-#define TILED_H
+#pragma once
 
 namespace Tiled {
 
@@ -57,5 +56,3 @@ static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 
 } // namespace Tiled
-
-#endif // TILED_H

@@ -156,8 +156,8 @@ void PropertyBrowser::setDocument(Document *document)
                 SLOT(objectsChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
                 SLOT(objectsTypeChanged(QList<MapObject*>)));
-        connect(mapDocument, SIGNAL(layerChanged(int)),
-                SLOT(layerChanged(int)));
+        connect(mapDocument, &MapDocument::layerChanged,
+                this, &PropertyBrowser::layerChanged);
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
                 SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
@@ -245,9 +245,9 @@ void PropertyBrowser::objectsTypeChanged(const QList<MapObject *> &objects)
             updateCustomProperties();
 }
 
-void PropertyBrowser::layerChanged(int index)
+void PropertyBrowser::layerChanged(Layer *layer)
 {
-    if (mObject == mMapDocument->map()->layerAt(index))
+    if (mObject == layer)
         updateProperties();
 }
 
@@ -541,12 +541,22 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
 
-    if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
+    auto mapObject = static_cast<const MapObject*>(mObject);
+
+    if (!mapObject->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
                 addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
                                tr("Flipping"), groupProperty);
 
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
+    }
+
+    if (mapObject->shape() == MapObject::Text) {
+        addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
+//        addProperty(TextAlignmentProperty, VariantPropertyManager::flagTypeId(), tr("Alignment"), groupProperty);
+        addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
+        addProperty(WordWrapProperty, QVariant::Bool, tr("Word Wrap"), groupProperty);
+        addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
     }
 
     addProperty(groupProperty);
@@ -562,14 +572,15 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
+    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -577,8 +588,6 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
 
     addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
 
@@ -606,8 +615,14 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     addProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
-    addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
+
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addGroupLayerProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Group Layer"));
+    addLayerProperties(groupProperty);
     addProperty(groupProperty);
 }
 
@@ -775,19 +790,25 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     QUndoCommand *command = nullptr;
 
     switch (id) {
-    case NameProperty:
-        command = new ChangeMapObject(mMapDocument, mapObject,
-                                      mIdToProperty[NameProperty]->value().toString(),
-                                      mapObject->type());
+    default: {
+        MapObject::Property property;
+
+        switch (id) {
+        case NameProperty:          property = MapObject::NameProperty; break;
+        case TypeProperty:          property = MapObject::TypeProperty; break;
+        case VisibleProperty:       property = MapObject::VisibleProperty; break;
+        case TextProperty:          property = MapObject::TextProperty; break;
+        case FontProperty:          property = MapObject::TextFontProperty; break;
+        case TextAlignmentProperty: property = MapObject::TextAlignmentProperty; break;
+        case WordWrapProperty:      property = MapObject::TextWordWrapProperty; break;
+        case ColorProperty:         property = MapObject::TextColorProperty; break;
+        default:
+            return nullptr; // unrecognized property
+        }
+
+        command = new ChangeMapObject(mMapDocument, mapObject, property, val);
         break;
-    case TypeProperty:
-        command = new ChangeMapObject(mMapDocument, mapObject,
-                                      mapObject->name(),
-                                      mIdToProperty[TypeProperty]->value().toString());
-        break;
-    case VisibleProperty:
-        command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
-        break;
+    }
     case XProperty: {
         const QPointF oldPos = mapObject->position();
         const QPointF newPos(val.toReal(), oldPos.y());
@@ -833,9 +854,8 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
                                          QList<MapObject*>() << mapObject,
                                          FlipVertically);
         }
-    }
-    default:
         break;
+    }
     }
 
     return command;
@@ -846,18 +866,16 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     MapObject *mapObject = static_cast<MapObject*>(mObject);
 
     QUndoCommand *command = applyMapObjectValueTo(id, val, mapObject);
+    if (!command)
+        return;
 
     mDocument->undoStack()->beginMacro(command->text());
     mDocument->undoStack()->push(command);
 
-    //Used to share non-custom properties.
-    QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
-    if (selectedObjects.size() > 1) {
-        for (MapObject *obj : selectedObjects) {
-            if (obj != mapObject) {
-                if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
-                    mDocument->undoStack()->push(cmd);
-            }
+    for (MapObject *obj : mMapDocument->selectedObjects()) {
+        if (obj != mapObject) {
+            if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
+                mDocument->undoStack()->push(cmd);
         }
     }
 
@@ -867,18 +885,17 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 {
     Layer *layer = static_cast<Layer*>(mObject);
-    const int layerIndex = mMapDocument->map()->layers().indexOf(layer);
     QUndoCommand *command = nullptr;
 
     switch (id) {
     case NameProperty:
-        command = new RenameLayer(mMapDocument, layerIndex, val.toString());
+        command = new RenameLayer(mMapDocument, layer, val.toString());
         break;
     case VisibleProperty:
-        command = new SetLayerVisible(mMapDocument, layerIndex, val.toBool());
+        command = new SetLayerVisible(mMapDocument, layer, val.toBool());
         break;
     case OpacityProperty:
-        command = new SetLayerOpacity(mMapDocument, layerIndex, val.toDouble());
+        command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
         break;
     case OffsetXProperty:
     case OffsetYProperty: {
@@ -889,13 +906,14 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
         else
             offset.setY(val.toDouble());
 
-        command = new SetLayerOffset(mMapDocument, layerIndex, offset);
+        command = new SetLayerOffset(mMapDocument, layer, offset);
     }
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:   applyTileLayerValue(id, val);   break;
         case Layer::ObjectGroupType: applyObjectGroupValue(id, val); break;
         case Layer::ImageLayerType:  applyImageLayerValue(id, val);  break;
+        case Layer::GroupLayerType:  applyGroupLayerValue(id, val);  break;
         }
         break;
     }
@@ -969,7 +987,13 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     }
 }
 
-void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
+void PropertyBrowser::applyGroupLayerValue(PropertyId id, const QVariant &val)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(val)
+}
+
+void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
 {
     Tileset *tileset = static_cast<Tileset*>(mObject);
     QUndoStack *undoStack = mDocument->undoStack();
@@ -1140,6 +1164,7 @@ void PropertyBrowser::addProperties()
         case Layer::TileLayerType:      addTileLayerProperties();   break;
         case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
         case Layer::ImageLayerType:     addImageLayerProperties();  break;
+        case Layer::GroupLayerType:     addGroupLayerProperties();  break;
         }
         break;
     case Object::TilesetType:           addTilesetProperties(); break;
@@ -1147,11 +1172,13 @@ void PropertyBrowser::addProperties()
     case Object::TerrainType:           addTerrainProperties(); break;
     }
 
-    // Make sure the color properties are collapsed, to save space
+    // Make sure the color and font properties are collapsed, to save space
     if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
         setExpanded(items(colorProperty).first(), false);
     if (QtProperty *colorProperty = mIdToProperty.value(BackgroundColorProperty))
         setExpanded(items(colorProperty).first(), false);
+    if (QtProperty *fontProperty = mIdToProperty.value(FontProperty))
+        setExpanded(items(fontProperty).first(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -1215,6 +1242,15 @@ void PropertyBrowser::updateProperties()
                 flippingFlags |= 2;
             property->setValue(flippingFlags);
         }
+
+        if (mapObject->shape() == MapObject::Text) {
+            const auto& textData = mapObject->textData();
+            mIdToProperty[TextProperty]->setValue(textData.text);
+            mIdToProperty[FontProperty]->setValue(textData.font);
+//            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
+            mIdToProperty[WordWrapProperty]->setValue(textData.wordWrap);
+            mIdToProperty[ColorProperty]->setValue(textData.color);
+        }
         break;
     }
     case Object::LayerType: {
@@ -1236,10 +1272,13 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
         }
-        case Layer::ImageLayerType:
+        case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { imageLayer->imageSource() }));
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
+            break;
+        }
+        case Layer::GroupLayerType:
             break;
         }
         break;

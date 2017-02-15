@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CLICKABLELABEL_H
-#define CLICKABLELABEL_H
+#pragma once
 
 #include <QLabel>
 
@@ -46,5 +45,3 @@ protected:
 
 } // namespace Tiled
 } // namespace Internal
-
-#endif // CLICKABLELABEL_H

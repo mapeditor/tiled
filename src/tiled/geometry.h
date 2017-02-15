@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#pragma once
 
 #include <QPoint>
 #include <QRegion>
@@ -39,5 +38,3 @@ inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
 QVector<QRegion> coherentRegions(const QRegion &region);
 
 } // namespace Tiled
-
-#endif // GEOMETRY_H

@@ -21,12 +21,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
         <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align="center"&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
 &lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;עורך המפות Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;גרסא %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align="center"&gt;זכויות יוצרים שמורות ל 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ראה קובץ AUTHORS לרשימה מלאה של תורמים)&lt;/p&gt;
+&lt;p align="center"&gt;זכויות יוצרים שמורות ל 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ראה קובץ AUTHORS לרשימה מלאה של תורמים)&lt;/p&gt;
 &lt;p align="center"&gt;הנך רשאי לשנות ולהפיץ מחדש תוכנית זו תחת תנאי ה-GPL (גרסא 2 או מאוחרת יותר). העתק קובץ ה-GPL מוכלל בקובץ 'COPYING' המופץ עם Tiled. &lt;/p&gt;
 &lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>

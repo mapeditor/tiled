@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MINIMAPDOCK_H
-#define MINIMAPDOCK_H
+#pragma once
 
 #include <QDockWidget>
 
@@ -45,12 +44,10 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void retranslateUi();    
+    void retranslateUi();
 
     MiniMap *mMiniMap;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MINIMAPDOCK_H

@@ -1,6 +1,7 @@
 /*
  * mapobjectmodel.h
  * Copyright 2012, Tim Baker <treectrl@hotmail.com>
+ * Copyright 2012-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,14 +19,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPOBJECTMODEL_H
-#define MAPOBJECTMODEL_H
+#pragma once
+
+#include "mapobject.h"
 
 #include <QAbstractItemModel>
 #include <QIcon>
 
 namespace Tiled {
 
+class GroupLayer;
+class Layer;
 class MapObject;
 class Map;
 class ObjectGroup;
@@ -48,22 +52,6 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    struct ObjectOrGroup
-    {
-        ObjectOrGroup(ObjectGroup *g)
-            : mGroup(g)
-            , mObject(nullptr)
-        {
-        }
-        ObjectOrGroup(MapObject *o)
-            : mGroup(nullptr)
-            , mObject(o)
-        {
-        }
-        ObjectGroup *mGroup;
-        MapObject *mObject;
-    };
-
     MapObjectModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
@@ -79,12 +67,14 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    QModelIndex index(ObjectGroup *og) const;
-    QModelIndex index(MapObject *o, int column = 0) const;
+    QModelIndex index(Layer *layer) const;
+    QModelIndex index(MapObject *mapObject, int column = 0) const;
 
-    ObjectGroup *toObjectGroup(const QModelIndex &index) const;
+    Layer *toLayer(const QModelIndex &index) const;
     MapObject *toMapObject(const QModelIndex &index) const;
-    ObjectGroup *toLayer(const QModelIndex &index) const;
+    ObjectGroup *toObjectGroup(const QModelIndex &index) const;
+    GroupLayer *toGroupLayer(const QModelIndex &index) const;
+    ObjectGroup *toObjectGroupContext(const QModelIndex &index) const;
 
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
@@ -94,13 +84,12 @@ public:
     void moveObjects(ObjectGroup *og, int from, int to, int count);
     void emitObjectsChanged(const QList<MapObject *> &objects);
 
-    void setObjectName(MapObject *o, const QString &name);
-    void setObjectType(MapObject *o, const QString &type);
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
     void setObjectRotation(MapObject *o, qreal rotation);
-    void setObjectVisible(MapObject *o, bool visible);
+
+    void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
@@ -109,21 +98,20 @@ signals:
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:
-    void layerAdded(int index);
-    void layerChanged(int index);
-    void layerAboutToBeRemoved(int index);
+    void layerAdded(Layer *layer);
+    void layerChanged(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
 
 private:
     MapDocument *mMapDocument;
     Map *mMap;
-    QList<ObjectGroup*> mObjectGroups;
-    QMap<MapObject*, ObjectOrGroup*> mObjects;
-    QMap<ObjectGroup*, ObjectOrGroup*> mGroups;
+
+    // cache
+    mutable QMap<GroupLayer*, QList<Layer*>> mFilteredLayers;
+    QList<Layer *> &filteredChildLayers(GroupLayer *parentLayer) const;
 
     QIcon mObjectGroupIcon;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPOBJECTMODEL_H

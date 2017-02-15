@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STAMPBRUSH_H
-#define STAMPBRUSH_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "randompicker.h"
@@ -143,5 +142,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // STAMPBRUSH_H
