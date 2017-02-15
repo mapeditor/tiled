@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Dateiendung nicht eindeutig. Exportformat konnte nicht festgestellt werden.</translation>
     </message>
     <message>
@@ -390,12 +390,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Konnte Datei nicht zum Schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker Raum-Dateien (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -682,7 +682,7 @@
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>An &amp;Pixel heften</translation>
     </message>
     <message>
         <location line="-170"/>
@@ -862,15 +862,15 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Nicht unterstützte Kartenorientierung: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Nicht unterstützte Kartenorientierung: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Ungültige Tileset-Parameter für Tileset &quot;%1&quot;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Ungültige Tileset-Parameter für Tileset "%1"</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Komprimierungsmethode &apos;%1&apos; nicht unterstützt</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Komprimierungsmethode '%1' nicht unterstützt</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Korrupte Layer-Daten für Layer &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Korrupte Layer-Daten für Layer '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Kann Kachel an (%1, %2) auf Ebene &apos;%3&apos; nicht parsen</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Kann Kachel an (%1, %2) auf Ebene '%3' nicht parsen</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>Datei enthält keine Objekttypen.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Ich bin bereits ein Unterstützer!</translation>
     </message>
     <message>
@@ -1474,7 +1474,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation>Skript lieferte &quot;falsch&quot; zurück. Bitte Konsole überprüfen.</translation>
+        <translation>Skript lieferte "falsch" zurück. Bitte Konsole überprüfen.</translation>
     </message>
 </context>
 <context>
@@ -1665,7 +1665,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Was ist das</translation>
     </message>
     <message>
@@ -1953,12 +1953,12 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Dateiheader kann nicht gelesen werden!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Der Ebenenheader konnte nicht gelesen werden!</translation>
     </message>
     <message>
@@ -1993,7 +1993,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Es können nur Kachelebenen gespeichert werden!</translation>
     </message>
     <message>
@@ -2104,7 +2104,7 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelgröße zurücksetzen</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2150,7 +2150,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+0"/>
         <source>PgUp</source>
-        <translation></translation>
+        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2160,7 +2160,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+0"/>
         <source>PgDown</source>
-        <translation></translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2208,49 +2208,49 @@ Zeile %1, Spalte %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Die Eigenschaft &apos;%2&apos; = &apos;%3&apos; ergibt keinen Sinn. Die Eigenschaft wird ignoriert.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Die Eigenschaft '%2' = '%3' ergibt keinen Sinn. Die Eigenschaft wird ignoriert.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Fehlt ein Unterstrich in Ebene &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Fehlt ein Unterstrich in Ebene '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Ebene &apos;%1&apos; konnte nicht als für das Automapping gültige Ebene erkannt werden.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Ebene '%1' konnte nicht als für das Automapping gültige Ebene erkannt werden.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos;-Ebene darf nicht mehrmals vorkommen.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input'-Ebene darf nicht mehrmals vorkommen.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos;-Ebenen müssen Kachelebenen sein.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*'-Ebenen müssen Kachelebenen sein.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos;-Ebene darf nicht mehrmals vorkommen.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output'-Ebene darf nicht mehrmals vorkommen.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos;- und &apos;inputnot_*&apos;-Ebene müssen Kachelebenen sein.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*'- und 'inputnot_*'-Ebene müssen Kachelebenen sein.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Es konnte keine &apos;regions&apos;- oder &apos;regions_input&apos;-Ebene gefunden werden.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Es konnte keine 'regions'- oder 'regions_input'-Ebene gefunden werden.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Es konnte keine &apos;regions&apos;- oder &apos;regions_output&apos;-Ebene gefunden werden.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Es konnte keine 'regions'- oder 'regions_output'-Ebene gefunden werden.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2670,8 +2670,8 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Die Anzahl der Kachelspalten im Tileset &apos;%1&apos; scheint sich von %2 zu %3 geändert zu haben. Möchtest du die Kachelreferenzen aktualisieren?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Die Anzahl der Kachelspalten im Tileset '%1' scheint sich von %2 zu %3 geändert zu haben. Möchtest du die Kachelreferenzen aktualisieren?</translation>
     </message>
 </context>
 <context>
@@ -2923,7 +2923,7 @@ Soll sie ersetzt werden?</translation>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neu</translation>
     </message>
     <message>
         <location line="-1210"/>
@@ -3241,19 +3241,15 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Objekt nach oben bewegen</numerusform>
+        <numerusform>%n Objekte nach oben bewegen</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Objekt nach unten bewegen</numerusform>
+        <numerusform>%n Objekte nach unten verschieben</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3270,22 +3266,22 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+11"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgUp</source>
-        <translation></translation>
+        <translation>Ctrl+PgUp</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation></translation>
+        <translation>Ctrl+PgDown</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3295,7 +3291,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3320,29 +3316,29 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kachelebene</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Objektebene</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bildebene</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene durch Kopie</translation>
     </message>
     <message>
         <location line="-196"/>
         <location line="+196"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene durch Ausschneiden</translation>
     </message>
     <message>
         <location line="-195"/>
@@ -3392,12 +3388,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+44"/>
         <source>Cut</source>
-        <translation type="unfinished">Ausschneiden</translation>
+        <translation>Ausschneiden</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
@@ -3532,8 +3528,8 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Tileset &apos;%1&apos; konnte nicht geladen werden.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Tileset '%1' konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3694,12 +3690,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebe Objekte hoch</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebe Objekte runter</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3717,7 +3713,7 @@ Bitte Format angeben.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Viel Dank für Deine Unterstützung&lt;/h3&gt;
@@ -3727,7 +3723,7 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Ich bin kein Unterstützer mehr</translation>
     </message>
     <message>
@@ -3745,7 +3741,7 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Ich bin bereits Unterstützer!</translation>
     </message>
 </context>
@@ -3784,17 +3780,17 @@ Bitte Format angeben.</translation>
     <message>
         <location line="-71"/>
         <source>Convert To</source>
-        <translation type="unfinished"></translation>
+        <translation>Umwandeln in</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Umbenennen...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Entfernen</translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -4275,8 +4271,8 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Das Tileset &quot;%1&quot; wird bereits in dieser Karte benutzt!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>Das Tileset "%1" wird bereits in dieser Karte benutzt!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4334,8 +4330,8 @@ Bitte Format angeben.</translation>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>&quot;%1&quot; konnte nicht geladen werden!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>"%1" konnte nicht geladen werden!</translation>
     </message>
     <message>
         <location line="+57"/>
