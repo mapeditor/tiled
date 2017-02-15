@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PROPERTIES_H
-#define PROPERTIES_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -113,5 +112,3 @@ TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type);
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::FilePath)
-
-#endif // PROPERTIES_H

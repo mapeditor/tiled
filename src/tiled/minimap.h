@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MINIMAP_H
-#define MINIMAP_H
+#pragma once
 
 #include <QFrame>
 #include <QImage>
@@ -91,5 +90,3 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMap::MiniMapRenderFlags)
-
-#endif // MINIMAP_H

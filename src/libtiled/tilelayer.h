@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILELAYER_H
-#define TILELAYER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -361,5 +360,3 @@ inline const Cell &TileLayer::cellAt(const QPoint &point) const
 typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
-
-#endif // TILELAYER_H

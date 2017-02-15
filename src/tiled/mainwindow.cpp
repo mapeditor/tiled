@@ -244,7 +244,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
+    mGroupLayerMenu = mActionHandler->createGroupLayerMenu(mLayerMenu);
     mLayerMenu->addMenu(mNewLayerMenu);
+    mLayerMenu->addMenu(mGroupLayerMenu);
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionMergeLayerDown());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
@@ -366,17 +368,23 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
+    mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
     mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
     mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
-    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
-    mUi->menuView->insertSeparator(mUi->actionShowGrid);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileAnimationEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileCollisionEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
+    mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->addTilesAction());
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->removeTilesAction());
+    mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
 
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
             this, &MainWindow::updateViewsAndToolbarsMenu);
@@ -1247,11 +1255,11 @@ void MainWindow::offsetMap()
 
     OffsetMapDialog offsetDialog(mapDocument, this);
     if (offsetDialog.exec()) {
-        const QList<int> layerIndexes = offsetDialog.affectedLayerIndexes();
-        if (layerIndexes.empty())
+        const auto layers = offsetDialog.affectedLayers();
+        if (layers.empty())
             return;
 
-        mapDocument->offsetMap(layerIndexes,
+        mapDocument->offsetMap(layers,
                                offsetDialog.offset(),
                                offsetDialog.affectedBoundingRect(),
                                offsetDialog.wrapX(),
@@ -1576,6 +1584,7 @@ void MainWindow::retranslateUi()
 
     mLayerMenu->setTitle(tr("&Layer"));
     mNewLayerMenu->setTitle(tr("&New"));
+    mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
@@ -1597,7 +1606,7 @@ void MainWindow::documentChanged(Document *document)
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
 
     if (mapDocument) {
-        connect(mapDocument, &MapDocument::currentLayerIndexChanged,
+        connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MainWindow::updateActions);
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MainWindow::updateActions);

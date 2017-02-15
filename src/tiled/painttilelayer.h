@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PAINTTILELAYER_H
-#define PAINTTILELAYER_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -102,5 +101,3 @@ inline void PaintTileLayer::setMergeable(bool mergeable)
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PAINTTILELAYER_H

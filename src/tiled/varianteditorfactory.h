@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTEDITORFACTORY_H
-#define VARIANTEDITORFACTORY_H
+#pragma once
 
 #include <QtVariantEditorFactory>
 
@@ -81,5 +80,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // VARIANTEDITORFACTORY_H

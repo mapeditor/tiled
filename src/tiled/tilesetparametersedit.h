@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETPARAMETERSEDIT_H
-#define TILESETPARAMETERSEDIT_H
+#pragma once
 
 #include <QWidget>
 
@@ -59,5 +58,3 @@ inline TilesetDocument *TilesetParametersEdit::tilesetDocument() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETPARAMETERSEDIT_H

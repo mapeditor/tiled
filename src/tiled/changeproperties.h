@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEPROPERTIES_H
-#define CHANGEPROPERTIES_H
+#pragma once
 
 #include "object.h"
 
@@ -137,5 +136,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEPROPERTIES_H

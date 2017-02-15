@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILESET_H
-#define TILESET_H
+#pragma once
 
 #include "imagereference.h"
 #include "object.h"
@@ -615,5 +614,3 @@ inline bool Tileset::imageLoaded() const
 }
 
 } // namespace Tiled
-
-#endif // TILESET_H

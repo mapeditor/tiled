@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWMAPDIALOG_H
-#define NEWMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWMAPDIALOG_H

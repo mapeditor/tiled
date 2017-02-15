@@ -1,6 +1,6 @@
 /*
  * mapdocument.h
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPDOCUMENT_H
-#define MAPDOCUMENT_H
+#pragma once
 
 #include "document.h"
 #include "layer.h"
@@ -106,22 +105,14 @@ public:
      */
     Map *map() const { return mMap; }
 
-    /**
-     * Sets the current layer to the given index.
-     */
-    void setCurrentLayerIndex(int index);
-
-    /**
-     * Returns the index of the currently selected layer. Returns -1 if no
-     * layer is currently selected.
-     */
-    int currentLayerIndex() const { return mCurrentLayerIndex; }
+    int layerIndex(const Layer *layer) const;
 
     /**
      * Returns the currently selected layer, or 0 if no layer is currently
      * selected.
      */
-    Layer *currentLayer() const;
+    Layer *currentLayer() const { return mCurrentLayer; }
+    void setCurrentLayer(Layer *layer);
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
@@ -131,10 +122,10 @@ public:
     void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
 
     /**
-     * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
-     * and optionally wraps on the X or Y axis.
+     * Offsets the \a layers by \a offset, within \a bounds, and optionally
+     * wraps on the X or Y axis.
      */
-    void offsetMap(const QList<int> &layerIndexes,
+    void offsetMap(const QList<Layer *> &layers,
                    const QPoint &offset,
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
@@ -143,12 +134,14 @@ public:
     void rotateSelectedObjects(RotateDirection direction);
 
     Layer *addLayer(Layer::TypeFlag layerType);
+    void groupLayer(Layer *layer);
+    void ungroupLayer(Layer *layer);
     void duplicateLayer();
     void mergeLayerDown();
-    void moveLayerUp(int index);
-    void moveLayerDown(int index);
-    void removeLayer(int index);
-    void toggleOtherLayers(int index);
+    void moveLayerUp(Layer *layer);
+    void moveLayerDown(Layer *layer);
+    void removeLayer(Layer *layer);
+    void toggleOtherLayers(Layer *layer);
 
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
@@ -239,11 +232,10 @@ signals:
      */
     void mapChanged();
 
-    void layerAdded(int index);
-    void layerAboutToBeRemoved(int index);
-    void layerRenamed(int index);
-    void layerRemoved(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
     /**
      * Emitted after a new layer was added and the name should be edited.
@@ -252,9 +244,9 @@ signals:
     void editLayerNameRequested();
 
     /**
-     * Emitted when the current layer index changes.
+     * Emitted when the current layer changes.
      */
-    void currentLayerIndexChanged(int index);
+    void currentLayerChanged(Layer *layer);
 
     /**
      * Emitted when a certain region of the map changes. The region is given in
@@ -303,9 +295,9 @@ private slots:
     void onObjectsMoved(const QModelIndex &parent, int start, int end,
                         const QModelIndex &destination, int row);
 
-    void onLayerAdded(int index);
-    void onLayerAboutToBeRemoved(int index);
-    void onLayerRemoved(int index);
+    void onLayerAdded(Layer *layer);
+    void onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index);
+    void onLayerRemoved(Layer *layer);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);
@@ -325,7 +317,7 @@ private:
     QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
     MapRenderer *mRenderer;
-    int mCurrentLayerIndex;
+    Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
     TerrainModel *mTerrainModel;
 };
@@ -402,5 +394,3 @@ inline void MapDocument::emitEditLayerNameRequested()
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPDOCUMENT_H

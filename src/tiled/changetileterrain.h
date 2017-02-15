@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILETERRAIN_H
-#define CHANGETILETERRAIN_H
+#pragma once
 
 #include <QMap>
 #include <QUndoCommand>
@@ -84,5 +83,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGETILETERRAIN_H

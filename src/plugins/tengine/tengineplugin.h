@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TENGINEPLUGIN_H
-#define TENGINEPLUGIN_H
+#pragma once
 
 #include "tengine_global.h"
 
@@ -54,5 +53,3 @@ private:
 };
 
 } // namespace Tengine
-
-#endif // TENGINEPLUGIN_H

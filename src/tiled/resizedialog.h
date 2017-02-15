@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -56,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEDIALOG_H

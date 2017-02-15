@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESELECTIONTOOL_H
-#define TILESELECTIONTOOL_H
+#pragma once
 
 #include "abstracttiletool.h"
 
@@ -60,5 +59,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESELECTIONTOOL_H

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DOCUMENT_MANAGER_H
-#define DOCUMENT_MANAGER_H
+#pragma once
 
 #include "document.h"
 #include "tileset.h"
@@ -283,5 +282,3 @@ inline const QList<TilesetDocument *> &DocumentManager::tilesetDocuments() const
 
 } // namespace Tiled::Internal
 } // namespace Tiled
-
-#endif // DOCUMENT_MANAGER_H

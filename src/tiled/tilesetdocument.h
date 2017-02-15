@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILESETDOCUMENT_H
-#define TILED_INTERNAL_TILESETDOCUMENT_H
+#pragma once
 
 #include "document.h"
 #include "tileset.h"
@@ -178,5 +177,3 @@ inline const QList<Tile *> &TilesetDocument::selectedTiles() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILESETDOCUMENT_H

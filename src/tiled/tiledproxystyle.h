@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDPROXYSTYLE_H
-#define TILEDPROXYSTYLE_H
+#pragma once
 
 #include <QProxyStyle>
 
@@ -89,5 +88,3 @@ inline bool TiledProxyStyle::isDark() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILEDPROXYSTYLE_H

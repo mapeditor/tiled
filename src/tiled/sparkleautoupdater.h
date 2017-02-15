@@ -5,8 +5,7 @@
  *   See sparkleautoupdater.mm
  */
 
-#ifndef SPARKLEAUTOUPDATER_H
-#define SPARKLEAUTOUPDATER_H
+#pragma once
 
 #include "autoupdater.h"
 
@@ -30,5 +29,3 @@ private:
     class Private;
     Private *d;
 };
-
-#endif // SPARKLEAUTOUPDATER_H

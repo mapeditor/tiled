@@ -19,8 +19,7 @@
  */
 
 
-#ifndef SELECTSAMETILETOOL_H
-#define SELECTSAMETILETOOL_H
+#pragma once
 
 
 #include "abstracttiletool.h"
@@ -57,5 +56,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SELECTSAMETILETOOL_H

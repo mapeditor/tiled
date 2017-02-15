@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PREFERENCES_H
-#define PREFERENCES_H
+#pragma once
 
 #include <QColor>
 #include <QDate>
@@ -296,5 +295,3 @@ inline bool Preferences::openLastFilesOnStartup() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PREFERENCES_H

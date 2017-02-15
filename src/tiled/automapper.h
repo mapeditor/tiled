@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPER_H
-#define AUTOMAPPER_H
+#pragma once
 
 #include "tileset.h"
 
@@ -85,18 +84,18 @@ public:
     /**
      * Constructs an AutoMapper.
      * All data structures, which only rely on the rules map are setup
-     * here. 
-     * 
+     * here.
+     *
      * @param workingDocument: the map to work on.
      * @param rules: The rule map which should be used for automapping
      * @param rulePath: The filepath to the rule map.
      */
-    AutoMapper(MapDocument *workingDocument, Map *rules, 
+    AutoMapper(MapDocument *workingDocument, Map *rules,
                const QString &rulePath);
     ~AutoMapper();
 
     /**
-     * Checks if the passed \a ruleLayerName is used in this instance 
+     * Checks if the passed \a ruleLayerName is used in this instance
      * of Automapper.
      */
     bool ruleLayerNameUsed(QString ruleLayerName) const;
@@ -303,9 +302,9 @@ private:
      * List of Regions in mMapRules to know where the input rules are
      */
     QVector<QRegion> mRulesInput;
-    
+
     /**
-     * List of regions in mMapRules to know where the output of a 
+     * List of regions in mMapRules to know where the output of a
      * rule is.
      * mRulesOutput[i] is the output of that rule,
      * which has the input at mRulesInput[i], meaning that mRulesInput
@@ -362,5 +361,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPER_H

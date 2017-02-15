@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVEMAPOBJECTTOGROUP_H
-#define MOVEMAPOBJECTTOGROUP_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -51,5 +50,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MOVEMAPOBJECTTOGROUP_H

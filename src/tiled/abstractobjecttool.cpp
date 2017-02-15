@@ -97,7 +97,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->offset();
+        offsetPos -= layer->totalOffset();
 
     const QPoint pixelPos = offsetPos.toPoint();
 

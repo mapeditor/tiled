@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <QIcon>
 #include <QString>
@@ -70,5 +69,3 @@ QSize smallIconSize();
 
 } // namespace Utils
 } // namespace Tiled
-
-#endif // UTILS_H

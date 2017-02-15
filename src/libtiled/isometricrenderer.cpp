@@ -65,7 +65,10 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
-    if (!object->cell().isEmpty()) {
+    if (object->shape() == MapObject::Text) {
+        const QPointF topLeft = pixelToScreenCoords(object->position());
+        return QRectF(topLeft, object->size());
+    } else if (!object->cell().isEmpty()) {
         const QSizeF objectSize { object->size() };
 
         QSizeF scale { 1.0, 1.0 };
@@ -111,7 +114,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    if (!object->cell().isEmpty()) {
+    if (!object->cell().isEmpty() || object->shape() == MapObject::Text) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
@@ -135,6 +138,8 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
             }
             break;
         }
+        case MapObject::Text:
+            break;  // already handled above
         }
     }
     return path;
@@ -322,6 +327,15 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(rect);
         }
+    } else if (object->shape() == MapObject::Text) {
+        const QPointF pos = pixelToScreenCoords(object->position());
+        const auto& textData = object->textData();
+
+        painter->setFont(textData.font);
+        painter->setPen(textData.color);
+        painter->drawText(QRectF(pos, object->size()),
+                          textData.text,
+                          textData.textOption());
     } else {
         const qreal lineWidth = objectLineWidth();
         const qreal scale = painterScale();
@@ -451,6 +465,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawPoint(screenPolygon.first());
             break;
         }
+        case MapObject::Text:
+            break;  // already handled above
         }
     }
 

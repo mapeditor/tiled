@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERDOCK_H
-#define LAYERDOCK_H
+#pragma once
 
 #include "mapdocument.h"
 
@@ -61,7 +60,7 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void layerChanged(int index);
+    void layerChanged(Layer *layer);
     void editLayerName();
     void sliderValueChanged(int opacity);
 
@@ -100,7 +99,7 @@ protected:
 private slots:
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
-    void currentLayerIndexChanged(int index);
+    void currentLayerChanged(Layer *layer);
 
 private:
     MapDocument *mMapDocument;
@@ -109,5 +108,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERDOCK_H

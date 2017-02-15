@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef STAGGEREDRENDERER_H
-#define STAGGEREDRENDERER_H
+#pragma once
 
 #include "hexagonalrenderer.h"
 
@@ -83,5 +82,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // STAGGEREDRENDERER_H

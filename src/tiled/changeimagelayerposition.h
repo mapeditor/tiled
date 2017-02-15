@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEIMAGELAYERPOSITION_H
-#define CHANGEIMAGELAYERPOSITION_H
+#pragma once
 
 #include <QPoint>
 #include <QUndoCommand>
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEIMAGELAYERPOSITION_H

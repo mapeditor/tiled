@@ -96,7 +96,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
     }
 
     Tiled::MapToVariantConverter converter;
-    QVariant variant = converter.toVariant(map, QFileInfo(fileName).dir());
+    QVariant variant = converter.toVariant(*map, QFileInfo(fileName).dir());
 
     JsonWriter writer;
     writer.setAutoFormatting(true);

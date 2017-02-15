@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LUATABLEWRITER_H
-#define LUATABLEWRITER_H
+#pragma once
 
 #include <QByteArray>
 #include <QString>
@@ -136,5 +135,3 @@ inline bool LuaTableWriter::suppressNewlines() const
 { return m_suppressNewlines; }
 
 } // namespace Lua
-
-#endif // LUATABLEWRITER_H

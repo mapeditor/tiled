@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -167,5 +166,3 @@ inline const QMap<QString, PluginState> &PluginManager::pluginStates() const
 }
 
 } // namespace Tiled
-
-#endif // PLUGINMANAGER_H

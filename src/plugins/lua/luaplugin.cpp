@@ -22,6 +22,7 @@
 
 #include "luatablewriter.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -152,23 +153,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     }
     writer.writeEndTable();
 
-    writer.writeStartTable("layers");
-    for (const Layer *layer : map->layers()) {
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            writeTileLayer(writer,
-                           static_cast<const TileLayer*>(layer),
-                           map->layerDataFormat());
-            break;
-        case Layer::ObjectGroupType:
-            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
-            break;
-        case Layer::ImageLayerType:
-            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
-            break;
-        }
-    }
-    writer.writeEndTable();
+    writeLayers(writer, map->layers(), map->layerDataFormat());
 
     writer.writeEndTable();
 }
@@ -335,6 +320,30 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeEndTable(); // tileset
 }
 
+void LuaPlugin::writeLayers(LuaTableWriter &writer,
+                            const QList<Layer *> &layers,
+                            Map::LayerDataFormat format)
+{
+    writer.writeStartTable("layers");
+    for (const Layer *layer : layers) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer), format);
+            break;
+        case Layer::ObjectGroupType:
+            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
+            break;
+        case Layer::GroupLayerType:
+            writeGroupLayer(writer, static_cast<const GroupLayer*>(layer), format);
+            break;
+        }
+    }
+    writer.writeEndTable();
+}
+
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format)
@@ -447,6 +456,28 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+void LuaPlugin::writeGroupLayer(LuaTableWriter &writer,
+                                const GroupLayer *groupLayer,
+                                Map::LayerDataFormat format)
+{
+    writer.writeStartTable();
+
+    writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("name", groupLayer->name());
+    writer.writeKeyAndValue("visible", groupLayer->isVisible());
+    writer.writeKeyAndValue("opacity", groupLayer->opacity());
+
+    const QPointF offset = groupLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
+    writeProperties(writer, groupLayer->properties());
+
+    writeLayers(writer, groupLayer->layers(), format);
+
+    writer.writeEndTable();
+}
+
 static const char *toString(MapObject::Shape shape)
 {
     switch (shape) {
@@ -458,6 +489,8 @@ static const char *toString(MapObject::Shape shape)
         return "polyline";
     case MapObject::Ellipse:
         return "ellipse";
+    case MapObject::Text:
+        return "text";
     }
     return "unknown";
 }
@@ -482,84 +515,137 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
     writer.writeKeyAndValue("visible", mapObject->isVisible());
 
-    const QPolygonF &polygon = mapObject->polygon();
-    if (!polygon.isEmpty()) {
-        if (mapObject->shape() == MapObject::Polygon)
-            writer.writeStartTable("polygon");
-        else
-            writer.writeStartTable("polyline");
-
-#if defined(POLYGON_FORMAT_FULL)
-        /* This format is the easiest to read and understand:
-         *
-         *  {
-         *    { x = 1, y = 1 },
-         *    { x = 2, y = 2 },
-         *    { x = 3, y = 3 },
-         *    ...
-         *  }
-         */
-        for (const QPointF &point : polygon) {
-            writer.writeStartTable();
-            writer.setSuppressNewlines(true);
-
-            writer.writeKeyAndValue("x", point.x());
-            writer.writeKeyAndValue("y", point.y());
-
-            writer.writeEndTable();
-            writer.setSuppressNewlines(false);
-        }
-#elif defined(POLYGON_FORMAT_PAIRS)
-        /* This is an alternative that takes about 25% less memory.
-         *
-         *  {
-         *    { 1, 1 },
-         *    { 2, 2 },
-         *    { 3, 3 },
-         *    ...
-         *  }
-         */
-        for (const QPointF &point : polygon) {
-            writer.writeStartTable();
-            writer.setSuppressNewlines(true);
-
-            writer.writeValue(point.x());
-            writer.writeValue(point.y());
-
-            writer.writeEndTable();
-            writer.setSuppressNewlines(false);
-        }
-#elif defined(POLYGON_FORMAT_OPTIMAL)
-        /* Writing it out in two tables, one for the x coordinates and one for
-         * the y coordinates. It is a compromise between code readability and
-         * performance. This takes the least amount of memory (60% less than
-         * the first approach).
-         *
-         * x = { 1, 2, 3, ... }
-         * y = { 1, 2, 3, ... }
-         */
-
-        writer.writeStartTable("x");
-        writer.setSuppressNewlines(true);
-        for (const QPointF &point : polygon)
-            writer.writeValue(point.x());
-        writer.writeEndTable();
-        writer.setSuppressNewlines(false);
-
-        writer.writeStartTable("y");
-        writer.setSuppressNewlines(true);
-        for (const QPointF &point : polygon)
-            writer.writeValue(point.y());
-        writer.writeEndTable();
-        writer.setSuppressNewlines(false);
-#endif
-
-        writer.writeEndTable();
+    switch (mapObject->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline:
+        writePolygon(writer, mapObject);
+        break;
+    case MapObject::Text:
+        writeTextProperties(writer, mapObject);
+        break;
     }
 
     writeProperties(writer, mapObject->properties());
 
     writer.writeEndTable();
+}
+
+void LuaPlugin::writePolygon(LuaTableWriter &writer, const MapObject *mapObject)
+{
+    if (mapObject->shape() == MapObject::Polygon)
+        writer.writeStartTable("polygon");
+    else
+        writer.writeStartTable("polyline");
+
+#if defined(POLYGON_FORMAT_FULL)
+    /* This format is the easiest to read and understand:
+     *
+     *  {
+     *    { x = 1, y = 1 },
+     *    { x = 2, y = 2 },
+     *    { x = 3, y = 3 },
+     *    ...
+     *  }
+     */
+    for (const QPointF &point : mapObject->polygon()) {
+        writer.writeStartTable();
+        writer.setSuppressNewlines(true);
+
+        writer.writeKeyAndValue("x", point.x());
+        writer.writeKeyAndValue("y", point.y());
+
+        writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+    }
+#elif defined(POLYGON_FORMAT_PAIRS)
+    /* This is an alternative that takes about 25% less memory.
+     *
+     *  {
+     *    { 1, 1 },
+     *    { 2, 2 },
+     *    { 3, 3 },
+     *    ...
+     *  }
+     */
+    for (const QPointF &point : mapObject->polygon()) {
+        writer.writeStartTable();
+        writer.setSuppressNewlines(true);
+
+        writer.writeValue(point.x());
+        writer.writeValue(point.y());
+
+        writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+    }
+#elif defined(POLYGON_FORMAT_OPTIMAL)
+    /* Writing it out in two tables, one for the x coordinates and one for
+     * the y coordinates. It is a compromise between code readability and
+     * performance. This takes the least amount of memory (60% less than
+     * the first approach).
+     *
+     * x = { 1, 2, 3, ... }
+     * y = { 1, 2, 3, ... }
+     */
+
+    writer.writeStartTable("x");
+    writer.setSuppressNewlines(true);
+    for (const QPointF &point : mapObject->polygon())
+        writer.writeValue(point.x());
+    writer.writeEndTable();
+    writer.setSuppressNewlines(false);
+
+    writer.writeStartTable("y");
+    writer.setSuppressNewlines(true);
+    for (const QPointF &point : mapObject->polygon())
+        writer.writeValue(point.y());
+    writer.writeEndTable();
+    writer.setSuppressNewlines(false);
+#endif
+
+    writer.writeEndTable();
+}
+
+void LuaPlugin::writeTextProperties(LuaTableWriter &writer, const MapObject *mapObject)
+{
+    const TextData &textData = mapObject->textData();
+
+    writer.writeKeyAndValue("text", textData.text);
+
+    if (textData.font.family() != QLatin1String("sans-serif"))
+        writer.writeKeyAndValue("fontfamily", textData.font.family());
+    if (textData.font.pixelSize() >= 0 && textData.font.pixelSize() != 16)
+        writer.writeKeyAndValue("pixelsize", textData.font.pixelSize());
+    if (textData.wordWrap)
+        writer.writeKeyAndValue("wrap", textData.wordWrap);
+    if (textData.color != Qt::black)
+        writeColor(writer, "color", textData.color);
+    if (textData.font.bold())
+        writer.writeKeyAndValue("bold", textData.font.bold());
+    if (textData.font.italic())
+        writer.writeKeyAndValue("italic", textData.font.italic());
+    if (textData.font.underline())
+        writer.writeKeyAndValue("underline", textData.font.underline());
+    if (textData.font.strikeOut())
+        writer.writeKeyAndValue("strikeout", textData.font.strikeOut());
+    if (!textData.font.kerning())
+        writer.writeKeyAndValue("kerning", textData.font.kerning());
+
+    if (!textData.alignment.testFlag(Qt::AlignLeft)) {
+        if (textData.alignment.testFlag(Qt::AlignHCenter))
+            writer.writeKeyAndValue("halign", "center");
+        else if (textData.alignment.testFlag(Qt::AlignRight))
+            writer.writeKeyAndValue("halign", "right");
+    }
+
+    if (!textData.alignment.testFlag(Qt::AlignTop)) {
+        if (textData.alignment.testFlag(Qt::AlignVCenter))
+            writer.writeKeyAndValue("valign", "center");
+        else if (textData.alignment.testFlag(Qt::AlignBottom))
+            writer.writeKeyAndValue("valign", "bottom");
+    }
 }
 
 } // namespace Lua

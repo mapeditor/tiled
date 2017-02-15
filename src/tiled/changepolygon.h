@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEPOLYGON_H
-#define CHANGEPOLYGON_H
+#pragma once
 
 #include <QPolygonF>
 #include <QUndoCommand>
@@ -63,5 +62,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEPOLYGON_H

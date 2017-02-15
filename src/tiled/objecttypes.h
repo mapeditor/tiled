@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTTYPES_H
-#define OBJECTTYPES_H
+#pragma once
 
 #include <QString>
 #include <QColor>
@@ -85,5 +84,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTTYPES_H

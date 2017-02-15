@@ -21,8 +21,7 @@
  */
 
 
-#ifndef MAGICWANDTOOL_H
-#define MAGICWANDTOOL_H
+#pragma once
 
 
 #include "abstracttiletool.h"
@@ -59,5 +58,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAGICWANDTOOL_H

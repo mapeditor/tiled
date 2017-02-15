@@ -21,7 +21,6 @@
 #include "changemapobject.h"
 
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "mapobjectmodel.h"
 
 #include <QCoreApplication>
@@ -31,54 +30,32 @@ using namespace Tiled::Internal;
 
 ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
-                                 const QString &name,
-                                 const QString &type)
+                                 MapObject::Property property,
+                                 const QVariant &value)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Object"))
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mName(name)
-    , mType(type)
+    , mProperty(property)
+    , mValue(value)
 {
+    switch (property) {
+    case MapObject::VisibleProperty:
+        if (value.toBool())
+            setText(QCoreApplication::translate("Undo Commands", "Show Object"));
+        else
+            setText(QCoreApplication::translate("Undo Commands", "Hide Object"));
+        break;
+    default:
+        break;
+    }
 }
 
 void ChangeMapObject::swap()
 {
-    const QString name = mMapObject->name();
-    const QString type = mMapObject->type();
-
-    mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
-    mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
-
-    mName = name;
-    mType = type;
-}
-
-
-SetMapObjectVisible::SetMapObjectVisible(MapDocument *mapDocument,
-                                         MapObject *mapObject,
-                                         bool visible)
-    : mMapObjectModel(mapDocument->mapObjectModel())
-    , mMapObject(mapObject)
-    , mOldVisible(mapObject->isVisible())
-    , mNewVisible(visible)
-{
-    if (visible)
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Show Object"));
-    else
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Hide Object"));
-}
-
-void SetMapObjectVisible::undo()
-{
-    mMapObjectModel->setObjectVisible(mMapObject, mOldVisible);
-}
-
-void SetMapObjectVisible::redo()
-{
-    mMapObjectModel->setObjectVisible(mMapObject, mNewVisible);
+    QVariant oldValue = mMapObject->mapObjectProperty(mProperty);
+    mMapDocument->mapObjectModel()->setObjectProperty(mMapObject, mProperty, mValue);
+    std::swap(mValue, oldValue);
 }
 
 

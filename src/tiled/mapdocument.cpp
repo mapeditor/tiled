@@ -1,6 +1,6 @@
 /*
  * mapdocument.cpp
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
  * This file is part of Tiled.
@@ -31,13 +31,14 @@
 #include "containerhelpers.h"
 #include "documentmanager.h"
 #include "flipmapobjects.h"
+#include "grouplayer.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
-#include "mapobjectmodel.h"
 #include "map.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 #include "movelayer.h"
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
@@ -46,6 +47,7 @@
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
 #include "rangeset.h"
+#include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
@@ -77,7 +79,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
 
     createRenderer();
 
-    mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
+    mCurrentLayer = (map->layerCount() == 0) ? nullptr : map->layerAt(0);
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
@@ -216,35 +218,26 @@ QString MapDocument::displayName() const
     return displayName;
 }
 
-void MapDocument::setCurrentLayerIndex(int index)
+/**
+  * Returns the sibling index of the given \a layer, or -1 if no layer is given.
+  */
+int MapDocument::layerIndex(const Layer *layer) const
 {
-    Q_ASSERT(index >= -1 && index < mMap->layerCount());
-
-    const bool changed = mCurrentLayerIndex != index;
-    mCurrentLayerIndex = index;
-
-    /* This function always sends the following signal, even if the index
-     * didn't actually change. This is because the selected index in the layer
-     * table view might be out of date anyway, and would otherwise not be
-     * properly updated.
-     *
-     * This problem happens due to the selection model not sending signals
-     * about changes to its current index when it is due to insertion/removal
-     * of other items. The selected item doesn't change in that case, but our
-     * layer index does.
-     */
-    emit currentLayerIndexChanged(mCurrentLayerIndex);
-
-    if (changed && mCurrentLayerIndex != -1)
-        setCurrentObject(currentLayer());
+    if (!layer)
+        return -1;
+    return layer->siblingIndex();
 }
 
-Layer *MapDocument::currentLayer() const
+void MapDocument::setCurrentLayer(Layer *layer)
 {
-    if (mCurrentLayerIndex == -1)
-        return nullptr;
+    if (mCurrentLayer == layer)
+        return;
 
-    return mMap->layerAt(mCurrentLayerIndex);
+    mCurrentLayer = layer;
+    emit currentLayerChanged(mCurrentLayer);
+
+    if (mCurrentLayer)
+        setCurrentObject(mCurrentLayer);
 }
 
 /**
@@ -295,9 +288,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
-    for (int layerIndex = 0; layerIndex < mMap->layerCount(); ++layerIndex) {
-        Layer *layer = mMap->layerAt(layerIndex);
-
+    LayerIterator iterator(mMap);
+    while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
@@ -321,13 +313,18 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             }
             break;
         }
-        case Layer::ImageLayerType:
+        case Layer::ImageLayerType: {
             // Adjust image layer by changing its offset
             auto imageLayer = static_cast<ImageLayer*>(layer);
-            new SetLayerOffset(this, layerIndex,
+            new SetLayerOffset(this, layer,
                                imageLayer->offset() + pixelOffset,
                                command);
             break;
+        }
+        case Layer::GroupLayerType: {
+            // Recursion handled by LayerIterator
+            break;
+        }
         }
     }
 
@@ -339,21 +336,21 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // TODO: Handle layers that don't match the map size correctly
 }
 
-void MapDocument::offsetMap(const QList<int> &layerIndexes,
+void MapDocument::offsetMap(const QList<Layer*> &layers,
                             const QPoint &offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
 {
-    if (layerIndexes.empty())
+    if (layers.empty())
         return;
 
-    if (layerIndexes.size() == 1) {
-        mUndoStack->push(new OffsetLayer(this, layerIndexes.first(), offset,
+    if (layers.size() == 1) {
+        mUndoStack->push(new OffsetLayer(this, layers.first(), offset,
                                          bounds, wrapX, wrapY));
     } else {
         mUndoStack->beginMacro(tr("Offset Map"));
-        for (const int layerIndex : layerIndexes) {
-            mUndoStack->push(new OffsetLayer(this, layerIndex, offset,
+        for (auto layer : layers) {
+            mUndoStack->push(new OffsetLayer(this, layer, offset,
                                              bounds, wrapX, wrapY));
         }
         mUndoStack->endMacro();
@@ -426,13 +423,17 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0);
         break;
+    case Layer::GroupLayerType:
+        name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
+        layer = new GroupLayer(name, 0, 0);
+        break;
     }
     Q_ASSERT(layer);
 
-    const int index = mCurrentLayerIndex >= 0 ? mCurrentLayerIndex + 1
-                                              : mMap->layerCount();
-    mUndoStack->push(new AddLayer(this, index, layer));
-    setCurrentLayerIndex(index);
+    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
+    const int index = layerIndex(mCurrentLayer) + 1;
+    mUndoStack->push(new AddLayer(this, index, layer, parentLayer));
+    setCurrentLayer(layer);
 
     emit editLayerNameRequested();
 
@@ -440,24 +441,80 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
 }
 
 /**
+ * Creates a new group layer, putting the given \a layer inside the group.
+ */
+void MapDocument::groupLayer(Layer *layer)
+{
+    if (!layer)
+        return;
+
+    Q_ASSERT(layer->map() == mMap);
+
+    QString name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
+    auto groupLayer = new GroupLayer(name, 0, 0);
+    auto parentLayer = layer->parentLayer();
+    const int index = layer->siblingIndex() + 1;
+    mUndoStack->beginMacro(tr("Group Layer"));
+    mUndoStack->push(new AddLayer(this, index, groupLayer, parentLayer));
+    mUndoStack->push(new ReparentLayers(this, QList<Layer*>() << layer, groupLayer, 0));
+    mUndoStack->endMacro();
+}
+
+/**
+ * Ungroups the given \a layer. If the layer itself is a group layer, then this
+ * group is ungrouped. Otherwise, if the layer is part of a group layer, then
+ * it is removed from the group.
+ */
+void MapDocument::ungroupLayer(Layer *layer)
+{
+    if (!layer)
+        return;
+
+    GroupLayer *groupLayer = layer->asGroupLayer();
+    QList<Layer *> layers;
+
+    if (groupLayer) {
+        layers = groupLayer->layers();
+    } else if (layer->parentLayer()) {
+        layers.append(layer);
+        groupLayer = layer->parentLayer();
+    } else {
+        // No ungrouping possible
+        return;
+    }
+
+    GroupLayer *targetParent = groupLayer->parentLayer();
+    int groupIndex = groupLayer->siblingIndex();
+
+    mUndoStack->beginMacro(tr("Ungroup Layer"));
+    mUndoStack->push(new ReparentLayers(this, layers, targetParent, groupIndex + 1));
+
+    if (groupLayer->layerCount() == 0)
+        mUndoStack->push(new RemoveLayer(this, groupIndex, targetParent));
+
+    mUndoStack->endMacro();
+}
+
+/**
  * Duplicates the currently selected layer.
  */
 void MapDocument::duplicateLayer()
 {
-    if (mCurrentLayerIndex == -1)
+    if (!mCurrentLayer)
         return;
 
-    Layer *duplicate = mMap->layerAt(mCurrentLayerIndex)->clone();
+    Layer *duplicate = mCurrentLayer->clone();
     duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
 
     if (duplicate->layerType() == Layer::ObjectGroupType)
         static_cast<ObjectGroup*>(duplicate)->resetObjectIds();
 
-    const int index = mCurrentLayerIndex + 1;
-    QUndoCommand *cmd = new AddLayer(this, index, duplicate);
+    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
+    const int index = layerIndex(mCurrentLayer) + 1;
+    QUndoCommand *cmd = new AddLayer(this, index, duplicate, parentLayer);
     cmd->setText(tr("Duplicate Layer"));
     mUndoStack->push(cmd);
-    setCurrentLayerIndex(index);
+    setCurrentLayer(duplicate);
 }
 
 /**
@@ -468,67 +525,67 @@ void MapDocument::duplicateLayer()
  */
 void MapDocument::mergeLayerDown()
 {
-    if (mCurrentLayerIndex < 1)
+    auto parentLayer = mCurrentLayer ? mCurrentLayer->parentLayer() : nullptr;
+    const int index = layerIndex(mCurrentLayer);
+
+    if (index < 1)
         return;
 
-    Layer *upperLayer = mMap->layerAt(mCurrentLayerIndex);
-    Layer *lowerLayer = mMap->layerAt(mCurrentLayerIndex - 1);
+    Layer *lowerLayer = mCurrentLayer->siblings().at(index - 1);
 
-    if (!lowerLayer->canMergeWith(upperLayer))
+    if (!lowerLayer->canMergeWith(mCurrentLayer))
         return;
 
-    Layer *merged = lowerLayer->mergedWith(upperLayer);
+    Layer *merged = lowerLayer->mergedWith(mCurrentLayer);
 
     mUndoStack->beginMacro(tr("Merge Layer Down"));
-    mUndoStack->push(new AddLayer(this, mCurrentLayerIndex - 1, merged));
-    mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
-    mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
+    mUndoStack->push(new AddLayer(this, index - 1, merged, parentLayer));
+    mUndoStack->push(new RemoveLayer(this, index, parentLayer));
+    mUndoStack->push(new RemoveLayer(this, index, parentLayer));
     mUndoStack->endMacro();
 }
 
 /**
- * Moves the given layer up. Does nothing when no valid layer index is
- * given.
+ * Moves the given \a layer up, when it is not already at the top of the map.
  */
-void MapDocument::moveLayerUp(int index)
+void MapDocument::moveLayerUp(Layer *layer)
 {
-    if (index < 0 || index >= mMap->layerCount() - 1)
+    if (!layer || !MoveLayer::canMoveUp(*layer))
         return;
 
-    mUndoStack->push(new MoveLayer(this, index, MoveLayer::Up));
+    mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Up));
 }
 
 /**
- * Moves the given layer down. Does nothing when no valid layer index is
- * given.
+ * Moves the given \a layer up, when it is not already at the bottom of the map.
  */
-void MapDocument::moveLayerDown(int index)
+void MapDocument::moveLayerDown(Layer *layer)
 {
-    if (index < 1 || index >= mMap->layerCount())
+    if (!layer || !MoveLayer::canMoveDown(*layer))
         return;
 
-    mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
+    mUndoStack->push(new MoveLayer(this, layer, MoveLayer::Down));
 }
 
 /**
- * Removes the given layer.
+ * Removes the given \a layer.
  */
-void MapDocument::removeLayer(int index)
+void MapDocument::removeLayer(Layer *layer)
 {
-    if (index < 0 || index >= mMap->layerCount())
-        return;
-
-    mUndoStack->push(new RemoveLayer(this, index));
+    Q_ASSERT(layer->map() == mMap);
+    mUndoStack->push(new RemoveLayer(this,
+                                     layer->siblingIndex(),
+                                     layer->parentLayer()));
 }
 
 /**
-  * Show or hide all other layers except the layer at the given index.
+  * Show or hide all other layers except the given \a layer.
   * If any other layer is visible then all layers will be hidden, otherwise
   * the layers will be shown.
   */
-void MapDocument::toggleOtherLayers(int index)
+void MapDocument::toggleOtherLayers(Layer *layer)
 {
-    mLayerModel->toggleOtherLayers(index);
+    mLayerModel->toggleOtherLayers(layer);
 }
 
 /**
@@ -763,40 +820,53 @@ void MapDocument::onObjectsMoved(const QModelIndex &parent, int start, int end,
     emit objectsIndexChanged(objectGroup, first, last);
 }
 
-void MapDocument::onLayerAdded(int index)
+void MapDocument::onLayerAdded(Layer *layer)
 {
-    emit layerAdded(index);
+    emit layerAdded(layer);
 
     // Select the first layer that gets added to the map
-    if (mMap->layerCount() == 1)
-        setCurrentLayerIndex(0);
+    if (mMap->layerCount() == 1 && mMap->layerAt(0) == layer)
+        setCurrentLayer(layer);
 }
 
-void MapDocument::onLayerAboutToBeRemoved(int index)
+static void collectObjects(Layer *layer, QList<MapObject*> &objects)
 {
-    Layer *layer = mMap->layerAt(index);
+    switch (layer->layerType()) {
+    case Layer::ObjectGroupType:
+        objects.append(static_cast<ObjectGroup*>(layer)->objects());
+        break;
+    case Layer::GroupLayerType:
+        for (auto childLayer : *static_cast<GroupLayer*>(layer))
+            collectObjects(childLayer, objects);
+        break;
+    case Layer::ImageLayerType:
+    case Layer::TileLayerType:
+        break;
+    }
+}
+
+void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
+{
+    Layer *layer = groupLayer ? groupLayer->layerAt(index) : mMap->layerAt(index);
     if (layer == mCurrentObject)
         setCurrentObject(nullptr);
 
     // Deselect any objects on this layer when necessary
-    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
-        deselectObjects(og->objects());
-    emit layerAboutToBeRemoved(index);
+    if (layer->isObjectGroup() || layer->isGroupLayer()) {
+        QList<MapObject*> objects;
+        collectObjects(layer, objects);
+        deselectObjects(objects);
+    }
+
+    emit layerAboutToBeRemoved(groupLayer, index);
 }
 
-void MapDocument::onLayerRemoved(int index)
+void MapDocument::onLayerRemoved(Layer *layer)
 {
-    // Bring the current layer index to safety
-    bool currentLayerAffected = index <= mCurrentLayerIndex;
-    if (currentLayerAffected)
-        mCurrentLayerIndex = mCurrentLayerIndex - 1;
+    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer))
+        setCurrentLayer(nullptr);
 
-    emit layerRemoved(index);
-
-    // Emitted after the layerRemoved signal so that the MapScene has a chance
-    // of synchronizing before adapting to the newly selected index
-    if (currentLayerAffected)
-        emit currentLayerIndexChanged(mCurrentLayerIndex);
+    emit layerRemoved(layer);
 }
 
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)

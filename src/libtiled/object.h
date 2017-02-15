@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include "properties.h"
 
@@ -125,5 +124,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // OBJECT_H

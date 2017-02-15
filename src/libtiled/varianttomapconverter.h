@@ -19,10 +19,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTTOMAPCONVERTER_H
-#define VARIANTTOMAPCONVERTER_H
+#pragma once
 
 #include "gidmapper.h"
+#include "mapobject.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -30,6 +30,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 class Map;
 class ObjectGroup;
@@ -83,8 +84,10 @@ private:
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
+    GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
+    TextData toTextData(const QVariantMap &variant) const;
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 
@@ -96,5 +99,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // VARIANTTOMAPCONVERTER_H

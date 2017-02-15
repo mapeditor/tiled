@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINVIEW_H
-#define TERRAINVIEW_H
+#pragma once
 
 #include "terrainmodel.h"
 
@@ -70,5 +69,3 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::TerrainView *)
-
-#endif // TERRAINVIEW_H

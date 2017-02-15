@@ -351,7 +351,7 @@ bool AutoMapper::setupMissingLayers()
                                              mMapWork->width(),
                                              mMapWork->height());
         mMapDocument->undoStack()->push(
-                    new AddLayer(mMapDocument, index, tilelayer));
+                    new AddLayer(mMapDocument, index, tilelayer, nullptr));
         mAddedTileLayers.append(name);
     }
 
@@ -362,7 +362,7 @@ bool AutoMapper::setupMissingLayers()
         const int index =  mMapWork->layerCount();
         ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0);
         mMapDocument->undoStack()->push(
-                    new AddLayer(mMapDocument, index, objectGroup));
+                    new AddLayer(mMapDocument, index, objectGroup, nullptr));
         mAddedTileLayers.append(name);
     }
 
@@ -883,7 +883,7 @@ void AutoMapper::cleanTileLayers()
             continue;
 
         QUndoStack *undo = mMapDocument->undoStack();
-        undo->push(new RemoveLayer(mMapDocument, layerIndex));
+        undo->push(new RemoveLayer(mMapDocument, layerIndex, nullptr));
     }
     mAddedTileLayers.clear();
 }

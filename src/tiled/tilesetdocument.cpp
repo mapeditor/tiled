@@ -57,7 +57,7 @@ private:
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
-    , mTerrainModel(new TilesetTerrainModel(this))
+    , mTerrainModel(new TilesetTerrainModel(this, this))
 {
     mCurrentObject = tileset.data();
 

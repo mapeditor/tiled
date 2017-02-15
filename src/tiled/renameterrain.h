@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMETERRAIN_H
-#define RENAMETERRAIN_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -52,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RENAMETERRAIN_H

@@ -28,8 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECTGROUP_H
-#define OBJECTGROUP_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -248,5 +247,3 @@ TILEDSHARED_EXPORT ObjectGroup::DrawOrder drawOrderFromString(const QString &);
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::ObjectGroup*)
-
-#endif // OBJECTGROUP_H

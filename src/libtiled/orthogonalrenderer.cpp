@@ -112,6 +112,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                                                                  extraSpace + 1);
             break;
         }
+
+        case MapObject::Text:
+            boundingRect = object->bounds();
+            break;
         }
     }
 
@@ -130,9 +134,9 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             const QRectF bounds = object->bounds();
 
             if (bounds.isNull()) {
-                path.addEllipse(bounds.topLeft(), 20, 20);
+                path.addRect(object->x() - 10, object->y() - 10, 20, 20);
             } else {
-                path.addRoundedRect(bounds, 10, 10);
+                path.addRect(bounds);
             }
             break;
         }
@@ -160,6 +164,11 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             } else {
                 path.addEllipse(bounds);
             }
+            break;
+        }
+
+        case MapObject::Text: {
+            path.addRect(object->bounds());
             break;
         }
         }
@@ -442,6 +451,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawEllipse(rect);
+            break;
+        }
+
+        case MapObject::Text: {
+            const auto& textData = object->textData();
+            painter->setFont(textData.font);
+            painter->setPen(textData.color);
+            painter->drawText(rect, textData.text, textData.textOption());
             break;
         }
         }

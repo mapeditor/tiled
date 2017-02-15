@@ -75,6 +75,7 @@ void LuaTableWriter::writeStartTable(const QByteArray &name)
 
 void LuaTableWriter::writeEndTable()
 {
+    Q_ASSERT(m_indent > 0);
     --m_indent;
     if (m_valueWritten)
         writeNewline();

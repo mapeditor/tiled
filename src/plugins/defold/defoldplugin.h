@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFOLDPLUGIN_H
-#define DEFOLDPLUGIN_H
+#pragma once
 
 #include "defoldplugin_global.h"
 #include "tiled.h"
@@ -49,5 +48,3 @@ private:
 };
 
 } // namespace Defold
-
-#endif

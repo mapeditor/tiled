@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILECOLLISIONEDITOR_H
-#define TILECOLLISIONEDITOR_H
+#pragma once
 
 #include "clipboardmanager.h"
 
@@ -97,5 +96,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILECOLLISIONEDITOR_H

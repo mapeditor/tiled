@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SAVEFILE_H
-#define SAVEFILE_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -85,5 +84,3 @@ inline QString SaveFile::errorString() const
 }
 
 } // namespace Tiled
-
-#endif // SAVEFILE_H

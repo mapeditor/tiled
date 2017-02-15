@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONVERTERDATAMODEL_H
-#define CONVERTERDATAMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 #include <QList>
@@ -64,5 +63,3 @@ private:
     QList<QString> mFileNames;
     QMap<QString, QString> mFileVersions;
 };
-
-#endif // CONVERTERDATAMODEL_H

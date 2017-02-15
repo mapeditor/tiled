@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DROIDCRAFTPLUGIN_H
-#define DROIDCRAFTPLUGIN_H
+#pragma once
 
 #include "droidcraft_global.h"
 
@@ -51,5 +50,3 @@ private:
 };
 
 } // namespace Droidcraft
-
-#endif // DROIDCRAFTPLUGIN_H

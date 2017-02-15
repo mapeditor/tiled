@@ -29,7 +29,7 @@ QtGuiApplication {
         else
             return ["$ORIGIN/../lib"];
     }
-    cpp.useCxxPrecompiledHeader: true
+    cpp.useCxxPrecompiledHeader: qbs.buildVariant != "debug"
     cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
@@ -160,6 +160,8 @@ QtGuiApplication {
         "createrectangleobjecttool.h",
         "createscalableobjecttool.cpp",
         "createscalableobjecttool.h",
+        "createtextobjecttool.cpp",
+        "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
         "document.cpp",
@@ -187,6 +189,8 @@ QtGuiApplication {
         "flipmapobjects.h",
         "geometry.cpp",
         "geometry.h",
+        "grouplayeritem.cpp",
+        "grouplayeritem.h",
         "id.cpp",
         "id.h",
         "imagecolorpickerwidget.cpp",
@@ -200,6 +204,8 @@ QtGuiApplication {
         "languagemanager.h",
         "layerdock.cpp",
         "layerdock.h",
+        "layeritem.cpp",
+        "layeritem.h",
         "layermodel.cpp",
         "layermodel.h",
         "layeroffsettool.cpp",
@@ -291,6 +297,8 @@ QtGuiApplication {
         "renamelayer.h",
         "renameterrain.cpp",
         "renameterrain.h",
+        "reparentlayers.cpp",
+        "reparentlayers.h",
         "replacetileset.cpp",
         "replacetileset.h",
         "resizedialog.cpp",
@@ -381,6 +389,8 @@ QtGuiApplication {
         "tmxmapformat.h",
         "toolmanager.cpp",
         "toolmanager.h",
+        "treeviewcombobox.cpp",
+        "treeviewcombobox.h",
         "undocommands.h",
         "undodock.cpp",
         "undodock.h",

@@ -99,5 +99,6 @@
         <file>images/32x32/layer-object.png</file>
         <file>images/dock-close@2x.png</file>
         <file>images/dock-restore@2x.png</file>
+        <file>images/24x24/insert-text.png</file>
     </qresource>
 </RCC>

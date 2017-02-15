@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEPOLYGONOBJECTTOOL_H
-#define CREATEPOLYGONOBJECTTOOL_H
+#pragma once
 
 #include "createmultipointobjecttool.h"
 
@@ -39,5 +38,3 @@ protected:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATEPOLYGONOBJECTTOOL_H
