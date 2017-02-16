@@ -58,7 +58,8 @@ public:
         _tileId(-1),
         _flippedHorizontally(false),
         _flippedVertically(false),
-        _flippedAntiDiagonally(false)
+        _flippedAntiDiagonally(false),
+        _flippedLeftHexAntiDiagonally(false)
     {}
 
     explicit Cell(Tile *tile) :
@@ -66,7 +67,8 @@ public:
         _tileId(tile ? tile->id() : -1),
         _flippedHorizontally(false),
         _flippedVertically(false),
-        _flippedAntiDiagonally(false)
+        _flippedAntiDiagonally(false),
+        _flippedLeftHexAntiDiagonally(false)
     {}
 
     bool isEmpty() const { return _tileset == nullptr; }
@@ -77,7 +79,8 @@ public:
                 && _tileId == other._tileId
                 && _flippedHorizontally == other._flippedHorizontally
                 && _flippedVertically == other._flippedVertically
-                && _flippedAntiDiagonally == other._flippedAntiDiagonally;
+                && _flippedAntiDiagonally == other._flippedAntiDiagonally
+                && _flippedLeftHexAntiDiagonally == other._flippedLeftHexAntiDiagonally;
     }
 
     bool operator != (const Cell &other) const
@@ -86,7 +89,8 @@ public:
                 || _tileId != other._tileId
                 || _flippedHorizontally != other._flippedHorizontally
                 || _flippedVertically != other._flippedVertically
-                || _flippedAntiDiagonally != other._flippedAntiDiagonally;
+                || _flippedAntiDiagonally != other._flippedAntiDiagonally
+                || _flippedLeftHexAntiDiagonally != other._flippedLeftHexAntiDiagonally;
     }
 
     Tileset *tileset() const { return _tileset; }
@@ -95,10 +99,12 @@ public:
     bool flippedHorizontally() const { return _flippedHorizontally; }
     bool flippedVertically() const { return _flippedVertically; }
     bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
+    bool flippedLeftHexAntiDiagonally() const { return _flippedLeftHexAntiDiagonally; }
 
     void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
     void setFlippedVertically(bool f) { _flippedVertically = f; }
     void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
+    void setFlippedLeftHexAntiDiagonally(bool f) { _flippedLeftHexAntiDiagonally = f; }
 
     Tile *tile() const;
     void setTile(Tile *tile);
@@ -110,6 +116,7 @@ private:
     bool _flippedHorizontally;
     bool _flippedVertically;
     bool _flippedAntiDiagonally;
+    bool _flippedLeftHexAntiDiagonally;
 };
 
 inline Tile *Cell::tile() const

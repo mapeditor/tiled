@@ -258,7 +258,7 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter);
+    explicit CellRenderer(QPainter *painter, const bool isHexagonal = false);
 
     ~CellRenderer() { flush(); }
 
@@ -270,6 +270,7 @@ private:
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
+    const bool mIsHexagonal;
 };
 
 } // namespace Tiled

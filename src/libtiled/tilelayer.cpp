@@ -199,57 +199,132 @@ void TileLayer::flip(FlipDirection direction)
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            Cell &dest = newGrid[x + y * mWidth];
-            if (direction == FlipHorizontally) {
-                const Cell &source = cellAt(mWidth - x - 1, y);
-                dest = source;
-                dest.setFlippedHorizontally(!source.flippedHorizontally());
-            } else if (direction == FlipVertically) {
-                const Cell &source = cellAt(x, mHeight - y - 1);
-                dest = source;
-                dest.setFlippedVertically(!source.flippedVertically());
-            }
-        }
-    }
+    const Map* const globalMap = map();
+    const Map::Orientation currentOrientation = (globalMap ? globalMap->orientation() : Map::Unknown);
+
+     if ( currentOrientation != Map::Hexagonal ) {
+
+         for (int y = 0; y < mHeight; ++y) {
+             for (int x = 0; x < mWidth; ++x) {
+                 Cell &dest = newGrid[x + y * mWidth];
+                 if (direction == FlipHorizontally) {
+                     const Cell &source = cellAt(mWidth - x - 1, y);
+                     dest = source;
+                     dest.setFlippedHorizontally(!source.flippedHorizontally());
+                 } else if (direction == FlipVertically) {
+                     const Cell &source = cellAt(x, mHeight - y - 1);
+                     dest = source;
+                     dest.setFlippedVertically(!source.flippedVertically());
+                 }
+             }
+         }
+
+     } else {
+
+         static const char flipMaskH[16] = { 4, 10, 9, 0, 0, 14, 15, 0, 12, 2, 1, 0, 8, 0, 5, 6 }; // 0<=>4; 10<=>1; 5<=>14; 12<=>8; 6<=>15; 9<=>2; skip: 3 7 11 13
+         static const char flipMaskV[16] = { 8, 6, 5, 0, 12, 2, 1, 0, 0, 14, 15, 0, 4, 0, 9, 10 }; // 0<=>8; 10<=>15; 5<=>2; 12<=>4; 6<=>1; 9<=>14; skip: 3 7 11 13
+
+         const char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
+
+         for (int y = 0; y < mHeight; ++y) {
+             for (int x = 0; x < mWidth; ++x) {
+                 const Cell &source = (direction == FlipHorizontally ? cellAt(mWidth - x - 1, y) : cellAt(x, mHeight - y - 1));
+                 Cell &dest = newGrid[x + y * mWidth];
+                 dest = source;
+
+                 unsigned char mask =
+                         (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
+                         (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
+                         (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
+                         (static_cast<unsigned char>(dest.flippedLeftHexAntiDiagonally()) << 0);
+
+                 mask = flipMask[mask];
+
+                 dest.setFlippedHorizontally((mask & 8) != 0);
+                 dest.setFlippedVertically((mask & 4) != 0);
+                 dest.setFlippedAntiDiagonally((mask & 2) != 0);
+                 dest.setFlippedLeftHexAntiDiagonally((mask & 1) != 0);
+             }
+         }
+
+     }
 
     mGrid = newGrid;
 }
 
 void TileLayer::rotate(RotateDirection direction)
 {
-    static const char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
-    static const char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
-
-    const char (&rotateMask)[8] =
-            (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
+    const Map* const globalMap = map();
+    const Map::Orientation currentOrientation = (globalMap ? globalMap->orientation() : Map::Unknown);
 
     int newWidth = mHeight;
     int newHeight = mWidth;
     QVector<Cell> newGrid(newWidth * newHeight);
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            const Cell &source = cellAt(x, y);
-            Cell dest = source;
+    if ( currentOrientation != Map::Hexagonal ) {
 
-            unsigned char mask =
-                    (dest.flippedHorizontally() << 2) |
-                    (dest.flippedVertically() << 1) |
-                    (dest.flippedAntiDiagonally() << 0);
+        static const char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+        static const char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
 
-            mask = rotateMask[mask];
+        const char (&rotateMask)[8] =
+                (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
-            dest.setFlippedHorizontally((mask & 4) != 0);
-            dest.setFlippedVertically((mask & 2) != 0);
-            dest.setFlippedAntiDiagonally((mask & 1) != 0);
+        for (int y = 0; y < mHeight; ++y) {
+            for (int x = 0; x < mWidth; ++x) {
+                const Cell &source = cellAt(x, y);
+                Cell dest = source;
 
-            if (direction == RotateRight)
-                newGrid[x * newWidth + (mHeight - y - 1)] = dest;
-            else
-                newGrid[(mWidth - x - 1) * newWidth + y] = dest;
+                unsigned char mask =
+                        (static_cast<unsigned char>(dest.flippedHorizontally()) << 2) |
+                        (static_cast<unsigned char>(dest.flippedVertically()) << 1) |
+                        (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 0);
+
+                mask = rotateMask[mask];
+
+                dest.setFlippedHorizontally((mask & 4) != 0);
+                dest.setFlippedVertically((mask & 2) != 0);
+                dest.setFlippedAntiDiagonally((mask & 1) != 0);
+
+                if (direction == RotateRight)
+                    newGrid[x * newWidth + (mHeight - y - 1)] = dest;
+                else
+                    newGrid[(mWidth - x - 1) * newWidth + y] = dest;
+            }
         }
+
+    } else {
+
+        static const char rotateRightMask[16] = { 10, 4, 15, 0, 2, 12, 9, 0, 14, 0, 5, 0, 6, 0, 1, 8 }; // 0->10->5->12->6->9; 8->14->1->4->2->15; skip: 3 7 11 13
+        static const char rotateLeftMask[16]  = { 9, 14, 4, 0, 1, 10, 12, 0, 15, 6, 0, 0, 5, 0, 8, 2 }; // 0->9->6->12->5->10; 8->15->2->4->1->14; skip: 3 7 11 13
+
+        const char (&rotateMask)[16] =
+                (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
+
+        for (int y = 0; y < mHeight; ++y) {
+            for (int x = 0; x < mWidth; ++x) {
+                const Cell &source = cellAt(x, y);
+                Cell dest = source;
+
+                unsigned char mask =
+                        (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
+                        (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
+                        (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
+                        (static_cast<unsigned char>(dest.flippedLeftHexAntiDiagonally()) << 0);
+
+                mask = rotateMask[mask];
+
+                dest.setFlippedHorizontally((mask & 8) != 0);
+                dest.setFlippedVertically((mask & 4) != 0);
+                dest.setFlippedAntiDiagonally((mask & 2) != 0);
+                dest.setFlippedLeftHexAntiDiagonally((mask & 1) != 0);
+
+                if (direction == RotateRight)
+                    newGrid[x * newWidth + (mHeight - y - 1)] = dest;
+                else
+                    newGrid[(mWidth - x - 1) * newWidth + y] = dest;
+            }
+        }
+
     }
 
     mWidth = newWidth;
