@@ -139,12 +139,12 @@
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомий long аргумент %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомий short аргумент %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -357,12 +357,12 @@
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження набору плиток %1, який розширяється до %2. Шлях не знайдено!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не знайдено набору плиток для шару плиток.</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -454,7 +454,8 @@
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під часу запису до файлу:
+%1</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -869,35 +870,35 @@ Line %1, column %2</source>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
         <source>Invalid tileset parameters for tileset '%1'</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний параметр набору плиток: «%1»</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Invalid tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний ID плитки: %1</translation>
     </message>
     <message>
         <location line="+228"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Забагато &lt;tile&gt; елементів</translation>
     </message>
     <message>
         <location line="+44"/>
         <location line="+43"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+219"/>
         <source>Invalid tile: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірна плитка: %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний порядок виводу: %1</translation>
     </message>
     <message>
         <location line="+154"/>
         <source>Invalid points data for polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірні координати полігону</translation>
     </message>
     <message>
         <location line="-285"/>
@@ -908,13 +909,13 @@ Line %1, column %2</source>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка читання вбудованого зображення для плитки %1</translation>
     </message>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method '%1' not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Метод стиснення «%1» не підтримується</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -935,7 +936,7 @@ Line %1, column %2</source>
         <location line="+44"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Плитка використовується, але не вказано набір плиток</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
@@ -945,7 +946,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-170"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний (від'ємний) ID плитки: %1</translation>
     </message>
 </context>
 <context>
@@ -1087,7 +1088,7 @@ Line %1, column %2</source>
     <message>
         <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ по краях набору плиток.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1197,7 +1198,7 @@ Line %1, column %2</source>
         <location line="-30"/>
         <location line="+46"/>
         <source>Wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенесення</translation>
     </message>
     <message>
         <location line="-39"/>
@@ -1365,7 +1366,7 @@ Line %1, column %2</source>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкривати останні файли під час запуску</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1385,7 +1386,7 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Товщина лінії об'єктів:</translation>
     </message>
     <message>
         <location line="+27"/>
