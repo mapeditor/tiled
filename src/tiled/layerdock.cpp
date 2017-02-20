@@ -281,10 +281,8 @@ void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 void LayerView::indexPressed(const QModelIndex &proxyIndex)
 {
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
-    if (index.isValid()) {
-        Layer *layer = mMapDocument->map()->layerAt(index.row());
+    if (Layer *layer = mMapDocument->layerModel()->toLayer(index))
         mMapDocument->setCurrentObject(layer);
-    }
 }
 
 void LayerView::currentLayerChanged(Layer *layer)
