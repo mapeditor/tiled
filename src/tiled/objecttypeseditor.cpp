@@ -178,10 +178,12 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->actionExport, SIGNAL(triggered()),
             SLOT(exportObjectTypes()));
 
-    connect(mObjectTypesModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            SLOT(applyObjectTypes()));
-    connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(applyObjectTypes()));
+    connect(mObjectTypesModel, &ObjectTypesModel::dataChanged,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsInserted,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsRemoved,
+            this, &ObjectTypesEditor::applyObjectTypes);
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &ObjectTypesEditor::propertyValueChanged);
@@ -242,8 +244,7 @@ void ObjectTypesEditor::addObjectType()
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);
     sm->setCurrentIndex(newIndex, QItemSelectionModel::Current);
-    mUi->objectTypesTable->setFocus();
-    mUi->objectTypesTable->scrollTo(newIndex);
+    mUi->objectTypesTable->edit(newIndex);
 }
 
 void ObjectTypesEditor::selectedObjectTypesChanged()
