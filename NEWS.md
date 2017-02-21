@@ -1,4 +1,4 @@
-### 0.18.2 (20 February 2017)
+### 0.18.2 (21 February 2017)
 
 * Fixed crash when deleting multiple selected objects
 * Fixed crash when moving multiple selected objects to another object layer
