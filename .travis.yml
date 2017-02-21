@@ -36,7 +36,7 @@ matrix:
       before_install:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt571-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev
+        - sudo apt-get -y install qt57base qt57svg qt57imageformats qt57tools binutils zlib1g-dev
         - source /opt/qt57/bin/qt57-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
