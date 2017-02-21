@@ -1024,7 +1024,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation type="unfinished">Tileset</translation>
     </message>
     <message>
         <location line="+13"/>
