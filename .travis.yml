@@ -36,7 +36,7 @@ matrix:
       before_install:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt58base qt58svg qt58tools binutils zlib1g-dev
+        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools binutils zlib1g-dev
         - source /opt/qt58/bin/qt58-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
@@ -48,10 +48,10 @@ matrix:
         - cp LICENSE* COPYING *md Tiled/
         - cp ./tiled.desktop Tiled/
         - cp ./src/tiled/images/32x32/tiled.png Tiled/
-        - wget -c "https://update.mapeditor.org/linuxdeployqt/linuxdeployqt-9a1fbab-x86-64.appimage"
-        - chmod a+x linuxdeployqt-9a1fbab-x86-64.appimage
+        - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/2/linuxdeployqt-2-x86_64.AppImage" -O linuxdeployqt
+        - chmod a+x linuxdeployqt
         - unset LD_LIBRARY_PATH
-        - ./linuxdeployqt-9a1fbab-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
+        - ./linuxdeployqt ./Tiled/tiled -appimage -verbose=2
         - rm -rf Tiled/
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
