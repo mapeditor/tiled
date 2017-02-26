@@ -29,6 +29,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [TMXParser](https://github.com/solar-storm-studios/TMXParser) General *.tmx tileset data loader. Intended to be used with TSXParser for external tileset loading. (No internal tileset support)
 * [TSXParser](https://github.com/solar-storm-studios/TSXParser) General *.tsx tileset data loader. Intended to be used with TMXParser.
 * [TMXLoader](https://bitbucket.org/martingrant/tmxloader) based on [RapidXml](http://rapidxml.sourceforge.net/). Limited functionality (check the [website](http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/) for details).
+* [tmxlite](https://github.com/fallahn/tmxlite) C++14 map parser with compressed map support but no external linking required. Includes examples for SFML and SDL2 rendering. Currently has full tmx support up to 0.16. (Zlib/libpng)
 
 ### C#/.NET ###
 * [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended) has a Tiled map loader and renderer that works with MonoGame on all platforms that support portable class libraries.
