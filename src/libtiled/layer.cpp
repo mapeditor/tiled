@@ -54,7 +54,7 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
  * Returns the effective opacity, which is the opacity multiplied by the
  * opacity of any parent layers.
  */
-float Layer::affectiveOpacity() const
+float Layer::effectiveOpacity() const
 {
     auto opacity = mOpacity;
     const Layer *layer = this;
