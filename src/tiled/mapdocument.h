@@ -202,16 +202,6 @@ public:
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
-    void emitMapChanged();
-
-    void emitRegionChanged(const QRegion &region, Layer *layer);
-    void emitRegionEdited(const QRegion &region, Layer *layer);
-
-    void emitTileLayerDrawMarginsChanged(TileLayer *layer);
-
-    void emitObjectGroupChanged(ObjectGroup *objectGroup);
-    void emitImageLayerChanged(ImageLayer *imageLayer);
-
     void emitEditLayerNameRequested();
 
 signals:
@@ -263,8 +253,16 @@ signals:
 
     void tileLayerDrawMarginsChanged(TileLayer *layer);
 
+    /**
+     * Should be emitted when changing the color or drawing order of an object
+     * group.
+     */
     void objectGroupChanged(ObjectGroup *objectGroup);
 
+    /**
+     * Should be emitted when changing the image or the transparent color of
+     * an image layer.
+     */
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
@@ -334,65 +332,6 @@ inline QString MapDocument::lastExportFileName() const
 inline void MapDocument::setLastExportFileName(const QString &fileName)
 {
     mLastExportFileName = fileName;
-}
-
-/**
- * Emits the map changed signal. This signal should be emitted after changing
- * the map size or its tile size.
- */
-inline void MapDocument::emitMapChanged()
-{
-    emit mapChanged();
-}
-
-/**
- * Emits the region changed signal for the specified region. The region
- * should be in tile coordinates. This method is used by the TilePainter.
- */
-inline void MapDocument::emitRegionChanged(const QRegion &region, Layer *layer)
-{
-    emit regionChanged(region, layer);
-}
-
-/**
- * Emits the region edited signal for the specified region and tile layer.
- * The region should be in tile coordinates. This should be called from
- * all map document changing classes which are triggered by user input.
- */
-inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
-{
-    emit regionEdited(region, layer);
-}
-
-inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
-{
-    emit tileLayerDrawMarginsChanged(layer);
-}
-
-/**
- * Emits the objectGroupChanged signal, should be called when changing the
- * color or drawing order of an object group.
- */
-inline void MapDocument::emitObjectGroupChanged(ObjectGroup *objectGroup)
-{
-    emit objectGroupChanged(objectGroup);
-}
-
-/**
- * Emits the imageLayerChanged signal, should be called when changing the
- * image or the transparent color of an image layer.
- */
-inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
-{
-    emit imageLayerChanged(imageLayer);
-}
-
-/**
- * Emits the editLayerNameRequested signal, to get renamed.
- */
-inline void MapDocument::emitEditLayerNameRequested()
-{
-    emit editLayerNameRequested();
 }
 
 } // namespace Internal

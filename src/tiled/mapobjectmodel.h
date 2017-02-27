@@ -82,7 +82,6 @@ public:
     void insertObject(ObjectGroup *og, int index, MapObject *o);
     int removeObject(ObjectGroup *og, MapObject *o);
     void moveObjects(ObjectGroup *og, int from, int to, int count);
-    void emitObjectsChanged(const QList<MapObject *> &objects);
 
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);

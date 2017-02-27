@@ -466,16 +466,6 @@ void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
     endMoveRows();
 }
 
-// ObjectGroup color changed
-// FIXME: layerChanged should let the scene know that objects need redrawing
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects)
-{
-    if (objects.isEmpty())
-        return;
-
-    emit objectsChanged(objects);
-}
-
 void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
 {
     if (o->polygon() == polygon)

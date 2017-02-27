@@ -213,7 +213,7 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(paint);
-    mapDocument()->emitRegionEdited(fillRegion, currentTileLayer());
+    emit mapDocument()->regionEdited(fillRegion, currentTileLayer());
 }
 
 void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *)
