@@ -511,6 +511,8 @@ void MapObjectModel::setObjectProperty(MapObject *o,
 
     o->setMapObjectProperty(property, value);
 
+    QList<MapObject*> objects = QList<MapObject*>() << o;
+
     // Notify views about certain property changes
     switch (property) {
     case MapObject::NameProperty:
@@ -522,11 +524,12 @@ void MapObjectModel::setObjectProperty(MapObject *o,
     case MapObject::TypeProperty: {
         QModelIndex index = this->index(o, 1);
         emit dataChanged(index, index);
+        emit objectsTypeChanged(objects);
         break;
     }
     default:
         break;
     }
 
-    emit objectsChanged(QList<MapObject*>() << o);
+    emit objectsChanged(objects);
 }
