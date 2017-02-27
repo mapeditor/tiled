@@ -282,6 +282,9 @@ signals:
 
     // emitted from the TilesetDocument
     void tilesetNameChanged(Tileset *tileset);
+    void tilesetTileOffsetChanged(Tileset *tileset);
+    void tileTypeChanged(Tile *tile);
+    void tileImageSourceChanged(Tile *tile);
     void tilesetTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
     void tilesetTerrainAdded(Tileset *tileset, int terrainId);
     void tilesetTerrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);

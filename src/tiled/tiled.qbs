@@ -118,6 +118,8 @@ QtGuiApplication {
         "changeproperties.h",
         "changeselectedarea.cpp",
         "changeselectedarea.h",
+        "changetile.cpp",
+        "changetile.h",
         "changetileanimation.cpp",
         "changetileanimation.h",
         "changetileimagesource.cpp",

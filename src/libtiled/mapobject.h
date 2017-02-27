@@ -125,6 +125,8 @@ public:
     const QString &type() const;
     void setType(const QString &type);
 
+    const QString &effectiveType() const;
+
     const QPointF &position() const;
     void setPosition(const QPointF &pos);
 

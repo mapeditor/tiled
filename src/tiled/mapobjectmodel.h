@@ -101,6 +101,7 @@ private slots:
     void layerAdded(Layer *layer);
     void layerChanged(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
+    void tileTypeChanged(Tile *tile);
 
 private:
     MapDocument *mMapDocument;

@@ -179,6 +179,8 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
 
 static bool includeTile(const Tile *tile)
 {
+    if (!tile->type().isEmpty())
+        return true;
     if (!tile->properties().isEmpty())
         return true;
     if (!tile->imageSource().isEmpty())
@@ -270,6 +272,9 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 
         writer.writeStartTable();
         writer.writeKeyAndValue("id", tile->id());
+
+        if (!tile->type().isEmpty())
+            writer.writeKeyAndValue("type", tile->type());
 
         if (!tile->properties().isEmpty())
             writeProperties(writer, tile->properties());

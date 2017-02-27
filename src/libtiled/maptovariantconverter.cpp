@@ -174,6 +174,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             tilePropertyTypesVariant[QString::number(tile->id())] = propertyTypesToVariant(properties);
         }
         QVariantMap tileVariant;
+        if (!tile->type().isEmpty())
+            tileVariant[QLatin1String("type")] = tile->type();
         if (tile->terrain() != 0xFFFFFFFF) {
             QVariantList terrainIds;
             for (int j = 0; j < 4; ++j)

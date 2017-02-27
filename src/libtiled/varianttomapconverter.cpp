@@ -250,7 +250,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         terrain->setProperties(extractProperties(terrainMap));
     }
 
-    // Read tile terrain and external image information
+    // Read tiles (everything except their properties)
     const QVariantMap tilesVariantMap = variantMap[QLatin1String("tiles")].toMap();
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
     for (; it != tilesVariantMap.end(); ++it) {
@@ -264,6 +264,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         Tile *tile = tileset->findOrCreateTile(tileId);
 
         const QVariantMap tileVar = it.value().toMap();
+
+        tile->setType(tileVar[QLatin1String("type")].toString());
+
         QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
         if (terrains.count() == 4) {
             for (int i = 0; i < 4; ++i) {
@@ -272,14 +275,17 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                     tile->setCornerTerrainId(i, terrainId);
             }
         }
+
         float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
         if (ok)
             tile->setProbability(probability);
+
         imageVariant = tileVar[QLatin1String("image")];
         if (!imageVariant.isNull()) {
             QString imagePath = resolvePath(mMapDir, imageVariant);
             tileset->setTileImage(tile, QPixmap(imagePath), imagePath);
         }
+
         QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
         if (!objectGroupVariant.isEmpty())
             tile->setObjectGroup(toObjectGroup(objectGroupVariant));

@@ -30,6 +30,7 @@
 #include "renamelayer.h"
 
 #include <QApplication>
+#include <QPalette>
 #include <QStyle>
 
 using namespace Tiled;
@@ -116,7 +117,18 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            return index.column() ? mapObject->type() : mapObject->name();
+            if (index.column() == 0) {
+                return mapObject->name();
+            } else if (index.column() == 1) {
+                return mapObject->effectiveType();
+            }
+        case Qt::ForegroundRole:
+            if (index.column() == 1) {
+                const QPalette palette = QApplication::palette();
+                const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
+                                                                        : QPalette::Active;
+                return palette.brush(typeColorGroup, QPalette::WindowText);
+            }
         case Qt::DecorationRole:
             return QVariant(); // no icon -> maybe the color?
         case Qt::CheckStateRole:
@@ -327,6 +339,8 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
                 this, &MapObjectModel::layerChanged);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
+        connect(mMapDocument, &MapDocument::tileTypeChanged,
+                this, &MapObjectModel::tileTypeChanged);
     }
 
     endResetModel();
@@ -381,6 +395,26 @@ void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
         beginRemoveRows(parent, row, row);
         filtered.removeAt(row);
         endRemoveRows();
+    }
+}
+
+void MapObjectModel::tileTypeChanged(Tile *tile)
+{
+    LayerIterator it(mMap);
+
+    while (Layer *layer = it.next()) {
+        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            for (MapObject *mapObject : objectGroup->objects()) {
+                if (!mapObject->type().isEmpty())
+                    continue;
+
+                const auto &cell = mapObject->cell();
+                if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id()) {
+                    QModelIndex index = this->index(mapObject, 1);
+                    emit dataChanged(index, index);
+                }
+            }
+        }
     }
 }
 

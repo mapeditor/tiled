@@ -115,6 +115,9 @@ public:
 
     QPoint offset() const;
 
+    const QString &type() const;
+    void setType(const QString &type);
+
     Terrain *terrainAtCorner(int corner) const;
 
     int cornerTerrainId(int corner) const;
@@ -146,6 +149,7 @@ private:
     Tileset *mTileset;
     QPixmap mImage;
     QString mImageSource;
+    QString mType;
     unsigned mTerrain;
     float mProbability;
     ObjectGroup *mObjectGroup;
@@ -226,6 +230,25 @@ inline int Tile::height() const
 inline QSize Tile::size() const
 {
     return mImage.size();
+}
+
+/**
+ * Returns the type of this tile. Tile objects that do not have a type
+ * explicitly set on them are assumed to be of the type returned by this
+ * function.
+ */
+inline const QString &Tile::type() const
+{
+    return mType;
+}
+
+/**
+ * Sets the type of this tile.
+ * \sa type()
+ */
+inline void Tile::setType(const QString &type)
+{
+    mType = type;
 }
 
 /**

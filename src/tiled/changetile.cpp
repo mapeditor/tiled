@@ -1,6 +1,6 @@
 /*
- * changetileimagesource.cpp
- * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * changetile.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,33 +18,31 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changetileimagesource.h"
+#include "changetile.h"
 
-#include "tilesetdocument.h"
 #include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
 namespace Internal {
 
-ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
-                                             Tile *tile,
-                                             const QString &imageSource)
-    : mTilesetDocument(tilesetDocument)
+ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
+                               Tile *tile,
+                               const QString &type)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"))
+    , mTilesetDocument(tilesetDocument)
     , mTile(tile)
-    , mOldImageSource(tile->imageSource())
-    , mNewImageSource(imageSource)
+    , mType(type)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Image"));
 }
 
-void ChangeTileImageSource::apply(const QString &imageSource)
+void ChangeTileType::swap()
 {
-    mTilesetDocument->setTileImage(mTile,
-                                   QPixmap(imageSource),
-                                   imageSource);
+    QString oldType = mTile->type();
+    mTilesetDocument->setTileType(mTile, mType);
+    mType = oldType;
 }
 
 } // namespace Internal
