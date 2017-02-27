@@ -378,7 +378,7 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         if (selectedObjects.count() == 1) {
             const MapObject *o = selectedObjects.first();
             const QPointF center = o->bounds().center();
-            DocumentManager::instance()->centerViewOn(center);
+            DocumentManager::instance()->centerMapViewOn(center);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;
