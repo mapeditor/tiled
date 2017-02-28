@@ -28,14 +28,13 @@
 namespace Tiled {
 
 class Tile;
-class TileLayer;
 
 namespace Internal {
 
 class MapDocument;
 
 /**
- * A command that swaps two tiles on a TileLayer
+ * A command that swaps two tiles on the map.
  */
 class SwapTiles : public QUndoCommand
 {
@@ -44,16 +43,12 @@ public:
      * Constructor.
      *
      * @param mapDocument the map document that's being edited
-     * @param tileLayer   the TileLayer to swap the tiles
      * @param tile1       the first tile
      * @param tile2       the second tile
      */
     SwapTiles(MapDocument *mapDocument,
-              TileLayer *tileLayer,
               Tile *tile1,
               Tile *tile2);
-
-    ~SwapTiles() {}
 
     void undo() { swap(); }
     void redo() { swap(); }
@@ -62,7 +57,6 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    TileLayer *mTileLayer;
     Tile *mTile1;
     Tile *mTile2;
 };

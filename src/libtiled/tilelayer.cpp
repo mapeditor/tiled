@@ -184,6 +184,25 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
                 setCell(_x, _y, layer->cellAt(_x - x, _y - y));
 }
 
+/**
+ * Sets the tiles in the given \a area to \a tile. Flipping flags are
+ * preserved.
+ */
+void TileLayer::setTiles(const QRegion &area, Tile *tile)
+{
+    Q_ASSERT(area.subtracted(QRegion(0, 0, mWidth, mHeight)).isEmpty());
+
+    for (const QRect &rect : area.rects()) {
+        for (int x = rect.left(); x <= rect.right(); ++x) {
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                Cell cell = cellAt(x, y);
+                cell.setTile(tile);
+                setCell(x, y, cell);
+            }
+        }
+    }
+}
+
 void TileLayer::erase(const QRegion &area)
 {
     const Cell emptyCell;

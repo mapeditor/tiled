@@ -21,74 +21,79 @@
 #include "swaptiles.h"
 
 #include "mapdocument.h"
+#include "mapobject.h"
+#include "mapobjectmodel.h"
+#include "objectgroup.h"
 #include "tilelayer.h"
-#include "tileset.h"
 
 #include <QCoreApplication>
-
-#include <limits.h>
 
 namespace Tiled {
 namespace Internal {
 
 SwapTiles::SwapTiles(MapDocument *mapDocument,
-                     TileLayer *tileLayer,
                      Tile *tile1,
                      Tile *tile2)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Swap Tiles"))
     , mMapDocument(mapDocument)
-    , mTileLayer(tileLayer)
     , mTile1(tile1)
     , mTile2(tile2)
 {}
 
 void SwapTiles::swap()
 {
-    // Remember smallest and largest x/y to give emitRegionChanged() the smallest possible rectangle
-    int minXChanged = INT_MAX;
-    int minYChanged = INT_MAX;
-    int maxXChanged = INT_MIN;
-    int maxYChanged = INT_MIN;
+    Tile * const tile1 = mTile1;
+    Tile * const tile2 = mTile2;
 
-    for (int y = 0; y < mTileLayer->height(); y++) {
-        for (int x = 0; x < mTileLayer->width(); x++) {
-            bool tileSwapped = false;
+    const bool tileSizeChanged = tile1->size() != tile2->size();
 
-            const Cell &cell = mTileLayer->cellAt(x, y);
-            if (cell.tile() == mTile1) {
-                Cell swapCell = cell;
-                swapCell.setTile(mTile2);
-                mTileLayer->setCell(x, y, swapCell);
+    QList<MapObject*> changedObjects;
 
-                tileSwapped = true;
-            } else if (cell.tile() == mTile2) {
-                Cell swapCell = cell;
-                swapCell.setTile(mTile1);
-                mTileLayer->setCell(x, y, swapCell);
+    auto isTile1 = [=](const Cell &cell) { return cell.refersTile(tile1); };
+    auto isTile2 = [=](const Cell &cell) { return cell.refersTile(tile2); };
 
-                tileSwapped = true;
+    auto swapObjectTile = [=,&changedObjects](MapObject *object, Tile *fromTile, Tile *toTile) {
+        Cell cell = object->cell();
+        cell.setTile(toTile);
+        object->setCell(cell);
+        if (tileSizeChanged && object->size() == fromTile->size())
+            object->setSize(toTile->size());
+        changedObjects.append(object);
+    };
+
+    LayerIterator it(mMapDocument->map());
+    while (Layer *layer = it.next()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            auto region1 = tileLayer->region(isTile1);
+            auto region2 = tileLayer->region(isTile2);
+
+            tileLayer->setTiles(region1, tile2);
+            tileLayer->setTiles(region2, tile1);
+
+            emit mMapDocument->regionChanged(region1 | region2, tileLayer);
+
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
+                if (object->cell().refersTile(tile1))
+                    swapObjectTile(object, tile1, tile2);
+                else if (object->cell().refersTile(tile2))
+                    swapObjectTile(object, tile2, tile1);
             }
-
-            if (tileSwapped) {
-                if (x < minXChanged) minXChanged = x;
-                if (y < minYChanged) minYChanged = y;
-                if (x > maxXChanged) maxXChanged = x;
-                if (y > maxYChanged) maxYChanged = y;
-            }
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            break;
         }
     }
 
-    // We changed at least one tile? Call emitRegionChanged() to redraw
-    if (minXChanged != INT_MAX) {
-        QRegion regionChanged(
-            minXChanged,
-            minYChanged,
-            maxXChanged - minXChanged + 1,
-            maxYChanged - minYChanged + 1
-        );
-        emit mMapDocument->regionChanged(regionChanged, mTileLayer);
-    }
+    if (!changedObjects.isEmpty())
+        emit mMapDocument->mapObjectModel()->objectsChanged(changedObjects);
 }
 
 } // namespace Internal

@@ -933,10 +933,6 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
     if (!mMapDocument)
         return;
 
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
-    if (!tileLayer)
-        return;
-
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new SwapTiles(mMapDocument, tileLayer, tileA, tileB));
+    undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }
