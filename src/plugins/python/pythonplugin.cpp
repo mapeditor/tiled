@@ -370,6 +370,7 @@ QString PythonMapFormat::shortName() const
     // find fun
     PyObject *pfun = PyObject_GetAttrString(mClass, "shortName");
     if (!pfun || !PyCallable_Check(pfun)) {
+        PySys_WriteStderr("Plugin extension doesn't define \"nameFilter\". Falling back to \"nameFilter\"\n");
         return nameFilter();
     }
 
