@@ -133,5 +133,5 @@ QString CsvPlugin::nameFilter() const
 
 QString CsvPlugin::shortName() const
 {
-    return "csv";
+    return QLatin1String("csv");
 }

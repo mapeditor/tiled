@@ -60,7 +60,7 @@ QString DefoldPlugin::nameFilter() const
 
 QString DefoldPlugin::shortName() const
 {
-    return "defold";
+    return QLatin1String("defold");
 }
 
 QString DefoldPlugin::errorString() const

@@ -38,9 +38,10 @@ public:
     QString errorString() const override;
     QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 
+    QString shortName() const override;
+
 protected:
     QString nameFilter() const override;
-    QString shortName() const override;
 
 private:
     QString mError;

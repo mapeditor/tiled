@@ -94,7 +94,7 @@ QString TmwPlugin::nameFilter() const
 
 QString TmwPlugin::shortName() const
 {
-    return "tmw";
+    return QLatin1String("tmw");
 }
 
 QString TmwPlugin::errorString() const

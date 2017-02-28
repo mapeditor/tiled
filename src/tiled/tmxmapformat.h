@@ -63,7 +63,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx)"); }
 
-    QString shortName() const override { return tr("tmx"); }
+    QString shortName() const override { return QLatin1String("tmx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -91,7 +91,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
 
-    QString shortName() const override { return tr("tsx"); }
+    QString shortName() const override { return QLatin1String("tsx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

@@ -88,7 +88,7 @@ QString LuaPlugin::nameFilter() const
 
 QString LuaPlugin::shortName() const
 {
-    return "lua";
+    return QLatin1String("lua");
 }
 
 QString LuaPlugin::errorString() const

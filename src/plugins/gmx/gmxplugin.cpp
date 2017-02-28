@@ -378,5 +378,5 @@ QString GmxPlugin::nameFilter() const
 
 QString GmxPlugin::shortName() const
 {
-    return "gamemaker";
+    return QLatin1String("gmx");
 }

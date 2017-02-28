@@ -209,7 +209,7 @@ QString ReplicaIslandPlugin::nameFilter() const
 
 QString ReplicaIslandPlugin::shortName() const
 {
-    return "replicaisland";
+    return QLatin1String("replicaisland");
 }
 
 bool ReplicaIslandPlugin::supportsFile(const QString &fileName) const

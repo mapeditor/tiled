@@ -295,7 +295,7 @@ QString TenginePlugin::nameFilter() const
 
 QString TenginePlugin::shortName() const
 {
-    return "te4";
+    return QLatin1String("te4");
 }
 
 QString TenginePlugin::errorString() const

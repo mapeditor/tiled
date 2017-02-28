@@ -36,10 +36,10 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
+    QString shortName() const override;
 
 protected:
     QString nameFilter() const override;
-    QString shortName() const override;
 
 private:
     QString mError;

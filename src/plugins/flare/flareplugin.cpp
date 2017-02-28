@@ -266,7 +266,7 @@ QString FlarePlugin::nameFilter() const
 
 QString FlarePlugin::shortName() const
 {
-    return "flare";
+    return QLatin1String("flare");
 }
 
 QString FlarePlugin::errorString() const
