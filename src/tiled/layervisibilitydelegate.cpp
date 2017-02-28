@@ -22,7 +22,7 @@
  */
 
 #include "layerdock.h"
-
+#include "layervisibilitydelegate.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
