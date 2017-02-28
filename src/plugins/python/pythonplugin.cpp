@@ -363,6 +363,32 @@ QString PythonMapFormat::nameFilter() const
     return ret;
 }
 
+QString PythonMapFormat::shortName() const
+{
+    QString ret;
+
+    // find fun
+    PyObject *pfun = PyObject_GetAttrString(mClass, "shortName");
+    if (!pfun || !PyCallable_Check(pfun)) {
+        PySys_WriteStderr("Plugin extension doesn't define \"shortName\"\n");
+        return ret;
+    }
+
+    // have fun
+    PyObject *pinst = PyEval_CallFunction(pfun, "()");
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+    } else {
+        ret = PyString_AsString(pinst);
+        Py_DECREF(pinst);
+    }
+    handleError();
+
+    Py_DECREF(pfun);
+
+    return ret;
+}
+
 QString PythonMapFormat::errorString() const
 {
     return mError;

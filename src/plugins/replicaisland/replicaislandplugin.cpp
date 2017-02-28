@@ -207,6 +207,11 @@ QString ReplicaIslandPlugin::nameFilter() const
     return tr("Replica Island map files (*.bin)");
 }
 
+QString ReplicaIslandPlugin::shortName() const
+{
+    return "replicaisland";
+}
+
 bool ReplicaIslandPlugin::supportsFile(const QString &fileName) const
 {
     // Check the file extension first.

@@ -150,6 +150,14 @@ QString JsonMapFormat::nameFilter() const
         return tr("JavaScript map files (*.js)");
 }
 
+QString JsonMapFormat::shortName() const
+{
+    if (mSubFormat == Json)
+        return "json";
+    else
+        return "js";
+}
+
 bool JsonMapFormat::supportsFile(const QString &fileName) const
 {
     if (mSubFormat == Json) {
@@ -298,6 +306,11 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
 QString JsonTilesetFormat::nameFilter() const
 {
     return tr("Json tileset files (*.json)");
+}
+
+QString JsonTilesetFormat::shortName() const
+{
+    return tr("json");
 }
 
 QString JsonTilesetFormat::errorString() const

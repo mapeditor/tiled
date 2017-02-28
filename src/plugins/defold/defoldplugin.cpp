@@ -58,6 +58,11 @@ QString DefoldPlugin::nameFilter() const
     return tr("Defold files (*.tilemap)");
 }
 
+QString DefoldPlugin::shortName() const
+{
+    return "defold";
+}
+
 QString DefoldPlugin::errorString() const
 {
     return mError;

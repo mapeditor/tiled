@@ -86,6 +86,11 @@ QString LuaPlugin::nameFilter() const
     return tr("Lua files (*.lua)");
 }
 
+QString LuaPlugin::shortName() const
+{
+    return "lua";
+}
+
 QString LuaPlugin::errorString() const
 {
     return mError;

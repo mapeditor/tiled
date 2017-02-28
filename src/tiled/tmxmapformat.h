@@ -63,6 +63,8 @@ public:
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx)"); }
 
+    QString shortName() const override { return tr("tmx"); }
+
     bool supportsFile(const QString &fileName) const override;
 
     QString errorString() const override { return mError; }
@@ -88,6 +90,8 @@ public:
     bool write(const Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
+
+    QString shortName() const override { return tr("tsx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

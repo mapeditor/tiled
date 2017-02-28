@@ -130,3 +130,8 @@ QString CsvPlugin::nameFilter() const
 {
     return tr("CSV files (*.csv)");
 }
+
+QString CsvPlugin::shortName() const
+{
+    return "csv";
+}

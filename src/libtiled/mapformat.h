@@ -81,6 +81,11 @@ public:
     virtual QString nameFilter() const = 0;
 
     /**
+     * Returns short name for this map format
+     */
+    virtual QString shortName() const = 0;
+
+    /**
      * Returns whether this map format supports reading the given file.
      *
      * Generally would do a file extension check.

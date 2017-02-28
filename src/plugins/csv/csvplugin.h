@@ -40,6 +40,7 @@ public:
 
 protected:
     QString nameFilter() const override;
+    QString shortName() const override;
 
 private:
     QString mError;
