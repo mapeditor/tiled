@@ -146,6 +146,11 @@ QString DroidcraftPlugin::nameFilter() const
     return tr("Droidcraft map files (*.dat)");
 }
 
+QString DroidcraftPlugin::shortName() const
+{
+    return QLatin1String("droidcraft");
+}
+
 QString DroidcraftPlugin::errorString() const
 {
     return mError;

@@ -20,6 +20,10 @@ class ZST(Plugin):
     return "zSNES Save State (*.zs?)"
 
   @classmethod
+  def shortName(cls):
+    return "zst"
+
+  @classmethod
   def supportsFile(cls, f):
     return open(f).read(26) == 'ZSNES Save State File V0.6'
 
