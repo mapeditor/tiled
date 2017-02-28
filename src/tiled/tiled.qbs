@@ -212,6 +212,8 @@ QtGuiApplication {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "layervisibilitydelegate.cpp",
+        "layervisibilitydelegate.h",
         "magicwandtool.h",
         "magicwandtool.cpp",
         "main.cpp",
