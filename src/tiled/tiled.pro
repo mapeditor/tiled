@@ -236,7 +236,8 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    layervisibilitydelegate.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -406,7 +407,8 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h
+    zoomable.h \
+    layervisibilitydelegate.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
