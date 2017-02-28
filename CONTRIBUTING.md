@@ -30,6 +30,6 @@ In any case, be sure to describe the feature in enough detail, to consider its i
 
 ## Making a Donation
 
-You can also support further development of Tiled with a monthly donation to [Thorbjørn on Patreon](https://www.patreon.com/bjorn).
+You can also support further development of Tiled with [a monthly donation to Thorbjørn](https://www.patreon.com/bjorn) on Patreon.
 
 Thanks a lot for your contribution!
