@@ -1,5 +1,5 @@
 /*
- * layervisibilitydelegate.cpp
+ * eyevisibilitydelegate.cpp
  * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -22,7 +22,7 @@
  */
 
 #include "layerdock.h"
-#include "layervisibilitydelegate.h"
+#include "eyevisibilitydelegate.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -45,24 +45,24 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-LayerVisibilityDelegate::LayerVisibilityDelegate(QObject *parent):
+EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     QItemDelegate(parent),
-    visiblePixmap(QLatin1String(":/images/12x12/layer-visible.png")),
-    invisiblePixmap(QLatin1String(":/images/12x12/layer-invisible.png"))
+    mVisiblePixmap(QLatin1String(":/images/12x12/layer-visible.png")),
+    mInvisiblePixmap(QLatin1String(":/images/12x12/layer-invisible.png"))
 {
 }
 
-void LayerVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
+void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
     const QRect &rect, Qt::CheckState state) const
 {
     Q_UNUSED(option)
     if (state == Qt::Checked)
     {
-        painter->drawPixmap(rect, visiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+        painter->drawPixmap(rect, mVisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
     }
     else if (state == Qt::Unchecked)
     {
-        painter->drawPixmap(rect, invisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+        painter->drawPixmap(rect, mInvisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
     }
 
 }

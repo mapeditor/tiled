@@ -1,5 +1,5 @@
 /*
- * layervisibilitydelegate.h
+ * eyevisibilitydelegate.h
  * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  *
@@ -40,17 +40,18 @@ namespace Internal {
 /**
  * Delegate for drawing an eye icon in LayerView when the layer is visible.
  */
-class LayerVisibilityDelegate: public QItemDelegate
+class EyeVisibilityDelegate: public QItemDelegate
 {
 public:
-    explicit LayerVisibilityDelegate(QObject *parent = nullptr);
+    explicit EyeVisibilityDelegate(QObject *parent = nullptr);
 
 protected:
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
         const QRect &rect, Qt::CheckState state) const override;
 
 private:
-    QPixmap visiblePixmap, invisiblePixmap;
+    QPixmap mVisiblePixmap;
+    QPixmap mInvisiblePixmap;
 };
 
 } // namespace Internal

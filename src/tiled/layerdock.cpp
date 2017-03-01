@@ -31,7 +31,7 @@
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "layervisibilitydelegate.h"
+#include "eyevisibilitydelegate.h"
 
 #include <QBoxLayout>
 #include <QApplication>
@@ -222,7 +222,7 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegate(new LayerVisibilityDelegate(this));
+    setItemDelegate(new EyeVisibilityDelegate(this));
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
