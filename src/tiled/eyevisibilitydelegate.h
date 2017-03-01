@@ -21,18 +21,9 @@
 
 #pragma once
 
-#include "mapdocument.h"
-
-#include <QDockWidget>
 #include <QItemDelegate>
 #include <QPixmap>
 #include <QTreeView>
-#include <QToolButton>
-
-class QAbstractProxyModel;
-class QLabel;
-class QModelIndex;
-class QUndoStack;
 
 namespace Tiled {
 namespace Internal {

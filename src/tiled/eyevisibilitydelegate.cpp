@@ -21,26 +21,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "layerdock.h"
 #include "eyevisibilitydelegate.h"
-#include "layer.h"
-#include "layermodel.h"
-#include "map.h"
-#include "mapdocument.h"
-#include "mapdocumentactionhandler.h"
-#include "objectgroup.h"
-#include "reversingproxymodel.h"
-#include "utils.h"
 
-#include <QBoxLayout>
 #include <QApplication>
-#include <QContextMenuEvent>
-#include <QLabel>
-#include <QMenu>
 #include <QPainter>
-#include <QSlider>
-#include <QUndoStack>
-#include <QToolBar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -56,13 +40,10 @@ void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewI
     const QRect &rect, Qt::CheckState state) const
 {
     Q_UNUSED(option)
+
     if (state == Qt::Checked)
-    {
         painter->drawPixmap(rect, mVisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
-    }
     else if (state == Qt::Unchecked)
-    {
         painter->drawPixmap(rect, mInvisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
-    }
 
 }
