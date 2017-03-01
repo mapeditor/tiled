@@ -47,10 +47,10 @@ public:
 
 protected:
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
-        const QRect &rect, Qt::CheckState state) const;
+        const QRect &rect, Qt::CheckState state) const override;
 
 private:
-    QPixmap mPixmap;
+    QPixmap visiblePixmap, invisiblePixmap;
 };
 
 } // namespace Internal

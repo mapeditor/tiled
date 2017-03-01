@@ -47,7 +47,8 @@ using namespace Tiled::Internal;
 
 LayerVisibilityDelegate::LayerVisibilityDelegate(QObject *parent):
     QItemDelegate(parent),
-    mPixmap(QLatin1String(":/images/12x12/layer-visible.png"))
+    visiblePixmap(QLatin1String(":/images/12x12/layer-visible.png")),
+    invisiblePixmap(QLatin1String(":/images/12x12/layer-invisible.png"))
 {
 }
 
@@ -56,5 +57,12 @@ void LayerVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionVie
 {
     Q_UNUSED(option)
     if (state == Qt::Checked)
-        painter->drawPixmap(rect, mPixmap, QRect(0, 0, rect.width(), rect.height()));
+    {
+        painter->drawPixmap(rect, visiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+    }
+    else if (state == Qt::Unchecked)
+    {
+        painter->drawPixmap(rect, invisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+    }
+
 }
