@@ -23,7 +23,6 @@
 
 #include "eyevisibilitydelegate.h"
 
-#include <QApplication>
 #include <QPainter>
 
 using namespace Tiled;

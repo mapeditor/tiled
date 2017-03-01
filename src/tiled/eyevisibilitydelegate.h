@@ -23,7 +23,6 @@
 
 #include <QItemDelegate>
 #include <QPixmap>
-#include <QTreeView>
 
 namespace Tiled {
 namespace Internal {
