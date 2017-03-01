@@ -47,8 +47,8 @@ using namespace Tiled::Internal;
 
 EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     QItemDelegate(parent),
-    mVisiblePixmap(QLatin1String(":/images/12x12/layer-visible.png")),
-    mInvisiblePixmap(QLatin1String(":/images/12x12/layer-invisible.png"))
+    mVisiblePixmap(QLatin1String(":/images/16x16/layer-visible.png")),
+    mInvisiblePixmap(QLatin1String(":/images/16x16/layer-invisible.png"))
 {
 }
 
