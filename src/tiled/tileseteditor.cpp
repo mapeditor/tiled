@@ -46,6 +46,7 @@
 #include "zoomable.h"
 
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QFileDialog>
@@ -435,21 +436,47 @@ void TilesetEditor::addTiles()
         QPixmap image;
     };
     QVector<LoadedFile> loadedFiles;
-
+    bool addImage = true, dontAskAgain = false;
     for (const QString &file : files) {
-        const QPixmap image(file);
-        if (!image.isNull()) {
-            loadedFiles.append(LoadedFile { file, image });
-        } else {
-            QMessageBox warning(QMessageBox::Warning,
-                                tr("Add Tiles"),
-                                tr("Could not load \"%1\"!").arg(file),
-                                QMessageBox::Ignore | QMessageBox::Cancel,
-                                mMainWindow->window());
-            warning.setDefaultButton(QMessageBox::Ignore);
+        // If the tile is already in the tileset, warn user and confirm addition
+        const QMap<int, Tile*> addedTiles = mCurrentTilesetDocument->tileset().data()->tiles();
+        for(auto tile : addedTiles) {
+            if(dontAskAgain)
+                break;
+            if(tile->imageSource() == file) {
+                QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
+                QMessageBox warning(QMessageBox::Warning,
+                            tr("Add Tiles"),
+                            tr("Tile \"%1\" already exists in the Tileset!").arg(file),
+                            QMessageBox::Yes | QMessageBox::No,
+                            mMainWindow->window());
+                warning.setDefaultButton(QMessageBox::Yes);
+                warning.setInformativeText(tr("Add anyway?"));
+                warning.setCheckBox(checkBox);
+                if (warning.exec() != QMessageBox::Yes) {
+                    addImage = false;
+                }
+                if (checkBox->checkState() == Qt::Checked) {
+                    dontAskAgain = true;
+                }
+                break;
+            }
+        }
+        if(addImage){
+            const QPixmap image(file);
+            if (!image.isNull()) {
+                loadedFiles.append(LoadedFile { file, image });
+            } else {
+                QMessageBox warning(QMessageBox::Warning,
+                                    tr("Add Tiles"),
+                                    tr("Could not load \"%1\"!").arg(file),
+                                    QMessageBox::Ignore | QMessageBox::Cancel,
+                                    mMainWindow->window());
+                warning.setDefaultButton(QMessageBox::Ignore);
 
-            if (warning.exec() != QMessageBox::Ignore)
-                return;
+                if (warning.exec() != QMessageBox::Ignore)
+                    return;
+            }
         }
     }
 
@@ -465,28 +492,7 @@ void TilesetEditor::addTiles()
         Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
         newTile->setImage(loadedFile.image);
         newTile->setImageSource(loadedFile.imageSource);
-
-        // If the tile is already in the tileset, warn user and confirm addition
-        bool addImage = true;
-        const QMap<int, Tile*> addedTiles = mCurrentTilesetDocument->tileset().data()->tiles();
-        for(auto tile : addedTiles) {
-            if(tile->imageSource() == newTile->imageSource()) {
-                QMessageBox warning(QMessageBox::Warning,
-                            tr("Add Tiles"),
-                            tr("Tile already exists in the Tileset!"),
-                            QMessageBox::Yes | QMessageBox::No,
-                            mMainWindow->window());
-                warning.setDefaultButton(QMessageBox::Yes);
-                warning.setInformativeText(tr("Add anyway?"));
-                if (warning.exec() != QMessageBox::Yes) {
-                    addImage = false;
-                }
-                break;
-            }
-        }
-        if(addImage){
-            tiles.append(newTile);
-        }
+        tiles.append(newTile);
     }
 
     mCurrentTilesetDocument->undoStack()->push(new AddTiles(mCurrentTilesetDocument, tiles));
