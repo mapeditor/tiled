@@ -465,7 +465,28 @@ void TilesetEditor::addTiles()
         Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
         newTile->setImage(loadedFile.image);
         newTile->setImageSource(loadedFile.imageSource);
-        tiles.append(newTile);
+
+        // If the tile is already in the tileset, warn user and confirm addition
+        bool addImage = true;
+        const QMap<int, Tile*> addedTiles = mCurrentTilesetDocument->tileset().data()->tiles();
+        for(auto tile : addedTiles) {
+            if(tile->imageSource() == newTile->imageSource()) {
+                QMessageBox warning(QMessageBox::Warning,
+                            tr("Add Tiles"),
+                            tr("Tile already exists in the Tileset!"),
+                            QMessageBox::Yes | QMessageBox::No,
+                            mMainWindow->window());
+                warning.setDefaultButton(QMessageBox::Yes);
+                warning.setInformativeText(tr("Add anyway?"));
+                if (warning.exec() != QMessageBox::Yes) {
+                    addImage = false;
+                }
+                break;
+            }
+        }
+        if(addImage){
+            tiles.append(newTile);
+        }
     }
 
     mCurrentTilesetDocument->undoStack()->push(new AddTiles(mCurrentTilesetDocument, tiles));
