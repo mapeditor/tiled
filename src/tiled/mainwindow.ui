@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -77,6 +77,7 @@
     <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
+    <addaction name="actionExecuteCommand"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
     <addaction name="actionQuit"/>
@@ -571,6 +572,18 @@
    </property>
    <property name="text">
     <string>No Snapping</string>
+   </property>
+  </action>
+  <action name="actionExecuteCommand">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/24x24/system-run.png</normaloff>:/images/24x24/system-run.png</iconset>
+   </property>
+   <property name="text">
+    <string>Execute Command</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>
