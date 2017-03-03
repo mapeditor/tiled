@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QLatin1String>
 #include <QMenu>
+#include <QSignalMapper>
 #include <QWidget>
 
 using namespace Tiled;
@@ -77,11 +78,14 @@ void CommandManager::populateMenu(QMenu *menu)
     // Add all enabled commands now
 
     bool firstEnabledCommand = true;
+    int counter = -1;
 
-    const CommandDataModel model;
-    const QList<Command> &commands = model.allCommands();
+    CommandDataModel *mModel = new CommandDataModel;
+    const QList<Command> &commands = mModel->allCommands();
 
     foreach (const Command &command, commands) {
+    	++counter;
+
         if (!command.isEnabled)
             continue;
 
@@ -89,6 +93,10 @@ void CommandManager::populateMenu(QMenu *menu)
         if(firstEnabledCommand)
         	mAction->setShortcut(QKeySequence(tr("F5")));
         firstEnabledCommand = false;
-        
+
+        QSignalMapper *mapper = new QSignalMapper(mAction);
+        mapper->setMapping(mAction, counter);
+        connect(mAction, SIGNAL(triggered()), mapper, SLOT(map()));
+        connect(mapper, SIGNAL(mapped(int)), mModel, SLOT(execute(int)));
     }
 }
