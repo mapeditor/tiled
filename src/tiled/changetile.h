@@ -1,6 +1,6 @@
 /*
- * The Mana World Tiled Plugin
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * changetile.h
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,29 +20,36 @@
 
 #pragma once
 
-#include "tmw_global.h"
+#include <QUndoCommand>
 
-#include "mapformat.h"
+namespace Tiled {
 
-#include <QObject>
+class Tile;
 
-namespace Tmw {
+namespace Internal {
 
-class TMWSHARED_EXPORT TmwPlugin : public Tiled::WritableMapFormat
+class TilesetDocument;
+
+class ChangeTileType : public QUndoCommand
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
-
 public:
-    TmwPlugin();
+    /**
+     * Creates an undo command that sets the given \a tile's \a type.
+     */
+    ChangeTileType(TilesetDocument *tilesetDocument,
+                   Tile *tile,
+                   const QString &type);
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
-    QString nameFilter() const override;
-    QString shortName() const override;
-    QString errorString() const override;
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
-    QString mError;
+    void swap();
+
+    TilesetDocument *mTilesetDocument;
+    Tile *mTile;
+    QString mType;
 };
 
-} // namespace Tmw
+} // namespace Internal
+} // namespace Tiled

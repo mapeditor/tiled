@@ -65,6 +65,10 @@ class Mappy(Plugin, FMPPicklerMixin):
     return "Mappy (*.fmp)"
 
   @classmethod
+  def shortName(cls):
+    return "mappy"
+
+  @classmethod
   def supportsFile(cls, f):
     return open(f).read(4) == 'FORM'
 

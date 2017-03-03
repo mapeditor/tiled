@@ -165,7 +165,7 @@ void CommandLineHandler::showExportFormats()
     const auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning(" %s", qUtf8Printable(format->nameFilter()));
+            qWarning(" %s", qUtf8Printable(format->shortName()));
     }
 
     quit = true;
@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
+                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
                     chosenFormat = format;
                     break;
                 }

@@ -117,6 +117,7 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName) override;
 
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
     PyObject *pythonClass() const { return mClass; }

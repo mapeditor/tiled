@@ -28,6 +28,7 @@ namespace Tiled {
 class GroupLayer;
 class Layer;
 class MapObject;
+class Tile;
 
 namespace Internal {
 
@@ -57,6 +58,7 @@ private slots:
     void updateObjectLabelColors();
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);
+    void tileTypeChanged(Tile *tile);
 
     void objectLabelVisibilityChanged();
 

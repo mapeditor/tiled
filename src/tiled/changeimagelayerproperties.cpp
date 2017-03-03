@@ -56,7 +56,7 @@ void ChangeImageLayerProperties::redo()
     else
         mImageLayer->loadFromImage(mRedoPath);
 
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 
 void ChangeImageLayerProperties::undo()
@@ -68,6 +68,6 @@ void ChangeImageLayerProperties::undo()
     else
         mImageLayer->loadFromImage(mUndoPath);
 
-    mMapDocument->emitImageLayerChanged(mImageLayer);
+    emit mMapDocument->imageLayerChanged(mImageLayer);
 }
 

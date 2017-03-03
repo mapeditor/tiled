@@ -1,6 +1,6 @@
 /*
- * resizemap.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * changetile.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,46 +18,31 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "resizemap.h"
+#include "changetile.h"
 
-#include "map.h"
-#include "mapdocument.h"
+#include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
 namespace Internal {
 
-ResizeMap::ResizeMap(MapDocument *mapDocument,
-                     const QSize &size,
-                     QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Resize Map"),
-                   parent)
-    , mMapDocument(mapDocument)
-    , mSize(size)
+ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
+                               Tile *tile,
+                               const QString &type)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"))
+    , mTilesetDocument(tilesetDocument)
+    , mTile(tile)
+    , mType(type)
 {
 }
 
-void ResizeMap::undo()
+void ChangeTileType::swap()
 {
-    swapSize();
-}
-
-void ResizeMap::redo()
-{
-    swapSize();
-}
-
-void ResizeMap::swapSize()
-{
-    Map *map = mMapDocument->map();
-    QSize oldSize(map->width(), map->height());
-    map->setWidth(mSize.width());
-    map->setHeight(mSize.height());
-    mSize = oldSize;
-
-    emit mMapDocument->mapChanged();
+    QString oldType = mTile->type();
+    mTilesetDocument->setTileType(mTile, mType);
+    mType = oldType;
 }
 
 } // namespace Internal

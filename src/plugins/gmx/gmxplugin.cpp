@@ -375,3 +375,8 @@ QString GmxPlugin::nameFilter() const
 {
     return tr("GameMaker room files (*.room.gmx)");
 }
+
+QString GmxPlugin::shortName() const
+{
+    return QLatin1String("gmx");
+}

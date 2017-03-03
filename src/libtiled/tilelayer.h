@@ -109,6 +109,7 @@ public:
     Tile *tile() const;
     void setTile(Tile *tile);
     void setTile(Tileset *tileset, int tileId);
+    bool refersTile(const Tile *tile) const;
 
 private:
     Tileset *_tileset;
@@ -136,6 +137,11 @@ inline void Cell::setTile(Tileset *tileset, int tileId)
 {
     _tileset = tileset;
     _tileId = tileId;
+}
+
+inline bool Cell::refersTile(const Tile *tile) const
+{
+    return _tileset == tile->tileset() && _tileId == tile->id();
 }
 
 
@@ -228,6 +234,8 @@ public:
      */
     void setCells(int x, int y, TileLayer *tileLayer,
                   const QRegion &mask = QRegion());
+
+    void setTiles(const QRegion &area, Tile *tile);
 
     /**
      * Flip this tile layer in the given \a direction. Direction must be

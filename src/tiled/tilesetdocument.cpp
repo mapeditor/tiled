@@ -64,6 +64,15 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
 
+    connect(this, &TilesetDocument::propertyAdded,
+            this, &TilesetDocument::onPropertyAdded);
+    connect(this, &TilesetDocument::propertyRemoved,
+            this, &TilesetDocument::onPropertyRemoved);
+    connect(this, &TilesetDocument::propertyChanged,
+            this, &TilesetDocument::onPropertyChanged);
+    connect(this, &TilesetDocument::propertiesChanged,
+            this, &TilesetDocument::onPropertiesChanged);
+
     connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
             this, &TilesetDocument::onTerrainAboutToBeAdded);
     connect(mTerrainModel, &TilesetTerrainModel::terrainAdded,
@@ -242,6 +251,9 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
         mapDocument->map()->invalidateDrawMargins();
 
     emit tilesetTileOffsetChanged(mTileset.data());
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTileOffsetChanged(mTileset.data());
 }
 
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
@@ -280,6 +292,53 @@ QList<Object *> TilesetDocument::currentObjects() const
     }
 
     return Document::currentObjects();
+}
+
+void TilesetDocument::setTileType(Tile *tile, const QString &type)
+{
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    tile->setType(type);
+    emit tileTypeChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileTypeChanged(tile);
+}
+
+void TilesetDocument::setTileImage(Tile *tile, const QPixmap &image, const QString &source)
+{
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    mTileset->setTileImage(tile, image, source);
+
+    emit tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileImageSourceChanged(tile);
+}
+
+void TilesetDocument::onPropertyAdded(Object *object, const QString &name)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertyAdded(object, name);
+}
+
+void TilesetDocument::onPropertyRemoved(Object *object, const QString &name)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertyRemoved(object, name);
+}
+
+void TilesetDocument::onPropertyChanged(Object *object, const QString &name)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertyChanged(object, name);
+}
+
+void TilesetDocument::onPropertiesChanged(Object *object)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertiesChanged(object);
 }
 
 void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)

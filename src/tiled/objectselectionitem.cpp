@@ -208,6 +208,7 @@ public:
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }
 
+    MapObject *mapObject() const { return mObject; }
     void syncWithMapObject(MapRenderer *renderer);
     void updateColor();
 
@@ -322,6 +323,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
     connect(mapDocument, &MapDocument::objectsRemoved,
             this, &ObjectSelectionItem::objectsRemoved);
 
+    connect(mapDocument, &MapDocument::tileTypeChanged,
+            this, &ObjectSelectionItem::tileTypeChanged);
+
     Preferences *prefs = Preferences::instance();
 
     connect(prefs, &Preferences::objectLabelVisibilityChanged,
@@ -433,6 +437,18 @@ void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         for (MapObject *object : objects)
             delete mObjectLabels.take(object);
+}
+
+void ObjectSelectionItem::tileTypeChanged(Tile *tile)
+{
+    for (MapObjectLabel *label : mObjectLabels) {
+        MapObject *object = label->mapObject();
+        if (object->type().isEmpty()) {
+            const auto &cell = object->cell();
+            if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id())
+                label->updateColor();
+        }
+    }
 }
 
 void ObjectSelectionItem::objectLabelVisibilityChanged()

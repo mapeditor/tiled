@@ -911,7 +911,7 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
         }
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
 
     mMovingObjects.clear();
 }
@@ -1020,7 +1020,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
 
     mOriginIndicator->setPos(mOldOriginPosition + diff);
 }
@@ -1109,7 +1109,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         mapObject->setRotation(newRotation);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
@@ -1235,7 +1235,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1374,7 +1374,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
 
-    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
+    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
