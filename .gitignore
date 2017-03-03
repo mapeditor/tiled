@@ -22,6 +22,7 @@ automappingconverter.exe
 *.lib
 *.exp
 *.intermediate.manifest
+default/
 
 # Build artifacts on Mac
 translations/phony_target.app
