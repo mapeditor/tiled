@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QLatin1String>
 #include <QMenu>
+#include <QShortcut>
 #include <QSignalMapper>
 #include <QWidget>
 
@@ -90,13 +91,18 @@ void CommandManager::populateMenu(QMenu *menu)
             continue;
 
         QAction *mAction = menu->addAction(command.name);
-        if(firstEnabledCommand)
-        	mAction->setShortcut(QKeySequence(tr("F5")));
+
         firstEnabledCommand = false;
 
         QSignalMapper *mapper = new QSignalMapper(mAction);
         mapper->setMapping(mAction, counter);
         connect(mAction, SIGNAL(triggered()), mapper, SLOT(map()));
         connect(mapper, SIGNAL(mapped(int)), mModel, SLOT(execute(int)));
+
+        if(firstEnabledCommand) {
+        	mAction->setShortcut(QKeySequence(tr("F5")));
+        	QShortcut *key = new QShortcut(QKeySequence(tr("F5")), mMainWindow);
+		    connect(key, SIGNAL(activated()), mAction, SLOT(trigger()));
+        }
     }
 }

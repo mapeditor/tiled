@@ -127,5 +127,6 @@ void CommandButton::changeEvent(QEvent *event)
 
 void CommandButton::retranslateUi()
 {
+    setShortcut(QKeySequence(tr("F5")));
     setToolTip(tr("Execute Command"));
 }
