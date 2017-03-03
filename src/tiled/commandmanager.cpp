@@ -62,6 +62,7 @@ void CommandManager::populateMenu(QMenu *menu)
 {
 	menu->clear();
 
+	// Add Edit Commands first
 	QAction *mEditCommands = new QAction(this);
     mEditCommands->setIcon(
             QIcon(QLatin1String(":/images/24x24/system-run.png")));
@@ -70,4 +71,24 @@ void CommandManager::populateMenu(QMenu *menu)
     menu->addAction(mEditCommands);
 
     connect(mEditCommands, SIGNAL(triggered()), this, SLOT(showDialog()));
+
+    menu->addSeparator();
+
+    // Add all enabled commands now
+
+    bool firstEnabledCommand = true;
+
+    const CommandDataModel model;
+    const QList<Command> &commands = model.allCommands();
+
+    foreach (const Command &command, commands) {
+        if (!command.isEnabled)
+            continue;
+
+        QAction *mAction = menu->addAction(command.name);
+        if(firstEnabledCommand)
+        	mAction->setShortcut(QKeySequence(tr("F5")));
+        firstEnabledCommand = false;
+        
+    }
 }
