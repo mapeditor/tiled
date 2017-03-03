@@ -1,9 +1,6 @@
 /*
  * eyevisibilitydelegate.cpp
- * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
- * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -30,8 +27,8 @@ using namespace Tiled::Internal;
 
 EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     QItemDelegate(parent),
-    mVisiblePixmap(QLatin1String(":/images/16x16/layer-visible.png")),
-    mInvisiblePixmap(QLatin1String(":/images/16x16/layer-invisible.png"))
+    mVisiblePixmap(QLatin1String(":/images/14x14/layer-visible.png")),
+    mInvisiblePixmap(QLatin1String(":/images/14x14/layer-invisible.png"))
 {
 }
 
@@ -41,8 +38,8 @@ void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewI
     Q_UNUSED(option)
 
     if (state == Qt::Checked)
-        painter->drawPixmap(rect, mVisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+        painter->drawPixmap(rect, mVisiblePixmap);
     else if (state == Qt::Unchecked)
-        painter->drawPixmap(rect, mInvisiblePixmap, QRect(0, 0, rect.width(), rect.height()));
+        painter->drawPixmap(rect, mInvisiblePixmap);
 
 }

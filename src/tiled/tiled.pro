@@ -134,6 +134,7 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
+    eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
@@ -236,8 +237,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    eyevisibilitydelegate.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -301,6 +301,7 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
+    eyevisibilitydelegate.h \
     filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
@@ -407,8 +408,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    eyevisibilitydelegate.h
+    zoomable.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \

@@ -1,7 +1,6 @@
 /*
  * eyevisibilitydelegate.h
- * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
  *
