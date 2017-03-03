@@ -117,6 +117,7 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
+    commandmanager.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
@@ -283,6 +284,7 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     command.h \
     commandlineparser.h \
+    commandmanager.h \
     consoledock.h \
     containerhelpers.h \
     createellipseobjecttool.h \

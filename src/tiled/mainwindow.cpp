@@ -33,6 +33,7 @@
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
+#include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
@@ -103,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mConsoleDock(new ConsoleDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
+    , mCommandManager(new CommandManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mTmxMapFormat(new TmxMapFormat(this))
     , mTsxTilesetFormat(new TsxTilesetFormat(this))

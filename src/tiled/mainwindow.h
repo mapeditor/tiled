@@ -50,6 +50,7 @@ namespace Internal {
 
 class ActionManager;
 class AutomappingManager;
+class CommandManager;
 class DocumentManager;
 class MapDocumentActionHandler;
 class MapScene;
@@ -221,6 +222,7 @@ private:
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
+    CommandManager *mCommandManager;
     DocumentManager *mDocumentManager;
 
     TmxMapFormat *mTmxMapFormat;
