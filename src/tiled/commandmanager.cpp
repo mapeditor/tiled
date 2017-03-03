@@ -20,15 +20,54 @@
 
 #include "commandmanager.h"
 
+#include "commanddatamodel.h"
+#include "commanddialog.h"
+
+#include <QAction>
+#include <QLatin1String>
+#include <QMenu>
+#include <QWidget>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CommandManager::CommandManager(QObject *parent)
+CommandManager::CommandManager(QObject *parent, QWidget *window)
 	: QObject(parent)
+	, mMainWindow(window)
 {
 	
 }
 
 CommandManager::~CommandManager()
 {
+}
+
+void CommandManager::setMainWindowMenu(QMenu *menu)
+{
+	this->mMainWindowMenu = menu;
+}
+
+void CommandManager::populateMainWindowMenu()
+{
+	populateMenu(this->mMainWindowMenu);
+}
+
+void CommandManager::showDialog()
+{
+	CommandDialog dialog(mMainWindow);
+    dialog.exec();
+}
+
+void CommandManager::populateMenu(QMenu *menu)
+{
+	menu->clear();
+
+	QAction *mEditCommands = new QAction(this);
+    mEditCommands->setIcon(
+            QIcon(QLatin1String(":/images/24x24/system-run.png")));
+    mEditCommands->setText(tr("Edit Commands"));
+
+    menu->addAction(mEditCommands);
+
+    connect(mEditCommands, SIGNAL(triggered()), this, SLOT(showDialog()));
 }

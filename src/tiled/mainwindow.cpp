@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mConsoleDock(new ConsoleDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
-    , mCommandManager(new CommandManager(this))
+    , mCommandManager(new CommandManager(this, window()))
     , mDocumentManager(DocumentManager::instance())
     , mTmxMapFormat(new TmxMapFormat(this))
     , mTsxTilesetFormat(new TsxTilesetFormat(this))
@@ -270,6 +270,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
+    mCommandManager->setMainWindowMenu(mUi->menuCommand);
+
     connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
@@ -311,6 +313,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
+
+    connect(mUi->menuCommand, SIGNAL(aboutToShow()), mCommandManager, SLOT(populateMainWindowMenu()));
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),

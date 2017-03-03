@@ -22,6 +22,9 @@
 
 #include <QObject>
 
+class QMenu;
+class QWidget;
+
 namespace Tiled {
 namespace Internal {
 
@@ -30,8 +33,30 @@ class CommandManager : public QObject
 	Q_OBJECT
 
 public:
-    CommandManager(QObject *parent = nullptr);
+    CommandManager(QObject *parent = nullptr, QWidget *window = nullptr);
     ~CommandManager();
+
+    /**
+     * Sets the value of mMainWindowMenu
+     */
+    void setMainWindowMenu(QMenu *menu);
+
+public slots:
+	void populateMainWindowMenu();
+
+	/**
+     * Displays the dialog to edit the commands
+     */
+    void showDialog();
+
+private:
+	/**
+	 * Populates the menu pointed by menu
+	 */
+	void populateMenu(QMenu *menu);
+
+	QMenu *mMainWindowMenu;
+	QWidget *mMainWindow;
 };
 
 } // namespace Internal
