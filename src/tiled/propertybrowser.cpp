@@ -629,11 +629,16 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
     addProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
     addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
-    addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
-    addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
-    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
 
     auto mapObject = static_cast<const MapObject*>(mObject);
+
+    if (!mapObject->isPolyShape()) {
+        addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
+        addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
+    }
+
+    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+
 
     if (!mapObject->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -1336,8 +1341,12 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
-        mIdToProperty[WidthProperty]->setValue(mapObject->width());
-        mIdToProperty[HeightProperty]->setValue(mapObject->height());
+
+        if (!mapObject->isPolyShape()) {
+            mIdToProperty[WidthProperty]->setValue(mapObject->width());
+            mIdToProperty[HeightProperty]->setValue(mapObject->height());
+        }
+
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
