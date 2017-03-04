@@ -106,11 +106,11 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter, const bool isHexagonal)
+CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
     : mPainter(painter)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
-    , mIsHexagonal(isHexagonal)
+    , mCellType(cellType)
 {
 }
 
@@ -166,14 +166,16 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         fragment.x -= sizeHalf.x();
 
     qreal rotation = 0;
-    if (mIsHexagonal) {
-        rotation = (cell.flippedLeftHexAntiDiagonally() ? 300 : (cell.flippedAntiDiagonally() ? 60 : 0));
-    } else {
-        rotation = (cell.flippedAntiDiagonally() ? 90 : 0);
-    }
-
-    if (rotation != 0) {
-        fragment.rotation = rotation;
+    if (mCellType == HexagonalCells) {
+        if (cell.rotatedHexagonal60()) {
+            fragment.rotation += 60;
+        }
+        if (cell.rotatedHexagonal120()) {
+            fragment.rotation += 120;
+        }
+    } else if (cell.flippedAntiDiagonally()) {
+        Q_ASSERT(mCellType == OrthogonalCells);
+        fragment.rotation = 90;
         
         flippedHorizontally = cell.flippedVertically();
         flippedVertically = !cell.flippedHorizontally();

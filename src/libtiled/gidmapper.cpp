@@ -38,7 +38,9 @@ using namespace Tiled;
 const int FlippedHorizontallyFlag   = 0x80000000;
 const int FlippedVerticallyFlag     = 0x40000000;
 const int FlippedAntiDiagonallyFlag = 0x20000000;
-const int FlippedLeftHexAntiDiagonallyFlag = 0x10000000;
+
+const int RotatedHexagonal60Flag    = 0x20000000;
+const int RotatedHexagonal120Flag   = 0x10000000;
 
 /**
  * Default constructor. Use \l insert to initialize the gid mapper
@@ -74,13 +76,16 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
     result.setFlippedHorizontally(gid & FlippedHorizontallyFlag);
     result.setFlippedVertically(gid & FlippedVerticallyFlag);
     result.setFlippedAntiDiagonally(gid & FlippedAntiDiagonallyFlag);
-    result.setFlippedLeftHexAntiDiagonally(gid & FlippedLeftHexAntiDiagonallyFlag);
+
+    result.setRotatedHexagonal60(gid & RotatedHexagonal60Flag);
+    result.setRotatedHexagonal120(gid & RotatedHexagonal120Flag);
 
     // Clear the flags
     gid &= ~(FlippedHorizontallyFlag |
              FlippedVerticallyFlag |
              FlippedAntiDiagonallyFlag |
-             FlippedLeftHexAntiDiagonallyFlag);
+             RotatedHexagonal60Flag |
+             RotatedHexagonal120Flag);
 
     if (gid == 0) {
         ok = true;
@@ -133,8 +138,10 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
         gid |= FlippedVerticallyFlag;
     if (cell.flippedAntiDiagonally())
         gid |= FlippedAntiDiagonallyFlag;
-    if (cell.flippedLeftHexAntiDiagonally())
-        gid |= FlippedLeftHexAntiDiagonallyFlag;
+    if (cell.rotatedHexagonal60())
+        gid |= RotatedHexagonal60Flag;
+    if (cell.rotatedHexagonal120())
+        gid |= RotatedHexagonal120Flag;
 
     return gid;
 }
