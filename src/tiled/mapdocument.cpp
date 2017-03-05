@@ -670,7 +670,7 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 
     // Switch the current object layer if only one object layer (and/or its objects)
     // are included in the current selection.
-    if(singleObjectGroup)
+    if (singleObjectGroup)
         setCurrentLayer(singleObjectGroup);
 
     if (selectedObjects.size() == 1)
