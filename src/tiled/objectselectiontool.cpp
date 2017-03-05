@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "objectselectiontool.h"
 
 #include "changepolygon.h"
@@ -686,6 +685,8 @@ static bool canResizeAbsolute(const MapObject *object)
 
     return false;
 }
+
+bool highlightState = false;
 
 /* This function returns the actual bounds of the object, as opposed to the
  * bounds of its visualization that the MapRenderer::boundingRect function
@@ -1431,7 +1432,7 @@ void ObjectSelectionTool::saveSelectionState()
 void ObjectSelectionTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
-
+    const MapObject *prevObject = nullptr;
     switch (mAction) {
     case NoAction: {
         const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
@@ -1439,17 +1440,43 @@ void ObjectSelectionTool::refreshCursor()
         if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
                 !(mModifiers & Qt::ShiftModifier)) {
             cursorShape = Qt::SizeAllCursor;
+            const MapObject *currentObject = mHoveredObjectItem->mapObject();
+            const Tile *tile = currentObject->cell().tile();
+
+            if (currentObject != prevObject) {
+                prevObject = currentObject;
+                if(highlightState)
+                    mapScene()->removeItem(mSelectionRectangle);
+
+                QRectF bounds(currentObject->bounds());
+                align(bounds, currentObject->alignment());
+                if (tile != nullptr)
+                    bounds.translate(-QPointF(bounds.width() / 2, 0));
+
+                mSelectionRectangle->setRectangle(bounds);
+                mapScene()->addItem(mSelectionRectangle);
+                highlightState = true;
+            }
+
+        } else {
+            if(highlightState)
+                mapScene()->removeItem(mSelectionRectangle);
+            highlightState = false;
+            prevObject = nullptr;
         }
 
         break;
     }
     case Moving:
         cursorShape = Qt::SizeAllCursor;
+        if(highlightState)
+            mapScene()->removeItem(mSelectionRectangle);
+        highlightState = false;
+        prevObject = nullptr;
         break;
     default:
         break;
     }
-
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);
 }
