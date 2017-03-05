@@ -368,11 +368,6 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
             selectedObjects.append(o);
     }
 
-    // Switch the current object layer if only one object layer (and/or its objects)
-    // are included in the current selection.
-    if (singleObjectGroup)
-        mMapDocument->setCurrentLayer(singleObjectGroup);
-
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;
         if (selectedObjects.count() == 1) {
