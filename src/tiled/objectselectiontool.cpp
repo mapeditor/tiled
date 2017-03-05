@@ -1441,26 +1441,23 @@ void ObjectSelectionTool::refreshCursor()
         if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
                 !(mModifiers & Qt::ShiftModifier)) {
             cursorShape = Qt::SizeAllCursor;
-            const MapObject *currentObject = mHoveredObjectItem->mapObject();
-            const Tile *tile = currentObject->cell().tile();
+            MapObject *currentObject = mHoveredObjectItem->mapObject();
 
             if (currentObject != prevObject) {
                 prevObject = currentObject;
-                if(highlightState)
+                if (highlightState)
                     mapScene()->removeItem(mSelectionRectangle);
 
-                QRectF bounds(currentObject->bounds());
-                align(bounds, currentObject->alignment());
-                if (tile != nullptr)
-                    bounds.translate(-QPointF(bounds.width() / 2, 0));
+                MapRenderer *renderer = mapDocument()->renderer();
+                QRectF boundingRect = objectBounds(currentObject, renderer,
+                                                   objectTransform(currentObject, renderer));
 
-                mSelectionRectangle->setRectangle(bounds);
+                mSelectionRectangle->setRectangle(boundingRect);
                 mapScene()->addItem(mSelectionRectangle);
                 highlightState = true;
             }
 
-        } else {
-            if(highlightState)
+        } else if (highlightState) {
                 mapScene()->removeItem(mSelectionRectangle);
             highlightState = false;
             prevObject = nullptr;
@@ -1470,7 +1467,7 @@ void ObjectSelectionTool::refreshCursor()
     }
     case Moving:
         cursorShape = Qt::SizeAllCursor;
-        if(highlightState)
+        if (highlightState)
             mapScene()->removeItem(mSelectionRectangle);
         highlightState = false;
         prevObject = nullptr;
