@@ -166,8 +166,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 }
 
-// If none of selected objects is on current layer, set current layer to one with selected objects
-static void updateCurrentLayerBySelection(MapDocument * mapDocument)
+// If none of selected objects is on current layer, sets current layer to one with selected objects
+static void updateCurrentLayerBySelection(MapDocument *mapDocument)
 {
     QList<MapObject*> selectedObjects = mapDocument->selectedObjects();
 
