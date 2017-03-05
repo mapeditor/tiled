@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "objectselectiontool.h"
 
 #include "changepolygon.h"
@@ -1477,6 +1478,7 @@ void ObjectSelectionTool::refreshCursor()
     default:
         break;
     }
+
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);
 }
