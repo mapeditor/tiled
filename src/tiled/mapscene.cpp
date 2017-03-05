@@ -166,33 +166,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 }
 
-// If none of selected objects is on current layer, sets current layer to one with selected objects
-static void updateCurrentLayerBySelection(MapDocument *mapDocument)
-{
-    QList<MapObject*> selectedObjects = mapDocument->selectedObjects();
-
-    if (selectedObjects.empty())
-        return;
-
-    ObjectGroup *currentObjectLayer = dynamic_cast<ObjectGroup *>(mapDocument->currentLayer());
-
-    // Return if any of selected objects is in selected layer
-    for (MapObject *object : selectedObjects) {
-        if (currentObjectLayer->objects().contains(object))
-            return;
-    }
-
-    // Find layer that contains first selected object, and set it as current
-    for (Layer *layer : mapDocument->map()->layers()) {
-        ObjectGroup *layerAsObjectGroup = dynamic_cast<ObjectGroup *>(layer);
-
-        if (layerAsObjectGroup && layerAsObjectGroup->objects().contains(selectedObjects.at(0))) {
-            mapDocument->setCurrentLayer(layer);
-            return;
-        }
-    }
-}
-
 void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
 {
     // Inform the map document about the newly selected objects
@@ -204,7 +177,22 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
 
     mMapDocument->setSelectedObjects(selectedObjects);
 
-    updateCurrentLayerBySelection(mMapDocument);
+    // If all selected objects are in a single object group, make it active
+    ObjectGroup *singleObjectGroup = nullptr;
+
+    for (MapObject *object : selectedObjects) {
+        ObjectGroup *currentObjectGroup = object->objectGroup();
+
+        if (!singleObjectGroup) {
+            singleObjectGroup = currentObjectGroup;
+        } else if (singleObjectGroup != currentObjectGroup) {
+            singleObjectGroup = nullptr;
+            break;
+        }
+    }
+
+    if (singleObjectGroup)
+        mMapDocument->setCurrentLayer(singleObjectGroup);
 }
 
 void MapScene::setSelectedTool(AbstractTool *tool)
