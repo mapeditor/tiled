@@ -347,23 +347,11 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         return;
 
     const QModelIndexList selectedProxyRows = selectionModel()->selectedRows();
-    ObjectGroup *singleObjectGroup = nullptr;
-    bool multipleObjectGroups = false;
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
-        if (ObjectGroup *og = mapObjectModel()->toObjectGroupContext(index)) {
-            if (!multipleObjectGroups) {
-                if (!singleObjectGroup) {
-                    singleObjectGroup = og;
-                } else if (singleObjectGroup != og) {
-                    singleObjectGroup = nullptr;
-                    multipleObjectGroups = true;
-                }
-            }
-        }
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
     }
