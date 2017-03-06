@@ -165,14 +165,14 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
-    qreal rotation = 0;
     if (mCellType == HexagonalCells) {
-        if (cell.rotatedHexagonal60()) {
+
+        if (cell.flippedAntiDiagonally())
             fragment.rotation += 60;
-        }
-        if (cell.rotatedHexagonal120()) {
+
+        if (cell.rotatedHexagonal120())
             fragment.rotation += 120;
-        }
+
     } else if (cell.flippedAntiDiagonally()) {
         Q_ASSERT(mCellType == OrthogonalCells);
         fragment.rotation = 90;

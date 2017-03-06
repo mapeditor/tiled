@@ -257,14 +257,14 @@ void TileLayer::flipHexagonal(FlipDirection direction)
             unsigned char mask =
                     (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
                     (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
-                    (static_cast<unsigned char>(dest.rotatedHexagonal60()) << 1) |
+                    (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
                     (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
 
             mask = flipMask[mask];
 
             dest.setFlippedHorizontally((mask & 8) != 0);
             dest.setFlippedVertically((mask & 4) != 0);
-            dest.setRotatedHexagonal60((mask & 2) != 0);
+            dest.setFlippedAntiDiagonally((mask & 2) != 0);
             dest.setRotatedHexagonal120((mask & 1) != 0);
         }
     }
@@ -330,7 +330,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction)
   8 or 7      0: FlippedHorizontally or (Rotated60 | Rotated120 | FlippedVertically)
     10       60: Rotated60 | FlippedHorizontally
      9      120: Rotated120 | FlippedHorizontally
-  4 or 11   180:  (FlippedVertically) or (Rotated60 | Rotated120 | FlippedHorizontally)
+  4 or 11   180: (FlippedVertically) or (Rotated60 | Rotated120 | FlippedHorizontally)
      6      240: Rotated60 | FlippedVertically
      5      300: Rotated120 | FlippedVertically
 
@@ -350,14 +350,14 @@ void TileLayer::rotateHexagonal(RotateDirection direction)
             unsigned char mask =
                     (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
                     (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
-                    (static_cast<unsigned char>(dest.rotatedHexagonal60()) << 1) |
+                    (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
                     (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
 
             mask = rotateMask[mask];
 
             dest.setFlippedHorizontally((mask & 8) != 0);
             dest.setFlippedVertically((mask & 4) != 0);
-            dest.setRotatedHexagonal60((mask & 2) != 0);
+            dest.setFlippedAntiDiagonally((mask & 2) != 0);
             dest.setRotatedHexagonal120((mask & 1) != 0);
 
             if (direction == RotateRight)

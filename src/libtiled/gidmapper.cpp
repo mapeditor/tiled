@@ -39,7 +39,6 @@ const int FlippedHorizontallyFlag   = 0x80000000;
 const int FlippedVerticallyFlag     = 0x40000000;
 const int FlippedAntiDiagonallyFlag = 0x20000000;
 
-const int RotatedHexagonal60Flag    = 0x20000000;
 const int RotatedHexagonal120Flag   = 0x10000000;
 
 /**
@@ -77,14 +76,12 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
     result.setFlippedVertically(gid & FlippedVerticallyFlag);
     result.setFlippedAntiDiagonally(gid & FlippedAntiDiagonallyFlag);
 
-    result.setRotatedHexagonal60(gid & RotatedHexagonal60Flag);
     result.setRotatedHexagonal120(gid & RotatedHexagonal120Flag);
 
     // Clear the flags
     gid &= ~(FlippedHorizontallyFlag |
              FlippedVerticallyFlag |
              FlippedAntiDiagonallyFlag |
-             RotatedHexagonal60Flag |
              RotatedHexagonal120Flag);
 
     if (gid == 0) {
@@ -138,8 +135,6 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
         gid |= FlippedVerticallyFlag;
     if (cell.flippedAntiDiagonally())
         gid |= FlippedAntiDiagonallyFlag;
-    if (cell.rotatedHexagonal60())
-        gid |= RotatedHexagonal60Flag;
     if (cell.rotatedHexagonal120())
         gid |= RotatedHexagonal120Flag;
 

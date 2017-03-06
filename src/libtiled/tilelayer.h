@@ -59,7 +59,6 @@ public:
         _flippedHorizontally(false),
         _flippedVertically(false),
         _flippedAntiDiagonally(false),
-        _rotatedHexagonal60(false),
         _rotatedHexagonal120(false)
     {}
 
@@ -69,7 +68,6 @@ public:
         _flippedHorizontally(false),
         _flippedVertically(false),
         _flippedAntiDiagonally(false),
-        _rotatedHexagonal60(false),
         _rotatedHexagonal120(false)
     {}
 
@@ -82,7 +80,6 @@ public:
                 && _flippedHorizontally == other._flippedHorizontally
                 && _flippedVertically == other._flippedVertically
                 && _flippedAntiDiagonally == other._flippedAntiDiagonally
-                && _rotatedHexagonal60 == other._rotatedHexagonal60
                 && _rotatedHexagonal120 == other._rotatedHexagonal120;
     }
 
@@ -93,7 +90,6 @@ public:
                 || _flippedHorizontally != other._flippedHorizontally
                 || _flippedVertically != other._flippedVertically
                 || _flippedAntiDiagonally != other._flippedAntiDiagonally
-                || _rotatedHexagonal60 != other._rotatedHexagonal60
                 || _rotatedHexagonal120 != other._rotatedHexagonal120;
     }
 
@@ -104,14 +100,12 @@ public:
     bool flippedVertically() const { return _flippedVertically; }
     bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
 
-    bool rotatedHexagonal60() const { return _rotatedHexagonal60; }
     bool rotatedHexagonal120() const { return _rotatedHexagonal120; }
 
     void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
     void setFlippedVertically(bool f) { _flippedVertically = f; }
     void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
 
-    void setRotatedHexagonal60(bool f) { _rotatedHexagonal60 = f; }
     void setRotatedHexagonal120(bool f) { _rotatedHexagonal120 = f; }
 
     Tile *tile() const;
@@ -126,7 +120,6 @@ private:
     bool _flippedVertically;
     bool _flippedAntiDiagonally;
 
-    bool _rotatedHexagonal60;
     bool _rotatedHexagonal120;
 };
 
@@ -269,7 +262,7 @@ public:
     void rotate(RotateDirection direction);
 
     /**
-     * Hexagonal rotate this tile layer by 90 degrees left or right. The tile positions
+     * Hexagonal rotate this tile layer by 60 degrees left or right. The tile positions
      * are rotated within the layer, and the tiles themselves are rotated. The
      * dimensions of the tile layer are swapped.
      */

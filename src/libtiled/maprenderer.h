@@ -263,7 +263,7 @@ public:
         HexagonalCells
     };
 
-    explicit CellRenderer(QPainter *painter, const CellType cellType = OrthogonalCells);
+    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
