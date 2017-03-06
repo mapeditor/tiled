@@ -21,7 +21,7 @@
 #pragma once
 
 #include <QItemDelegate>
-#include <QPixmap>
+#include <QIcon>
 
 namespace Tiled {
 namespace Internal {
@@ -36,11 +36,11 @@ public:
 
 protected:
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
-        const QRect &rect, Qt::CheckState state) const override;
+                   const QRect &rect, Qt::CheckState state) const override;
 
 private:
-    QPixmap mVisiblePixmap;
-    QPixmap mInvisiblePixmap;
+    QIcon mVisibleIcon;
+    QIcon mHiddenIcon;
 };
 
 } // namespace Internal

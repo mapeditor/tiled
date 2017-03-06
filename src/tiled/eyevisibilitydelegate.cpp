@@ -27,19 +27,22 @@ using namespace Tiled::Internal;
 
 EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     QItemDelegate(parent),
-    mVisiblePixmap(QLatin1String(":/images/14x14/layer-visible.png")),
-    mInvisiblePixmap(QLatin1String(":/images/14x14/layer-invisible.png"))
+    mVisibleIcon(QLatin1String(":/images/14x14/visible.png")),
+    mHiddenIcon(QLatin1String(":/images/14x14/hidden.png"))
 {
+    mVisibleIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
+    mHiddenIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
 }
 
-void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
-    const QRect &rect, Qt::CheckState state) const
+void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &,
+                                      const QRect &rect, Qt::CheckState state) const
 {
-    Q_UNUSED(option)
+    const QIcon &icon = (state == Qt::Checked) ? mVisibleIcon : mHiddenIcon;
+    const QPixmap &pixmap = icon.pixmap(rect.size());
 
-    if (state == Qt::Checked)
-        painter->drawPixmap(rect, mVisiblePixmap);
-    else if (state == Qt::Unchecked)
-        painter->drawPixmap(rect, mInvisiblePixmap);
+    QSize layoutSize = pixmap.size() / pixmap.devicePixelRatio();
+    QRect targetRect(QPoint(0, 0), layoutSize);
+    targetRect.moveCenter(rect.center());
 
+    painter->drawPixmap(targetRect, pixmap);
 }
