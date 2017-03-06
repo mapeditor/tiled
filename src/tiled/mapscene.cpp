@@ -176,23 +176,6 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
         selectedObjects.append(item->mapObject());
 
     mMapDocument->setSelectedObjects(selectedObjects);
-
-    // If all selected objects are in a single object group, make it active
-    ObjectGroup *singleObjectGroup = nullptr;
-
-    for (MapObject *object : selectedObjects) {
-        ObjectGroup *currentObjectGroup = object->objectGroup();
-
-        if (!singleObjectGroup) {
-            singleObjectGroup = currentObjectGroup;
-        } else if (singleObjectGroup != currentObjectGroup) {
-            singleObjectGroup = nullptr;
-            break;
-        }
-    }
-
-    if (singleObjectGroup)
-        mMapDocument->setCurrentLayer(singleObjectGroup);
 }
 
 void MapScene::setSelectedTool(AbstractTool *tool)
