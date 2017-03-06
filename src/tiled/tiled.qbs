@@ -181,6 +181,8 @@ QtGuiApplication {
         "exportasimagedialog.cpp",
         "exportasimagedialog.h",
         "exportasimagedialog.ui",
+        "eyevisibilitydelegate.cpp",
+        "eyevisibilitydelegate.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",
