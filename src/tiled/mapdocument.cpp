@@ -236,7 +236,7 @@ void MapDocument::setCurrentLayer(Layer *layer)
     mCurrentLayer = layer;
     emit currentLayerChanged(mCurrentLayer);
 
-    if (mCurrentLayer)
+    if (mCurrentLayer && currentObject()->typeId() == Object::LayerType)
         setCurrentObject(mCurrentLayer);
 }
 
@@ -658,6 +658,23 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 {
     mSelectedObjects = selectedObjects;
     emit selectedObjectsChanged();
+
+    ObjectGroup *singleObjectGroup = nullptr;
+    for (MapObject *object : selectedObjects) {
+        ObjectGroup *currentObjectGroup = object->objectGroup();
+
+        if (!singleObjectGroup) {
+            singleObjectGroup = currentObjectGroup;
+        } else if (singleObjectGroup != currentObjectGroup) {
+            singleObjectGroup = nullptr;
+            break;
+        }
+    }
+
+    // Switch the current object layer if only one object layer (and/or its objects)
+    // are included in the current selection.
+    if (singleObjectGroup)
+        setCurrentLayer(singleObjectGroup);
 
     if (selectedObjects.size() == 1)
         setCurrentObject(selectedObjects.first());
