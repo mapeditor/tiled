@@ -65,6 +65,12 @@
      <addaction name="actionNewMap"/>
      <addaction name="actionNewTileset"/>
     </widget>
+    <widget class="QMenu" name="menuCommand">
+     <property name="title">
+      <string>Command</string>
+     </property>
+     <addaction name="actionEditCommands"/>
+    </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentFiles"/>
@@ -77,6 +83,7 @@
     <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
+    <addaction name="menuCommand"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
     <addaction name="actionQuit"/>
@@ -157,17 +164,9 @@
     </property>
     <addaction name="actionTilesetProperties"/>
    </widget>
-   <widget class="QMenu" name="menuCommand">
-    <property name="title">
-     <string>Command</string>
-    </property>
-    <addaction name="actionEditCommands"/>
-    <addaction name="separator"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuCommand"/>
    <addaction name="menuMap"/>
    <addaction name="menuTileset"/>
    <addaction name="menuHelp"/>
@@ -588,7 +587,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Edit Commands</string>
+    <string>Edit Commands...</string>
    </property>
   </action>
  </widget>

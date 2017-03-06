@@ -1,5 +1,5 @@
 /*
- * commandmanagar.h
+ * commandmanager.h
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
@@ -23,40 +23,30 @@
 #include <QObject>
 
 class QMenu;
-class QWidget;
 
 namespace Tiled {
 namespace Internal {
 
 class CommandManager : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-    CommandManager(QObject *parent = nullptr, QWidget *window = nullptr);
-    ~CommandManager();
-
-    /**
-     * Sets the value of mMainWindowMenu
-     */
-    void setMainWindowMenu(QMenu *menu);
+    CommandManager(QObject *parent = nullptr);
 
 public slots:
-	void populateMainWindowMenu();
+    /**
+     * Populates the menu pointed by menu
+     */
+    void populateMenu(QMenu *menu);
 
-	/**
+    /**
      * Displays the dialog to edit the commands
      */
     void showDialog();
 
 private:
-	/**
-	 * Populates the menu pointed by menu
-	 */
-	void populateMenu(QMenu *menu);
-
-	QMenu *mMainWindowMenu;
-	QWidget *mMainWindow;
+    QMenu *mMainWindowMenu;
 };
 
 } // namespace Internal

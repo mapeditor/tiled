@@ -1,5 +1,5 @@
 /*
- * commandmanagar.cpp
+ * commandmanager.cpp
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
@@ -23,6 +23,7 @@
 #include "commanddatamodel.h"
 #include "commanddialog.h"
 
+#include <QApplication>
 #include <QAction>
 #include <QLatin1String>
 #include <QMenu>
@@ -32,50 +33,23 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CommandManager::CommandManager(QObject *parent, QWidget *window)
-	: QObject(parent)
-	, mMainWindow(window)
+CommandManager::CommandManager(QObject *parent)
+    : QObject(parent)
 {
-	
-}
-
-CommandManager::~CommandManager()
-{
-}
-
-void CommandManager::setMainWindowMenu(QMenu *menu)
-{
-	this->mMainWindowMenu = menu;
-}
-
-void CommandManager::populateMainWindowMenu()
-{
-	populateMenu(this->mMainWindowMenu);
+    
 }
 
 void CommandManager::showDialog()
 {
-	CommandDialog dialog(mMainWindow);
+    CommandDialog dialog(QApplication::activeWindow());
     dialog.exec();
 }
 
 void CommandManager::populateMenu(QMenu *menu)
 {
-	menu->clear();
+    menu->clear();
 
-	// Add Edit Commands first
-	QAction *mEditCommands = new QAction(this);
-    mEditCommands->setIcon(
-            QIcon(QLatin1String(":/images/24x24/system-run.png")));
-    mEditCommands->setText(tr("Edit Commands"));
-
-    menu->addAction(mEditCommands);
-
-    connect(mEditCommands, SIGNAL(triggered()), this, SLOT(showDialog()));
-
-    menu->addSeparator();
-
-    // Add all enabled commands now
+    // Add all enabled commands
 
     bool firstEnabledCommand = true;
     int counter = -1;
@@ -84,14 +58,14 @@ void CommandManager::populateMenu(QMenu *menu)
     const QList<Command> &commands = mModel->allCommands();
 
     foreach (const Command &command, commands) {
-    	++counter;
+        ++counter;
 
         if (!command.isEnabled)
             continue;
 
         QAction *mAction = menu->addAction(command.name);
-        if(firstEnabledCommand)
-        	mAction->setShortcut(QKeySequence(tr("F5")));
+        if (firstEnabledCommand)
+            mAction->setShortcut(QKeySequence(tr("F5")));
         firstEnabledCommand = false;
 
         QSignalMapper *mapper = new QSignalMapper(mAction);
@@ -99,4 +73,17 @@ void CommandManager::populateMenu(QMenu *menu)
         connect(mAction, SIGNAL(triggered()), mapper, SLOT(map()));
         connect(mapper, SIGNAL(mapped(int)), mModel, SLOT(execute(int)));
     }
+
+    // Add Edit Commands action
+    menu->addSeparator();
+
+    QAction *mEditCommands = new QAction(this);
+    mEditCommands->setIcon(
+            QIcon(QLatin1String(":/images/24x24/system-run.png")));
+    mEditCommands->setText(tr("Edit Commands..."));
+
+    menu->addAction(mEditCommands);
+
+    connect(mEditCommands, SIGNAL(triggered()), this, SLOT(showDialog()));
+
 }
