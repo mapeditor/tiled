@@ -21,6 +21,7 @@
 #include "commandbutton.h"
 #include "commanddatamodel.h"
 #include "commanddialog.h"
+#include "commandmanager.h"
 #include "utils.h"
 
 #include <QEvent>
@@ -34,6 +35,7 @@ using namespace Tiled::Internal;
 CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)
     , mMenu(new QMenu(this))
+    , mCommandManager(new CommandManager(this))
 {
     setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
     setThemeIcon(this, "system-run");
@@ -42,7 +44,8 @@ CommandButton::CommandButton(QWidget *parent)
     setPopupMode(QToolButton::MenuButtonPopup);
     setMenu(mMenu);
 
-    connect(mMenu, SIGNAL(aboutToShow()), SLOT(populateMenu()));
+    connect(mMenu, &QMenu::aboutToShow, 
+            mCommandManager, [this]() { mCommandManager->populateMenu(mMenu); });
     connect(this, SIGNAL(clicked()), SLOT(runCommand()));
 }
 
@@ -85,33 +88,6 @@ void CommandButton::showDialog()
     dialog.exec();
 }
 
-void CommandButton::populateMenu()
-{
-    mMenu->clear();
-
-    // Use a data model for getting the command list to avoid having to
-    // manually parse the settings
-    const CommandDataModel model;
-    const QList<Command> &commands = model.allCommands();
-
-    foreach (const Command &command, commands) {
-        if (!command.isEnabled)
-            continue;
-
-        QAction *action = mMenu->addAction(command.name);
-        action->setStatusTip(command.command);
-        action->setData(command.toQVariant());
-        connect(action, SIGNAL(triggered()), SLOT(runCommand()));
-    }
-
-    if (!mMenu->isEmpty())
-        mMenu->addSeparator();
-
-    // Add "Edit Commands..." action
-    QAction *action = mMenu->addAction(tr("Edit Commands..."));
-    connect(action, SIGNAL(triggered()), SLOT(showDialog()));
-}
-
 void CommandButton::changeEvent(QEvent *event)
 {
     QToolButton::changeEvent(event);
@@ -128,5 +104,4 @@ void CommandButton::changeEvent(QEvent *event)
 void CommandButton::retranslateUi()
 {
     setToolTip(tr("Execute Command"));
-    setShortcut(QKeySequence(tr("F5")));
 }

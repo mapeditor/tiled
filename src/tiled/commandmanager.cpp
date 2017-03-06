@@ -69,7 +69,8 @@ void CommandManager::populateMenu(QMenu *menu)
     }
 
     // Add Edit Commands action
-    menu->addSeparator();
+    if (!menu->isEmpty())
+        menu->addSeparator();
 
     QAction *mEditCommands = new QAction(this);
     mEditCommands->setIcon(
