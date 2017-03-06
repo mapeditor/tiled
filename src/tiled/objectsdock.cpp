@@ -31,6 +31,7 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
+#include "eyevisibilitydelegate.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -260,6 +261,7 @@ ObjectsView::ObjectsView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setModel(mProxyModel);
+    setItemDelegate(new EyeVisibilityDelegate(this));
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);

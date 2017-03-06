@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
         <file>images/about-tiled-logo-white.png</file>
+        <file>images/14x14/layer-visible.png</file>
+        <file>images/14x14/layer-invisible.png</file>
         <file>images/16x16/add.png</file>
         <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
