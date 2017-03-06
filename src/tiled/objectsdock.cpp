@@ -271,6 +271,9 @@ ObjectsView::ObjectsView(QWidget *parent)
 
     connect(header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onSectionResized(int)));
+
+    header()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(header(), &QWidget::customContextMenuRequested, this, &ObjectsView::showCustomMenu);
 }
 
 QSize ObjectsView::sizeHint() const
@@ -299,6 +302,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
+        updateColumnVisibilityActions();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -399,6 +403,45 @@ void ObjectsView::selectedObjectsChanged()
         MapObject *o = selectedObjects.first();
         scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
     }
+}
+
+void ObjectsView::setColumnVisibility(bool visible)
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (action)
+        header()->setSectionHidden(action->data().toInt(), !visible);
+}
+
+void ObjectsView::showCustomMenu(const QPoint &point)
+{
+    Q_UNUSED(point)
+    QMenu contextMenu(this);
+    contextMenu.addActions(mActions);
+    contextMenu.exec(QCursor::pos());
+}
+
+void ObjectsView::updateColumnVisibilityActions()
+{
+    hideExtraColumns();
+    mActions.clear();
+    QAbstractItemModel *model = mProxyModel->sourceModel();
+    for (int i = 0; i < model->columnCount(); i++) {
+        if (i == MapObjectModel::Name || i == MapObjectModel::Type)
+            continue;
+        QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), this);
+        action->setCheckable(true);
+        action->setChecked(!header()->isSectionHidden(i));
+        action->setData(i);
+        connect(action, &QAction::triggered, this, &ObjectsView::setColumnVisibility);
+        mActions << action;
+    }
+}
+
+void ObjectsView::hideExtraColumns()
+{
+    header()->setSectionHidden(MapObjectModel::Id, true);
+    header()->setSectionHidden(MapObjectModel::X, true);
+    header()->setSectionHidden(MapObjectModel::Y, true);
 }
 
 void ObjectsView::synchronizeSelectedItems()
