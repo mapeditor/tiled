@@ -27,6 +27,8 @@ class QMenu;
 namespace Tiled {
 namespace Internal {
 
+class CommandDataModel;
+
 class CommandManager : public QObject
 {
     Q_OBJECT
@@ -47,6 +49,7 @@ public slots:
 
 private:
     QMenu *mMainWindowMenu;
+    CommandDataModel *mModel;
 };
 
 } // namespace Internal
