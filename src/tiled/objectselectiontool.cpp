@@ -1458,7 +1458,7 @@ void ObjectSelectionTool::refreshCursor()
             }
 
         } else if (highlightState) {
-                mapScene()->removeItem(mSelectionRectangle);
+            mapScene()->removeItem(mSelectionRectangle);
             highlightState = false;
             prevObject = nullptr;
         }
@@ -1467,9 +1467,10 @@ void ObjectSelectionTool::refreshCursor()
     }
     case Moving:
         cursorShape = Qt::SizeAllCursor;
-        if (highlightState)
+        if (highlightState) {
             mapScene()->removeItem(mSelectionRectangle);
-        highlightState = false;
+            highlightState = false;
+        }
         prevObject = nullptr;
         break;
     default:
