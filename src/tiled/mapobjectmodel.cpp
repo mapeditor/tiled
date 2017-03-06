@@ -108,7 +108,7 @@ int MapObjectModel::rowCount(const QModelIndex &parent) const
 int MapObjectModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 2; // MapObject name|type
+    return ColumnsCount;
 }
 
 QVariant MapObjectModel::data(const QModelIndex &index, int role) const
@@ -117,10 +117,19 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            if (index.column() == 0) {
+            switch (index.column()) {
+            case Name:
                 return mapObject->name();
-            } else if (index.column() == 1) {
+            case Type:
                 return mapObject->effectiveType();
+            case Id:
+                return mapObject->id();
+            case X:
+                return mapObject->x();
+            case Y:
+                return mapObject->y();
+            default:
+                break;
             }
         case Qt::ForegroundRole:
             if (index.column() == 1) {
@@ -233,7 +242,9 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else if (toMapObject(index))
-        rc |= Qt::ItemIsEditable; // MapObject type
+        if (index.column() == Type) { // allow to edit only type column
+            rc |= Qt::ItemIsEditable;
+        }
     return rc;
 }
 
@@ -242,8 +253,11 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return tr("Name");
-        case 1: return tr("Type");
+        case Name: return tr("Name");
+        case Type: return tr("Type");
+        case Id: return tr("Id");
+        case X: return tr("X");
+        case Y: return tr("Y");
         }
     }
     return QVariant();

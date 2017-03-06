@@ -52,6 +52,15 @@ public:
         OpacityRole = Qt::UserRole
     };
 
+    enum Columns {
+        Name,
+        Type,
+        Id,
+        X,
+        Y,
+        ColumnsCount
+    };
+
     MapObjectModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
