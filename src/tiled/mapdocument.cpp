@@ -659,6 +659,20 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
     mSelectedObjects = selectedObjects;
     emit selectedObjectsChanged();
 
+    ObjectGroup *singleObjectGroup = nullptr;
+    for (MapObject const *nextMapObject : selectedObjects) {
+        if (singleObjectGroup && nextMapObject->objectGroup() != singleObjectGroup) {
+            singleObjectGroup = nullptr;
+            break;
+        }
+        singleObjectGroup = nextMapObject->objectGroup();
+    }
+
+    // Switch the current object layer if only one object layer (and/or its objects)
+    // are included in the current selection.
+    if (singleObjectGroup)
+        setCurrentLayer(singleObjectGroup);
+
     if (selectedObjects.size() == 1)
         setCurrentObject(selectedObjects.first());
 }
