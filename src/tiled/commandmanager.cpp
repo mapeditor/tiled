@@ -35,7 +35,7 @@ namespace Internal {
 CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
-    : mModel(new CommandDataModel)
+    : mModel(new CommandDataModel(this))
 {
     
 }
