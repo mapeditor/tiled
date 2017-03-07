@@ -290,7 +290,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter);
+    CellRenderer renderer(painter, CellRenderer::HexagonalCells);
 
     if (p.staggerX) {
         startTile.setX(qMax(-1, startTile.x()));
