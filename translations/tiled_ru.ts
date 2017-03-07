@@ -390,7 +390,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удается открыть файл для записи.</translation>
+        <translation>Не удалось открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+143"/>
@@ -2927,7 +2927,7 @@ Do you want to replace it?</source>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Новый</translation>
     </message>
     <message>
         <location line="-1210"/>
@@ -3250,21 +3250,17 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Передвинуть %n объект вверх</numerusform>
+        <numerusform>Передвинуть %n объекта вверх</numerusform>
+        <numerusform>Передвинуть %n объектов вверх</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Передвинуть %n объект вниз</numerusform>
+        <numerusform>Передвинуть %n объекта вниз</numerusform>
+        <numerusform>Передвинуть %n объектов вниз</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3281,12 +3277,12 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3373,12 +3369,12 @@ Please select specific format.</source>
     <message>
         <location line="+45"/>
         <source>Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
@@ -3710,12 +3706,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить объекты вверх</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить объекты вниз</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3801,17 +3797,17 @@ Please select specific format.</source>
     <message>
         <location line="-71"/>
         <source>Convert To</source>
-        <translation type="unfinished"></translation>
+        <translation>Конвертировать в</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Убрать</translation>
     </message>
     <message>
         <location line="+65"/>
