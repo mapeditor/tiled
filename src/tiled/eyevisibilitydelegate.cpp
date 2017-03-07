@@ -30,7 +30,10 @@ EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     mVisibleIcon(QLatin1String(":/images/14x14/visible.png")),
     mHiddenIcon(QLatin1String(":/images/14x14/hidden.png"))
 {
+    mVisibleIcon.addFile(QLatin1String(":/images/16x16/visible.png"));
     mVisibleIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
+
+    mHiddenIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
     mHiddenIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
 }
 
