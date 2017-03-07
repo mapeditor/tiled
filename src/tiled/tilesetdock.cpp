@@ -510,6 +510,8 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
             this, &TilesetDock::tileAnimationChanged);
 
+    connect(view, &TilesetView::clicked,
+            this, &TilesetDock::updateCurrentTiles);
     connect(view, &TilesetView::swapTilesRequested,
             this, &TilesetDock::swapTiles);
 }
