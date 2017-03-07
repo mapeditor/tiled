@@ -27,6 +27,7 @@
 #include "maprenderer.h"
 #include "snaphelper.h"
 
+#include <QApplication>
 #include <QUndoStack>
 
 #include <cmath>
@@ -34,13 +35,14 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-LayerOffsetTool::LayerOffsetTool(QObject *parent) :
-    AbstractTool(tr("Offset Layers"),
-                 QIcon(QLatin1String(":images/22x22/stock-tool-move-22.png")),
-                 QKeySequence(tr("M")),
-                 parent),
-    mMousePressed(false),
-    mApplyingChange(false)
+LayerOffsetTool::LayerOffsetTool(QObject *parent)
+    : AbstractTool(tr("Offset Layers"),
+                   QIcon(QLatin1String(":images/22x22/stock-tool-move-22.png")),
+                   QKeySequence(tr("M")),
+                   parent)
+    , mMousePressed(false)
+    , mDragging(false)
+    , mApplyingChange(false)
 {
 }
 
@@ -58,6 +60,7 @@ void LayerOffsetTool::activate(MapScene *)
 
 void LayerOffsetTool::deactivate(MapScene *)
 {
+    finishDrag();
 }
 
 void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -80,10 +83,20 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     if (mApplyingChange)    // avoid recursion
         return;
 
-    auto currentLayer = mapDocument()->currentLayer();
+    if (!mDragging) {
+        QPoint screenPos = QCursor::pos();
+        const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
 
+        // Use a reduced start drag distance to increase the responsiveness
+        if (dragDistance >= QApplication::startDragDistance() / 2)
+            startDrag(pos);
+        else
+            return;
+    }
+
+    auto currentLayer = mapDocument()->currentLayer();
     if (currentLayer) {
-        QPointF newOffset = mOldOffset + (pos - mMouseStart);
+        QPointF newOffset = mOldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
         mApplyingChange = true;
         mapDocument()->layerModel()->setLayerOffset(currentLayer, newOffset);
@@ -94,33 +107,13 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
 void LayerOffsetTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     mMousePressed = true;
-    mMouseStart = event->scenePos();
-
-    if (!mapDocument())
-        return;
-
-    if (Layer *layer = mapDocument()->currentLayer())
-        mOldOffset = layer->offset();
+    mMouseScreenStart = event->screenPos();
 }
 
 void LayerOffsetTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
     mMousePressed = false;
-
-    if (!mapDocument())
-        return;
-
-    if (Layer *layer = mapDocument()->currentLayer()) {
-        const QPointF newOffset = layer->offset();
-        auto currentLayer = mapDocument()->currentLayer();
-        mApplyingChange = true;
-        mapDocument()->layerModel()->setLayerOffset(currentLayer, mOldOffset);
-        mapDocument()->undoStack()->push(
-                    new SetLayerOffset(mapDocument(),
-                                       currentLayer,
-                                       newOffset));
-        mApplyingChange = false;
-    }
+    finishDrag();
 }
 
 void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
@@ -136,4 +129,39 @@ void LayerOffsetTool::languageChanged()
 void LayerOffsetTool::updateEnabledState()
 {
     setEnabled(mapDocument() && mapDocument()->currentLayer());
+}
+
+void LayerOffsetTool::startDrag(const QPointF &pos)
+{
+    if (!mapDocument())
+        return;
+
+    if (Layer *layer = mapDocument()->currentLayer()) {
+        mDragging = true;
+        mMouseSceneStart = pos;
+        mOldOffset = layer->offset();
+    }
+}
+
+void LayerOffsetTool::finishDrag()
+{
+    if (!mDragging)
+        return;
+
+    mDragging = false;
+
+    if (!mapDocument())
+        return;
+
+    if (Layer *layer = mapDocument()->currentLayer()) {
+        const QPointF newOffset = layer->offset();
+        auto currentLayer = mapDocument()->currentLayer();
+        mApplyingChange = true;
+        mapDocument()->layerModel()->setLayerOffset(currentLayer, mOldOffset);
+        mapDocument()->undoStack()->push(
+                    new SetLayerOffset(mapDocument(),
+                                       currentLayer,
+                                       newOffset));
+        mApplyingChange = false;
+    }
 }
