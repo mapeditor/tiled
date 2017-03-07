@@ -436,25 +436,31 @@ void TilesetEditor::addTiles()
         QPixmap image;
     };
     QVector<LoadedFile> loadedFiles;
-    bool addImage = true, dontAskAgain = false;
+    // If the tile is already in the tileset, warn user and confirm addition
+    bool dontAskAgain = false, rememberOption = true;
     for (const QString &file : files) {
-        // If the tile is already in the tileset, warn user and confirm addition
+        bool addImage = true;
         const QMap<int, Tile*> addedTiles = mCurrentTilesetDocument->tileset().data()->tiles();
-        for(auto tile : addedTiles) {
-            if(dontAskAgain)
-                break;
-            if(tile->imageSource() == file) {
+        for (auto tile : addedTiles) {
+            if (tile->imageSource() == file) {
+                if (dontAskAgain) {
+                    addImage = rememberOption;
+                    break;
+                }
                 QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
                 QMessageBox warning(QMessageBox::Warning,
                             tr("Add Tiles"),
-                            tr("Tile \"%1\" already exists in the Tileset!").arg(file),
+                            tr("Tile \"%1\" already exists in the tileset!").arg(file),
                             QMessageBox::Yes | QMessageBox::No,
                             mMainWindow->window());
                 warning.setDefaultButton(QMessageBox::Yes);
                 warning.setInformativeText(tr("Add anyway?"));
                 warning.setCheckBox(checkBox);
                 if (warning.exec() != QMessageBox::Yes) {
-                    addImage = false;
+                    rememberOption = addImage = false;
+                }
+                else {
+                    rememberOption = true;
                 }
                 if (checkBox->checkState() == Qt::Checked) {
                     dontAskAgain = true;
@@ -462,21 +468,22 @@ void TilesetEditor::addTiles()
                 break;
             }
         }
-        if(addImage){
-            const QPixmap image(file);
-            if (!image.isNull()) {
-                loadedFiles.append(LoadedFile { file, image });
-            } else {
-                QMessageBox warning(QMessageBox::Warning,
-                                    tr("Add Tiles"),
-                                    tr("Could not load \"%1\"!").arg(file),
-                                    QMessageBox::Ignore | QMessageBox::Cancel,
-                                    mMainWindow->window());
-                warning.setDefaultButton(QMessageBox::Ignore);
+        if(!addImage){
+            continue;
+        }
+        const QPixmap image(file);
+        if (!image.isNull()) {
+            loadedFiles.append(LoadedFile { file, image });
+        } else {
+            QMessageBox warning(QMessageBox::Warning,
+                                tr("Add Tiles"),
+                                tr("Could not load \"%1\"!").arg(file),
+                                QMessageBox::Ignore | QMessageBox::Cancel,
+                                mMainWindow->window());
+            warning.setDefaultButton(QMessageBox::Ignore);
 
-                if (warning.exec() != QMessageBox::Ignore)
-                    return;
-            }
+            if (warning.exec() != QMessageBox::Ignore)
+                return;
         }
     }
 
