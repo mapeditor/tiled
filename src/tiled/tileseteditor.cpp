@@ -418,9 +418,10 @@ void TilesetEditor::retranslateUi()
     mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
-bool hasTileInTileset(QString tileName, const QMap<int, Tile*> addedTiles){
-    for (auto tile : addedTiles) {
-        if (tile->imageSource() == tileName)
+static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
+{
+    for (auto tile : tileset.tiles()) {
+        if (tile->imageSource() == imageSource)
             return true;
     }
     return false;
@@ -448,30 +449,27 @@ void TilesetEditor::addTiles()
     bool dontAskAgain = false;
     bool rememberOption = true;
     for (const QString &file : files) {
-        bool addImage = true;
-        if (hasTileInTileset(file, mCurrentTilesetDocument->tileset().data()->tiles())) {
-            if (dontAskAgain) 
-                addImage = rememberOption;
-            else {
-                QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
-                QMessageBox warning(QMessageBox::Warning,
-                            tr("Add Tiles"),
-                            tr("Tile \"%1\" already exists in the tileset!").arg(file),
-                            QMessageBox::Yes | QMessageBox::No,
-                            mMainWindow->window());
-                warning.setDefaultButton(QMessageBox::Yes);
-                warning.setInformativeText(tr("Add anyway?"));
-                warning.setCheckBox(checkBox);
-                if (warning.exec() != QMessageBox::Yes)
-                    rememberOption = addImage = false;
-                else 
-                    rememberOption = true;
-                if (checkBox->checkState() == Qt::Checked)
-                    dontAskAgain = true;
+        if (!(dontAskAgain && rememberOption) && hasTileInTileset(file, *tileset)) {
+            if (dontAskAgain)
+                continue;
+            QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
+            QMessageBox warning(QMessageBox::Warning,
+                        tr("Add Tiles"),
+                        tr("Tile \"%1\" already exists in the tileset!").arg(file),
+                        QMessageBox::Yes | QMessageBox::No,
+                        mMainWindow->window());
+            warning.setDefaultButton(QMessageBox::Yes);
+            warning.setInformativeText(tr("Add anyway?"));
+            warning.setCheckBox(checkBox);
+            int warningBoxChoice = warning.exec();
+            if (checkBox->checkState() == Qt::Checked)
+                dontAskAgain = true;
+            if (warningBoxChoice != QMessageBox::Yes) {
+                rememberOption = false;
+                continue;
             }
-        }
-        if(!addImage){
-            continue;
+            else
+                rememberOption = true;
         }
         const QPixmap image(file);
         if (!image.isNull()) {
