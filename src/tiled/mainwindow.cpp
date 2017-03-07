@@ -179,8 +179,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
     mUi->actionDelete->setShortcuts(deleteKeys);
 
+    QList<QKeySequence> redoShortcuts = QKeySequence::keyBindings(QKeySequence::Redo);
+    const QKeySequence ctrlY(Qt::Key_Y | Qt::ControlModifier);
+    if (!redoShortcuts.contains(ctrlY))
+        redoShortcuts.append(ctrlY);
+
     undoAction->setShortcuts(QKeySequence::Undo);
-    redoAction->setShortcuts(QKeySequence::Redo);
+    redoAction->setShortcuts(redoShortcuts);
 
     auto snappingGroup = new QActionGroup(this);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);
