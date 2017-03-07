@@ -34,7 +34,12 @@ class CommandManager : public QObject
     Q_OBJECT
 
 public:
-    CommandManager(QObject *parent = nullptr);
+
+    static CommandManager *instance();
+
+    static void deleteInstance();
+
+    CommandDataModel *getCommandDataModel();
 
 public slots:
     /**
@@ -48,7 +53,11 @@ public slots:
     void showDialog();
 
 private:
-    QMenu *mMainWindowMenu;
+    Q_DISABLE_COPY(CommandManager);
+
+    CommandManager();
+
+    static CommandManager *mInstance;
     CommandDataModel *mModel;
 };
 

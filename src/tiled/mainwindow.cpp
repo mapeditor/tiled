@@ -104,7 +104,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mConsoleDock(new ConsoleDock(this))
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
-    , mCommandManager(new CommandManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mTmxMapFormat(new TmxMapFormat(this))
     , mTsxTilesetFormat(new TsxTilesetFormat(this))
@@ -313,7 +312,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
 
     connect(mUi->menuCommand, &QMenu::aboutToShow, 
-            mCommandManager, [this]() { mCommandManager->populateMenu(mUi->menuCommand); });
+            CommandManager::instance(), [this]() { CommandManager::instance()->populateMenu(mUi->menuCommand); });
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),

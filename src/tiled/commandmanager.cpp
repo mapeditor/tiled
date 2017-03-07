@@ -28,13 +28,34 @@
 #include <QLatin1String>
 #include <QMenu>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
-CommandManager::CommandManager(QObject *parent)
-    : QObject(parent)
+CommandManager *CommandManager::mInstance;
+
+CommandManager::CommandManager()
+    : mModel(new CommandDataModel)
 {
     
+}
+
+CommandManager *CommandManager::instance()
+{
+    if (!mInstance)
+        mInstance = new CommandManager;
+
+    return mInstance;
+}
+
+void CommandManager::deleteInstance()
+{
+    delete mInstance;
+    mInstance = nullptr;
+}
+
+CommandDataModel *CommandManager::getCommandDataModel()
+{
+    return mModel;
 }
 
 void CommandManager::showDialog()
@@ -51,7 +72,6 @@ void CommandManager::populateMenu(QMenu *menu)
 
     bool firstEnabledCommand = true;
 
-    mModel = new CommandDataModel;
     const QList<Command> &commands = mModel->allCommands();
 
     for (int i = 0; i < commands.size(); ++i) {
@@ -79,6 +99,9 @@ void CommandManager::populateMenu(QMenu *menu)
 
     menu->addAction(mEditCommands);
 
-    connect(mEditCommands, SIGNAL(triggered()), this, SLOT(showDialog()));
+    connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
 
 }
+
+} // namespace Internal
+} // namespace Tiled

@@ -35,7 +35,6 @@ using namespace Tiled::Internal;
 CommandButton::CommandButton(QWidget *parent)
     : QToolButton(parent)
     , mMenu(new QMenu(this))
-    , mCommandManager(new CommandManager(this))
 {
     setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
     setThemeIcon(this, "system-run");
@@ -45,7 +44,7 @@ CommandButton::CommandButton(QWidget *parent)
     setMenu(mMenu);
 
     connect(mMenu, &QMenu::aboutToShow, 
-            mCommandManager, [this]() { mCommandManager->populateMenu(mMenu); });
+            CommandManager::instance(), [this]() { CommandManager::instance()->populateMenu(mMenu); });
     connect(this, SIGNAL(clicked()), SLOT(runCommand()));
 }
 

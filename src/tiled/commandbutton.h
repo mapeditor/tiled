@@ -27,7 +27,6 @@ class QMenu;
 namespace Tiled {
 namespace Internal {
 
-class CommandManager;
 class MainWindow;
 class DocumentManager;
 
@@ -49,7 +48,6 @@ private:
     void retranslateUi();
 
     QMenu *mMenu;
-    CommandManager *mCommandManager;
 };
 
 } // namespace Internal

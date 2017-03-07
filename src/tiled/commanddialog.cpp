@@ -22,6 +22,7 @@
 #include "ui_commanddialog.h"
 
 #include "commanddatamodel.h"
+#include "commandmanager.h"
 #include "utils.h"
 
 #include <QShortcut>
@@ -62,7 +63,7 @@ void CommandDialog::accept()
 
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
-    , mModel(new CommandDataModel)
+    , mModel(CommandManager::instance()->getCommandDataModel())
 {
     setModel(mModel);
     setRootIsDecorated(false);
@@ -83,11 +84,6 @@ CommandTreeView::CommandTreeView(QWidget *parent)
 
     connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
                     SLOT(handleRowsRemoved(QModelIndex, int, int)));
-}
-
-CommandTreeView::~CommandTreeView()
-{
-    delete mModel;
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
