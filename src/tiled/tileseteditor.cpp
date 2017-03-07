@@ -418,6 +418,14 @@ void TilesetEditor::retranslateUi()
     mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
+bool hasTileInTileset(QString tileName, const QMap<int, Tile*> addedTiles){
+    for (auto tile : addedTiles) {
+        if (tile->imageSource() == tileName)
+            return true;
+    }
+    return false;
+}
+
 void TilesetEditor::addTiles()
 {
     Tileset *tileset = currentTileset();
@@ -437,16 +445,14 @@ void TilesetEditor::addTiles()
     };
     QVector<LoadedFile> loadedFiles;
     // If the tile is already in the tileset, warn user and confirm addition
-    bool dontAskAgain = false, rememberOption = true;
+    bool dontAskAgain = false;
+    bool rememberOption = true;
     for (const QString &file : files) {
         bool addImage = true;
-        const QMap<int, Tile*> addedTiles = mCurrentTilesetDocument->tileset().data()->tiles();
-        for (auto tile : addedTiles) {
-            if (tile->imageSource() == file) {
-                if (dontAskAgain) {
-                    addImage = rememberOption;
-                    break;
-                }
+        if (hasTileInTileset(file, mCurrentTilesetDocument->tileset().data()->tiles())) {
+            if (dontAskAgain) 
+                addImage = rememberOption;
+            else {
                 QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
                 QMessageBox warning(QMessageBox::Warning,
                             tr("Add Tiles"),
@@ -456,16 +462,12 @@ void TilesetEditor::addTiles()
                 warning.setDefaultButton(QMessageBox::Yes);
                 warning.setInformativeText(tr("Add anyway?"));
                 warning.setCheckBox(checkBox);
-                if (warning.exec() != QMessageBox::Yes) {
+                if (warning.exec() != QMessageBox::Yes)
                     rememberOption = addImage = false;
-                }
-                else {
+                else 
                     rememberOption = true;
-                }
-                if (checkBox->checkState() == Qt::Checked) {
+                if (checkBox->checkState() == Qt::Checked)
                     dontAskAgain = true;
-                }
-                break;
             }
         }
         if(!addImage){
