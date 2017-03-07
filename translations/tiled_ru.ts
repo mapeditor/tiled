@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле &apos;COPYING&apos; поставляемым с Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
+&lt;p align="center"&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле 'COPYING' поставляемым с Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Не уникальное расширение файла. Невозможно определить формат экспорта.</translation>
     </message>
     <message>
@@ -390,7 +390,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+143"/>
@@ -862,15 +862,15 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Не поддерживаемая ориентация карты: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Не поддерживаемая ориентация карты: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Неверный параметр набора тайлов: &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Неверный параметр набора тайлов: '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Метод компрессии &apos;%1&apos; не поддерживается</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Метод компрессии '%1' не поддерживается</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Содержимое слоя &apos;%1&apos; повреждено</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Содержимое слоя '%1' повреждено</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Не удается обработать тайл по координатам (%1, %2) на слое &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Не удается обработать тайл по координатам (%1, %2) на слое '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>Файл не содержит типов объектов.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Я уже спонсор!</translation>
     </message>
     <message>
@@ -1665,7 +1665,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Что это</translation>
     </message>
     <message>
@@ -1953,12 +1953,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Не удается распарсить заголовок файла!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Не удается распарсить заголовок слоя!</translation>
     </message>
     <message>
@@ -1993,7 +1993,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Не удается сохранить не тайловый слой!</translation>
     </message>
     <message>
@@ -2211,49 +2211,49 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Параметр &apos;%2&apos; = &apos;%3&apos; не выполняет ничего важного. Параметр игнорируется.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Параметр '%2' = '%3' не выполняет ничего важного. Параметр игнорируется.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Вы забыли подчеркивание в слое &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Вы забыли подчеркивание в слое '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Слой &apos;%1&apos; не является действительным слоем для Авто-карты.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Слой '%1' не является действительным слоем для Авто-карты.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos; слой может объявляться лишь однократно.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input' слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos; слои должны быть слоями тайлов.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*' слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos; слой может объявляться лишь однократно.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output' слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; и &apos;inputnot_*&apos; слои должны быть слоями тайлов.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*' и 'inputnot_*' слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Не найдено слоев 'regions' и 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_outpu&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Не найдено слоев 'regions' и 'regions_outpu'.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2672,8 +2672,8 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Число столбцов в наборе тайлов &apos;%1&apos;, возможно, были изменены с %2 по %3. Хотите настроить ссылки тайлов?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Число столбцов в наборе тайлов '%1', возможно, были изменены с %2 по %3. Хотите настроить ссылки тайлов?</translation>
     </message>
 </context>
 <context>
@@ -3545,8 +3545,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Не удалось загрузить изображение для набора тайлов: &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Не удалось загрузить изображение для набора тайлов: '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3734,7 +3734,7 @@ Please select specific format.</source>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Спасибо за поддержку!&lt;/h3&gt;
@@ -3744,7 +3744,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Я больше не спонсор</translation>
     </message>
     <message>
@@ -3762,7 +3762,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Я уже спонсор!</translation>
     </message>
 </context>
@@ -4292,8 +4292,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Набор тайлов &quot;%1&quot; используется на карте!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>Набор тайлов "%1" используется на карте!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4351,8 +4351,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>Не загружено &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>Не загружено "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
