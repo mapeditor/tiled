@@ -236,8 +236,8 @@ void MapDocument::setCurrentLayer(Layer *layer)
     mCurrentLayer = layer;
     emit currentLayerChanged(mCurrentLayer);
 
-    if (mCurrentLayer && mCurrentObject)
-        if (mCurrentObject->typeId() == Object::LayerType)
+    if (mCurrentLayer)
+        if (!mCurrentObject || mCurrentObject->typeId() == Object::LayerType)
             setCurrentObject(mCurrentLayer);
 }
 
