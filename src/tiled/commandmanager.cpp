@@ -22,6 +22,7 @@
 
 #include "commanddatamodel.h"
 #include "commanddialog.h"
+#include "utils.h"
 
 #include <QApplication>
 #include <QAction>
@@ -53,7 +54,7 @@ void CommandManager::deleteInstance()
     mInstance = nullptr;
 }
 
-CommandDataModel *CommandManager::getCommandDataModel()
+CommandDataModel *CommandManager::commandDataModel()
 {
     return mModel;
 }
@@ -96,6 +97,7 @@ void CommandManager::populateMenu(QMenu *menu)
     mEditCommands->setIcon(
             QIcon(QLatin1String(":/images/24x24/system-run.png")));
     mEditCommands->setText(tr("Edit Commands..."));
+    Utils::setThemeIcon(mEditCommands, "system-run");
 
     menu->addAction(mEditCommands);
 

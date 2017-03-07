@@ -42,7 +42,7 @@ public:
       * Constructs the object and parses the users settings to allow easy
       * programmatic access to the command list.
       */
-    CommandDataModel();
+    CommandDataModel(QObject *parent = nullptr);
 
     /**
       * Saves the data to the users preferences.

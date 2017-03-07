@@ -312,7 +312,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
 
     connect(mUi->menuCommand, &QMenu::aboutToShow, 
-            CommandManager::instance(), [this]() { CommandManager::instance()->populateMenu(mUi->menuCommand); });
+            [this]() { CommandManager::instance()->populateMenu(mUi->menuCommand); });
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
@@ -477,6 +477,7 @@ MainWindow::~MainWindow()
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
     ClipboardManager::deleteInstance();
+    CommandManager::deleteInstance();
 
     delete mUi;
 }

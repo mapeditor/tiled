@@ -63,7 +63,7 @@ void CommandDialog::accept()
 
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
-    , mModel(CommandManager::instance()->getCommandDataModel())
+    , mModel(CommandManager::instance()->commandDataModel())
 {
     setModel(mModel);
     setRootIsDecorated(false);

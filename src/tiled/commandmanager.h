@@ -39,7 +39,7 @@ public:
 
     static void deleteInstance();
 
-    CommandDataModel *getCommandDataModel();
+    CommandDataModel *commandDataModel();
 
 public slots:
     /**
