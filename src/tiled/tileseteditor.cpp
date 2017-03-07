@@ -445,6 +445,7 @@ void TilesetEditor::addTiles()
         QPixmap image;
     };
     QVector<LoadedFile> loadedFiles;
+
     // If the tile is already in the tileset, warn user and confirm addition
     bool dontAskAgain = false;
     bool rememberOption = true;
@@ -462,14 +463,10 @@ void TilesetEditor::addTiles()
             warning.setInformativeText(tr("Add anyway?"));
             warning.setCheckBox(checkBox);
             int warningBoxChoice = warning.exec();
-            if (checkBox->checkState() == Qt::Checked)
-                dontAskAgain = true;
-            if (warningBoxChoice != QMessageBox::Yes) {
-                rememberOption = false;
+            dontAskAgain = checkBox->checkState() == Qt::Checked;
+            rememberOption = warningBoxChoice == QMessageBox::Yes;
+            if (!rememberOption)
                 continue;
-            }
-            else
-                rememberOption = true;
         }
         const QPixmap image(file);
         if (!image.isNull()) {
