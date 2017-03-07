@@ -37,6 +37,7 @@ class OriginIndicator;
 class ResizeHandle;
 class RotateHandle;
 class SelectionRectangle;
+class MapObjectHighlight;
 
 class ObjectSelectionTool : public AbstractObjectTool
 {
@@ -151,12 +152,15 @@ private:
     QPointF mOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
+    bool mHighlightState;
     Mode mMode;
     Action mAction;
     QPointF mStart;
     QPointF mStartOffset;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+
+    QHash<MapObject*, MapObjectHighlight*> mObjectHighlight;
 };
 
 } // namespace Internal

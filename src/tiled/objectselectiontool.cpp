@@ -305,8 +305,6 @@ void ResizeHandle::paint(QPainter *painter,
     painter->drawPath(mArrow);
 }
 
-} // namespace Internal
-} // namespace Tiled
 
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
@@ -325,6 +323,7 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mClickedResizeHandle(nullptr)
     , mResizingLimitHorizontal(false)
     , mResizingLimitVertical(false)
+    , mHighlightState(false)
     , mMode(Resize)
     , mAction(NoAction)
 {
@@ -687,7 +686,6 @@ static bool canResizeAbsolute(const MapObject *object)
     return false;
 }
 
-bool highlightState = false;
 
 /* This function returns the actual bounds of the object, as opposed to the
  * bounds of its visualization that the MapRenderer::boundingRect function
@@ -776,6 +774,64 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
 
     return transform;
 }
+
+class MapObjectHighlight : public QGraphicsItem
+{
+public:
+    MapObjectHighlight(MapObject *object)
+        : mObject(object)
+    {
+        setZValue(10000);
+    }
+
+    void syncWithMapObject(MapRenderer *renderer);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *,
+               QWidget *) override;
+
+private:
+    QRectF mHighlightRect;
+    MapObject *mObject;
+};
+
+void MapObjectHighlight::syncWithMapObject(MapRenderer *renderer)
+{
+    QTransform noTransform;
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+    QRectF bounds = objectBounds(mObject, renderer, noTransform);
+    bounds.translate(-pixelPos);
+
+    setPos(pixelPos + mObject->objectGroup()->totalOffset());
+    setRotation(mObject->rotation());
+
+    if (mHighlightRect != bounds) {
+        prepareGeometryChange();
+        mHighlightRect = bounds;
+    }
+}
+
+QRectF MapObjectHighlight::boundingRect() const
+{
+    return mHighlightRect;
+}
+
+void MapObjectHighlight::paint(QPainter *painter,
+                          const QStyleOptionGraphicsItem *,
+                          QWidget *)
+{
+
+    QColor highlight = QApplication::palette().highlight().color();
+    highlight.setAlpha(60);
+    QPen pen(highlight, 2);
+    painter->setPen(pen);
+    painter->setBrush(highlight);
+    painter->drawRect(mHighlightRect);
+}
+
+} // namespace Internal
+} // namespace Tiled
 
 void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 {
@@ -1433,7 +1489,7 @@ void ObjectSelectionTool::saveSelectionState()
 void ObjectSelectionTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
-    const MapObject *prevObject = nullptr;
+    QHash<MapObject*, MapObjectHighlight*> highlightItems;
     switch (mAction) {
     case NoAction: {
         const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
@@ -1441,37 +1497,35 @@ void ObjectSelectionTool::refreshCursor()
         if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection && !mHoveredHandle)) &&
                 !(mModifiers & Qt::ShiftModifier)) {
             cursorShape = Qt::SizeAllCursor;
-            MapObject *currentObject = mHoveredObjectItem->mapObject();
-
-            if (currentObject != prevObject) {
-                prevObject = currentObject;
-                if (highlightState)
-                    mapScene()->removeItem(mSelectionRectangle);
+            if (mHoveredObjectItem) {
+                MapObject *currentObject = mHoveredObjectItem->mapObject();
 
                 MapRenderer *renderer = mapDocument()->renderer();
-                QRectF boundingRect = objectBounds(currentObject, renderer,
-                                                   objectTransform(currentObject, renderer));
+                MapObjectHighlight *highlightItem = mObjectHighlight.take(currentObject);
 
-                mSelectionRectangle->setRectangle(boundingRect);
-                mapScene()->addItem(mSelectionRectangle);
-                highlightState = true;
-            }
+                if (!highlightItem) {
+                    highlightItem = new MapObjectHighlight(currentObject);
+                    highlightItem->syncWithMapObject(renderer);
+                    mapScene()->addItem(highlightItem);
+                }
+                highlightItems.insert(currentObject, highlightItem);
+                qDeleteAll(mObjectHighlight);
+                mObjectHighlight.swap(highlightItems);
+                mHighlightState = true;         
+            }   
 
-        } else if (highlightState) {
-            mapScene()->removeItem(mSelectionRectangle);
-            highlightState = false;
-            prevObject = nullptr;
+        } else if (mHighlightState) {
+            qDeleteAll(mObjectHighlight); 
+            mObjectHighlight.swap(highlightItems);
+            mHighlightState = false;
         }
 
         break;
     }
     case Moving:
         cursorShape = Qt::SizeAllCursor;
-        if (highlightState) {
-            mapScene()->removeItem(mSelectionRectangle);
-            highlightState = false;
-        }
-        prevObject = nullptr;
+        qDeleteAll(mObjectHighlight); 
+        mObjectHighlight.swap(highlightItems);
         break;
     default:
         break;
