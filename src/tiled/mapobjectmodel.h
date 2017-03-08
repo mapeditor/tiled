@@ -58,7 +58,7 @@ public:
         Id,
         X,
         Y,
-        ColumnsCount
+        ColumnCount
     };
 
     MapObjectModel(QObject *parent = nullptr);

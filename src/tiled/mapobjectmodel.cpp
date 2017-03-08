@@ -108,7 +108,7 @@ int MapObjectModel::rowCount(const QModelIndex &parent) const
 int MapObjectModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return ColumnsCount;
+    return ColumnCount;
 }
 
 QVariant MapObjectModel::data(const QModelIndex &index, int role) const
@@ -241,10 +241,10 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-    else if (toMapObject(index))
-        if (index.column() == Type) { // allow to edit only type column
+    else if (toMapObject(index)) {
+        if (index.column() == Type)// allow to edit only type column
             rc |= Qt::ItemIsEditable;
-        }
+    }
     return rc;
 }
 
@@ -255,7 +255,7 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
         switch (section) {
         case Name: return tr("Name");
         case Type: return tr("Type");
-        case Id: return tr("Id");
+        case Id: return tr("ID");
         case X: return tr("X");
         case Y: return tr("Y");
         }
