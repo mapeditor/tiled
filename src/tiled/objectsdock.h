@@ -103,13 +103,11 @@ private slots:
     void showCustomMenu(const QPoint &point);
 
 private:
-    void updateColumnVisibilityActions();
     void hideExtraColumns();
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;
     QAbstractProxyModel *mProxyModel;
-    QList<QAction*> mActions;
     bool mSynching;
 };
 

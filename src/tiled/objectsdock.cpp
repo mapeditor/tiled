@@ -45,6 +45,7 @@
 #include <QUrl>
 
 static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
+static const char SHOWED_SECTIONS_KEY[] = "ObjectsDock/ShowedSections";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -302,7 +303,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
-        updateColumnVisibilityActions();
+        hideExtraColumns();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -408,40 +409,47 @@ void ObjectsView::selectedObjectsChanged()
 void ObjectsView::setColumnVisibility(bool visible)
 {
     QAction *action = qobject_cast<QAction*>(sender());
-    if (action)
-        header()->setSectionHidden(action->data().toInt(), !visible);
+    if (!action)
+        return;
+
+    int column = action->data().toInt();
+    header()->setSectionHidden(column, !visible);
+
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList showedColumns;
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        if (!header()->isSectionHidden(i))
+            showedColumns.append(i);
+    }
+    settings->setValue(QLatin1String(SHOWED_SECTIONS_KEY), showedColumns);
 }
 
 void ObjectsView::showCustomMenu(const QPoint &point)
 {
     Q_UNUSED(point)
     QMenu contextMenu(this);
-    contextMenu.addActions(mActions);
-    contextMenu.exec(QCursor::pos());
-}
-
-void ObjectsView::updateColumnVisibilityActions()
-{
-    hideExtraColumns();
-    mActions.clear();
     QAbstractItemModel *model = mProxyModel->sourceModel();
     for (int i = 0; i < model->columnCount(); i++) {
-        if (i == MapObjectModel::Name || i == MapObjectModel::Type)
+        if (i == MapObjectModel::Name)
             continue;
-        QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), this);
+        QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), &contextMenu);
         action->setCheckable(true);
         action->setChecked(!header()->isSectionHidden(i));
         action->setData(i);
         connect(action, &QAction::triggered, this, &ObjectsView::setColumnVisibility);
-        mActions << action;
+        contextMenu.addAction(action);
     }
+    contextMenu.exec(QCursor::pos());
 }
 
 void ObjectsView::hideExtraColumns()
 {
-    header()->setSectionHidden(MapObjectModel::Id, true);
-    header()->setSectionHidden(MapObjectModel::X, true);
-    header()->setSectionHidden(MapObjectModel::Y, true);
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList showedColumns = settings->value(QLatin1String(SHOWED_SECTIONS_KEY),
+                                                 QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        header()->setSectionHidden(i, !showedColumns.contains(i));
+    }
 }
 
 void ObjectsView::synchronizeSelectedItems()
