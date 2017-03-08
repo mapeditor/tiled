@@ -84,6 +84,7 @@
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="menuCommand"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
     <addaction name="actionQuit"/>
