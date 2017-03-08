@@ -43,6 +43,8 @@ MapObjectModel::MapObjectModel(QObject *parent):
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
+    connect(this, &MapObjectModel::objectsChanged,
+            this, &MapObjectModel::emitObjectsDataChanged);
 }
 
 QModelIndex MapObjectModel::index(int row, int column,
@@ -430,6 +432,13 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
             }
         }
     }
+}
+
+void MapObjectModel::emitObjectsDataChanged(const QList<MapObject *> &objects)
+{
+    emit dataChanged(index(objects.first(), Name),
+                     index(objects.last(), ColumnCount - 1),
+                     QVector<int>() << Qt::EditRole);
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const

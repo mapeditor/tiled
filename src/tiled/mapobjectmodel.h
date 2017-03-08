@@ -110,6 +110,7 @@ private slots:
     void layerChanged(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void tileTypeChanged(Tile *tile);
+    void emitObjectDataChanged(const QList<MapObject *> &objects);
 
 private:
     MapDocument *mMapDocument;
