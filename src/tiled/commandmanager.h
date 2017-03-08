@@ -45,7 +45,7 @@ public slots:
     /**
      * Populates the menu pointed by menu
      */
-    void populateMenu(QMenu *menu);
+    void populateMenu(QMenu *menu, bool flag = false);
 
     /**
      * Displays the dialog to edit the commands

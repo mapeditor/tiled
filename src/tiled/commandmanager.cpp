@@ -65,7 +65,7 @@ void CommandManager::showDialog()
     dialog.exec();
 }
 
-void CommandManager::populateMenu(QMenu *menu)
+void CommandManager::populateMenu(QMenu *menu, bool flag)
 {
     menu->clear();
 
@@ -82,7 +82,7 @@ void CommandManager::populateMenu(QMenu *menu)
             continue;
 
         QAction *mAction = menu->addAction(command.name);
-        if (firstEnabledCommand)
+        if (firstEnabledCommand && flag)
             mAction->setShortcut(QKeySequence(tr("F5")));
         firstEnabledCommand = false;
 
