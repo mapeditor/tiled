@@ -114,6 +114,7 @@ private slots:
     void exportAs();
     void exportAsImage();
     void reload();
+    void executeCommand();
     void closeFile();
     void closeAllFiles();
 
@@ -158,6 +159,8 @@ private slots:
     void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
+
+    void showCommandDialog();
 
 private:
     /**

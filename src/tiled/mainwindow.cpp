@@ -33,6 +33,8 @@
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
+#include "commanddatamodel.h"
+#include "commanddialog.h"
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
@@ -284,6 +286,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
     connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
+    connect(mUi->actionExecuteCommand, SIGNAL(triggered()), SLOT(executeCommand()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
@@ -1043,6 +1046,39 @@ void MainWindow::reload()
         mDocumentManager->reloadCurrentDocument();
 }
 
+void MainWindow::executeCommand()
+{
+    Command command;
+
+    QAction *action = dynamic_cast<QAction*>(sender());
+    if (action && action->data().isValid()) {
+        //run the command passed by the action
+        command = Command::fromQVariant(action->data());
+    } else {
+        //run the default command
+        command = CommandDataModel().firstEnabledCommand();
+
+        if (!command.isEnabled) {
+            QMessageBox msgBox(window());
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setWindowTitle(tr("Error Executing Command"));
+            msgBox.setText(tr("You do not have any commands setup."));
+            msgBox.addButton(QMessageBox::Ok);
+            msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setEscapeButton(QMessageBox::Ok);
+
+            QAbstractButton *button = msgBox.buttons().last();
+            connect(button, SIGNAL(clicked()), SLOT(showCommandDialog()));
+
+            msgBox.exec();
+            return;
+        }
+    }
+
+    command.execute();
+}
+
 void MainWindow::closeFile()
 {
     if (confirmSave(mDocumentManager->currentDocument()))
@@ -1337,6 +1373,12 @@ void MainWindow::onAnimationEditorClosed()
 void MainWindow::onCollisionEditorClosed()
 {
     mShowTileCollisionEditor->setChecked(false);
+}
+
+void MainWindow::showCommandDialog()
+{
+    CommandDialog dialog(window());
+    dialog.exec();
 }
 
 void MainWindow::openRecentFile()
