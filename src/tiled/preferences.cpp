@@ -95,6 +95,7 @@ Preferences::Preferences()
 #endif
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
+    mZoomInTerrainEditor = realValue("ZoomInTerrainEditor", 1);
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -348,6 +349,15 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
     mMapRenderOrder = mapRenderOrder;
     mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
                         mMapRenderOrder);
+}
+
+void Preferences::setZoomInTerrainEditor(qreal zoom)
+{
+    if(mZoomInTerrainEditor == zoom)
+        return;
+
+    mZoomInTerrainEditor = zoom;
+    mSettings->setValue(QLatin1String("Interface/ZoomInTerrainEditor"), zoom);
 }
 
 bool Preferences::dtdEnabled() const

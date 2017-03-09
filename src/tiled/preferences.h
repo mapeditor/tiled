@@ -88,6 +88,9 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
+    qreal getZoomInTerrainEditor() {return mZoomInTerrainEditor;}
+    void setZoomInTerrainEditor(qreal zoom);
+
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
 
@@ -218,6 +221,7 @@ private:
     ApplicationStyle mApplicationStyle;
     QColor mBaseColor;
     QColor mSelectionColor;
+    qreal mZoomInTerrainEditor;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
