@@ -1,6 +1,6 @@
 /*
- * commandbutton.h
- * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * commandmanager.h
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -20,34 +20,45 @@
 
 #pragma once
 
-#include <QToolButton>
+#include <QObject>
 
 class QMenu;
 
 namespace Tiled {
 namespace Internal {
 
-class MainWindow;
-class DocumentManager;
+class CommandDataModel;
 
-class CommandButton : public QToolButton
+class CommandManager : public QObject
 {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-    CommandButton(QWidget *parent);
 
-protected:
-    void changeEvent(QEvent *event) override;
+    static CommandManager *instance();
 
-private slots:
-    void runCommand();
+    static void deleteInstance();
+
+    CommandDataModel *commandDataModel();
+
+public slots:
+    /**
+     * Populates the menu pointed by menu
+     */
+    void populateMenu(QMenu *menu, bool flag = false);
+
+    /**
+     * Displays the dialog to edit the commands
+     */
     void showDialog();
 
 private:
-    void retranslateUi();
+    Q_DISABLE_COPY(CommandManager);
 
-    QMenu *mMenu;
+    CommandManager();
+
+    static CommandManager *mInstance;
+    CommandDataModel *mModel;
 };
 
 } // namespace Internal

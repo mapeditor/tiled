@@ -33,6 +33,7 @@
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
+#include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
@@ -315,6 +316,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
 
+    connect(mUi->menuCommand, &QMenu::aboutToShow, 
+            [this]() { CommandManager::instance()->populateMenu(mUi->menuCommand); });
+
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
@@ -478,6 +482,7 @@ MainWindow::~MainWindow()
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
     ClipboardManager::deleteInstance();
+    CommandManager::deleteInstance();
 
     delete mUi;
 }

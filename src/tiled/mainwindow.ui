@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -65,6 +65,12 @@
      <addaction name="actionNewMap"/>
      <addaction name="actionNewTileset"/>
     </widget>
+    <widget class="QMenu" name="menuCommand">
+     <property name="title">
+      <string>Command</string>
+     </property>
+     <addaction name="actionEditCommands"/>
+    </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentFiles"/>
@@ -76,6 +82,8 @@
     <addaction name="actionExportAs"/>
     <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
+    <addaction name="separator"/>
+    <addaction name="menuCommand"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
@@ -571,6 +579,16 @@
    </property>
    <property name="text">
     <string>No Snapping</string>
+   </property>
+  </action>
+  <action name="actionEditCommands">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/24x24/system-run.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Edit Commands...</string>
    </property>
   </action>
  </widget>

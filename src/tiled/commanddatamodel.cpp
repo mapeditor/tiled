@@ -29,7 +29,8 @@ using namespace Tiled::Internal;
 
 const char *commandMimeType = "application/x-tiled-commandptr";
 
-CommandDataModel::CommandDataModel()
+CommandDataModel::CommandDataModel(QObject *parent)
+    : QAbstractTableModel(parent)
 {
     // Load saveBeforeExecute option
     QVariant s = mSettings.value(QLatin1String("saveBeforeExecute"), true);

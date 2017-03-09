@@ -145,6 +145,8 @@ QtGuiApplication {
         "command.h",
         "commandlineparser.cpp",
         "commandlineparser.h",
+        "commandmanager.cpp",
+        "commandmanager.h",
         "consoledock.cpp",
         "consoledock.h",
         "containerhelpers.h",

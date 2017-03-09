@@ -56,7 +56,6 @@ class CommandTreeView : public QTreeView
 
 public:
     CommandTreeView(QWidget *parent);
-    ~CommandTreeView();
 
     /**
       * Returns the model used by this view in CommandDataMode form.
