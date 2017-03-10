@@ -196,9 +196,13 @@ void TilesetEditor::addDocument(Document *document)
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
+
     auto zoomable = new Zoomable(this);
-    zoomable->setScale(Preferences::instance()->getZoomInTerrainEditor());
+    auto fileName = tilesetDocument->fileName();
+    qreal zoom = Preferences::instance()->getTerrainEditorZoom(fileName);
+    zoomable->setScale(zoom);
     view->setZoomable(zoomable);
+
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -237,7 +241,7 @@ void TilesetEditor::removeDocument(Document *document)
     tilesetDocument->disconnect(this);
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
-    Preferences::instance()->setZoomInTerrainEditor(view->scale());
+    Preferences::instance()->setTerrainEditorZoom(tilesetDocument->fileName(),view->scale());
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
     delete view;

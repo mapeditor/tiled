@@ -37,7 +37,7 @@ namespace Internal {
  * This class holds user preferences and provides a convenient interface to
  * access them.
  */
-class Preferences : public QObject
+class  Preferences : public QObject
 {
     Q_OBJECT
 
@@ -88,8 +88,8 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
-    qreal getZoomInTerrainEditor() {return mZoomInTerrainEditor;}
-    void setZoomInTerrainEditor(qreal zoom);
+    qreal getTerrainEditorZoom(QString name);
+    void setTerrainEditorZoom(QString name, qreal value);
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
@@ -192,6 +192,7 @@ signals:
 
     void isPatronChanged();
     void checkForUpdatesChanged();
+
 
 private:
     Preferences();

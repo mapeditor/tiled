@@ -351,13 +351,20 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-void Preferences::setZoomInTerrainEditor(qreal zoom)
+void Preferences::setTerrainEditorZoom(QString name, qreal value)
 {
-    if(mZoomInTerrainEditor == zoom)
-        return;
+    QString str;
+    str += QLatin1String("Zoom/");
+    str += name;
+    mSettings->setValue(str, value);
+}
 
-    mZoomInTerrainEditor = zoom;
-    mSettings->setValue(QLatin1String("Interface/ZoomInTerrainEditor"), zoom);
+qreal Preferences::getTerrainEditorZoom(QString name)
+{
+    QString str;
+    str += QLatin1String("Zoom/");
+    str += name;
+    return mSettings->value(str, 1.0).toReal();
 }
 
 bool Preferences::dtdEnabled() const
