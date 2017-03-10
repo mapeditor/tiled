@@ -45,6 +45,9 @@ CommandDialog::CommandDialog(QWidget *parent)
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    connect(mUi->pushButton, &QPushButton::clicked, 
+            [this]() { CommandManager::instance()->populateMenu(); });
 }
 
 CommandDialog::~CommandDialog()

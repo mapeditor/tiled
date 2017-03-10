@@ -43,11 +43,13 @@ CommandButton::CommandButton(QWidget *parent)
     setPopupMode(QToolButton::MenuButtonPopup);
     setMenu(mMenu);
 
+    CommandManager::instance()->registerMenu(mMenu);
+
     // Populate the menu once in order to register shortcuts beforehand
-    CommandManager::instance()->populateMenu(mMenu, true);
+    CommandManager::instance()->populateMenu();
 
     connect(mMenu, &QMenu::aboutToShow,  
-            [this]() { CommandManager::instance()->populateMenu(mMenu, true); });
+            [this]() { CommandManager::instance()->populateMenu(); });
     connect(this, SIGNAL(clicked()), SLOT(runCommand()));
 }
 
