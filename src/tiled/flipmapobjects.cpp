@@ -43,10 +43,23 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 
 void FlipMapObjects::flip()
 {
-    // TODO: Flip them properly as a group
     const auto &objects = mMapObjects;
+
+    //computing objects center
+    QPainterPath boundaringPath;
     for (MapObject *object : objects)
-        object->flip(mFlipDirection);
+    {
+        const QPolygonF &objectPolygon = object->polygon();
+        if(objectPolygon.empty())
+            boundaringPath.addRect(object->bounds());
+        else
+            boundaringPath.addRect(QRectF(object->position(), objectPolygon.boundingRect().size()));
+    }
+    QPointF objectsCenter = boundaringPath.boundingRect().center();
+
+    //fliping objects
+    for (MapObject *object : objects)
+        object->flip(mFlipDirection, objectsCenter);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

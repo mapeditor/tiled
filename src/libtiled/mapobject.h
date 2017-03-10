@@ -179,7 +179,7 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
-    void flip(FlipDirection direction);
+    void flip(FlipDirection direction, const QPointF &flipCenter);
 
     MapObject *clone() const;
 

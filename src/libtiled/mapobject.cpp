@@ -200,7 +200,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
  * Flip this object in the given \a direction. This doesn't change the size
  * of the object.
  */
-void MapObject::flip(FlipDirection direction)
+void MapObject::flip(FlipDirection direction, const QPointF &flipCenter)
 {
     if (!mCell.isEmpty()) {
         if (direction == FlipHorizontally)
@@ -209,16 +209,40 @@ void MapObject::flip(FlipDirection direction)
             mCell.setFlippedVertically(!mCell.flippedVertically());
     }
 
-    if (!mPolygon.isEmpty()) {
-        const QPointF center2 = mPolygon.boundingRect().center() * 2;
+    //creating flipmatrix
+    QMatrix flipMatrix;
+    flipMatrix.translate(flipCenter.x(), flipCenter.y());
+    if (direction == FlipHorizontally)
+        flipMatrix.scale(1, -1);
+    else //direction == FlipVertically
+        flipMatrix.scale(-1, 1);
+    flipMatrix.translate(-flipCenter.x(), -flipCenter.y());
 
-        if (direction == FlipHorizontally) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setX(center2.x() - mPolygon[i].x());
-        } else if (direction == FlipVertically) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setY(center2.y() - mPolygon[i].y());
-        }
+    //computing position offset
+    QPointF positionOffset;
+    QSizeF objectSize = mPolygon.empty() ? size() : mPolygon.boundingRect().size();
+    if (direction == FlipHorizontally)
+        positionOffset = QPointF(0, objectSize.height());
+    else //direction == FlipVertically
+        positionOffset = QPointF(objectSize.width(), 0);
+
+    if (!mPolygon.isEmpty()) {  //fliping polygon
+        QPointF polygonCenter = mPolygon.boundingRect().center();
+
+        QMatrix flipPolygonMatrix;
+        flipPolygonMatrix.translate(polygonCenter.x(), polygonCenter.y());
+        if (direction == FlipHorizontally)
+            flipPolygonMatrix.scale(1, -1);
+        else //direction == FlipVertically
+            flipPolygonMatrix.scale(-1, 1);
+        flipPolygonMatrix.translate(-polygonCenter.x(), -polygonCenter.y());
+
+
+        mPolygon = flipPolygonMatrix.map(mPolygon);
+        setPosition(flipMatrix.map(position()) - positionOffset);
+    }
+    else {
+        setPosition(flipMatrix.map(position() + positionOffset));
     }
 }
 
