@@ -95,7 +95,6 @@ Preferences::Preferences()
 #endif
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
-    mZoomInTerrainEditor = realValue("ZoomInTerrainEditor", 1);
     mSettings->endGroup();
 
     // Retrieve defined object types

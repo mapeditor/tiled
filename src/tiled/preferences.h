@@ -193,7 +193,6 @@ signals:
     void isPatronChanged();
     void checkForUpdatesChanged();
 
-
 private:
     Preferences();
     ~Preferences();
@@ -222,7 +221,6 @@ private:
     ApplicationStyle mApplicationStyle;
     QColor mBaseColor;
     QColor mSelectionColor;
-    qreal mZoomInTerrainEditor;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
