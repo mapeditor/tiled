@@ -2,6 +2,7 @@
  * mapobject.cpp
  * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
  * This file is part of libtiled.
  *
@@ -34,6 +35,7 @@
 #include "tile.h"
 
 #include <QFontMetricsF>
+#include <qmath.h>
 
 namespace Tiled {
 
@@ -197,53 +199,17 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
 }
 
 /**
- * Flip this object in the given \a direction. This doesn't change the size
+ * Flip this object in the given \a direction . This doesn't change the size
  * of the object.
  */
-void MapObject::flip(FlipDirection direction, const QPointF &flipCenter)
+void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
-    if (!mCell.isEmpty()) {
-        if (direction == FlipHorizontally)
-            mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
-        else if (direction == FlipVertically)
-            mCell.setFlippedVertically(!mCell.flippedVertically());
-    }
-
-    //creating flipmatrix
-    QMatrix flipMatrix;
-    flipMatrix.translate(flipCenter.x(), flipCenter.y());
-    if (direction == FlipHorizontally)
-        flipMatrix.scale(1, -1);
-    else //direction == FlipVertically
-        flipMatrix.scale(-1, 1);
-    flipMatrix.translate(-flipCenter.x(), -flipCenter.y());
-
-    //computing position offset
-    QPointF positionOffset;
-    QSizeF objectSize = mPolygon.empty() ? size() : mPolygon.boundingRect().size();
-    if (direction == FlipHorizontally)
-        positionOffset = QPointF(0, objectSize.height());
-    else //direction == FlipVertically
-        positionOffset = QPointF(objectSize.width(), 0);
-
-    if (!mPolygon.isEmpty()) {  //fliping polygon
-        QPointF polygonCenter = mPolygon.boundingRect().center();
-
-        QMatrix flipPolygonMatrix;
-        flipPolygonMatrix.translate(polygonCenter.x(), polygonCenter.y());
-        if (direction == FlipHorizontally)
-            flipPolygonMatrix.scale(1, -1);
-        else //direction == FlipVertically
-            flipPolygonMatrix.scale(-1, 1);
-        flipPolygonMatrix.translate(-polygonCenter.x(), -polygonCenter.y());
-
-
-        mPolygon = flipPolygonMatrix.map(mPolygon);
-        setPosition(flipMatrix.map(position()) - positionOffset);
-    }
-    else {
-        setPosition(flipMatrix.map(position() + positionOffset));
-    }
+    if(!mCell.isEmpty())
+        flipTileObject(direction, origin);
+    else if(!mPolygon.isEmpty())
+        flipPolygonObject(direction, origin);
+    else
+        flipRectObject(direction, origin);
 }
 
 /**
@@ -262,6 +228,134 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     o->setVisible(mVisible);
     return o;
+}
+
+void MapObject::flipRectObject(FlipDirection direction, const QPointF &origin)
+{
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    if(direction == FlipHorizontally)
+        flipTransform.scale(-1, 1);
+    else //direction == FlipVertically
+        flipTransform.scale(1, -1);
+    flipTransform.translate(-origin.x(), -origin.y());
+
+    // point 1 is position
+    // 0-----1
+    // |     |
+    // 3-----2
+
+
+    QPointF points[4];
+    points[0] = position();
+    points[1] = QPointF(cos(qDegreesToRadians(rotation())) * width() + x(),
+                        sin(qDegreesToRadians(rotation())) * width() + y());
+
+    points[3] = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),
+                        sin(qDegreesToRadians(rotation() + 90)) * height() + y());
+
+    points[2] = QPointF(cos(qDegreesToRadians(rotation())) * width() + points[3].x(),
+            sin(qDegreesToRadians(rotation())) * width() + points[3].y());
+
+
+    QPointF newPointTwo = flipTransform.map(points[2]);
+    QPointF newPointThree = flipTransform.map(points[3]);
+    qreal newRotation = -QLineF(newPointThree, newPointTwo).angle();
+
+    setPosition(newPointThree);
+    setRotation(newRotation);
+}
+
+void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin)
+{
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    if(direction == FlipHorizontally)
+        flipTransform.scale(-1, 1);
+    else //direction == FlipVertically
+        flipTransform.scale(1, -1);
+    flipTransform.translate(-origin.x(), -origin.y());
+
+    // point 1 is position
+    // 0-----1
+    // |     |
+    // 3-----2
+
+    QRectF polygonRect = mPolygon.boundingRect();
+    qreal polyWidth = polygonRect.width();
+    qreal polyHeight = polygonRect.height();
+
+    QPointF points[4];
+    points[0] = position();
+    points[1] = QPointF(cos(qDegreesToRadians(rotation())) * polyWidth + x(),
+                        sin(qDegreesToRadians(rotation())) * polyWidth + y());
+
+    points[3] = QPointF(cos(qDegreesToRadians(rotation() + 90)) * polyHeight + x(),
+                            sin(qDegreesToRadians(rotation() + 90)) * polyHeight + y());
+
+    points[2] = QPointF(cos(qDegreesToRadians(rotation())) * polyWidth + points[3].x(),
+                        sin(qDegreesToRadians(rotation())) * polyWidth + points[3].y());
+
+
+
+    QPointF newPointTwo = flipTransform.map(points[2]);
+    QPointF newPointThree = flipTransform.map(points[3]);
+    qreal newRotation = -QLineF(newPointThree, newPointTwo).angle();
+    setPosition(newPointThree);
+    setRotation(newRotation);
+
+    //flip polygon
+    QPointF polygonCenter = mPolygon.boundingRect().center();
+    QTransform flipPolygonTransform;
+    flipPolygonTransform.translate(polygonCenter.x(), polygonCenter.y());
+    if (direction != FlipHorizontally)
+        flipPolygonTransform.scale(-1, 1);
+    else //direction == FlipVertically
+        flipPolygonTransform.scale(1, -1);
+    flipPolygonTransform.translate(-polygonCenter.x(), -polygonCenter.y());
+
+    mPolygon = flipPolygonTransform.map(mPolygon);
+}
+
+void MapObject::flipTileObject(FlipDirection direction, const QPointF &origin)
+{
+    if (direction == FlipHorizontally)
+        mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+    else // direction == FlipVertically)
+        mCell.setFlippedVertically(!mCell.flippedVertically());
+
+
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    if(direction == FlipHorizontally)
+        flipTransform.scale(-1, 1);
+    else //direction == FlipVertically
+        flipTransform.scale(1, -1);
+    flipTransform.translate(-origin.x(), -origin.y());
+
+    // point 1 is position
+    // 3-----2
+    // |     |
+    // 0-----1
+
+    QPointF points[4];
+    points[0] = position();
+    points[1] = QPointF(cos(qDegreesToRadians(rotation())) * width() + x(),
+                        sin(qDegreesToRadians(rotation())) * width() + y());
+
+    points[3] = QPointF(cos(qDegreesToRadians(rotation() - 90)) * height() + x(),
+                        sin(qDegreesToRadians(rotation() - 90)) * height() + y());
+
+    points[2] = QPointF(cos(qDegreesToRadians(rotation())) * width() + points[3].x(),
+            sin(qDegreesToRadians(rotation())) * width() + points[3].y());
+
+
+    QPointF newPointTwo = flipTransform.map(points[2]);
+    QPointF newPointThree = flipTransform.map(points[3]);
+    qreal newRotation = -QLineF(newPointThree, newPointTwo).angle();
+
+    setPosition(newPointThree);
+    setRotation(newRotation);
 }
 
 } // namespace Tiled

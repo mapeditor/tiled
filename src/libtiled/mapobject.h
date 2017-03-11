@@ -179,11 +179,15 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
-    void flip(FlipDirection direction, const QPointF &flipCenter);
+    void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
 
 private:
+    void flipRectObject(FlipDirection direction, const QPointF &origin);
+    void flipPolygonObject(FlipDirection direction, const QPointF &origin);
+    void flipTileObject(FlipDirection direction, const QPointF &origin);
+
     int mId;
     QString mName;
     QString mType;
@@ -348,7 +352,7 @@ inline const QPolygonF &MapObject::polygon() const
  * \sa setShape()
  */
 inline void MapObject::setPolygon(const QPolygonF &polygon)
-{ mPolygon = polygon; }
+{ mPolygon = polygon;}
 
 /**
  * Returns the shape of the object.

@@ -1,6 +1,7 @@
 /*
  * flipmapobjects.cpp
  * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
  * This file is part of Tiled.
  *
@@ -49,15 +50,28 @@ void FlipMapObjects::flip()
     QPainterPath boundaringPath;
     for (MapObject *object : objects)
     {
-        const QPolygonF &objectPolygon = object->polygon();
-        if(objectPolygon.empty())
-            boundaringPath.addRect(object->bounds());
-        else
-            boundaringPath.addRect(QRectF(object->position(), objectPolygon.boundingRect().size()));
+        QTransform objectTransform;
+        objectTransform.translate(object->x(), object->y());
+        objectTransform.rotate(object->rotation());
+        objectTransform.translate(-object->x(), -object->y());
+
+        if(!object->cell().isEmpty()){ //computing bound rect for cell
+            QRectF cellRect = QRectF(object->x(),
+                                     object->y(),
+                                     object->width(), -object->height()).normalized();
+            boundaringPath.addRect(objectTransform.mapRect(cellRect));
+        }
+        else if(!object->polygon().empty()){ //computing bound rect for polygon
+            const QPolygonF &objectPolygon = object->polygon();
+            boundaringPath.addRect(objectTransform.mapRect(QRectF(object->position(), objectPolygon.boundingRect().size())));
+        }
+        else { //computing bound rect for other
+            boundaringPath.addRect(objectTransform.mapRect(object->bounds()));
+        }
     }
     QPointF objectsCenter = boundaringPath.boundingRect().center();
 
-    //fliping objects
+    //flip objects
     for (MapObject *object : objects)
         object->flip(mFlipDirection, objectsCenter);
 
