@@ -395,7 +395,7 @@
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker room файлы (*.room.gmx)</translation>
     </message>
 </context>
 <context>
