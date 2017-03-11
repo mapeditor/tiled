@@ -37,7 +37,7 @@ namespace Internal {
  * This class holds user preferences and provides a convenient interface to
  * access them.
  */
-class  Preferences : public QObject
+class Preferences : public QObject
 {
     Q_OBJECT
 
