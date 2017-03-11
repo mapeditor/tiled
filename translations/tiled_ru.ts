@@ -395,7 +395,7 @@
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation>GameMaker room файлы (*.room.gmx)</translation>
+        <translation>Файлы GameMaker room (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -687,7 +687,7 @@
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Привязывать к &amp;пикселям</translation>
     </message>
     <message>
         <location line="-200"/>
@@ -2104,7 +2104,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить размер плитки</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -3317,29 +3317,29 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой &amp;плиток</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой &amp;объектов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой &amp;изображений</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой через копирование</translation>
     </message>
     <message>
         <location line="-196"/>
         <location line="+196"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой через вырезание</translation>
     </message>
     <message>
         <location line="-192"/>
