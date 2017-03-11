@@ -240,7 +240,7 @@ void MapObject::flipRectObject(FlipDirection direction, const QPointF &origin)
         flipTransform.scale(1, -1);
     flipTransform.translate(-origin.x(), -origin.y());
 
-    // point 1 is position
+    // point 0 is position
     // 0-----1
     // |     |
     // 3-----2
@@ -276,7 +276,7 @@ void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin
         flipTransform.scale(1, -1);
     flipTransform.translate(-origin.x(), -origin.y());
 
-    // point 1 is position
+    // point 0 is position
     // 0-----1
     // |     |
     // 3-----2
@@ -333,7 +333,7 @@ void MapObject::flipTileObject(FlipDirection direction, const QPointF &origin)
         flipTransform.scale(1, -1);
     flipTransform.translate(-origin.x(), -origin.y());
 
-    // point 1 is position
+    // point 0 is position
     // 3-----2
     // |     |
     // 0-----1
