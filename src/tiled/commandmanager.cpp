@@ -74,8 +74,7 @@ void CommandManager::showDialog()
 
 void CommandManager::populateMenus()
 {
-    for (int i = 0; i < mMenus.size(); ++i) {
-        QMenu *menu = mMenus.at(i);
+    for (QMenu *menu : mMenus) {
         menu->clear();
         menu->addActions(mActions);
     }

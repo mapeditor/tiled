@@ -42,9 +42,9 @@ public:
 
     /**
       * Saves the changes to the users preferences.
-      * Automatically called when the dialog is accepted.
+      * Automatically called when the dialog is closed.
       */
-    void accept() override;
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::CommandDialog *mUi;

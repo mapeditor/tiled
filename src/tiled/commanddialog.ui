@@ -75,15 +75,15 @@
    <sender>pushButton</sender>
    <signal>clicked()</signal>
    <receiver>CommandDialog</receiver>
-   <slot>accept()</slot>
+   <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>342</x>
-     <y>233</y>
+     <x>447</x>
+     <y>234</y>
     </hint>
     <hint type="destinationlabel">
-     <x>372</x>
-     <y>254</y>
+     <x>474</x>
+     <y>214</y>
     </hint>
    </hints>
   </connection>
