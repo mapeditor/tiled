@@ -318,9 +318,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
-    connect(mUi->menuCommand, &QMenu::aboutToShow, 
-            [this]() { CommandManager::instance()->populateMenu(); });
-
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));

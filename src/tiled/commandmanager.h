@@ -50,12 +50,9 @@ public:
      */
     void registerMenu(QMenu* menu);
 
-public slots:
+    void updateActions();
 
-    /**
-     * Populates the menu pointed by menu
-     */
-    void populateMenu();
+public slots:
 
     /**
      * Displays the dialog to edit the commands
@@ -68,9 +65,9 @@ private:
     CommandManager();
 
     /**
-     * Updates mActions QList
+     * Populates all the menus registered in CommandManager
      */
-    void updateActions();
+    void populateMenus();
 
     static CommandManager *mInstance;
     CommandDataModel *mModel;

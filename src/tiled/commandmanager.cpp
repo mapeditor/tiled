@@ -37,7 +37,7 @@ CommandManager *CommandManager::mInstance;
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
 {
-    
+    updateActions();
 }
 
 CommandManager *CommandManager::instance()
@@ -62,6 +62,8 @@ CommandDataModel *CommandManager::commandDataModel()
 void CommandManager::registerMenu(QMenu *menu)
 {
     mMenus.append(menu);
+    menu->clear();
+    menu->addActions(mActions);
 }
 
 void CommandManager::showDialog()
@@ -70,25 +72,18 @@ void CommandManager::showDialog()
     dialog.exec();
 }
 
-void CommandManager::populateMenu()
+void CommandManager::populateMenus()
 {
-    updateActions();
-
     for (int i = 0; i < mMenus.size(); ++i) {
         QMenu *menu = mMenus.at(i);
         menu->clear();
-
-        for (int j = 0; j < mActions.size(); ++j) {
-            menu->addAction(mActions.at(j));
-        }
+        menu->addActions(mActions);
     }
-
 }
 
 void CommandManager::updateActions()
 {
-    for (int i = 0; i < mActions.size(); ++i)
-        delete mActions.at(i);
+    qDeleteAll(mActions);
     mActions.clear();
 
     bool firstEnabledCommand = true;
@@ -101,10 +96,7 @@ void CommandManager::updateActions()
         if (!command.isEnabled)
             continue;
 
-        QAction *mAction = new QAction(this);
-
-        QString commandText = command.name;
-        mAction->setText(commandText);
+        QAction *mAction = new QAction(command.name, this);
 
         if (firstEnabledCommand)
             mAction->setShortcut(QKeySequence(tr("F5")));
@@ -130,6 +122,8 @@ void CommandManager::updateActions()
     connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
 
     mActions.append(mEditCommands);
+
+    populateMenus();
 }
 
 } // namespace Internal

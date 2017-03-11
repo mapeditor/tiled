@@ -45,11 +45,6 @@ CommandButton::CommandButton(QWidget *parent)
 
     CommandManager::instance()->registerMenu(mMenu);
 
-    // Populate the menu once in order to register shortcuts beforehand
-    CommandManager::instance()->populateMenu();
-
-    connect(mMenu, &QMenu::aboutToShow,  
-            [this]() { CommandManager::instance()->populateMenu(); });
     connect(this, SIGNAL(clicked()), SLOT(runCommand()));
 }
 

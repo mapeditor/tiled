@@ -46,8 +46,7 @@ CommandDialog::CommandDialog(QWidget *parent)
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
 
-    connect(mUi->pushButton, &QPushButton::clicked, 
-            [this]() { CommandManager::instance()->populateMenu(); });
+    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
 }
 
 CommandDialog::~CommandDialog()
@@ -62,6 +61,8 @@ void CommandDialog::accept()
 
     mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
     mUi->treeView->model()->commit();
+
+    CommandManager::instance()->updateActions();
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
