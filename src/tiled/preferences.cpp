@@ -350,18 +350,18 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-void Preferences::setTerrainEditorZoom(QString name, qreal value)
+void Preferences::setTilesetScale(const QString & name, qreal value)
 {
     QString str;
-    str += QLatin1String("Zoom/");
+    str += QLatin1String("TilesetEditor/TilesetScales/");
     str += name;
     mSettings->setValue(str, value);
 }
 
-qreal Preferences::getTerrainEditorZoom(QString name)
+qreal Preferences::TilesetScale(const QString & name) const
 {
     QString str;
-    str += QLatin1String("Zoom/");
+    str += QLatin1String("TilesetEditor/TilesetScales/");
     str += name;
     return mSettings->value(str, 1.0).toReal();
 }

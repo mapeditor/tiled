@@ -199,7 +199,7 @@ void TilesetEditor::addDocument(Document *document)
 
     auto zoomable = new Zoomable(this);
     auto fileName = tilesetDocument->fileName();
-    qreal zoom = Preferences::instance()->getTerrainEditorZoom(fileName);
+    qreal zoom = Preferences::instance()->TilesetScale(fileName);
     zoomable->setScale(zoom);
     view->setZoomable(zoomable);
 
@@ -241,7 +241,7 @@ void TilesetEditor::removeDocument(Document *document)
     tilesetDocument->disconnect(this);
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
-    Preferences::instance()->setTerrainEditorZoom(tilesetDocument->fileName(),view->scale());
+    Preferences::instance()->setTilesetScale(tilesetDocument->fileName(), view->scale());
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
     delete view;
