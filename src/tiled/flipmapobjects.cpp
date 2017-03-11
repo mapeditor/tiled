@@ -48,8 +48,7 @@ void FlipMapObjects::flip()
 
     //computing objects center
     QPainterPath boundaringPath;
-    for (MapObject *object : objects)
-    {
+    for (MapObject *object : objects) {
         QTransform objectTransform;
         objectTransform.translate(object->x(), object->y());
         objectTransform.rotate(object->rotation());
