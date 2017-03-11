@@ -53,12 +53,14 @@ CommandDialog::~CommandDialog()
     delete mUi;
 }
 
-void CommandDialog::accept()
+void CommandDialog::closeEvent(QCloseEvent *event)
 {
-    QDialog::accept();
+    QDialog::closeEvent(event);
 
     mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
     mUi->treeView->model()->commit();
+
+    CommandManager::instance()->updateActions();
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)

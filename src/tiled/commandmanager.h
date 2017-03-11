@@ -22,6 +22,7 @@
 
 #include <QObject>
 
+class QAction;
 class QMenu;
 
 namespace Tiled {
@@ -39,13 +40,19 @@ public:
 
     static void deleteInstance();
 
+    /**
+     * Returns the CommandDataModel instance stored
+     */
     CommandDataModel *commandDataModel();
 
-public slots:
     /**
-     * Populates the menu pointed by menu
+     * Registers a new QMenu with the CommandManager
      */
-    void populateMenu(QMenu *menu, bool flag = false);
+    void registerMenu(QMenu* menu);
+
+    void updateActions();
+
+public slots:
 
     /**
      * Displays the dialog to edit the commands
@@ -57,8 +64,15 @@ private:
 
     CommandManager();
 
+    /**
+     * Populates all the menus registered in CommandManager
+     */
+    void populateMenus();
+
     static CommandManager *mInstance;
     CommandDataModel *mModel;
+    QList<QMenu*> mMenus;
+    QList<QAction*> mActions;
 };
 
 } // namespace Internal

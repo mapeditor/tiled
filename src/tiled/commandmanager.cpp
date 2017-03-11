@@ -37,7 +37,7 @@ CommandManager *CommandManager::mInstance;
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
 {
-    
+    updateActions();
 }
 
 CommandManager *CommandManager::instance()
@@ -59,17 +59,31 @@ CommandDataModel *CommandManager::commandDataModel()
     return mModel;
 }
 
+void CommandManager::registerMenu(QMenu *menu)
+{
+    mMenus.append(menu);
+    menu->clear();
+    menu->addActions(mActions);
+}
+
 void CommandManager::showDialog()
 {
     CommandDialog dialog(QApplication::activeWindow());
     dialog.exec();
 }
 
-void CommandManager::populateMenu(QMenu *menu, bool flag)
+void CommandManager::populateMenus()
 {
-    menu->clear();
+    for (QMenu *menu : mMenus) {
+        menu->clear();
+        menu->addActions(mActions);
+    }
+}
 
-    // Add all enabled commands
+void CommandManager::updateActions()
+{
+    qDeleteAll(mActions);
+    mActions.clear();
 
     bool firstEnabledCommand = true;
 
@@ -81,17 +95,22 @@ void CommandManager::populateMenu(QMenu *menu, bool flag)
         if (!command.isEnabled)
             continue;
 
-        QAction *mAction = menu->addAction(command.name);
-        if (firstEnabledCommand && flag)
+        QAction *mAction = new QAction(command.name, this);
+
+        if (firstEnabledCommand)
             mAction->setShortcut(QKeySequence(tr("F5")));
         firstEnabledCommand = false;
 
         connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
+
+        mActions.append(mAction);
     }
 
     // Add Edit Commands action
-    if (!menu->isEmpty())
-        menu->addSeparator();
+    QAction *mSeparator = new QAction(this);
+    mSeparator->setSeparator(true);
+
+    mActions.append(mSeparator);
 
     QAction *mEditCommands = new QAction(this);
     mEditCommands->setIcon(
@@ -99,10 +118,11 @@ void CommandManager::populateMenu(QMenu *menu, bool flag)
     mEditCommands->setText(tr("Edit Commands..."));
     Utils::setThemeIcon(mEditCommands, "system-run");
 
-    menu->addAction(mEditCommands);
-
     connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
 
+    mActions.append(mEditCommands);
+
+    populateMenus();
 }
 
 } // namespace Internal
