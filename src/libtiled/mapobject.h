@@ -352,7 +352,7 @@ inline const QPolygonF &MapObject::polygon() const
  * \sa setShape()
  */
 inline void MapObject::setPolygon(const QPolygonF &polygon)
-{ mPolygon = polygon;}
+{ mPolygon = polygon; }
 
 /**
  * Returns the shape of the object.

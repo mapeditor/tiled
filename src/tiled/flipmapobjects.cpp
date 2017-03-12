@@ -54,13 +54,13 @@ void FlipMapObjects::flip()
         objectTransform.rotate(object->rotation());
         objectTransform.translate(-object->x(), -object->y());
 
-        if(!object->cell().isEmpty()){ //computing bound rect for cell
+        if (!object->cell().isEmpty()) { //computing bound rect for cell
             QRectF cellRect = QRectF(object->x(),
                                      object->y(),
                                      object->width(), -object->height()).normalized();
             boundaringPath.addRect(objectTransform.mapRect(cellRect));
         }
-        else if(!object->polygon().empty()){ //computing bound rect for polygon
+        else if (!object->polygon().empty()) { //computing bound rect for polygon
             const QPolygonF &objectPolygon = object->polygon();
             boundaringPath.addRect(objectTransform.mapRect(QRectF(object->position(), objectPolygon.boundingRect().size())));
         }

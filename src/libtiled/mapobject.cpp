@@ -204,9 +204,9 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
  */
 void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
-    if(!mCell.isEmpty())
+    if (!mCell.isEmpty())
         flipTileObject(direction, origin);
-    else if(!mPolygon.isEmpty())
+    else if (!mPolygon.isEmpty())
         flipPolygonObject(direction, origin);
     else
         flipRectObject(direction, origin);
@@ -234,7 +234,7 @@ void MapObject::flipRectObject(FlipDirection direction, const QPointF &origin)
 {
     QTransform flipTransform;
     flipTransform.translate(origin.x(), origin.y());
-    if(direction == FlipHorizontally)
+    if (direction == FlipHorizontally)
         flipTransform.scale(-1, 1);
     else //direction == FlipVertically
         flipTransform.scale(1, -1);
@@ -270,7 +270,7 @@ void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin
 {
     QTransform flipTransform;
     flipTransform.translate(origin.x(), origin.y());
-    if(direction == FlipHorizontally)
+    if (direction == FlipHorizontally)
         flipTransform.scale(-1, 1);
     else //direction == FlipVertically
         flipTransform.scale(1, -1);
@@ -308,7 +308,7 @@ void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin
     QPointF polygonCenter = mPolygon.boundingRect().center();
     QTransform flipPolygonTransform;
     flipPolygonTransform.translate(polygonCenter.x(), polygonCenter.y());
-    if (direction != FlipHorizontally)
+    if (direction == FlipHorizontally)
         flipPolygonTransform.scale(-1, 1);
     else //direction == FlipVertically
         flipPolygonTransform.scale(1, -1);
@@ -319,18 +319,14 @@ void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin
 
 void MapObject::flipTileObject(FlipDirection direction, const QPointF &origin)
 {
-    if (direction == FlipHorizontally)
-        mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
-    else // direction == FlipVertically)
-        mCell.setFlippedVertically(!mCell.flippedVertically());
-
+    mCell.setFlippedVertically(!mCell.flippedVertically());
 
     QTransform flipTransform;
     flipTransform.translate(origin.x(), origin.y());
-    if(direction == FlipHorizontally)
-        flipTransform.scale(-1, 1);
-    else //direction == FlipVertically
+    if (direction != FlipHorizontally)
         flipTransform.scale(1, -1);
+    else //direction == FlipVertically
+        flipTransform.scale(-1, 1);
     flipTransform.translate(-origin.x(), -origin.y());
 
     // point 0 is position
