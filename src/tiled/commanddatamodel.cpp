@@ -21,6 +21,7 @@
 #include "commanddatamodel.h"
 
 #include <QMenu>
+#include <QKeySequence>
 #include <QSignalMapper>
 #include <QMimeData>
 
@@ -431,6 +432,22 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     }
 
     return false;
+}
+
+QKeySequence CommandDataModel::shortcut(const QModelIndex &index)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow) {
+        return mCommands[index.row()].shortcut;
+    }
+    else
+        return QKeySequence();
+}
+
+void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &keySequence)
+{
+    mCommands[index.row()].shortcut = keySequence;
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

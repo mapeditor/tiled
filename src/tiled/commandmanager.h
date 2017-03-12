@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <QKeySequence>
 #include <QObject>
 
 class QAction;
@@ -53,10 +52,6 @@ public:
 
     void updateActions();
 
-    QKeySequence shortcut() { return mShortcut; }
-
-    void setShortcut(const QKeySequence &keySequence);
-
 public slots:
 
     /**
@@ -78,7 +73,6 @@ private:
     CommandDataModel *mModel;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;
-    QKeySequence mShortcut;
 };
 
 } // namespace Internal

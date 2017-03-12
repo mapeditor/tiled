@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QString>
+#include <QKeySequence>
 #include <QProcess>
 #include <QVariant>
 
@@ -43,6 +44,7 @@ struct Command
     bool isEnabled;
     QString name;
     QString command;
+    QKeySequence shortcut;
 
     /**
      * Returns the final command with replaced tokens.

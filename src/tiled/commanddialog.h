@@ -23,6 +23,8 @@
 #include <QDialog>
 #include <QTreeView>
 
+class QKeySequenceEdit;
+
 namespace Ui {
 class CommandDialog;
 }
@@ -46,11 +48,11 @@ public:
       */
     void closeEvent(QCloseEvent *event) override;
 
-public slots:
-    void setDefaultShortcut(const QKeySequence &keySequence);
+    void updateKeySequenceEdit(const QKeySequence &keySequence);
 
 private:
     Ui::CommandDialog *mUi;
+    QKeySequenceEdit *mKeySequenceEdit;
 };
 
 class CommandTreeView : public QTreeView
@@ -64,6 +66,11 @@ public:
       * Returns the model used by this view in CommandDataMode form.
       */
     CommandDataModel *model() const { return mModel; }
+
+    void setDialog(CommandDialog *dialog) { mDialog = dialog; }
+
+public slots:
+    void setShortcut(const QKeySequence &keySequence);
 
 private slots:
     /**
@@ -81,8 +88,12 @@ private slots:
       */
     void removeSelectedCommands();
 
+    void currentChanged(const QModelIndex &current,
+                        const QModelIndex&) override;
+
 private:
     CommandDataModel *mModel;
+    CommandDialog *mDialog;
 };
 
 } // namespace Internal

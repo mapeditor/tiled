@@ -25,6 +25,7 @@
 #include <QAbstractTableModel>
 #include <QSettings>
 
+class QKeySequence;
 class QMenu;
 
 namespace Tiled {
@@ -140,6 +141,10 @@ public:
      */
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
+
+    QKeySequence shortcut(const QModelIndex &index);
+
+    void setShortcut(const QModelIndex &index, const QKeySequence &keySequence);
 
 public slots:
 
