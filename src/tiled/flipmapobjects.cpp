@@ -62,7 +62,14 @@ void FlipMapObjects::flip()
         }
         else if (!object->polygon().empty()) { //computing bound rect for polygon
             const QPolygonF &objectPolygon = object->polygon();
-            boundaringPath.addRect(objectTransform.mapRect(QRectF(object->position(), objectPolygon.boundingRect().size())));
+            QTransform polygonToMapTransform;
+            polygonToMapTransform.translate(object->x() + objectPolygon.first().x(),
+                                            object->y() + objectPolygon.first().y());
+            polygonToMapTransform.rotate(object->rotation());
+            polygonToMapTransform.translate(-objectPolygon.first().x(),
+                                            -objectPolygon.first().y());
+
+            boundaringPath.addRect(polygonToMapTransform.mapRect(QRectF(objectPolygon.boundingRect())));
         }
         else { //computing bound rect for other
             boundaringPath.addRect(objectTransform.mapRect(object->bounds()));
