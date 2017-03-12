@@ -36,6 +36,7 @@ CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
+    , mShortcut(QKeySequence(tr("F5")))
 {
     updateActions();
 }
@@ -98,7 +99,7 @@ void CommandManager::updateActions()
         QAction *mAction = new QAction(command.name, this);
 
         if (firstEnabledCommand)
-            mAction->setShortcut(QKeySequence(tr("F5")));
+            mAction->setShortcut(mShortcut);
         firstEnabledCommand = false;
 
         connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
@@ -123,6 +124,11 @@ void CommandManager::updateActions()
     mActions.append(mEditCommands);
 
     populateMenus();
+}
+
+void CommandManager::setShortcut(const QKeySequence &keySequence)
+{
+    mShortcut = keySequence;
 }
 
 } // namespace Internal

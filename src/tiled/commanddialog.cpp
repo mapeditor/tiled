@@ -45,6 +45,17 @@ CommandDialog::CommandDialog(QWidget *parent)
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    QKeySequenceEdit *keySequenceEdit = mUi->keySequenceEdit;
+    keySequenceEdit->setKeySequence(CommandManager::instance()->shortcut());
+
+    connect(keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+            this, &CommandDialog::setDefaultShortcut);
+}
+
+void CommandDialog::setDefaultShortcut(const QKeySequence &keySequence)
+{
+    CommandManager::instance()->setShortcut(keySequence);
 }
 
 CommandDialog::~CommandDialog()

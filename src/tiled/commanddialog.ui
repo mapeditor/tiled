@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>479</width>
-    <height>258</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,6 +32,30 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Shortcut:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QKeySequenceEdit" name="keySequenceEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
