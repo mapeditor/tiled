@@ -142,7 +142,7 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
 
-    QKeySequence shortcut(const QModelIndex &index);
+    QKeySequence shortcut(const QModelIndex &index) const;
 
     void setShortcut(const QModelIndex &index, const QKeySequence &keySequence);
 

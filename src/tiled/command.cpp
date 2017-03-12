@@ -108,7 +108,7 @@ Command Command::fromQVariant(const QVariant &variant)
     if (hash.contains(commandPref))
         command.command = hash[commandPref].toString();
     if (hash.contains(shortcutPref))
-        command.shortcut = QKeySequence(hash[shortcutPref].toString());
+        command.shortcut = hash[shortcutPref].value<QKeySequence>();
 
     return command;
 }

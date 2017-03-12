@@ -46,12 +46,11 @@ CommandDialog::CommandDialog(QWidget *parent)
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
 
-    mKeySequenceEdit = mUi->keySequenceEdit;
+    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+            this, &CommandDialog::setShortcut);
 
-    connect(mKeySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
-            mUi->treeView, &CommandTreeView::setShortcut);
-
-    mUi->treeView->setDialog(this);
+    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
+            this, &CommandDialog::updateKeySequenceEdit);
 }
 
 CommandDialog::~CommandDialog()
@@ -70,9 +69,17 @@ void CommandDialog::closeEvent(QCloseEvent *event)
     CommandManager::instance()->updateActions();
 }
 
-void CommandDialog::updateKeySequenceEdit(const QKeySequence &keySequence)
+void CommandDialog::setShortcut(const QKeySequence &keySequence)
 {
-    mKeySequenceEdit->setKeySequence(keySequence);
+    mUi->treeView->model()->setShortcut(mUi->treeView->currentIndex(), keySequence);
+}
+
+void CommandDialog::updateKeySequenceEdit(const QModelIndex &current, const QModelIndex &)
+{
+    if (current.row() < mUi->treeView->model()->rowCount(current))
+        mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
+    else
+        mUi->keySequenceEdit->clear();
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
@@ -98,11 +105,6 @@ CommandTreeView::CommandTreeView(QWidget *parent)
 
     connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
                     SLOT(handleRowsRemoved(QModelIndex, int, int)));
-}
-
-void CommandTreeView::setShortcut(const QKeySequence &keySequence)
-{
-    model()->setShortcut(currentIndex(), keySequence);
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
@@ -134,9 +136,4 @@ void CommandTreeView::removeSelectedCommands()
     QItemSelectionModel *selection = selectionModel();
     const QModelIndexList indices = selection->selectedRows();
     mModel->removeRows(indices);
-}
-
-void CommandTreeView::currentChanged(const QModelIndex &current, const QModelIndex&)
-{
-    mDialog->updateKeySequenceEdit(model()->shortcut(current));
 }

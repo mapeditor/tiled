@@ -434,13 +434,10 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     return false;
 }
 
-QKeySequence CommandDataModel::shortcut(const QModelIndex &index)
+QKeySequence CommandDataModel::shortcut(const QModelIndex &index) const
 {
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow) {
+    if (index.isValid())
         return mCommands[index.row()].shortcut;
-    }
     else
         return QKeySequence();
 }
