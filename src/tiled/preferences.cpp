@@ -350,7 +350,7 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-void Preferences::setTilesetScale(const QString & name, qreal value)
+void Preferences::setTilesetScaleInTilesetEditor(const QString & name, qreal value)
 {
     QString str;
     str += QLatin1String("TilesetEditor/TilesetScales/");
@@ -358,7 +358,7 @@ void Preferences::setTilesetScale(const QString & name, qreal value)
     mSettings->setValue(str, value);
 }
 
-qreal Preferences::TilesetScale(const QString & name) const
+qreal Preferences::tilesetScaleInTilesetEditor(const QString & name) const
 {
     QString str;
     str += QLatin1String("TilesetEditor/TilesetScales/");

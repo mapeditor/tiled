@@ -270,12 +270,10 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    Zoomable *zoomable = new Zoomable(this);
-    zoomable->setComboBox(mUi->zoomComboBox);
-
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
-    mUi->tilesetView->setZoomable(zoomable);
+    //TODO: test
+    mUi->tilesetView->zoomable()->setComboBox(mUi->zoomComboBox);
 
     connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(addFrameForTileAt(QModelIndex)));

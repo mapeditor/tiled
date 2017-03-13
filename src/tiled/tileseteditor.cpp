@@ -113,7 +113,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
-    , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
@@ -197,11 +196,9 @@ void TilesetEditor::addDocument(Document *document)
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
 
-    auto zoomable = new Zoomable(this);
-    auto fileName = tilesetDocument->fileName();
-    qreal zoom = Preferences::instance()->TilesetScale(fileName);
-    zoomable->setScale(zoom);
-    view->setZoomable(zoomable);
+    auto name = tilesetDocument->tileset().data()->name();
+    qreal scale = Preferences::instance()->tilesetScaleInTilesetEditor(name);
+    view->zoomable()->setScale(scale);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -241,7 +238,7 @@ void TilesetEditor::removeDocument(Document *document)
     tilesetDocument->disconnect(this);
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
-    Preferences::instance()->setTilesetScale(tilesetDocument->fileName(), view->scale());
+    Preferences::instance()->setTilesetScaleInTilesetEditor(tilesetDocument->tileset().data()->name(), view->scale());
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
     delete view;
@@ -255,11 +252,6 @@ void TilesetEditor::setCurrentDocument(Document *document)
     if (mCurrentTilesetDocument == tilesetDocument)
         return;
 
-    if (mZoomable) {
-        mZoomable->setComboBox(nullptr);
-        mZoomable = nullptr;
-    }
-
     TilesetView *tilesetView = nullptr;
 
     if (document) {
@@ -268,9 +260,7 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditTerrain(mEditTerrain->isChecked());
-
-        mZoomable = tilesetView->zoomable();
-        mZoomable->setComboBox(mZoomComboBox);
+        tilesetView->zoomable()->setComboBox(mZoomComboBox);
     }
 
     mPropertiesDock->setDocument(document);

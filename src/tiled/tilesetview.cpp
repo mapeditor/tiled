@@ -394,7 +394,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
-    , mZoomable(nullptr)
+    , mZoomable(new Zoomable(this))
     , mTilesetDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
@@ -433,6 +433,8 @@ TilesetView::TilesetView(QWidget *parent)
 
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
             this, &TilesetView::updateBackgroundColor);
+
+    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -469,18 +471,6 @@ int TilesetView::sizeHintForRow(int row) const
 
     const int tileHeight = model->tileset()->tileHeight();
     return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
-}
-
-void TilesetView::setZoomable(Zoomable *zoomable)
-{
-    if (mZoomable)
-        mZoomable->disconnect(this);
-
-    if (zoomable)
-        connect(zoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
-
-    mZoomable = zoomable;
-    adjustScale();
 }
 
 qreal TilesetView::scale() const

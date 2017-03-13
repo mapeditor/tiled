@@ -88,8 +88,8 @@ public:
     Map::RenderOrder mapRenderOrder() const;
     void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
-    qreal TilesetScale(const QString & name) const;
-    void setTilesetScale(const QString & name, qreal value);
+    qreal tilesetScaleInTilesetEditor(const QString & name) const;
+    void setTilesetScaleInTilesetEditor(const QString & name, qreal value);
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);

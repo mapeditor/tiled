@@ -55,7 +55,6 @@ public:
     int sizeHintForColumn(int column) const override;
     int sizeHintForRow(int row) const override;
 
-    void setZoomable(Zoomable *zoomable);
     Zoomable *zoomable() const { return mZoomable; }
 
     /**
