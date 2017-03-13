@@ -80,6 +80,8 @@ void CommandDialog::updateKeySequenceEdit(const QModelIndex &current, const QMod
 {
     if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1)
         mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
+    else
+        mUi->keySequenceEdit->clear();
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
