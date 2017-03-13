@@ -11,6 +11,8 @@ moc_*.cpp
 ui_*.h
 qrc_*
 default/
+tests/mapreader/mapreader
+tests/staggeredrenderer/staggeredrenderer
 
 # Build artifacts on Windows
 tiled.exe
