@@ -45,7 +45,7 @@
 #include <QUrl>
 
 static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
-static const char SHOWED_SECTIONS_KEY[] = "ObjectsDock/ShowedSections";
+static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -303,7 +303,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
-        hideExtraColumns();
+        restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -416,12 +416,12 @@ void ObjectsView::setColumnVisibility(bool visible)
     header()->setSectionHidden(column, !visible);
 
     QSettings *settings = Preferences::instance()->settings();
-    QVariantList showedColumns;
+    QVariantList visibleSections;
     for (int i = 0; i < mProxyModel->columnCount(); i++) {
         if (!header()->isSectionHidden(i))
-            showedColumns.append(i);
+            visibleSections.append(i);
     }
-    settings->setValue(QLatin1String(SHOWED_SECTIONS_KEY), showedColumns);
+    settings->setValue(QLatin1String(VISIBLE_SECTIONS_KEY), visibleSections);
 }
 
 void ObjectsView::showCustomMenu(const QPoint &point)
@@ -442,13 +442,13 @@ void ObjectsView::showCustomMenu(const QPoint &point)
     contextMenu.exec(QCursor::pos());
 }
 
-void ObjectsView::hideExtraColumns()
+void ObjectsView::restoreVisibleSections()
 {
     QSettings *settings = Preferences::instance()->settings();
-    QVariantList showedColumns = settings->value(QLatin1String(SHOWED_SECTIONS_KEY),
+    QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
                                                  QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
     for (int i = 0; i < mProxyModel->columnCount(); i++) {
-        header()->setSectionHidden(i, !showedColumns.contains(i));
+        header()->setSectionHidden(i, !visibleSections.contains(i));
     }
 }
 
