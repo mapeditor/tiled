@@ -43,8 +43,6 @@ MapObjectModel::MapObjectModel(QObject *parent):
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
-    connect(this, &MapObjectModel::objectsChanged,
-            this, &MapObjectModel::emitObjectsDataChanged);
 }
 
 QModelIndex MapObjectModel::index(int row, int column,
@@ -126,10 +124,12 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                 return mapObject->effectiveType();
             case Id:
                 return mapObject->id();
-            case X:
-                return mapObject->x();
-            case Y:
-                return mapObject->y();
+            case Position:
+                return QLatin1Char('(')
+                        + QString::number(mapObject->x())
+                        + QLatin1String(", ")
+                        + QString::number(mapObject->y())
+                        + QLatin1Char(')');
             default:
                 break;
             }
@@ -258,8 +258,7 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
         case Name: return tr("Name");
         case Type: return tr("Type");
         case Id: return tr("ID");
-        case X: return tr("X");
-        case Y: return tr("Y");
+        case Position: return tr("Position");
         }
     }
     return QVariant();
@@ -434,11 +433,16 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
     }
 }
 
-void MapObjectModel::emitObjectsDataChanged(const QList<MapObject *> &objects)
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const QList<Columns> &columns)
 {
-    emit dataChanged(index(objects.first(), Name),
-                     index(objects.last(), ColumnCount - 1),
-                     QVector<int>() << Qt::EditRole);
+    emit objectsChanged(objects);
+    if (columns.isEmpty())
+        return;
+
+    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+    for (auto object : objects) {
+        emit dataChanged(index(object, *minMaxPair.first), index(object, *minMaxPair.second));
+    }
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const

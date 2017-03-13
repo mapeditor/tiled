@@ -56,8 +56,7 @@ public:
         Name,
         Type,
         Id,
-        X,
-        Y,
+        Position,
         ColumnCount
     };
 
@@ -98,6 +97,7 @@ public:
     void setObjectRotation(MapObject *o, qreal rotation);
 
     void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
+    void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Columns> &columns = QList<Columns>());
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
@@ -110,7 +110,6 @@ private slots:
     void layerChanged(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void tileTypeChanged(Tile *tile);
-    void emitObjectsDataChanged(const QList<MapObject *> &objects);
 
 private:
     MapDocument *mMapDocument;
