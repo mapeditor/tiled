@@ -52,7 +52,7 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    enum Columns {
+    enum Column {
         Name,
         Type,
         Id,
@@ -97,7 +97,8 @@ public:
     void setObjectRotation(MapObject *o, qreal rotation);
 
     void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
-    void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Columns> &columns = QList<Columns>());
+    void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns = QList<Column>());
+    void emitObjectsChanged(const QList<MapObject*> &objects, const Column column);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);

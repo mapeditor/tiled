@@ -433,7 +433,7 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
     }
 }
 
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const QList<Columns> &columns)
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns)
 {
     emit objectsChanged(objects);
     if (columns.isEmpty())
@@ -443,6 +443,12 @@ void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const
     for (auto object : objects) {
         emit dataChanged(index(object, *minMaxPair.first), index(object, *minMaxPair.second));
     }
+}
+
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const MapObjectModel::Column column)
+{
+    emitObjectsChanged(objects,
+                       QList<MapObjectModel::Column>() << column);
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const
