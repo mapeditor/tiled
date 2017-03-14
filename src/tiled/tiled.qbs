@@ -11,7 +11,6 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.4" }
-    Depends { name: "Qt.opengl"; condition: Qt.core.versionMinor < 4 }
 
     property string sparkleDir: {
         if (qbs.architecture === "x86_64")
