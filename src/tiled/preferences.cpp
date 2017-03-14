@@ -350,22 +350,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-void Preferences::setTilesetScaleInTilesetEditor(const QString & name, qreal value)
-{
-    QString str;
-    str += QLatin1String("TilesetEditor/TilesetScales/");
-    str += name;
-    mSettings->setValue(str, value);
-}
-
-qreal Preferences::tilesetScaleInTilesetEditor(const QString & name) const
-{
-    QString str;
-    str += QLatin1String("TilesetEditor/TilesetScales/");
-    str += name;
-    return mSettings->value(str, 1.0).toReal();
-}
-
 bool Preferences::dtdEnabled() const
 {
     return mDtdEnabled;
