@@ -141,7 +141,7 @@ SOURCES += aboutdialog.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
-	gototile.cpp \
+	gotodialog.cpp \
     grouplayeritem.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
@@ -311,7 +311,7 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
-	gototile.h \
+	gotodialog.h \
     grouplayeritem.h \
     id.h \
     imagecolorpickerwidget.h \
