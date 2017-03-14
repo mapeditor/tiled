@@ -71,9 +71,6 @@ void CommandDialog::closeEvent(QCloseEvent *event)
 
 void CommandDialog::setShortcut(const QKeySequence &keySequence)
 {
-    if (!mUi->keySequenceEdit->isEnabled())
-        mUi->keySequenceEdit->setEnabled(true);
-
     const QModelIndex &current = mUi->treeView->currentIndex();
     if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
         mUi->treeView->model()->setShortcut(current, keySequence);
@@ -81,10 +78,14 @@ void CommandDialog::setShortcut(const QKeySequence &keySequence)
 
 void CommandDialog::updateKeySequenceEdit(const QModelIndex &current, const QModelIndex &)
 {
-    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1)
+    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1) {
+        mUi->keySequenceEdit->setEnabled(true);
         mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
-    else
+    }
+    else {
+        mUi->keySequenceEdit->clear();
         mUi->keySequenceEdit->setEnabled(false);
+    }
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
