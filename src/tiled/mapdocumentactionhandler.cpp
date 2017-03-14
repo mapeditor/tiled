@@ -59,7 +59,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mInstance = this;
 
     mActionGotoTile = new QAction(this);
-    mActionGotoTile->setShortcut(tr("Ctrl+G"));
+    mActionGotoTile->setShortcut(tr("Ctrl+Shift+G"));
 
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
@@ -180,7 +180,7 @@ MapDocumentActionHandler::~MapDocumentActionHandler()
 
 void MapDocumentActionHandler::retranslateUi()
 {
-    mActionGotoTile->setText(tr("&Go to"));
+    mActionGotoTile->setText(tr("&Go to Tile"));
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
@@ -329,7 +329,7 @@ void MapDocumentActionHandler::delete_()
 
 void MapDocumentActionHandler::gotoTile()
 {
-    GotoDialog *gotoDialog = GotoDialog::showDialog();
+    GotoDialog::showDialog();
 }
 
 void MapDocumentActionHandler::selectAll()
