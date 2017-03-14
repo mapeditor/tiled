@@ -100,6 +100,7 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     h->setStretchLastSection(false);
     h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
 

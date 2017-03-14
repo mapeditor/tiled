@@ -37,7 +37,7 @@ class CommandDataModel : public QAbstractTableModel
 
 public:
 
-    enum { NameColumn, CommandColumn, EnabledColumn };
+    enum { NameColumn, CommandColumn, ShortcutColumn, EnabledColumn };
 
     /**
       * Constructs the object and parses the users settings to allow easy

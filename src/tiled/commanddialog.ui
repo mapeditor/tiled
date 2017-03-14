@@ -55,6 +55,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -102,12 +109,28 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>447</x>
-     <y>234</y>
+     <x>468</x>
+     <y>287</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>
      <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>keySequenceEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>411</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>328</x>
+     <y>251</y>
     </hint>
    </hints>
   </connection>
