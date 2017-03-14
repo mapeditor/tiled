@@ -46,6 +46,11 @@ public:
       */
     void closeEvent(QCloseEvent *event) override;
 
+public slots:
+    void setShortcut(const QKeySequence &keySequence);
+
+    void updateKeySequenceEdit(const QModelIndex &current, const QModelIndex&);
+
 private:
     Ui::CommandDialog *mUi;
 };

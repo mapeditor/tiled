@@ -45,6 +45,12 @@ CommandDialog::CommandDialog(QWidget *parent)
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+            this, &CommandDialog::setShortcut);
+
+    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
+            this, &CommandDialog::updateKeySequenceEdit);
 }
 
 CommandDialog::~CommandDialog()
@@ -63,6 +69,26 @@ void CommandDialog::closeEvent(QCloseEvent *event)
     CommandManager::instance()->updateActions();
 }
 
+void CommandDialog::setShortcut(const QKeySequence &keySequence)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+        mUi->treeView->model()->setShortcut(current, keySequence);
+}
+
+void CommandDialog::updateKeySequenceEdit(const QModelIndex &current, const QModelIndex &)
+{
+    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1) {
+        mUi->keySequenceEdit->setEnabled(true);
+        mUi->clearButton->setEnabled(true);
+        mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
+    } else {
+        mUi->keySequenceEdit->clear();
+        mUi->keySequenceEdit->setEnabled(false);
+        mUi->clearButton->setEnabled(false);
+    }
+}
+
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
     , mModel(CommandManager::instance()->commandDataModel())
@@ -76,6 +102,7 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     h->setStretchLastSection(false);
     h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
 
