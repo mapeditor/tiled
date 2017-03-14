@@ -455,7 +455,7 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
         mCommands[index.row()].shortcut = keySequence;
 
         QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
-        emit dataChanged(index, shortcutIndex);
+        emit dataChanged(shortcutIndex, shortcutIndex);
     }
 }
 
