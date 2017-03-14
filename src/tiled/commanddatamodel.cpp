@@ -258,9 +258,7 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
         f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
-        else if (index.column() == ShortcutColumn)
-            f |= Qt::ItemIsSelectable;
-        else
+        else if (index.column() == NameColumn || index.column() == CommandColumn)
             f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
@@ -455,7 +453,9 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
 {
     if (index.row() < mCommands.size()) {
         mCommands[index.row()].shortcut = keySequence;
-        emit dataChanged(index, index);
+
+        QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
+        emit dataChanged(index, shortcutIndex);
     }
 }
 
