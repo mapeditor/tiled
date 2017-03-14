@@ -12,6 +12,7 @@ Project {
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
     property bool release: Environment.getEnv("TILED_RELEASE")
     property bool linuxArchive: Environment.getEnv("TILED_LINUX_ARCHIVE")
+    property bool installHeaders: false
 
     references: [
         "dist/archive.qbs",
