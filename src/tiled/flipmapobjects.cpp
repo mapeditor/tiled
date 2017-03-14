@@ -48,5 +48,5 @@ void FlipMapObjects::flip()
     for (MapObject *object : objects)
         object->flip(mFlipDirection);
 
-    mMapDocument->mapObjectModel()->emitObjectsChanged(mMapObjects);
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

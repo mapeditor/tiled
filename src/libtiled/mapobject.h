@@ -125,6 +125,8 @@ public:
     const QString &type() const;
     void setType(const QString &type);
 
+    const QString &effectiveType() const;
+
     const QPointF &position() const;
     void setPosition(const QPointF &pos);
 
@@ -154,6 +156,8 @@ public:
 
     Shape shape() const;
     void setShape(Shape shape);
+
+    bool isPolyShape() const;
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
@@ -357,6 +361,12 @@ inline MapObject::Shape MapObject::shape() const
  */
 inline void MapObject::setShape(MapObject::Shape shape)
 { mShape = shape; }
+
+/**
+ * Returns true if this is a Polygon or a Polyline.
+ */
+inline bool MapObject::isPolyShape() const
+{ return mShape == Polygon || mShape == Polyline; }
 
 /**
  * Shortcut to getting a QRectF from position() and size().

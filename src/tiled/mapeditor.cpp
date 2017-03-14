@@ -143,8 +143,11 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
+    QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
+    diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
+
     mRandomButton = new QToolButton(mMainToolBar);
-    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
+    mRandomButton->setIcon(diceIcon);
     mRandomButton->setCheckable(true);
     mMainToolBar->addWidget(mRandomButton);
 

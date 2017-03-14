@@ -33,6 +33,7 @@
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandbutton.h"
+#include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
@@ -179,8 +180,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
     mUi->actionDelete->setShortcuts(deleteKeys);
 
+    QList<QKeySequence> redoShortcuts = QKeySequence::keyBindings(QKeySequence::Redo);
+    const QKeySequence ctrlY(Qt::Key_Y | Qt::ControlModifier);
+    if (!redoShortcuts.contains(ctrlY))
+        redoShortcuts.append(ctrlY);
+
     undoAction->setShortcuts(QKeySequence::Undo);
-    redoAction->setShortcuts(QKeySequence::Redo);
+    redoAction->setShortcuts(redoShortcuts);
+
+    auto snappingGroup = new QActionGroup(this);
+    mUi->actionSnapNothing->setActionGroup(snappingGroup);
+    mUi->actionSnapToGrid->setActionGroup(snappingGroup);
+    mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
+    mUi->actionSnapToPixels->setActionGroup(snappingGroup);
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
@@ -305,6 +317,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
+
+    CommandManager::instance()->registerMenu(mUi->menuCommand);
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
@@ -469,6 +483,7 @@ MainWindow::~MainWindow()
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
     ClipboardManager::deleteInstance();
+    CommandManager::deleteInstance();
 
     delete mUi;
 }

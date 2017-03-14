@@ -71,7 +71,7 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
             editedRegion |= doPaint(Mergeable | SuppressRegionEdited);
         }
 
-        mapDocument()->emitRegionEdited(editedRegion, currentTileLayer());
+        emit mapDocument()->regionEdited(editedRegion, currentTileLayer());
     } else {
         updatePreview();
     }
@@ -329,7 +329,7 @@ QRegion StampBrush::doPaint(int flags)
 
     QRegion editedRegion = preview->region();
     if (! (flags & SuppressRegionEdited))
-        mapDocument()->emitRegionEdited(editedRegion, tileLayer);
+        emit mapDocument()->regionEdited(editedRegion, tileLayer);
     return editedRegion;
 }
 

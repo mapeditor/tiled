@@ -116,6 +116,7 @@ public:
 signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
+    void swapTilesRequested(Tile *tileA, Tile *tileB);
 
 protected:
     bool event(QEvent *event) override;
@@ -130,6 +131,7 @@ private slots:
     void addTerrainType();
     void selectTerrainImage();
     void editTileProperties();
+    void swapTiles();
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();

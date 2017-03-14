@@ -42,11 +42,9 @@ ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
 
 void ChangeTileImageSource::apply(const QString &imageSource)
 {
-    mTile->tileset()->setTileImage(mTile,
+    mTilesetDocument->setTileImage(mTile,
                                    QPixmap(imageSource),
                                    imageSource);
-
-    emit mTilesetDocument->tileImageSourceChanged(mTile);
 }
 
 } // namespace Internal

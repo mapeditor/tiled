@@ -21,6 +21,10 @@ class PK2(Plugin):
     return "Pekka Kana 2 (*.map)"
 
   @classmethod
+  def shortName(cls):
+    return "pk2"
+
+  @classmethod
   def supportsFile(cls, f):
     return open(f, 'rb').read(4) == '1.3\0'
 

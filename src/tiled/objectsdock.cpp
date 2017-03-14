@@ -31,6 +31,7 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
+#include "eyevisibilitydelegate.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -260,6 +261,7 @@ ObjectsView::ObjectsView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setModel(mProxyModel);
+    setItemDelegate(new EyeVisibilityDelegate(this));
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -347,38 +349,21 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         return;
 
     const QModelIndexList selectedProxyRows = selectionModel()->selectedRows();
-    ObjectGroup *singleObjectGroup = nullptr;
-    bool multipleObjectGroups = false;
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
-        if (ObjectGroup *og = mapObjectModel()->toObjectGroupContext(index)) {
-            if (!multipleObjectGroups) {
-                if (!singleObjectGroup) {
-                    singleObjectGroup = og;
-                } else if (singleObjectGroup != og) {
-                    singleObjectGroup = nullptr;
-                    multipleObjectGroups = true;
-                }
-            }
-        }
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
     }
-
-    // Switch the current object layer if only one object layer (and/or its objects)
-    // are included in the current selection.
-    if (singleObjectGroup)
-        mMapDocument->setCurrentLayer(singleObjectGroup);
 
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;
         if (selectedObjects.count() == 1) {
             const MapObject *o = selectedObjects.first();
             const QPointF center = o->bounds().center();
-            DocumentManager::instance()->centerViewOn(center);
+            DocumentManager::instance()->centerMapViewOn(center);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;

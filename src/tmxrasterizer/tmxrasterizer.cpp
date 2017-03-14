@@ -140,7 +140,7 @@ int TmxRasterizer::render(const QString &mapFileName,
 
         const auto offset = layer->totalOffset();
 
-        painter.setOpacity(layer->affectiveOpacity());
+        painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);

@@ -224,7 +224,7 @@ void ExportAsImageDialog::accept()
 
         const auto offset = layer->totalOffset();
 
-        painter.setOpacity(layer->affectiveOpacity());
+        painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
         switch (layer->layerType()) {

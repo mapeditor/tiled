@@ -167,7 +167,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
         const auto offset = layer->totalOffset();
 
-        painter.setOpacity(layer->affectiveOpacity());
+        painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
         switch (layer->layerType()) {

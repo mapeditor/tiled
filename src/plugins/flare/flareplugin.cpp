@@ -264,6 +264,11 @@ QString FlarePlugin::nameFilter() const
     return tr("Flare map files (*.txt)");
 }
 
+QString FlarePlugin::shortName() const
+{
+    return QLatin1String("flare");
+}
+
 QString FlarePlugin::errorString() const
 {
     return mError;

@@ -145,13 +145,10 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, &MapScene::imageLayerChanged);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &MapScene::currentLayerChanged);
-        // todo: possibly route this through the TilesetManager and
-        // have the MapScene check if the current map uses the changed tileset.
-        // possibly have it still trigger through the signal
-//        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
-//                this, &MapScene::adaptToTilesetTileSizeChanges);
-//        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
-//                this, &MapScene::adaptToTileSizeChanges);
+        connect(mMapDocument, &MapDocument::tilesetTileOffsetChanged,
+                this, &MapScene::adaptToTilesetTileSizeChanges);
+        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+                this, &MapScene::adaptToTileSizeChanges);
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
         connect(mMapDocument, &MapDocument::objectsInserted,

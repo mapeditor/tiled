@@ -698,6 +698,17 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             Utils::setThemeIcon(tileProperties, "document-properties");
             connect(tileProperties, SIGNAL(triggered()),
                     SLOT(editTileProperties()));
+        } else {
+            // Assuming we're used in the MapEditor
+
+            // Enable "swap" if there are exactly 2 tiles selected
+            bool exactlyTwoTilesSelected =
+                    (selectionModel()->selectedIndexes().size() == 2);
+
+            QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
+            swapTilesAction->setEnabled(exactlyTwoTilesSelected);
+            connect(swapTilesAction, SIGNAL(triggered()),
+                    SLOT(swapTiles()));
         }
 
         menu.addSeparator();
@@ -736,6 +747,22 @@ void TilesetView::editTileProperties()
 
     mTilesetDocument->setCurrentObject(tile);
     emit mTilesetDocument->editCurrentObject();
+}
+
+void TilesetView::swapTiles()
+{
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() != 2)
+        return;
+
+    const TilesetModel *model = tilesetModel();
+    Tile *tile1 = model->tileAt(selectedIndexes[0]);
+    Tile *tile2 = model->tileAt(selectedIndexes[1]);
+
+    if (!tile1 || !tile2)
+        return;
+
+    emit swapTilesRequested(tile1, tile2);
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)

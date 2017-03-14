@@ -129,6 +129,8 @@ private slots:
 
     void refreshTilesetMenu();
 
+    void swapTiles(Tile *tileA, Tile *tileB);
+
 private:
     void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);

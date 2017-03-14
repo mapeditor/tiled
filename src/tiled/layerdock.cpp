@@ -31,6 +31,7 @@
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
+#include "eyevisibilitydelegate.h"
 
 #include <QBoxLayout>
 #include <QApplication>
@@ -212,9 +213,7 @@ void LayerDock::retranslateUi()
     mNewLayerButton->setToolTip(tr("New Layer"));
 }
 
-
-//=============================================================================
-
+//==========================================================================
 LayerView::LayerView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
@@ -223,6 +222,7 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
+    setItemDelegate(new EyeVisibilityDelegate(this));
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
@@ -281,10 +281,8 @@ void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 void LayerView::indexPressed(const QModelIndex &proxyIndex)
 {
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
-    if (index.isValid()) {
-        Layer *layer = mMapDocument->map()->layerAt(index.row());
+    if (Layer *layer = mMapDocument->layerModel()->toLayer(index))
         mMapDocument->setCurrentObject(layer);
-    }
 }
 
 void LayerView::currentLayerChanged(Layer *layer)

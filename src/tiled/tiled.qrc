@@ -2,6 +2,12 @@
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
         <file>images/about-tiled-logo-white.png</file>
+        <file>images/14x14/visible.png</file>
+        <file>images/14x14/hidden.png</file>
+        <file>images/16x16/visible.png</file>
+        <file>images/16x16/hidden.png</file>
+        <file>images/24x24/visible.png</file>
+        <file>images/24x24/hidden.png</file>
         <file>images/16x16/add.png</file>
         <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
@@ -100,5 +106,6 @@
         <file>images/dock-close@2x.png</file>
         <file>images/dock-restore@2x.png</file>
         <file>images/24x24/insert-text.png</file>
+        <file>images/32x32/dice.png</file>
     </qresource>
 </RCC>
