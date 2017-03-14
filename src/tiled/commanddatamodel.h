@@ -25,7 +25,6 @@
 #include <QAbstractTableModel>
 #include <QSettings>
 
-class QKeySequence;
 class QMenu;
 
 namespace Tiled {
