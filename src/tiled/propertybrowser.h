@@ -94,6 +94,7 @@ private slots:
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
+    void tileTypeChanged(Tile *tile);
     void terrainChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);

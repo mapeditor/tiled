@@ -49,9 +49,14 @@ protected slots:
     void updateEnabledState() override;
 
 private:
+    void startDrag(const QPointF &pos);
+    void finishDrag();
+
     bool mMousePressed;
+    bool mDragging;
     bool mApplyingChange;
-    QPointF mMouseStart;
+    QPointF mMouseScreenStart;
+    QPointF mMouseSceneStart;
     QPointF mOldOffset;
 };
 

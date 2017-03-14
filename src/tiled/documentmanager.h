@@ -179,9 +179,9 @@ public:
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
      */
-    void centerViewOn(qreal x, qreal y);
-    void centerViewOn(const QPointF &pos)
-    { centerViewOn(pos.x(), pos.y()); }
+    void centerMapViewOn(qreal x, qreal y);
+    void centerMapViewOn(const QPointF &pos)
+    { centerMapViewOn(pos.x(), pos.y()); }
 
 signals:
     void fileOpenRequested();

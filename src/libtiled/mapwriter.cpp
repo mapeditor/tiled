@@ -235,6 +235,26 @@ static QString makeTerrainAttribute(const Tile *tile)
     return terrain;
 }
 
+static bool includeTile(const Tile *tile)
+{
+    if (!tile->type().isEmpty())
+        return true;
+    if (!tile->properties().isEmpty())
+        return true;
+    if (!tile->imageSource().isEmpty())
+        return true;
+    if (tile->objectGroup())
+        return true;
+    if (tile->isAnimated())
+        return true;
+    if (tile->terrain() != 0xFFFFFFFF)
+        return true;
+    if (tile->probability() != 1.f)
+        return true;
+
+    return false;
+}
+
 void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                     unsigned firstGid)
 {
@@ -338,20 +358,17 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
     // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
-        const Properties properties = tile->properties();
-        unsigned terrain = tile->terrain();
-        float probability = tile->probability();
-        ObjectGroup *objectGroup = tile->objectGroup();
-
-        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != 1.f || imageSource.isEmpty() || objectGroup || tile->isAnimated()) {
+        if (imageSource.isEmpty() || includeTile(tile)) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
-            if (terrain != 0xFFFFFFFF)
+            if (!tile->type().isEmpty())
+                w.writeAttribute(QLatin1String("type"), tile->type());
+            if (tile->terrain() != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
-            if (probability != 1.f)
-                w.writeAttribute(QLatin1String("probability"), QString::number(probability));
-            if (!properties.isEmpty())
-                writeProperties(w, properties);
+            if (tile->probability() != 1.f)
+                w.writeAttribute(QLatin1String("probability"), QString::number(tile->probability()));
+            if (!tile->properties().isEmpty())
+                writeProperties(w, tile->properties());
             if (imageSource.isEmpty()) {
                 w.writeStartElement(QLatin1String("image"));
 
@@ -384,8 +401,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
                 w.writeEndElement(); // </image>
             }
-            if (objectGroup)
-                writeObjectGroup(w, *objectGroup);
+            if (tile->objectGroup())
+                writeObjectGroup(w, *tile->objectGroup());
             if (tile->isAnimated()) {
                 const QVector<Frame> &frames = tile->frames();
 

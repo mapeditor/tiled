@@ -24,7 +24,10 @@ DEFINES += TILED_VERSION=$${TILED_VERSION}
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
-!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
+!isEmpty(TILED_LINUX_ARCHIVE) {
+    DEFINES += TILED_LINUX_ARCHIVE
+    QT += svg
+}
 
 macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
@@ -100,6 +103,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changeselectedarea.cpp \
+    changetile.cpp \
     changetileanimation.cpp \
     changetileimagesource.cpp \
     changetileobjectgroup.cpp \
@@ -113,6 +117,7 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
+    commandmanager.cpp \
     consoledock.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
@@ -130,6 +135,7 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
+    eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
@@ -198,6 +204,7 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
+    swaptiles.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -264,6 +271,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changeselectedarea.h \
+    changetile.h \
     changetileanimation.h \
     changetileimagesource.h \
     changetileobjectgroup.h \
@@ -277,6 +285,7 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     command.h \
     commandlineparser.h \
+    commandmanager.h \
     consoledock.h \
     containerhelpers.h \
     createellipseobjecttool.h \
@@ -295,6 +304,7 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
+    eyevisibilitydelegate.h \
     filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
@@ -366,6 +376,7 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     standardautoupdater.h \
     stylehelper.h \
+    swaptiles.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

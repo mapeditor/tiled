@@ -258,7 +258,12 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter);
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
+    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -270,6 +275,7 @@ private:
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
+    const CellType mCellType;
 };
 
 } // namespace Tiled

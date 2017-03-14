@@ -1,3 +1,12 @@
+### 0.18.2 (21 February 2017)
+
+* Fixed crash when deleting multiple selected objects
+* Fixed crash when moving multiple selected objects to another object layer
+* Fixed updating of values displayed in Objects and Layers views
+* GmxPlugin: Added support for image collection tilesets
+* Object Types Editor: Improved behavior when adding new types
+* Linux: Fixed shipping of image format plugins in AppImage releases
+
 ### 0.18.1 (23 January 2017)
 
 * Fixed terrain brush for isometric staggered maps (by Clyde)

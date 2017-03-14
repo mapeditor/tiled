@@ -34,6 +34,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "replacetileset.h"
+#include "swaptiles.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -508,6 +509,11 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             this, &TilesetDock::tileImageSourceChanged);
     connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
             this, &TilesetDock::tileAnimationChanged);
+
+    connect(view, &TilesetView::clicked,
+            this, &TilesetDock::updateCurrentTiles);
+    connect(view, &TilesetView::swapTilesRequested,
+            this, &TilesetDock::swapTiles);
 }
 
 void TilesetDock::deleteTilesetView(int index)
@@ -922,4 +928,13 @@ void TilesetDock::refreshTilesetMenu()
         connect(action, SIGNAL(triggered()), mTilesetMenuMapper, SLOT(map()));
         mTilesetMenuMapper->setMapping(action, i);
     }
+}
+
+void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
+{
+    if (!mMapDocument)
+        return;
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }

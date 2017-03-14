@@ -98,6 +98,19 @@ MapObject::MapObject(const QString &name, const QString &type,
 }
 
 /**
+ * Returns the affective type of this object. This may be the type of its tile,
+ * if the object does not have a type set explicitly.
+ */
+const QString &MapObject::effectiveType() const
+{
+    if (mType.isEmpty())
+        if (const Tile *tile = mCell.tile())
+            return tile->type();
+
+    return mType;
+}
+
+/**
  * Sets the text data associated with this object.
  */
 void MapObject::setTextData(const TextData &textData)

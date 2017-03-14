@@ -233,7 +233,7 @@ void TerrainBrush::doPaint(bool mergeable)
                                                stamp, brushItem()->tileRegion());
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
-    mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
+    emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
 static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned considerationMask)

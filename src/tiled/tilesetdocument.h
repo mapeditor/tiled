@@ -89,6 +89,9 @@ public:
 
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
 
+    void setTileType(Tile *tile, const QString &type);
+    void setTileImage(Tile *tile, const QPixmap &image, const QString &source);
+
 signals:
     /**
      * This signal is currently used when adding or removing tiles from a
@@ -101,36 +104,41 @@ signals:
     void tilesetNameChanged(Tileset *tileset);
     void tilesetTileOffsetChanged(Tileset *tileset);
 
+    void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
 
     /**
-     * Emits the signal notifying tileset models about changes to tile terrain
-     * information. All the \a tiles need to be from the same tileset.
+     * Notifies tileset models about changes to tile terrain information.
+     * All the \a tiles need to be from the same tileset.
      */
     void tileTerrainChanged(const QList<Tile*> &tiles);
 
     /**
-     * Emits the signal notifying about the terrain probability of a tile changing.
+     * Emitted when the terrain probability of a tile changed.
      */
     void tileProbabilityChanged(Tile *tile);
 
     /**
-     * Emits the signal notifying the TileCollisionEditor about the object group
-     * of a tile changing.
+     * Notifies the TileCollisionEditor about the object group of a tile changing.
      */
     void tileObjectGroupChanged(Tile *tile);
 
     /**
-     * Emits the signal notifying about the animation of a tile changing.
+     * Emitted when the animation of a tile changed.
      */
     void tileAnimationChanged(Tile *tile);
 
     /**
-     * Emitted when the list of selected tiles in the tileset changes.
+     * Emitted when the list of selected tiles in the tileset changed.
      */
     void selectedTilesChanged();
 
 private slots:
+    void onPropertyAdded(Object *object, const QString &name);
+    void onPropertyRemoved(Object *object, const QString &name);
+    void onPropertyChanged(Object *object, const QString &name);
+    void onPropertiesChanged(Object *object);
+
     void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
     void onTerrainAdded(Tileset *tileset, int terrainId);
     void onTerrainAboutToBeRemoved(Terrain *terrain);

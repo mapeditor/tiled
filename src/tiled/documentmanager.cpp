@@ -31,6 +31,7 @@
 #include "mapeditor.h"
 #include "map.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "tilesetdocument.h"
@@ -672,15 +673,11 @@ void DocumentManager::hideChangedWarning()
     mFileChangedWarning->setVisible(false);
 }
 
-void DocumentManager::centerViewOn(qreal x, qreal y)
+void DocumentManager::centerMapViewOn(qreal x, qreal y)
 {
-    const int index = mTabBar->currentIndex();
-    if (index == -1)
-        return;
-
     if (MapView *view = currentMapView()) {
-        MapDocument *document = static_cast<MapDocument*>(mDocuments.at(index));
-        view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
+        auto mapDocument = view->mapScene()->mapDocument();
+        view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y));
     }
 }
 

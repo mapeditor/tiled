@@ -58,7 +58,8 @@ public:
         _tileId(-1),
         _flippedHorizontally(false),
         _flippedVertically(false),
-        _flippedAntiDiagonally(false)
+        _flippedAntiDiagonally(false),
+        _rotatedHexagonal120(false)
     {}
 
     explicit Cell(Tile *tile) :
@@ -66,7 +67,8 @@ public:
         _tileId(tile ? tile->id() : -1),
         _flippedHorizontally(false),
         _flippedVertically(false),
-        _flippedAntiDiagonally(false)
+        _flippedAntiDiagonally(false),
+        _rotatedHexagonal120(false)
     {}
 
     bool isEmpty() const { return _tileset == nullptr; }
@@ -77,7 +79,8 @@ public:
                 && _tileId == other._tileId
                 && _flippedHorizontally == other._flippedHorizontally
                 && _flippedVertically == other._flippedVertically
-                && _flippedAntiDiagonally == other._flippedAntiDiagonally;
+                && _flippedAntiDiagonally == other._flippedAntiDiagonally
+                && _rotatedHexagonal120 == other._rotatedHexagonal120;
     }
 
     bool operator != (const Cell &other) const
@@ -86,7 +89,8 @@ public:
                 || _tileId != other._tileId
                 || _flippedHorizontally != other._flippedHorizontally
                 || _flippedVertically != other._flippedVertically
-                || _flippedAntiDiagonally != other._flippedAntiDiagonally;
+                || _flippedAntiDiagonally != other._flippedAntiDiagonally
+                || _rotatedHexagonal120 != other._rotatedHexagonal120;
     }
 
     Tileset *tileset() const { return _tileset; }
@@ -96,13 +100,18 @@ public:
     bool flippedVertically() const { return _flippedVertically; }
     bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
 
+    bool rotatedHexagonal120() const { return _rotatedHexagonal120; }
+
     void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
     void setFlippedVertically(bool f) { _flippedVertically = f; }
     void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
 
+    void setRotatedHexagonal120(bool f) { _rotatedHexagonal120 = f; }
+
     Tile *tile() const;
     void setTile(Tile *tile);
     void setTile(Tileset *tileset, int tileId);
+    bool refersTile(const Tile *tile) const;
 
 private:
     Tileset *_tileset;
@@ -110,6 +119,8 @@ private:
     bool _flippedHorizontally;
     bool _flippedVertically;
     bool _flippedAntiDiagonally;
+
+    bool _rotatedHexagonal120;
 };
 
 inline Tile *Cell::tile() const
@@ -129,6 +140,11 @@ inline void Cell::setTile(Tileset *tileset, int tileId)
 {
     _tileset = tileset;
     _tileId = tileId;
+}
+
+inline bool Cell::refersTile(const Tile *tile) const
+{
+    return _tileset == tile->tileset() && _tileId == tile->id();
 }
 
 
@@ -222,6 +238,8 @@ public:
     void setCells(int x, int y, TileLayer *tileLayer,
                   const QRegion &mask = QRegion());
 
+    void setTiles(const QRegion &area, Tile *tile);
+
     /**
      * Flip this tile layer in the given \a direction. Direction must be
      * horizontal or vertical. This doesn't change the dimensions of the
@@ -230,11 +248,25 @@ public:
     void flip(FlipDirection direction);
 
     /**
+     * Hexagonal flip this tile layer in the given \a direction. Direction must be
+     * horizontal or vertical. This doesn't change the dimensions of the
+     * tile layer.
+     */
+    void flipHexagonal(FlipDirection direction);
+
+    /**
      * Rotate this tile layer by 90 degrees left or right. The tile positions
      * are rotated within the layer, and the tiles themselves are rotated. The
      * dimensions of the tile layer are swapped.
      */
     void rotate(RotateDirection direction);
+
+    /**
+     * Hexagonal rotate this tile layer by 60 degrees left or right. The tile positions
+     * are rotated within the layer, and the tiles themselves are rotated. The
+     * dimensions of the tile layer are swapped.
+     */
+    void rotateHexagonal(RotateDirection direction);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.

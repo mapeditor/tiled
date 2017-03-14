@@ -53,6 +53,7 @@ public:
 
     Tiled::Map *read(const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     bool supportsFile(const QString &fileName) const override;
     QString errorString() const override;
     bool write(const Tiled::Map *map, const QString &fileName) override;

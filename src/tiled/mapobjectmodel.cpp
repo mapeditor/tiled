@@ -30,6 +30,7 @@
 #include "renamelayer.h"
 
 #include <QApplication>
+#include <QPalette>
 #include <QStyle>
 
 using namespace Tiled;
@@ -116,7 +117,18 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            return index.column() ? mapObject->type() : mapObject->name();
+            if (index.column() == 0) {
+                return mapObject->name();
+            } else if (index.column() == 1) {
+                return mapObject->effectiveType();
+            }
+        case Qt::ForegroundRole:
+            if (index.column() == 1) {
+                const QPalette palette = QApplication::palette();
+                const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
+                                                                        : QPalette::Active;
+                return palette.brush(typeColorGroup, QPalette::WindowText);
+            }
         case Qt::DecorationRole:
             return QVariant(); // no icon -> maybe the color?
         case Qt::CheckStateRole:
@@ -327,6 +339,8 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
                 this, &MapObjectModel::layerChanged);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
+        connect(mMapDocument, &MapDocument::tileTypeChanged,
+                this, &MapObjectModel::tileTypeChanged);
     }
 
     endResetModel();
@@ -384,6 +398,26 @@ void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
     }
 }
 
+void MapObjectModel::tileTypeChanged(Tile *tile)
+{
+    LayerIterator it(mMap);
+
+    while (Layer *layer = it.next()) {
+        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+            for (MapObject *mapObject : objectGroup->objects()) {
+                if (!mapObject->type().isEmpty())
+                    continue;
+
+                const auto &cell = mapObject->cell();
+                if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id()) {
+                    QModelIndex index = this->index(mapObject, 1);
+                    emit dataChanged(index, index);
+                }
+            }
+        }
+    }
+}
+
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const
 {
     if (!mFilteredLayers.contains(parentLayer)) {
@@ -432,16 +466,6 @@ void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
     endMoveRows();
 }
 
-// ObjectGroup color changed
-// FIXME: layerChanged should let the scene know that objects need redrawing
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects)
-{
-    if (objects.isEmpty())
-        return;
-
-    emit objectsChanged(objects);
-}
-
 void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
 {
     if (o->polygon() == polygon)
@@ -487,6 +511,8 @@ void MapObjectModel::setObjectProperty(MapObject *o,
 
     o->setMapObjectProperty(property, value);
 
+    QList<MapObject*> objects = QList<MapObject*>() << o;
+
     // Notify views about certain property changes
     switch (property) {
     case MapObject::NameProperty:
@@ -498,11 +524,12 @@ void MapObjectModel::setObjectProperty(MapObject *o,
     case MapObject::TypeProperty: {
         QModelIndex index = this->index(o, 1);
         emit dataChanged(index, index);
+        emit objectsTypeChanged(objects);
         break;
     }
     default:
         break;
     }
 
-    emit objectsChanged(QList<MapObject*>() << o);
+    emit objectsChanged(objects);
 }

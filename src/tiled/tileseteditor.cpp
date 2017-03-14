@@ -46,6 +46,7 @@
 #include "zoomable.h"
 
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QFileDialog>
@@ -417,6 +418,15 @@ void TilesetEditor::retranslateUi()
     mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
+static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
+{
+    for (auto tile : tileset.tiles()) {
+        if (tile->imageSource() == imageSource)
+            return true;
+    }
+    return false;
+}
+
 void TilesetEditor::addTiles()
 {
     Tileset *tileset = currentTileset();
@@ -436,7 +446,28 @@ void TilesetEditor::addTiles()
     };
     QVector<LoadedFile> loadedFiles;
 
+    // If the tile is already in the tileset, warn user and confirm addition
+    bool dontAskAgain = false;
+    bool rememberOption = true;
     for (const QString &file : files) {
+        if (!(dontAskAgain && rememberOption) && hasTileInTileset(file, *tileset)) {
+            if (dontAskAgain)
+                continue;
+            QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
+            QMessageBox warning(QMessageBox::Warning,
+                        tr("Add Tiles"),
+                        tr("Tile \"%1\" already exists in the tileset!").arg(file),
+                        QMessageBox::Yes | QMessageBox::No,
+                        mMainWindow->window());
+            warning.setDefaultButton(QMessageBox::Yes);
+            warning.setInformativeText(tr("Add anyway?"));
+            warning.setCheckBox(checkBox);
+            int warningBoxChoice = warning.exec();
+            dontAskAgain = checkBox->checkState() == Qt::Checked;
+            rememberOption = warningBoxChoice == QMessageBox::Yes;
+            if (!rememberOption)
+                continue;
+        }
         const QPixmap image(file);
         if (!image.isNull()) {
             loadedFiles.append(LoadedFile { file, image });

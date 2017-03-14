@@ -91,7 +91,7 @@ public:
      */
     void setOpacity(float opacity) { mOpacity = opacity; }
 
-    float affectiveOpacity() const;
+    float effectiveOpacity() const;
 
     /**
      * Returns the visibility of this layer.
