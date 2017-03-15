@@ -55,6 +55,8 @@ public slots:
 
     void updateWidgets(const QModelIndex &current, const QModelIndex&);
 
+    void openFileDialog();
+
 private:
     void enableWidgets(const bool enable);
 

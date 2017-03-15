@@ -29,6 +29,7 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QModelIndex>
+#include <QFileDialog>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -55,6 +56,9 @@ CommandDialog::CommandDialog(QWidget *parent)
 
     connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
             this, &CommandDialog::updateWidgets);
+
+    connect(mUi->browseButton, &QPushButton::clicked,
+            this, &CommandDialog::openFileDialog);
 }
 
 CommandDialog::~CommandDialog()
@@ -104,6 +108,16 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     }
     else
         enableWidgets(false);
+}
+
+void CommandDialog::openFileDialog()
+{
+    QString caption = tr("Select executable");
+    QString dir = tr("/bin");
+    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
+
+    if (!executableName.isEmpty())
+        mUi->commandEdit->setText(executableName);
 }
 
 void CommandDialog::enableWidgets(const bool enable)
