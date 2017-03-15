@@ -389,8 +389,7 @@ void TilesetDock::dropEvent(QDropEvent *e)
 
 void TilesetDock::currentTilesetChanged()
 {
-    if (const TilesetView *view = currentTilesetView())
-    {
+    if (const TilesetView *view = currentTilesetView()) {
         view->zoomable()->setComboBox(mZoomComboBox);
 
         if (const QItemSelectionModel *s = view->selectionModel())
