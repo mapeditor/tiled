@@ -98,7 +98,7 @@ public:
 
     void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
     void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns = QList<Column>());
-    void emitObjectsChanged(const QList<MapObject*> &objects, const Column column);
+    void emitObjectsChanged(const QList<MapObject*> &objects, Column column);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);

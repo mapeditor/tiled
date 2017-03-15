@@ -445,7 +445,7 @@ void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const
     }
 }
 
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const MapObjectModel::Column column)
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, Column column)
 {
     emitObjectsChanged(objects,
                        QList<MapObjectModel::Column>() << column);
