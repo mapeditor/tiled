@@ -315,7 +315,7 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
 {
-    setTransformationAnchor(QGraphicsView::NoAnchor);
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     mZoomable->handlePinchGesture(pinch);
 
