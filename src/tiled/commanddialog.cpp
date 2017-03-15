@@ -41,16 +41,20 @@ CommandDialog::CommandDialog(QWidget *parent)
     resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
-
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    connect(mUi->saveBox, &QCheckBox::stateChanged,
+            this, &CommandDialog::setSaveBeforeExecute);
 
     connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
             this, &CommandDialog::setShortcut);
 
+    connect(mUi->commandEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setCommand);
+
     connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
-            this, &CommandDialog::updateKeySequenceEdit);
+            this, &CommandDialog::updateWidgets);
 }
 
 CommandDialog::~CommandDialog()
@@ -63,7 +67,6 @@ void CommandDialog::closeEvent(QCloseEvent *event)
 {
     QDialog::closeEvent(event);
 
-    mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
     mUi->treeView->model()->commit();
 
     CommandManager::instance()->updateActions();
@@ -76,17 +79,46 @@ void CommandDialog::setShortcut(const QKeySequence &keySequence)
         mUi->treeView->model()->setShortcut(current, keySequence);
 }
 
-void CommandDialog::updateKeySequenceEdit(const QModelIndex &current, const QModelIndex &)
+void CommandDialog::setSaveBeforeExecute(int state)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+        mUi->treeView->model()->setSaveBeforeExecute(current, state);
+}
+
+void CommandDialog::setCommand(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+        mUi->treeView->model()->setCommand(current, text);
+}
+
+void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
 {
     if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1) {
-        mUi->keySequenceEdit->setEnabled(true);
-        mUi->clearButton->setEnabled(true);
+        enableWidgets(true);
+
         mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
-    } else {
-        mUi->keySequenceEdit->clear();
-        mUi->keySequenceEdit->setEnabled(false);
-        mUi->clearButton->setEnabled(false);
+        mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute(current));
+        mUi->commandEdit->setText(mUi->treeView->model()->command(current));
     }
+    else
+        enableWidgets(false);
+}
+
+void CommandDialog::enableWidgets(const bool enable)
+{
+    if (!enable) {
+        mUi->commandEdit->clear();
+        mUi->keySequenceEdit->clear();
+        mUi->saveBox->setChecked(false);
+    }
+
+    mUi->commandEdit->setEnabled(enable);
+    mUi->browseButton->setEnabled(enable);
+    mUi->keySequenceEdit->setEnabled(enable);
+    mUi->clearButton->setEnabled(enable);
+    mUi->saveBox->setEnabled(enable);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)

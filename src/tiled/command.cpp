@@ -26,7 +26,6 @@
 
 #include <QDir>
 #include <QMessageBox>
-#include <QSettings>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -68,10 +67,7 @@ QString Command::finalCommand() const
 
 void Command::execute(bool inTerminal) const
 {
-    // Save if save option is unset or true
-    QSettings settings;
-    QVariant variant = settings.value(QLatin1String("saveBeforeExecute"), true);
-    if (variant.toBool()) {
+    if (saveBeforeExecute) {
         Document *document = DocumentManager::instance()->currentDocument();
         if (document)
             document->save(document->fileName());
@@ -88,6 +84,7 @@ QVariant Command::toQVariant() const
     hash[QLatin1String("Name")] = name;
     hash[QLatin1String("Command")] = command;
     hash[QLatin1String("Shortcut")] = shortcut;
+    hash[QLatin1String("SaveBeforeExecute")] = saveBeforeExecute;
     return hash;
 }
 
@@ -99,6 +96,7 @@ Command Command::fromQVariant(const QVariant &variant)
     const QString commandPref = QLatin1String("Command");
     const QString enablePref = QLatin1String("Enabled");
     const QString shortcutPref = QLatin1String("Shortcut");
+    const QString saveBeforeExecutePref = QLatin1String("SaveBeforeExecute");
 
     Command command;
     if (hash.contains(enablePref))
@@ -109,6 +107,8 @@ Command Command::fromQVariant(const QVariant &variant)
         command.command = hash[commandPref].toString();
     if (hash.contains(shortcutPref))
         command.shortcut = hash[shortcutPref].value<QKeySequence>();
+    if (hash.contains(saveBeforeExecutePref))
+        command.saveBeforeExecute = hash[saveBeforeExecutePref].toBool();
 
     return command;
 }

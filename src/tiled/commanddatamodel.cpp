@@ -33,10 +33,6 @@ const char *commandMimeType = "application/x-tiled-commandptr";
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    // Load saveBeforeExecute option
-    QVariant s = mSettings.value(QLatin1String("saveBeforeExecute"), true);
-    mSaveBeforeExecute = s.toBool();
-
     // Load command list
     const QVariant variant = mSettings.value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
@@ -70,9 +66,6 @@ CommandDataModel::CommandDataModel(QObject *parent)
 
 void CommandDataModel::commit()
 {
-    // Save saveBeforeExecute option
-    mSettings.setValue(QLatin1String("saveBeforeExecute"), mSaveBeforeExecute);
-
     // Save command list
     QList<QVariant> commands;
     foreach (const Command &command, mCommands)
@@ -441,14 +434,52 @@ QKeySequence CommandDataModel::shortcut(const QModelIndex &index) const
         return QKeySequence();
 }
 
-void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &keySequence)
+void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &value)
 {
-    if (index.row() < mCommands.size()) {
-        mCommands[index.row()].shortcut = keySequence;
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow) {
+        mCommands[index.row()].shortcut = value;
 
         QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
         emit dataChanged(shortcutIndex, shortcutIndex);
     }
+}
+
+bool CommandDataModel::saveBeforeExecute(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()].saveBeforeExecute;
+    else
+        return false;
+}
+
+void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, const bool &value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].saveBeforeExecute = value;
+}
+
+QString CommandDataModel::command(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()].command;
+    else
+        return QString();
+}
+
+void CommandDataModel::setCommand(const QModelIndex &index, const QString &value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].command = value;
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

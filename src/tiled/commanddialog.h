@@ -49,9 +49,15 @@ public:
 public slots:
     void setShortcut(const QKeySequence &keySequence);
 
-    void updateKeySequenceEdit(const QModelIndex &current, const QModelIndex&);
+    void setSaveBeforeExecute(int state);
+
+    void setCommand(const QString &text);
+
+    void updateWidgets(const QModelIndex &current, const QModelIndex&);
 
 private:
+    void enableWidgets(const bool enable);
+
     Ui::CommandDialog *mUi;
 };
 
