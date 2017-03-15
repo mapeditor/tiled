@@ -127,7 +127,7 @@ int CommandDataModel::rowCount(const QModelIndex &parent) const
 
 int CommandDataModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 4;
+    return parent.isValid() ? 0 : 3;
 }
 
 QVariant CommandDataModel::data(const QModelIndex &index, int role) const
@@ -143,8 +143,6 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return command.name;
-            if (index.column() == CommandColumn)
-                return command.command;
             if (index.column() == ShortcutColumn)
                 return command.shortcut;
         } else {
@@ -161,8 +159,6 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return tr("Set a name for this command");
-            if (index.column() == CommandColumn)
-                return tr("Set the shell command to execute");
             if (index.column() == ShortcutColumn)
                 return tr("Shortcut for this command");
             if (index.column() == EnabledColumn)
@@ -200,9 +196,6 @@ bool CommandDataModel::setData(const QModelIndex &index,
             if (!text.isEmpty()) {
                 if (index.column() == NameColumn) {
                     command.name = value.toString();
-                    isModified = true;
-                } else if (index.column() == CommandColumn) {
-                    command.command = value.toString();
                     isModified = true;
                 }
             }
@@ -258,7 +251,7 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
         f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
-        else if (index.column() == NameColumn || index.column() == CommandColumn)
+        else if (index.column() == NameColumn)
             f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
@@ -275,9 +268,8 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
-    const char *sectionLabels[4] = {
+    const char *sectionLabels[3] = {
         QT_TR_NOOP("Name"),
-        QT_TR_NOOP("Command"),
         QT_TR_NOOP("Shortcut"),
         QT_TR_NOOP("Enable") };
 
