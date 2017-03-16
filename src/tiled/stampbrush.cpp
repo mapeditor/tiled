@@ -45,6 +45,7 @@ StampBrush::StampBrush(QObject *parent)
                        parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
+    , mCaptureTopCorner(-1)
 {
 }
 
@@ -250,6 +251,8 @@ void StampBrush::endCapture()
 
     // Intersect with the layer and translate to layer coordinates
     QRect captured = capturedArea();
+    mCaptureTopCorner = captured.top();
+
     captured &= QRect(tileLayer->x(), tileLayer->y(),
                       tileLayer->width(), tileLayer->height());
 
@@ -385,7 +388,53 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
-            TileLayer *stamp = variation.tileLayer();
+            TileLayer *stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
+
+            //If using a hexagonal map, this takes into acount staggering
+            if(mapDocument()->map()->orientation() == 4 && stamp->height()>1)
+            {
+                int shiftMode;//-1 do not shift, 0 shift even rows (relatived to the stamp), 1 shift odd rows
+                int rowOfTop = p.y()-stamp->height()/2;
+                if(rowOfTop<0)rowOfTop*=-1; //Only used to check if even or odd, and being negative can mess this up.
+
+                if(mCaptureTopCorner == -1)
+                    shiftMode = 1;
+                else
+                //if what the stamp captured starts by going left
+                if((mCaptureTopCorner+1)%2 == mapDocument()->map()->staggerIndex())
+                {
+                    //if where the top is now will go down the correct way
+                    if((rowOfTop+1)%2 != mapDocument()->map()->staggerIndex())
+                        shiftMode = 0;
+                    else
+                        shiftMode = -1;
+                }
+                else//if going right
+                {
+                    //if where the top is now will go down the correct way
+                    if((rowOfTop+1)%2 == mapDocument()->map()->staggerIndex())
+                        shiftMode = 1;
+                    else
+                        shiftMode = -1;
+                }
+
+                if(shiftMode != -1)
+                {
+                    stamp->resize(QSize(stamp->width()+1,stamp->height()),QPoint());
+
+                    QRect boundBox = stamp->bounds();
+                    //Actually does the shift of the tiles. Maybe this could be done as
+                    //a method of TileLayer?
+                    for(int i = shiftMode; i <= boundBox.bottom(); i+=2)
+                    {
+                        for(int j = boundBox.right()-1; j >= 0; --j)
+                        {
+                            stamp->setCell(j+1,i,stamp->cellAt(j,i));
+                            stamp->setCell(j,i,Cell());
+                        }
+                    }
+                }
+            }
 
             QRegion stampRegion;
             if (regionCache.contains(stamp)) {

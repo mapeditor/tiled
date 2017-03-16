@@ -103,6 +103,7 @@ private:
 
     QPoint mCaptureStart;
     QPoint mPrevTilePosition;
+    int mCaptureTopCorner;
 
     void drawPreviewLayer(const QVector<QPoint> &list);
 
