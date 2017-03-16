@@ -65,7 +65,10 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
+    QList<MapObjectItem*> listOfObjectItemsAt(QPointF pos) const;
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
+
+    QPointF mCurrMouseScenePosition;//to get the pos in key event
 
 private slots:
     void duplicateObjects();
@@ -81,10 +84,12 @@ private slots:
     void lowerToBottom();
 
 private:
-    void showContextMenu(MapObjectItem *clickedObject,
+    void showContextMenu(QPointF scenePos,
                          QPoint screenPos);
 
     MapScene *mMapScene;
+
+    int mSelectedRotationIndex;
 };
 
 } // namespace Internal

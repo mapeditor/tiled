@@ -67,6 +67,7 @@ AbstractObjectTool::AbstractObjectTool(const QString &name,
 void AbstractObjectTool::activate(MapScene *scene)
 {
     mMapScene = scene;
+    mSelectedRotationIndex = 0;
 }
 
 void AbstractObjectTool::deactivate(MapScene *)
@@ -81,6 +82,19 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_Alt: {
+        auto objectList = listOfObjectItemsAt(mCurrMouseScenePosition);
+
+        if (!objectList.size())
+            return;
+        QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
+        selection.clear();
+        selection.insert(objectList.at(mSelectedRotationIndex));
+        mapScene()->setSelectedObjectItems(selection);
+
+        mSelectedRotationIndex = (mSelectedRotationIndex + 1) % objectList.size();
+        return;
+        }
     }
 
     event->ignore();
@@ -105,12 +119,15 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+
+    mCurrMouseScenePosition = pos;
+    mSelectedRotationIndex = 0;
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        showContextMenu(topMostObjectItemAt(event->scenePos()),
+        showContextMenu(event->scenePos(),
                         event->screenPos());
     }
 }
@@ -128,9 +145,22 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
+QList<MapObjectItem*> AbstractObjectTool::listOfObjectItemsAt(QPointF pos) const
+{
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    QList<MapObjectItem*> objectList;
+    for (auto item : items) {
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+            objectList.append(objectItem);
+    }
+    return objectList;
+}
+
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
     for (QGraphicsItem *item : items) {
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
@@ -205,9 +235,11 @@ void AbstractObjectTool::lowerToBottom()
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
  */
-void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
+void AbstractObjectTool::showContextMenu(QPointF scenePos,
                                          QPoint screenPos)
 {
+    MapObjectItem *clickedObjectItem = topMostObjectItemAt(scenePos);
+
     QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
     if (clickedObjectItem && !selection.contains(clickedObjectItem)) {
         selection.clear();
@@ -271,6 +303,21 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
 
+    QList<MapObjectItem*> underlyingObjects = listOfObjectItemsAt(scenePos);
+    if (underlyingObjects.size() > 1) {
+        menu.addSeparator();
+        QMenu *selectUnderlyingMenu = menu.addMenu(tr("Select underlying object"));
+
+        for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
+            QString actionName = tr("Object at level %n", "", levelNum + 1) + tr(levelNum ? "" : " (topmost)");
+            QAction *action = selectUnderlyingMenu->addAction(actionName);
+            if (levelNum == 0)
+                action->setEnabled(false);//just to set a starting point
+            else
+                action->setData(QVariant::fromValue(levelNum));
+        }
+    }
+
     QAction *action = menu.exec(screenPos);
     if (!action)
         return;
@@ -285,5 +332,12 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
         mapDocument()->moveObjectsToGroup(mapDocument()->selectedObjects(),
                                           objectGroup);
+    }
+
+    if (int indexOfObjectToBeSelected = action->data().value<int>()) {
+        auto selection = mapScene()->selectedObjectItems();
+        selection.clear();
+        selection.insert(underlyingObjects[indexOfObjectToBeSelected]);
+        mapScene()->setSelectedObjectItems(selection);
     }
 }
