@@ -306,10 +306,13 @@ void AbstractObjectTool::showContextMenu(QPointF scenePos,
     QList<MapObjectItem*> underlyingObjects = listOfObjectItemsAt(scenePos);
     if (underlyingObjects.size() > 1) {
         menu.addSeparator();
+
         QMenu *selectUnderlyingMenu = menu.addMenu(tr("Select underlying object"));
 
         for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
-            QString actionName = tr("Object at level %n", "", levelNum + 1) + tr(levelNum ? "" : " (topmost)");
+            const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
+            QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
+                    + tr(levelNum ? "" : " (topmost)");
             QAction *action = selectUnderlyingMenu->addAction(actionName);
             if (levelNum == 0)
                 action->setEnabled(false);//just to set a starting point
