@@ -218,9 +218,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mEditTileset);
     mToolBar->addAction(mDeleteTileset);
 
-    mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
-    mZoomable->setComboBox(mZoomComboBox);
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, &QStackedWidget::currentChanged,
@@ -391,9 +389,12 @@ void TilesetDock::dropEvent(QDropEvent *e)
 
 void TilesetDock::currentTilesetChanged()
 {
-    if (const TilesetView *view = currentTilesetView())
+    if (const TilesetView *view = currentTilesetView()) {
+        view->zoomable()->setComboBox(mZoomComboBox);
+
         if (const QItemSelectionModel *s = view->selectionModel())
             setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+    }
 }
 
 void TilesetDock::selectionChanged()
@@ -492,7 +493,6 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTilesetDocuments.insert(index, tilesetDocument);
 
     TilesetView *view = new TilesetView;
-    view->setZoomable(mZoomable);
 
     // Insert view before the tab to make sure it is there when the tab index
     // changes (happens when first tab is inserted).

@@ -171,7 +171,6 @@ private:
     QActionGroup *mTilesetActionGroup;
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
 
     bool mEmittingStampCaptured;

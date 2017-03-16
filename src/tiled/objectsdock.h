@@ -98,8 +98,12 @@ private slots:
     void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
+    void setColumnVisibility(bool visible);
+
+    void showCustomMenu(const QPoint &point);
 
 private:
+    void restoreVisibleSections();
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;

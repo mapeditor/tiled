@@ -7,6 +7,7 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
+    cpp.useRPaths: project.useRPaths
     bundle.isBundle: false
 
     Properties {

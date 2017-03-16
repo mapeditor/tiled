@@ -99,6 +99,13 @@ DynamicLibrary {
         "varianttomapconverter.h",
     ]
 
+    Group {
+        condition: project.installHeaders
+        qbs.install: true
+        qbs.installDir: "include/tiled"
+        fileTagsFilter: "hpp"
+    }
+
     Export {
         Depends { name: "cpp" }
         Depends {
