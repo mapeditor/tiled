@@ -327,6 +327,7 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mResizingLimitVertical(false)
     , mMode(Resize)
     , mAction(NoAction)
+    , mSelectedRotationIndex(0)
 {
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
@@ -551,8 +552,22 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             break;
         }
         const Qt::KeyboardModifiers modifiers = event->modifiers();
+        QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
+        if (modifiers & Qt::AltModifier) {
+            auto underlyingObjects = listOfObjectItemsAt(event->scenePos());
+
+            if (!underlyingObjects.size())
+                break;
+            if (mSelectedRotationIndex >= underlyingObjects.size())
+                mSelectedRotationIndex = 0;//definitely another stack
+            selection.clear();
+            selection.insert(underlyingObjects.at(mSelectedRotationIndex));
+            mapScene()->setSelectedObjectItems(selection);
+
+            mSelectedRotationIndex = (mSelectedRotationIndex + 1) % underlyingObjects.size();
+            break;
+        }
         if (mClickedObjectItem) {
-            QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedObjectItem))
                     selection.remove(mClickedObjectItem);

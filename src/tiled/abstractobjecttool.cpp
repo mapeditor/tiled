@@ -67,7 +67,6 @@ AbstractObjectTool::AbstractObjectTool(const QString &name,
 void AbstractObjectTool::activate(MapScene *scene)
 {
     mMapScene = scene;
-    mSelectedRotationIndex = 0;
 }
 
 void AbstractObjectTool::deactivate(MapScene *)
@@ -82,26 +81,12 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
-    case Qt::Key_Alt: {
-        auto objectList = listOfObjectItemsAt(mCurrMouseScenePosition);
-
-        if (!objectList.size())
-            return;
-        if (mSelectedRotationIndex >= objectList.size())
-            mSelectedRotationIndex = 0;//definitely another stack
-        QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
-        selection.clear();
-        selection.insert(objectList.at(mSelectedRotationIndex));
-        mapScene()->setSelectedObjectItems(selection);
-
-        mSelectedRotationIndex = (mSelectedRotationIndex + 1) % objectList.size();
-        return;
-	}
     case Qt::Key_D:
         if (event->modifiers() & Qt::ControlModifier) {
             duplicateObjects();
             return;
         }
+        return;
     }
 
     event->ignore();

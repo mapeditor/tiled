@@ -157,6 +157,8 @@ private:
     QPointF mStartOffset;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+
+    int mSelectedRotationIndex;
 };
 
 } // namespace Internal

@@ -88,8 +88,6 @@ private:
                          QPoint screenPos);
 
     MapScene *mMapScene;
-
-    int mSelectedRotationIndex;
 };
 
 } // namespace Internal
