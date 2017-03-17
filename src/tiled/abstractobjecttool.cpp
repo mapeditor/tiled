@@ -82,10 +82,8 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
     case Qt::Key_D:
-        if (event->modifiers() & Qt::ControlModifier) {
+        if (event->modifiers() & Qt::ControlModifier)
             duplicateObjects();
-            return;
-        }
         return;
     }
 
