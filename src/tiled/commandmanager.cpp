@@ -85,8 +85,6 @@ void CommandManager::updateActions()
     qDeleteAll(mActions);
     mActions.clear();
 
-    bool firstEnabledCommand = true;
-
     const QList<Command> &commands = mModel->allCommands();
 
     for (int i = 0; i < commands.size(); ++i) {
@@ -96,10 +94,7 @@ void CommandManager::updateActions()
             continue;
 
         QAction *mAction = new QAction(command.name, this);
-
-        if (firstEnabledCommand)
-            mAction->setShortcut(QKeySequence(tr("F5")));
-        firstEnabledCommand = false;
+        mAction->setShortcut(command.shortcut);
 
         connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
 

@@ -52,6 +52,14 @@ public:
         OpacityRole = Qt::UserRole
     };
 
+    enum Column {
+        Name,
+        Type,
+        Id,
+        Position,
+        ColumnCount
+    };
+
     MapObjectModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
@@ -89,6 +97,8 @@ public:
     void setObjectRotation(MapObject *o, qreal rotation);
 
     void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
+    void emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns = QList<Column>());
+    void emitObjectsChanged(const QList<MapObject*> &objects, Column column);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);

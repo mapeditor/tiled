@@ -21,6 +21,7 @@
 #include "commanddatamodel.h"
 
 #include <QMenu>
+#include <QKeySequence>
 #include <QSignalMapper>
 #include <QMimeData>
 
@@ -126,7 +127,7 @@ int CommandDataModel::rowCount(const QModelIndex &parent) const
 
 int CommandDataModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 3;
+    return parent.isValid() ? 0 : 4;
 }
 
 QVariant CommandDataModel::data(const QModelIndex &index, int role) const
@@ -144,6 +145,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return command.name;
             if (index.column() == CommandColumn)
                 return command.command;
+            if (index.column() == ShortcutColumn)
+                return command.shortcut;
         } else {
             if (index.column() == NameColumn) {
                 if (role == Qt::EditRole)
@@ -160,6 +163,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return tr("Set a name for this command");
             if (index.column() == CommandColumn)
                 return tr("Set the shell command to execute");
+            if (index.column() == ShortcutColumn)
+                return tr("Shortcut for this command");
             if (index.column() == EnabledColumn)
                 return tr("Show or hide this command in the command list");
         } else
@@ -253,7 +258,7 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
         f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
-        else
+        else if (index.column() == NameColumn || index.column() == CommandColumn)
             f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
@@ -270,9 +275,10 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
-    const char *sectionLabels[3] = {
+    const char *sectionLabels[4] = {
         QT_TR_NOOP("Name"),
         QT_TR_NOOP("Command"),
+        QT_TR_NOOP("Shortcut"),
         QT_TR_NOOP("Enable") };
 
     return tr(sectionLabels[section]);
@@ -431,6 +437,26 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     }
 
     return false;
+}
+
+QKeySequence CommandDataModel::shortcut(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()].shortcut;
+    else
+        return QKeySequence();
+}
+
+void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &keySequence)
+{
+    if (index.row() < mCommands.size()) {
+        mCommands[index.row()].shortcut = keySequence;
+
+        QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
+        emit dataChanged(shortcutIndex, shortcutIndex);
+    }
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

@@ -108,7 +108,7 @@ int MapObjectModel::rowCount(const QModelIndex &parent) const
 int MapObjectModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 2; // MapObject name|type
+    return ColumnCount;
 }
 
 QVariant MapObjectModel::data(const QModelIndex &index, int role) const
@@ -117,10 +117,21 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            if (index.column() == 0) {
+            switch (index.column()) {
+            case Name:
                 return mapObject->name();
-            } else if (index.column() == 1) {
+            case Type:
                 return mapObject->effectiveType();
+            case Id:
+                return mapObject->id();
+            case Position:
+                return QLatin1Char('(')
+                        + QString::number(mapObject->x())
+                        + QLatin1String(", ")
+                        + QString::number(mapObject->y())
+                        + QLatin1Char(')');
+            default:
+                break;
             }
         case Qt::ForegroundRole:
             if (index.column() == 1) {
@@ -232,8 +243,10 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-    else if (toMapObject(index))
-        rc |= Qt::ItemIsEditable; // MapObject type
+    else if (toMapObject(index)) {
+        if (index.column() == Type)// allow to edit only type column
+            rc |= Qt::ItemIsEditable;
+    }
     return rc;
 }
 
@@ -242,8 +255,10 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return tr("Name");
-        case 1: return tr("Type");
+        case Name: return tr("Name");
+        case Type: return tr("Type");
+        case Id: return tr("ID");
+        case Position: return tr("Position");
         }
     }
     return QVariant();
@@ -416,6 +431,24 @@ void MapObjectModel::tileTypeChanged(Tile *tile)
             }
         }
     }
+}
+
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, const QList<Column> &columns)
+{
+    emit objectsChanged(objects);
+    if (columns.isEmpty())
+        return;
+
+    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+    for (auto object : objects) {
+        emit dataChanged(index(object, *minMaxPair.first), index(object, *minMaxPair.second));
+    }
+}
+
+void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, Column column)
+{
+    emitObjectsChanged(objects,
+                       QList<MapObjectModel::Column>() << column);
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const

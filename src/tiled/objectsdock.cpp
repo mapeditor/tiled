@@ -45,6 +45,7 @@
 #include <QUrl>
 
 static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
+static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -271,6 +272,9 @@ ObjectsView::ObjectsView(QWidget *parent)
 
     connect(header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onSectionResized(int)));
+
+    header()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(header(), &QWidget::customContextMenuRequested, this, &ObjectsView::showCustomMenu);
 }
 
 QSize ObjectsView::sizeHint() const
@@ -299,6 +303,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
+        restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -381,6 +386,52 @@ void ObjectsView::selectedObjectsChanged()
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
         scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
+    }
+}
+
+void ObjectsView::setColumnVisibility(bool visible)
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (!action)
+        return;
+
+    int column = action->data().toInt();
+    header()->setSectionHidden(column, !visible);
+
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList visibleSections;
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        if (!header()->isSectionHidden(i))
+            visibleSections.append(i);
+    }
+    settings->setValue(QLatin1String(VISIBLE_SECTIONS_KEY), visibleSections);
+}
+
+void ObjectsView::showCustomMenu(const QPoint &point)
+{
+    Q_UNUSED(point)
+    QMenu contextMenu(this);
+    QAbstractItemModel *model = mProxyModel->sourceModel();
+    for (int i = 0; i < model->columnCount(); i++) {
+        if (i == MapObjectModel::Name)
+            continue;
+        QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), &contextMenu);
+        action->setCheckable(true);
+        action->setChecked(!header()->isSectionHidden(i));
+        action->setData(i);
+        connect(action, &QAction::triggered, this, &ObjectsView::setColumnVisibility);
+        contextMenu.addAction(action);
+    }
+    contextMenu.exec(QCursor::pos());
+}
+
+void ObjectsView::restoreVisibleSections()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
+                                                 QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        header()->setSectionHidden(i, !visibleSections.contains(i));
     }
 }
 

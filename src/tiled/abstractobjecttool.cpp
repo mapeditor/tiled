@@ -96,6 +96,11 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
 
         mSelectedRotationIndex = (mSelectedRotationIndex + 1) % objectList.size();
         return;
+	}
+    case Qt::Key_D:
+        if (event->modifiers() & Qt::ControlModifier) {
+            duplicateObjects();
+            return;
         }
     }
 

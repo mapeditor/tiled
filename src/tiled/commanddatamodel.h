@@ -36,7 +36,7 @@ class CommandDataModel : public QAbstractTableModel
 
 public:
 
-    enum { NameColumn, CommandColumn, EnabledColumn };
+    enum { NameColumn, CommandColumn, ShortcutColumn, EnabledColumn };
 
     /**
       * Constructs the object and parses the users settings to allow easy
@@ -140,6 +140,10 @@ public:
      */
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
+
+    QKeySequence shortcut(const QModelIndex &index) const;
+
+    void setShortcut(const QModelIndex &index, const QKeySequence &keySequence);
 
 public slots:
 

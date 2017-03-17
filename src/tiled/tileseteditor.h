@@ -119,7 +119,6 @@ private:
 
     PropertiesDock *mPropertiesDock;
     TerrainDock *mTerrainDock;
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;

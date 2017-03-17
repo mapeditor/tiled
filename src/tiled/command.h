@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QString>
+#include <QKeySequence>
 #include <QProcess>
 #include <QVariant>
 
@@ -35,14 +36,17 @@ struct Command
 {
     Command(bool isEnabled = true,
             QString name = QString(),
-            QString command = QString())
+            QString command = QString(),
+            QKeySequence shortcut = QKeySequence())
         : isEnabled(isEnabled)
         , name(std::move(name))
-        , command(std::move(command)) {}
+        , command(std::move(command))
+        , shortcut(shortcut) {}
 
     bool isEnabled;
     QString name;
     QString command;
+    QKeySequence shortcut;
 
     /**
      * Returns the final command with replaced tokens.

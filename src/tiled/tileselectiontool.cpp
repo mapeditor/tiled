@@ -1,6 +1,6 @@
 /*
  * tileselectiontool.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -27,6 +27,8 @@
 #include "mapscene.h"
 #include "tilelayer.h"
 
+#include <QApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -37,9 +39,10 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
                        QKeySequence(tr("R")),
                        parent)
     , mSelectionMode(Replace)
+    , mMouseDown(false)
     , mSelecting(false)
 {
-    setTilePositionMethod(BetweenTiles);
+    setTilePositionMethod(OnTiles);
 }
 
 void TileSelectionTool::tilePositionChanged(const QPoint &)
@@ -62,6 +65,22 @@ void TileSelectionTool::updateStatusInfo()
                   .arg(area.width()).arg(area.height()));
 }
 
+void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    if (mMouseDown && !mSelecting) {
+        QPoint screenPos = QCursor::pos();
+        const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
+
+        // Use a reduced start drag distance to increase the responsiveness
+        if (dragDistance >= QApplication::startDragDistance() / 2) {
+            mSelecting = true;
+            tilePositionChanged(tilePosition());
+        }
+    }
+
+    AbstractTileTool::mouseMoved(pos, modifiers);
+}
+
 void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
@@ -78,7 +97,8 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             mSelectionMode = Replace;
         }
 
-        mSelecting = true;
+        mMouseDown = true;
+        mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
         brushItem()->setTileRegion(QRegion());
     }
@@ -87,21 +107,20 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         if (mSelecting) {
             // Cancel selecting
             mSelecting = false;
+            mMouseDown = false; // Avoid restarting select on move
             brushItem()->setTileRegion(QRegion());
         } else {
-            // Clear the selection
-            MapDocument *document = mapDocument();
-            if (!document->selectedArea().isEmpty()) {
-                QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
-                document->undoStack()->push(cmd);
-            }
+            clearSelection();
         }
     }
 }
 
 void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && mSelecting) {
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    if (mSelecting) {
         mSelecting = false;
 
         MapDocument *document = mapDocument();
@@ -122,7 +141,12 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
         brushItem()->setTileRegion(QRegion());
         updateStatusInfo();
+    } else if (mMouseDown) {
+        // Clicked without dragging and not cancelled
+        clearSelection();
     }
+
+    mMouseDown = false;
 }
 
 void TileSelectionTool::languageChanged()
@@ -133,11 +157,19 @@ void TileSelectionTool::languageChanged()
 
 QRect TileSelectionTool::selectedArea() const
 {
-    const QPoint tilePos = tilePosition();
-    const QPoint pos(qMin(tilePos.x(), mSelectionStart.x()),
-                     qMin(tilePos.y(), mSelectionStart.y()));
-    const QSize size(qAbs(tilePos.x() - mSelectionStart.x()),
-                     qAbs(tilePos.y() - mSelectionStart.y()));
+    QRect area = QRect(mSelectionStart, tilePosition()).normalized();
+    if (area.width() == 0)
+        area.adjust(-1, 0, 1, 0);
+    if (area.height() == 0)
+        area.adjust(0, -1, 0, 1);
+    return area;
+}
 
-    return QRect(pos, size);
+void TileSelectionTool::clearSelection()
+{
+    MapDocument *document = mapDocument();
+    if (!document->selectedArea().isEmpty()) {
+        QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
+        document->undoStack()->push(cmd);
+    }
 }

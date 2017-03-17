@@ -427,7 +427,7 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Move %n Object(s)", "", items.size()));
     int i = 0;
-    foreach (MapObjectItem *objectItem, items) {
+    for (MapObjectItem *objectItem : items) {
         MapObject *object = objectItem->mapObject();
         const QPointF oldPos = object->position();
         const QPointF newPos = oldPos + moveBy;
@@ -1020,7 +1020,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
 
     mOriginIndicator->setPos(mOldOriginPosition + diff);
 }
@@ -1109,7 +1109,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         mapObject->setRotation(newRotation);
     }
 
-    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
 }
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
@@ -1235,7 +1235,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         mapObject->setPosition(newPos);
     }
 
-    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1374,7 +1374,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
 
-    emit mapDocument()->mapObjectModel()->objectsChanged(changingObjects());
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
