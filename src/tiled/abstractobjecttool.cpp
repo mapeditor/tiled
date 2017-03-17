@@ -87,6 +87,8 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
 
         if (!objectList.size())
             return;
+        if (mSelectedRotationIndex >= objectList.size())
+            mSelectedRotationIndex = 0;//definitely another stack
         QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
         selection.clear();
         selection.insert(objectList.at(mSelectedRotationIndex));
@@ -121,7 +123,6 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 
     mCurrMouseScenePosition = pos;
-    mSelectedRotationIndex = 0;
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -307,7 +308,7 @@ void AbstractObjectTool::showContextMenu(QPointF scenePos,
     if (underlyingObjects.size() > 1) {
         menu.addSeparator();
 
-        QMenu *selectUnderlyingMenu = menu.addMenu(tr("Select underlying object"));
+        QMenu *selectUnderlyingMenu = menu.addMenu(tr("Select an underlying object"));
 
         for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
             const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
