@@ -68,8 +68,6 @@ protected:
     QList<MapObjectItem*> listOfObjectItemsAt(QPointF pos) const;
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
 
-    QPointF mCurrMouseScenePosition;//to get the pos in key event
-
 private slots:
     void duplicateObjects();
     void removeObjects();

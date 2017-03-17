@@ -111,8 +111,6 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
-
-    mCurrMouseScenePosition = pos;
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
