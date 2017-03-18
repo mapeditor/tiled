@@ -545,10 +545,7 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
                     QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
                             + tr(levelNum ? "" : " (topmost)");
                     QAction *action = selectUnderlyingMenu.addAction(actionName);
-                    if (levelNum == 0)
-                        action->setEnabled(false);//just to set a starting point
-                    else
-                        action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
+                    action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
                 }
 
                 QAction *action = selectUnderlyingMenu.exec(event->screenPos());
