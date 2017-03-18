@@ -133,7 +133,7 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
-QList<MapObjectItem*> AbstractObjectTool::listOfObjectItemsAt(QPointF pos) const
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
@@ -290,24 +290,6 @@ void AbstractObjectTool::showContextMenu(QPointF scenePos, QPoint screenPos)
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
 
-    QList<MapObjectItem*> underlyingObjects = listOfObjectItemsAt(scenePos);
-    if (underlyingObjects.size() > 1) {
-        menu.addSeparator();
-
-        QMenu *selectUnderlyingMenu = menu.addMenu(tr("Select an underlying object"));
-
-        for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
-            const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
-            QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
-                    + tr(levelNum ? "" : " (topmost)");
-            QAction *action = selectUnderlyingMenu->addAction(actionName);
-            if (levelNum == 0)
-                action->setEnabled(false);//just to set a starting point
-            else
-                action->setData(QVariant::fromValue(levelNum));
-        }
-    }
-
     QAction *action = menu.exec(screenPos);
     if (!action)
         return;
@@ -322,12 +304,5 @@ void AbstractObjectTool::showContextMenu(QPointF scenePos, QPoint screenPos)
     if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
         mapDocument()->moveObjectsToGroup(mapDocument()->selectedObjects(),
                                           objectGroup);
-    }
-
-    if (int indexOfObjectToBeSelected = action->data().value<int>()) {
-        auto selection = mapScene()->selectedObjectItems();
-        selection.clear();
-        selection.insert(underlyingObjects[indexOfObjectToBeSelected]);
-        mapScene()->setSelectedObjectItems(selection);
     }
 }

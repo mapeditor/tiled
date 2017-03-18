@@ -65,7 +65,7 @@ protected:
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;
-    QList<MapObjectItem*> listOfObjectItemsAt(QPointF pos) const;
+    QList<MapObjectItem*> objectItemsAt(QPointF pos) const;
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
 
 private slots:
@@ -82,8 +82,7 @@ private slots:
     void lowerToBottom();
 
 private:
-    void showContextMenu(QPointF scenePos,
-                         QPoint screenPos);
+    void showContextMenu(QPointF scenePos, QPoint screenPos);
 
     MapScene *mMapScene;
 };

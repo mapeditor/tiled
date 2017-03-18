@@ -25,6 +25,7 @@
 #include <QList>
 #include <QSet>
 #include <QVector>
+#include <QMenu>
 
 class QGraphicsItem;
 
@@ -158,7 +159,7 @@ private:
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 
-    int mSelectedRotationIndex;
+    MapObjectItem *mSelectedInUnderlyingRotation;
 };
 
 } // namespace Internal
