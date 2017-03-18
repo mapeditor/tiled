@@ -101,6 +101,68 @@ void SetLayerOffset::setOffset(const QPointF &offset)
     mMapDocument->layerModel()->setLayerOffset(mLayer, offset);
 }
 
+SetLayerMoveSpeed::SetLayerMoveSpeed(MapDocument *mapDocument,
+                               Layer *layer,
+                               const QPointF &moveSpeed,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mOldOffset(layer->moveSpeed())
+    , mNewOffset(moveSpeed)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Move Speed"));
+}
+
+void SetLayerMoveSpeed::setMoveSpeed(const QPointF &moveSpeed)
+{
+    mMapDocument->layerModel()->setLayerMoveSpeed(mLayer, moveSpeed);
+}
+
+SetLayerRepeatedX::SetLayerRepeatedX(MapDocument *mapDocument,
+                                 Layer *layer,
+                                 bool repeatedX)
+    : mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mRepeatedX(repeatedX)
+{
+    if (repeatedX)
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Repeat Horizontally"));
+    else
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Dont Repeat Horizontally"));
+}
+
+void SetLayerRepeatedX::swap()
+{
+    const bool previousRepeatX = mLayer->repeatedX();
+    mMapDocument->layerModel()->setLayerRepeatedX(mLayer, mRepeatedX);
+    mRepeatedX = previousRepeatX;
+}
+
+SetLayerRepeatedY::SetLayerRepeatedY(MapDocument *mapDocument,
+                                 Layer *layer,
+                                 bool repeatedY)
+    : mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mRepeatedY(repeatedY)
+{
+    if (repeatedY)
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Repeat Vertically"));
+    else
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Dont Repeat Vertically"));
+}
+
+void SetLayerRepeatedY::swap()
+{
+    const bool previousRepeatY = mLayer->repeatedY();
+    mMapDocument->layerModel()->setLayerRepeatedY(mLayer, mRepeatedY);
+    mRepeatedY = previousRepeatY;
+}
 
 } // namespace Internal
 } // namespace Tiled

@@ -570,7 +570,7 @@ static void readLayerAttributes(Layer &layer,
     const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
-    bool ok;
+    bool ok, ok2;
     const float opacity = opacityRef.toFloat(&ok);
     if (ok)
         layer.setOpacity(opacity);
@@ -582,7 +582,20 @@ static void readLayerAttributes(Layer &layer,
     const QPointF offset(atts.value(QLatin1String("offsetx")).toDouble(),
                          atts.value(QLatin1String("offsety")).toDouble());
 
+    QPointF moveSpeed(atts.value(QLatin1String("moveSpeedX")).toDouble(&ok),
+                            atts.value(QLatin1String("moveSpeedY")).toDouble(&ok2));
+
+    if(!ok) moveSpeed.setX(1.0);
+    if(!ok2) moveSpeed.setY(1.0);
+
+    QLatin1String yes("true");
+    const bool repeatX = atts.value(QLatin1String("repeatedX")).toInt();
+    const bool repeatY = atts.value(QLatin1String("repeatedY")).toInt();
+
     layer.setOffset(offset);
+    layer.setMoveSpeed(moveSpeed);
+    layer.setRepeatedX(repeatX);
+    layer.setRepeatedY(repeatY);
 }
 
 TileLayer *MapReaderPrivate::readTileLayer()

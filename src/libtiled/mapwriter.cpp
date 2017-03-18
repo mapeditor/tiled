@@ -543,6 +543,16 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("offsetx"), QString::number(offset.x()));
         w.writeAttribute(QLatin1String("offsety"), QString::number(offset.y()));
     }
+    const QPointF moveSpeed = layer.moveSpeed();
+    const QPointF neutral(1.0, 1.0);
+    if (moveSpeed!=neutral) {
+        w.writeAttribute(QLatin1String("moveSpeedX"), QString::number(moveSpeed.x()));
+        w.writeAttribute(QLatin1String("moveSpeedY"), QString::number(moveSpeed.y()));
+    }
+    if (layer.repeatedX())
+        w.writeAttribute(QLatin1String("repeatedX"), QLatin1String("1"));
+    if (layer.repeatedY())
+        w.writeAttribute(QLatin1String("repeatedY"), QLatin1String("1"));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

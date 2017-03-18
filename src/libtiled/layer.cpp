@@ -151,6 +151,9 @@ QPointF Layer::totalOffset() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
+    clone->mRepeatedY = mRepeatedY;
+    clone->mRepeatedX = mRepeatedX;
+    clone->mMoveSpeed = mMoveSpeed;
     clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;

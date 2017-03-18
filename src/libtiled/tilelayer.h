@@ -380,6 +380,8 @@ inline QRegion TileLayer::region() const
  */
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
+    if(repeatedX()){ x %= width(); if(x<0) x+= width(); }
+    if(repeatedY()){ y %= height(); if(x<0) y+= height(); }
     Q_ASSERT(contains(x, y));
     return mGrid.at(x + y * mWidth);
 }

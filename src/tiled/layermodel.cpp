@@ -342,6 +342,60 @@ void LayerModel::setLayerOffset(Layer *layer, const QPointF &offset)
 }
 
 /**
+ * Sets the move speed of the layer at the given index.
+ */
+void LayerModel::setLayerMoveSpeed(Layer *layer, const QPointF &moveSpeed)
+{
+    if (layer->moveSpeed() == moveSpeed)
+        return;
+
+    layer->setMoveSpeed(moveSpeed);
+    emit layerChanged(layer);
+}
+
+/**
+ * Sets whether the layer at the given index is horizontally repeated.
+ */
+void LayerModel::setLayerRepeatedX(Layer *layer, bool repeatedX)
+{
+    if (layer->repeatedX() == repeatedX)
+        return;
+
+    layer->setRepeatedX(repeatedX);
+
+    const QModelIndex modelIndex = index(layer);
+    emit dataChanged(modelIndex, modelIndex);
+    emit layerChanged(layer);
+}
+
+/**
+ * Sets whether the layer at the given index is vertically repeated.
+ */
+void LayerModel::setLayerRepeatedY(Layer *layer, bool repeatedY)
+{
+    if (layer->repeatedY() == repeatedY)
+        return;
+
+    layer->setRepeatedY(repeatedY);
+
+    const QModelIndex modelIndex = index(layer);
+    emit dataChanged(modelIndex, modelIndex);
+    emit layerChanged(layer);
+}
+
+/**
+ * Sets the dimensions of the layer at the given index.
+ */
+void LayerModel::setLayerSize(TileLayer *layer, const QSize &size)
+{
+    if (QSize(layer->width(), layer->height()) == size)
+        return;
+
+    layer->resize(size, QPoint());
+    emit layerChanged(layer);
+}
+
+/**
  * Renames the layer at the given index.
  */
 void LayerModel::renameLayer(Layer *layer, const QString &name)

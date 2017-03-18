@@ -28,6 +28,7 @@
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
 #include "changetile.h"
+#include "resizetilelayer.h"
 #include "changetileimagesource.h"
 #include "changetileprobability.h"
 #include "flipmapobjects.h"
@@ -672,12 +673,28 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 
     addProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
     addProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
+
+    QtVariantProperty *moveSpeedXProperty =
+    addProperty(MoveSpeedXProperty, QVariant::Double, tr("Horizontal Move Speed"), parent);
+    moveSpeedXProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+    QtVariantProperty *moveSpeedYProperty =
+    addProperty(MoveSpeedYProperty, QVariant::Double, tr("Vertical Move Speed"), parent);
+    moveSpeedYProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    addProperty(RepeatedXProperty, QVariant::Bool, tr("Horizontal Repeat"), parent);
+    addProperty(RepeatedYProperty, QVariant::Bool, tr("Vertical Repeat"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
+    QtVariantProperty *widthProperty =
+            addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty);
+    widthProperty->setAttribute(QLatin1String("minimum"), 1);
+    QtVariantProperty *heightProperty =
+        addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty);
+    heightProperty->setAttribute(QLatin1String("minimum"), 1);
     addProperty(groupProperty);
 }
 
@@ -1009,7 +1026,26 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
             offset.setY(val.toDouble());
 
         command = new SetLayerOffset(mMapDocument, layer, offset);
+        break;
     }
+    case MoveSpeedXProperty:
+    case MoveSpeedYProperty: {
+        QPointF moveSpeed = layer->moveSpeed();
+
+        if (id == MoveSpeedXProperty)
+            moveSpeed.setX(val.toDouble());
+        else
+            moveSpeed.setY(val.toDouble());
+
+        command = new SetLayerMoveSpeed(mMapDocument, layer, moveSpeed);
+        break;
+    }
+    case RepeatedXProperty:
+        command = new SetLayerRepeatedX(mMapDocument, layer, val.toBool());
+        break;
+    case RepeatedYProperty:
+        command = new SetLayerRepeatedY(mMapDocument, layer, val.toBool());
+        break;
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:   applyTileLayerValue(id, val);   break;
@@ -1026,8 +1062,27 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(val)
+    TileLayer *layer = static_cast<TileLayer*>(mObject);
+    QUndoCommand *command = nullptr;
+
+    switch (id) {
+    case WidthProperty:
+    case HeightProperty: {
+        QSize size( layer->width(), layer->height() );
+
+        if (id == WidthProperty)
+            size.setWidth(val.toInt());
+        else
+            size.setHeight(val.toInt());
+        command = new ResizeTileLayer(mMapDocument, layer, size, QPoint());
+        break;
+    }
+    default:
+        break;
+    }
+
+    if (command)
+        mDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
@@ -1376,10 +1431,18 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
+        mIdToProperty[MoveSpeedXProperty]->setValue(layer->moveSpeed().x());
+        mIdToProperty[MoveSpeedYProperty]->setValue(layer->moveSpeed().y());
+        mIdToProperty[RepeatedXProperty]->setValue(layer->repeatedX());
+        mIdToProperty[RepeatedYProperty]->setValue(layer->repeatedY());
 
         switch (layer->layerType()) {
-        case Layer::TileLayerType:
+        case Layer::TileLayerType: {
+            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+            mIdToProperty[WidthProperty]->setValue(tileLayer->width());
+            mIdToProperty[HeightProperty]->setValue(tileLayer->height());
             break;
+        }
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             const QColor color = objectGroup->color();
