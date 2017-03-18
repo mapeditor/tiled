@@ -597,11 +597,8 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             if (currRotation == underlyingObjects.end())
                 currRotation = underlyingObjects.begin();//new stack of objects
             else {
-                if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0) {
-                    auto previouslySelected = selection.find(mSelectedInUnderlyingRotation);
-                    if (previouslySelected != selection.end())
-                        selection.erase(previouslySelected);//deselect previous
-                }
+                if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
+                    selection.remove(mSelectedInUnderlyingRotation);//deselect previous
                 if (++currRotation == underlyingObjects.end())
                     currRotation = underlyingObjects.begin();
             }
