@@ -389,12 +389,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne peut ouvrir le fichier en écriture.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers GameMaker room (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -686,7 +686,7 @@
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Aligner aux &amp;Pixels</translation>
     </message>
     <message>
         <location line="-200"/>
@@ -2103,7 +2103,7 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser la taille des Tiles</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2921,7 +2921,7 @@ Voulez-vous le remplacer ?</translation>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
         <location line="-1210"/>
@@ -3239,17 +3239,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Déplacer %n objet vers le haut</numerusform>
+            <numerusform>Déplacer %n objets vers le haut</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Déplacer %n objet vers le bas</numerusform>
+            <numerusform>Déplacer %n objets vers le bas</numerusform>
         </translation>
     </message>
 </context>
@@ -3268,12 +3268,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+11"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3308,29 +3308,29 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Calque de &amp;Tile</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Calque d&apos;&amp;Objet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Calque d&apos;&amp;Image</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Calque selon copie</translation>
     </message>
     <message>
         <location line="-196"/>
         <location line="+196"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Calque selon Couper/Coller</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -3360,12 +3360,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+45"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
@@ -3692,12 +3692,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer les objets vers le haut</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer les objets vers le bas</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3782,17 +3782,17 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-71"/>
         <source>Convert To</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir vers</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Renommer ...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location line="+65"/>
