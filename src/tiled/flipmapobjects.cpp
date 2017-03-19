@@ -47,7 +47,7 @@ void FlipMapObjects::flip()
     const auto &objects = mMapObjects;
 
     //computing objects center
-    QPainterPath boundaringPath;
+    QRectF boundaryObjectsRect;
     for (MapObject *object : objects) {
         QTransform objectTransform;
         objectTransform.translate(object->x(), object->y());
@@ -58,24 +58,19 @@ void FlipMapObjects::flip()
             QRectF cellRect = QRectF(object->x(),
                                      object->y(),
                                      object->width(), -object->height()).normalized();
-            boundaringPath.addRect(objectTransform.mapRect(cellRect));
-        }
-        else if (!object->polygon().empty()) { //computing bound rect for polygon
+            boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(cellRect));
+        } else if (!object->polygon().empty()) { //computing bound rect for polygon
             const QPolygonF &objectPolygon = object->polygon();
             QTransform polygonToMapTransform;
-            polygonToMapTransform.translate(object->x() + objectPolygon.first().x(),
-                                            object->y() + objectPolygon.first().y());
+            polygonToMapTransform.translate(object->x(),
+                                            object->y());
             polygonToMapTransform.rotate(object->rotation());
-            polygonToMapTransform.translate(-objectPolygon.first().x(),
-                                            -objectPolygon.first().y());
-
-            boundaringPath.addRect(polygonToMapTransform.mapRect(QRectF(objectPolygon.boundingRect())));
-        }
-        else { //computing bound rect for other
-            boundaringPath.addRect(objectTransform.mapRect(object->bounds()));
+            boundaryObjectsRect = boundaryObjectsRect.united(polygonToMapTransform.mapRect(QRectF(objectPolygon.boundingRect())));
+        } else { //computing bound rect for other
+            boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(object->bounds()));
         }
     }
-    QPointF objectsCenter = boundaringPath.boundingRect().center();
+    QPointF objectsCenter = boundaryObjectsRect.center();
 
     //flip objects
     for (MapObject *object : objects)

@@ -948,11 +948,8 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
 
         // You can only change one checkbox at a time
         Cell newCell = mapObject->cell();
-        if (mapObject->cell().flippedHorizontally() != flippedHorizontally) {
-            newCell.setFlippedHorizontally(!mapObject->cell().flippedHorizontally());
-        } else if (mapObject->cell().flippedVertically() != flippedVertically) {
-            newCell.setFlippedVertically(!mapObject->cell().flippedVertically());
-        }
+        newCell.setFlippedHorizontally(flippedHorizontally);
+        newCell.setFlippedVertically(flippedVertically);
 
         MapObjectCell mapObjectCell;
         mapObjectCell.object = mapObject;
