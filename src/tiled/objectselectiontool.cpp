@@ -538,35 +538,35 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     case Qt::RightButton:
         if (event->modifiers() & Qt::AltModifier) {
             QList<MapObjectItem*> underlyingObjects = objectItemsAt(event->scenePos());
-            if (!underlyingObjects.empty()) {
-                QMenu selectUnderlyingMenu;
+            if (underlyingObjects.empty())
+                break;
+            QMenu selectUnderlyingMenu;
 
-                for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
-                    const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
-                    QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
-                            + tr(levelNum ? "" : " (topmost)");
-                    QAction *action = selectUnderlyingMenu.addAction(actionName);
-                    action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
+            for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
+                const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
+                QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
+                        + tr(levelNum ? "" : " (topmost)");
+                QAction *action = selectUnderlyingMenu.addAction(actionName);
+                action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
+            }
+
+            QAction *action = selectUnderlyingMenu.exec(event->screenPos());
+
+            if (!action)
+                break;
+
+            if (MapObjectItem* objectToBeSelected = action->data().value<MapObjectItem*>()) {
+                auto selection = mapScene()->selectedObjectItems();
+                if (event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+                    if (selection.contains(objectToBeSelected))
+                            selection.remove(objectToBeSelected);
+                        else
+                            selection.insert(objectToBeSelected);
+                } else {
+                    selection.clear();
+                    selection.insert(objectToBeSelected);
                 }
-
-                QAction *action = selectUnderlyingMenu.exec(event->screenPos());
-
-                if (!action)
-                    break;
-
-                if (MapObjectItem* objectToBeSelected = action->data().value<MapObjectItem*>()) {
-                    auto selection = mapScene()->selectedObjectItems();
-                    if (event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                        if (selection.contains(objectToBeSelected))
-                                selection.remove(objectToBeSelected);
-                            else
-                                selection.insert(objectToBeSelected);
-                    } else {
-                        selection.clear();
-                        selection.insert(objectToBeSelected);
-                    }
-                    mapScene()->setSelectedObjectItems(selection);
-                }
+                mapScene()->setSelectedObjectItems(selection);
             }
         }
         else
