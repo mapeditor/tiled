@@ -204,12 +204,29 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
  */
 void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
+    //computing new rotation and flip transform
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    qreal newRotation = 0;
+    if (direction == FlipHorizontally) {
+        newRotation = 180.0 - rotation();
+        flipTransform.scale(-1, 1);
+    } else { //direction == FlipVertically
+        flipTransform.scale(1, -1);
+        newRotation = -rotation();
+    }
+    flipTransform.translate(-origin.x(), -origin.y());
+
+
     if (!mCell.isEmpty())
-        flipTileObject(direction, origin);
+        flipTileObject(flipTransform);
     else if (!mPolygon.isEmpty())
-        flipPolygonObject(direction, origin);
+        flipPolygonObject(flipTransform);
     else
-        flipRectObject(direction, origin);
+        flipRectObject(flipTransform);
+
+    //installing new rotation after computing new position
+    setRotation(newRotation);
 }
 
 /**
@@ -230,42 +247,17 @@ MapObject *MapObject::clone() const
     return o;
 }
 
-void MapObject::flipRectObject(FlipDirection direction, const QPointF &origin)
+void MapObject::flipRectObject(const QTransform &flipTransform)
 {
-    QTransform flipTransform;
-    flipTransform.translate(origin.x(), origin.y());
-    qreal newRotation = 0;
-    if (direction == FlipHorizontally) {
-        newRotation = 180.0 - rotation();
-        flipTransform.scale(-1, 1);
-    } else { //direction == FlipVertically
-        flipTransform.scale(1, -1);
-        newRotation = -rotation();
-    }
-    flipTransform.translate(-origin.x(), -origin.y());
-
     QPointF oldBottomLeftPoint = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),
                                          sin(qDegreesToRadians(rotation() + 90)) * height() + y());
     QPointF newPos = flipTransform.map(oldBottomLeftPoint);
 
     setPosition(newPos);
-    setRotation(newRotation);
 }
 
-void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin)
+void MapObject::flipPolygonObject(const QTransform &flipTransform)
 {
-    QTransform flipTransform;
-    flipTransform.translate(origin.x(), origin.y());
-    qreal newRotation = 0;
-    if (direction == FlipHorizontally) {
-        newRotation = 180.0 - rotation();
-        flipTransform.scale(-1, 1);
-    } else { //direction == FlipVertically
-        flipTransform.scale(1, -1);
-        newRotation = -rotation();
-    }
-    flipTransform.translate(-origin.x(), -origin.y());
-
     QTransform polygonToMapTransform;
     polygonToMapTransform.translate(x(), y());
     polygonToMapTransform.rotate(rotation());
@@ -281,24 +273,11 @@ void MapObject::flipPolygonObject(FlipDirection direction, const QPointF &origin
 
     mPolygon = polygonFlip.map(mPolygon);
     setPosition(newPos);
-    setRotation(newRotation);
 }
 
-void MapObject::flipTileObject(FlipDirection direction, const QPointF &origin)
+void MapObject::flipTileObject(const QTransform &flipTransform)
 {
     mCell.setFlippedVertically(!mCell.flippedVertically());
-
-    QTransform flipTransform;
-    qreal newRotation = 0;
-    flipTransform.translate(origin.x(), origin.y());
-    if (direction == FlipHorizontally) {
-        newRotation = 180.0 - rotation();
-        flipTransform.scale(-1, 1);
-    } else { //direction == FlipVertically
-        flipTransform.scale(1, -1);
-        newRotation = -rotation();
-    }
-    flipTransform.translate(-origin.x(), -origin.y());
 
     //old tile position is bottomLeftPoint
     QPointF topLeftTilePoint = QPointF(cos(qDegreesToRadians(rotation() - 90)) * height() + x(),
@@ -306,7 +285,6 @@ void MapObject::flipTileObject(FlipDirection direction, const QPointF &origin)
     QPointF newPos = flipTransform.map(topLeftTilePoint);
 
     setPosition(newPos);
-    setRotation(newRotation);
 }
 
 } // namespace Tiled

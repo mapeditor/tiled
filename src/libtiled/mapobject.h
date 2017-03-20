@@ -184,9 +184,9 @@ public:
     MapObject *clone() const;
 
 private:
-    void flipRectObject(FlipDirection direction, const QPointF &origin);
-    void flipPolygonObject(FlipDirection direction, const QPointF &origin);
-    void flipTileObject(FlipDirection direction, const QPointF &origin);
+    void flipRectObject(const QTransform &flipTransform);
+    void flipPolygonObject(const QTransform &flipTransform);
+    void flipTileObject(const QTransform &flipTransform);
 
     int mId;
     QString mName;

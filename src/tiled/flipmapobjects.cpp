@@ -40,13 +40,9 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands",
                                         "Flip %n Object(s)",
                                         nullptr, mapObjects.size()));
-}
-
-void FlipMapObjects::flip()
-{
-    const auto &objects = mMapObjects;
 
     //computing objects center
+    const auto &objects = mMapObjects;
     QRectF boundaryObjectsRect;
     for (MapObject *object : objects) {
         QTransform objectTransform;
@@ -70,11 +66,15 @@ void FlipMapObjects::flip()
             boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(object->bounds()));
         }
     }
-    QPointF objectsCenter = boundaryObjectsRect.center();
+    mObjectsCenter = boundaryObjectsRect.center();
+}
 
+void FlipMapObjects::flip()
+{
     //flip objects
+    const auto &objects = mMapObjects;
     for (MapObject *object : objects)
-        object->flip(mFlipDirection, objectsCenter);
+        object->flip(mFlipDirection, mObjectsCenter);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
