@@ -45,7 +45,6 @@ StampBrush::StampBrush(QObject *parent)
                        parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
-    , mCaptureTopCorner(-1)
 {
 }
 
@@ -391,7 +390,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             TileLayer *stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
 
             //If using a hexagonal map, this takes into acount staggering
-            if (mapDocument()->map()->orientation() == 4 && stamp->height()>1) {
+            if (mapDocument()->map()->orientation() == Map::Hexagonal && stamp->height() > 1) {
                 int shiftMode;//-1 do not shift, 0 shift even rows (relatived to the stamp), 1 shift odd rows
                 int rowOfTop = p.y()-stamp->height()/2;
                 if (rowOfTop<0)
