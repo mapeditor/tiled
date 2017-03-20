@@ -25,7 +25,6 @@
 #include <QList>
 #include <QSet>
 #include <QVector>
-#include <QMenu>
 
 class QGraphicsItem;
 

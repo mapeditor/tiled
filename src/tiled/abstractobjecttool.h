@@ -82,7 +82,8 @@ private slots:
     void lowerToBottom();
 
 private:
-    void showContextMenu(QPointF scenePos, QPoint screenPos);
+    void showContextMenu(MapObjectItem *clickedObject,
+                         QPoint screenPos);
 
     MapScene *mMapScene;
 };

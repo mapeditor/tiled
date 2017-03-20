@@ -47,6 +47,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <QUndoStack>
+#include <QMenu>
 
 #include <cmath>
 
@@ -537,7 +538,7 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     case Qt::RightButton:
         if (event->modifiers() & Qt::AltModifier) {
             QList<MapObjectItem*> underlyingObjects = objectItemsAt(event->scenePos());
-            if (underlyingObjects.size() > 1) {
+            if (!underlyingObjects.empty()) {
                 QMenu selectUnderlyingMenu;
 
                 for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
@@ -549,6 +550,9 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 }
 
                 QAction *action = selectUnderlyingMenu.exec(event->screenPos());
+
+                if (!action)
+                    break;
 
                 if (MapObjectItem* objectToBeSelected = action->data().value<MapObjectItem*>()) {
                     auto selection = mapScene()->selectedObjectItems();
@@ -589,20 +593,11 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
         if (modifiers & Qt::AltModifier) {
             auto underlyingObjects = objectItemsAt(event->scenePos());
-
             if (underlyingObjects.isEmpty())
                 break;
-            auto currRotation = std::find(underlyingObjects.begin(),
-                                          underlyingObjects.end(), mSelectedInUnderlyingRotation);
-            if (currRotation == underlyingObjects.end())
-                currRotation = underlyingObjects.begin();//new stack of objects
-            else {
-                if ((modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) == 0)
-                    selection.remove(mSelectedInUnderlyingRotation);//deselect previous
-                if (++currRotation == underlyingObjects.end())
-                    currRotation = underlyingObjects.begin();
-            }
-            mClickedObjectItem = mSelectedInUnderlyingRotation = *currRotation;
+            int currRotationIndex = underlyingObjects.indexOf(mSelectedInUnderlyingRotation);
+            mClickedObjectItem = mSelectedInUnderlyingRotation
+                    = underlyingObjects.at((currRotationIndex + 1) % underlyingObjects.size());
         }
         if (mClickedObjectItem) {
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
@@ -612,8 +607,12 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                     selection.insert(mClickedObjectItem);
                 mapScene()->setSelectedObjectItems(selection);
             } else if (selection.contains(mClickedObjectItem)) {
-                // Clicking one of the selected items changes the edit mode
-                setMode((mMode == Resize) ? Rotate : Resize);
+                if (modifiers & Qt::AltModifier) {
+                    selection.remove(mClickedObjectItem);
+                } else {
+                    // Clicking one of the selected items changes the edit mode
+                    setMode((mMode == Resize) ? Rotate : Resize);
+                }
             } else {
                 selection.clear();
                 selection.insert(mClickedObjectItem);

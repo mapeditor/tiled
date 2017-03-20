@@ -116,7 +116,8 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        showContextMenu(event->scenePos(), event->screenPos());
+        showContextMenu(topMostObjectItemAt(event->scenePos()),
+                        event->screenPos());
     }
 }
 
@@ -223,10 +224,9 @@ void AbstractObjectTool::lowerToBottom()
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
  */
-void AbstractObjectTool::showContextMenu(QPointF scenePos, QPoint screenPos)
+void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
+                                         QPoint screenPos)
 {
-    MapObjectItem *clickedObjectItem = topMostObjectItemAt(scenePos);
-
     QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
     if (clickedObjectItem && !selection.contains(clickedObjectItem)) {
         selection.clear();
