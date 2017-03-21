@@ -250,7 +250,16 @@ void StampBrush::endCapture()
 
     // Intersect with the layer and translate to layer coordinates
     QRect captured = capturedArea();
-    mCaptureTopCorner = captured.top();
+
+    captured &= QRect(tileLayer->x(), tileLayer->y(),
+                      tileLayer->width(), tileLayer->height());
+
+    //gets if the relative stagger should be the same as the base layer
+    int stagIndexOffSet;
+    if (tileLayer->map()->staggerAxis() == Map::StaggerX)
+        stagIndexOffSet = captured.x() % 2;
+    else
+        stagIndexOffSet = captured.y() % 2;
 
     captured &= QRect(tileLayer->x(), tileLayer->y(),
                       tileLayer->width(), tileLayer->height());
@@ -264,6 +273,9 @@ void StampBrush::endCapture()
                              capture->height(),
                              map->tileWidth(),
                              map->tileHeight());
+
+        stamp->setStaggerAxis(map->staggerAxis());
+        stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + stagIndexOffSet) % 2));
 
         // Add tileset references to map
         foreach (const SharedTileset &tileset, capture->usedTilesets())
@@ -338,6 +350,7 @@ QRegion StampBrush::doPaint(int flags)
 struct PaintOperation {
     QPoint pos;
     TileLayer *stamp;
+    bool isCopy;
 };
 
 /**
@@ -387,43 +400,49 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
-            TileLayer *stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
+            TileLayer *stamp = variation.tileLayer();
+            bool copyFlag = false;
 
-            //If using a hexagonal map, this takes into acount staggering
-            if (mapDocument()->map()->orientation() == Map::Hexagonal && stamp->height() > 1) {
-                int shiftMode;//-1 do not shift, 0 shift even rows (relatived to the stamp), 1 shift odd rows
-                int rowOfTop = p.y()-stamp->height()/2;
-                if (rowOfTop<0)
-                    rowOfTop*=-1; //Only used to check if even or odd, and being negative can mess this up.
+            //if staggered map, makes sure stamp stays the same
+            if ((mapDocument()->map()->orientation() == Map::Hexagonal
+                    || mapDocument()->map()->orientation() == Map::Staggered)
+                    && ((mapDocument()->map()->staggerAxis() == Map::StaggerY)?
+                         stamp->height() > 1 : stamp->width() > 1)) {
+                stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
+                copyFlag = true;
 
-                if (mCaptureTopCorner == -1)
-                    shiftMode = 1;
-                else if ((mCaptureTopCorner+1)%2 == mapDocument()->map()->staggerIndex()) {
-                    //if where the top is now will go down the correct way
-                    if ((rowOfTop+1)%2 != mapDocument()->map()->staggerIndex())
-                        shiftMode = 0;
-                    else
-                        shiftMode = -1;
+                if(mapDocument()->map()->staggerAxis() == Map::StaggerY) {
+                    int rowOfTop = p.y() - stamp->height() / 2;
+
+                    if ((variation.map->staggerIndex() == mapDocument()->map()->staggerIndex()
+                            && (rowOfTop&1) == 1)
+                               ||
+                           (variation.map->staggerIndex() != mapDocument()->map()->staggerIndex()
+                            && (rowOfTop&1) == 0)) {
+                        stamp->resize(QSize(stamp->width() + 1,stamp->height()),QPoint());
+
+                        for (int y = (variation.map->staggerIndex()+1)&1; y < stamp->height(); y += 2) {
+                            for(int x = stamp->width() - 2; x >= 0; --x) {
+                                stamp->setCell(x+1,y,stamp->cellAt(x,y));
+                                stamp->setCell(x,y,Cell());
+                            }
+                        }
+                    }
                 } else {
-                    //if where the top is now will go down the correct way
-                    if ((rowOfTop+1)%2 == mapDocument()->map()->staggerIndex())
-                        shiftMode = 1;
-                    else
-                        shiftMode = -1;
-                }
+                    int colOfLeft = p.x() - stamp->width() / 2;
 
-                if (shiftMode != -1) {
-                    stamp->resize(QSize(stamp->width()+1,stamp->height()),QPoint());
+                    if ((variation.map->staggerIndex() == mapDocument()->map()->staggerIndex()
+                            && (colOfLeft&1) == 1)
+                               ||
+                           (variation.map->staggerIndex() != mapDocument()->map()->staggerIndex()
+                            && (colOfLeft&1) == 0)) {
+                        stamp->resize(QSize(stamp->width(),stamp->height()+1),QPoint());
 
-                    QRect boundBox = stamp->bounds();
-                    //Actually does the shift of the tiles. Maybe this could be done as
-                    //a method of TileLayer?
-                    for (int i = shiftMode; i <= boundBox.bottom(); i+=2)
-                    {
-                        for (int j = boundBox.right()-1; j >= 0; --j)
-                        {
-                            stamp->setCell(j+1,i,stamp->cellAt(j,i));
-                            stamp->setCell(j,i,Cell());
+                        for (int x = (variation.map->staggerIndex() + 1)&1; x < stamp->width(); x += 2) {
+                            for(int y = stamp->height() - 2; y >= 0; --y) {
+                                stamp->setCell(x,y+1,stamp->cellAt(x,y));
+                                stamp->setCell(x,y,Cell());
+                            }
                         }
                     }
                 }
@@ -445,7 +464,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             if (!paintedRegion.intersects(region)) {
                 paintedRegion += region;
 
-                PaintOperation op = { centered, stamp };
+                PaintOperation op = { centered, stamp, copyFlag };
                 operations.append(op);
             }
         }
@@ -455,8 +474,11 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        for (const PaintOperation &op : operations)
+        for (const PaintOperation &op : operations) {
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
+            if(op.isCopy)
+                delete op.stamp;
+        }
 
         mPreviewLayer = preview;
     }
