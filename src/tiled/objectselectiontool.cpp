@@ -328,7 +328,6 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mResizingLimitVertical(false)
     , mMode(Resize)
     , mAction(NoAction)
-    , mSelectedInUnderlyingRotation(nullptr)
 {
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
@@ -544,8 +543,8 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
             for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
                 const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
-                QString actionName = (objectName.isEmpty() ? tr("Object at level %n", "", levelNum + 1) : objectName)
-                        + tr(levelNum ? "" : " (topmost)");
+                QString actionName = QLatin1String(levelNum < 9 ? "&" : "") + tr("%n) ", "", levelNum + 1)
+                        + (objectName.isEmpty() ? tr("Unnamed object") : objectName);
                 QAction *action = selectUnderlyingMenu.addAction(actionName);
                 action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
             }
@@ -559,17 +558,16 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 auto selection = mapScene()->selectedObjectItems();
                 if (event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
                     if (selection.contains(objectToBeSelected))
-                            selection.remove(objectToBeSelected);
-                        else
-                            selection.insert(objectToBeSelected);
+                        selection.remove(objectToBeSelected);
+                    else
+                        selection.insert(objectToBeSelected);
                 } else {
                     selection.clear();
                     selection.insert(objectToBeSelected);
                 }
                 mapScene()->setSelectedObjectItems(selection);
             }
-        }
-        else
+        } else
             AbstractObjectTool::mousePressed(event);
         break;
     default:
@@ -595,24 +593,25 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             auto underlyingObjects = objectItemsAt(event->scenePos());
             if (underlyingObjects.isEmpty())
                 break;
-            int currRotationIndex = underlyingObjects.indexOf(mSelectedInUnderlyingRotation);
-            mClickedObjectItem = mSelectedInUnderlyingRotation
-                    = underlyingObjects.at((currRotationIndex + 1) % underlyingObjects.size());
+
+            int lastSelectedIndex = -1;
+            for (auto selected : selection)
+                lastSelectedIndex = std::max(lastSelectedIndex, underlyingObjects.indexOf(selected));
+            do lastSelectedIndex = (lastSelectedIndex + 1) % underlyingObjects.size();
+            while (selection.contains(underlyingObjects.at(lastSelectedIndex))
+                   && lastSelectedIndex != underlyingObjects.size() - 1);
+            mClickedObjectItem = underlyingObjects.at(lastSelectedIndex);
         }
         if (mClickedObjectItem) {
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                if (selection.contains(mClickedObjectItem))
-                    selection.remove(mClickedObjectItem);
+                if (!(modifiers & Qt::AltModifier) && selection.contains(mClickedObjectItem))
+                    selection.remove(mClickedObjectItem);// Removal is not supported in alt+click mode
                 else
                     selection.insert(mClickedObjectItem);
                 mapScene()->setSelectedObjectItems(selection);
             } else if (selection.contains(mClickedObjectItem)) {
-                if (modifiers & Qt::AltModifier) {
-                    selection.remove(mClickedObjectItem);
-                } else {
-                    // Clicking one of the selected items changes the edit mode
-                    setMode((mMode == Resize) ? Rotate : Resize);
-                }
+                // Clicking one of the selected items changes the edit mode
+                setMode((mMode == Resize) ? Rotate : Resize);
             } else {
                 selection.clear();
                 selection.insert(mClickedObjectItem);

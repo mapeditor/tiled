@@ -157,8 +157,6 @@ private:
     QPointF mStartOffset;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
-
-    MapObjectItem *mSelectedInUnderlyingRotation;
 };
 
 } // namespace Internal
