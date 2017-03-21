@@ -110,9 +110,10 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     mUi->saveBox->setEnabled(enable);
 
     if (enable) {
-        mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
-        mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute(current));
-        mUi->commandEdit->setText(mUi->treeView->model()->command(current));
+        const Command command = mUi->treeView->model()->command(current);
+        mUi->commandEdit->setText(command.command);
+        mUi->keySequenceEdit->setKeySequence(command.shortcut);
+        mUi->saveBox->setChecked(command.saveBeforeExecute);
     } else {
         mUi->commandEdit->clear();
         mUi->keySequenceEdit->clear();

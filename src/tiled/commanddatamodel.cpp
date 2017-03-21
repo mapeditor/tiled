@@ -36,16 +36,15 @@ CommandDataModel::CommandDataModel(QObject *parent)
     // Load command list
     const QVariant variant = mSettings.value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
-    foreach (const QVariant &commandVariant, commands)
+    for (const QVariant &commandVariant : commands)
         mCommands.append(Command::fromQVariant(commandVariant));
 
     // Add default commands the first time the app has booted up.
-    // This is useful on it's own and helps demonstrate how to use the commands.
+    // This is useful on its own and helps demonstrate how to use the commands.
 
-    const QString addPrefStr = QLatin1String("addedDefaultCommands");
-    const bool addedCommands = mSettings.value(addPrefStr, false).toBool();
-    if (!addedCommands) {
-
+    const QString addedDefaultKey = QLatin1String("addedDefaultCommands");
+    const bool addedDefault = mSettings.value(addedDefaultKey, false).toBool();
+    if (!addedDefault) {
         // Disable default commands by default so user gets an informative
         // warning when clicking the command button for the first time
         Command command(false);
@@ -60,7 +59,7 @@ CommandDataModel::CommandDataModel(QObject *parent)
         }
 
         commit();
-        mSettings.setValue(addPrefStr, true);
+        mSettings.setValue(addedDefaultKey, true);
     }
 }
 
@@ -75,7 +74,7 @@ void CommandDataModel::commit()
 
 Command CommandDataModel::firstEnabledCommand() const
 {
-    foreach (const Command &command, mCommands)
+    for (const Command &command : mCommands)
         if (command.isEnabled)
             return command;
 
@@ -331,7 +330,7 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
 {
     int row = -1;
 
-    foreach (const QModelIndex &index, indices) {
+    for (const QModelIndex &index : indices) {
         // Only generate mime data on command rows
         if (index.row() < 0 || index.row() >= mCommands.size())
             return nullptr;
@@ -424,14 +423,12 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     return false;
 }
 
-QKeySequence CommandDataModel::shortcut(const QModelIndex &index) const
+void CommandDataModel::setCommand(const QModelIndex &index, const QString &value)
 {
     const bool isNormalRow = index.row() < mCommands.size();
 
     if (isNormalRow)
-        return mCommands[index.row()].shortcut;
-    else
-        return QKeySequence();
+        mCommands[index.row()].command = value;
 }
 
 void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &value)
@@ -446,16 +443,6 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
     }
 }
 
-bool CommandDataModel::saveBeforeExecute(const QModelIndex &index) const
-{
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
-        return mCommands[index.row()].saveBeforeExecute;
-    else
-        return false;
-}
-
 void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
 {
     const bool isNormalRow = index.row() < mCommands.size();
@@ -464,22 +451,14 @@ void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value
         mCommands[index.row()].saveBeforeExecute = value;
 }
 
-QString CommandDataModel::command(const QModelIndex &index) const
+Command CommandDataModel::command(const QModelIndex &index) const
 {
     const bool isNormalRow = index.row() < mCommands.size();
 
     if (isNormalRow)
-        return mCommands[index.row()].command;
+        return mCommands[index.row()];
     else
-        return QString();
-}
-
-void CommandDataModel::setCommand(const QModelIndex &index, const QString &value)
-{
-    const bool isNormalRow = index.row() < mCommands.size();
-
-    if (isNormalRow)
-        mCommands[index.row()].command = value;
+        return Command();
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

@@ -127,17 +127,11 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
 
-    QKeySequence shortcut(const QModelIndex &index) const;
-
+    void setCommand(const QModelIndex &index, const QString &value);
     void setShortcut(const QModelIndex &index, const QKeySequence &value);
-
-    bool saveBeforeExecute(const QModelIndex &index) const;
-
     void setSaveBeforeExecute(const QModelIndex &index, bool value);
 
-    QString command(const QModelIndex &index) const;
-
-    void setCommand(const QModelIndex &index, const QString &value);
+    Command command(const QModelIndex &index) const;
 
 public slots:
 
