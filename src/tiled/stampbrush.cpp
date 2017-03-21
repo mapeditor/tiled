@@ -391,7 +391,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
-        QHash<TileLayer *, TileLayer *> shiftedCopies;
+        QHash<TileLayer *,TileLayer *> shiftedCopies;
 
         for (const QPoint &p : list) {
             const TileStampVariation variation = mStamp.randomVariation();
@@ -403,7 +403,6 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
             Map::StaggerIndex stampStaggerIndex = variation.map->staggerIndex();
 
-
             //if staggered map, makes sure stamp stays the same
             if (mapDocument()->map()->isStaggered()
                     && ((mapStaggerAxis == Map::StaggerY)? stamp->height() > 1 : stamp->width() > 1)) {
@@ -412,31 +411,39 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                     bool topIsOdd = (p.y() - stamp->height() / 2) & 1;
 
                     if ((stampStaggerIndex == mapStaggerIndex) == topIsOdd) {
-                        stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
-                        shiftedCopies.insert(stamp, stamp);
+                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
+                        if (!shiftedStamp) {
+                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedCopies.insert(stamp,shiftedStamp);
 
-                        stamp->resize(QSize(stamp->width() + 1, stamp->height()), QPoint());
+                            shiftedStamp->resize(QSize(shiftedStamp->width() + 1, shiftedStamp->height()), QPoint());
 
-                        for (int y = (stampStaggerIndex + 1) & 1; y < stamp->height(); y += 2) {
-                            for (int x = stamp->width() - 2; x >= 0; --x)
-                                stamp->setCell(x + 1, y, stamp->cellAt(x, y));
-                            stamp->setCell(0, y, Cell());
+                            for (int y = (stampStaggerIndex + 1) & 1; y < shiftedStamp->height(); y += 2) {
+                                for (int x = shiftedStamp->width() - 2; x >= 0; --x)
+                                    shiftedStamp->setCell(x + 1, y, shiftedStamp->cellAt(x, y));
+                                shiftedStamp->setCell(0, y, Cell());
+                            }
                         }
+                        stamp = shiftedStamp;
                     }
                 } else {
                     bool leftIsOdd = (p.x() - stamp->width() / 2) & 1;
 
                     if ((stampStaggerIndex == mapStaggerIndex) == leftIsOdd) {
-                        stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
-                        shiftedCopies.insert(stamp, stamp);
+                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
+                        if (!shiftedStamp) {
+                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedCopies.insert(stamp,shiftedStamp);
 
-                        stamp->resize(QSize(stamp->width(), stamp->height() + 1), QPoint());
+                            shiftedStamp->resize(QSize(shiftedStamp->width(), shiftedStamp->height() + 1), QPoint());
 
-                        for (int x = (stampStaggerIndex + 1) & 1; x < stamp->width(); x += 2) {
-                            for (int y = stamp->height() - 2; y >= 0; --y)
-                                stamp->setCell(x, y + 1, stamp->cellAt(x, y));
-                            stamp->setCell(x, 0, Cell());
+                            for (int x = (stampStaggerIndex + 1) & 1; x < shiftedStamp->width(); x += 2) {
+                                for (int y = shiftedStamp->height() - 2; y >= 0; --y)
+                                    shiftedStamp->setCell(x, y + 1, shiftedStamp->cellAt(x, y));
+                                shiftedStamp->setCell(x, 0, Cell());
+                            }
                         }
+                        stamp = shiftedStamp;
                     }
                 }
             }
@@ -467,9 +474,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        for (const PaintOperation &op : operations) {
+        for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
-        }
 
         qDeleteAll(shiftedCopies);
 
