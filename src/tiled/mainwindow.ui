@@ -67,7 +67,7 @@
     </widget>
     <widget class="QMenu" name="menuCommand">
      <property name="title">
-      <string>Command</string>
+      <string>Commands</string>
      </property>
      <addaction name="actionEditCommands"/>
     </widget>

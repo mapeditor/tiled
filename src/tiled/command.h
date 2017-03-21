@@ -37,16 +37,19 @@ struct Command
     Command(bool isEnabled = true,
             QString name = QString(),
             QString command = QString(),
-            QKeySequence shortcut = QKeySequence())
+            QKeySequence shortcut = QKeySequence(),
+            bool saveBeforeExecute = true)
         : isEnabled(isEnabled)
         , name(std::move(name))
         , command(std::move(command))
-        , shortcut(shortcut) {}
+        , shortcut(shortcut)
+        , saveBeforeExecute(saveBeforeExecute) {}
 
     bool isEnabled;
     QString name;
     QString command;
     QKeySequence shortcut;
+    bool saveBeforeExecute;
 
     /**
      * Returns the final command with replaced tokens.
