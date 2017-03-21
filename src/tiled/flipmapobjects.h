@@ -44,7 +44,7 @@ private:
     void flip();
 
     MapDocument *mMapDocument;
-    QList<MapObject *> mMapObjects;
+    const QList<MapObject *> mMapObjects;
     QPointF mObjectsCenter;
     FlipDirection mFlipDirection;
 };
