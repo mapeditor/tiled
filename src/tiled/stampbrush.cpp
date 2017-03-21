@@ -255,14 +255,11 @@ void StampBrush::endCapture()
                       tileLayer->width(), tileLayer->height());
 
     //gets if the relative stagger should be the same as the base layer
-    int stagIndexOffSet;
+    int staggerIndexOffSet;
     if (tileLayer->map()->staggerAxis() == Map::StaggerX)
-        stagIndexOffSet = captured.x() % 2;
+        staggerIndexOffSet = captured.x() % 2;
     else
-        stagIndexOffSet = captured.y() % 2;
-
-    captured &= QRect(tileLayer->x(), tileLayer->y(),
-                      tileLayer->width(), tileLayer->height());
+        staggerIndexOffSet = captured.y() % 2;
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
@@ -275,7 +272,7 @@ void StampBrush::endCapture()
                              map->tileHeight());
 
         stamp->setStaggerAxis(map->staggerAxis());
-        stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + stagIndexOffSet) % 2));
+        stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + staggerIndexOffSet) % 2));
 
         // Add tileset references to map
         foreach (const SharedTileset &tileset, capture->usedTilesets())
@@ -350,7 +347,6 @@ QRegion StampBrush::doPaint(int flags)
 struct PaintOperation {
     QPoint pos;
     TileLayer *stamp;
-    bool isCopy;
 };
 
 /**
@@ -395,54 +391,51 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
+        QHash<TileLayer *, TileLayer *> shiftedCopies;
 
         for (const QPoint &p : list) {
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
             TileLayer *stamp = variation.tileLayer();
-            bool copyFlag = false;
+
+            Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+            Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
+            Map::StaggerIndex stampStaggerIndex = variation.map->staggerIndex();
+
 
             //if staggered map, makes sure stamp stays the same
-            if ((mapDocument()->map()->orientation() == Map::Hexagonal
-                    || mapDocument()->map()->orientation() == Map::Staggered)
-                    && ((mapDocument()->map()->staggerAxis() == Map::StaggerY)?
-                         stamp->height() > 1 : stamp->width() > 1)) {
-                stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
-                copyFlag = true;
+            if (mapDocument()->map()->isStaggered()
+                    && ((mapStaggerAxis == Map::StaggerY)? stamp->height() > 1 : stamp->width() > 1)) {
 
-                if(mapDocument()->map()->staggerAxis() == Map::StaggerY) {
-                    int rowOfTop = p.y() - stamp->height() / 2;
+                if (mapStaggerAxis == Map::StaggerY) {
+                    bool topIsOdd = (p.y() - stamp->height() / 2) & 1;
 
-                    if ((variation.map->staggerIndex() == mapDocument()->map()->staggerIndex()
-                            && (rowOfTop&1) == 1)
-                               ||
-                           (variation.map->staggerIndex() != mapDocument()->map()->staggerIndex()
-                            && (rowOfTop&1) == 0)) {
-                        stamp->resize(QSize(stamp->width() + 1,stamp->height()),QPoint());
+                    if ((stampStaggerIndex == mapStaggerIndex) == topIsOdd) {
+                        stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
+                        shiftedCopies.insert(stamp, stamp);
 
-                        for (int y = (variation.map->staggerIndex()+1)&1; y < stamp->height(); y += 2) {
-                            for(int x = stamp->width() - 2; x >= 0; --x) {
-                                stamp->setCell(x+1,y,stamp->cellAt(x,y));
-                                stamp->setCell(x,y,Cell());
-                            }
+                        stamp->resize(QSize(stamp->width() + 1, stamp->height()), QPoint());
+
+                        for (int y = (stampStaggerIndex + 1) & 1; y < stamp->height(); y += 2) {
+                            for (int x = stamp->width() - 2; x >= 0; --x)
+                                stamp->setCell(x + 1, y, stamp->cellAt(x, y));
+                            stamp->setCell(0, y, Cell());
                         }
                     }
                 } else {
-                    int colOfLeft = p.x() - stamp->width() / 2;
+                    bool leftIsOdd = (p.x() - stamp->width() / 2) & 1;
 
-                    if ((variation.map->staggerIndex() == mapDocument()->map()->staggerIndex()
-                            && (colOfLeft&1) == 1)
-                               ||
-                           (variation.map->staggerIndex() != mapDocument()->map()->staggerIndex()
-                            && (colOfLeft&1) == 0)) {
-                        stamp->resize(QSize(stamp->width(),stamp->height()+1),QPoint());
+                    if ((stampStaggerIndex == mapStaggerIndex) == leftIsOdd) {
+                        stamp = variation.tileLayer()->copy(variation.tileLayer()->bounds());
+                        shiftedCopies.insert(stamp, stamp);
 
-                        for (int x = (variation.map->staggerIndex() + 1)&1; x < stamp->width(); x += 2) {
-                            for(int y = stamp->height() - 2; y >= 0; --y) {
-                                stamp->setCell(x,y+1,stamp->cellAt(x,y));
-                                stamp->setCell(x,y,Cell());
-                            }
+                        stamp->resize(QSize(stamp->width(), stamp->height() + 1), QPoint());
+
+                        for (int x = (stampStaggerIndex + 1) & 1; x < stamp->width(); x += 2) {
+                            for (int y = stamp->height() - 2; y >= 0; --y)
+                                stamp->setCell(x, y + 1, stamp->cellAt(x, y));
+                            stamp->setCell(x, 0, Cell());
                         }
                     }
                 }
@@ -464,7 +457,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             if (!paintedRegion.intersects(region)) {
                 paintedRegion += region;
 
-                PaintOperation op = { centered, stamp, copyFlag };
+                PaintOperation op = { centered, stamp };
                 operations.append(op);
             }
         }
@@ -476,9 +469,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         for (const PaintOperation &op : operations) {
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
-            if(op.isCopy)
-                delete op.stamp;
         }
+
+        qDeleteAll(shiftedCopies);
 
         mPreviewLayer = preview;
     }
