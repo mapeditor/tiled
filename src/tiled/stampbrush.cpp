@@ -391,7 +391,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
-        QHash<TileLayer *,TileLayer *> shiftedCopies;
+        QHash<TileLayer *, TileLayer *> shiftedCopies;
 
         for (const QPoint &p : list) {
             const TileStampVariation variation = mStamp.randomVariation();
@@ -414,7 +414,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                         TileLayer *shiftedStamp = shiftedCopies.value(stamp);
                         if (!shiftedStamp) {
                             shiftedStamp = static_cast<TileLayer *>(stamp->clone());
-                            shiftedCopies.insert(stamp,shiftedStamp);
+                            shiftedCopies.insert(stamp, shiftedStamp);
 
                             shiftedStamp->resize(QSize(shiftedStamp->width() + 1, shiftedStamp->height()), QPoint());
 
@@ -433,7 +433,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                         TileLayer *shiftedStamp = shiftedCopies.value(stamp);
                         if (!shiftedStamp) {
                             shiftedStamp = static_cast<TileLayer *>(stamp->clone());
-                            shiftedCopies.insert(stamp,shiftedStamp);
+                            shiftedCopies.insert(stamp, shiftedStamp);
 
                             shiftedStamp->resize(QSize(shiftedStamp->width(), shiftedStamp->height() + 1), QPoint());
 
