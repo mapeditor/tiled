@@ -33,10 +33,6 @@ const char *commandMimeType = "application/x-tiled-commandptr";
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    // Load saveBeforeExecute option
-    QVariant s = mSettings.value(QLatin1String("saveBeforeExecute"), true);
-    mSaveBeforeExecute = s.toBool();
-
     // Load command list
     const QVariant variant = mSettings.value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
@@ -70,9 +66,6 @@ CommandDataModel::CommandDataModel(QObject *parent)
 
 void CommandDataModel::commit()
 {
-    // Save saveBeforeExecute option
-    mSettings.setValue(QLatin1String("saveBeforeExecute"), mSaveBeforeExecute);
-
     // Save command list
     QList<QVariant> commands;
     foreach (const Command &command, mCommands)
@@ -127,7 +120,7 @@ int CommandDataModel::rowCount(const QModelIndex &parent) const
 
 int CommandDataModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 4;
+    return parent.isValid() ? 0 : 3;
 }
 
 QVariant CommandDataModel::data(const QModelIndex &index, int role) const
@@ -143,8 +136,6 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return command.name;
-            if (index.column() == CommandColumn)
-                return command.command;
             if (index.column() == ShortcutColumn)
                 return command.shortcut;
         } else {
@@ -161,8 +152,6 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return tr("Set a name for this command");
-            if (index.column() == CommandColumn)
-                return tr("Set the shell command to execute");
             if (index.column() == ShortcutColumn)
                 return tr("Shortcut for this command");
             if (index.column() == EnabledColumn)
@@ -200,9 +189,6 @@ bool CommandDataModel::setData(const QModelIndex &index,
             if (!text.isEmpty()) {
                 if (index.column() == NameColumn) {
                     command.name = value.toString();
-                    isModified = true;
-                } else if (index.column() == CommandColumn) {
-                    command.command = value.toString();
                     isModified = true;
                 }
             }
@@ -258,7 +244,7 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
         f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
-        else if (index.column() == NameColumn || index.column() == CommandColumn)
+        else if (index.column() == NameColumn)
             f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
@@ -275,9 +261,8 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
-    const char *sectionLabels[4] = {
+    const char *sectionLabels[3] = {
         QT_TR_NOOP("Name"),
-        QT_TR_NOOP("Command"),
         QT_TR_NOOP("Shortcut"),
         QT_TR_NOOP("Enable") };
 
@@ -449,14 +434,52 @@ QKeySequence CommandDataModel::shortcut(const QModelIndex &index) const
         return QKeySequence();
 }
 
-void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &keySequence)
+void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &value)
 {
-    if (index.row() < mCommands.size()) {
-        mCommands[index.row()].shortcut = keySequence;
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow) {
+        mCommands[index.row()].shortcut = value;
 
         QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
         emit dataChanged(shortcutIndex, shortcutIndex);
     }
+}
+
+bool CommandDataModel::saveBeforeExecute(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()].saveBeforeExecute;
+    else
+        return false;
+}
+
+void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].saveBeforeExecute = value;
+}
+
+QString CommandDataModel::command(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()].command;
+    else
+        return QString();
+}
+
+void CommandDataModel::setCommand(const QModelIndex &index, const QString &value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].command = value;
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

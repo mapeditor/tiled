@@ -36,7 +36,7 @@ class CommandDataModel : public QAbstractTableModel
 
 public:
 
-    enum { NameColumn, CommandColumn, ShortcutColumn, EnabledColumn };
+    enum { NameColumn, ShortcutColumn, EnabledColumn };
 
     /**
       * Constructs the object and parses the users settings to allow easy
@@ -49,20 +49,6 @@ public:
       */
     void commit();
 
-    /**
-      * Returns whether saving before executing commands is enabled.
-      */
-    bool saveBeforeExecute() const { return mSaveBeforeExecute; }
-
-    /**
-      * Enables or disables saving before executing commands.
-      */
-    void setSaveBeforeExecute(bool enabled) { mSaveBeforeExecute = enabled; }
-
-    /**
-      * Returns the first enabled command in the list, or an empty
-      * disabled command if there are no enabled commands.
-      */
     Command firstEnabledCommand() const;
 
     /**
@@ -84,12 +70,12 @@ public:
     /**
      * Returns the number of rows (this includes the <New Command> row).
      */
-    int rowCount(const QModelIndex &) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data at <i>index</i> for the given <i>role</i>.
@@ -143,7 +129,15 @@ public:
 
     QKeySequence shortcut(const QModelIndex &index) const;
 
-    void setShortcut(const QModelIndex &index, const QKeySequence &keySequence);
+    void setShortcut(const QModelIndex &index, const QKeySequence &value);
+
+    bool saveBeforeExecute(const QModelIndex &index) const;
+
+    void setSaveBeforeExecute(const QModelIndex &index, bool value);
+
+    QString command(const QModelIndex &index) const;
+
+    void setCommand(const QModelIndex &index, const QString &value);
 
 public slots:
 
@@ -182,7 +176,6 @@ private:
 
     QSettings mSettings;
     QList<Command> mCommands;
-    bool mSaveBeforeExecute;
 };
 
 } // namespace Internal
