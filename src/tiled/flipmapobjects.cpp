@@ -42,9 +42,8 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
                                         nullptr, mapObjects.size()));
 
     //computing objects center
-    const auto &objects = mMapObjects;
     QRectF boundaryObjectsRect;
-    for (MapObject *object : objects) {
+    for (MapObject *object : mMapObjects) {
         QTransform objectTransform;
         objectTransform.translate(object->x(), object->y());
         objectTransform.rotate(object->rotation());
@@ -72,8 +71,7 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 void FlipMapObjects::flip()
 {
     //flip objects
-    const auto &objects = mMapObjects;
-    for (MapObject *object : objects)
+    for (MapObject *object : mMapObjects)
         object->flip(mFlipDirection, mObjectsCenter);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
