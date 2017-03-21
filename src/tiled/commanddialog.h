@@ -58,8 +58,6 @@ public slots:
     void openFileDialog();
 
 private:
-    void enableWidgets(const bool enable);
-
     Ui::CommandDialog *mUi;
 };
 

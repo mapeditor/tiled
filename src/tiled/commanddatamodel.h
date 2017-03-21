@@ -133,7 +133,7 @@ public:
 
     bool saveBeforeExecute(const QModelIndex &index) const;
 
-    void setSaveBeforeExecute(const QModelIndex &index, const bool &value);
+    void setSaveBeforeExecute(const QModelIndex &index, bool value);
 
     QString command(const QModelIndex &index) const;
 

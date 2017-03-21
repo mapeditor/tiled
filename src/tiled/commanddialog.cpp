@@ -30,6 +30,7 @@
 #include <QContextMenuEvent>
 #include <QModelIndex>
 #include <QFileDialog>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -100,39 +101,36 @@ void CommandDialog::setCommand(const QString &text)
 void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
 {
     if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1) {
-        enableWidgets(true);
+        mUi->commandEdit->setEnabled(true);
+        mUi->browseButton->setEnabled(true);
+        mUi->keySequenceEdit->setEnabled(true);
+        mUi->clearButton->setEnabled(true);
+        mUi->saveBox->setEnabled(true);
 
         mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
         mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute(current));
         mUi->commandEdit->setText(mUi->treeView->model()->command(current));
     }
-    else
-        enableWidgets(false);
+    else {
+        mUi->commandEdit->clear();
+        mUi->keySequenceEdit->clear();
+        mUi->saveBox->setChecked(false);
+        mUi->commandEdit->setEnabled(false);
+        mUi->browseButton->setEnabled(false);
+        mUi->keySequenceEdit->setEnabled(false);
+        mUi->clearButton->setEnabled(false);
+        mUi->saveBox->setEnabled(false);
+    }
 }
 
 void CommandDialog::openFileDialog()
 {
-    QString caption = tr("Select executable");
-    QString dir = tr("/bin");
+    QString caption = tr("Select Executable");
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
     QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
 
     if (!executableName.isEmpty())
         mUi->commandEdit->setText(executableName);
-}
-
-void CommandDialog::enableWidgets(const bool enable)
-{
-    if (!enable) {
-        mUi->commandEdit->clear();
-        mUi->keySequenceEdit->clear();
-        mUi->saveBox->setChecked(false);
-    }
-
-    mUi->commandEdit->setEnabled(enable);
-    mUi->browseButton->setEnabled(enable);
-    mUi->keySequenceEdit->setEnabled(enable);
-    mUi->clearButton->setEnabled(enable);
-    mUi->saveBox->setEnabled(enable);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
@@ -146,7 +144,7 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     setColumnWidth(0, 200);
     QHeaderView *h = header();
     h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
+    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
     h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);

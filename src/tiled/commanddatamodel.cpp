@@ -113,12 +113,12 @@ void CommandDataModel::removeRows(QModelIndexList indices)
     }
 }
 
-int CommandDataModel::rowCount(const QModelIndex &parent) const
+int CommandDataModel::rowCount(const QModelIndex &parent = QModelIndex()) const
 {
     return parent.isValid() ? 0 : mCommands.size() + 1;
 }
 
-int CommandDataModel::columnCount(const QModelIndex &parent) const
+int CommandDataModel::columnCount(const QModelIndex &parent = QModelIndex()) const
 {
     return parent.isValid() ? 0 : 3;
 }
@@ -456,7 +456,7 @@ bool CommandDataModel::saveBeforeExecute(const QModelIndex &index) const
         return false;
 }
 
-void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, const bool &value)
+void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
 {
     const bool isNormalRow = index.row() < mCommands.size();
 
