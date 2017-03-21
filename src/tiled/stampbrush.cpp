@@ -250,16 +250,8 @@ void StampBrush::endCapture()
 
     // Intersect with the layer and translate to layer coordinates
     QRect captured = capturedArea();
-
     captured &= QRect(tileLayer->x(), tileLayer->y(),
                       tileLayer->width(), tileLayer->height());
-
-    //gets if the relative stagger should be the same as the base layer
-    int staggerIndexOffSet;
-    if (tileLayer->map()->staggerAxis() == Map::StaggerX)
-        staggerIndexOffSet = captured.x() % 2;
-    else
-        staggerIndexOffSet = captured.y() % 2;
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
@@ -270,6 +262,13 @@ void StampBrush::endCapture()
                              capture->height(),
                              map->tileWidth(),
                              map->tileHeight());
+
+        //gets if the relative stagger should be the same as the base layer
+        int staggerIndexOffSet;
+        if (tileLayer->map()->staggerAxis() == Map::StaggerX)
+            staggerIndexOffSet = captured.x() % 2;
+        else
+            staggerIndexOffSet = captured.y() % 2;
 
         stamp->setStaggerAxis(map->staggerAxis());
         stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + staggerIndexOffSet) % 2));
