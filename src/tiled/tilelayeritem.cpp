@@ -20,10 +20,10 @@
 
 #include "tilelayeritem.h"
 
-#include "tile.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "tile.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -53,10 +53,8 @@ void TileLayerItem::syncWithTileLayer()
         margins.setRight(margins.right() - map->tileWidth());
     }
 
-    mBoundingRect = boundingRect.adjusted(-margins.left(),
-                                          -margins.top(),
-                                          margins.right(),
-                                          margins.bottom());
+    mBoundingRect =
+        boundingRect.adjusted(-margins.left(), -margins.top(), margins.right(), margins.bottom());
 }
 
 QRectF TileLayerItem::boundingRect() const
@@ -64,9 +62,7 @@ QRectF TileLayerItem::boundingRect() const
     return mBoundingRect;
 }
 
-void TileLayerItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *option,
-                          QWidget *)
+void TileLayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     MapRenderer *renderer = mMapDocument->renderer();
     // TODO: Display a border around the layer when selected

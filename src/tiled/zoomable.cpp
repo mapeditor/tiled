@@ -43,33 +43,9 @@ Zoomable::Zoomable(QObject *parent)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
     , mComboValidator(nullptr)
 {
-    mZoomFactors = QVector<qreal> {
-        0.015625,
-        0.03125,
-        0.0625,
-        0.125,
-        0.25,
-        0.33,
-        0.5,
-        0.75,
-        1.0,
-        1.5,
-        2.0,
-        3.0,
-        4.0,
-        5.5,
-        8.0,
-        11.0,
-        16.0,
-        23.0,
-        32.0,
-        45.0,
-        64.0,
-        90.0,
-        128.0,
-        180.0,
-        256.0
-    };
+    mZoomFactors = QVector<qreal>{0.015625, 0.03125, 0.0625, 0.125, 0.25,  0.33,  0.5,  0.75, 1.0,
+                                  1.5,      2.0,     3.0,    4.0,   5.5,   8.0,   11.0, 16.0, 23.0,
+                                  32.0,     45.0,    64.0,   90.0,  128.0, 180.0, 256.0};
 }
 
 void Zoomable::setScale(qreal scale)
@@ -107,9 +83,7 @@ void Zoomable::handleWheelDelta(int delta)
         if (delta < 0)
             factor = 1 / factor;
 
-        qreal scale = qBound(mZoomFactors.first(),
-                             mScale * factor,
-                             mZoomFactors.last());
+        qreal scale = qBound(mZoomFactors.first(), mScale * factor, mZoomFactors.last());
 
         // Round to at most four digits after the decimal point
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
@@ -126,12 +100,11 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-        // fall through
+    // fall through
     case Qt::GestureUpdated: {
         qreal factor = pinch->totalScaleFactor();
-        qreal scale = qBound(mZoomFactors.first(),
-                             mGestureStartScale * factor,
-                             mZoomFactors.last());
+        qreal scale =
+            qBound(mZoomFactors.first(), mGestureStartScale * factor, mZoomFactors.last());
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
         break;
     }
@@ -166,7 +139,7 @@ void Zoomable::resetZoom()
     setScale(1);
 }
 
-void Zoomable::setZoomFactors(const QVector<qreal>& factors)
+void Zoomable::setZoomFactors(const QVector<qreal> &factors)
 {
     mZoomFactors = factors;
 }
@@ -187,13 +160,11 @@ void Zoomable::setComboBox(QComboBox *comboBox)
         for (qreal scale : mZoomFactors)
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
-        connect(mComboBox, SIGNAL(activated(int)),
-                this, SLOT(comboActivated(int)));
+        connect(mComboBox, SIGNAL(activated(int)), this, SLOT(comboActivated(int)));
 
         mComboBox->setEditable(true);
         mComboBox->setInsertPolicy(QComboBox::NoInsert);
-        connect(mComboBox->lineEdit(), SIGNAL(editingFinished()),
-                this, SLOT(comboEdited()));
+        connect(mComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(comboEdited()));
 
         if (!mComboValidator)
             mComboValidator = new QRegExpValidator(mComboRegExp, this);
@@ -212,9 +183,8 @@ void Zoomable::comboEdited()
     Q_ASSERT(pos != -1);
     Q_UNUSED(pos)
 
-    qreal scale = qBound(mZoomFactors.first(),
-                         qreal(mComboRegExp.cap(1).toDouble() / 100.f),
-                         mZoomFactors.last());
+    qreal scale = qBound(
+        mZoomFactors.first(), qreal(mComboRegExp.cap(1).toDouble() / 100.f), mZoomFactors.last());
 
     setScale(scale);
 }

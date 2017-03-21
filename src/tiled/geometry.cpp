@@ -51,7 +51,7 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
     xChange = radiusY * radiusY * (1 - 2 * radiusX);
     yChange = radiusX * radiusX;
     ellipseError = 0;
-    stoppingX = twoYSquare*radiusX;
+    stoppingX = twoYSquare * radiusX;
     stoppingY = 0;
     while (stoppingX >= stoppingY) {
         ret += QPoint(x0 + x, y0 + y);
@@ -130,15 +130,15 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
     else
         ystep = -1;
 
-    for (int x = x0; x < x1 + 1 ; x++) {
+    for (int x = x0; x < x1 + 1; x++) {
         if (steep)
             ret += QPoint(y, x);
         else
             ret += QPoint(x, y);
         error = error - deltay;
         if (error < 0) {
-             y = y + ystep;
-             error = error + deltax;
+            y = y + ystep;
+            error = error + deltax;
         }
     }
 

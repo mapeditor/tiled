@@ -72,9 +72,7 @@ static bool smoothTransform(qreal scale)
     return scale != qreal(1) && scale < qreal(2);
 }
 
-static QRectF cellRect(const MapRenderer &renderer,
-                       const Cell &cell,
-                       const QPointF &tileCoords)
+static QRectF cellRect(const MapRenderer &renderer, const Cell &cell, const QPointF &tileCoords)
 {
     const Tile *tile = cell.tile();
     if (!tile)
@@ -105,7 +103,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
         if (layer->layerType() != Layer::TileLayerType)
             continue;
 
-        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+        const TileLayer *tileLayer = static_cast<const TileLayer *>(layer);
         const QPointF offset = tileLayer->totalOffset();
 
         for (int y = 0; y < tileLayer->height(); ++y) {
@@ -139,8 +137,8 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
     QRect mapRect = computeMapRect(*mRenderer);
 
-    qreal scale = qMin(qreal(size.width()) / mapRect.width(),
-                       qreal(size.height()) / mapRect.height());
+    qreal scale =
+        qMin(qreal(size.width()) / mapRect.width(), qreal(size.height()) / mapRect.height());
 
     QSize scaledSize = mapRect.size() * scale;
 
@@ -172,14 +170,14 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+            const TileLayer *tileLayer = static_cast<const TileLayer *>(layer);
             mRenderer->drawTileLayer(&painter, tileLayer);
             break;
         }
 
         case Layer::ObjectGroupType: {
-            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
-            QList<MapObject*> objects = objectGroup->objects();
+            const ObjectGroup *objectGroup = static_cast<const ObjectGroup *>(layer);
+            QList<MapObject *> objects = objectGroup->objects();
 
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 qStableSort(objects.begin(), objects.end(), objectLessThan);
@@ -204,7 +202,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
             break;
         }
         case Layer::ImageLayerType: {
-            const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+            const ImageLayer *imageLayer = static_cast<const ImageLayer *>(layer);
             mRenderer->drawImageLayer(&painter, imageLayer);
             break;
         }
@@ -222,4 +220,3 @@ QImage ThumbnailRenderer::render(const QSize &size) const
 
 } // namespace Internal
 } // namespace Tiled
-

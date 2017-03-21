@@ -48,8 +48,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     foreach (const QString &name, mLanguages) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
-            .arg(QLocale::languageToString(locale.language()))
-            .arg(QLocale::countryToString(locale.country()));
+                             .arg(QLocale::languageToString(locale.language()))
+                             .arg(QLocale::countryToString(locale.country()));
         mUi->languageCombo->addItem(string, name);
     }
 
@@ -74,40 +74,46 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     auto *preferences = Preferences::instance();
 
-    connect(mUi->enableDtd, &QCheckBox::toggled,
-            preferences, &Preferences::setDtdEnabled);
-    connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
-            preferences, &Preferences::setReloadTilesetsOnChanged);
-    connect(mUi->openLastFiles, &QCheckBox::toggled,
-            preferences, &Preferences::setOpenLastFilesOnStartup);
-    connect(mUi->safeSaving, &QCheckBox::toggled,
-            preferences, &Preferences::setSafeSavingEnabled);
+    connect(mUi->enableDtd, &QCheckBox::toggled, preferences, &Preferences::setDtdEnabled);
+    connect(mUi->reloadTilesetImages,
+            &QCheckBox::toggled,
+            preferences,
+            &Preferences::setReloadTilesetsOnChanged);
+    connect(mUi->openLastFiles,
+            &QCheckBox::toggled,
+            preferences,
+            &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->safeSaving, &QCheckBox::toggled, preferences, &Preferences::setSafeSavingEnabled);
 
-    connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
-            SLOT(languageSelected(int)));
-    connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
-            preferences, SLOT(setGridColor(QColor)));
-    connect(mUi->gridFine, SIGNAL(valueChanged(int)),
-            preferences, SLOT(setGridFine(int)));
-    connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
-            preferences, SLOT(setObjectLineWidth(qreal)));
-    connect(mUi->openGL, &QCheckBox::toggled,
-            preferences, &Preferences::setUseOpenGL);
+    connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)), SLOT(languageSelected(int)));
+    connect(mUi->gridColor, SIGNAL(colorChanged(QColor)), preferences, SLOT(setGridColor(QColor)));
+    connect(mUi->gridFine, SIGNAL(valueChanged(int)), preferences, SLOT(setGridFine(int)));
+    connect(mUi->objectLineWidth,
+            SIGNAL(valueChanged(double)),
+            preferences,
+            SLOT(setObjectLineWidth(qreal)));
+    connect(mUi->openGL, &QCheckBox::toggled, preferences, &Preferences::setUseOpenGL);
 
-    connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &PreferencesDialog::styleComboChanged);
-    connect(mUi->baseColor, &ColorButton::colorChanged,
-            preferences, &Preferences::setBaseColor);
-    connect(mUi->selectionColor, &ColorButton::colorChanged,
-            preferences, &Preferences::setSelectionColor);
+    connect(mUi->styleCombo,
+            static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this,
+            &PreferencesDialog::styleComboChanged);
+    connect(mUi->baseColor, &ColorButton::colorChanged, preferences, &Preferences::setBaseColor);
+    connect(mUi->selectionColor,
+            &ColorButton::colorChanged,
+            preferences,
+            &Preferences::setSelectionColor);
 
-    connect(mUi->autoUpdateCheckBox, &QPushButton::toggled,
-            this, &PreferencesDialog::autoUpdateToggled);
-    connect(mUi->checkForUpdate, &QPushButton::clicked,
-            this, &PreferencesDialog::checkForUpdates);
+    connect(mUi->autoUpdateCheckBox,
+            &QPushButton::toggled,
+            this,
+            &PreferencesDialog::autoUpdateToggled);
+    connect(mUi->checkForUpdate, &QPushButton::clicked, this, &PreferencesDialog::checkForUpdates);
 
-    connect(pluginListModel, &PluginListModel::setPluginEnabled,
-            preferences, &Preferences::setPluginEnabled);
+    connect(pluginListModel,
+            &PluginListModel::setPluginEnabled,
+            preferences,
+            &Preferences::setPluginEnabled);
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -120,10 +126,9 @@ void PreferencesDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange: {
-            mUi->retranslateUi(this);
-            retranslateUi();
-        }
-        break;
+        mUi->retranslateUi(this);
+        retranslateUi();
+    } break;
     default:
         break;
     }

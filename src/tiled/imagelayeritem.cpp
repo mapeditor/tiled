@@ -50,9 +50,7 @@ QRectF ImageLayerItem::boundingRect() const
     return mBoundingRect;
 }
 
-void ImageLayerItem::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *)
+void ImageLayerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();

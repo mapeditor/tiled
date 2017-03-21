@@ -45,7 +45,8 @@ void TreeViewComboBoxView::adjustWidth(int width)
 
 
 TreeViewComboBox::TreeViewComboBox(QWidget *parent)
-    : QComboBox(parent), m_skipNextHide(false)
+    : QComboBox(parent)
+    , m_skipNextHide(false)
 {
     m_view = new TreeViewComboBoxView;
     m_view->setHeaderHidden(true);
@@ -136,7 +137,7 @@ void TreeViewComboBox::setCurrentModelIndex(const QModelIndex &index)
 bool TreeViewComboBox::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress && object == view()->viewport()) {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
         QModelIndex index = view()->indexAt(mouseEvent->pos());
         if (!view()->visualRect(index).contains(mouseEvent->pos()))
             m_skipNextHide = true;

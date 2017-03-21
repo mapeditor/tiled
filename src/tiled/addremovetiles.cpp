@@ -56,16 +56,14 @@ void AddRemoveTiles::removeTiles()
 }
 
 
-AddTiles::AddTiles(TilesetDocument *tilesetDocument,
-                   const QList<Tile *> &tiles)
+AddTiles::AddTiles(TilesetDocument *tilesetDocument, const QList<Tile *> &tiles)
     : AddRemoveTiles(tilesetDocument, tiles, true)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tiles"));
 }
 
 
-RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument,
-                         const QList<Tile *> &tiles)
+RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument, const QList<Tile *> &tiles)
     : AddRemoveTiles(tilesetDocument, tiles, false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));

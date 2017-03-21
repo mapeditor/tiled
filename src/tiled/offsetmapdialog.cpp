@@ -84,9 +84,8 @@ QRect OffsetMapDialog::affectedBoundingRect() const
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();
 
-        Q_ASSERT_X(!selection.isEmpty(),
-                   "OffsetMapDialog::affectedBoundingRect()",
-                   "selection is empty");
+        Q_ASSERT_X(
+            !selection.isEmpty(), "OffsetMapDialog::affectedBoundingRect()", "selection is empty");
 
         boundingRect = selection.boundingRect();
         break;

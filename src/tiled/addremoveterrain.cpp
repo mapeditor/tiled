@@ -30,9 +30,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-AddRemoveTerrain::AddRemoveTerrain(TilesetDocument *tilesetDocument,
-                                   int index,
-                                   Terrain *terrain)
+AddRemoveTerrain::AddRemoveTerrain(TilesetDocument *tilesetDocument, int index, Terrain *terrain)
     : mTilesetDocument(tilesetDocument)
     , mTileset(tilesetDocument->tileset().data())
     , mIndex(index)
@@ -60,18 +58,14 @@ void AddRemoveTerrain::addTerrain()
 
 
 AddTerrain::AddTerrain(TilesetDocument *tilesetDocument, Terrain *terrain)
-    : AddRemoveTerrain(tilesetDocument,
-                       terrain->tileset()->terrainCount(),
-                       terrain)
+    : AddRemoveTerrain(tilesetDocument, terrain->tileset()->terrainCount(), terrain)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Terrain"));
 }
 
 
 RemoveTerrain::RemoveTerrain(TilesetDocument *tilesetDocument, Terrain *terrain)
-    : AddRemoveTerrain(tilesetDocument,
-                       terrain->id(),
-                       nullptr)
+    : AddRemoveTerrain(tilesetDocument, terrain->id(), nullptr)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Terrain"));
 }

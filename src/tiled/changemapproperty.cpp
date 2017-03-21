@@ -38,76 +38,61 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 {
     switch (property) {
     case TileWidth:
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Change Tile Width"));
+        setText(QCoreApplication::translate("Undo Commands", "Change Tile Width"));
         break;
     case TileHeight:
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Change Tile Height"));
+        setText(QCoreApplication::translate("Undo Commands", "Change Tile Height"));
         break;
     case HexSideLength:
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Change Hex Side Length"));
+        setText(QCoreApplication::translate("Undo Commands", "Change Hex Side Length"));
         break;
     default:
         break;
     }
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     const QColor &backgroundColor)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Background Color"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Background Color"))
     , mMapDocument(mapDocument)
     , mProperty(BackgroundColor)
     , mBackgroundColor(backgroundColor)
 {
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::StaggerAxis staggerAxis)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Stagger Axis"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Stagger Axis"))
     , mMapDocument(mapDocument)
     , mProperty(StaggerAxis)
     , mStaggerAxis(staggerAxis)
 {
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::StaggerIndex staggerIndex)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Stagger Index"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Stagger Index"))
     , mMapDocument(mapDocument)
     , mProperty(StaggerIndex)
     , mStaggerIndex(staggerIndex)
 {
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::Orientation orientation)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Orientation"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, Map::Orientation orientation)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Orientation"))
     , mMapDocument(mapDocument)
     , mProperty(Orientation)
     , mOrientation(orientation)
 {
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::RenderOrder renderOrder)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Render Order"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Render Order"))
     , mMapDocument(mapDocument)
     , mProperty(RenderOrder)
     , mRenderOrder(renderOrder)
 {
 }
 
-ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     Map::LayerDataFormat layerDataFormat)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Layer Data Format"))
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument, Map::LayerDataFormat layerDataFormat)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Layer Data Format"))
     , mMapDocument(mapDocument)
     , mProperty(LayerDataFormat)
     , mLayerDataFormat(layerDataFormat)

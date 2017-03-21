@@ -29,8 +29,7 @@
 namespace Tiled {
 namespace Internal {
 
-Document::Document(DocumentType type, const QString &fileName,
-                   QObject *parent)
+Document::Document(DocumentType type, const QString &fileName, QObject *parent)
     : QObject(parent)
     , mType(type)
     , mFileName(fileName)
@@ -38,8 +37,7 @@ Document::Document(DocumentType type, const QString &fileName,
     , mCurrentObject(nullptr)
     , mIgnoreBrokenLinks(false)
 {
-    connect(mUndoStack, &QUndoStack::cleanChanged,
-            this, &Document::modifiedChanged);
+    connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::modifiedChanged);
 }
 
 void Document::setFileName(const QString &fileName)
@@ -71,15 +69,13 @@ void Document::setCurrentObject(Object *object)
 
 QList<Object *> Document::currentObjects() const
 {
-    QList<Object*> objects;
+    QList<Object *> objects;
     if (mCurrentObject)
         objects.append(mCurrentObject);
     return objects;
 }
 
-void Document::setProperty(Object *object,
-                           const QString &name,
-                           const QVariant &value)
+void Document::setProperty(Object *object, const QString &name, const QVariant &value)
 {
     const bool hadProperty = object->hasProperty(name);
 

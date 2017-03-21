@@ -77,10 +77,18 @@ void AbstractObjectTool::deactivate(MapScene *)
 void AbstractObjectTool::keyPressed(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_PageUp:    raise(); return;
-    case Qt::Key_PageDown:  lower(); return;
-    case Qt::Key_Home:      raiseToTop(); return;
-    case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_PageUp:
+        raise();
+        return;
+    case Qt::Key_PageDown:
+        lower();
+        return;
+    case Qt::Key_Home:
+        raiseToTop();
+        return;
+    case Qt::Key_End:
+        lowerToBottom();
+        return;
     case Qt::Key_D:
         if (event->modifiers() & Qt::ControlModifier) {
             duplicateObjects();
@@ -96,8 +104,7 @@ void AbstractObjectTool::mouseLeft()
     setStatusInfo(QString());
 }
 
-void AbstractObjectTool::mouseMoved(const QPointF &pos,
-                                    Qt::KeyboardModifiers)
+void AbstractObjectTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
@@ -109,14 +116,17 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)"))
+                      .arg(x)
+                      .arg(y)
+                      .arg(pixelPos.x())
+                      .arg(pixelPos.y()));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        showContextMenu(topMostObjectItemAt(event->scenePos()),
-                        event->screenPos());
+        showContextMenu(topMostObjectItemAt(event->scenePos()), event->screenPos());
     }
 }
 
@@ -130,14 +140,14 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     if (!mapDocument())
         return nullptr;
 
-    return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
+    return dynamic_cast<ObjectGroup *>(mapDocument()->currentLayer());
 }
 
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
     for (QGraphicsItem *item : items) {
-        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem *>(item))
             return objectItem;
     }
     return nullptr;
@@ -155,16 +165,14 @@ void AbstractObjectTool::removeObjects()
 
 void AbstractObjectTool::resetTileSize()
 {
-    QList<QUndoCommand*> commands;
+    QList<QUndoCommand *> commands;
 
     for (auto mapObject : mapDocument()->selectedObjects()) {
         if (!isResizedTileObject(mapObject))
             continue;
 
-        commands << new ResizeMapObject(mapDocument(),
-                                        mapObject,
-                                        mapObject->cell().tile()->size(),
-                                        mapObject->size());
+        commands << new ResizeMapObject(
+            mapDocument(), mapObject, mapObject->cell().tile()->size(), mapObject->size());
     }
 
     if (!commands.isEmpty()) {
@@ -210,8 +218,7 @@ void AbstractObjectTool::lowerToBottom()
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
  */
-void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
-                                         QPoint screenPos)
+void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem, QPoint screenPos)
 {
     QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
     if (clickedObjectItem && !selection.contains(clickedObjectItem)) {
@@ -222,27 +229,26 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (selection.isEmpty())
         return;
 
-    const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
-    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
+    const QList<MapObject *> &selectedObjects = mapDocument()->selectedObjects();
+    const QList<ObjectGroup *> objectGroups = mapDocument()->map()->objectGroups();
 
     QMenu menu;
-    QAction *duplicateAction = menu.addAction(tr("Duplicate %n Object(s)", "", selection.size()),
-                                              this, SLOT(duplicateObjects()));
-    QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selection.size()),
-                                           this, SLOT(removeObjects()));
+    QAction *duplicateAction = menu.addAction(
+        tr("Duplicate %n Object(s)", "", selection.size()), this, SLOT(duplicateObjects()));
+    QAction *removeAction = menu.addAction(
+        tr("Remove %n Object(s)", "", selection.size()), this, SLOT(removeObjects()));
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
-    bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
-                                             selectedObjects.end(),
-                                             isTileObject);
+    bool anyTileObjectSelected =
+        std::any_of(selectedObjects.begin(), selectedObjects.end(), isTileObject);
 
     if (anyTileObjectSelected) {
-        auto resetTileSizeAction = menu.addAction(tr("Reset Tile Size"), this, SLOT(resetTileSize()));
-        resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
-                                                    selectedObjects.end(),
-                                                    isResizedTileObject));
+        auto resetTileSizeAction =
+            menu.addAction(tr("Reset Tile Size"), this, SLOT(resetTileSize()));
+        resetTileSizeAction->setEnabled(
+            std::any_of(selectedObjects.begin(), selectedObjects.end(), isResizedTileObject));
     }
 
     menu.addSeparator();
@@ -254,14 +260,16 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         menu.addSeparator();
         menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
         menu.addAction(tr("Lower Object"), this, SLOT(lower()), QKeySequence(tr("PgDown")));
-        menu.addAction(tr("Raise Object to Top"), this, SLOT(raiseToTop()), QKeySequence(tr("Home")));
-        menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
+        menu.addAction(
+            tr("Raise Object to Top"), this, SLOT(raiseToTop()), QKeySequence(tr("Home")));
+        menu.addAction(
+            tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
     }
 
     if (objectGroups.size() > 1) {
         menu.addSeparator();
-        QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
-                                                 "", selectedObjects.size()));
+        QMenu *moveToLayerMenu =
+            menu.addMenu(tr("Move %n Object(s) to Layer", "", selectedObjects.size()));
         for (ObjectGroup *objectGroup : objectGroups) {
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
@@ -270,8 +278,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
 
     menu.addSeparator();
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *propertiesAction = menu.addAction(propIcon,
-                                               tr("Object &Properties..."));
+    QAction *propertiesAction = menu.addAction(propIcon, tr("Object &Properties..."));
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
@@ -287,8 +294,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         return;
     }
 
-    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
-        mapDocument()->moveObjectsToGroup(mapDocument()->selectedObjects(),
-                                          objectGroup);
+    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup *>()) {
+        mapDocument()->moveObjectsToGroup(mapDocument()->selectedObjects(), objectGroup);
     }
 }

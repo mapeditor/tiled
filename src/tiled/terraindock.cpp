@@ -34,8 +34,8 @@
 #include "utils.h"
 
 #include <QAction>
-#include <QEvent>
 #include <QBoxLayout>
+#include <QEvent>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
@@ -78,7 +78,10 @@ public:
     {
     }
 
-    void setEnabled(bool enabled) { mEnabled = enabled; }
+    void setEnabled(bool enabled)
+    {
+        mEnabled = enabled;
+    }
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
@@ -115,13 +118,16 @@ TerrainDock::TerrainDock(QWidget *parent)
 
     mTerrainView = new TerrainView(w);
     mTerrainView->setModel(mProxyModel);
-    connect(mTerrainView->selectionModel(), &QItemSelectionModel::currentRowChanged,
-            this, &TerrainDock::refreshCurrentTerrain);
-    connect(mTerrainView, SIGNAL(pressed(QModelIndex)),
-            SLOT(indexPressed(QModelIndex)));
+    connect(mTerrainView->selectionModel(),
+            &QItemSelectionModel::currentRowChanged,
+            this,
+            &TerrainDock::refreshCurrentTerrain);
+    connect(mTerrainView, SIGNAL(pressed(QModelIndex)), SLOT(indexPressed(QModelIndex)));
 
-    connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            this, SLOT(expandRows(QModelIndex,int,int)));
+    connect(mProxyModel,
+            SIGNAL(rowsInserted(QModelIndex, int, int)),
+            this,
+            SLOT(expandRows(QModelIndex, int, int)));
 
     mEraseTerrainButton = new QPushButton(this);
     mEraseTerrainButton->setIconSize(Utils::smallIconSize());
@@ -135,8 +141,8 @@ TerrainDock::TerrainDock(QWidget *parent)
     Utils::setThemeIcon(mAddTerrainType, "add");
     Utils::setThemeIcon(mRemoveTerrainType, "remove");
 
-    connect(mEraseTerrainButton, &QPushButton::clicked,
-            this, &TerrainDock::eraseTerrainButtonClicked);
+    connect(
+        mEraseTerrainButton, &QPushButton::clicked, this, &TerrainDock::eraseTerrainButtonClicked);
 
     mToolBar->setFloatable(false);
     mToolBar->setMovable(false);
@@ -155,10 +161,9 @@ TerrainDock::TerrainDock(QWidget *parent)
     vertical->addWidget(mTerrainView);
     vertical->addLayout(horizontal);
 
-    connect(mAddTerrainType, &QAction::triggered,
-            this, &TerrainDock::addTerrainTypeRequested);
-    connect(mRemoveTerrainType, &QAction::triggered,
-            this, &TerrainDock::removeTerrainTypeRequested);
+    connect(mAddTerrainType, &QAction::triggered, this, &TerrainDock::addTerrainTypeRequested);
+    connect(
+        mRemoveTerrainType, &QAction::triggered, this, &TerrainDock::removeTerrainTypeRequested);
 
     setWidget(w);
     retranslateUi();
@@ -172,9 +177,9 @@ static QAbstractItemModel *terrainModel(Document *document)
 {
     switch (document->type()) {
     case Document::MapDocumentType:
-        return static_cast<MapDocument*>(document)->terrainModel();
+        return static_cast<MapDocument *>(document)->terrainModel();
     case Document::TilesetDocumentType:
-        return static_cast<TilesetDocument*>(document)->terrainModel();
+        return static_cast<TilesetDocument *>(document)->terrainModel();
     }
     return nullptr;
 }
@@ -193,7 +198,7 @@ void TerrainDock::setDocument(Document *document)
     mDocument = document;
     mInitializing = true;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto mapDocument = qobject_cast<MapDocument *>(document)) {
         TerrainModel *terrainModel = mapDocument->terrainModel();
 
         mProxyModel->setEnabled(true);
@@ -204,7 +209,7 @@ void TerrainDock::setDocument(Document *document)
 
         mToolBar->setVisible(false);
 
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
         TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
 
         mTerrainView->setTilesetDocument(tilesetDocument);
@@ -220,8 +225,10 @@ void TerrainDock::setDocument(Document *document)
          * selection changing rows, so we can't rely on the currentRowChanged
          * signal.
          */
-        connect(terrainModel, &TilesetTerrainModel::terrainRemoved,
-                this, &TerrainDock::refreshCurrentTerrain);
+        connect(terrainModel,
+                &TilesetTerrainModel::terrainRemoved,
+                this,
+                &TerrainDock::refreshCurrentTerrain);
 
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -239,9 +246,8 @@ void TerrainDock::editTerrainName(Terrain *terrain)
 {
     const QModelIndex index = terrainIndex(terrain);
     QItemSelectionModel *selectionModel = mTerrainView->selectionModel();
-    selectionModel->setCurrentIndex(index,
-                                    QItemSelectionModel::ClearAndSelect |
-                                    QItemSelectionModel::Rows);
+    selectionModel->setCurrentIndex(
+        index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     mTerrainView->edit(index);
 }
 
@@ -267,7 +273,7 @@ void TerrainDock::refreshCurrentTerrain()
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
     if (Terrain *terrain = mTerrainView->terrainAt(index)) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+        if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument))
             tilesetDocument->setCurrentObject(terrain);
         emit selectTerrainBrush();
     }
@@ -307,7 +313,7 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
     }
 
     if (terrain && !mInitializing) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+        if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument))
             tilesetDocument->setCurrentObject(terrain);
     }
 
@@ -331,9 +337,9 @@ QModelIndex TerrainDock::terrainIndex(Terrain *terrain) const
 {
     QModelIndex sourceIndex;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+    if (auto mapDocument = qobject_cast<MapDocument *>(mDocument)) {
         sourceIndex = mapDocument->terrainModel()->index(terrain);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument)) {
         sourceIndex = tilesetDocument->terrainModel()->index(terrain);
     }
 

@@ -29,7 +29,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     QVector<AutoMapper*> autoMapper,
+                                     QVector<AutoMapper *> autoMapper,
                                      QRegion *where)
 {
     mMapDocument = mapDocument;
@@ -49,7 +49,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     foreach (const QString &layerName, touchedLayers) {
         const int layerIndex = map->indexOfLayer(layerName);
         Q_ASSERT(layerIndex != -1);
-        mLayersBefore.append(static_cast<TileLayer*>(map->layerAt(layerIndex)->clone()));
+        mLayersBefore.append(static_cast<TileLayer *>(map->layerAt(layerIndex)->clone()));
     }
 
     for (AutoMapper *a : autoMapper)
@@ -61,7 +61,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         // layer index exists, because AutoMapper is still alive, don't check
         Q_ASSERT(layerIndex != -1);
         TileLayer *before = mLayersBefore.at(beforeIndex);
-        TileLayer *after = static_cast<TileLayer*>(map->layerAt(layerIndex));
+        TileLayer *after = static_cast<TileLayer *>(map->layerAt(layerIndex));
 
         if (before->drawMargins() != after->drawMargins())
             emit mMapDocument->tileLayerDrawMarginsChanged(after);
@@ -118,11 +118,8 @@ void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
     QRect b = layer->bounds();
 
     Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
-    TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
+    TileLayer *t = static_cast<TileLayer *>(map->layerAt(layerIndex));
 
-    t->setCells(b.left() - t->x(),
-                b.top() - t->y(),
-                layer,
-                b.translated(-t->position()));
+    t->setCells(b.left() - t->x(), b.top() - t->y(), layer, b.translated(-t->position()));
     emit mMapDocument->regionChanged(b, t);
 }

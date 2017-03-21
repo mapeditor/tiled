@@ -87,8 +87,7 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     if (mTilePositionMethod == BetweenTiles)
         tilePos = tilePosF.toPoint();
     else
-        tilePos = QPoint((int) std::floor(tilePosF.x()),
-                         (int) std::floor(tilePosF.y()));
+        tilePos = QPoint((int) std::floor(tilePosF.x()), (int) std::floor(tilePosF.y()));
 
     if (mTilePosition != tilePos) {
         mTilePosition = tilePos;
@@ -98,8 +97,7 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     }
 }
 
-void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
-                                          MapDocument *newDocument)
+void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument)
 {
     Q_UNUSED(oldDocument)
     mBrushItem->setMapDocument(newDocument);
@@ -123,9 +121,9 @@ void AbstractTileTool::updateStatusInfo()
 
         QString tileIdString = tileId >= 0 ? QString::number(tileId) : tr("empty");
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
-                      .arg(mTilePosition.x())
-                      .arg(mTilePosition.y())
-                      .arg(tileIdString));
+                          .arg(mTilePosition.x())
+                          .arg(mTilePosition.y())
+                          .arg(tileIdString));
     } else {
         setStatusInfo(QString());
     }
@@ -159,5 +157,5 @@ TileLayer *AbstractTileTool::currentTileLayer() const
     if (!mapDocument())
         return nullptr;
 
-    return dynamic_cast<TileLayer*>(mapDocument()->currentLayer());
+    return dynamic_cast<TileLayer *>(mapDocument()->currentLayer());
 }

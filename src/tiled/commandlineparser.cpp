@@ -33,11 +33,8 @@ CommandLineParser::CommandLineParser()
 {
 }
 
-void CommandLineParser::registerOption(Callback callback,
-                                       void *data,
-                                       QChar shortName,
-                                       const QString &longName,
-                                       const QString &help)
+void CommandLineParser::registerOption(
+    Callback callback, void *data, QChar shortName, const QString &longName, const QString &help)
 {
     mOptions.append(Option(callback, data, shortName, longName, help));
 
@@ -98,7 +95,8 @@ bool CommandLineParser::parse(const QStringList &arguments)
         for (int i = 1; i < arg.length(); ++i) {
             const QChar c = arg.at(i);
             if (!handleShortOption(c)) {
-                qWarning().noquote() << tr("Unknown short argument %1.%2: %3").arg(index).arg(i).arg(c);
+                qWarning().noquote()
+                    << tr("Unknown short argument %1.%2: %3").arg(index).arg(i).arg(c);
                 mShowHelp = true;
                 break;
             }

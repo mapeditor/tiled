@@ -36,11 +36,11 @@
 #include <QEvent>
 #include <QInputDialog>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QShortcut>
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
-#include <QMenu>
 
 namespace Tiled {
 namespace Internal {
@@ -55,21 +55,18 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
-    connect(mActionAddProperty, SIGNAL(triggered()),
-            SLOT(addProperty()));
+    connect(mActionAddProperty, SIGNAL(triggered()), SLOT(addProperty()));
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
-    connect(mActionRemoveProperty, SIGNAL(triggered()),
-            SLOT(removeProperty()));
+    connect(mActionRemoveProperty, SIGNAL(triggered()), SLOT(removeProperty()));
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
     mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
-    connect(mActionRenameProperty, SIGNAL(triggered()),
-            SLOT(renameProperty()));
+    connect(mActionRenameProperty, SIGNAL(triggered()), SLOT(renameProperty()));
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -94,10 +91,14 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     setWidget(widget);
 
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
-            this, &PropertiesDock::showContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::currentItemChanged,
-            this, &PropertiesDock::updateActions);
+    connect(mPropertyBrowser,
+            &PropertyBrowser::customContextMenuRequested,
+            this,
+            &PropertiesDock::showContextMenu);
+    connect(mPropertyBrowser,
+            &PropertyBrowser::currentItemChanged,
+            this,
+            &PropertiesDock::updateActions);
 
     retranslateUi();
 }
@@ -111,15 +112,12 @@ void PropertiesDock::setDocument(Document *document)
     mPropertyBrowser->setDocument(document);
 
     if (document) {
-        connect(document, SIGNAL(currentObjectChanged(Object*)),
-                SLOT(currentObjectChanged(Object*)));
-        connect(document, SIGNAL(editCurrentObject()),
-                SLOT(bringToFront()));
+        connect(
+            document, SIGNAL(currentObjectChanged(Object *)), SLOT(currentObjectChanged(Object *)));
+        connect(document, SIGNAL(editCurrentObject()), SLOT(bringToFront()));
 
-        connect(document, &Document::propertyAdded,
-                this, &PropertiesDock::updateActions);
-        connect(document, &Document::propertyRemoved,
-                this, &PropertiesDock::updateActions);
+        connect(document, &Document::propertyAdded, this, &PropertiesDock::updateActions);
+        connect(document, &Document::propertyRemoved, this, &PropertiesDock::updateActions);
 
         currentObjectChanged(document->currentObject());
     } else {
@@ -149,7 +147,7 @@ static bool isPartOfTileset(const Object *object)
     }
 }
 
-static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
+static bool anyObjectHasProperty(const QList<Object *> &objects, const QString &name)
 {
     for (Object *obj : objects) {
         if (obj->hasProperty(name))
@@ -176,9 +174,9 @@ void PropertiesDock::updateActions()
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = isPartOfTileset(mPropertyBrowser->object());
-    bool canModify = isCustomProperty &&
-            (!isTileset || editingTileset) &&
-            anyObjectHasProperty(mDocument->currentObjects(), item->property()->propertyName());
+    bool canModify =
+        isCustomProperty && (!isTileset || editingTileset) &&
+        anyObjectHasProperty(mDocument->currentObjects(), item->property()->propertyName());
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify);
@@ -201,9 +199,7 @@ void PropertiesDock::addProperty(const QString &name, const QVariant &value)
 
     if (!object->hasProperty(name)) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        name, value));
+        undoStack->push(new SetProperty(mDocument, mDocument->currentObjects(), name, value));
     }
 
     mPropertyBrowser->editCustomProperty(name);
@@ -221,9 +217,7 @@ void PropertiesDock::removeProperty()
 
     const QString name = item->property()->propertyName();
     QUndoStack *undoStack = mDocument->undoStack();
-    undoStack->push(new RemoveProperty(mDocument,
-                                       mDocument->currentObjects(),
-                                       name));
+    undoStack->push(new RemoveProperty(mDocument, mDocument->currentObjects(), name));
 }
 
 void PropertiesDock::renameProperty()
@@ -259,8 +253,8 @@ void PropertiesDock::renameProperty(const QString &name)
     undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
 }
 
-void PropertiesDock::showContextMenu(const QPoint& pos)
-{   
+void PropertiesDock::showContextMenu(const QPoint &pos)
+{
     QtBrowserItem *item = mPropertyBrowser->currentItem();
     if (!mPropertyBrowser->isCustomPropertyItem(item))
         return;
@@ -279,14 +273,12 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     removeAction->setEnabled(mActionRemoveProperty->isEnabled());
     removeAction->setShortcuts(mActionRemoveProperty->shortcuts());
 
-    const QList<int> convertTo {
-        QVariant::Bool,
-        QVariant::Color,
-        QVariant::Double,
-        filePathTypeId(),
-        QVariant::Int,
-        QVariant::String
-    };
+    const QList<int> convertTo{QVariant::Bool,
+                               QVariant::Color,
+                               QVariant::Double,
+                               filePathTypeId(),
+                               QVariant::Int,
+                               QVariant::String};
 
     for (int toType : convertTo) {
         QVariant copy = value;
@@ -305,9 +297,8 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
         removeProperty();
     } else if (selectedItem) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        name, selectedItem->data()));
+        undoStack->push(
+            new SetProperty(mDocument, mDocument->currentObjects(), name, selectedItem->data()));
     }
 }
 

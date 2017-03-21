@@ -39,15 +39,14 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
     , mTarget(target)
-    , mSource(static_cast<TileLayer*>(source->clone()))
+    , mSource(static_cast<TileLayer *>(source->clone()))
     , mX(x)
     , mY(y)
     , mPaintedRegion(source->region().translated(QPoint(x, y) - source->position()))
     , mMergeable(false)
 {
-    mErased = mTarget->copy(mX - mTarget->x(),
-                            mY - mTarget->y(),
-                            mSource->width(), mSource->height());
+    mErased =
+        mTarget->copy(mX - mTarget->x(), mY - mTarget->y(), mSource->width(), mSource->height());
     setText(QCoreApplication::translate("Undo Commands", "Paint"));
 }
 
@@ -61,15 +60,14 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
     , mTarget(target)
-    , mSource(static_cast<TileLayer*>(source->clone()))
+    , mSource(static_cast<TileLayer *>(source->clone()))
     , mX(x)
     , mY(y)
     , mPaintedRegion(paintRegion)
     , mMergeable(false)
 {
-    mErased = mTarget->copy(mX - mTarget->x(),
-                            mY - mTarget->y(),
-                            mSource->width(), mSource->height());
+    mErased =
+        mTarget->copy(mX - mTarget->x(), mY - mTarget->y(), mSource->width(), mSource->height());
     setText(QCoreApplication::translate("Undo Commands", "Paint"));
 }
 
@@ -97,10 +95,8 @@ void PaintTileLayer::redo()
 
 bool PaintTileLayer::mergeWith(const QUndoCommand *other)
 {
-    const PaintTileLayer *o = static_cast<const PaintTileLayer*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
-          mTarget == o->mTarget &&
-          o->mMergeable))
+    const PaintTileLayer *o = static_cast<const PaintTileLayer *>(other);
+    if (!(mMapDocument == o->mMapDocument && mTarget == o->mTarget && o->mMergeable))
         return false;
 
     const QRegion newRegion = o->mPaintedRegion.subtracted(mPaintedRegion);
@@ -127,9 +123,7 @@ bool PaintTileLayer::mergeWith(const QUndoCommand *other)
     foreach (const QRect &rect, newRegion.rects())
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
-                mErased->setCell(x - mX,
-                                 y - mY,
-                                 o->mErased->cellAt(x - o->mX, y - o->mY));
+                mErased->setCell(x - mX, y - mY, o->mErased->cellAt(x - o->mX, y - o->mY));
 
     return true;
 }

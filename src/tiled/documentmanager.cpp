@@ -27,9 +27,9 @@
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
+#include "map.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
-#include "map.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
@@ -51,11 +51,11 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QScrollBar>
+#include <QStackedLayout>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QUndoStack>
 #include <QVBoxLayout>
-#include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -67,7 +67,7 @@ using namespace Tiled::Internal;
  */
 static void showInFileManager(const QString &fileName)
 {
-    // Mac, Windows support folder or file.
+// Mac, Windows support folder or file.
 #if defined(Q_OS_WIN)
     QStringList param;
     if (!QFileInfo(fileName).isDir())
@@ -78,20 +78,18 @@ static void showInFileManager(const QString &fileName)
     QStringList scriptArgs;
     scriptArgs << QLatin1String("-e")
                << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
-                                     .arg(fileName);
+                      .arg(fileName);
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
     scriptArgs.clear();
-    scriptArgs << QLatin1String("-e")
-               << QLatin1String("tell application \"Finder\" to activate");
+    scriptArgs << QLatin1String("-e") << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
 #else
     // We cannot select a file here, because xdg-open would open the file
     // instead of the file browser...
-    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
-                            .arg(QFileInfo(fileName).absolutePath()));
+    QProcess::startDetached(
+        QString(QLatin1String("xdg-open \"%1\"")).arg(QFileInfo(fileName).absolutePath()));
 #endif
 }
-
 
 
 DocumentManager *DocumentManager::mInstance;
@@ -131,8 +129,14 @@ DocumentManager::DocumentManager(QObject *parent)
 
     mFileChangedWarning->setVisible(false);
 
-    connect(mFileChangedWarning, &FileChangedWarning::reload, this, &DocumentManager::reloadCurrentDocument);
-    connect(mFileChangedWarning, &FileChangedWarning::ignore, this, &DocumentManager::hideChangedWarning);
+    connect(mFileChangedWarning,
+            &FileChangedWarning::reload,
+            this,
+            &DocumentManager::reloadCurrentDocument);
+    connect(mFileChangedWarning,
+            &FileChangedWarning::ignore,
+            this,
+            &DocumentManager::hideChangedWarning);
 
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
@@ -145,23 +149,24 @@ DocumentManager::DocumentManager(QObject *parent)
     mEditorStack->addWidget(mNoEditorWidget);
     vertical->addLayout(mEditorStack);
 
-    connect(mTabBar, &QTabBar::currentChanged,
-            this, &DocumentManager::currentIndexChanged);
-    connect(mTabBar, &QTabBar::tabCloseRequested,
-            this, &DocumentManager::documentCloseRequested);
-    connect(mTabBar, &QTabBar::tabMoved,
-            this, &DocumentManager::documentTabMoved);
-    connect(mTabBar, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(tabContextMenuRequested(QPoint)));
+    connect(mTabBar, &QTabBar::currentChanged, this, &DocumentManager::currentIndexChanged);
+    connect(mTabBar, &QTabBar::tabCloseRequested, this, &DocumentManager::documentCloseRequested);
+    connect(mTabBar, &QTabBar::tabMoved, this, &DocumentManager::documentTabMoved);
+    connect(
+        mTabBar, SIGNAL(customContextMenuRequested(QPoint)), SLOT(tabContextMenuRequested(QPoint)));
 
-    connect(mFileSystemWatcher, &FileSystemWatcher::fileChanged,
-            this, &DocumentManager::fileChanged);
+    connect(
+        mFileSystemWatcher, &FileSystemWatcher::fileChanged, this, &DocumentManager::fileChanged);
 
-    connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
-            mBrokenLinksWidget, &BrokenLinksWidget::setVisible);
+    connect(mBrokenLinksModel,
+            &BrokenLinksModel::hasBrokenLinksChanged,
+            mBrokenLinksWidget,
+            &BrokenLinksWidget::setVisible);
 
-    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
-            this, &DocumentManager::tilesetImagesChanged);
+    connect(TilesetManager::instance(),
+            &TilesetManager::tilesetImagesChanged,
+            this,
+            &DocumentManager::tilesetImagesChanged);
 }
 
 DocumentManager::~DocumentManager()
@@ -184,7 +189,7 @@ void DocumentManager::setEditor(Document::DocumentType documentType, Editor *edi
     mEditorForType.insert(documentType, editor);
     mEditorStack->addWidget(editor->editorWidget());
 
-    if (MapEditor *mapEditor = qobject_cast<MapEditor*>(editor))
+    if (MapEditor *mapEditor = qobject_cast<MapEditor *>(editor))
         mMapEditor = mapEditor;
 }
 
@@ -212,14 +217,14 @@ Editor *DocumentManager::currentEditor() const
 
 void DocumentManager::saveState()
 {
-    QHashIterator<Document::DocumentType, Editor*> iterator(mEditorForType);
+    QHashIterator<Document::DocumentType, Editor *> iterator(mEditorForType);
     while (iterator.hasNext())
         iterator.next().value()->saveState();
 }
 
 void DocumentManager::restoreState()
 {
-    QHashIterator<Document::DocumentType, Editor*> iterator(mEditorForType);
+    QHashIterator<Document::DocumentType, Editor *> iterator(mEditorForType);
     while (iterator.hasNext())
         iterator.next().value()->restoreState();
 }
@@ -321,10 +326,10 @@ void DocumentManager::addDocument(Document *document)
     mDocuments.append(document);
     mUndoGroup->addStack(document->undoStack());
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             addToTilesetDocument(tileset, mapDocument);
-    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
         // We may have opened a bare tileset that wasn't seen before
         if (!mTilesetDocuments.contains(tilesetDocument)) {
             mTilesetToDocument.insert(tilesetDocument->tileset(), tilesetDocument);
@@ -347,19 +352,24 @@ void DocumentManager::addDocument(Document *document)
     mTabBar->setTabToolTip(documentIndex, document->fileName());
 
     // todo: updateDocumentTab if an embedded tileset name changes
-    connect(document, SIGNAL(fileNameChanged(QString,QString)),
-            SLOT(fileNameChanged(QString,QString)));
+    connect(document,
+            SIGNAL(fileNameChanged(QString, QString)),
+            SLOT(fileNameChanged(QString, QString)));
     connect(document, SIGNAL(modifiedChanged()), SLOT(modifiedChanged()));
     connect(document, SIGNAL(saved()), SLOT(documentSaved()));
 
-    if (auto *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto *mapDocument = qobject_cast<MapDocument *>(document)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
-        connect(mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
+        connect(
+            mapDocument, &MapDocument::tilesetReplaced, this, &DocumentManager::tilesetReplaced);
     }
 
-    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-        connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
+        connect(tilesetDocument,
+                &TilesetDocument::tilesetNameChanged,
+                this,
+                &DocumentManager::tilesetNameChanged);
     }
 
     switchToDocument(documentIndex);
@@ -378,7 +388,7 @@ void DocumentManager::addDocument(Document *document)
  */
 bool DocumentManager::isDocumentModified(Document *document) const
 {
-    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (auto mapDocument = qobject_cast<MapDocument *>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
             if (TilesetDocument *tilesetDocument = findTilesetDocument(tileset))
                 if (tilesetDocument->isEmbedded() && tilesetDocument->isModified())
@@ -395,7 +405,7 @@ bool DocumentManager::isDocumentModified(Document *document) const
  */
 bool DocumentManager::isDocumentChangedOnDisk(Document *document) const
 {
-    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    if (auto tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
         if (tilesetDocument->isEmbedded())
             document = tilesetDocument->mapDocuments().first();
     }
@@ -428,12 +438,12 @@ void DocumentManager::closeDocumentAt(int index)
         mDocumentsChangedOnDisk.remove(document);
     }
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             removeFromTilesetDocument(tileset, mapDocument);
 
         delete document;
-    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetToDocument.remove(tilesetDocument->tileset());
             mTilesetDocuments.removeOne(tilesetDocument);
@@ -459,11 +469,10 @@ bool DocumentManager::reloadDocumentAt(int index)
     Document *oldDocument = mDocuments.at(index);
     QString error;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(oldDocument)) {
+    if (auto mapDocument = qobject_cast<MapDocument *>(oldDocument)) {
         // TODO: Consider fixing the reload to avoid recreating the MapDocument
-        auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                        mapDocument->readerFormat(),
-                                        &error);
+        auto newDocument =
+            MapDocument::load(oldDocument->fileName(), mapDocument->readerFormat(), &error);
         if (!newDocument) {
             emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
             return false;
@@ -476,7 +485,7 @@ bool DocumentManager::reloadDocumentAt(int index)
 
         checkTilesetColumns(mapDocument);
 
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(oldDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument *>(oldDocument)) {
         if (tilesetDocument->isEmbedded()) {
             // For embedded tilesets, we need to reload the map
             index = mDocuments.indexOf(tilesetDocument->mapDocuments().first());
@@ -529,8 +538,7 @@ void DocumentManager::currentIndexChanged()
     emit currentDocumentChanged(document);
 }
 
-void DocumentManager::fileNameChanged(const QString &fileName,
-                                      const QString &oldFileName)
+void DocumentManager::fileNameChanged(const QString &fileName, const QString &oldFileName)
 {
     if (!fileName.isEmpty())
         mFileSystemWatcher->addPath(fileName);
@@ -538,8 +546,8 @@ void DocumentManager::fileNameChanged(const QString &fileName,
         mFileSystemWatcher->removePath(oldFileName);
 
     // Update the tabs for all opened embedded tilesets
-    Document *document = static_cast<Document*>(sender());
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    Document *document = static_cast<Document *>(sender());
+    if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
             if (TilesetDocument *tilesetDocument = findTilesetDocument(tileset))
                 updateDocumentTab(tilesetDocument);
@@ -551,7 +559,7 @@ void DocumentManager::fileNameChanged(const QString &fileName,
 
 void DocumentManager::modifiedChanged()
 {
-    updateDocumentTab(static_cast<Document*>(sender()));
+    updateDocumentTab(static_cast<Document *>(sender()));
 }
 
 void DocumentManager::updateDocumentTab(Document *document)
@@ -570,7 +578,7 @@ void DocumentManager::updateDocumentTab(Document *document)
 
 void DocumentManager::documentSaved()
 {
-    Document *document = static_cast<Document*>(sender());
+    Document *document = static_cast<Document *>(sender());
 
     if (mDocumentsChangedOnDisk.remove(document)) {
         if (!isDocumentModified(currentDocument()))
@@ -600,9 +608,7 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     });
 
     QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
-    connect(openFolder, &QAction::triggered, [fileName] {
-        showInFileManager(fileName);
-    });
+    connect(openFolder, &QAction::triggered, [fileName] { showInFileManager(fileName); });
 
     menu.exec(mTabBar->mapToGlobal(pos));
 }
@@ -610,20 +616,20 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 void DocumentManager::tilesetAdded(int index, Tileset *tileset)
 {
     Q_UNUSED(index)
-    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    MapDocument *mapDocument = static_cast<MapDocument *>(QObject::sender());
     addToTilesetDocument(tileset->sharedPointer(), mapDocument);
 }
 
 void DocumentManager::tilesetRemoved(Tileset *tileset)
 {
-    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    MapDocument *mapDocument = static_cast<MapDocument *>(QObject::sender());
     removeFromTilesetDocument(tileset->sharedPointer(), mapDocument);
 }
 
 void DocumentManager::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
 {
     Q_UNUSED(index)
-    MapDocument *mapDocument = static_cast<MapDocument*>(QObject::sender());
+    MapDocument *mapDocument = static_cast<MapDocument *>(QObject::sender());
     addToTilesetDocument(tileset->sharedPointer(), mapDocument);
     removeFromTilesetDocument(oldTileset->sharedPointer(), mapDocument);
 }
@@ -664,7 +670,7 @@ void DocumentManager::fileChanged(const QString &fileName)
 void DocumentManager::hideChangedWarning()
 {
     Document *document = currentDocument();
-    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+    if (auto tilesetDocument = qobject_cast<TilesetDocument *>(document)) {
         if (tilesetDocument->isEmbedded())
             document = tilesetDocument->mapDocuments().first();
     }
@@ -735,7 +741,8 @@ void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocu
     tilesetDocument->addMapDocument(mapDocument);
 }
 
-void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
+void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset,
+                                                MapDocument *mapDocument)
 {
     TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
     Q_ASSERT(tilesetDocument);
@@ -784,7 +791,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
 
     bool anyRelevantMap = false;
     for (Document *document : mDocuments) {
-        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
             if (mapDocument->map()->tilesets().contains(sharedTileset)) {
                 anyRelevantMap = true;
                 break;
@@ -796,7 +803,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
         bool tilesetAdjusted = false;
 
         for (Document *document : mDocuments) {
-            if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+            if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
                 Map *map = mapDocument->map();
 
                 if (map->tilesets().contains(sharedTileset)) {
@@ -851,15 +858,16 @@ void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
 
 bool DocumentManager::askForAdjustment(const Tileset &tileset)
 {
-    int r = QMessageBox::question(mWidget->window(),
-                                  tr("Tileset Columns Changed"),
-                                  tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
-                                     "Do you want to adjust tile references?")
-                                  .arg(tileset.name())
-                                  .arg(tileset.expectedColumnCount())
-                                  .arg(tileset.columnCount()),
-                                  QMessageBox::Yes | QMessageBox::No,
-                                  QMessageBox::Yes);
+    int r = QMessageBox::question(
+        mWidget->window(),
+        tr("Tileset Columns Changed"),
+        tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
+           "Do you want to adjust tile references?")
+            .arg(tileset.name())
+            .arg(tileset.expectedColumnCount())
+            .arg(tileset.columnCount()),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::Yes);
 
     return r == QMessageBox::Yes;
 }

@@ -44,11 +44,10 @@ QString Command::finalCommand() const
 
         QFileInfo fileInfo(fileName);
         QString mapPath = fileInfo.absolutePath();
-        finalCommand.replace(
-            QLatin1String("%mappath"),
-            QString(QLatin1String("\"%1\"")).arg(mapPath));
+        finalCommand.replace(QLatin1String("%mappath"),
+                             QString(QLatin1String("\"%1\"")).arg(mapPath));
 
-        if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (MapDocument *mapDocument = qobject_cast<MapDocument *>(document)) {
             if (const Layer *layer = mapDocument->currentLayer()) {
                 finalCommand.replace(QLatin1String("%layername"),
                                      QString(QLatin1String("\"%1\"")).arg(layer->name()));
@@ -130,8 +129,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     // Modify the command to run in a terminal
     if (inTerminal) {
 #ifdef Q_OS_LINUX
-        static bool hasGnomeTerminal = QProcess::execute(
-                                    QLatin1String("which gnome-terminal")) == 0;
+        static bool hasGnomeTerminal =
+            QProcess::execute(QLatin1String("which gnome-terminal")) == 0;
 
         if (hasGnomeTerminal)
             mFinalCommand = QLatin1String("gnome-terminal -x ") + mFinalCommand;
@@ -154,24 +153,21 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
         mFile.close();
 
         // Add execute permission to the file
-        int chmodRet = QProcess::execute(QString(QLatin1String(
-                                     "chmod +x \"%1\"")).arg(mFile.fileName()));
+        int chmodRet =
+            QProcess::execute(QString(QLatin1String("chmod +x \"%1\"")).arg(mFile.fileName()));
         if (chmodRet != 0) {
-            handleError(tr("Unable to add executable permissions to %1")
-                                                        .arg(mFile.fileName()));
+            handleError(tr("Unable to add executable permissions to %1").arg(mFile.fileName()));
             return;
         }
 
         // Use open command to launch the command in the terminal
         // -W makes it not return immediately
         // -n makes it open a new instance of terminal if it is open already
-        mFinalCommand = QString(QLatin1String("open -W -n \"%1\""))
-                                                         .arg(mFile.fileName());
+        mFinalCommand = QString(QLatin1String("open -W -n \"%1\"")).arg(mFile.fileName());
 #endif
     }
 
-    connect(this, SIGNAL(error(QProcess::ProcessError)),
-            SLOT(handleError(QProcess::ProcessError)));
+    connect(this, SIGNAL(error(QProcess::ProcessError)), SLOT(handleError(QProcess::ProcessError)));
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
 

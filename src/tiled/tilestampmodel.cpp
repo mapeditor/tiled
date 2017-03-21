@@ -75,8 +75,10 @@ QVariant TileStampModel::headerData(int section, Qt::Orientation orientation, in
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return tr("Stamp");
-        case 1: return tr("Probability");
+        case 0:
+            return tr("Stamp");
+        case 1:
+            return tr("Probability");
         }
     }
     return QVariant();
@@ -86,7 +88,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (isStamp(index)) {
         TileStamp &stamp = mStamps[index.row()];
-        if (index.column() == 0) {      // stamp name
+        if (index.column() == 0) { // stamp name
             switch (role) {
             case Qt::EditRole:
                 stamp.setName(value.toString());
@@ -99,7 +101,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
                 break;
             }
         }
-    } else if (index.column() == 1) {   // variation probability
+    } else if (index.column() == 1) { // variation probability
         QModelIndex parent = index.parent();
         if (isStamp(parent)) {
             TileStamp &stamp = mStamps[parent.row()];
@@ -120,16 +122,14 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
 static QPixmap renderThumbnail(const ThumbnailRenderer &renderer)
 {
     return QPixmap::fromImage(renderer.render(QSize(64, 64))
-                              .scaled(32, 32,
-                                      Qt::IgnoreAspectRatio,
-                                      Qt::SmoothTransformation));
+                                  .scaled(32, 32, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 }
 
 QVariant TileStampModel::data(const QModelIndex &index, int role) const
 {
     if (isStamp(index)) {
         const TileStamp &stamp = mStamps.at(index.row());
-        if (index.column() == 0) {          // preview and name
+        if (index.column() == 0) { // preview and name
             switch (role) {
             case Qt::DisplayRole:
             case Qt::EditRole:
@@ -145,7 +145,7 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 return thumbnail;
             }
             }
-        } else if (index.column() == 1) {   // sum of probabilities
+        } else if (index.column() == 1) { // sum of probabilities
             switch (role) {
             case Qt::DisplayRole:
                 if (stamp.variations().size() > 1) {
@@ -186,8 +186,8 @@ Qt::ItemFlags TileStampModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
     const bool validParent = index.parent().isValid();
-    if ((!validParent && index.column() == 0) ||   // can edit stamp names
-            (validParent && index.column() == 1))  // and variation probability
+    if ((!validParent && index.column() == 0) || // can edit stamp names
+        (validParent && index.column() == 1))    // and variation probability
         rc |= Qt::ItemIsEditable;
     return rc;
 }
@@ -221,7 +221,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
                 // preview on stamp and probability sum need update
                 // (while technically I think this is correct, it triggers a
                 // repainting issue in QTreeView)
-                //emit dataChanged(index(parent.row(), 0),
+                // emit dataChanged(index(parent.row(), 0),
                 //                 index(parent.row(), 1));
             }
             emit stampChanged(stamp);
@@ -251,9 +251,7 @@ const TileStamp &TileStampModel::stampAt(const QModelIndex &index) const
 
 bool TileStampModel::isStamp(const QModelIndex &index) const
 {
-    return index.isValid()
-            && !index.parent().isValid()
-            && index.row() < mStamps.size();
+    return index.isValid() && !index.parent().isValid() && index.row() < mStamps.size();
 }
 
 const TileStampVariation *TileStampModel::variationAt(const QModelIndex &index) const
@@ -297,8 +295,7 @@ void TileStampModel::removeStamp(const TileStamp &stamp)
     emit stampRemoved(stamp);
 }
 
-void TileStampModel::addVariation(const TileStamp &stamp,
-                                  const TileStampVariation &variation)
+void TileStampModel::addVariation(const TileStamp &stamp, const TileStampVariation &variation)
 {
     int index = mStamps.indexOf(stamp);
     if (index == -1)
@@ -309,8 +306,7 @@ void TileStampModel::addVariation(const TileStamp &stamp,
     if (variationCount == 1)
         beginInsertRows(TileStampModel::index(index, 0), 0, 1);
     else
-        beginInsertRows(TileStampModel::index(index, 0),
-                        variationCount, variationCount);
+        beginInsertRows(TileStampModel::index(index, 0), variationCount, variationCount);
 
     mStamps[index].addVariation(variation);
     endInsertRows();

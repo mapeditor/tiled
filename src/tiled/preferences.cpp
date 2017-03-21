@@ -56,10 +56,8 @@ Preferences::Preferences()
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = static_cast<Map::LayerDataFormat>
-            (intValue("LayerDataFormat", Map::CSV));
-    mMapRenderOrder = static_cast<Map::RenderOrder>
-            (intValue("MapRenderOrder", Map::RightDown));
+    mLayerDataFormat = static_cast<Map::LayerDataFormat>(intValue("LayerDataFormat", Map::CSV));
+    mMapRenderOrder = static_cast<Map::RenderOrder>(intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
     mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
@@ -84,14 +82,13 @@ Preferences::Preferences()
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
-    mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
-            (intValue("ObjectLabelVisibility", AllObjectLabels));
+    mObjectLabelVisibility =
+        static_cast<ObjectLabelVisiblity>(intValue("ObjectLabelVisibility", AllObjectLabels));
 #if defined(Q_OS_MAC)
-    mApplicationStyle = static_cast<ApplicationStyle>
-            (intValue("ApplicationStyle", SystemDefaultStyle));
+    mApplicationStyle =
+        static_cast<ApplicationStyle>(intValue("ApplicationStyle", SystemDefaultStyle));
 #else
-    mApplicationStyle = static_cast<ApplicationStyle>
-            (intValue("ApplicationStyle", TiledStyle));
+    mApplicationStyle = static_cast<ApplicationStyle>(intValue("ApplicationStyle", TiledStyle));
 #endif
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
@@ -131,8 +128,10 @@ Preferences::Preferences()
     tilesetManager->setAnimateTiles(mShowTileAnimations);
 
     // Read the lists of enabled and disabled plugins
-    const QStringList disabledPlugins = mSettings->value(QLatin1String("Plugins/Disabled")).toStringList();
-    const QStringList enabledPlugins = mSettings->value(QLatin1String("Plugins/Enabled")).toStringList();
+    const QStringList disabledPlugins =
+        mSettings->value(QLatin1String("Plugins/Disabled")).toStringList();
+    const QStringList enabledPlugins =
+        mSettings->value(QLatin1String("Plugins/Enabled")).toStringList();
 
     PluginManager *pluginManager = PluginManager::instance();
     for (const QString &fileName : disabledPlugins)
@@ -219,8 +218,7 @@ void Preferences::setShowTileObjectOutlines(bool enabled)
         return;
 
     mShowTileObjectOutlines = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"),
-                        mShowTileObjectOutlines);
+    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"), mShowTileObjectOutlines);
     emit showTileObjectOutlinesChanged(mShowTileObjectOutlines);
 }
 
@@ -230,8 +228,7 @@ void Preferences::setShowTileAnimations(bool enabled)
         return;
 
     mShowTileAnimations = enabled;
-    mSettings->setValue(QLatin1String("Interface/ShowTileAnimations"),
-                        mShowTileAnimations);
+    mSettings->setValue(QLatin1String("Interface/ShowTileAnimations"), mShowTileAnimations);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setAnimateTiles(mShowTileAnimations);
@@ -303,8 +300,7 @@ void Preferences::setHighlightCurrentLayer(bool highlight)
         return;
 
     mHighlightCurrentLayer = highlight;
-    mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"),
-                        mHighlightCurrentLayer);
+    mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"), mHighlightCurrentLayer);
     emit highlightCurrentLayerChanged(mHighlightCurrentLayer);
 }
 
@@ -314,8 +310,7 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
         return;
 
     mShowTilesetGrid = showTilesetGrid;
-    mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"),
-                        mShowTilesetGrid);
+    mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"), mShowTilesetGrid);
     emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
@@ -324,15 +319,13 @@ Map::LayerDataFormat Preferences::layerDataFormat() const
     return mLayerDataFormat;
 }
 
-void Preferences::setLayerDataFormat(Map::LayerDataFormat
-                                     layerDataFormat)
+void Preferences::setLayerDataFormat(Map::LayerDataFormat layerDataFormat)
 {
     if (mLayerDataFormat == layerDataFormat)
         return;
 
     mLayerDataFormat = layerDataFormat;
-    mSettings->setValue(QLatin1String("Storage/LayerDataFormat"),
-                        mLayerDataFormat);
+    mSettings->setValue(QLatin1String("Storage/LayerDataFormat"), mLayerDataFormat);
 }
 
 Map::RenderOrder Preferences::mapRenderOrder() const
@@ -346,8 +339,7 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
         return;
 
     mMapRenderOrder = mapRenderOrder;
-    mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
-                        mMapRenderOrder);
+    mSettings->setValue(QLatin1String("Storage/MapRenderOrder"), mMapRenderOrder);
 }
 
 bool Preferences::dtdEnabled() const
@@ -379,8 +371,7 @@ void Preferences::setLanguage(const QString &language)
         return;
 
     mLanguage = language;
-    mSettings->setValue(QLatin1String("Interface/Language"),
-                        mLanguage);
+    mSettings->setValue(QLatin1String("Interface/Language"), mLanguage);
 
     LanguageManager::instance()->installTranslators();
     emit languageChanged();
@@ -397,8 +388,7 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
         return;
 
     mReloadTilesetsOnChange = value;
-    mSettings->setValue(QLatin1String("Storage/ReloadTilesets"),
-                        mReloadTilesetsOnChange);
+    mSettings->setValue(QLatin1String("Storage/ReloadTilesets"), mReloadTilesetsOnChange);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
@@ -466,8 +456,7 @@ QString Preferences::lastPath(FileType fileType) const
     }
 
     if (path.isEmpty()) {
-        path = QStandardPaths::writableLocation(
-                    QStandardPaths::DocumentsLocation);
+        path = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     }
 
     return path;
@@ -530,7 +519,7 @@ void Preferences::setCheckForUpdates(bool on)
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
-    	return;
+        return;
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
@@ -573,8 +562,7 @@ bool Preferences::boolValue(const char *key, bool defaultValue) const
 
 QColor Preferences::colorValue(const char *key, const QColor &def) const
 {
-    const QString name = mSettings->value(QLatin1String(key),
-                                          def.name()).toString();
+    const QString name = mSettings->value(QLatin1String(key), def.name()).toString();
     if (!QColor::isValidColor(name))
         return QColor();
 

@@ -32,9 +32,7 @@ ChangeTileAnimation::ChangeTileAnimation(TilesetDocument *document,
                                          Tile *tile,
                                          const QVector<Frame> &frames,
                                          QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate(
-                       "Undo Commands", "Change Tile Animation"),
-                   parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Animation"), parent)
     , mTilesetDocument(document)
     , mTile(tile)
     , mFrames(frames)

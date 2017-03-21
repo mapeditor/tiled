@@ -37,8 +37,7 @@ ChangeProperties::ChangeProperties(Document *document,
     , mObject(object)
     , mNewProperties(newProperties)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change %1 Properties").arg(kind));
+    setText(QCoreApplication::translate("Undo Commands", "Change %1 Properties").arg(kind));
 }
 
 void ChangeProperties::redo()
@@ -60,7 +59,7 @@ void ChangeProperties::swapProperties()
 
 
 SetProperty::SetProperty(Document *document,
-                         const QList<Object*> &objects,
+                         const QList<Object *> &objects,
                          const QString &name,
                          const QVariant &value,
                          QUndoCommand *parent)
@@ -95,14 +94,14 @@ void SetProperty::undo()
 
 void SetProperty::redo()
 {
-    const QList<Object*> &objects = mObjects;
+    const QList<Object *> &objects = mObjects;
     for (Object *obj : objects)
         mDocument->setProperty(obj, mName, mValue);
 }
 
 
 RemoveProperty::RemoveProperty(Document *document,
-                               const QList<Object*> &objects,
+                               const QList<Object *> &objects,
                                const QString &name,
                                QUndoCommand *parent)
     : QUndoCommand(parent)
@@ -124,14 +123,14 @@ void RemoveProperty::undo()
 
 void RemoveProperty::redo()
 {
-    const QList<Object*> &objects = mObjects;
+    const QList<Object *> &objects = mObjects;
     for (Object *obj : objects)
         mDocument->removeProperty(obj, mName);
 }
 
 
 RenameProperty::RenameProperty(Document *document,
-                               const QList<Object*> &objects,
+                               const QList<Object *> &objects,
                                const QString &oldName,
                                const QString &newName)
 {
@@ -146,7 +145,7 @@ RenameProperty::RenameProperty(Document *document,
         if (!object->hasProperty(oldName))
             continue;
 
-        const QList<Object*> objects { object };
+        const QList<Object *> objects{object};
         const QVariant value = object->property(oldName);
 
         new SetProperty(document, objects, newName, value, this);

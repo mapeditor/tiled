@@ -33,14 +33,14 @@ namespace Internal {
 RenameTerrain::RenameTerrain(TilesetDocument *tilesetDocument,
                              int terrainId,
                              const QString &newName)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Terrain Name"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Terrain Name"))
     , mTerrainModel(tilesetDocument->terrainModel())
     , mTileset(tilesetDocument->tileset().data())
     , mTerrainId(terrainId)
     , mOldName(mTileset->terrain(terrainId)->name())
     , mNewName(newName)
-{}
+{
+}
 
 void RenameTerrain::undo()
 {

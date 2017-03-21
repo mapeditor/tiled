@@ -20,19 +20,18 @@
 
 #include "tilesetterrainmodel.h"
 
-#include "tilesetdocument.h"
 #include "renameterrain.h"
 #include "terrain.h"
-#include "tileset.h"
 #include "tile.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TilesetTerrainModel::TilesetTerrainModel(TilesetDocument *tilesetDocument,
-                                         QObject *parent):
-    QAbstractListModel(parent),
-    mTilesetDocument(tilesetDocument)
+TilesetTerrainModel::TilesetTerrainModel(TilesetDocument *tilesetDocument, QObject *parent)
+    : QAbstractListModel(parent)
+    , mTilesetDocument(tilesetDocument)
 {
 }
 
@@ -80,17 +79,13 @@ QVariant TilesetTerrainModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool TilesetTerrainModel::setData(const QModelIndex &index,
-                                  const QVariant &value,
-                                  int role)
+bool TilesetTerrainModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::EditRole) {
         const QString newName = value.toString();
         Terrain *terrain = terrainAt(index);
         if (terrain->name() != newName) {
-            RenameTerrain *rename = new RenameTerrain(mTilesetDocument,
-                                                      terrain->id(),
-                                                      newName);
+            RenameTerrain *rename = new RenameTerrain(mTilesetDocument, terrain->id(), newName);
             mTilesetDocument->undoStack()->push(rename);
         }
         return true;
@@ -102,7 +97,7 @@ bool TilesetTerrainModel::setData(const QModelIndex &index,
 Qt::ItemFlags TilesetTerrainModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
-    if (index.isValid())  // can edit terrain names
+    if (index.isValid()) // can edit terrain names
         rc |= Qt::ItemIsEditable;
     return rc;
 }

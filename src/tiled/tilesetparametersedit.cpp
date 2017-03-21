@@ -25,11 +25,11 @@
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 
+#include <QFileInfo>
 #include <QFocusEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
-#include <QFileInfo>
 
 namespace Tiled {
 namespace Internal {
@@ -53,8 +53,7 @@ TilesetParametersEdit::TilesetParametersEdit(QWidget *parent)
     setFocusProxy(button);
     setFocusPolicy(Qt::StrongFocus);
 
-    connect(button, &QToolButton::clicked,
-            this, &TilesetParametersEdit::buttonClicked);
+    connect(button, &QToolButton::clicked, this, &TilesetParametersEdit::buttonClicked);
 }
 
 void TilesetParametersEdit::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -77,8 +76,7 @@ void TilesetParametersEdit::buttonClicked()
 
     if (dialog.editTilesetParameters(parameters)) {
         if (parameters != TilesetParameters(*mTilesetDocument->tileset())) {
-            auto command = new ChangeTilesetParameters(mTilesetDocument,
-                                                       parameters);
+            auto command = new ChangeTilesetParameters(mTilesetDocument, parameters);
 
             mTilesetDocument->undoStack()->push(command);
         }

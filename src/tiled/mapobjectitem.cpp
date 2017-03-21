@@ -47,11 +47,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                             ObjectGroupItem *parent):
-    QGraphicsItem(parent),
-    mObject(object),
-    mMapDocument(mapDocument)
+MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument, ObjectGroupItem *parent)
+    : QGraphicsItem(parent)
+    , mObject(object)
+    , mMapDocument(mapDocument)
 {
     syncWithMapObject();
 }
@@ -108,11 +107,9 @@ QPainterPath MapObjectItem::shape() const
     return path;
 }
 
-void MapObjectItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *,
-                          QWidget *widget)
+void MapObjectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *widget)
 {
-    qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
+    qreal scale = static_cast<MapView *>(widget->parent())->zoomable()->scale();
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);

@@ -28,8 +28,10 @@
 namespace Tiled {
 namespace Internal {
 
-AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
-                           const QKeySequence &shortcut, QObject *parent)
+AbstractTool::AbstractTool(const QString &name,
+                           const QIcon &icon,
+                           const QKeySequence &shortcut,
+                           QObject *parent)
     : QObject(parent)
     , mName(name)
     , mIcon(icon)
@@ -81,10 +83,12 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
         return;
 
     if (mMapDocument) {
-        disconnect(mMapDocument, &MapDocument::layerChanged,
-                   this, &AbstractTool::updateEnabledState);
-        disconnect(mMapDocument, &MapDocument::currentLayerChanged,
-                   this, &AbstractTool::updateEnabledState);
+        disconnect(
+            mMapDocument, &MapDocument::layerChanged, this, &AbstractTool::updateEnabledState);
+        disconnect(mMapDocument,
+                   &MapDocument::currentLayerChanged,
+                   this,
+                   &AbstractTool::updateEnabledState);
     }
 
     MapDocument *oldDocument = mMapDocument;
@@ -92,10 +96,11 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     mapDocumentChanged(oldDocument, mMapDocument);
 
     if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &AbstractTool::updateEnabledState);
-        connect(mMapDocument, &MapDocument::currentLayerChanged,
-                this, &AbstractTool::updateEnabledState);
+        connect(mMapDocument, &MapDocument::layerChanged, this, &AbstractTool::updateEnabledState);
+        connect(mMapDocument,
+                &MapDocument::currentLayerChanged,
+                this,
+                &AbstractTool::updateEnabledState);
     }
     updateEnabledState();
 }

@@ -59,8 +59,7 @@ MiniMap::MiniMap(QWidget *parent)
     setMouseTracking(true);
 
     mMapImageUpdateTimer.setSingleShot(true);
-    connect(&mMapImageUpdateTimer, SIGNAL(timeout()),
-            SLOT(redrawTimeout()));
+    connect(&mMapImageUpdateTimer, SIGNAL(timeout()), SLOT(redrawTimeout()));
 }
 
 void MiniMap::setMapDocument(MapDocument *map)
@@ -80,8 +79,10 @@ void MiniMap::setMapDocument(MapDocument *map)
     mMapDocument = map;
 
     if (mMapDocument) {
-        connect(mMapDocument->undoStack(), SIGNAL(indexChanged(int)),
-                this, SLOT(scheduleMapImageUpdate()));
+        connect(mMapDocument->undoStack(),
+                SIGNAL(indexChanged(int)),
+                this,
+                SLOT(scheduleMapImageUpdate()));
 
         if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
             connect(mapView->horizontalScrollBar(), SIGNAL(valueChanged(int)), SLOT(update()));
@@ -156,8 +157,8 @@ void MiniMap::updateImageRect()
 
     // Scale and center the image
     const QRect r = contentsRect();
-    qreal scale = qMin((qreal) r.width() / imageRect.width(),
-                       (qreal) r.height() / imageRect.height());
+    qreal scale =
+        qMin((qreal) r.width() / imageRect.width(), (qreal) r.height() / imageRect.height());
     imageRect.setSize(imageRect.size() * scale);
     imageRect.moveCenter(r.center());
 
@@ -234,14 +235,14 @@ void MiniMap::renderMapToImage()
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        const TileLayer *tileLayer = dynamic_cast<const TileLayer *>(layer);
+        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup *>(layer);
+        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer *>(layer);
 
         if (tileLayer && drawTiles) {
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup && drawObjects) {
-            QList<MapObject*> objects = objGroup->objects();
+            QList<MapObject *> objects = objGroup->objects();
 
             if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 qStableSort(objects.begin(), objects.end(), objectLessThan);
@@ -272,8 +273,7 @@ void MiniMap::renderMapToImage()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), prefs->gridColor());
     }
 
     renderer->setFlags(renderFlags);
@@ -298,7 +298,7 @@ void MiniMap::redrawTimeout()
 }
 
 void MiniMap::wheelEvent(QWheelEvent *event)
-{    
+{
     if (event->orientation() == Qt::Vertical) {
         centerViewOnLocalPixel(event->pos(), event->delta());
         return;
@@ -308,7 +308,7 @@ void MiniMap::wheelEvent(QWheelEvent *event)
 }
 
 void MiniMap::mousePressEvent(QMouseEvent *event)
-{       
+{
     if (event->button() == Qt::LeftButton) {
         QPoint cursorPos = event->pos();
         QRect viewPort = viewportRect();
@@ -351,7 +351,7 @@ void MiniMap::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void MiniMap::mouseMoveEvent(QMouseEvent *event)
-{    
+{
     if (mDragging) {
         centerViewOnLocalPixel(event->pos() + mDragOffset);
         return;
@@ -380,10 +380,11 @@ QRect MiniMap::viewportRect() const
 
     const QRectF sceneRect = mapView->sceneRect();
     const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
-    return QRect((viewRect.x() - sceneRect.x()) / sceneRect.width() * mImageRect.width() + mImageRect.x(),
-                 (viewRect.y() - sceneRect.y()) / sceneRect.height() * mImageRect.height() + mImageRect.y(),
-                 viewRect.width() / sceneRect.width() * mImageRect.width(),
-                 viewRect.height() / sceneRect.height() * mImageRect.height());
+    return QRect(
+        (viewRect.x() - sceneRect.x()) / sceneRect.width() * mImageRect.width() + mImageRect.x(),
+        (viewRect.y() - sceneRect.y()) / sceneRect.height() * mImageRect.height() + mImageRect.y(),
+        viewRect.width() / sceneRect.width() * mImageRect.width(),
+        viewRect.height() / sceneRect.height() * mImageRect.height());
 }
 
 QPointF MiniMap::mapToScene(QPoint p) const

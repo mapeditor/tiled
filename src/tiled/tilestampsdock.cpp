@@ -30,8 +30,8 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QHeaderView>
-#include <QLineEdit>
 #include <QKeyEvent>
+#include <QLineEdit>
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
@@ -68,8 +68,8 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     mTileStampView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
     mTileStampView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mTileStampView, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(showContextMenu(QPoint)));
+    connect(
+        mTileStampView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
 
     mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
@@ -84,11 +84,13 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     mFilterEdit->setClearButtonEnabled(true);
 
-    connect(mFilterEdit, &QLineEdit::textChanged,
-            mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
+    connect(mFilterEdit,
+            &QLineEdit::textChanged,
+            mProxyModel,
+            &QSortFilterProxyModel::setFilterFixedString);
 
-    connect(mTileStampModel, &TileStampModel::stampRenamed,
-            this, &TileStampsDock::ensureStampVisible);
+    connect(
+        mTileStampModel, &TileStampModel::stampRenamed, this, &TileStampsDock::ensureStampVisible);
 
     connect(mNewStamp, &QAction::triggered, this, &TileStampsDock::newStamp);
     connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
@@ -129,8 +131,10 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     layout->addLayout(listAndToolBar);
 
     QItemSelectionModel *selectionModel = mTileStampView->selectionModel();
-    connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this, SLOT(currentRowChanged(QModelIndex)));
+    connect(selectionModel,
+            SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+            this,
+            SLOT(currentRowChanged(QModelIndex)));
 
     setWidget(widget);
     retranslateUi();
@@ -188,10 +192,9 @@ void TileStampsDock::showContextMenu(QPoint pos)
 
     const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
     if (mTileStampModel->isStamp(sourceIndex)) {
-        QAction *addStampVariation = new QAction(mAddVariation->icon(),
-                                                 mAddVariation->text(), &menu);
-        QAction *deleteStamp = new QAction(mDelete->icon(),
-                                           tr("Delete Stamp"), &menu);
+        QAction *addStampVariation =
+            new QAction(mAddVariation->icon(), mAddVariation->text(), &menu);
+        QAction *deleteStamp = new QAction(mDelete->icon(), tr("Delete Stamp"), &menu);
 
         connect(deleteStamp, SIGNAL(triggered(bool)), SLOT(delete_()));
         connect(addStampVariation, SIGNAL(triggered(bool)), SLOT(addVariation()));
@@ -200,9 +203,8 @@ void TileStampsDock::showContextMenu(QPoint pos)
         menu.addSeparator();
         menu.addAction(deleteStamp);
     } else {
-        QAction *removeVariation = new QAction(QIcon(QLatin1String(":/images/16x16/remove.png")),
-                                               tr("Remove Variation"),
-                                               &menu);
+        QAction *removeVariation = new QAction(
+            QIcon(QLatin1String(":/images/16x16/remove.png")), tr("Remove Variation"), &menu);
 
         Utils::setThemeIcon(removeVariation, "remove");
 
@@ -271,9 +273,8 @@ void TileStampsDock::chooseFolder()
     Preferences *prefs = Preferences::instance();
 
     QString stampsDirectory = prefs->stampsDirectory();
-    stampsDirectory = QFileDialog::getExistingDirectory(window(),
-                                                        tr("Choose the Stamps Folder"),
-                                                        stampsDirectory);
+    stampsDirectory = QFileDialog::getExistingDirectory(
+        window(), tr("Choose the Stamps Folder"), stampsDirectory);
     if (!stampsDirectory.isEmpty())
         prefs->setStampsDirectory(stampsDirectory);
 }

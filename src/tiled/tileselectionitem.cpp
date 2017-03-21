@@ -38,12 +38,15 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
-    connect(mMapDocument, &MapDocument::selectedAreaChanged,
-            this, &TileSelectionItem::selectionChanged);
-    connect(mapDocument, &MapDocument::layerChanged,
-            this, &TileSelectionItem::layerChanged);
-    connect(mMapDocument, &MapDocument::currentLayerChanged,
-            this, &TileSelectionItem::currentLayerChanged);
+    connect(mMapDocument,
+            &MapDocument::selectedAreaChanged,
+            this,
+            &TileSelectionItem::selectionChanged);
+    connect(mapDocument, &MapDocument::layerChanged, this, &TileSelectionItem::layerChanged);
+    connect(mMapDocument,
+            &MapDocument::currentLayerChanged,
+            this,
+            &TileSelectionItem::currentLayerChanged);
 
     updateBoundingRect();
 }
@@ -53,21 +56,17 @@ QRectF TileSelectionItem::boundingRect() const
     return mBoundingRect;
 }
 
-void TileSelectionItem::paint(QPainter *painter,
-                              const QStyleOptionGraphicsItem *option,
-                              QWidget *)
+void TileSelectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     const QRegion &selection = mMapDocument->selectedArea();
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(128);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    renderer->drawTileSelection(painter, selection, highlight,
-                                option->exposedRect);
+    renderer->drawTileSelection(painter, selection, highlight, option->exposedRect);
 }
 
-void TileSelectionItem::selectionChanged(const QRegion &newSelection,
-                                         const QRegion &oldSelection)
+void TileSelectionItem::selectionChanged(const QRegion &newSelection, const QRegion &oldSelection)
 {
     prepareGeometryChange();
     updateBoundingRect();

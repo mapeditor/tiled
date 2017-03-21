@@ -24,8 +24,8 @@
 #include "commanddialog.h"
 #include "utils.h"
 
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
 #include <QLatin1String>
 #include <QMenu>
 
@@ -96,7 +96,7 @@ void CommandManager::updateActions()
         QAction *mAction = new QAction(command.name, this);
         mAction->setShortcut(command.shortcut);
 
-        connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
+        connect(mAction, &QAction::triggered, [this, i]() { mModel->execute(i); });
 
         mActions.append(mAction);
     }
@@ -108,8 +108,7 @@ void CommandManager::updateActions()
     mActions.append(mSeparator);
 
     QAction *mEditCommands = new QAction(this);
-    mEditCommands->setIcon(
-            QIcon(QLatin1String(":/images/24x24/system-run.png")));
+    mEditCommands->setIcon(QIcon(QLatin1String(":/images/24x24/system-run.png")));
     mEditCommands->setText(tr("Edit Commands..."));
     Utils::setThemeIcon(mEditCommands, "system-run");
 

@@ -29,8 +29,8 @@
 
 #include <QtGroupPropertyManager>
 
-#include <QColorDialog>
 #include <QCloseEvent>
+#include <QColorDialog>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -46,13 +46,14 @@ class ColorDelegate : public QStyledItemDelegate
 public:
     ColorDelegate(QObject *parent = nullptr)
         : QStyledItemDelegate(parent)
-    { }
+    {
+    }
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
 
-    QSize sizeHint(const QStyleOptionViewItem &,
-                   const QModelIndex &) const override;
+    QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override;
 };
 
 void ColorDelegate::paint(QPainter *painter,
@@ -61,8 +62,7 @@ void ColorDelegate::paint(QPainter *painter,
 {
     QStyledItemDelegate::paint(painter, option, index);
 
-    const QVariant displayData =
-            index.model()->data(index, ObjectTypesModel::ColorRole);
+    const QVariant displayData = index.model()->data(index, ObjectTypesModel::ColorRole);
     const QColor color = displayData.value<QColor>();
     const QRect rect = option.rect.adjusted(4, 4, -4, -4);
 
@@ -83,8 +83,7 @@ void ColorDelegate::paint(QPainter *painter,
     painter->drawRect(rect);
 }
 
-QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &,
-                              const QModelIndex &) const
+QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
 {
     return Utils::dpiScaled(QSize(50, 20));
 }
@@ -152,44 +151,51 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     mUi->propertiesLayout->addWidget(propertiesToolBar);
 
     auto selectionModel = mUi->objectTypesTable->selectionModel();
-    connect(selectionModel, &QItemSelectionModel::selectionChanged,
-            this, &ObjectTypesEditor::selectedObjectTypesChanged);
-    connect(mObjectTypesModel, &ObjectTypesModel::modelReset,
-            this, &ObjectTypesEditor::selectFirstType);
-    connect(mUi->objectTypesTable, SIGNAL(doubleClicked(QModelIndex)),
+    connect(selectionModel,
+            &QItemSelectionModel::selectionChanged,
+            this,
+            &ObjectTypesEditor::selectedObjectTypesChanged);
+    connect(mObjectTypesModel,
+            &ObjectTypesModel::modelReset,
+            this,
+            &ObjectTypesEditor::selectFirstType);
+    connect(mUi->objectTypesTable,
+            SIGNAL(doubleClicked(QModelIndex)),
             SLOT(objectTypeIndexClicked(QModelIndex)));
 
-    connect(mAddObjectTypeAction, SIGNAL(triggered()),
-            SLOT(addObjectType()));
-    connect(mRemoveObjectTypeAction, SIGNAL(triggered()),
-            SLOT(removeSelectedObjectTypes()));
+    connect(mAddObjectTypeAction, SIGNAL(triggered()), SLOT(addObjectType()));
+    connect(mRemoveObjectTypeAction, SIGNAL(triggered()), SLOT(removeSelectedObjectTypes()));
 
-    connect(mAddPropertyAction, SIGNAL(triggered()),
-            SLOT(addProperty()));
-    connect(mRemovePropertyAction, SIGNAL(triggered()),
-            SLOT(removeProperty()));
-    connect(mRenamePropertyAction, SIGNAL(triggered()),
-            SLOT(renameProperty()));
+    connect(mAddPropertyAction, SIGNAL(triggered()), SLOT(addProperty()));
+    connect(mRemovePropertyAction, SIGNAL(triggered()), SLOT(removeProperty()));
+    connect(mRenamePropertyAction, SIGNAL(triggered()), SLOT(renameProperty()));
 
-    connect(mUi->actionChooseFile, SIGNAL(triggered()),
-            SLOT(chooseObjectTypesFile()));
-    connect(mUi->actionImport, SIGNAL(triggered()),
-            SLOT(importObjectTypes()));
-    connect(mUi->actionExport, SIGNAL(triggered()),
-            SLOT(exportObjectTypes()));
+    connect(mUi->actionChooseFile, SIGNAL(triggered()), SLOT(chooseObjectTypesFile()));
+    connect(mUi->actionImport, SIGNAL(triggered()), SLOT(importObjectTypes()));
+    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportObjectTypes()));
 
-    connect(mObjectTypesModel, &ObjectTypesModel::dataChanged,
-            this, &ObjectTypesEditor::applyObjectTypes);
-    connect(mObjectTypesModel, &ObjectTypesModel::rowsInserted,
-            this, &ObjectTypesEditor::applyObjectTypes);
-    connect(mObjectTypesModel, &ObjectTypesModel::rowsRemoved,
-            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel,
+            &ObjectTypesModel::dataChanged,
+            this,
+            &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel,
+            &ObjectTypesModel::rowsInserted,
+            this,
+            &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel,
+            &ObjectTypesModel::rowsRemoved,
+            this,
+            &ObjectTypesEditor::applyObjectTypes);
 
-    connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
-            this, &ObjectTypesEditor::propertyValueChanged);
+    connect(mVariantManager,
+            &QtVariantPropertyManager::valueChanged,
+            this,
+            &ObjectTypesEditor::propertyValueChanged);
 
-    connect(mUi->propertiesView, &QtTreePropertyBrowser::currentItemChanged,
-            this, &ObjectTypesEditor::currentItemChanged);
+    connect(mUi->propertiesView,
+            &QtTreePropertyBrowser::currentItemChanged,
+            this,
+            &ObjectTypesEditor::currentItemChanged);
 
     Preferences *prefs = Preferences::instance();
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
@@ -240,9 +246,7 @@ void ObjectTypesEditor::addObjectType()
     // Select and focus the new row and ensure it is visible
     QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
     const QModelIndex newIndex = mObjectTypesModel->index(newRow, 0);
-    sm->select(newIndex,
-               QItemSelectionModel::ClearAndSelect |
-               QItemSelectionModel::Rows);
+    sm->select(newIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     sm->setCurrentIndex(newIndex, QItemSelectionModel::Current);
     mUi->objectTypesTable->edit(newIndex);
 }
@@ -286,10 +290,10 @@ void ObjectTypesEditor::applyObjectTypes()
 
     ObjectTypesWriter writer;
     if (!writer.writeObjectTypes(objectTypesFile, objectTypes)) {
-        QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              tr("Error writing to %1:\n%2")
-                              .arg(prefs->objectTypesFile(),
-                                   writer.errorString()));
+        QMessageBox::critical(
+            this,
+            tr("Error Writing Object Types"),
+            tr("Error writing to %1:\n%2").arg(prefs->objectTypesFile(), writer.errorString()));
     }
 }
 
@@ -326,12 +330,12 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     Preferences *prefs = Preferences::instance();
     const QString startPath = prefs->objectTypesFile();
 
-    const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Choose Object Types File"),
-                                         startPath,
-                                         tr("Object Types files (*.xml)"),
-                                         nullptr,
-                                         QFileDialog::DontConfirmOverwrite);
+    const QString fileName = QFileDialog::getOpenFileName(this,
+                                                          tr("Choose Object Types File"),
+                                                          startPath,
+                                                          tr("Object Types files (*.xml)"),
+                                                          nullptr,
+                                                          QFileDialog::DontConfirmOverwrite);
 
     if (fileName.isEmpty())
         return;
@@ -345,8 +349,7 @@ void ObjectTypesEditor::chooseObjectTypesFile()
         objectTypes = reader.readObjectTypes(fileName);
 
         if (!reader.errorString().isEmpty()) {
-            QMessageBox::critical(this, tr("Error Reading Object Types"),
-                                  reader.errorString());
+            QMessageBox::critical(this, tr("Error Reading Object Types"), reader.errorString());
             return;
         }
     }
@@ -360,10 +363,8 @@ void ObjectTypesEditor::importObjectTypes()
 {
     Preferences *prefs = Preferences::instance();
     const QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
-    const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Import Object Types"),
-                                         lastPath,
-                                         tr("Object Types files (*.xml)"));
+    const QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Import Object Types"), lastPath, tr("Object Types files (*.xml)"));
     if (fileName.isEmpty())
         return;
 
@@ -375,9 +376,10 @@ void ObjectTypesEditor::importObjectTypes()
     if (reader.errorString().isEmpty()) {
         ObjectTypes currentTypes = mObjectTypesModel->objectTypes();
         for (const ObjectType &type : objectTypes) {
-            auto it = std::find_if(currentTypes.begin(), currentTypes.end(), [&type](ObjectType &existingType) {
-                return existingType.name == type.name;
-            });
+            auto it = std::find_if(
+                currentTypes.begin(), currentTypes.end(), [&type](ObjectType &existingType) {
+                    return existingType.name == type.name;
+                });
 
             if (it != currentTypes.end()) {
                 it->color = type.color;
@@ -389,8 +391,7 @@ void ObjectTypesEditor::importObjectTypes()
 
         mObjectTypesModel->setObjectTypes(currentTypes);
     } else {
-        QMessageBox::critical(this, tr("Error Reading Object Types"),
-                              reader.errorString());
+        QMessageBox::critical(this, tr("Error Reading Object Types"), reader.errorString());
     }
 
     applyObjectTypes();
@@ -404,10 +405,8 @@ void ObjectTypesEditor::exportObjectTypes()
     if (!lastPath.endsWith(QLatin1String(".xml")))
         lastPath.append(QLatin1String("/objecttypes.xml"));
 
-    const QString fileName =
-            QFileDialog::getSaveFileName(this, tr("Export Object Types"),
-                                         lastPath,
-                                         tr("Object Types files (*.xml)"));
+    const QString fileName = QFileDialog::getSaveFileName(
+        this, tr("Export Object Types"), lastPath, tr("Object Types files (*.xml)"));
     if (fileName.isEmpty())
         return;
 
@@ -415,8 +414,7 @@ void ObjectTypesEditor::exportObjectTypes()
 
     ObjectTypesWriter writer;
     if (!writer.writeObjectTypes(fileName, prefs->objectTypes())) {
-        QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              writer.errorString());
+        QMessageBox::critical(this, tr("Error Writing Object Types"), writer.errorString());
     }
 }
 
@@ -461,8 +459,7 @@ void ObjectTypesEditor::updateProperties()
     mUpdating = false;
 }
 
-void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
-                                             const QVariant &value)
+void ObjectTypesEditor::propertyValueChanged(QtProperty *property, const QVariant &value)
 {
     if (mUpdating)
         return;
@@ -470,8 +467,7 @@ void ObjectTypesEditor::propertyValueChanged(QtProperty *property,
     applyProperty(property->propertyName(), value);
 }
 
-QtVariantProperty *ObjectTypesEditor::createProperty(int type,
-                                                     const QString &name)
+QtVariantProperty *ObjectTypesEditor::createProperty(int type, const QString &name)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
     if (!property) {
@@ -511,7 +507,7 @@ void ObjectTypesEditor::editCustomProperty(const QString &name)
     if (!property)
         return;
 
-    const QList<QtBrowserItem*> propertyItems = mUi->propertiesView->items(property);
+    const QList<QtBrowserItem *> propertyItems = mUi->propertiesView->items(property);
     if (!propertyItems.isEmpty())
         mUi->propertiesView->editItem(propertyItems.first());
 }
@@ -586,9 +582,8 @@ void ObjectTypesEditor::selectFirstType()
 {
     QModelIndex firstIndex = mObjectTypesModel->index(0, 0);
     if (firstIndex.isValid()) {
-        mUi->objectTypesTable->selectionModel()->select(firstIndex,
-                                                        QItemSelectionModel::ClearAndSelect |
-                                                        QItemSelectionModel::Rows);
+        mUi->objectTypesTable->selectionModel()->select(
+            firstIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     } else {
         // make sure the properties view is empty
         updateProperties();

@@ -35,15 +35,13 @@ ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
                                  const QSize &size,
                                  const QPoint &offset,
                                  QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Resize Layer"),
-                   parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Resize Layer"), parent)
     , mMapDocument(mapDocument)
     , mDone(false)
     , mOriginalLayer(layer)
 {
     // Create the resized layer (once)
-    mResizedLayer = static_cast<TileLayer*>(layer->clone());
+    mResizedLayer = static_cast<TileLayer *>(layer->clone());
     mResizedLayer->resize(size, offset);
 }
 

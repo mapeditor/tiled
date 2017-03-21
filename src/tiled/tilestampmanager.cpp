@@ -24,8 +24,8 @@
 #include "abstracttool.h"
 #include "bucketfilltool.h"
 #include "documentmanager.h"
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "preferences.h"
 #include "savefile.h"
 #include "stampbrush.h"
@@ -51,8 +51,7 @@ static QString stampFilePath(const QString &name)
     return stampsDir.filePath(name);
 }
 
-static QString findStampFileName(const QString &name,
-                                 const QString &currentFileName = QString())
+static QString findStampFileName(const QString &name, const QString &currentFileName = QString())
 {
     const QRegularExpression invalidChars(QLatin1String("[^\\w -]+"));
     const Preferences *prefs = Preferences::instance();
@@ -72,8 +71,7 @@ static QString findStampFileName(const QString &name,
     return fileName;
 }
 
-TileStampManager::TileStampManager(const ToolManager &toolManager,
-                                   QObject *parent)
+TileStampManager::TileStampManager(const ToolManager &toolManager, QObject *parent)
     : QObject(parent)
     , mQuickStamps(quickStampKeys().length())
     , mTileStampModel(new TileStampModel(this))
@@ -81,17 +79,15 @@ TileStampManager::TileStampManager(const ToolManager &toolManager,
 {
     Preferences *prefs = Preferences::instance();
 
-    connect(prefs, &Preferences::stampsDirectoryChanged,
-            this, &TileStampManager::stampsDirectoryChanged);
+    connect(prefs,
+            &Preferences::stampsDirectoryChanged,
+            this,
+            &TileStampManager::stampsDirectoryChanged);
 
-    connect(mTileStampModel, &TileStampModel::stampAdded,
-            this, &TileStampManager::stampAdded);
-    connect(mTileStampModel, &TileStampModel::stampRenamed,
-            this, &TileStampManager::stampRenamed);
-    connect(mTileStampModel, &TileStampModel::stampChanged,
-            this, &TileStampManager::saveStamp);
-    connect(mTileStampModel, &TileStampModel::stampRemoved,
-            this, &TileStampManager::deleteStamp);
+    connect(mTileStampModel, &TileStampModel::stampAdded, this, &TileStampManager::stampAdded);
+    connect(mTileStampModel, &TileStampModel::stampRenamed, this, &TileStampManager::stampRenamed);
+    connect(mTileStampModel, &TileStampModel::stampChanged, this, &TileStampManager::saveStamp);
+    connect(mTileStampModel, &TileStampModel::stampRemoved, this, &TileStampManager::deleteStamp);
 
     loadStamps();
 }
@@ -105,16 +101,16 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
 {
     TileStamp stamp;
 
-    if (StampBrush *stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
+    if (StampBrush *stampBrush = dynamic_cast<StampBrush *>(selectedTool)) {
         // take the stamp from the stamp brush
         stamp = stampBrush->stamp();
-    } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
+    } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool *>(selectedTool)) {
         // take the stamp from the fill tool
         stamp = fillTool->stamp();
-    } else if (MapDocument *mapDocument = qobject_cast<MapDocument*>(DocumentManager::instance()->currentDocument())) {
+    } else if (MapDocument *mapDocument =
+                   qobject_cast<MapDocument *>(DocumentManager::instance()->currentDocument())) {
         // try making a stamp from the current tile selection
-        const TileLayer *tileLayer =
-                dynamic_cast<TileLayer*>(mapDocument->currentLayer());
+        const TileLayer *tileLayer = dynamic_cast<TileLayer *>(mapDocument->currentLayer());
         if (!tileLayer)
             return stamp;
 
@@ -129,9 +125,8 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
             return stamp;
 
         const Map *map = mapDocument->map();
-        Map *copyMap = new Map(map->orientation(),
-                               copy->width(), copy->height(),
-                               map->tileWidth(), map->tileHeight());
+        Map *copyMap = new Map(
+            map->orientation(), copy->width(), copy->height(), map->tileWidth(), map->tileHeight());
 
         // Add tileset references to map
         foreach (const SharedTileset &tileset, copy->usedTilesets())
@@ -234,9 +229,8 @@ void TileStampManager::loadStamps()
     const QString stampsDirectory = prefs->stampsDirectory();
     const QDir stampsDir(stampsDirectory);
 
-    QDirIterator iterator(stampsDirectory,
-                          QStringList() << QLatin1String("*.stamp"),
-                          QDir::Files | QDir::Readable);
+    QDirIterator iterator(
+        stampsDirectory, QStringList() << QLatin1String("*.stamp"), QDir::Files | QDir::Readable);
     while (iterator.hasNext()) {
         const QString &stampFileName = iterator.next();
 
@@ -303,8 +297,7 @@ void TileStampManager::stampRenamed(TileStamp stamp)
     QString newFileName = findStampFileName(stamp.name(), existingFileName);
 
     if (existingFileName != newFileName) {
-        if (QFile::rename(stampFilePath(existingFileName),
-                          stampFilePath(newFileName))) {
+        if (QFile::rename(stampFilePath(existingFileName), stampFilePath(newFileName))) {
             stamp.setFileName(newFileName);
         }
     }

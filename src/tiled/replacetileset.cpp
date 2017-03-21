@@ -27,11 +27,8 @@
 namespace Tiled {
 namespace Internal {
 
-ReplaceTileset::ReplaceTileset(MapDocument *mapDocument,
-                               int index,
-                               const SharedTileset &tileset)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Replace Tileset"))
+ReplaceTileset::ReplaceTileset(MapDocument *mapDocument, int index, const SharedTileset &tileset)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Replace Tileset"))
     , mMapDocument(mapDocument)
     , mIndex(index)
     , mTileset(tileset)

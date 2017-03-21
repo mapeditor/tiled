@@ -21,13 +21,13 @@
 #include "tilecollisioneditor.h"
 
 #include "addremovemapobject.h"
-#include "editpolygontool.h"
 #include "changetileobjectgroup.h"
-#include "createobjecttool.h"
-#include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
+#include "createobjecttool.h"
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
+#include "createrectangleobjecttool.h"
+#include "editpolygontool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -47,8 +47,8 @@
 #include "zoomable.h"
 
 #include <QCloseEvent>
-#include <QCoreApplication>
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QShortcut>
 #include <QStatusBar>
 #include <QToolBar>
@@ -88,7 +88,8 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);;
+    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
+    ;
 
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setObjectName(QLatin1String("TileCollisionEditorToolBar"));
@@ -108,8 +109,9 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     addToolBar(toolBar);
 
     mMapScene->setSelectedTool(mToolManager->selectedTool());
-    connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            SLOT(setSelectedTool(AbstractTool*)));
+    connect(mToolManager,
+            SIGNAL(selectedToolChanged(AbstractTool *)),
+            SLOT(setSelectedTool(AbstractTool *)));
 
     QComboBox *zoomComboBox = new QComboBox;
     statusBar()->addPermanentWidget(zoomComboBox);
@@ -122,7 +124,8 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     QShortcut *cutShortcut = new QShortcut(QKeySequence::Cut, this);
     QShortcut *copyShortcut = new QShortcut(QKeySequence::Copy, this);
     QShortcut *pasteShortcut = new QShortcut(QKeySequence::Paste, this);
-    QShortcut *pasteInPlaceShortcut = new QShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Shift+V"), this);
+    QShortcut *pasteInPlaceShortcut =
+        new QShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Shift+V"), this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
     QShortcut *deleteShortcut2 = new QShortcut(QKeySequence(Qt::Key_Backspace), this);
 
@@ -154,11 +157,14 @@ void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
     mTilesetDocument = tilesetDocument;
 
     if (mTilesetDocument) {
-        connect(mTilesetDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
-                SLOT(tileObjectGroupChanged(Tile*)));
+        connect(mTilesetDocument,
+                SIGNAL(tileObjectGroupChanged(Tile *)),
+                SLOT(tileObjectGroupChanged(Tile *)));
 
-        connect(mTilesetDocument, &MapDocument::currentObjectChanged,
-                this, &TileCollisionEditor::currentObjectChanged);
+        connect(mTilesetDocument,
+                &MapDocument::currentObjectChanged,
+                this,
+                &TileCollisionEditor::currentObjectChanged);
     }
 }
 
@@ -193,7 +199,7 @@ void TileCollisionEditor::setTile(Tile *tile)
 
         ObjectGroup *objectGroup;
         if (tile->objectGroup())
-            objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+            objectGroup = static_cast<ObjectGroup *>(tile->objectGroup()->clone());
         else
             objectGroup = new ObjectGroup;
 
@@ -211,11 +217,15 @@ void TileCollisionEditor::setTile(Tile *tile)
 
         mMapScene->enableSelectedTool();
 
-        connect(mapDocument->undoStack(), &QUndoStack::indexChanged,
-                this, &TileCollisionEditor::applyChanges);
+        connect(mapDocument->undoStack(),
+                &QUndoStack::indexChanged,
+                this,
+                &TileCollisionEditor::applyChanges);
 
-        connect(mapDocument, &MapDocument::selectedObjectsChanged,
-                this, &TileCollisionEditor::selectedObjectsChanged);
+        connect(mapDocument,
+                &MapDocument::selectedObjectsChanged,
+                this,
+                &TileCollisionEditor::selectedObjectsChanged);
 
     } else {
         mMapScene->setMapDocument(nullptr);
@@ -226,8 +236,10 @@ void TileCollisionEditor::setTile(Tile *tile)
     if (previousDocument) {
         // Explicitly disconnect early from this signal, since it can get fired
         // from the QUndoStack destructor.
-        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TileCollisionEditor::applyChanges);
+        disconnect(previousDocument->undoStack(),
+                   &QUndoStack::indexChanged,
+                   this,
+                   &TileCollisionEditor::applyChanges);
 
         delete previousDocument;
     }
@@ -254,7 +266,7 @@ void TileCollisionEditor::applyChanges()
 
     MapDocument *dummyDocument = mMapScene->mapDocument();
     Layer *objectGroup = dummyDocument->map()->layerAt(1);
-    ObjectGroup *clonedGroup = static_cast<ObjectGroup*>(objectGroup->clone());
+    ObjectGroup *clonedGroup = static_cast<ObjectGroup *>(objectGroup->clone());
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
@@ -279,7 +291,7 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
     ObjectGroup *objectGroup;
     if (tile->objectGroup())
-        objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+        objectGroup = static_cast<ObjectGroup *>(tile->objectGroup()->clone());
     else
         objectGroup = new ObjectGroup;
 
@@ -295,7 +307,7 @@ void TileCollisionEditor::currentObjectChanged(Object *object)
 {
     // If a tile object is selected, edit the collision shapes for that tile
     if (object && object->typeId() == Object::MapObjectType) {
-        const Cell &cell = static_cast<MapObject*>(object)->cell();
+        const Cell &cell = static_cast<MapObject *>(object)->cell();
         if (Tile *tile = cell.tile())
             setTile(tile);
     }
@@ -359,9 +371,8 @@ void TileCollisionEditor::paste(ClipboardManager::PasteFlags flags)
 
     if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         MapDocument *dummyDocument = mMapScene->mapDocument();
-        clipboardManager->pasteObjectGroup(objectGroup,
-                                           dummyDocument, mMapView,
-                                           flags | ClipboardManager::PasteNoTileObjects);
+        clipboardManager->pasteObjectGroup(
+            objectGroup, dummyDocument, mMapView, flags | ClipboardManager::PasteNoTileObjects);
     }
 }
 
@@ -371,7 +382,7 @@ void TileCollisionEditor::delete_(Operation operation)
         return;
 
     MapDocument *dummyDocument = mMapScene->mapDocument();
-    const QList<MapObject*> &selectedObjects = dummyDocument->selectedObjects();
+    const QList<MapObject *> &selectedObjects = dummyDocument->selectedObjects();
     if (selectedObjects.isEmpty())
         return;
 

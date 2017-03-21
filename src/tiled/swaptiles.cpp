@@ -31,29 +31,27 @@
 namespace Tiled {
 namespace Internal {
 
-SwapTiles::SwapTiles(MapDocument *mapDocument,
-                     Tile *tile1,
-                     Tile *tile2)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Swap Tiles"))
+SwapTiles::SwapTiles(MapDocument *mapDocument, Tile *tile1, Tile *tile2)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Swap Tiles"))
     , mMapDocument(mapDocument)
     , mTile1(tile1)
     , mTile2(tile2)
-{}
+{
+}
 
 void SwapTiles::swap()
 {
-    Tile * const tile1 = mTile1;
-    Tile * const tile2 = mTile2;
+    Tile *const tile1 = mTile1;
+    Tile *const tile2 = mTile2;
 
     const bool tileSizeChanged = tile1->size() != tile2->size();
 
-    QList<MapObject*> changedObjects;
+    QList<MapObject *> changedObjects;
 
     auto isTile1 = [=](const Cell &cell) { return cell.refersTile(tile1); };
     auto isTile2 = [=](const Cell &cell) { return cell.refersTile(tile2); };
 
-    auto swapObjectTile = [=,&changedObjects](MapObject *object, Tile *fromTile, Tile *toTile) {
+    auto swapObjectTile = [=, &changedObjects](MapObject *object, Tile *fromTile, Tile *toTile) {
         Cell cell = object->cell();
         cell.setTile(toTile);
         object->setCell(cell);
@@ -66,7 +64,7 @@ void SwapTiles::swap()
     while (Layer *layer = it.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-            auto tileLayer = static_cast<TileLayer*>(layer);
+            auto tileLayer = static_cast<TileLayer *>(layer);
             auto region1 = tileLayer->region(isTile1);
             auto region2 = tileLayer->region(isTile2);
 
@@ -78,7 +76,7 @@ void SwapTiles::swap()
             break;
         }
         case Layer::ObjectGroupType: {
-            for (MapObject *object : *static_cast<ObjectGroup*>(layer)) {
+            for (MapObject *object : *static_cast<ObjectGroup *>(layer)) {
                 if (object->cell().refersTile(tile1))
                     swapObjectTile(object, tile1, tile2);
                 else if (object->cell().refersTile(tile2))

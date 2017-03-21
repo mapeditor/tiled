@@ -26,8 +26,7 @@
 namespace Tiled {
 namespace Internal {
 
-SnapHelper::SnapHelper(const MapRenderer *renderer,
-                       Qt::KeyboardModifiers modifiers)
+SnapHelper::SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers)
     : mRenderer(renderer)
 {
     Preferences *preferences = Preferences::instance();

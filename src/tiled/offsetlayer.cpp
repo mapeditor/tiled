@@ -40,8 +40,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          const QRect &bounds,
                          bool wrapX,
                          bool wrapY)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Offset Layer"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Offset Layer"))
     , mMapDocument(mapDocument)
     , mDone(false)
     , mOriginalLayer(layer)
@@ -50,11 +49,11 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
         mOffsetLayer = layer->clone();
-        static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
+        static_cast<TileLayer *>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
     case Layer::ObjectGroupType:
         mOffsetLayer = layer->clone();
-        // fall through
+    // fall through
     case Layer::ImageLayerType:
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units
@@ -64,7 +63,8 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
 
         if (mOriginalLayer->layerType() == Layer::ObjectGroupType) {
-            static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+            static_cast<ObjectGroup *>(mOffsetLayer)
+                ->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
         } else {
             // (wrapping not supported for image layers and group layers)
             mOldOffset = mOriginalLayer->offset();

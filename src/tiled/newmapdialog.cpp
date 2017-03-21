@@ -21,8 +21,8 @@
 #include "newmapdialog.h"
 #include "ui_newmapdialog.h"
 
-#include "isometricrenderer.h"
 #include "hexagonalrenderer.h"
+#include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "orthogonalrenderer.h"
@@ -34,23 +34,21 @@
 #include <QPushButton>
 #include <QSettings>
 
-static const char * const ORIENTATION_KEY = "Map/Orientation";
-static const char * const MAP_WIDTH_KEY = "Map/Width";
-static const char * const MAP_HEIGHT_KEY = "Map/Height";
-static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
-static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
+static const char *const ORIENTATION_KEY = "Map/Orientation";
+static const char *const MAP_WIDTH_KEY = "Map/Width";
+static const char *const MAP_HEIGHT_KEY = "Map/Height";
+static const char *const TILE_WIDTH_KEY = "Map/TileWidth";
+static const char *const TILE_HEIGHT_KEY = "Map/TileHeight";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-template<typename Type>
-static Type comboBoxValue(QComboBox *comboBox)
+template <typename Type> static Type comboBoxValue(QComboBox *comboBox)
 {
     return comboBox->currentData().value<Type>();
 }
 
-template<typename Type>
-static bool setComboBoxValue(QComboBox *comboBox, Type value)
+template <typename Type> static bool setComboBoxValue(QComboBox *comboBox, Type value)
 {
     const int index = comboBox->findData(QVariant::fromValue(value));
     if (index == -1)
@@ -60,9 +58,9 @@ static bool setComboBoxValue(QComboBox *comboBox, Type value)
 }
 
 
-NewMapDialog::NewMapDialog(QWidget *parent) :
-    QDialog(parent),
-    mUi(new Ui::NewMapDialog)
+NewMapDialog::NewMapDialog(QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::NewMapDialog)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -72,20 +70,30 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    const auto orientation = static_cast<Map::Orientation>(s->value(QLatin1String(ORIENTATION_KEY)).toInt());
+    const auto orientation =
+        static_cast<Map::Orientation>(s->value(QLatin1String(ORIENTATION_KEY)).toInt());
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
     const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY), 32).toInt();
 
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
-    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"),
+                              QVariant::fromValue(Map::CSV));
+    mUi->layerFormat->addItem(
+        QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"),
+        QVariant::fromValue(Map::Base64));
+    mUi->layerFormat->addItem(
+        QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"),
+        QVariant::fromValue(Map::Base64Zlib));
 
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"), QVariant::fromValue(Map::LeftDown));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"), QVariant::fromValue(Map::LeftUp));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"),
+                              QVariant::fromValue(Map::RightDown));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"),
+                              QVariant::fromValue(Map::RightUp));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"),
+                              QVariant::fromValue(Map::LeftDown));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"),
+                              QVariant::fromValue(Map::LeftUp));
 
     mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
     mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
@@ -138,9 +146,7 @@ MapDocument *NewMapDialog::createMap()
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
     const auto renderOrder = comboBoxValue<Map::RenderOrder>(mUi->renderOrder);
 
-    Map *map = new Map(orientation,
-                       mapWidth, mapHeight,
-                       tileWidth, tileHeight);
+    Map *map = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -150,14 +156,14 @@ MapDocument *NewMapDialog::createMap()
 
     // Add a tile layer to new maps of reasonable size
     if (memory < gigabyte) {
-        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
-                                    mapWidth, mapHeight));
+        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0, mapWidth, mapHeight));
     } else {
         const double gigabytes = (double) memory / gigabyte;
-        QMessageBox::warning(this, tr("Memory Usage Warning"),
+        QMessageBox::warning(this,
+                             tr("Memory Usage Warning"),
                              tr("Tile layers for this map will consume %L1 GB "
                                 "of memory each. Not creating one by default.")
-                             .arg(gigabytes, 0, 'f', 2));
+                                 .arg(gigabytes, 0, 'f', 2));
     }
 
     // Store settings for next time
@@ -199,7 +205,5 @@ void NewMapDialog::refreshPixelSize()
         break;
     }
 
-    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
-                                 .arg(size.width())
-                                 .arg(size.height()));
+    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels").arg(size.width()).arg(size.height()));
 }

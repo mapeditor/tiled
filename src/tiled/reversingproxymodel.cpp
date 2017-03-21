@@ -85,9 +85,9 @@ QModelIndex ReversingProxyModel::mapToSource(const QModelIndex &proxyIndex) cons
         return QModelIndex();
 
     // This relies on the fact that the parent and its rowCount are the same for each subling.
-    const QModelIndex sourceSiblingIndex = static_cast<FriendModel*>(sourceModel())->createIndex(proxyIndex.row(),
-                                                                                                 proxyIndex.column(),
-                                                                                                 proxyIndex.internalId());
+    const QModelIndex sourceSiblingIndex =
+        static_cast<FriendModel *>(sourceModel())
+            ->createIndex(proxyIndex.row(), proxyIndex.column(), proxyIndex.internalId());
     const QModelIndex sourceParent = sourceSiblingIndex.parent();
     const int rowCount = sourceModel()->rowCount(sourceParent);
 
@@ -108,110 +108,171 @@ QModelIndex ReversingProxyModel::mapFromSource(const QModelIndex &sourceIndex) c
     return createIndex(row, sourceIndex.column(), sourceIndex.internalId());
 }
 
-void ReversingProxyModel::setSourceModel(QAbstractItemModel* newSourceModel)
+void ReversingProxyModel::setSourceModel(QAbstractItemModel *newSourceModel)
 {
     beginResetModel();
 
     if (QAbstractItemModel *source = sourceModel()) {
-        disconnect(source, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceRowsAboutToBeInserted(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceRowsInserted(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceRowsAboutToBeRemoved(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceRowsRemoved(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
-                   this, SLOT(sourceRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        disconnect(source, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-                   this, SLOT(sourceRowsMoved(QModelIndex,int,int,QModelIndex,int)));
-        disconnect(source, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceColumnsAboutToBeInserted(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(columnsInserted(QModelIndex,int,int)),
-                   this, SLOT(sourceColumnsInserted(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceColumnsAboutToBeRemoved(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(columnsRemoved(QModelIndex,int,int)),
-                   this, SLOT(sourceColumnsRemoved(QModelIndex,int,int)));
-        disconnect(source, SIGNAL(columnsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
-                   this, SLOT(sourceColumnsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        disconnect(source, SIGNAL(columnsMoved(QModelIndex,int,int,QModelIndex,int)),
-                   this, SLOT(sourceColumnsMoved(QModelIndex,int,int,QModelIndex,int)));
-        disconnect(source, SIGNAL(modelAboutToBeReset()),
-                   this, SLOT(sourceModelAboutToBeReset()));
-        disconnect(source, SIGNAL(modelReset()),
-                   this, SLOT(sourceModelReset()));
-        disconnect(source, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-                   this, SLOT(sourceDataChanged(QModelIndex,QModelIndex,QVector<int>)));
-        disconnect(source, SIGNAL(headerDataChanged(Qt::Orientation,int,int)),
-                   this, SLOT(sourceHeaderDataChanged(Qt::Orientation,int,int)));
-        disconnect(source, SIGNAL(layoutAboutToBeChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)),
-                   this, SLOT(sourceLayoutAboutToBeChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)));
-        disconnect(source, SIGNAL(layoutChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)),
-                   this, SLOT(sourceLayoutChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)));
+        disconnect(source,
+                   SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceRowsAboutToBeInserted(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(rowsInserted(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceRowsAboutToBeRemoved(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceRowsRemoved(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(rowsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)),
+                   this,
+                   SLOT(sourceRowsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)));
+        disconnect(source,
+                   SIGNAL(rowsMoved(QModelIndex, int, int, QModelIndex, int)),
+                   this,
+                   SLOT(sourceRowsMoved(QModelIndex, int, int, QModelIndex, int)));
+        disconnect(source,
+                   SIGNAL(columnsAboutToBeInserted(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceColumnsAboutToBeInserted(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(columnsInserted(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceColumnsInserted(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(columnsAboutToBeRemoved(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceColumnsAboutToBeRemoved(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(columnsRemoved(QModelIndex, int, int)),
+                   this,
+                   SLOT(sourceColumnsRemoved(QModelIndex, int, int)));
+        disconnect(source,
+                   SIGNAL(columnsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)),
+                   this,
+                   SLOT(sourceColumnsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)));
+        disconnect(source,
+                   SIGNAL(columnsMoved(QModelIndex, int, int, QModelIndex, int)),
+                   this,
+                   SLOT(sourceColumnsMoved(QModelIndex, int, int, QModelIndex, int)));
+        disconnect(source, SIGNAL(modelAboutToBeReset()), this, SLOT(sourceModelAboutToBeReset()));
+        disconnect(source, SIGNAL(modelReset()), this, SLOT(sourceModelReset()));
+        disconnect(source,
+                   SIGNAL(dataChanged(QModelIndex, QModelIndex, QVector<int>)),
+                   this,
+                   SLOT(sourceDataChanged(QModelIndex, QModelIndex, QVector<int>)));
+        disconnect(source,
+                   SIGNAL(headerDataChanged(Qt::Orientation, int, int)),
+                   this,
+                   SLOT(sourceHeaderDataChanged(Qt::Orientation, int, int)));
+        disconnect(source,
+                   SIGNAL(layoutAboutToBeChanged(QList<QPersistentModelIndex>,
+                                                 QAbstractItemModel::LayoutChangeHint)),
+                   this,
+                   SLOT(sourceLayoutAboutToBeChanged(QList<QPersistentModelIndex>,
+                                                     QAbstractItemModel::LayoutChangeHint)));
+        disconnect(source,
+                   SIGNAL(layoutChanged(QList<QPersistentModelIndex>,
+                                        QAbstractItemModel::LayoutChangeHint)),
+                   this,
+                   SLOT(sourceLayoutChanged(QList<QPersistentModelIndex>,
+                                            QAbstractItemModel::LayoutChangeHint)));
     }
 
     // Skip QIdentityPoxyModel
     QAbstractProxyModel::setSourceModel(newSourceModel);
 
     if (QAbstractItemModel *source = sourceModel()) {
-        connect(source, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
-                SLOT(sourceRowsAboutToBeInserted(QModelIndex,int,int)));
-        connect(source, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                SLOT(sourceRowsInserted(QModelIndex,int,int)));
-        connect(source, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                SLOT(sourceRowsAboutToBeRemoved(QModelIndex,int,int)));
-        connect(source, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-                SLOT(sourceRowsRemoved(QModelIndex,int,int)));
-        connect(source, SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
-                SLOT(sourceRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(source, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-                SLOT(sourceRowsMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(source, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
-                SLOT(sourceColumnsAboutToBeInserted(QModelIndex,int,int)));
-        connect(source, SIGNAL(columnsInserted(QModelIndex,int,int)),
-                SLOT(sourceColumnsInserted(QModelIndex,int,int)));
-        connect(source, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
-                SLOT(sourceColumnsAboutToBeRemoved(QModelIndex,int,int)));
-        connect(source, SIGNAL(columnsRemoved(QModelIndex,int,int)),
-                SLOT(sourceColumnsRemoved(QModelIndex,int,int)));
-        connect(source, SIGNAL(columnsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
-                SLOT(sourceColumnsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(source, SIGNAL(columnsMoved(QModelIndex,int,int,QModelIndex,int)),
-                SLOT(sourceColumnsMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(source, SIGNAL(modelAboutToBeReset()),
-                SLOT(sourceModelAboutToBeReset()));
-        connect(source, SIGNAL(modelReset()),
-                SLOT(sourceModelReset()));
-        connect(source, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
-                SLOT(sourceDataChanged(QModelIndex,QModelIndex,QVector<int>)));
-        connect(source, SIGNAL(headerDataChanged(Qt::Orientation,int,int)),
-                SLOT(sourceHeaderDataChanged(Qt::Orientation,int,int)));
-        connect(source, SIGNAL(layoutAboutToBeChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)),
-                SLOT(sourceLayoutAboutToBeChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)));
-        connect(source, SIGNAL(layoutChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)),
-                SLOT(sourceLayoutChanged(QList<QPersistentModelIndex>,QAbstractItemModel::LayoutChangeHint)));
+        connect(source,
+                SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)),
+                SLOT(sourceRowsAboutToBeInserted(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(rowsInserted(QModelIndex, int, int)),
+                SLOT(sourceRowsInserted(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)),
+                SLOT(sourceRowsAboutToBeRemoved(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                SLOT(sourceRowsRemoved(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(rowsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)),
+                SLOT(sourceRowsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)));
+        connect(source,
+                SIGNAL(rowsMoved(QModelIndex, int, int, QModelIndex, int)),
+                SLOT(sourceRowsMoved(QModelIndex, int, int, QModelIndex, int)));
+        connect(source,
+                SIGNAL(columnsAboutToBeInserted(QModelIndex, int, int)),
+                SLOT(sourceColumnsAboutToBeInserted(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(columnsInserted(QModelIndex, int, int)),
+                SLOT(sourceColumnsInserted(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(columnsAboutToBeRemoved(QModelIndex, int, int)),
+                SLOT(sourceColumnsAboutToBeRemoved(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(columnsRemoved(QModelIndex, int, int)),
+                SLOT(sourceColumnsRemoved(QModelIndex, int, int)));
+        connect(source,
+                SIGNAL(columnsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)),
+                SLOT(sourceColumnsAboutToBeMoved(QModelIndex, int, int, QModelIndex, int)));
+        connect(source,
+                SIGNAL(columnsMoved(QModelIndex, int, int, QModelIndex, int)),
+                SLOT(sourceColumnsMoved(QModelIndex, int, int, QModelIndex, int)));
+        connect(source, SIGNAL(modelAboutToBeReset()), SLOT(sourceModelAboutToBeReset()));
+        connect(source, SIGNAL(modelReset()), SLOT(sourceModelReset()));
+        connect(source,
+                SIGNAL(dataChanged(QModelIndex, QModelIndex, QVector<int>)),
+                SLOT(sourceDataChanged(QModelIndex, QModelIndex, QVector<int>)));
+        connect(source,
+                SIGNAL(headerDataChanged(Qt::Orientation, int, int)),
+                SLOT(sourceHeaderDataChanged(Qt::Orientation, int, int)));
+        connect(source,
+                SIGNAL(layoutAboutToBeChanged(QList<QPersistentModelIndex>,
+                                              QAbstractItemModel::LayoutChangeHint)),
+                SLOT(sourceLayoutAboutToBeChanged(QList<QPersistentModelIndex>,
+                                                  QAbstractItemModel::LayoutChangeHint)));
+        connect(source,
+                SIGNAL(layoutChanged(QList<QPersistentModelIndex>,
+                                     QAbstractItemModel::LayoutChangeHint)),
+                SLOT(sourceLayoutChanged(QList<QPersistentModelIndex>,
+                                         QAbstractItemModel::LayoutChangeHint)));
     }
 
     endResetModel();
 }
 
-void ReversingProxyModel::sourceColumnsAboutToBeInserted(const QModelIndex &parent, int start, int end)
+void ReversingProxyModel::sourceColumnsAboutToBeInserted(const QModelIndex &parent,
+                                                         int start,
+                                                         int end)
 {
     Q_ASSERT(parent.isValid() ? parent.model() == sourceModel() : true);
 
     beginInsertColumns(mapFromSource(parent), start, end);
 }
 
-void ReversingProxyModel::sourceColumnsAboutToBeMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destParent, int dest)
+void ReversingProxyModel::sourceColumnsAboutToBeMoved(const QModelIndex &sourceParent,
+                                                      int sourceStart,
+                                                      int sourceEnd,
+                                                      const QModelIndex &destParent,
+                                                      int dest)
 {
     Q_ASSERT(sourceParent.isValid() ? sourceParent.model() == sourceModel() : true);
     Q_ASSERT(destParent.isValid() ? destParent.model() == sourceModel() : true);
 
-    beginMoveColumns(mapFromSource(sourceParent), sourceStart, sourceEnd, mapFromSource(destParent), dest);
+    beginMoveColumns(
+        mapFromSource(sourceParent), sourceStart, sourceEnd, mapFromSource(destParent), dest);
 }
 
-void ReversingProxyModel::sourceColumnsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
+void ReversingProxyModel::sourceColumnsAboutToBeRemoved(const QModelIndex &parent,
+                                                        int start,
+                                                        int end)
 {
     Q_ASSERT(parent.isValid() ? parent.model() == sourceModel() : true);
 
@@ -229,7 +290,11 @@ void ReversingProxyModel::sourceColumnsInserted(const QModelIndex &parent, int s
     endInsertColumns();
 }
 
-void ReversingProxyModel::sourceColumnsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destParent, int dest)
+void ReversingProxyModel::sourceColumnsMoved(const QModelIndex &sourceParent,
+                                             int sourceStart,
+                                             int sourceEnd,
+                                             const QModelIndex &destParent,
+                                             int dest)
 {
     Q_ASSERT(sourceParent.isValid() ? sourceParent.model() == sourceModel() : true);
     Q_ASSERT(destParent.isValid() ? destParent.model() == sourceModel() : true);
@@ -254,21 +319,27 @@ void ReversingProxyModel::sourceColumnsRemoved(const QModelIndex &parent, int st
     endRemoveColumns();
 }
 
-void ReversingProxyModel::sourceDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void ReversingProxyModel::sourceDataChanged(const QModelIndex &topLeft,
+                                            const QModelIndex &bottomRight,
+                                            const QVector<int> &roles)
 {
     Q_ASSERT(topLeft.isValid() ? topLeft.model() == sourceModel() : true);
     Q_ASSERT(bottomRight.isValid() ? bottomRight.model() == sourceModel() : true);
 
     const QModelIndex sourceParent = topLeft.parent();
-    const QModelIndex bottomLeft = sourceModel()->index(bottomRight.row(), topLeft.column(), sourceParent);
-    const QModelIndex topRight = sourceModel()->index(topLeft.row(), bottomRight.column(), sourceParent);
+    const QModelIndex bottomLeft =
+        sourceModel()->index(bottomRight.row(), topLeft.column(), sourceParent);
+    const QModelIndex topRight =
+        sourceModel()->index(topLeft.row(), bottomRight.column(), sourceParent);
 
     const int rows = sourceModel()->rowCount(sourceParent);
     const int proxyTop = rows - bottomRight.row() - 1;
     const int proxyBottom = rows - topLeft.row() - 1;
 
-    const QModelIndex proxyTopLeft = createIndex(proxyTop, topLeft.column(), bottomLeft.internalId());
-    const QModelIndex proxyBottomRight = createIndex(proxyBottom, bottomRight.column(), topRight.internalId());
+    const QModelIndex proxyTopLeft =
+        createIndex(proxyTop, topLeft.column(), bottomLeft.internalId());
+    const QModelIndex proxyBottomRight =
+        createIndex(proxyBottom, bottomRight.column(), topRight.internalId());
 
     dataChanged(proxyTopLeft, proxyBottomRight, roles);
 }
@@ -285,7 +356,8 @@ void ReversingProxyModel::sourceHeaderDataChanged(Qt::Orientation orientation, i
     headerDataChanged(orientation, first, last);
 }
 
-void ReversingProxyModel::sourceLayoutAboutToBeChanged(const QList<QPersistentModelIndex> &sourceParents, QAbstractItemModel::LayoutChangeHint hint)
+void ReversingProxyModel::sourceLayoutAboutToBeChanged(
+    const QList<QPersistentModelIndex> &sourceParents, QAbstractItemModel::LayoutChangeHint hint)
 {
     const auto proxyPersistentIndexes = persistentIndexList();
     for (const QPersistentModelIndex &proxyPersistentIndex : proxyPersistentIndexes) {
@@ -311,7 +383,8 @@ void ReversingProxyModel::sourceLayoutAboutToBeChanged(const QList<QPersistentMo
     layoutAboutToBeChanged(parents, hint);
 }
 
-void ReversingProxyModel::sourceLayoutChanged(const QList<QPersistentModelIndex> &sourceParents, QAbstractItemModel::LayoutChangeHint hint)
+void ReversingProxyModel::sourceLayoutChanged(const QList<QPersistentModelIndex> &sourceParents,
+                                              QAbstractItemModel::LayoutChangeHint hint)
 {
     for (int i = 0; i < mProxyIndexes.size(); ++i) {
         changePersistentIndex(mProxyIndexes.at(i),
@@ -357,7 +430,11 @@ void ReversingProxyModel::sourceRowsAboutToBeInserted(const QModelIndex &parent,
     beginInsertRows(mapFromSource(parent), proxyStart, proxyEnd);
 }
 
-void ReversingProxyModel::sourceRowsAboutToBeMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destParent, int dest)
+void ReversingProxyModel::sourceRowsAboutToBeMoved(const QModelIndex &sourceParent,
+                                                   int sourceStart,
+                                                   int sourceEnd,
+                                                   const QModelIndex &destParent,
+                                                   int dest)
 {
     Q_ASSERT(sourceParent.isValid() ? sourceParent.model() == sourceModel() : true);
     Q_ASSERT(destParent.isValid() ? destParent.model() == sourceModel() : true);
@@ -369,7 +446,11 @@ void ReversingProxyModel::sourceRowsAboutToBeMoved(const QModelIndex &sourcePare
     const int proxySourceEnd = sourceRows - sourceStart - 1;
     const int proxyDest = destRows - dest;
 
-    beginMoveRows(mapFromSource(sourceParent), proxySourceStart, proxySourceEnd, mapFromSource(destParent), proxyDest);
+    beginMoveRows(mapFromSource(sourceParent),
+                  proxySourceStart,
+                  proxySourceEnd,
+                  mapFromSource(destParent),
+                  proxyDest);
 }
 
 void ReversingProxyModel::sourceRowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
@@ -395,7 +476,11 @@ void ReversingProxyModel::sourceRowsInserted(const QModelIndex &parent, int star
     endInsertRows();
 }
 
-void ReversingProxyModel::sourceRowsMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destParent, int dest)
+void ReversingProxyModel::sourceRowsMoved(const QModelIndex &sourceParent,
+                                          int sourceStart,
+                                          int sourceEnd,
+                                          const QModelIndex &destParent,
+                                          int dest)
 {
     Q_ASSERT(sourceParent.isValid() ? sourceParent.model() == sourceModel() : true);
     Q_ASSERT(destParent.isValid() ? destParent.model() == sourceModel() : true);

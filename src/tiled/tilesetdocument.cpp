@@ -20,8 +20,8 @@
 
 #include "tilesetdocument.h"
 
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetmanager.h"
@@ -45,8 +45,14 @@ public:
         setText(QCoreApplication::translate("Undo Commands", "Reload Tileset"));
     }
 
-    void undo() override { mTilesetDocument->swapTileset(mTileset); }
-    void redo() override { mTilesetDocument->swapTileset(mTileset); }
+    void undo() override
+    {
+        mTilesetDocument->swapTileset(mTileset);
+    }
+    void redo() override
+    {
+        mTilesetDocument->swapTileset(mTileset);
+    }
 
 private:
     TilesetDocument *mTilesetDocument;
@@ -64,23 +70,25 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
 
-    connect(this, &TilesetDocument::propertyAdded,
-            this, &TilesetDocument::onPropertyAdded);
-    connect(this, &TilesetDocument::propertyRemoved,
-            this, &TilesetDocument::onPropertyRemoved);
-    connect(this, &TilesetDocument::propertyChanged,
-            this, &TilesetDocument::onPropertyChanged);
-    connect(this, &TilesetDocument::propertiesChanged,
-            this, &TilesetDocument::onPropertiesChanged);
+    connect(this, &TilesetDocument::propertyAdded, this, &TilesetDocument::onPropertyAdded);
+    connect(this, &TilesetDocument::propertyRemoved, this, &TilesetDocument::onPropertyRemoved);
+    connect(this, &TilesetDocument::propertyChanged, this, &TilesetDocument::onPropertyChanged);
+    connect(this, &TilesetDocument::propertiesChanged, this, &TilesetDocument::onPropertiesChanged);
 
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
-            this, &TilesetDocument::onTerrainAboutToBeAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAdded,
-            this, &TilesetDocument::onTerrainAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeRemoved,
-            this, &TilesetDocument::onTerrainAboutToBeRemoved);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
-            this, &TilesetDocument::onTerrainRemoved);
+    connect(mTerrainModel,
+            &TilesetTerrainModel::terrainAboutToBeAdded,
+            this,
+            &TilesetDocument::onTerrainAboutToBeAdded);
+    connect(
+        mTerrainModel, &TilesetTerrainModel::terrainAdded, this, &TilesetDocument::onTerrainAdded);
+    connect(mTerrainModel,
+            &TilesetTerrainModel::terrainAboutToBeRemoved,
+            this,
+            &TilesetDocument::onTerrainAboutToBeRemoved);
+    connect(mTerrainModel,
+            &TilesetTerrainModel::terrainRemoved,
+            this,
+            &TilesetDocument::onTerrainRemoved);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -141,9 +149,8 @@ bool TilesetDocument::reload(QString *error)
     return true;
 }
 
-TilesetDocument *TilesetDocument::load(const QString &fileName,
-                                       TilesetFormat *format,
-                                       QString *error)
+TilesetDocument *
+TilesetDocument::load(const QString &fileName, TilesetFormat *format, QString *error)
 {
     SharedTileset tileset = format->read(fileName);
 
@@ -206,7 +213,7 @@ QString TilesetDocument::displayName() const
 void TilesetDocument::swapTileset(SharedTileset &tileset)
 {
     // Bring pointers to safety
-    setSelectedTiles(QList<Tile*>());
+    setSelectedTiles(QList<Tile *>());
     setCurrentObject(mTileset.data());
 
     mTileset->swap(*tileset);
@@ -276,7 +283,7 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
     emit tilesetChanged(mTileset.data());
 }
 
-void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
+void TilesetDocument::setSelectedTiles(const QList<Tile *> &selectedTiles)
 {
     mSelectedTiles = selectedTiles;
     emit selectedTilesChanged();
@@ -285,7 +292,7 @@ void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
 QList<Object *> TilesetDocument::currentObjects() const
 {
     if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-        QList<Object*> objects;
+        QList<Object *> objects;
         for (Tile *tile : mSelectedTiles)
             objects.append(tile);
         return objects;

@@ -34,8 +34,7 @@ using namespace Tiled::Internal;
 
 TileSelectionTool::TileSelectionTool(QObject *parent)
     : AbstractTileTool(tr("Rectangular Select"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-rect-select.png")),
+                       QIcon(QLatin1String(":images/22x22/stock-tool-rect-select.png")),
                        QKeySequence(tr("R")),
                        parent)
     , mSelectionMode(Replace)
@@ -61,8 +60,10 @@ void TileSelectionTool::updateStatusInfo()
     const QPoint pos = tilePosition();
     const QRect area = selectedArea();
     setStatusInfo(tr("%1, %2 - Rectangle: (%3 x %4)")
-                  .arg(pos.x()).arg(pos.y())
-                  .arg(area.width()).arg(area.height()));
+                      .arg(pos.x())
+                      .arg(pos.y())
+                      .arg(area.width())
+                      .arg(area.height()));
 }
 
 void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -128,10 +129,18 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         const QRect area = selectedArea();
 
         switch (mSelectionMode) {
-        case Replace:   selection = area; break;
-        case Add:       selection += area; break;
-        case Subtract:  selection -= area; break;
-        case Intersect: selection &= area; break;
+        case Replace:
+            selection = area;
+            break;
+        case Add:
+            selection += area;
+            break;
+        case Subtract:
+            selection -= area;
+            break;
+        case Intersect:
+            selection &= area;
+            break;
         }
 
         if (selection != document->selectedArea()) {

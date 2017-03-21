@@ -44,8 +44,7 @@ QRectF SelectionRectangle::boundingRect() const
     return mRectangle.adjusted(-1, -1, 2, 2);
 }
 
-void SelectionRectangle::paint(QPainter *painter,
-                               const QStyleOptionGraphicsItem *, QWidget *)
+void SelectionRectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     if (mRectangle.isNull())
         return;

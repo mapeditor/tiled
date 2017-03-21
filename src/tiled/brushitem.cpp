@@ -35,8 +35,8 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-BrushItem::BrushItem():
-    mMapDocument(nullptr)
+BrushItem::BrushItem()
+    : mMapDocument(nullptr)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 }
@@ -73,8 +73,7 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
  * with it. This allows highlighting of areas that are not covered by tiles in
  * the given tile layer.
  */
-void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
-                             const QRegion &region)
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer, const QRegion &region)
 {
     mTileLayer = tileLayer;
     mRegion = region;
@@ -126,14 +125,12 @@ QRectF BrushItem::boundingRect() const
     return mBoundingRect;
 }
 
-void BrushItem::paint(QPainter *painter,
-                      const QStyleOptionGraphicsItem *option,
-                      QWidget *)
+void BrushItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
-    
+
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
     QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
@@ -148,12 +145,9 @@ void BrushItem::paint(QPainter *painter,
         painter->setOpacity(opacity);
     }
 
-    renderer->drawTileSelection(painter, insideMapRegion,
-                                insideMapHighlight,
-                                option->exposedRect);
-    renderer->drawTileSelection(painter, outsideMapRegion,
-                                outsideMapHighlight,
-                                option->exposedRect);
+    renderer->drawTileSelection(painter, insideMapRegion, insideMapHighlight, option->exposedRect);
+    renderer->drawTileSelection(
+        painter, outsideMapRegion, outsideMapHighlight, option->exposedRect);
 }
 
 void BrushItem::updateBoundingRect()

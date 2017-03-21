@@ -31,14 +31,13 @@
 namespace Tiled {
 namespace Internal {
 
-MoveLayer::MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction):
-    mMapDocument(mapDocument),
-    mLayer(layer),
-    mDirection(direction)
+MoveLayer::MoveLayer(MapDocument *mapDocument, Layer *layer, Direction direction)
+    : mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mDirection(direction)
 {
-    setText((direction == Down) ?
-            QCoreApplication::translate("Undo Commands", "Lower Layer") :
-            QCoreApplication::translate("Undo Commands", "Raise Layer"));
+    setText((direction == Down) ? QCoreApplication::translate("Undo Commands", "Lower Layer")
+                                : QCoreApplication::translate("Undo Commands", "Raise Layer"));
 }
 
 bool MoveLayer::canMoveUp(const Layer &layer)
@@ -69,7 +68,7 @@ void MoveLayer::moveLayer()
             insertionParent = insertionParent->parentLayer();
         } else if (siblings.at(insertionIndex)->isGroupLayer()) {
             // Enter the group from the top
-            insertionParent = static_cast<GroupLayer*>(siblings.at(insertionIndex));
+            insertionParent = static_cast<GroupLayer *>(siblings.at(insertionIndex));
             insertionIndex = insertionParent->layerCount();
         }
     } else {
@@ -80,7 +79,7 @@ void MoveLayer::moveLayer()
             insertionParent = insertionParent->parentLayer();
         } else if (siblings.at(insertionIndex)->isGroupLayer()) {
             // Enter the group from the bottom
-            insertionParent = static_cast<GroupLayer*>(siblings.at(insertionIndex));
+            insertionParent = static_cast<GroupLayer *>(siblings.at(insertionIndex));
             insertionIndex = 0;
         }
     }

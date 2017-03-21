@@ -50,8 +50,7 @@ using namespace Tiled::Internal;
  * are put directly below each of these functions.
  */
 
-AutoMapper::AutoMapper(MapDocument *workingDocument, Map *rules,
-                       const QString &rulePath)
+AutoMapper::AutoMapper(MapDocument *workingDocument, Map *rules, const QString &rulePath)
     : mMapDocument(workingDocument)
     , mMapWork(workingDocument ? workingDocument->map() : nullptr)
     , mMapRules(rules)
@@ -114,7 +113,8 @@ bool AutoMapper::setupRuleMapProperties()
         if (raiseWarning)
             mWarning += tr("'%1': Property '%2' = '%3' does not make sense. "
                            "Ignoring this property.")
-                    .arg(mRulePath, key, value.toString()) + QLatin1Char('\n');
+                            .arg(mRulePath, key, value.toString()) +
+                        QLatin1Char('\n');
     }
     return true;
 }
@@ -134,40 +134,34 @@ bool AutoMapper::setupRuleMapTileLayers()
     foreach (Layer *layer, mMapRules->layers()) {
         const QString layerName = layer->name();
 
-        if (layerName.startsWith(QLatin1String("regions"),
-                                 Qt::CaseInsensitive)) {
+        if (layerName.startsWith(QLatin1String("regions"), Qt::CaseInsensitive)) {
             bool treatAsBoth = layerName.toLower() == QLatin1String("regions");
-            if (layerName.endsWith(QLatin1String("input"),
-                                 Qt::CaseInsensitive) || treatAsBoth) {
+            if (layerName.endsWith(QLatin1String("input"), Qt::CaseInsensitive) || treatAsBoth) {
                 if (mLayerInputRegions) {
-                    error += tr("'regions_input' layer must not occur more than once.")
-                            + QLatin1Char('\n');
+                    error += tr("'regions_input' layer must not occur more than once.") +
+                             QLatin1Char('\n');
                 }
                 if (layer->isTileLayer()) {
                     mLayerInputRegions = layer->asTileLayer();
                 } else {
-                    error += tr("'regions_*' layers must be tile layers.")
-                            + QLatin1Char('\n');
+                    error += tr("'regions_*' layers must be tile layers.") + QLatin1Char('\n');
                 }
             }
-            if (layerName.endsWith(QLatin1String("output"),
-                                 Qt::CaseInsensitive) || treatAsBoth) {
+            if (layerName.endsWith(QLatin1String("output"), Qt::CaseInsensitive) || treatAsBoth) {
                 if (mLayerOutputRegions) {
-                    error += tr("'regions_output' layer must not occur more than once.")
-                            + QLatin1Char('\n');
+                    error += tr("'regions_output' layer must not occur more than once.") +
+                             QLatin1Char('\n');
                 }
                 if (layer->isTileLayer()) {
                     mLayerOutputRegions = layer->asTileLayer();
                 } else {
-                    error += tr("'regions_*' layers must be tile layers.")
-                            + QLatin1Char('\n');
+                    error += tr("'regions_*' layers must be tile layers.") + QLatin1Char('\n');
                 }
             }
             continue;
         }
 
-        int nameStartPosition = layerName.indexOf(
-                                      QLatin1Char('_')) + 1;
+        int nameStartPosition = layerName.indexOf(QLatin1Char('_')) + 1;
         // name is all characters behind the underscore (excluded)
         QString name = layerName.right(layerName.size() - nameStartPosition);
         // group is all before the underscore (included)
@@ -183,19 +177,18 @@ bool AutoMapper::setupRuleMapTileLayers()
         // both 'rule' and 'output' layers will require and underscore and
         // rely on the correct position detected of the underscore
         if (nameStartPosition == 0) {
-            error += tr("Did you forget an underscore in layer '%1'?").arg(
-                        layerName) + QLatin1Char('\n');
+            error += tr("Did you forget an underscore in layer '%1'?").arg(layerName) +
+                     QLatin1Char('\n');
             continue;
         }
 
         if (layerName.startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
 
-            bool isNotList = layerName.startsWith(QLatin1String("inputnot"),
-                                                  Qt::CaseInsensitive);
+            bool isNotList = layerName.startsWith(QLatin1String("inputnot"), Qt::CaseInsensitive);
 
             if (!layer->isTileLayer()) {
-                error += tr("'input_*' and 'inputnot_*' layers must be tile layers.")
-                        + QLatin1Char('\n');
+                error += tr("'input_*' and 'inputnot_*' layers must be tile layers.") +
+                         QLatin1Char('\n');
                 continue;
             }
 
@@ -219,8 +212,7 @@ bool AutoMapper::setupRuleMapTileLayers()
             continue;
         }
 
-        if (layerName.startsWith(QLatin1String("output"),
-                                 Qt::CaseInsensitive)) {
+        if (layerName.startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             if (layer->isTileLayer())
                 mTouchedTileLayers.insert(name);
             else
@@ -245,8 +237,9 @@ bool AutoMapper::setupRuleMapTileLayers()
             continue;
         }
 
-        error += tr("Layer '%1' is not recognized as a valid layer for Automapping.")
-                .arg(layerName) + QLatin1Char('\n');
+        error +=
+            tr("Layer '%1' is not recognized as a valid layer for Automapping.").arg(layerName) +
+            QLatin1Char('\n');
     }
 
     if (!mLayerInputRegions)
@@ -284,8 +277,8 @@ bool AutoMapper::setupRuleList()
     Q_ASSERT(mLayerInputRegions);
     Q_ASSERT(mLayerOutputRegions);
 
-    QVector<QRegion> combinedRegions = coherentRegions(mLayerInputRegions->region() +
-                                                       mLayerOutputRegions->region());
+    QVector<QRegion> combinedRegions =
+        coherentRegions(mLayerInputRegions->region() + mLayerOutputRegions->region());
 
     qSort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
@@ -346,12 +339,9 @@ bool AutoMapper::setupMissingLayers()
         if (mMapWork->indexOfLayer(name, Layer::TileLayerType) != -1)
             continue;
 
-        const int index =  mMapWork->layerCount();
-        TileLayer *tilelayer = new TileLayer(name, 0, 0,
-                                             mMapWork->width(),
-                                             mMapWork->height());
-        mMapDocument->undoStack()->push(
-                    new AddLayer(mMapDocument, index, tilelayer, nullptr));
+        const int index = mMapWork->layerCount();
+        TileLayer *tilelayer = new TileLayer(name, 0, 0, mMapWork->width(), mMapWork->height());
+        mMapDocument->undoStack()->push(new AddLayer(mMapDocument, index, tilelayer, nullptr));
         mAddedTileLayers.append(name);
     }
 
@@ -359,10 +349,9 @@ bool AutoMapper::setupMissingLayers()
         if (mMapWork->indexOfLayer(name, Layer::ObjectGroupType) != -1)
             continue;
 
-        const int index =  mMapWork->layerCount();
+        const int index = mMapWork->layerCount();
         ObjectGroup *objectGroup = new ObjectGroup(name, 0, 0);
-        mMapDocument->undoStack()->push(
-                    new AddLayer(mMapDocument, index, objectGroup, nullptr));
+        mMapDocument->undoStack()->push(new AddLayer(mMapDocument, index, objectGroup, nullptr));
         mAddedTileLayers.append(name);
     }
 
@@ -380,7 +369,7 @@ bool AutoMapper::setupCorrectIndexes()
 
             const int index = translationTable->value(layerKey, -1);
             if (index >= mMapWork->layerCount() || index == -1 ||
-                    name != mMapWork->layerAt(index)->name()) {
+                name != mMapWork->layerAt(index)->name()) {
 
                 int newIndex = mMapWork->indexOfLayer(name, layerKey->layerType());
                 Q_ASSERT(newIndex != -1);
@@ -418,10 +407,8 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
             if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
                 Properties properties = replacementTile->properties();
                 properties.merge(originalTile->properties());
-                undoStack->push(new ChangeProperties(mMapDocument,
-                                                     tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
+                undoStack->push(
+                    new ChangeProperties(mMapDocument, tr("Tile"), replacementTile, properties));
             }
         }
 
@@ -440,10 +427,8 @@ void AutoMapper::autoMap(QRegion *where)
     if (mAutoMappingRadius) {
         QRegion region;
         for (const QRect &r : where->rects()) {
-            region += r.adjusted(- mAutoMappingRadius,
-                                 - mAutoMappingRadius,
-                                 + mAutoMappingRadius,
-                                 + mAutoMappingRadius);
+            region += r.adjusted(
+                -mAutoMappingRadius, -mAutoMappingRadius, +mAutoMappingRadius, +mAutoMappingRadius);
         }
         *where += region;
     }
@@ -460,9 +445,7 @@ void AutoMapper::autoMap(QRegion *where)
                 if (dstTileLayer)
                     dstTileLayer->erase(region);
                 else
-                    eraseRegionObjectGroup(mMapDocument,
-                                           dstLayer->asObjectGroup(),
-                                           region);
+                    eraseRegionObjectGroup(mMapDocument, dstLayer->asObjectGroup(), region);
             }
         }
     }
@@ -495,9 +478,10 @@ const QRegion AutoMapper::getSetLayersRegion()
 }
 
 static bool compareLayerTo(const TileLayer *setLayer,
-                           const QVector<TileLayer*> &listYes,
-                           const QVector<TileLayer*> &listNo,
-                           const QRegion &ruleRegion, const QPoint &offset);
+                           const QVector<TileLayer *> &listYes,
+                           const QVector<TileLayer *> &listNo,
+                           const QRegion &ruleRegion,
+                           const QPoint &offset);
 
 QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
 {
@@ -528,75 +512,70 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
         appliedRegions.resize(mMapWork->layerCount());
 
     for (int y = minY; y <= maxY; ++y)
-    for (int x = minX; x <= maxX; ++x) {
-        bool anymatch = false;
-        foreach (const QString &index, mInputRules.indexes) {
-            const InputIndex &ii = mInputRules[index];
+        for (int x = minX; x <= maxX; ++x) {
+            bool anymatch = false;
+            foreach (const QString &index, mInputRules.indexes) {
+                const InputIndex &ii = mInputRules[index];
 
-            bool allLayerNamesMatch = true;
-            foreach (const QString &name, ii.names) {
-                const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
-                if (i == -1) {
-                    allLayerNamesMatch = false;
-                } else {
-                    const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
-                    allLayerNamesMatch &= compareLayerTo(setLayer,
-                                                         ii[name].listYes,
-                                                         ii[name].listNo,
-                                                         ruleInput,
-                                                         QPoint(x, y));
+                bool allLayerNamesMatch = true;
+                foreach (const QString &name, ii.names) {
+                    const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
+                    if (i == -1) {
+                        allLayerNamesMatch = false;
+                    } else {
+                        const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
+                        allLayerNamesMatch &= compareLayerTo(
+                            setLayer, ii[name].listYes, ii[name].listNo, ruleInput, QPoint(x, y));
+                    }
                 }
-            }
-            if (allLayerNamesMatch) {
-                anymatch = true;
-                break;
-            }
-        }
-
-        if (anymatch) {
-            // choose by chance which group of rule_layers should be used:
-            const int r = qrand() % mLayerList.size();
-            const RuleOutput *translationTable = mLayerList.at(r);
-
-            if (!mNoOverlappingRules) {
-                copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
-                ret = ret.united(rbr.translated(QPoint(x, y)));
-                continue;
-            }
-
-            bool missmatch = false;
-            QList<Layer*> layers = translationTable->keys();
-
-            // check if there are no overlaps within this rule.
-            QVector<QRegion> ruleRegionInLayer;
-            for (int i = 0; i < layers.size(); ++i) {
-                Layer *layer = layers.at(i);
-
-                QRegion appliedPlace;
-                TileLayer *tileLayer = layer->asTileLayer();
-                if (tileLayer)
-                    appliedPlace = tileLayer->region();
-                else
-                    appliedPlace = tileRegionOfObjectGroup(layer->asObjectGroup());
-
-                ruleRegionInLayer.append(appliedPlace.intersected(ruleOutput));
-                if (appliedRegions.at(i).intersects(
-                            ruleRegionInLayer[i].translated(x, y))) {
-                    missmatch = true;
+                if (allLayerNamesMatch) {
+                    anymatch = true;
                     break;
                 }
             }
-            if (missmatch)
-                continue;
 
-            copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
-            ret = ret.united(rbr.translated(QPoint(x, y)));
-            for (int i = 0; i < translationTable->size(); ++i) {
-                appliedRegions[i] +=
-                        ruleRegionInLayer[i].translated(x, y);
+            if (anymatch) {
+                // choose by chance which group of rule_layers should be used:
+                const int r = qrand() % mLayerList.size();
+                const RuleOutput *translationTable = mLayerList.at(r);
+
+                if (!mNoOverlappingRules) {
+                    copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
+                    ret = ret.united(rbr.translated(QPoint(x, y)));
+                    continue;
+                }
+
+                bool missmatch = false;
+                QList<Layer *> layers = translationTable->keys();
+
+                // check if there are no overlaps within this rule.
+                QVector<QRegion> ruleRegionInLayer;
+                for (int i = 0; i < layers.size(); ++i) {
+                    Layer *layer = layers.at(i);
+
+                    QRegion appliedPlace;
+                    TileLayer *tileLayer = layer->asTileLayer();
+                    if (tileLayer)
+                        appliedPlace = tileLayer->region();
+                    else
+                        appliedPlace = tileRegionOfObjectGroup(layer->asObjectGroup());
+
+                    ruleRegionInLayer.append(appliedPlace.intersected(ruleOutput));
+                    if (appliedRegions.at(i).intersects(ruleRegionInLayer[i].translated(x, y))) {
+                        missmatch = true;
+                        break;
+                    }
+                }
+                if (missmatch)
+                    continue;
+
+                copyMapRegion(ruleOutput, QPoint(x, y), translationTable);
+                ret = ret.united(rbr.translated(QPoint(x, y)));
+                for (int i = 0; i < translationTable->size(); ++i) {
+                    appliedRegions[i] += ruleRegionInLayer[i].translated(x, y);
+                }
             }
         }
-    }
 
     return ret;
 }
@@ -605,8 +584,7 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
  * Returns a list of all cells which can be found within all tile layers
  * within the given region.
  */
-static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
-                                   const QRegion &r)
+static QVector<Cell> cellsInRegion(const QVector<TileLayer *> &list, const QRegion &r)
 {
     QVector<Cell> cells;
     foreach (const TileLayer *tilelayer, list) {
@@ -686,9 +664,10 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  * @return bool, if the tile layer matches the given list of layers.
  */
 static bool compareLayerTo(const TileLayer *setLayer,
-                           const QVector<TileLayer*> &listYes,
-                           const QVector<TileLayer*> &listNo,
-                           const QRegion &ruleRegion, const QPoint &offset)
+                           const QVector<TileLayer *> &listYes,
+                           const QVector<TileLayer *> &listNo,
+                           const QRegion &ruleRegion,
+                           const QPoint &offset)
 {
     if (listYes.isEmpty() && listNo.isEmpty())
         return false;
@@ -707,13 +686,12 @@ static bool compareLayerTo(const TileLayer *setLayer,
                 bool ruleDefinedListYes = false;
 
                 bool matchListYes = false;
-                bool matchListNo  = false;
+                bool matchListNo = false;
 
                 if (!setLayer->contains(x + offset.x(), y + offset.y()))
                     return false;
 
-                const Cell &c1 = setLayer->cellAt(x + offset.x(),
-                                                  y + offset.y());
+                const Cell &c1 = setLayer->cellAt(x + offset.x(), y + offset.y());
 
                 // ruleDefined will be set when there is a tile in at least
                 // one layer. if there is a tile in at least one layer, only
@@ -775,7 +753,8 @@ static bool compareLayerTo(const TileLayer *setLayer,
     return true;
 }
 
-void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
+void AutoMapper::copyMapRegion(const QRegion &region,
+                               QPoint offset,
                                const RuleOutput *layerTranslation)
 {
     for (auto it = layerTranslation->begin(), end = layerTranslation->end(); it != end; ++it) {
@@ -784,18 +763,26 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
         foreach (const QRect &rect, region.rects()) {
             if (TileLayer *fromTileLayer = from->asTileLayer()) {
                 TileLayer *toTileLayer = to->asTileLayer();
-                Q_ASSERT(toTileLayer); //TODO check this before in prepareAutomap or such!
-                copyTileRegion(fromTileLayer, rect.x(), rect.y(),
-                               rect.width(), rect.height(),
+                Q_ASSERT(toTileLayer); // TODO check this before in prepareAutomap or such!
+                copyTileRegion(fromTileLayer,
+                               rect.x(),
+                               rect.y(),
+                               rect.width(),
+                               rect.height(),
                                toTileLayer,
-                               rect.x() + offset.x(), rect.y() + offset.y());
+                               rect.x() + offset.x(),
+                               rect.y() + offset.y());
 
             } else if (ObjectGroup *fromObjectGroup = from->asObjectGroup()) {
                 ObjectGroup *toObjectGroup = to->asObjectGroup();
-                copyObjectRegion(fromObjectGroup, rect.x(), rect.y(),
-                                 rect.width(), rect.height(),
+                copyObjectRegion(fromObjectGroup,
+                                 rect.x(),
+                                 rect.y(),
+                                 rect.width(),
+                                 rect.height(),
                                  toObjectGroup,
-                                 rect.x() + offset.x(), rect.y() + offset.y());
+                                 rect.x() + offset.x(),
+                                 rect.y() + offset.y());
             } else {
                 Q_ASSERT(false);
             }
@@ -803,9 +790,14 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
     }
 }
 
-void AutoMapper::copyTileRegion(TileLayer *srcLayer, int srcX, int srcY,
-                                int width, int height,
-                                TileLayer *dstLayer, int dstX, int dstY)
+void AutoMapper::copyTileRegion(TileLayer *srcLayer,
+                                int srcX,
+                                int srcY,
+                                int width,
+                                int height,
+                                TileLayer *dstLayer,
+                                int dstX,
+                                int dstY)
 {
     const int startX = qMax(dstX, 0);
     const int startY = qMax(dstY, 0);
@@ -827,14 +819,19 @@ void AutoMapper::copyTileRegion(TileLayer *srcLayer, int srcX, int srcY,
     }
 }
 
-void AutoMapper::copyObjectRegion(ObjectGroup *srcLayer, int srcX, int srcY,
-                                  int width, int height,
-                                  ObjectGroup *dstLayer, int dstX, int dstY)
+void AutoMapper::copyObjectRegion(ObjectGroup *srcLayer,
+                                  int srcX,
+                                  int srcY,
+                                  int width,
+                                  int height,
+                                  ObjectGroup *dstLayer,
+                                  int dstX,
+                                  int dstY)
 {
     QUndoStack *undo = mMapDocument->undoStack();
     const QRectF rect = QRectF(srcX, srcY, width, height);
     const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
-    const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
+    const QList<MapObject *> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
 
     QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY);
     pixelOffset -= pixelRect.topLeft();
@@ -873,8 +870,7 @@ void AutoMapper::cleanTilesets()
 void AutoMapper::cleanTileLayers()
 {
     foreach (const QString &tilelayerName, mAddedTileLayers) {
-        const int layerIndex = mMapWork->indexOfLayer(tilelayerName,
-                                                      Layer::TileLayerType);
+        const int layerIndex = mMapWork->indexOfLayer(tilelayerName, Layer::TileLayerType);
         if (layerIndex == -1)
             continue;
 

@@ -87,10 +87,14 @@ VariantEditorFactory::~VariantEditorFactory()
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
 {
-    connect(manager, SIGNAL(valueChanged(QtProperty*,QVariant)),
-            this, SLOT(slotPropertyChanged(QtProperty*,QVariant)));
-    connect(manager, SIGNAL(attributeChanged(QtProperty*,QString,QVariant)),
-            this, SLOT(slotPropertyAttributeChanged(QtProperty*,QString,QVariant)));
+    connect(manager,
+            SIGNAL(valueChanged(QtProperty *, QVariant)),
+            this,
+            SLOT(slotPropertyChanged(QtProperty *, QVariant)));
+    connect(manager,
+            SIGNAL(attributeChanged(QtProperty *, QString, QVariant)),
+            this,
+            SLOT(slotPropertyAttributeChanged(QtProperty *, QString, QVariant)));
     QtVariantEditorFactory::connectPropertyManager(manager);
 }
 
@@ -108,22 +112,22 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
-        connect(editor, &FileEdit::filePathChanged,
-                this, &VariantEditorFactory::fileEditFilePathChanged);
-        connect(editor, SIGNAL(destroyed(QObject *)),
-                this, SLOT(slotEditorDestroyed(QObject *)));
+        connect(editor,
+                &FileEdit::filePathChanged,
+                this,
+                &VariantEditorFactory::fileEditFilePathChanged);
+        connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDestroyed(QObject *)));
 
         return editor;
     }
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
         auto editor = new TilesetParametersEdit(parent);
-        editor->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
+        editor->setTilesetDocument(manager->value(property).value<TilesetDocument *>());
         mCreatedTilesetEdits[property].append(editor);
         mTilesetEditToProperty[editor] = property;
 
-        connect(editor, SIGNAL(destroyed(QObject *)),
-                this, SLOT(slotEditorDestroyed(QObject *)));
+        connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDestroyed(QObject *)));
 
         return editor;
     }
@@ -136,10 +140,12 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
             mCreatedTextPropertyEdits[property].append(editor);
             mTextPropertyEditToProperty[editor] = property;
 
-            connect(editor, &TextPropertyEdit::textChanged,
-                    this, &VariantEditorFactory::textPropertyEditTextChanged);
-            connect(editor, SIGNAL(destroyed(QObject *)),
-                    this, SLOT(slotEditorDestroyed(QObject *)));
+            connect(editor,
+                    &TextPropertyEdit::textChanged,
+                    this,
+                    &VariantEditorFactory::textPropertyEditTextChanged);
+            connect(
+                editor, SIGNAL(destroyed(QObject *)), this, SLOT(slotEditorDestroyed(QObject *)));
 
             return editor;
         }
@@ -151,7 +157,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         // Add support for "suggestions" attribute that adds a QCompleter to the QLineEdit
         QVariant suggestions = manager->attributeValue(property, QLatin1String("suggestions"));
         if (!suggestions.toStringList().isEmpty()) {
-            if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+            if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(editor)) {
                 QCompleter *completer = new QCompleter(suggestions.toStringList(), lineEdit);
                 completer->setCaseSensitivity(Qt::CaseInsensitive);
                 lineEdit->setCompleter(completer);
@@ -162,8 +168,8 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (type == QVariant::Color) {
         // Allow resetting a color property to the invalid color
         ResetWidget *resetWidget = new ResetWidget(property, editor, parent);
-        connect(resetWidget, &ResetWidget::resetProperty,
-                this, &VariantEditorFactory::resetProperty);
+        connect(
+            resetWidget, &ResetWidget::resetProperty, this, &VariantEditorFactory::resetProperty);
         editor = resetWidget;
     }
 
@@ -172,27 +178,28 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
 void VariantEditorFactory::disconnectPropertyManager(QtVariantPropertyManager *manager)
 {
-    disconnect(manager, SIGNAL(valueChanged(QtProperty*,QVariant)),
-               this, SLOT(slotPropertyChanged(QtProperty*,QVariant)));
-    disconnect(manager, SIGNAL(attributeChanged(QtProperty*,QString,QVariant)),
-               this, SLOT(slotPropertyAttributeChanged(QtProperty*,QString,QVariant)));
+    disconnect(manager,
+               SIGNAL(valueChanged(QtProperty *, QVariant)),
+               this,
+               SLOT(slotPropertyChanged(QtProperty *, QVariant)));
+    disconnect(manager,
+               SIGNAL(attributeChanged(QtProperty *, QString, QVariant)),
+               this,
+               SLOT(slotPropertyAttributeChanged(QtProperty *, QString, QVariant)));
     QtVariantEditorFactory::disconnectPropertyManager(manager);
 }
 
-void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
-                                               const QVariant &value)
+void VariantEditorFactory::slotPropertyChanged(QtProperty *property, const QVariant &value)
 {
     if (mCreatedFileEdits.contains(property)) {
         for (FileEdit *edit : mCreatedFileEdits[property]) {
             FilePath filePath = value.value<FilePath>();
             edit->setFilePath(filePath.absolutePath);
         }
-    }
-    else if (mCreatedTilesetEdits.contains(property)) {
+    } else if (mCreatedTilesetEdits.contains(property)) {
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
-            edit->setTilesetDocument(value.value<TilesetDocument*>());
-    }
-    else if (mCreatedTextPropertyEdits.contains(property)) {
+            edit->setTilesetDocument(value.value<TilesetDocument *>());
+    } else if (mCreatedTextPropertyEdits.contains(property)) {
         for (TextPropertyEdit *edit : mCreatedTextPropertyEdits[property])
             edit->setText(value.toString());
     }
@@ -213,20 +220,20 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
 
 void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
 {
-    FileEdit *fileEdit = qobject_cast<FileEdit*>(sender());
+    FileEdit *fileEdit = qobject_cast<FileEdit *>(sender());
     Q_ASSERT(fileEdit);
 
     if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
-        manager->setValue(property, QVariant::fromValue(FilePath { value }));
+        manager->setValue(property, QVariant::fromValue(FilePath{value}));
     }
 }
 
 void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
 {
-    auto textPropertyEdit = qobject_cast<TextPropertyEdit*>(sender());
+    auto textPropertyEdit = qobject_cast<TextPropertyEdit *>(sender());
     Q_ASSERT(textPropertyEdit);
 
     if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
@@ -241,7 +248,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
     // Check if it was a FileEdit
     {
-        FileEdit *fileEdit = static_cast<FileEdit*>(object);
+        FileEdit *fileEdit = static_cast<FileEdit *>(object);
 
         if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
             mFileEditToProperty.remove(fileEdit);
@@ -254,7 +261,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a TilesetParametersEdit
     {
-        TilesetParametersEdit *tilesetEdit = static_cast<TilesetParametersEdit*>(object);
+        TilesetParametersEdit *tilesetEdit = static_cast<TilesetParametersEdit *>(object);
 
         if (QtProperty *property = mTilesetEditToProperty.value(tilesetEdit)) {
             mTilesetEditToProperty.remove(tilesetEdit);
@@ -267,7 +274,7 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 
     // Check if it was a TextPropertyEdit
     {
-        TextPropertyEdit *textPropertyEdit = static_cast<TextPropertyEdit*>(object);
+        TextPropertyEdit *textPropertyEdit = static_cast<TextPropertyEdit *>(object);
 
         if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
             mTextPropertyEditToProperty.remove(textPropertyEdit);

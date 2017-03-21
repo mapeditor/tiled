@@ -22,9 +22,9 @@
 
 #include "changelayer.h"
 #include "grouplayer.h"
+#include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "layer.h"
 #include "renamelayer.h"
 #include "tilelayer.h"
 
@@ -34,13 +34,13 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-LayerModel::LayerModel(QObject *parent):
-    QAbstractItemModel(parent),
-    mMapDocument(nullptr),
-    mMap(nullptr),
-    mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
-    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
-    mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
+LayerModel::LayerModel(QObject *parent)
+    : QAbstractItemModel(parent)
+    , mMapDocument(nullptr)
+    , mMap(nullptr)
+    , mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png"))
+    , mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
+    , mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
 {
     mTileLayerIcon.addFile(QLatin1String(":images/32x32/layer-tile.png"));
     mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
@@ -67,7 +67,7 @@ QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) co
 
 QModelIndex LayerModel::parent(const QModelIndex &index) const
 {
-    if (auto groupLayer = static_cast<GroupLayer*>(index.internalPointer()))
+    if (auto groupLayer = static_cast<GroupLayer *>(index.internalPointer()))
         return LayerModel::index(groupLayer);
     return QModelIndex();
 }
@@ -132,8 +132,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
 /**
  * Allows for changing the name, visibility and opacity of a layer.
  */
-bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
-                         int role)
+bool LayerModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid())
         return false;
@@ -144,9 +143,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
         const bool visible = (c == Qt::Checked);
         if (visible != layer->isVisible()) {
-            QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                        layer,
-                                                        visible);
+            QUndoCommand *command = new SetLayerVisible(mMapDocument, layer, visible);
             mMapDocument->undoStack()->push(command);
         }
         return true;
@@ -155,9 +152,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         const qreal opacity = value.toDouble(&ok);
         if (ok) {
             if (layer->opacity() != opacity) {
-                QUndoCommand *command = new SetLayerOpacity(mMapDocument,
-                                                            layer,
-                                                            opacity);
+                QUndoCommand *command = new SetLayerOpacity(mMapDocument, layer, opacity);
                 mMapDocument->undoStack()->push(command);
             }
             return true;
@@ -165,8 +160,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == Qt::EditRole) {
         const QString newName = value.toString();
         if (layer->name() != newName) {
-            RenameLayer *rename = new RenameLayer(mMapDocument, layer,
-                                                  newName);
+            RenameLayer *rename = new RenameLayer(mMapDocument, layer, newName);
             mMapDocument->undoStack()->push(rename);
         }
         return true;
@@ -189,12 +183,12 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 /**
  * Returns the headers for the table.
  */
-QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
-                                int role) const
+QVariant LayerModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return tr("Layer");
+        case 0:
+            return tr("Layer");
         }
     }
     return QVariant();
@@ -223,7 +217,7 @@ Layer *LayerModel::toLayer(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    if (auto groupLayer = static_cast<GroupLayer*>(index.internalPointer()))
+    if (auto groupLayer = static_cast<GroupLayer *>(index.internalPointer()))
         return groupLayer->layerAt(index.row());
 
     return mMap->layerAt(index.row());
@@ -364,7 +358,7 @@ static QList<Layer *> collectAllSiblings(Layer *layer)
     QList<Layer *> collected;
 
     while (layer) {
-        const auto& siblings = layer->siblings();
+        const auto &siblings = layer->siblings();
         for (Layer *sibling : siblings) {
             if (sibling != layer)
                 collected.append(sibling);
@@ -382,7 +376,7 @@ static QList<Layer *> collectAllSiblings(Layer *layer)
   */
 void LayerModel::toggleOtherLayers(Layer *layer)
 {
-    const auto& otherLayers = collectAllSiblings(layer);
+    const auto &otherLayers = collectAllSiblings(layer);
     if (otherLayers.isEmpty())
         return;
 

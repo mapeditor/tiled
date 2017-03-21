@@ -30,7 +30,9 @@
 namespace Tiled {
 namespace Internal {
 
-class TilesetParametersPropertyType {};
+class TilesetParametersPropertyType
+{
+};
 
 } // namespace Tiled
 } // namespace Internal
@@ -73,22 +75,19 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == filePathTypeId())
         return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
-        return qMetaTypeId<TilesetDocument*>();
+        return qMetaTypeId<TilesetDocument *>();
     return QtVariantPropertyManager::valueType(propertyType);
 }
 
 QStringList VariantPropertyManager::attributes(int propertyType) const
 {
     if (propertyType == filePathTypeId()) {
-        return QStringList {
-            QStringLiteral("filter")
-        };
+        return QStringList{QStringLiteral("filter")};
     }
     return QtVariantPropertyManager::attributes(propertyType);
 }
 
-int VariantPropertyManager::attributeType(int propertyType,
-                                          const QString &attribute) const
+int VariantPropertyManager::attributeType(int propertyType, const QString &attribute) const
 {
     if (propertyType == filePathTypeId()) {
         if (attribute == QLatin1String("filter"))
@@ -136,7 +135,7 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         }
 
         if (typeId == tilesetParametersTypeId()) {
-            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument *>())
                 return QFileInfo(tilesetDocument->tileset()->imageSource()).fileName();
         }
 
@@ -163,7 +162,7 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
             filePath = value.value<FilePath>().absolutePath;
 
         if (typeId == tilesetParametersTypeId()) {
-            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument *>())
                 filePath = tilesetDocument->tileset()->imageSource();
         }
 

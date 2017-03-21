@@ -23,8 +23,8 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ClickableLabel::ClickableLabel(QWidget *parent) :
-    QLabel(parent)
+ClickableLabel::ClickableLabel(QWidget *parent)
+    : QLabel(parent)
 {
 }
 

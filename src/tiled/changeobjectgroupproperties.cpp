@@ -22,22 +22,19 @@
 #include "changeobjectgroupproperties.h"
 
 #include "mapdocument.h"
-#include "objectgroup.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeObjectGroupProperties::ChangeObjectGroupProperties(
-        MapDocument *mapDocument,
-        ObjectGroup *objectGroup,
-        const QColor &newColor,
-        ObjectGroup::DrawOrder newDrawOrder)
-    : QUndoCommand(
-        QCoreApplication::translate(
-            "Undo Commands", "Change Object Layer Properties"))
+ChangeObjectGroupProperties::ChangeObjectGroupProperties(MapDocument *mapDocument,
+                                                         ObjectGroup *objectGroup,
+                                                         const QColor &newColor,
+                                                         ObjectGroup::DrawOrder newDrawOrder)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Object Layer Properties"))
     , mMapDocument(mapDocument)
     , mObjectGroup(objectGroup)
     , mUndoColor(objectGroup->color())

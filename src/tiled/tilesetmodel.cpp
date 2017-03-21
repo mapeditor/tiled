@@ -31,9 +31,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
-    QAbstractListModel(parent),
-    mTileset(tileset)
+TilesetModel::TilesetModel(Tileset *tileset, QObject *parent)
+    : QAbstractListModel(parent)
+    , mTileset(tileset)
 {
     refreshTileIds();
 }
@@ -80,9 +80,8 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant TilesetModel::headerData(int /* section */,
-                                  Qt::Orientation /* orientation */,
-                                  int role) const
+QVariant
+TilesetModel::headerData(int /* section */, Qt::Orientation /* orientation */, int role) const
 {
     if (role == Qt::SizeHintRole)
         return QSize(1, 1);
@@ -203,12 +202,11 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
         }
 
         if (i.row() < topLeft.row() || i.column() < topLeft.column())
-            topLeft = index(qMin(topLeft.row(), i.row()),
-                            qMin(topLeft.column(), i.column()));
+            topLeft = index(qMin(topLeft.row(), i.row()), qMin(topLeft.column(), i.column()));
 
         if (i.row() > bottomRight.row() || i.column() > bottomRight.column())
-            bottomRight = index(qMax(bottomRight.row(), i.row()),
-                                qMax(bottomRight.column(), i.column()));
+            bottomRight =
+                index(qMax(bottomRight.row(), i.row()), qMax(bottomRight.column(), i.column()));
     }
 
     if (topLeft.isValid())

@@ -20,8 +20,8 @@
 
 #include "changetileimagesource.h"
 
-#include "tilesetdocument.h"
 #include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -36,15 +36,12 @@ ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
     , mOldImageSource(tile->imageSource())
     , mNewImageSource(imageSource)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Image"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Image"));
 }
 
 void ChangeTileImageSource::apply(const QString &imageSource)
 {
-    mTilesetDocument->setTileImage(mTile,
-                                   QPixmap(imageSource),
-                                   imageSource);
+    mTilesetDocument->setTileImage(mTile, QPixmap(imageSource), imageSource);
 }
 
 } // namespace Internal

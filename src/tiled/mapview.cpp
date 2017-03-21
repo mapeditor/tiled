@@ -31,8 +31,8 @@
 #include <QGesture>
 #include <QGestureEvent>
 #include <QPinchGesture>
-#include <QWheelEvent>
 #include <QScrollBar>
+#include <QWheelEvent>
 
 #ifndef QT_NO_OPENGL
 #include <QOpenGLWidget>
@@ -88,31 +88,30 @@ MapView::~MapView()
 
 MapScene *MapView::mapScene() const
 {
-    return static_cast<MapScene*>(scene());
+    return static_cast<MapScene *>(scene());
 }
 
 void MapView::adjustScale(qreal scale)
 {
     setTransform(QTransform::fromScale(scale, scale));
-    setRenderHint(QPainter::SmoothPixmapTransform,
-                  mZoomable->smoothTransform());
+    setRenderHint(QPainter::SmoothPixmapTransform, mZoomable->smoothTransform());
 }
 
 void MapView::setUseOpenGL(bool useOpenGL)
 {
 #ifndef QT_NO_OPENGL
     if (useOpenGL) {
-        if (!qobject_cast<QOpenGLWidget*>(viewport())) {
+        if (!qobject_cast<QOpenGLWidget *>(viewport())) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-            format.setDepthBufferSize(0);   // No need for a depth buffer
-            format.setSamples(4);           // Enable anti-aliasing
+            format.setDepthBufferSize(0); // No need for a depth buffer
+            format.setSamples(4);         // Enable anti-aliasing
 
             QOpenGLWidget *openGLWidget = new QOpenGLWidget(this);
             openGLWidget->setFormat(format);
             setViewport(openGLWidget);
         }
     } else {
-        if (qobject_cast<QOpenGLWidget*>(viewport()))
+        if (qobject_cast<QOpenGLWidget *>(viewport()))
             setViewport(nullptr);
     }
 
@@ -155,8 +154,8 @@ void MapView::forceCenterOn(const QPointF &pos)
     // just in case this is important.
     centerOn(pos);
 
-    auto hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
-    auto vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+    auto hBar = static_cast<FlexibleScrollBar *>(horizontalScrollBar());
+    auto vBar = static_cast<FlexibleScrollBar *>(verticalScrollBar());
     bool hScroll = hBar->minimum() != 0 || hBar->maximum() != 0;
     bool vScroll = vBar->minimum() != 0 || vBar->maximum() != 0;
 
@@ -183,7 +182,7 @@ bool MapView::event(QEvent *e)
 {
     // Ignore space bar events since they're handled by the MainWindow
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
-        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Space) {
+        if (static_cast<QKeyEvent *>(e)->key() == Qt::Key_Space) {
             e->ignore();
             return false;
         }
@@ -211,12 +210,10 @@ void MapView::hideEvent(QHideEvent *event)
  */
 void MapView::wheelEvent(QWheelEvent *event)
 {
-    auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
-    auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+    auto *hBar = static_cast<FlexibleScrollBar *>(horizontalScrollBar());
+    auto *vBar = static_cast<FlexibleScrollBar *>(verticalScrollBar());
 
-    if (event->modifiers() & Qt::ControlModifier
-        && event->orientation() == Qt::Vertical)
-    {
+    if (event->modifiers() & Qt::ControlModifier && event->orientation() == Qt::Vertical) {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
@@ -296,8 +293,8 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     if (mHandScrolling) {
-        auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
-        auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
+        auto *hBar = static_cast<FlexibleScrollBar *>(horizontalScrollBar());
+        auto *vBar = static_cast<FlexibleScrollBar *>(verticalScrollBar());
         const QPoint d = event->globalPos() - mLastMousePos;
 
         int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());

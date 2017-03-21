@@ -57,7 +57,7 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
 static QStringList cleanFilterList(const QString &filter)
 {
     const char filterRegExp[] =
-    "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
+        "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
 
     QRegExp regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
@@ -91,8 +91,7 @@ QString writableImageFormatsFilter()
  * Returns whether the \a fileName has an extension that is matched by
  * the \a nameFilter.
  */
-bool fileNameMatchesNameFilter(const QString &fileName,
-                               const QString &nameFilter)
+bool fileNameMatchesNameFilter(const QString &fileName, const QString &nameFilter)
 {
     QRegExp rx;
     rx.setCaseSensitivity(Qt::CaseInsensitive);
@@ -121,7 +120,7 @@ void restoreGeometry(QWidget *widget)
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     widget->restoreGeometry(settings->value(key).toByteArray());
 
-    if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
+    if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
         mainWindow->restoreState(settings->value(stateKey).toByteArray());
     }
@@ -140,7 +139,7 @@ void saveGeometry(QWidget *widget)
     const QString key = widget->objectName() + QLatin1String("/Geometry");
     settings->setValue(key, widget->saveGeometry());
 
-    if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
+    if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
         settings->setValue(stateKey, mainWindow->saveState());
     }
@@ -169,14 +168,12 @@ qreal dpiScaled(qreal value)
 
 QSize dpiScaled(QSize value)
 {
-    return QSize(qRound(dpiScaled(value.width())),
-                 qRound(dpiScaled(value.height())));
+    return QSize(qRound(dpiScaled(value.width())), qRound(dpiScaled(value.height())));
 }
 
 QPoint dpiScaled(QPoint value)
 {
-    return QPoint(qRound(dpiScaled(value.x())),
-                  qRound(dpiScaled(value.y())));
+    return QPoint(qRound(dpiScaled(value.x())), qRound(dpiScaled(value.y())));
 }
 
 QRectF dpiScaled(QRectF value)

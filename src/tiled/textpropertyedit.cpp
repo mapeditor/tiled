@@ -42,9 +42,7 @@ namespace {
 class ReplacementValidator : public QValidator
 {
 public:
-    ReplacementValidator(QObject *parent,
-                         const QString &offending,
-                         const QString &replacement)
+    ReplacementValidator(QObject *parent, const QString &offending, const QString &replacement)
         : QValidator(parent)
         , mOffending(offending)
         , mReplacement(replacement)
@@ -77,8 +75,8 @@ QString escapeNewlines(const QString &string)
         return string;
 
     QString result(string);
-    result.replace(QLatin1Char('\\'), QStringLiteral("\\\\"));  // protect backslashes
-    result.replace(QLatin1Char('\n'), QStringLiteral("\\n"));   // escape newlines
+    result.replace(QLatin1Char('\\'), QStringLiteral("\\\\")); // protect backslashes
+    result.replace(QLatin1Char('\n'), QStringLiteral("\\n"));  // escape newlines
     return result;
 }
 
@@ -95,11 +93,11 @@ static QString unescapeNewlines(const QString &string)
         // found an escaped character. If not a newline or at end of string,
         // leave as is, else insert '\n'
         const int nextpos = pos + 1;
-        if (nextpos >= result.length())  // trailing '\'
-             break;
+        if (nextpos >= result.length()) // trailing '\'
+            break;
         // escaped newline
         if (result.at(nextpos) == QChar(QLatin1Char('n')))
-             result[nextpos] = QChar(QLatin1Char('\n'));
+            result[nextpos] = QChar(QLatin1Char('\n'));
         // remove escape, go past escaped
         result.remove(pos, 1);
         pos++;
@@ -132,9 +130,8 @@ TextPropertyEdit::TextPropertyEdit(QWidget *parent)
     //
     // * After pasting text with newlines, undo is no longer available.
     //
-    mLineEdit->setValidator(new ReplacementValidator(mLineEdit,
-                                                     QStringLiteral("\n"),
-                                                     QStringLiteral("\\n")));
+    mLineEdit->setValidator(
+        new ReplacementValidator(mLineEdit, QStringLiteral("\n"), QStringLiteral("\\n")));
 
     layout->setMargin(0);
     layout->setSpacing(0);

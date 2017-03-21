@@ -21,8 +21,8 @@
 #include "selectsametiletool.h"
 
 #include "brushitem.h"
-#include "mapdocument.h"
 #include "changeselectedarea.h"
+#include "mapdocument.h"
 
 #include <QApplication>
 
@@ -31,8 +31,7 @@ using namespace Tiled::Internal;
 
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
     : AbstractTileTool(tr("Select Same Tile"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-by-color-select.png")),
+                       QIcon(QLatin1String(":images/22x22/stock-tool-by-color-select.png")),
                        QKeySequence(tr("S")),
                        parent)
 {
@@ -48,7 +47,7 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
     QRegion resultRegion;
     if (tileLayer->contains(tilePos)) {
         const Cell &matchCell = tileLayer->cellAt(tilePos);
-        resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
+        resultRegion = tileLayer->region([&](const Cell &cell) { return cell == matchCell; });
     }
     mSelectedRegion = resultRegion;
     brushItem()->setTileRegion(mSelectedRegion);

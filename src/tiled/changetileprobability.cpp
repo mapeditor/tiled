@@ -20,8 +20,8 @@
 
 #include "changetileprobability.h"
 
-#include "tilesetdocument.h"
 #include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -29,17 +29,16 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
-                                             const QList<Tile*>& tiles,
+                                             const QList<Tile *> &tiles,
                                              float probability)
     : mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
 {
     mProbabilities.reserve(tiles.size());
-    for (int i = 0; i < tiles.size(); ++ i)
+    for (int i = 0; i < tiles.size(); ++i)
         mProbabilities.append(probability);
 
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Probability"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Probability"));
 }
 
 ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
@@ -52,13 +51,12 @@ ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
     , mProbabilities(probabilities)
 {
     Q_ASSERT(mTiles.size() == mProbabilities.size());
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Probability"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Probability"));
 }
 
 void ChangeTileProbability::swap()
 {
-    for (int i = 0; i < mTiles.size(); ++ i) {
+    for (int i = 0; i < mTiles.size(); ++i) {
         Tile *tile = mTiles[i];
         float probability = tile->probability();
         tile->setProbability(mProbabilities[i]);
@@ -69,4 +67,3 @@ void ChangeTileProbability::swap()
 
 } // namespace Internal
 } // namespace Tiled
-

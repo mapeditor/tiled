@@ -21,9 +21,9 @@
 #include "raiselowerhelper.h"
 
 #include "changemapobjectsorder.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
-#include "mapdocument.h"
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "rangeset.h"
@@ -45,7 +45,7 @@ void RaiseLowerHelper::raise()
         return;
 
     // For each range of objects, only the first will move
-    QList<QUndoCommand*> commands;
+    QList<QUndoCommand *> commands;
     do {
         --it;
 
@@ -59,12 +59,10 @@ void RaiseLowerHelper::raise()
         const int from = static_cast<int>(movingItem->zValue());
         const int to = static_cast<int>(targetItem->zValue()) + 1;
 
-        commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup,
-                                                  from, to, 1));
+        commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup, from, to, 1));
     } while (it != firstRange);
 
-    push(commands,
-         QCoreApplication::translate("Undo Commands", "Raise Object"));
+    push(commands, QCoreApplication::translate("Undo Commands", "Raise Object"));
 }
 
 void RaiseLowerHelper::lower()
@@ -76,7 +74,7 @@ void RaiseLowerHelper::lower()
     RangeSet<int>::Range it_end = mSelectionRanges.end();
 
     // For each range of objects, only the first will move
-    QList<QUndoCommand*> commands;
+    QList<QUndoCommand *> commands;
     for (; it != it_end; ++it) {
         // The first range may be already at the bottom of the related items
         if (it.first() == 0)
@@ -88,17 +86,15 @@ void RaiseLowerHelper::lower()
         const int from = static_cast<int>(movingItem->zValue());
         const int to = static_cast<int>(targetItem->zValue());
 
-        commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup,
-                                                  from, to, 1));
+        commands.append(new ChangeMapObjectsOrder(mMapDocument, mObjectGroup, from, to, 1));
     }
 
-    push(commands,
-         QCoreApplication::translate("Undo Commands", "Lower Object"));
+    push(commands, QCoreApplication::translate("Undo Commands", "Lower Object"));
 }
 
 void RaiseLowerHelper::raiseToTop()
 {
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
+    const QSet<MapObjectItem *> &selectedItems = mMapScene->selectedObjectItems();
     ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
     if (!objectGroup)
         return;
@@ -115,7 +111,7 @@ void RaiseLowerHelper::raiseToTop()
     if (it == firstRange) // no range
         return;
 
-    QList<QUndoCommand*> commands;
+    QList<QUndoCommand *> commands;
     int to = objectGroup->objectCount();
 
     do {
@@ -130,18 +126,16 @@ void RaiseLowerHelper::raiseToTop()
 
         const int from = it.first();
 
-        commands.append(new ChangeMapObjectsOrder(mMapDocument, objectGroup,
-                                                  from, to, count));
+        commands.append(new ChangeMapObjectsOrder(mMapDocument, objectGroup, from, to, count));
         to -= count;
     } while (it != firstRange);
 
-    push(commands,
-         QCoreApplication::translate("Undo Commands", "Raise Object To Top"));
+    push(commands, QCoreApplication::translate("Undo Commands", "Raise Object To Top"));
 }
 
 void RaiseLowerHelper::lowerToBottom()
 {
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
+    const QSet<MapObjectItem *> &selectedItems = mMapScene->selectedObjectItems();
     ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
     if (!objectGroup)
         return;
@@ -155,7 +149,7 @@ void RaiseLowerHelper::lowerToBottom()
     RangeSet<int>::Range it = ranges.begin();
     RangeSet<int>::Range it_end = ranges.end();
 
-    QList<QUndoCommand*> commands;
+    QList<QUndoCommand *> commands;
     int to = 0;
 
     for (; it != it_end; ++it) {
@@ -167,13 +161,11 @@ void RaiseLowerHelper::lowerToBottom()
             continue;
         }
 
-        commands.append(new ChangeMapObjectsOrder(mMapDocument, objectGroup,
-                                                  from, to, count));
+        commands.append(new ChangeMapObjectsOrder(mMapDocument, objectGroup, from, to, count));
         to += count;
     }
 
-    push(commands,
-         QCoreApplication::translate("Undo Commands", "Lower Object To Bottom"));
+    push(commands, QCoreApplication::translate("Undo Commands", "Lower Object To Bottom"));
 }
 
 ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &items)
@@ -204,7 +196,7 @@ bool RaiseLowerHelper::initContext()
     mRelatedObjects.clear();
     mSelectionRanges.clear();
 
-    const QSet<MapObjectItem*> &selectedItems = mMapScene->selectedObjectItems();
+    const QSet<MapObjectItem *> &selectedItems = mMapScene->selectedObjectItems();
     if (selectedItems.isEmpty())
         return false;
 
@@ -224,12 +216,11 @@ bool RaiseLowerHelper::initContext()
 
     // The list of related items are all items from the same object group
     // that share space with the selected items.
-    const QList<QGraphicsItem*> items = mMapScene->items(shape,
-                                                         Qt::IntersectsItemShape,
-                                                         Qt::AscendingOrder);
+    const QList<QGraphicsItem *> items =
+        mMapScene->items(shape, Qt::IntersectsItemShape, Qt::AscendingOrder);
 
     for (QGraphicsItem *item : items) {
-        if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item)) {
+        if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem *>(item)) {
             if (mapObjectItem->mapObject()->objectGroup() == mObjectGroup)
                 mRelatedObjects.append(mapObjectItem);
         }
@@ -244,8 +235,7 @@ bool RaiseLowerHelper::initContext()
     return true;
 }
 
-void RaiseLowerHelper::push(const QList<QUndoCommand*> &commands,
-                            const QString &text)
+void RaiseLowerHelper::push(const QList<QUndoCommand *> &commands, const QString &text)
 {
     if (commands.isEmpty())
         return;

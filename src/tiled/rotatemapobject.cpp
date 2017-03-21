@@ -29,9 +29,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-RotateMapObject::RotateMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject,
-                                 qreal oldRotation)
+RotateMapObject::RotateMapObject(MapDocument *mapDocument, MapObject *mapObject, qreal oldRotation)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mOldRotation(oldRotation)

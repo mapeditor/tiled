@@ -35,8 +35,6 @@ QRectF ObjectGroupItem::boundingRect() const
     return QRectF();
 }
 
-void ObjectGroupItem::paint(QPainter *,
-                            const QStyleOptionGraphicsItem *,
-                            QWidget *)
+void ObjectGroupItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {
 }

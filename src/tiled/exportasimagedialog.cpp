@@ -21,26 +21,26 @@
 #include "exportasimagedialog.h"
 #include "ui_exportasimagedialog.h"
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
-#include "imagelayer.h"
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tilelayer.h"
 #include "utils.h"
 
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QImageWriter>
+#include <QMessageBox>
 #include <QSettings>
 
-static const char * const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
-static const char * const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
-static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
-static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
+static const char *const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
+static const char *const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
+static const char *const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
+static const char *const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -87,14 +87,11 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
-    const bool visibleLayersOnly =
-            s->value(QLatin1String(VISIBLE_ONLY_KEY), true).toBool();
-    const bool useCurrentScale =
-            s->value(QLatin1String(CURRENT_SCALE_KEY), true).toBool();
-    const bool drawTileGrid =
-            s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
+    const bool visibleLayersOnly = s->value(QLatin1String(VISIBLE_ONLY_KEY), true).toBool();
+    const bool useCurrentScale = s->value(QLatin1String(CURRENT_SCALE_KEY), true).toBool();
+    const bool drawTileGrid = s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
     const bool includeBackgroundColor =
-            s->value(QLatin1String(INCLUDE_BACKGROUND_COLOR), false).toBool();
+        s->value(QLatin1String(INCLUDE_BACKGROUND_COLOR), false).toBool();
 
     mUi->visibleLayersOnly->setChecked(visibleLayersOnly);
     mUi->currentZoomLevel->setChecked(useCurrentScale);
@@ -102,8 +99,7 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
     mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
-    connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(updateAcceptEnabled()));
+    connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)), this, SLOT(updateAcceptEnabled()));
 
 
     Utils::restoreGeometry(this);
@@ -133,13 +129,13 @@ void ExportAsImageDialog::accept()
 
     if (QFile::exists(fileName)) {
         const QMessageBox::StandardButton button =
-                QMessageBox::warning(this,
-                                     tr("Export as Image"),
-                                     tr("%1 already exists.\n"
-                                        "Do you want to replace it?")
+            QMessageBox::warning(this,
+                                 tr("Export as Image"),
+                                 tr("%1 already exists.\n"
+                                    "Do you want to replace it?")
                                      .arg(QFileInfo(fileName).fileName()),
-                                     QMessageBox::Yes | QMessageBox::No,
-                                     QMessageBox::No);
+                                 QMessageBox::Yes | QMessageBox::No,
+                                 QMessageBox::No);
 
         if (button != QMessageBox::Yes)
             return;
@@ -180,10 +176,11 @@ void ExportAsImageDialog::accept()
             image.fill(Qt::transparent);
         }
     } catch (const std::bad_alloc &) {
-        QMessageBox::critical(this,
-                              tr("Out of Memory"),
-                              tr("Could not allocate sufficient memory for the image. "
-                                 "Try reducing the zoom level or using a 64-bit version of Tiled."));
+        QMessageBox::critical(
+            this,
+            tr("Out of Memory"),
+            tr("Could not allocate sufficient memory for the image. "
+               "Try reducing the zoom level or using a 64-bit version of Tiled."));
         return;
     }
 
@@ -192,13 +189,14 @@ void ExportAsImageDialog::accept()
         const size_t memory = size_t(mapSize.width()) * size_t(mapSize.height()) * 4;
         const double gigabytes = (double) memory / gigabyte;
 
-        QMessageBox::critical(this,
-                              tr("Image too Big"),
-                              tr("The resulting image would be %1 x %2 pixels and take %3 GB of memory. "
-                                 "Tiled is unable to create such an image. Try reducing the zoom level.")
-                              .arg(mapSize.width())
-                              .arg(mapSize.height())
-                              .arg(gigabytes, 0, 'f', 2));
+        QMessageBox::critical(
+            this,
+            tr("Image too Big"),
+            tr("The resulting image would be %1 x %2 pixels and take %3 GB of memory. "
+               "Tiled is unable to create such an image. Try reducing the zoom level.")
+                .arg(mapSize.width())
+                .arg(mapSize.height())
+                .arg(gigabytes, 0, 'f', 2));
         return;
     }
 
@@ -208,8 +206,7 @@ void ExportAsImageDialog::accept()
         if (smoothTransform(mCurrentScale))
             painter.setRenderHints(QPainter::SmoothPixmapTransform);
 
-        painter.setTransform(QTransform::fromScale(mCurrentScale,
-                                                   mCurrentScale));
+        painter.setTransform(QTransform::fromScale(mCurrentScale, mCurrentScale));
         renderer->setPainterScale(mCurrentScale);
     } else {
         renderer->setPainterScale(1);
@@ -229,14 +226,14 @@ void ExportAsImageDialog::accept()
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-            const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+            const TileLayer *tileLayer = static_cast<const TileLayer *>(layer);
             renderer->drawTileLayer(&painter, tileLayer);
             break;
         }
 
         case Layer::ObjectGroupType: {
-            const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
-            QList<MapObject*> objects = objectGroup->objects();
+            const ObjectGroup *objectGroup = static_cast<const ObjectGroup *>(layer);
+            QList<MapObject *> objects = objectGroup->objects();
 
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 qStableSort(objects.begin(), objects.end(), objectLessThan);
@@ -261,7 +258,7 @@ void ExportAsImageDialog::accept()
             break;
         }
         case Layer::ImageLayerType: {
-            const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+            const ImageLayer *imageLayer = static_cast<const ImageLayer *>(layer);
             renderer->drawImageLayer(&painter, imageLayer);
             break;
         }
@@ -276,8 +273,7 @@ void ExportAsImageDialog::accept()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), prefs->gridColor());
     }
 
     // Restore the previous render flags
@@ -301,9 +297,11 @@ void ExportAsImageDialog::browse()
     // Don't confirm overwrite here, since we'll confirm when the user presses
     // the Export button
     const QString filter = Utils::writableImageFormatsFilter();
-    QString f = QFileDialog::getSaveFileName(this, tr("Image"),
+    QString f = QFileDialog::getSaveFileName(this,
+                                             tr("Image"),
                                              mUi->fileNameEdit->text(),
-                                             filter, nullptr,
+                                             filter,
+                                             nullptr,
                                              QFileDialog::DontConfirmOverwrite);
     if (!f.isEmpty()) {
         mUi->fileNameEdit->setText(f);

@@ -60,11 +60,8 @@ void ResizeHelper::setOffsetY(int y)
 void ResizeHelper::setOffset(const QPoint &offset)
 {
     // Clamp the offset within the offset bounds
-    const QPoint newOffset(
-            qMin(mOffsetBounds.right(),
-                qMax(mOffsetBounds.left(), offset.x())),
-            qMin(mOffsetBounds.bottom(),
-                qMax(mOffsetBounds.top(), offset.y())));
+    const QPoint newOffset(qMin(mOffsetBounds.right(), qMax(mOffsetBounds.left(), offset.x())),
+                           qMin(mOffsetBounds.bottom(), qMax(mOffsetBounds.top(), offset.y())));
 
     if (mOffset != newOffset) {
         const bool xChanged = mOffset.x() != newOffset.x();
@@ -168,13 +165,13 @@ void ResizeHelper::recalculateScale()
     if (_size.isEmpty())
         return;
 
-    const int width = (mOldSize.width() < mNewSize.width()) ?
-        mNewSize.width() :
-        2 * mOldSize.width() - mNewSize.width();
+    const int width = (mOldSize.width() < mNewSize.width())
+                          ? mNewSize.width()
+                          : 2 * mOldSize.width() - mNewSize.width();
 
-    const int height = (mOldSize.height() < mNewSize.height()) ?
-        mNewSize.height() :
-        2 * mOldSize.height() - mNewSize.height();
+    const int height = (mOldSize.height() < mNewSize.height())
+                           ? mNewSize.height()
+                           : 2 * mOldSize.height() - mNewSize.height();
 
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;

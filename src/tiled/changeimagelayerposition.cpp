@@ -20,21 +20,18 @@
 
 #include "changeimagelayerposition.h"
 
-#include "mapdocument.h"
 #include "imagelayer.h"
+#include "mapdocument.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeImageLayerPosition::ChangeImageLayerPosition(
-        MapDocument *mapDocument,
-        ImageLayer *imageLayer,
-        const QPoint &newPos)
-    : QUndoCommand(
-          QCoreApplication::translate(
-              "Undo Commands", "Change Image Layer Position"))
+ChangeImageLayerPosition::ChangeImageLayerPosition(MapDocument *mapDocument,
+                                                   ImageLayer *imageLayer,
+                                                   const QPoint &newPos)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Image Layer Position"))
     , mMapDocument(mapDocument)
     , mImageLayer(imageLayer)
     , mUndoPos(imageLayer->position())

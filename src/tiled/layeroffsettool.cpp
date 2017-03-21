@@ -80,7 +80,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
 
     if (!mMousePressed)
         return;
-    if (mApplyingChange)    // avoid recursion
+    if (mApplyingChange) // avoid recursion
         return;
 
     if (!mDragging) {
@@ -159,9 +159,7 @@ void LayerOffsetTool::finishDrag()
         mApplyingChange = true;
         mapDocument()->layerModel()->setLayerOffset(currentLayer, mOldOffset);
         mapDocument()->undoStack()->push(
-                    new SetLayerOffset(mapDocument(),
-                                       currentLayer,
-                                       newOffset));
+            new SetLayerOffset(mapDocument(), currentLayer, newOffset));
         mApplyingChange = false;
     }
 }

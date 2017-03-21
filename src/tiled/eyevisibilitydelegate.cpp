@@ -25,10 +25,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
-    QItemDelegate(parent),
-    mVisibleIcon(QLatin1String(":/images/14x14/visible.png")),
-    mHiddenIcon(QLatin1String(":/images/14x14/hidden.png"))
+EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent)
+    : QItemDelegate(parent)
+    , mVisibleIcon(QLatin1String(":/images/14x14/visible.png"))
+    , mHiddenIcon(QLatin1String(":/images/14x14/hidden.png"))
 {
     mVisibleIcon.addFile(QLatin1String(":/images/16x16/visible.png"));
     mVisibleIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
@@ -37,8 +37,10 @@ EyeVisibilityDelegate::EyeVisibilityDelegate(QObject *parent):
     mHiddenIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
 }
 
-void EyeVisibilityDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &,
-                                      const QRect &rect, Qt::CheckState state) const
+void EyeVisibilityDelegate::drawCheck(QPainter *painter,
+                                      const QStyleOptionViewItem &,
+                                      const QRect &rect,
+                                      Qt::CheckState state) const
 {
     const QIcon &icon = (state == Qt::Checked) ? mVisibleIcon : mHiddenIcon;
     const QPixmap &pixmap = icon.pixmap(rect.size());

@@ -29,7 +29,7 @@
 
 using namespace Tiled::Internal;
 
-static const char * const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
+static const char *const REMOVE_OBJECTS_KEY = "ResizeMap/RemoveObjects";
 
 ResizeDialog::ResizeDialog(QWidget *parent)
     : QDialog(parent)
@@ -44,17 +44,16 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     bool removeObjects = s->value(QLatin1String(REMOVE_OBJECTS_KEY), true).toBool();
 
     mUi->removeObjectsCheckBox->setChecked(removeObjects);
-    connect(mUi->removeObjectsCheckBox, &QCheckBox::toggled, this, &ResizeDialog::removeObjectsToggled);
+    connect(
+        mUi->removeObjectsCheckBox, &QCheckBox::toggled, this, &ResizeDialog::removeObjectsToggled);
 
     // Initialize the new size of the resizeHelper to the default values of
     // the spin boxes. Otherwise, if the map width or height is default, then
     // setOldSize() will simply reset default values, causing callbacks in the
     // resize helper to not be called.
-    mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
-                                        mUi->heightSpinBox->value()));
+    mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(), mUi->heightSpinBox->value()));
 
-    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
-                               SLOT(updateOffsetBounds(QRect)));
+    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)), SLOT(updateOffsetBounds(QRect)));
 
     Utils::restoreGeometry(this);
 }

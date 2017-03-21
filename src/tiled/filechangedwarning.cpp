@@ -32,10 +32,8 @@ namespace Internal {
 FileChangedWarning::FileChangedWarning(QWidget *parent)
     : QWidget(parent)
     , mLabel(new QLabel(this))
-    , mButtons(new QDialogButtonBox(QDialogButtonBox::Yes |
-                                    QDialogButtonBox::No,
-                                    Qt::Horizontal,
-                                    this))
+    , mButtons(
+          new QDialogButtonBox(QDialogButtonBox::Yes | QDialogButtonBox::No, Qt::Horizontal, this))
 {
     mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
 
@@ -65,9 +63,7 @@ void FileChangedWarning::paintEvent(QPaintEvent *event)
     painter.setPen(light);
     painter.drawLine(r.bottomLeft(), r.bottomRight());
     painter.setPen(shadow);
-    painter.drawLine(r.left(), r.bottom() - 1,
-                     r.right(), r.bottom() - 1);
-
+    painter.drawLine(r.left(), r.bottom() - 1, r.right(), r.bottom() - 1);
 }
 
 } // namespace Internal

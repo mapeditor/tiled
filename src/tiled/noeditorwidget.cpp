@@ -26,9 +26,9 @@
 namespace Tiled {
 namespace Internal {
 
-NoEditorWidget::NoEditorWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::NoEditorWidget)
+NoEditorWidget::NoEditorWidget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::NoEditorWidget)
 {
     ui->setupUi(this);
 

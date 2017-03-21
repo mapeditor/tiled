@@ -28,9 +28,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-EraseTiles::EraseTiles(MapDocument *mapDocument,
-                       TileLayer *tileLayer,
-                       const QRegion &region)
+EraseTiles::EraseTiles(MapDocument *mapDocument, TileLayer *tileLayer, const QRegion &region)
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mRegion(region)
@@ -63,10 +61,8 @@ void EraseTiles::redo()
 
 bool EraseTiles::mergeWith(const QUndoCommand *other)
 {
-    const EraseTiles *o = static_cast<const EraseTiles*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
-          mTileLayer == o->mTileLayer &&
-          o->mMergeable))
+    const EraseTiles *o = static_cast<const EraseTiles *>(other);
+    if (!(mMapDocument == o->mMapDocument && mTileLayer == o->mTileLayer && o->mMergeable))
         return false;
 
     const QRegion combinedRegion = mRegion.united(o->mRegion);

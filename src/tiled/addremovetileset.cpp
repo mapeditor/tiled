@@ -56,22 +56,15 @@ void AddRemoveTileset::addTileset()
 }
 
 
-AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
-                       QUndoCommand *parent)
-    : AddRemoveTileset(mapDocument,
-                       mapDocument->map()->tilesets().size(),
-                       tileset,
-                       parent)
+AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset, QUndoCommand *parent)
+    : AddRemoveTileset(mapDocument, mapDocument->map()->tilesets().size(), tileset, parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tileset"));
 }
 
 
 RemoveTileset::RemoveTileset(MapDocument *mapDocument, int index)
-    : AddRemoveTileset(mapDocument,
-                       index,
-                       mapDocument->map()->tilesetAt(index))
+    : AddRemoveTileset(mapDocument, index, mapDocument->map()->tilesetAt(index))
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Remove Tileset"));
+    setText(QCoreApplication::translate("Undo Commands", "Remove Tileset"));
 }

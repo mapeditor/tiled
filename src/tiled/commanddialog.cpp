@@ -25,10 +25,10 @@
 #include "commandmanager.h"
 #include "utils.h"
 
-#include <QShortcut>
-#include <QMenu>
 #include <QContextMenuEvent>
+#include <QMenu>
 #include <QModelIndex>
+#include <QShortcut>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -46,11 +46,15 @@ CommandDialog::CommandDialog(QWidget *parent)
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
 
-    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
-            this, &CommandDialog::setShortcut);
+    connect(mUi->keySequenceEdit,
+            &QKeySequenceEdit::keySequenceChanged,
+            this,
+            &CommandDialog::setShortcut);
 
-    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
-            this, &CommandDialog::updateKeySequenceEdit);
+    connect(mUi->treeView->selectionModel(),
+            &QItemSelectionModel::currentChanged,
+            this,
+            &CommandDialog::updateKeySequenceEdit);
 }
 
 CommandDialog::~CommandDialog()
@@ -103,16 +107,16 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
     h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
-    h->setSectionResizeMode(CommandDataModel::EnabledColumn,
-                            QHeaderView::ResizeToContents);
+    h->setSectionResizeMode(CommandDataModel::EnabledColumn, QHeaderView::ResizeToContents);
 
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);
     d->setContext(Qt::WidgetShortcut);
     connect(d, SIGNAL(activated()), SLOT(removeSelectedCommands()));
 
-    connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
-                    SLOT(handleRowsRemoved(QModelIndex, int, int)));
+    connect(mModel,
+            SIGNAL(rowsRemoved(QModelIndex, int, int)),
+            SLOT(handleRowsRemoved(QModelIndex, int, int)));
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
@@ -134,9 +138,8 @@ void CommandTreeView::handleRowsRemoved(const QModelIndex &parent, int, int)
     QItemSelectionModel *sModel = selectionModel();
     QModelIndex index = sModel->currentIndex();
 
-    sModel->select(index.sibling(index.row() + 1,index.column()),
-                   QItemSelectionModel::ClearAndSelect |
-                   QItemSelectionModel::Rows);
+    sModel->select(index.sibling(index.row() + 1, index.column()),
+                   QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 void CommandTreeView::removeSelectedCommands()

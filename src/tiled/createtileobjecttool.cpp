@@ -39,7 +39,8 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
+                                                         Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 

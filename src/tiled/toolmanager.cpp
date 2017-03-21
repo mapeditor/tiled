@@ -38,8 +38,7 @@ ToolManager::ToolManager(QObject *parent)
     , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
-    connect(mActionGroup, SIGNAL(triggered(QAction*)),
-            this, SLOT(actionTriggered(QAction*)));
+    connect(mActionGroup, SIGNAL(triggered(QAction *)), this, SLOT(actionTriggered(QAction *)));
 }
 
 ToolManager::~ToolManager()
@@ -58,7 +57,7 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
 
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
-        AbstractTool *tool = action->data().value<AbstractTool*>();
+        AbstractTool *tool = action->data().value<AbstractTool *>();
         tool->setMapDocument(mapDocument);
     }
 }
@@ -75,16 +74,14 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
 
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
     toolAction->setShortcut(tool->shortcut());
-    toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
+    toolAction->setData(QVariant::fromValue<AbstractTool *>(tool));
     toolAction->setCheckable(true);
     toolAction->setToolTip(
-            QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                  tool->shortcut().toString()));
+        QString(QLatin1String("%1 (%2)")).arg(tool->name(), tool->shortcut().toString()));
     toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
 
-    connect(tool, SIGNAL(enabledChanged(bool)),
-            this, SLOT(toolEnabledChanged(bool)));
+    connect(tool, SIGNAL(enabledChanged(bool)), this, SLOT(toolEnabledChanged(bool)));
 
     // Select the first added tool
     if (!mSelectedTool && tool->isEnabled()) {
@@ -108,7 +105,7 @@ void ToolManager::selectTool(AbstractTool *tool)
 
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
-        if (action->data().value<AbstractTool*>() == tool) {
+        if (action->data().value<AbstractTool *>() == tool) {
             action->trigger();
             return;
         }
@@ -122,7 +119,7 @@ void ToolManager::selectTool(AbstractTool *tool)
 
 void ToolManager::actionTriggered(QAction *action)
 {
-    setSelectedTool(action->data().value<AbstractTool*>());
+    setSelectedTool(action->data().value<AbstractTool *>());
 }
 
 void ToolManager::retranslateTools()
@@ -130,24 +127,24 @@ void ToolManager::retranslateTools()
     // Allow the tools to adapt to the new language
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
-        AbstractTool *tool = action->data().value<AbstractTool*>();
+        AbstractTool *tool = action->data().value<AbstractTool *>();
         tool->languageChanged();
 
         // Update the text, shortcut and tooltip of the action
         action->setText(tool->name());
         action->setShortcut(tool->shortcut());
-        action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
-                tool->name(), tool->shortcut().toString()));
+        action->setToolTip(
+            QString(QLatin1String("%1 (%2)")).arg(tool->name(), tool->shortcut().toString()));
     }
 }
 
 void ToolManager::toolEnabledChanged(bool enabled)
 {
-    AbstractTool *tool = qobject_cast<AbstractTool*>(sender());
+    AbstractTool *tool = qobject_cast<AbstractTool *>(sender());
 
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions) {
-        if (action->data().value<AbstractTool*>() == tool) {
+        if (action->data().value<AbstractTool *>() == tool) {
             action->setEnabled(enabled);
             break;
         }
@@ -164,8 +161,7 @@ void ToolManager::toolEnabledChanged(bool enabled)
         // all the tools to update their enabled state.
         if (!mSelectEnabledToolPending) {
             mSelectEnabledToolPending = true;
-            QMetaObject::invokeMethod(this, "selectEnabledTool",
-                                      Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "selectEnabledTool", Qt::QueuedConnection);
         }
     }
 }
@@ -191,7 +187,7 @@ AbstractTool *ToolManager::firstEnabledTool() const
 {
     const auto actions = mActionGroup->actions();
     for (QAction *action : actions)
-        if (AbstractTool *tool = action->data().value<AbstractTool*>())
+        if (AbstractTool *tool = action->data().value<AbstractTool *>())
             if (tool->isEnabled())
                 return tool;
 
@@ -204,8 +200,10 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         return;
 
     if (mSelectedTool) {
-        disconnect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                   this, SIGNAL(statusInfoChanged(QString)));
+        disconnect(mSelectedTool,
+                   SIGNAL(statusInfoChanged(QString)),
+                   this,
+                   SIGNAL(statusInfoChanged(QString)));
     }
 
     mSelectedTool = tool;
@@ -213,7 +211,9 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
 
     if (mSelectedTool) {
         emit statusInfoChanged(mSelectedTool->statusInfo());
-        connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
-                this, SIGNAL(statusInfoChanged(QString)));
+        connect(mSelectedTool,
+                SIGNAL(statusInfoChanged(QString)),
+                this,
+                SIGNAL(statusInfoChanged(QString)));
     }
 }

@@ -112,4 +112,3 @@ bool PluginListModel::setData(const QModelIndex &index, const QVariant &value, i
 
 } // namespace Internal
 } // namespace Tiled
-

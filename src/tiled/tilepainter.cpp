@@ -21,8 +21,8 @@
 
 #include "tilepainter.h"
 
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -89,13 +89,9 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     emit mMapDocument->regionChanged(QRegion(x, y, 1, 1), mTileLayer);
 }
 
-void TilePainter::setCells(int x, int y,
-                           TileLayer *tileLayer,
-                           const QRegion &mask)
+void TilePainter::setCells(int x, int y, TileLayer *tileLayer, const QRegion &mask)
 {
-    QRegion region = paintableRegion(x, y,
-                                     tileLayer->width(),
-                                     tileLayer->height());
+    QRegion region = paintableRegion(x, y, tileLayer->width(), tileLayer->height());
     region &= mask;
 
     if (region.isEmpty())
@@ -112,9 +108,7 @@ void TilePainter::setCells(int x, int y,
 
 void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 {
-    const QRegion region = paintableRegion(x, y,
-                                           tileLayer->width(),
-                                           tileLayer->height());
+    const QRegion region = paintableRegion(x, y, tileLayer->width(), tileLayer->height());
     if (region.isEmpty())
         return;
 
@@ -127,9 +121,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
                 if (cell.isEmpty())
                     continue;
 
-                mTileLayer->setCell(_x - mTileLayer->x(),
-                                    _y - mTileLayer->y(),
-                                    cell);
+                mTileLayer->setCell(_x - mTileLayer->x(), _y - mTileLayer->y(), cell);
             }
         }
     }
@@ -137,8 +129,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
     emit mMapDocument->regionChanged(region, mTileLayer);
 }
 
-void TilePainter::drawStamp(const TileLayer *stamp,
-                            const QRegion &drawRegion)
+void TilePainter::drawStamp(const TileLayer *stamp, const QRegion &drawRegion)
 {
     Q_ASSERT(stamp);
     if (stamp->bounds().isEmpty())
@@ -163,9 +154,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
                 if (cell.isEmpty())
                     continue;
 
-                mTileLayer->setCell(_x - mTileLayer->x(),
-                                    _y - mTileLayer->y(),
-                                    cell);
+                mTileLayer->setCell(_x - mTileLayer->x(), _y - mTileLayer->y(), cell);
             }
         }
     }
@@ -229,9 +218,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)
         fillRegion += QRegion(left, currentPoint.y(), right - left + 1, 1);
 
         // Add cell strip to processed cells
-        memset(&processedCells[startOfLine + left],
-               1,
-               right - left);
+        memset(&processedCells[startOfLine + left], 1, right - left);
 
         // These variables cache whether the last cell was added to the queue
         // or not as an optimization, since adjacent cells on the x axis
@@ -248,8 +235,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)
             if (fillPoint.y() > 0) {
                 QPoint aboveCell(fillPoint.x(), fillPoint.y() - 1);
                 if (!processedCells[aboveCell.y() * layerWidth + aboveCell.x()] &&
-                    layer->cellAt(aboveCell) == matchCell)
-                {
+                    layer->cellAt(aboveCell) == matchCell) {
                     // Do not add the above cell to the queue if its
                     // x-adjacent cell was added.
                     if (!lastAboveCell)
@@ -267,8 +253,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)
             if (fillPoint.y() + 1 < layerHeight) {
                 QPoint belowCell(fillPoint.x(), fillPoint.y() + 1);
                 if (!processedCells[belowCell.y() * layerWidth + belowCell.x()] &&
-                    layer->cellAt(belowCell) == matchCell)
-                {
+                    layer->cellAt(belowCell) == matchCell) {
                     // Do not add the below cell to the queue if its
                     // x-adjacent cell was added.
                     if (!lastBelowCell)

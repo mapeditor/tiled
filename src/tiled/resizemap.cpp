@@ -28,12 +28,8 @@
 namespace Tiled {
 namespace Internal {
 
-ResizeMap::ResizeMap(MapDocument *mapDocument,
-                     const QSize &size,
-                     QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Resize Map"),
-                   parent)
+ResizeMap::ResizeMap(MapDocument *mapDocument, const QSize &size, QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Resize Map"), parent)
     , mMapDocument(mapDocument)
     , mSize(size)
 {

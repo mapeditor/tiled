@@ -32,8 +32,7 @@ ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
                                  MapObject::Property property,
                                  const QVariant &value)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Object"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Object"))
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mProperty(property)
@@ -68,9 +67,9 @@ ChangeMapObjectCells::ChangeMapObjectCells(MapDocument *mapDocument,
 {
 }
 
-static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
+static QList<MapObject *> objectList(const QVector<MapObjectCell> &changes)
 {
-    QList<MapObject*> result;
+    QList<MapObject *> result;
     result.reserve(changes.size());
 
     for (const MapObjectCell &change : changes)

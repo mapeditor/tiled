@@ -31,16 +31,15 @@
 #include "tile.h"
 #include "tilestamp.h"
 
-#include <math.h>
 #include <QVector>
+#include <math.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 StampBrush::StampBrush(QObject *parent)
     : AbstractTileTool(tr("Stamp Brush"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-clone.png")),
+                       QIcon(QLatin1String(":images/22x22/stock-tool-clone.png")),
                        QKeySequence(tr("B")),
                        parent)
     , mBrushBehavior(Free)
@@ -169,8 +168,7 @@ void StampBrush::languageChanged()
     setShortcut(QKeySequence(tr("B")));
 }
 
-void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
-                                    MapDocument *newDocument)
+void StampBrush::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument)
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
@@ -250,8 +248,7 @@ void StampBrush::endCapture()
 
     // Intersect with the layer and translate to layer coordinates
     QRect captured = capturedArea();
-    captured &= QRect(tileLayer->x(), tileLayer->y(),
-                      tileLayer->width(), tileLayer->height());
+    captured &= QRect(tileLayer->x(), tileLayer->y(), tileLayer->width(), tileLayer->height());
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
@@ -305,17 +302,12 @@ QRegion StampBrush::doPaint(int flags)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    if (!tileLayer->bounds().intersects(QRect(preview->x(),
-                                              preview->y(),
-                                              preview->width(),
-                                              preview->height())))
+    if (!tileLayer->bounds().intersects(
+            QRect(preview->x(), preview->y(), preview->width(), preview->height())))
         return QRegion();
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                               tileLayer,
-                                               preview->x(),
-                                               preview->y(),
-                                               preview);
+    PaintTileLayer *paint =
+        new PaintTileLayer(mapDocument(), tileLayer, preview->x(), preview->y(), preview);
 
     if (!mMissingTilesets.isEmpty()) {
         for (const SharedTileset &tileset : mMissingTilesets)
@@ -328,7 +320,7 @@ QRegion StampBrush::doPaint(int flags)
     mapDocument()->undoStack()->push(paint);
 
     QRegion editedRegion = preview->region();
-    if (! (flags & SuppressRegionEdited))
+    if (!(flags & SuppressRegionEdited))
         emit mapDocument()->regionEdited(editedRegion, tileLayer);
     return editedRegion;
 }
@@ -362,15 +354,12 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview(
+            new TileLayer(QString(), bounds.x(), bounds.y(), bounds.width(), bounds.height()));
 
         for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
-            preview->setCell(p.x() - bounds.left(),
-                             p.y() - bounds.top(),
-                             cell);
+            preview->setCell(p.x() - bounds.left(), p.y() - bounds.top(), cell);
         }
 
         mPreviewLayer = preview;
@@ -395,23 +384,20 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                 regionCache.insert(stamp, stampRegion);
             }
 
-            QPoint centered(p.x() - stamp->width() / 2,
-                            p.y() - stamp->height() / 2);
+            QPoint centered(p.x() - stamp->width() / 2, p.y() - stamp->height() / 2);
 
-            const QRegion region = stampRegion.translated(centered.x(),
-                                                          centered.y());
+            const QRegion region = stampRegion.translated(centered.x(), centered.y());
             if (!paintedRegion.intersects(region)) {
                 paintedRegion += region;
 
-                PaintOperation op = { centered, stamp };
+                PaintOperation op = {centered, stamp};
                 operations.append(op);
             }
         }
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview(
+            new TileLayer(QString(), bounds.x(), bounds.y(), bounds.width(), bounds.height()));
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);

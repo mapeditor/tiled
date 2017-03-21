@@ -27,17 +27,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TiledApplication::TiledApplication(int &argc, char **argv) :
-    QtSingleApplication(argc, argv)
+TiledApplication::TiledApplication(int &argc, char **argv)
+    : QtSingleApplication(argc, argv)
 {
-    connect(this, &TiledApplication::messageReceived,
-            this, &TiledApplication::onMessageReceived);
+    connect(this, &TiledApplication::messageReceived, this, &TiledApplication::onMessageReceived);
 }
 
 bool TiledApplication::event(QEvent *event)
 {
     if (event->type() == QEvent::FileOpen) {
-        QFileOpenEvent *fileOpenEvent = static_cast<QFileOpenEvent*>(event);
+        QFileOpenEvent *fileOpenEvent = static_cast<QFileOpenEvent *>(event);
         emit fileOpenRequest(fileOpenEvent->file());
         return true;
     }
@@ -46,8 +45,8 @@ bool TiledApplication::event(QEvent *event)
 
 void TiledApplication::onMessageReceived(const QString &message)
 {
-   const QJsonArray files = QJsonDocument::fromJson(message.toLatin1()).array();
-   for (const QJsonValue &file : files) {
-       emit fileOpenRequest(file.toString());
-   }
+    const QJsonArray files = QJsonDocument::fromJson(message.toLatin1()).array();
+    for (const QJsonValue &file : files) {
+        emit fileOpenRequest(file.toString());
+    }
 }

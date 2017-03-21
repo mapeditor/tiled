@@ -23,10 +23,10 @@
 #include "automapperwrapper.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
-#include "preferences.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -64,8 +64,7 @@ void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
         autoMapInternal(where, touchedLayer);
 }
 
-void AutomappingManager::autoMapInternal(const QRegion &where,
-                                         Layer *touchedLayer)
+void AutomappingManager::autoMapInternal(const QRegion &where, Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
@@ -85,7 +84,7 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         }
     }
 
-    QVector<AutoMapper*> passedAutoMappers;
+    QVector<AutoMapper *> passedAutoMappers;
     if (touchedLayer) {
         foreach (AutoMapper *a, mAutoMappers) {
             if (a->ruleLayerNameUsed(touchedLayer->name()))
@@ -124,13 +123,11 @@ bool AutomappingManager::loadFile(const QString &filePath)
     QFile rulesFile(filePath);
 
     if (!rulesFile.exists()) {
-        mError += tr("No rules file found at:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        mError += tr("No rules file found at:\n%1").arg(filePath) + QLatin1Char('\n');
         return false;
     }
     if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError += tr("Error opening rules file:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
+        mError += tr("Error opening rules file:\n%1").arg(filePath) + QLatin1Char('\n');
         return false;
     }
 
@@ -139,9 +136,8 @@ bool AutomappingManager::loadFile(const QString &filePath)
 
     for (; !line.isNull(); line = in.readLine()) {
         QString rulePath = line.trimmed();
-        if (rulePath.isEmpty()
-                || rulePath.startsWith(QLatin1Char('#'))
-                || rulePath.startsWith(QLatin1String("//")))
+        if (rulePath.isEmpty() || rulePath.startsWith(QLatin1Char('#')) ||
+            rulePath.startsWith(QLatin1String("//")))
             continue;
 
         if (QFileInfo(rulePath).isRelative())
@@ -158,8 +154,8 @@ bool AutomappingManager::loadFile(const QString &filePath)
             Map *rules = tmxFormat.read(rulePath);
 
             if (!rules) {
-                mError += tr("Opening rules map failed:\n%1").arg(
-                        tmxFormat.errorString()) + QLatin1Char('\n');
+                mError += tr("Opening rules map failed:\n%1").arg(tmxFormat.errorString()) +
+                          QLatin1Char('\n');
                 ret = false;
                 continue;
             }
@@ -171,7 +167,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             autoMapper = new AutoMapper(mMapDocument, rules, rulePath);
 
             mWarning += autoMapper->warningString();
-            const QString error = autoMapper->errorString(); 
+            const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
             } else {
@@ -196,8 +192,10 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(autoMap(QRegion,Layer*)));
+        connect(mMapDocument,
+                SIGNAL(regionEdited(QRegion, Layer *)),
+                this,
+                SLOT(autoMap(QRegion, Layer *)));
     }
 
     mLoaded = false;

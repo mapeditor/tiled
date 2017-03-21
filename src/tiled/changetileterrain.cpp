@@ -20,8 +20,8 @@
 
 #include "changetileterrain.h"
 
-#include "tilesetdocument.h"
 #include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -36,8 +36,7 @@ ChangeTileTerrain::ChangeTileTerrain()
     initText();
 }
 
-ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
-                                     Tile *tile, unsigned terrain)
+ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument, Tile *tile, unsigned terrain)
     : mTilesetDocument(tilesetDocument)
     , mTileset(tile->tileset())
     , mMergeable(true)
@@ -109,9 +108,9 @@ bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
     if (!mMergeable)
         return false;
 
-    const ChangeTileTerrain *o = static_cast<const ChangeTileTerrain*>(other);
-    if (o->mTilesetDocument && !(mTilesetDocument == o->mTilesetDocument &&
-                             mTileset == o->mTileset))
+    const ChangeTileTerrain *o = static_cast<const ChangeTileTerrain *>(other);
+    if (o->mTilesetDocument &&
+        !(mTilesetDocument == o->mTilesetDocument && mTileset == o->mTileset))
         return false;
 
     Changes::const_iterator i = o->mChanges.constBegin();
@@ -136,8 +135,7 @@ bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
 
 void ChangeTileTerrain::initText()
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Terrain"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Terrain"));
 }
 
 } // namespace Internal

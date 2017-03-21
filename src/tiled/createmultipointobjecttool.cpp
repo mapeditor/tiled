@@ -100,9 +100,7 @@ bool CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGro
     mOverlayPolygonObject->setShape(newMapObject->shape());
     mOverlayPolygonObject->setPosition(pos);
 
-    mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
-                                            mapDocument(),
-                                            mObjectGroupItem);
+    mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject, mapDocument(), mObjectGroupItem);
 
     return true;
 }

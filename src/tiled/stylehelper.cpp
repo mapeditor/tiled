@@ -32,15 +32,12 @@ namespace Internal {
 
 StyleHelper *StyleHelper::mInstance;
 
-static QPalette createPalette(const QColor &windowColor,
-                              const QColor &highlightColor)
+static QPalette createPalette(const QColor &windowColor, const QColor &highlightColor)
 {
     int hue, sat, windowValue;
     windowColor.getHsv(&hue, &sat, &windowValue);
 
-    auto fromValue = [=](int value) {
-        return QColor::fromHsv(hue, sat, qBound(0, value, 255));
-    };
+    auto fromValue = [=](int value) { return QColor::fromHsv(hue, sat, qBound(0, value, 255)); };
 
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
@@ -64,9 +61,12 @@ static QPalette createPalette(const QColor &windowColor,
     palette.setColor(QPalette::Mid, fromValue(windowValue - 27));
     palette.setColor(QPalette::Midlight, fromValue(windowValue + 27));
 
-    palette.setColor(QPalette::Disabled, QPalette::WindowText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::ButtonText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::Text, isLight ? darkDisabledText : lightDisabledText);
+    palette.setColor(
+        QPalette::Disabled, QPalette::WindowText, isLight ? darkDisabledText : lightDisabledText);
+    palette.setColor(
+        QPalette::Disabled, QPalette::ButtonText, isLight ? darkDisabledText : lightDisabledText);
+    palette.setColor(
+        QPalette::Disabled, QPalette::Text, isLight ? darkDisabledText : lightDisabledText);
 
     bool highlightIsDark = qGray(highlightColor.rgb()) < 120;
     palette.setColor(QPalette::Highlight, highlightColor);
@@ -108,13 +108,11 @@ void StyleHelper::apply()
         break;
     case Preferences::FusionStyle:
         desiredStyle = QLatin1String("fusion");
-        desiredPalette = createPalette(preferences->baseColor(),
-                                       preferences->selectionColor());
+        desiredPalette = createPalette(preferences->baseColor(), preferences->selectionColor());
         break;
     case Preferences::TiledStyle:
         desiredStyle = QLatin1String("tiled");
-        desiredPalette = createPalette(preferences->baseColor(),
-                                       preferences->selectionColor());
+        desiredPalette = createPalette(preferences->baseColor(), preferences->selectionColor());
         break;
     }
 
@@ -134,7 +132,7 @@ void StyleHelper::apply()
     if (QApplication::palette() != desiredPalette) {
         QApplication::setPalette(desiredPalette);
 
-        if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
+        if (auto *style = qobject_cast<TiledProxyStyle *>(QApplication::style()))
             style->setPalette(desiredPalette);
     }
 

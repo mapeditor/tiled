@@ -43,18 +43,21 @@ using namespace Tiled::Internal;
  * Used under the terms of the GNU Lesser General Public License version 2.1
  */
 
-static Q_DECL_CONSTEXPR inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
+static Q_DECL_CONSTEXPR inline int qt_div_255(int x)
+{
+    return (x + (x >> 8) + 0x80) >> 8;
+}
 
 // internal helper. Converts an integer value to an unique string token
-template <typename T>
-        struct HexString
-{
+template <typename T> struct HexString {
     inline HexString(const T t)
         : val(t)
-    {}
+    {
+    }
     inline void write(QChar *&dest) const
     {
-        const ushort hexChars[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        const ushort hexChars[] = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         const char *c = reinterpret_cast<const char *>(&val);
         for (uint i = 0; i < sizeof(T); ++i) {
             *dest++ = hexChars[*c & 0xf];
@@ -65,13 +68,17 @@ template <typename T>
     const T val;
 };
 // specialization to enable fast concatenating of our string tokens to a string
-template <typename T>
-        struct QConcatenable<HexString<T> >
-{
+template <typename T> struct QConcatenable<HexString<T>> {
     typedef HexString<T> type;
     enum { ExactSize = true };
-    static int size(const HexString<T> &) { return sizeof(T) * 2; }
-    static inline void appendTo(const HexString<T> &str, QChar *&out) { str.write(out); }
+    static int size(const HexString<T> &)
+    {
+        return sizeof(T) * 2;
+    }
+    static inline void appendTo(const HexString<T> &str, QChar *&out)
+    {
+        str.write(out);
+    }
     typedef QString ConvertTo;
 };
 
@@ -79,30 +86,33 @@ static QColor mergedColors(const QColor &colorA, const QColor &colorB, int facto
 {
     const int maxFactor = 100;
     QColor tmp = colorA;
-    tmp.setRed((tmp.red() * factor) / maxFactor + (colorB.red() * (maxFactor - factor)) / maxFactor);
-    tmp.setGreen((tmp.green() * factor) / maxFactor + (colorB.green() * (maxFactor - factor)) / maxFactor);
-    tmp.setBlue((tmp.blue() * factor) / maxFactor + (colorB.blue() * (maxFactor - factor)) / maxFactor);
+    tmp.setRed((tmp.red() * factor) / maxFactor +
+               (colorB.red() * (maxFactor - factor)) / maxFactor);
+    tmp.setGreen((tmp.green() * factor) / maxFactor +
+                 (colorB.green() * (maxFactor - factor)) / maxFactor);
+    tmp.setBlue((tmp.blue() * factor) / maxFactor +
+                (colorB.blue() * (maxFactor - factor)) / maxFactor);
     return tmp;
 }
 
 static QPixmap colorizedImage(const QString &fileName, const QColor &color, int rotation = 0)
 {
-    QString pixmapName = QLatin1String("$qt_ia-") % fileName % HexString<uint>(color.rgba()) % QString::number(rotation);
+    QString pixmapName = QLatin1String("$qt_ia-") % fileName % HexString<uint>(color.rgba()) %
+                         QString::number(rotation);
     QPixmap pixmap;
     if (!QPixmapCache::find(pixmapName, pixmap)) {
         QImage image(fileName);
         if (image.format() != QImage::Format_ARGB32_Premultiplied)
-            image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied);
+            image = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
         int width = image.width();
         int height = image.height();
         QRgb source = color.rgba();
         int sourceRed = qRed(source);
         int sourceGreen = qGreen(source);
         int sourceBlue = qBlue(source);
-        for (int y = 0; y < height; ++y)
-        {
-            QRgb *data = reinterpret_cast<QRgb*>(image.scanLine(y));
-            for (int x = 0 ; x < width ; x++) {
+        for (int y = 0; y < height; ++y) {
+            QRgb *data = reinterpret_cast<QRgb *>(image.scanLine(y));
+            for (int x = 0; x < width; x++) {
                 QRgb col = data[x];
                 int colorDiff = (qBlue(col) - qRed(col));
                 int gray = qGreen(col);
@@ -110,17 +120,15 @@ static QPixmap colorizedImage(const QString &fileName, const QColor &color, int 
                 int green = gray + qt_div_255(sourceGreen * colorDiff);
                 int blue = gray + qt_div_255(sourceBlue * colorDiff);
                 int alpha = qt_div_255(qAlpha(col) * qAlpha(source));
-                data[x] = qRgba(std::min(alpha, red),
-                                std::min(alpha, green),
-                                std::min(alpha, blue),
-                                alpha);
+                data[x] = qRgba(
+                    std::min(alpha, red), std::min(alpha, green), std::min(alpha, blue), alpha);
             }
         }
         if (rotation != 0) {
             QTransform transform;
-            transform.translate(-image.width()/2, -image.height()/2);
+            transform.translate(-image.width() / 2, -image.height() / 2);
             transform.rotate(rotation);
-            transform.translate(image.width()/2, image.height()/2);
+            transform.translate(image.width() / 2, image.height() / 2);
             image = image.transformed(transform);
         }
         pixmap = QPixmap::fromImage(image);
@@ -129,15 +137,11 @@ static QPixmap colorizedImage(const QString &fileName, const QColor &color, int 
     return pixmap;
 }
 
-enum Direction {
-    TopDown,
-    FromLeft,
-    BottomUp,
-    FromRight
-};
+enum Direction { TopDown, FromLeft, BottomUp, FromRight };
 
 // The default button and handle gradient
-static QLinearGradient qt_fusion_gradient(const QRect &rect, const QBrush &baseColor, Direction direction = TopDown)
+static QLinearGradient
+qt_fusion_gradient(const QRect &rect, const QBrush &baseColor, Direction direction = TopDown)
 {
     int x = rect.center().x();
     int y = rect.center().y();
@@ -200,7 +204,7 @@ static QColor getButtonColor(const QPalette &pal)
 {
     QColor buttonColor = pal.button().color();
     int val = qGray(buttonColor.rgb());
-    buttonColor = buttonColor.lighter(100 + qMax(1, (180 - val)/6));
+    buttonColor = buttonColor.lighter(100 + qMax(1, (180 - val) / 6));
     buttonColor.setHsv(buttonColor.hue(), buttonColor.saturation() * 0.75, buttonColor.value());
     return buttonColor;
 }
@@ -249,9 +253,9 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                                     const QWidget *widget) const
 {
     switch (element) {
-    case PE_FrameGroupBox:
-    {
-        int topMargin = qMax(pixelMetric(PM_ExclusiveIndicatorHeight), option->fontMetrics.height()) + 3;
+    case PE_FrameGroupBox: {
+        int topMargin =
+            qMax(pixelMetric(PM_ExclusiveIndicatorHeight), option->fontMetrics.height()) + 3;
         QRect frame = option->rect.adjusted(0, topMargin, -1, -1);
         QColor tabFrameColor = getTabFrameColor(option->palette);
 
@@ -265,8 +269,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         break;
     }
     case PE_FrameTabBarBase:
-        if (const QStyleOptionTabBarBase *tbb
-                = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
+        if (const QStyleOptionTabBarBase *tbb =
+                qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
             painter->save();
             painter->setPen(QPen(getOutlineColor(option->palette)));
 
@@ -281,30 +285,33 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
 
             switch (tbb->shape) {
             case QTabBar::RoundedNorth: {
-                QRect backgroundRect(tbb->rect.left(), tbb->tabBarRect.top(),
-                                     tbb->rect.width(), tbb->tabBarRect.height() - overlap);
+                QRect backgroundRect(tbb->rect.left(),
+                                     tbb->tabBarRect.top(),
+                                     tbb->rect.width(),
+                                     tbb->tabBarRect.height() - overlap);
 
                 fillGradient.setStart(backgroundRect.topLeft());
                 fillGradient.setFinalStop(backgroundRect.bottomLeft() + QPoint(0, overlap));
 
                 painter->fillRect(backgroundRect, fillGradient);
                 painter->drawLine(tbb->rect.topLeft(), tbb->rect.topRight());
-            }
-                break;
+            } break;
             case QTabBar::RoundedWest:
-                painter->drawLine(tbb->rect.left(), tbb->rect.top(),
-                                  tbb->rect.left(), tbb->rect.bottom());
+                painter->drawLine(
+                    tbb->rect.left(), tbb->rect.top(), tbb->rect.left(), tbb->rect.bottom());
                 break;
             case QTabBar::RoundedSouth: {
-                QRect backgroundRect(tbb->rect.left(), tbb->tabBarRect.top() + overlap,
-                                     tbb->rect.width(), tbb->tabBarRect.height() - overlap - 1);
+                QRect backgroundRect(tbb->rect.left(),
+                                     tbb->tabBarRect.top() + overlap,
+                                     tbb->rect.width(),
+                                     tbb->tabBarRect.height() - overlap - 1);
 
                 fillGradient.setStart(backgroundRect.topLeft());
                 fillGradient.setFinalStop(backgroundRect.bottomLeft() + QPoint(0, overlap));
 
                 painter->fillRect(backgroundRect, fillGradient);
-                painter->drawLine(tbb->rect.left(), tbb->rect.bottom(),
-                                  tbb->rect.right(), tbb->rect.bottom());
+                painter->drawLine(
+                    tbb->rect.left(), tbb->rect.bottom(), tbb->rect.right(), tbb->rect.bottom());
                 break;
             }
             case QTabBar::RoundedEast:
@@ -323,26 +330,31 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         return;
     case PE_IndicatorCheckBox:
         painter->save();
-        if (const QStyleOptionButton *checkbox = qstyleoption_cast<const QStyleOptionButton*>(option)) {
+        if (const QStyleOptionButton *checkbox =
+                qstyleoption_cast<const QStyleOptionButton *>(option)) {
             painter->setRenderHint(QPainter::Antialiasing, true);
             painter->translate(0.5, 0.5);
             QRect rect = option->rect.adjusted(0, 0, -1, -1);
             int state = option->state;
 
-            QColor pressedColor = mergedColors(option->palette.base().color(),
-                                               option->palette.foreground().color(), 85);
+            QColor pressedColor = mergedColors(
+                option->palette.base().color(), option->palette.foreground().color(), 85);
             painter->setBrush(Qt::NoBrush);
 
             // Gradient fill
             QLinearGradient gradient(rect.topLeft(), rect.bottomLeft());
-            gradient.setColorAt(0, (state & State_Sunken) ? pressedColor : option->palette.base().color().darker(115));
-            gradient.setColorAt(0.15, (state & State_Sunken) ? pressedColor : option->palette.base().color());
-            gradient.setColorAt(1, (state & State_Sunken) ? pressedColor : option->palette.base().color());
+            gradient.setColorAt(
+                0,
+                (state & State_Sunken) ? pressedColor : option->palette.base().color().darker(115));
+            gradient.setColorAt(
+                0.15, (state & State_Sunken) ? pressedColor : option->palette.base().color());
+            gradient.setColorAt(
+                1, (state & State_Sunken) ? pressedColor : option->palette.base().color());
 
             painter->setBrush((state & State_Sunken) ? QBrush(pressedColor) : gradient);
 
-            QColor boxOutline(mIsDark ? getLightOutlineColor(option->palette) :
-                                        getOutlineColor(option->palette));
+            QColor boxOutline(mIsDark ? getLightOutlineColor(option->palette)
+                                      : getOutlineColor(option->palette));
             boxOutline.setAlpha(200);
             painter->setPen(boxOutline);
 
@@ -362,7 +374,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 checkMarkColor.setAlpha(180);
                 painter->setPen(QPen(checkMarkColor, 1));
                 painter->setBrush(gradient);
-                painter->drawRect(rect.adjusted(checkMarkPadding, checkMarkPadding, -checkMarkPadding, -checkMarkPadding));
+                painter->drawRect(rect.adjusted(
+                    checkMarkPadding, checkMarkPadding, -checkMarkPadding, -checkMarkPadding));
 
             } else if (checkbox->state & (State_On)) {
                 QPen checkPen = QPen(checkMarkColor, Utils::dpiScaled(1.8));
@@ -382,8 +395,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         }
         painter->restore();
         break;
-    case PE_IndicatorTabClose:
-    {
+    case PE_IndicatorTabClose: {
         bool hovered = (option->state & State_Enabled) && (option->state & State_MouseOver);
         if (hovered)
             proxy()->drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
@@ -409,8 +421,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         iconRect.moveCenter(option->rect.center());
 
         const QPoint lines[] = {
-            iconRect.topLeft(), iconRect.bottomRight(),
-            iconRect.topRight(), iconRect.bottomLeft(),
+            iconRect.topLeft(), iconRect.bottomRight(), iconRect.topRight(), iconRect.bottomLeft(),
         };
 
         painter->save();
@@ -426,8 +437,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         painter->restore();
         break;
     }
-    case PE_PanelButtonCommand:
-    {
+    case PE_PanelButtonCommand: {
         painter->save();
 
         bool isDefault = false;
@@ -435,8 +445,10 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         bool isDown = (option->state & State_Sunken) || (option->state & State_On);
         QRect r;
 
-        if (const QStyleOptionButton *button = qstyleoption_cast<const QStyleOptionButton*>(option)) {
-            isDefault = (button->features & QStyleOptionButton::DefaultButton) && (button->state & State_Enabled);
+        if (const QStyleOptionButton *button =
+                qstyleoption_cast<const QStyleOptionButton *>(option)) {
+            isDefault = (button->features & QStyleOptionButton::DefaultButton) &&
+                        (button->state & State_Enabled);
             isFlat = (button->features & QStyleOptionButton::Flat);
         }
 
@@ -445,22 +457,15 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 r = option->rect.adjusted(0, 1, 0, -1);
                 painter->setPen(QPen(Qt::black));
                 const QLine lines[4] = {
-                    QLine(QPoint(r.left() + 2, r.top()),
-                    QPoint(r.right() - 2, r.top())),
-                    QLine(QPoint(r.left(), r.top() + 2),
-                    QPoint(r.left(), r.bottom() - 2)),
-                    QLine(QPoint(r.right(), r.top() + 2),
-                    QPoint(r.right(), r.bottom() - 2)),
-                    QLine(QPoint(r.left() + 2, r.bottom()),
-                    QPoint(r.right() - 2, r.bottom()))
-                };
+                    QLine(QPoint(r.left() + 2, r.top()), QPoint(r.right() - 2, r.top())),
+                    QLine(QPoint(r.left(), r.top() + 2), QPoint(r.left(), r.bottom() - 2)),
+                    QLine(QPoint(r.right(), r.top() + 2), QPoint(r.right(), r.bottom() - 2)),
+                    QLine(QPoint(r.left() + 2, r.bottom()), QPoint(r.right() - 2, r.bottom()))};
                 painter->drawLines(lines, 4);
-                const QPoint points[4] = {
-                    QPoint(r.right() - 1, r.bottom() - 1),
-                    QPoint(r.right() - 1, r.top() + 1),
-                    QPoint(r.left() + 1, r.bottom() - 1),
-                    QPoint(r.left() + 1, r.top() + 1)
-                };
+                const QPoint points[4] = {QPoint(r.right() - 1, r.bottom() - 1),
+                                          QPoint(r.right() - 1, r.top() + 1),
+                                          QPoint(r.left() + 1, r.bottom() - 1),
+                                          QPoint(r.left() + 1, r.top() + 1)};
                 painter->drawPoints(points, 4);
             }
             return;
@@ -469,7 +474,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         r = option->rect.adjusted(0, 1, -1, 0);
 
         bool isEnabled = option->state & State_Enabled;
-        bool hasFocus = (option->state & State_HasFocus && option->state & State_KeyboardFocusChange);
+        bool hasFocus =
+            (option->state & State_HasFocus && option->state & State_KeyboardFocusChange);
         QColor buttonColor = getButtonColor(option->palette);
 
         QColor darkOutline = getOutlineColor(option->palette);
@@ -478,7 +484,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         }
 
         if (isDefault)
-            buttonColor = mergedColors(buttonColor, getHighlightedOutline(option->palette).lighter(130), 90);
+            buttonColor =
+                mergedColors(buttonColor, getHighlightedOutline(option->palette).lighter(130), 90);
 
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->translate(0.5, -0.5);
@@ -488,7 +495,9 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         if (option->state & State_On)
             downColor = option->palette.button().color().darker(mIsDark ? 128 : 116);
 
-        QLinearGradient gradient = qt_fusion_gradient(option->rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
+        QLinearGradient gradient = qt_fusion_gradient(
+            option->rect,
+            (isEnabled && option->state & State_MouseOver) ? buttonColor : buttonColor.darker(104));
         painter->setPen(Qt::transparent);
         painter->setBrush(isDown ? QBrush(downColor) : gradient);
         painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
@@ -499,7 +508,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
 
         painter->setPen(innerContrastLine());
-        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
+        painter->drawRoundedRect(
+            r.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
 
         painter->restore();
         break;
@@ -520,28 +530,29 @@ void TiledProxyStyle::drawControl(ControlElement element,
     QColor shadow = darkShade();
 
     switch (element) {
-    case CE_MenuBarEmptyArea:       // Copied to change bottom line color
+    case CE_MenuBarEmptyArea: // Copied to change bottom line color
         painter->save();
-    {
-        painter->fillRect(rect, option->palette.window());
-        painter->setPen(option->palette.mid().color());
-        painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
-    }
+        {
+            painter->fillRect(rect, option->palette.window());
+            painter->setPen(option->palette.mid().color());
+            painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
+        }
         painter->restore();
         break;
 
-    case CE_ToolBar:                // A lot of code copied from Fusion style, just to tweak the colors
-        if (const QStyleOptionToolBar *toolBar = qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
+    case CE_ToolBar: // A lot of code copied from Fusion style, just to tweak the colors
+        if (const QStyleOptionToolBar *toolBar =
+                qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
             // Reserve the beveled appearance only for mainwindow toolbars
-            if (widget && !(qobject_cast<const QMainWindow*> (widget->parentWidget())))
+            if (widget && !(qobject_cast<const QMainWindow *>(widget->parentWidget())))
                 break;
 
             // Draws the light line above and the dark line below menu bars and
             // tool bars.
             QLinearGradient gradient(option->rect.topLeft(), option->rect.bottomLeft());
             if (!(option->state & State_Horizontal))
-                gradient = QLinearGradient(rect.left(), rect.center().y(),
-                                           rect.right(), rect.center().y());
+                gradient = QLinearGradient(
+                    rect.left(), rect.center().y(), rect.right(), rect.center().y());
             gradient.setColorAt(0, option->palette.window().color());
             gradient.setColorAt(1, option->palette.window().color().darker(104));
             painter->fillRect(option->rect, gradient);
@@ -551,31 +562,33 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             QPen oldPen = painter->pen();
             if (toolBar->toolBarArea == Qt::TopToolBarArea) {
-                if (toolBar->positionOfLine == QStyleOptionToolBar::End
-                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
                     // The end and onlyone top toolbar lines draw a double
                     // line at the bottom to blend with the central
                     // widget.
                     painter->setPen(light);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                     painter->setPen(shadow);
-                    painter->drawLine(option->rect.left(), option->rect.bottom() - 1,
-                                      option->rect.right(), option->rect.bottom() - 1);
+                    painter->drawLine(option->rect.left(),
+                                      option->rect.bottom() - 1,
+                                      option->rect.right(),
+                                      option->rect.bottom() - 1);
                 } else {
                     // All others draw a single dark line at the bottom.
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                 }
             } else if (toolBar->toolBarArea == Qt::BottomToolBarArea) {
-                if (toolBar->positionOfLine == QStyleOptionToolBar::End
-                        || toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::Middle) {
                     // The end and middle bottom tool bar lines draw a dark
                     // line at the bottom.
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                 }
-                if (toolBar->positionOfLine == QStyleOptionToolBar::Beginning
-                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Beginning ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
                     // The beginning and only one tool bar lines draw a
                     // double line at the bottom to blend with the
                     // status bar.
@@ -583,8 +596,10 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     // main window has a menu bar and a status bar, and
                     // possibly dock widgets.
                     painter->setPen(shadow);
-                    painter->drawLine(option->rect.left(), option->rect.bottom() - 1,
-                                      option->rect.right(), option->rect.bottom() - 1);
+                    painter->drawLine(option->rect.left(),
+                                      option->rect.bottom() - 1,
+                                      option->rect.right(),
+                                      option->rect.bottom() - 1);
                     painter->setPen(light);
                     painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
                 }
@@ -592,8 +607,10 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.topLeft(), option->rect.topRight());
                     painter->setPen(light);
-                    painter->drawLine(option->rect.left(), option->rect.top() + 1,
-                                      option->rect.right(), option->rect.top() + 1);
+                    painter->drawLine(option->rect.left(),
+                                      option->rect.top() + 1,
+                                      option->rect.right(),
+                                      option->rect.top() + 1);
 
                 } else {
                     // All other bottom toolbars draw a light line at the top.
@@ -602,8 +619,8 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 }
             }
             if (toolBar->toolBarArea == Qt::LeftToolBarArea) {
-                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
-                        || toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::End) {
                     // The middle and left end toolbar lines draw a light
                     // line to the left.
                     painter->setPen(light);
@@ -612,8 +629,10 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 if (toolBar->positionOfLine == QStyleOptionToolBar::End) {
                     // All other left toolbar lines draw a dark line to the right
                     painter->setPen(shadow);
-                    painter->drawLine(option->rect.right() - 1, option->rect.top(),
-                                      option->rect.right() - 1, option->rect.bottom());
+                    painter->drawLine(option->rect.right() - 1,
+                                      option->rect.top(),
+                                      option->rect.right() - 1,
+                                      option->rect.bottom());
                     painter->setPen(light);
                     painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
                 } else {
@@ -622,22 +641,24 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
                 }
             } else if (toolBar->toolBarArea == Qt::RightToolBarArea) {
-                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle
-                        || toolBar->positionOfLine == QStyleOptionToolBar::End) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::Middle ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::End) {
                     // Right middle and end toolbar lines draw the dark right line
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.topRight(), option->rect.bottomRight());
                 }
-                if (toolBar->positionOfLine == QStyleOptionToolBar::End
-                        || toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
+                if (toolBar->positionOfLine == QStyleOptionToolBar::End ||
+                    toolBar->positionOfLine == QStyleOptionToolBar::OnlyOne) {
                     // The right end and single toolbar draws the dark
                     // line on its left edge
                     painter->setPen(shadow);
                     painter->drawLine(option->rect.topLeft(), option->rect.bottomLeft());
                     // And a light line next to it
                     painter->setPen(light);
-                    painter->drawLine(option->rect.left() + 1, option->rect.top(),
-                                      option->rect.left() + 1, option->rect.bottom());
+                    painter->drawLine(option->rect.left() + 1,
+                                      option->rect.top(),
+                                      option->rect.left() + 1,
+                                      option->rect.bottom());
                 } else {
                     // Other right toolbars draw a light line on its left edge
                     painter->setPen(light);
@@ -651,13 +672,12 @@ void TiledProxyStyle::drawControl(ControlElement element,
     case CE_TabBarTabShape:
         painter->save();
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
-            bool rtlHorTabs = (tab->direction == Qt::RightToLeft
-                               && (tab->shape == QTabBar::RoundedNorth
-                                   || tab->shape == QTabBar::RoundedSouth));
+            bool rtlHorTabs =
+                (tab->direction == Qt::RightToLeft &&
+                 (tab->shape == QTabBar::RoundedNorth || tab->shape == QTabBar::RoundedSouth));
             bool selected = tab->state & State_Selected;
-            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End)
-                            || (rtlHorTabs
-                                && tab->position == QStyleOptionTab::Beginning));
+            bool lastTab = ((!rtlHorTabs && tab->position == QStyleOptionTab::End) ||
+                            (rtlHorTabs && tab->position == QStyleOptionTab::Beginning));
             bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
             int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
             rect = option->rect.adjusted(0, 0, (onlyOne || lastTab) ? 0 : tabOverlap, 0);
@@ -691,7 +711,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 break;
             case QTabBar::RoundedEast:
                 rotMatrix.rotate(90);
-                rotMatrix.translate(0, - rect.width() + 1);
+                rotMatrix.translate(0, -rect.width() + 1);
                 flip = true;
                 painter->setTransform(rotMatrix, true);
                 break;
@@ -715,9 +735,9 @@ void TiledProxyStyle::drawControl(ControlElement element,
             painter->setRenderHint(QPainter::Antialiasing, true);
             painter->translate(0.5, 0.5);
 
-            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
-                        getTabFrameColor(option->palette) :
-                        option->palette.window().color();
+            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame
+                                       ? getTabFrameColor(option->palette)
+                                       : option->palette.window().color();
 
             if (!selected) {
                 int f = mIsDark ? 128 : 116;
@@ -730,16 +750,17 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 fillGradient.setColorAt(0, tabFrameColor.lighter(104));
 
                 // colorful selected tab
-//                QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
-//                QColor highlight = option->palette.highlight().color();
-//                fillGradient.setColorAt(0, highlight.lighter(130));
-//                outlineGradient.setColorAt(0, highlight.darker(130));
-//                fillGradient.setColorAt(0.10, highlight);
-//                outlineGradient.setColorAt(0.10, highlight.darker(130));
-//                fillGradient.setColorAt(0.1001, tabFrameColor);
-//                outlineGradient.setColorAt(0.1001, highlight.darker(130));
-//                outlineGradient.setColorAt(1, outline);
-//                outlinePen = QPen(outlineGradient, 1);
+                //                QLinearGradient outlineGradient(rect.topLeft(),
+                //                rect.bottomLeft());
+                //                QColor highlight = option->palette.highlight().color();
+                //                fillGradient.setColorAt(0, highlight.lighter(130));
+                //                outlineGradient.setColorAt(0, highlight.darker(130));
+                //                fillGradient.setColorAt(0.10, highlight);
+                //                outlineGradient.setColorAt(0.10, highlight.darker(130));
+                //                fillGradient.setColorAt(0.1001, tabFrameColor);
+                //                outlineGradient.setColorAt(0.1001, highlight.darker(130));
+                //                outlineGradient.setColorAt(1, outline);
+                //                outlinePen = QPen(outlineGradient, 1);
 
                 fillGradient.setColorAt(1, tabFrameColor);
             } else {
@@ -760,10 +781,17 @@ void TiledProxyStyle::drawControl(ControlElement element,
             painter->restore();
 
             if (selected) {
-                painter->fillRect(rect.left() + 1, rect.bottom() - 1, rect.width() - 2, rect.bottom() - 1, tabFrameColor);
-                painter->fillRect(QRect(rect.bottomRight() + QPoint(-2, -1), QSize(1, 1)), innerContrastLine());
-                painter->fillRect(QRect(rect.bottomLeft() + QPoint(0, -1), QSize(1, 1)), innerContrastLine());
-                painter->fillRect(QRect(rect.bottomRight() + QPoint(-1, -1), QSize(1, 1)), innerContrastLine());
+                painter->fillRect(rect.left() + 1,
+                                  rect.bottom() - 1,
+                                  rect.width() - 2,
+                                  rect.bottom() - 1,
+                                  tabFrameColor);
+                painter->fillRect(QRect(rect.bottomRight() + QPoint(-2, -1), QSize(1, 1)),
+                                  innerContrastLine());
+                painter->fillRect(QRect(rect.bottomLeft() + QPoint(0, -1), QSize(1, 1)),
+                                  innerContrastLine());
+                painter->fillRect(QRect(rect.bottomRight() + QPoint(-1, -1), QSize(1, 1)),
+                                  innerContrastLine());
             }
         }
         painter->restore();
@@ -800,15 +828,19 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
     QColor outline = getOutlineColor(option->palette);
 
     switch (control) {
-    case CC_ScrollBar:              // replaced for higher contrast and thinner slider
+    case CC_ScrollBar: // replaced for higher contrast and thinner slider
         painter->save();
-        if (const QStyleOptionSlider *scrollBar = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
+        if (const QStyleOptionSlider *scrollBar =
+                qstyleoption_cast<const QStyleOptionSlider *>(option)) {
             bool horizontal = scrollBar->orientation == Qt::Horizontal;
             bool sunken = scrollBar->state & State_Sunken;
 
-            QRect scrollBarSubLine = proxy()->subControlRect(control, scrollBar, SC_ScrollBarSubLine, widget);
-            QRect scrollBarAddLine = proxy()->subControlRect(control, scrollBar, SC_ScrollBarAddLine, widget);
-            QRect scrollBarSlider = proxy()->subControlRect(control, scrollBar, SC_ScrollBarSlider, widget);
+            QRect scrollBarSubLine =
+                proxy()->subControlRect(control, scrollBar, SC_ScrollBarSubLine, widget);
+            QRect scrollBarAddLine =
+                proxy()->subControlRect(control, scrollBar, SC_ScrollBarAddLine, widget);
+            QRect scrollBarSlider =
+                proxy()->subControlRect(control, scrollBar, SC_ScrollBarSlider, widget);
 
             QRect rect = option->rect;
             QColor alphaOutline = outline;
@@ -818,15 +850,16 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             arrowColor.setAlpha(220);
 
             const QColor bgColor = mPalette.color(QPalette::Base);
-            const bool isDarkBg = bgColor.red() < 128 && bgColor.green() < 128 && bgColor.blue() < 128;
+            const bool isDarkBg =
+                bgColor.red() < 128 && bgColor.green() < 128 && bgColor.blue() < 128;
 
             // Paint groove
             if (scrollBar->subControls & SC_ScrollBarGroove) {
-                QLinearGradient gradient(rect.center().x(), rect.top(),
-                                         rect.center().x(), rect.bottom());
+                QLinearGradient gradient(
+                    rect.center().x(), rect.top(), rect.center().x(), rect.bottom());
                 if (!horizontal)
-                    gradient = QLinearGradient(rect.left(), rect.center().y(),
-                                               rect.right(), rect.center().y());
+                    gradient = QLinearGradient(
+                        rect.left(), rect.center().y(), rect.right(), rect.center().y());
 
                 gradient.setColorAt(0, bgColor.darker(150));
                 gradient.setColorAt(0.5, bgColor.darker(120));
@@ -841,11 +874,15 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             }
 
             QRect pixmapRect = scrollBarSlider;
-            QLinearGradient gradient(pixmapRect.center().x(), pixmapRect.top(),
-                                     pixmapRect.center().x(), pixmapRect.bottom());
+            QLinearGradient gradient(pixmapRect.center().x(),
+                                     pixmapRect.top(),
+                                     pixmapRect.center().x(),
+                                     pixmapRect.bottom());
             if (!horizontal)
-                gradient = QLinearGradient(pixmapRect.left(), pixmapRect.center().y(),
-                                           pixmapRect.right(), pixmapRect.center().y());
+                gradient = QLinearGradient(pixmapRect.left(),
+                                           pixmapRect.center().y(),
+                                           pixmapRect.right(),
+                                           pixmapRect.center().y());
 
             gradient.setColorAt(0, buttonColor.lighter(108));
             gradient.setColorAt(1, buttonColor);
@@ -860,16 +897,19 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
 
                 int margin = qRound(Utils::dpiScaled(2));
 
-                QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
+                QRect sliderRect =
+                    scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
-                    sliderRect = scrollBarSlider.adjusted(margin, margin + 1, -margin - 1, -margin - 1);
+                    sliderRect =
+                        scrollBarSlider.adjusted(margin, margin + 1, -margin - 1, -margin - 1);
                 painter->setPen(QPen(getSliderOutline(option->palette, isDarkBg)));
                 if (sunken && scrollBar->activeSubControls & SC_ScrollBarSlider) {
                     QLinearGradient sunkenGradient = gradient;
                     sunkenGradient.setColorAt(0, sliderColor.lighter(130));
                     sunkenGradient.setColorAt(1, sliderColor.lighter(105));
                     painter->setBrush(sunkenGradient);
-                } else if (option->state & State_MouseOver && scrollBar->activeSubControls & SC_ScrollBarSlider) {
+                } else if (option->state & State_MouseOver &&
+                           scrollBar->activeSubControls & SC_ScrollBarSlider) {
                     QLinearGradient highlightedGradient = gradient;
                     highlightedGradient.setColorAt(0, sliderColor.lighter(135));
                     highlightedGradient.setColorAt(1, sliderColor.lighter(110));
@@ -885,7 +925,8 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                 painter->translate(0.5, 0.5);
                 painter->drawRoundedRect(sliderRect, roundedRectRadius(), roundedRectRadius());
                 painter->setPen(innerContrastLine());
-                painter->drawRoundedRect(sliderRect.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
+                painter->drawRoundedRect(
+                    sliderRect.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
                 painter->restore();
             }
 
@@ -899,7 +940,8 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                     painter->setBrush(Qt::NoBrush);
 
                 painter->setPen(Qt::NoPen);
-                painter->drawRect(scrollBarSubLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
+                painter->drawRect(
+                    scrollBarSubLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
                 painter->setPen(QPen(alphaOutline));
                 if (horizontal) {
                     if (option->direction == Qt::RightToLeft) {
@@ -916,18 +958,26 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
 
                 painter->setBrush(Qt::NoBrush);
                 painter->setPen(innerContrastLine());
-                painter->drawRect(scrollBarSubLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0 ,  horizontal ? -2 : -1, horizontal ? -1 : -2));
+                painter->drawRect(scrollBarSubLine.adjusted(horizontal ? 0 : 1,
+                                                            horizontal ? 1 : 0,
+                                                            horizontal ? -2 : -1,
+                                                            horizontal ? -1 : -2));
 
                 // Arrows
                 int rotation = 0;
                 if (horizontal)
                     rotation = option->direction == Qt::LeftToRight ? -90 : 90;
                 QRect upRect = scrollBarSubLine.translated(horizontal ? -2 : -1, 0);
-                QPixmap arrowPixmap = colorizedImage(QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"), arrowColor, rotation);
-                painter->drawPixmap(QRectF(upRect.center().x() - arrowPixmap.width() / 4.0  + 2.0,
-                                          upRect.center().y() - arrowPixmap.height() / 4.0 + 1.0,
-                                          arrowPixmap.width() / 2.0, arrowPixmap.height() / 2.0),
-                                          arrowPixmap, QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
+                QPixmap arrowPixmap = colorizedImage(
+                    QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"),
+                    arrowColor,
+                    rotation);
+                painter->drawPixmap(QRectF(upRect.center().x() - arrowPixmap.width() / 4.0 + 2.0,
+                                           upRect.center().y() - arrowPixmap.height() / 4.0 + 1.0,
+                                           arrowPixmap.width() / 2.0,
+                                           arrowPixmap.height() / 2.0),
+                                    arrowPixmap,
+                                    QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
             }
 
             // The AddLine (down/right) button
@@ -940,7 +990,8 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                     painter->setBrush(Qt::NoBrush);
 
                 painter->setPen(Qt::NoPen);
-                painter->drawRect(scrollBarAddLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
+                painter->drawRect(
+                    scrollBarAddLine.adjusted(horizontal ? 0 : 1, horizontal ? 1 : 0, 0, 0));
                 painter->setPen(QPen(alphaOutline, 1));
                 if (horizontal) {
                     if (option->direction == Qt::LeftToRight) {
@@ -963,11 +1014,16 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                 if (horizontal)
                     rotation = option->direction == Qt::LeftToRight ? 90 : -90;
                 QRect downRect = scrollBarAddLine.translated(-1, 1);
-                QPixmap arrowPixmap = colorizedImage(QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"), arrowColor, rotation);
+                QPixmap arrowPixmap = colorizedImage(
+                    QLatin1String(":/qt-project.org/styles/commonstyle/images/fusion_arrow.png"),
+                    arrowColor,
+                    rotation);
                 painter->drawPixmap(QRectF(downRect.center().x() - arrowPixmap.width() / 4.0 + 2.0,
                                            downRect.center().y() - arrowPixmap.height() / 4.0,
-                                           arrowPixmap.width() / 2.0, arrowPixmap.height() / 2.0),
-                                           arrowPixmap, QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
+                                           arrowPixmap.width() / 2.0,
+                                           arrowPixmap.height() / 2.0),
+                                    arrowPixmap,
+                                    QRectF(QPoint(0.0, 0.0), arrowPixmap.size()));
             }
         }
         painter->restore();
@@ -984,10 +1040,10 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
 {
     switch (metric) {
     case PM_MenuBarItemSpacing:
-        return 0;                   // no space between menu bar items
+        return 0; // no space between menu bar items
     case PM_TabBarTabShiftHorizontal:
     case PM_TabBarTabShiftVertical:
-        return 0;                   // no shifting of tabs
+        return 0; // no shifting of tabs
     default:
         return QProxyStyle::pixelMetric(metric, option, widget);
     }
@@ -995,10 +1051,8 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
 
 inline static bool verticalTabs(QTabBar::Shape shape)
 {
-    return shape == QTabBar::RoundedWest
-           || shape == QTabBar::RoundedEast
-           || shape == QTabBar::TriangularWest
-           || shape == QTabBar::TriangularEast;
+    return shape == QTabBar::RoundedWest || shape == QTabBar::RoundedEast ||
+           shape == QTabBar::TriangularWest || shape == QTabBar::TriangularEast;
 }
 
 QSize TiledProxyStyle::sizeFromContents(ContentsType type,
@@ -1009,12 +1063,11 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     QSize size(contentsSize);
 
     switch (type) {
-    case CT_MenuBarItem:            // make the menu bar item itself wider
+    case CT_MenuBarItem: // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(Utils::dpiScaled(16.),
-                          Utils::dpiScaled(5.));
+            size += QSize(Utils::dpiScaled(16.), Utils::dpiScaled(5.));
         break;
-    case CT_ItemViewItem:           // give item view items a little more space
+    case CT_ItemViewItem: // give item view items a little more space
         size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
         size += QSize(0, Utils::dpiScaled(2.));
         break;
@@ -1046,11 +1099,12 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
                 padding += Utils::dpiScaled(4);
             if (verticalTabs(tab->shape)) {
                 size = QSize(qMax(maxWidgetWidth, qMax(fm.height(), iconSize.height()) + vframe),
-                        fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe + widgetHeight + padding);
+                             fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() +
+                                 hframe + widgetHeight + padding);
             } else {
-                size = QSize(fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe
-                      + widgetWidth + padding,
-                      qMax(maxWidgetHeight, qMax(fm.height(), iconSize.height()) + vframe));
+                size = QSize(fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() +
+                                 hframe + widgetWidth + padding,
+                             qMax(maxWidgetHeight, qMax(fm.height(), iconSize.height()) + vframe));
             }
         }
         break;
@@ -1062,23 +1116,26 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     return size;
 }
 
-QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyleOption *option, const QWidget *widget) const
+QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement,
+                                      const QStyleOption *option,
+                                      const QWidget *widget) const
 {
     QRect r;
 
     switch (subElement) {
-    case SE_TabBarTabLeftButton:    // moving the tab buttons closer to the corners
+    case SE_TabBarTabLeftButton: // moving the tab buttons closer to the corners
     case SE_TabBarTabRightButton:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             bool selected = tab->state & State_Selected;
-            int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
-            int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = Utils::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
+            int verticalShift =
+                proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
+            int horizontalShift =
+                proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
+            int hpadding = Utils::dpiScaled(4.); // normally half the PM_TabBarTabHSpace
 
-            bool verticalTabs = tab->shape == QTabBar::RoundedEast
-                    || tab->shape == QTabBar::RoundedWest
-                    || tab->shape == QTabBar::TriangularEast
-                    || tab->shape == QTabBar::TriangularWest;
+            bool verticalTabs =
+                tab->shape == QTabBar::RoundedEast || tab->shape == QTabBar::RoundedWest ||
+                tab->shape == QTabBar::TriangularEast || tab->shape == QTabBar::TriangularWest;
             QRect tr = tab->rect;
             if (tab->shape == QTabBar::RoundedSouth || tab->shape == QTabBar::TriangularSouth)
                 verticalShift = -verticalShift;
@@ -1090,12 +1147,12 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             if (tab->shape == QTabBar::RoundedWest || tab->shape == QTabBar::TriangularWest)
                 horizontalShift = -horizontalShift;
             tr.adjust(0, 0, horizontalShift, verticalShift);
-            if (selected)
-            {
+            if (selected) {
                 tr.setBottom(tr.bottom() - verticalShift);
                 tr.setRight(tr.right() - horizontalShift);
             }
-            QSize size = (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
+            QSize size =
+                (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
             int w = size.width();
             int h = size.height();
             int midHeight = static_cast<int>(qCeil(float(tr.height() - h) / 2));
@@ -1141,7 +1198,7 @@ int TiledProxyStyle::styleHint(StyleHint styleHint,
 {
     switch (styleHint) {
     case SH_EtchDisabledText:
-        return !mIsDark;    // etch only when bright
+        return !mIsDark; // etch only when bright
     default:
         return QProxyStyle::styleHint(styleHint, option, widget, returnData);
     }

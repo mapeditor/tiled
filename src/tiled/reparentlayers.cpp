@@ -22,8 +22,8 @@
 
 #include "grouplayer.h"
 #include "layermodel.h"
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
 
 namespace Tiled {
 namespace Internal {
@@ -47,7 +47,7 @@ void ReparentLayers::undo()
     auto currentLayer = mMapDocument->currentLayer();
 
     for (int i = mUndoInfo.size() - 1; i >= 0; --i) {
-        auto& undoInfo = mUndoInfo.at(i);
+        auto &undoInfo = mUndoInfo.at(i);
         auto layer = mLayers.at(i);
 
         layerModel->takeLayerAt(mLayerParent, undoInfo.newIndex);

@@ -20,10 +20,10 @@
 
 #include "commanddatamodel.h"
 
-#include <QMenu>
 #include <QKeySequence>
-#include <QSignalMapper>
+#include <QMenu>
 #include <QMimeData>
+#include <QSignalMapper>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -167,9 +167,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return tr("Shortcut for this command");
             if (index.column() == EnabledColumn)
                 return tr("Show or hide this command in the command list");
-        } else
-            if (index.column() == NameColumn)
-                return tr("Add a new command");
+        } else if (index.column() == NameColumn)
+            return tr("Add a new command");
         break;
 
     case Qt::CheckStateRole:
@@ -181,8 +180,7 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool CommandDataModel::setData(const QModelIndex &index,
-                                     const QVariant &value, int role)
+bool CommandDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     const bool isNormalRow = index.row() < mCommands.size();
     bool isModified = false;
@@ -222,8 +220,7 @@ bool CommandDataModel::setData(const QModelIndex &index,
         // If final row was edited, insert the new command
         if (role == Qt::EditRole && index.column() == NameColumn) {
             command.name = value.toString();
-            if (!command.name.isEmpty()
-              && command.name != tr("<new command>")) {
+            if (!command.name.isEmpty() && command.name != tr("<new command>")) {
                 isModified = true;
                 shouldAppend = true;
             }
@@ -269,17 +266,13 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
     return f;
 }
 
-QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
-                                                   int role) const
+QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
     const char *sectionLabels[4] = {
-        QT_TR_NOOP("Name"),
-        QT_TR_NOOP("Command"),
-        QT_TR_NOOP("Shortcut"),
-        QT_TR_NOOP("Enable") };
+        QT_TR_NOOP("Name"), QT_TR_NOOP("Command"), QT_TR_NOOP("Shortcut"), QT_TR_NOOP("Enable")};
 
     return tr(sectionLabels[section]);
 }
@@ -300,7 +293,7 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
             connect(mapper, SIGNAL(mapped(int)), SLOT(moveUp(int)));
         }
 
-        if (row+1 < mCommands.size()) {
+        if (row + 1 < mCommands.size()) {
             QAction *action = menu->addAction(tr("Move Down"));
             QSignalMapper *mapper = new QSignalMapper(action);
             mapper->setMapping(action, row + 1);
@@ -360,7 +353,7 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
     }
 
     const Command &command = mCommands[row];
-    QMimeData* mimeData = new QMimeData();
+    QMimeData *mimeData = new QMimeData();
 
     // Text data is used if command is dragged to a text editor or terminal
     mimeData->setText(command.finalCommand());
@@ -371,7 +364,7 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
     // will result in a no-op instead of moving the wrong thing.
     const Command *addr = &command;
     mimeData->setData(QLatin1String(commandMimeType),
-                      QByteArray((const char *)&addr, sizeof(addr)));
+                      QByteArray((const char *) &addr, sizeof(addr)));
 
     return mimeData;
 }
@@ -388,8 +381,8 @@ Qt::DropActions CommandDataModel::supportedDropActions() const
     return Qt::CopyAction | Qt::MoveAction;
 }
 
-bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
-                                    int, const QModelIndex &parent)
+bool CommandDataModel::dropMimeData(
+    const QMimeData *data, Qt::DropAction, int, int, const QModelIndex &parent)
 {
     if (!parent.isValid())
         return false;
@@ -400,8 +393,8 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
 
         // Get the ptr to the command that was being dragged
         const QByteArray byteData = data->data(QLatin1String(commandMimeType));
-        Q_ASSERT(byteData.length() == sizeof(Command*));
-        const Command *addr = *(Command**)byteData.data();
+        Q_ASSERT(byteData.length() == sizeof(Command *));
+        const Command *addr = *(Command **) byteData.data();
 
         // Find the command in the command list so we can move/copy it
         for (int srcRow = 0; srcRow < mCommands.size(); ++srcRow)
@@ -414,9 +407,8 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
 
                 // If a command is dropped elsewhere, create a copy of it
                 if (dstRow == mCommands.size()) {
-                    append(Command(addr->isEnabled,
-                                   tr("%1 (copy)").arg(addr->name),
-                                   addr->command));
+                    append(
+                        Command(addr->isEnabled, tr("%1 (copy)").arg(addr->name), addr->command));
                     return true;
                 }
             }
@@ -461,12 +453,14 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
 
 bool CommandDataModel::move(int commandIndex, int newIndex)
 {
-    if (commandIndex < 0 || commandIndex >= mCommands.size() ||
-        newIndex < 0 || newIndex >= mCommands.size() ||
-        newIndex == commandIndex)
+    if (commandIndex < 0 || commandIndex >= mCommands.size() || newIndex < 0 ||
+        newIndex >= mCommands.size() || newIndex == commandIndex)
         return false;
 
-    if (!beginMoveRows(QModelIndex(), commandIndex, commandIndex, QModelIndex(),
+    if (!beginMoveRows(QModelIndex(),
+                       commandIndex,
+                       commandIndex,
+                       QModelIndex(),
                        newIndex > commandIndex ? newIndex + 1 : newIndex))
         return false;
 

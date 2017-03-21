@@ -22,8 +22,8 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "objectgroup.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 
@@ -38,8 +38,7 @@ MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
     , mOldObjectGroup(mapObject->objectGroup())
     , mNewObjectGroup(objectGroup)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Move Object to Layer"));
+    setText(QCoreApplication::translate("Undo Commands", "Move Object to Layer"));
 }
 
 void MoveMapObjectToGroup::undo()

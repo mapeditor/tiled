@@ -20,9 +20,9 @@
 
 #include "changetileobjectgroup.h"
 
-#include "tilesetdocument.h"
 #include "objectgroup.h"
 #include "tile.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -33,9 +33,7 @@ ChangeTileObjectGroup::ChangeTileObjectGroup(TilesetDocument *tilesetDocument,
                                              Tile *tile,
                                              ObjectGroup *objectGroup,
                                              QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate(
-                       "Undo Commands", "Change Tile Collision"),
-                   parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Collision"), parent)
     , mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mObjectGroup(objectGroup)

@@ -22,8 +22,8 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "objectgroup.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 
@@ -52,26 +52,22 @@ AddRemoveMapObject::~AddRemoveMapObject()
 
 void AddRemoveMapObject::addObject()
 {
-    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
-                                                 mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex, mMapObject);
     mOwnsObject = false;
 }
 
 void AddRemoveMapObject::removeObject()
 {
-    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup,
-                                                          mMapObject);
+    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup, mMapObject);
     mOwnsObject = true;
 }
 
 
-AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                           MapObject *mapObject, QUndoCommand *parent)
-    : AddRemoveMapObject(mapDocument,
-                         objectGroup,
-                         mapObject,
-                         true,
-                         parent)
+AddMapObject::AddMapObject(MapDocument *mapDocument,
+                           ObjectGroup *objectGroup,
+                           MapObject *mapObject,
+                           QUndoCommand *parent)
+    : AddRemoveMapObject(mapDocument, objectGroup, mapObject, true, parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Object"));
 }
@@ -80,11 +76,7 @@ AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
 RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
                                  QUndoCommand *parent)
-    : AddRemoveMapObject(mapDocument,
-                         mapObject->objectGroup(),
-                         mapObject,
-                         false,
-                         parent)
+    : AddRemoveMapObject(mapDocument, mapObject->objectGroup(), mapObject, false, parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Object"));
 }

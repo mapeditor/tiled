@@ -30,19 +30,15 @@
 namespace Tiled {
 namespace Internal {
 
-SetLayerVisible::SetLayerVisible(MapDocument *mapDocument,
-                                 Layer *layer,
-                                 bool visible)
+SetLayerVisible::SetLayerVisible(MapDocument *mapDocument, Layer *layer, bool visible)
     : mMapDocument(mapDocument)
     , mLayer(layer)
     , mVisible(visible)
 {
     if (visible)
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Show Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Show Layer"));
     else
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Hide Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Hide Layer"));
 }
 
 void SetLayerVisible::swap()
@@ -53,23 +49,19 @@ void SetLayerVisible::swap()
 }
 
 
-SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
-                                 Layer *layer,
-                                 float opacity)
+SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument, Layer *layer, float opacity)
     : mMapDocument(mapDocument)
     , mLayer(layer)
     , mOldOpacity(layer->opacity())
     , mNewOpacity(opacity)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Layer Opacity"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Layer Opacity"));
 }
 
 bool SetLayerOpacity::mergeWith(const QUndoCommand *other)
 {
-    const SetLayerOpacity *o = static_cast<const SetLayerOpacity*>(other);
-    if (!(mMapDocument == o->mMapDocument &&
-          mLayer == o->mLayer))
+    const SetLayerOpacity *o = static_cast<const SetLayerOpacity *>(other);
+    if (!(mMapDocument == o->mMapDocument && mLayer == o->mLayer))
         return false;
 
     mNewOpacity = o->mNewOpacity;
@@ -92,8 +84,7 @@ SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
     , mOldOffset(layer->offset())
     , mNewOffset(offset)
 {
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Layer Offset"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Layer Offset"));
 }
 
 void SetLayerOffset::setOffset(const QPointF &offset)

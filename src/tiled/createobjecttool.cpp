@@ -100,8 +100,7 @@ void CreateObjectTool::mouseEntered()
 {
 }
 
-void CreateObjectTool::mouseMoved(const QPointF &pos,
-                                  Qt::KeyboardModifiers modifiers)
+void CreateObjectTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
@@ -143,8 +142,7 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mouseReleasedWhileCreatingObject(event);
 }
 
-bool CreateObjectTool::startNewMapObject(const QPointF &pos,
-                                         ObjectGroup *objectGroup)
+bool CreateObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
     Q_ASSERT(!mNewMapObjectItem);
 
@@ -202,11 +200,9 @@ void CreateObjectTool::finishNewMapObject()
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
     clearNewMapObjectItem();
 
-    mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),
-                                                      objectGroup,
-                                                      newMapObject));
+    mapDocument()->undoStack()->push(new AddMapObject(mapDocument(), objectGroup, newMapObject));
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+    mapDocument()->setSelectedObjects(QList<MapObject *>() << newMapObject);
 }
 
 void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers)

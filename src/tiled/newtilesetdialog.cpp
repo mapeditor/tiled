@@ -34,20 +34,17 @@
 #include <QScopedPointer>
 #include <QSettings>
 
-static const char * const TYPE_KEY = "Tileset/Type";
-static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
-static const char * const COLOR_KEY = "Tileset/TransparentColor";
-static const char * const TILE_SIZE_KEY = "Tileset/TileSize";
-static const char * const SPACING_KEY = "Tileset/Spacing";
-static const char * const MARGIN_KEY = "Tileset/Margin";
+static const char *const TYPE_KEY = "Tileset/Type";
+static const char *const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
+static const char *const COLOR_KEY = "Tileset/TransparentColor";
+static const char *const TILE_SIZE_KEY = "Tileset/TileSize";
+static const char *const SPACING_KEY = "Tileset/Spacing";
+static const char *const MARGIN_KEY = "Tileset/Margin";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-enum TilesetType {
-    TilesetImage,
-    ImageCollection
-};
+enum TilesetType { TilesetImage, ImageCollection };
 
 static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
 {
@@ -60,10 +57,10 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
     }
 }
 
-NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
-    QDialog(parent),
-    mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false)
+NewTilesetDialog::NewTilesetDialog(QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::NewTilesetDialog)
+    , mNameWasEdited(false)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -95,7 +92,10 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->embedded, &QCheckBox::toggled, this, &NewTilesetDialog::updateOkButton);
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->image, &QLineEdit::textChanged, this, &NewTilesetDialog::updateColorPickerButton);
-    connect(mUi->useTransparentColor, &QCheckBox::toggled, this, &NewTilesetDialog::updateColorPickerButton);
+    connect(mUi->useTransparentColor,
+            &QCheckBox::toggled,
+            this,
+            &NewTilesetDialog::updateColorPickerButton);
     connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)), SLOT(tilesetTypeChanged(int)));
     connect(mUi->dropperButton, SIGNAL(clicked(bool)), SLOT(pickColorFromImage()));
     mUi->imageGroupBox->setVisible(tilesetType == 0);
@@ -137,7 +137,7 @@ SharedTileset NewTilesetDialog::createTileset()
 {
     bool couldEmbed = false;
     if (auto document = DocumentManager::instance()->currentDocument()) {
-        if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (auto mapDocument = qobject_cast<MapDocument *>(document)) {
             couldEmbed = true;
             setTileSize(mapDocument->map()->tileSize());
         }
@@ -205,23 +205,21 @@ void NewTilesetDialog::tryAccept()
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
 
-        tileset = Tileset::create(name,
-                                  tileWidth, tileHeight,
-                                  spacing, margin);
+        tileset = Tileset::create(name, tileWidth, tileHeight, spacing, margin);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
 
         if (!image.isEmpty()) {
             if (!tileset->loadFromImage(image)) {
-                QMessageBox::critical(this, tr("Error"),
-                                      tr("Failed to load tileset image '%1'.")
-                                      .arg(image));
+                QMessageBox::critical(
+                    this, tr("Error"), tr("Failed to load tileset image '%1'.").arg(image));
                 return;
             }
 
             if (tileset->tileCount() == 0) {
-                QMessageBox::critical(this, tr("Error"),
+                QMessageBox::critical(this,
+                                      tr("Error"),
                                       tr("No tiles found in the tileset image "
                                          "when using the given tile size, "
                                          "margin and spacing!"));
@@ -267,8 +265,7 @@ void NewTilesetDialog::setMode(Mode mode)
 void NewTilesetDialog::browse()
 {
     const QString filter = Utils::readableImageFormatsFilter();
-    QString f = QFileDialog::getOpenFileName(this, tr("Tileset Image"), mPath,
-                                             filter);
+    QString f = QFileDialog::getOpenFileName(this, tr("Tileset Image"), mPath, filter);
     if (!f.isEmpty()) {
         mUi->image->setText(f);
         mPath = f;

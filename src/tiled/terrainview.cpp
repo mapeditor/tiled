@@ -21,10 +21,10 @@
 
 #include "terrainview.h"
 
-#include "tileset.h"
-#include "tilesetdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
+#include "tileset.h"
+#include "tilesetdocument.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -61,7 +61,7 @@ void TerrainView::setTilesetDocument(TilesetDocument *tilesetDocument)
 Terrain *TerrainView::terrainAt(const QModelIndex &index) const
 {
     const QVariant data = model()->data(index, TerrainModel::TerrainRole);
-    return data.value<Terrain*>();
+    return data.value<Terrain *>();
 }
 
 /**
@@ -69,9 +69,7 @@ Terrain *TerrainView::terrainAt(const QModelIndex &index) const
  */
 void TerrainView::wheelEvent(QWheelEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier
-        && event->orientation() == Qt::Vertical)
-    {
+    if (event->modifiers() & Qt::ControlModifier && event->orientation() == Qt::Vertical) {
         mZoomable->handleWheelDelta(event->delta());
         return;
     }
@@ -94,12 +92,10 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
 
-    QAction *terrainProperties = menu.addAction(propIcon,
-                                             tr("Terrain &Properties..."));
+    QAction *terrainProperties = menu.addAction(propIcon, tr("Terrain &Properties..."));
     Utils::setThemeIcon(terrainProperties, "document-properties");
 
-    connect(terrainProperties, SIGNAL(triggered()),
-            SLOT(editTerrainProperties()));
+    connect(terrainProperties, SIGNAL(triggered()), SLOT(editTerrainProperties()));
 
     menu.exec(event->globalPos());
 }
@@ -116,5 +112,5 @@ void TerrainView::editTerrainProperties()
 
 void TerrainView::adjustScale()
 {
-//    terrainModel()->tilesetChanged();
+    //    terrainModel()->tilesetChanged();
 }

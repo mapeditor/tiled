@@ -35,7 +35,7 @@ namespace Internal {
 TileLayer *TileStampVariation::tileLayer() const
 {
     Q_ASSERT(map);
-    return static_cast<TileLayer*>(map->layerAt(0));
+    return static_cast<TileLayer *>(map->layerAt(0));
 }
 
 
@@ -54,12 +54,13 @@ public:
 
 TileStampData::TileStampData()
     : quickStampIndex(-1)
-{}
+{
+}
 
 TileStampData::TileStampData(const TileStampData &other)
     : QSharedData(other)
     , name(other.name)
-    , fileName()                        // not copied
+    , fileName() // not copied
     , variations(other.variations)
     , quickStampIndex(-1)
 {
@@ -304,7 +305,8 @@ TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
     TileStamp stamp;
 
     stamp.setName(json.value(QLatin1String("name")).toString());
-    stamp.setQuickStampIndex(static_cast<int>(json.value(QLatin1String("quickStampIndex")).toDouble(-1)));
+    stamp.setQuickStampIndex(
+        static_cast<int>(json.value(QLatin1String("quickStampIndex")).toDouble(-1)));
 
     QJsonArray variations = json.value(QLatin1String("variations")).toArray();
     for (const QJsonValue &value : variations) {

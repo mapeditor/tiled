@@ -47,8 +47,8 @@ using namespace Tiled::Internal;
 class FileSystemModel : public QFileSystemModel
 {
 public:
-    explicit FileSystemModel(QObject *parent = nullptr):
-        QFileSystemModel(parent)
+    explicit FileSystemModel(QObject *parent = nullptr)
+        : QFileSystemModel(parent)
     {
     }
 
@@ -100,9 +100,8 @@ MapsDock::MapsDock(QWidget *parent)
 
 void MapsDock::browse()
 {
-    QString f = QFileDialog::getExistingDirectory(window(),
-                                                  tr("Choose the Maps Folder"),
-                                                  mDirectoryEdit->text());
+    QString f = QFileDialog::getExistingDirectory(
+        window(), tr("Choose the Maps Folder"), mDirectoryEdit->text());
     if (!f.isEmpty()) {
         Preferences *prefs = Preferences::instance();
         prefs->setMapsDirectory(f);
@@ -151,8 +150,7 @@ MapsView::MapsView(QWidget *parent)
     setDefaultDropAction(Qt::MoveAction);
 
     Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(mapsDirectoryChanged()),
-            SLOT(onMapsDirectoryChanged()));
+    connect(prefs, SIGNAL(mapsDirectoryChanged()), SLOT(onMapsDirectoryChanged()));
 
     QDir mapsDir(prefs->mapsDirectory());
     if (!mapsDir.exists())
@@ -188,12 +186,11 @@ MapsView::MapsView(QWidget *parent)
     headerView->hideSection(3);
 
     setRootIndex(mFSModel->index(mapsDir.absolutePath()));
-    
+
     header()->setStretchLastSection(false);
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
-    connect(this, SIGNAL(activated(QModelIndex)),
-            SLOT(onActivated(QModelIndex)));
+    connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
 }
 
 QSize MapsView::sizeHint() const

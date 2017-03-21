@@ -33,15 +33,13 @@
 namespace Tiled {
 namespace Internal {
 
-bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
-                                         const ObjectTypes &objectTypes)
+bool ObjectTypesWriter::writeObjectTypes(const QString &fileName, const ObjectTypes &objectTypes)
 {
     mError.clear();
 
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "Could not open file for writing.");
+        mError = QCoreApplication::translate("ObjectTypes", "Could not open file for writing.");
         return false;
     }
 
@@ -60,7 +58,7 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
         writer.writeAttribute(QLatin1String("name"), objectType.name);
         writer.writeAttribute(QLatin1String("color"), objectType.color.name());
 
-        QMapIterator<QString,QVariant> it(objectType.defaultProperties);
+        QMapIterator<QString, QVariant> it(objectType.defaultProperties);
         while (it.hasNext()) {
             it.next();
 
@@ -104,8 +102,7 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "Could not open file.");
+        mError = QCoreApplication::translate("ObjectTypes", "Could not open file.");
         return objectTypes;
     }
 
@@ -114,8 +111,7 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     QXmlStreamReader reader(&file);
 
     if (!reader.readNextStartElement() || reader.name() != QLatin1String("objecttypes")) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "File doesn't contain object types.");
+        mError = QCoreApplication::translate("ObjectTypes", "File doesn't contain object types.");
         return objectTypes;
     }
 
@@ -129,7 +125,7 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
             // read the custom properties
             Properties props;
             while (reader.readNextStartElement()) {
-                if (reader.name() == QLatin1String("property")){
+                if (reader.name() == QLatin1String("property")) {
                     readObjectTypeProperty(reader, props, filePath);
                 } else {
                     reader.skipCurrentElement();
@@ -141,11 +137,10 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     }
 
     if (reader.hasError()) {
-        mError = QCoreApplication::translate("ObjectTypes",
-                                             "%3\n\nLine %1, column %2")
-                .arg(reader.lineNumber())
-                .arg(reader.columnNumber())
-                .arg(reader.errorString());
+        mError = QCoreApplication::translate("ObjectTypes", "%3\n\nLine %1, column %2")
+                     .arg(reader.lineNumber())
+                     .arg(reader.columnNumber())
+                     .arg(reader.errorString());
         return objectTypes;
     }
 

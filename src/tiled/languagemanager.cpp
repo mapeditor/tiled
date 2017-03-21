@@ -79,19 +79,16 @@ void LanguageManager::installTranslators()
     if (language.isEmpty())
         language = QLocale::system().name();
 
-    const QString qtTranslationsDir =
-            QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+    const QString qtTranslationsDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 
-    if (mQtTranslator->load(QLatin1String("qt_") + language,
-                            qtTranslationsDir)) {
+    if (mQtTranslator->load(QLatin1String("qt_") + language, qtTranslationsDir)) {
         QCoreApplication::installTranslator(mQtTranslator);
     } else {
         delete mQtTranslator;
         mQtTranslator = nullptr;
     }
 
-    if (mAppTranslator->load(QLatin1String("tiled_") + language,
-                             mTranslationsDir)) {
+    if (mAppTranslator->load(QLatin1String("tiled_") + language, mTranslationsDir)) {
         QCoreApplication::installTranslator(mAppTranslator);
     } else {
         delete mAppTranslator;
@@ -113,8 +110,7 @@ void LanguageManager::loadAvailableLanguages()
     QStringList nameFilters;
     nameFilters.append(QLatin1String("tiled_*.qm"));
 
-    QDirIterator iterator(mTranslationsDir, nameFilters,
-                          QDir::Files | QDir::Readable);
+    QDirIterator iterator(mTranslationsDir, nameFilters, QDir::Files | QDir::Readable);
 
     while (iterator.hasNext()) {
         iterator.next();

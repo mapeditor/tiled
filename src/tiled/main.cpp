@@ -80,14 +80,9 @@ private:
 
     // Convenience wrapper around registerOption
     template <void (CommandLineHandler::*memberFunction)()>
-    void option(QChar shortName,
-                const QString &longName,
-                const QString &help)
+    void option(QChar shortName, const QString &longName, const QString &help)
     {
-        registerOption<CommandLineHandler, memberFunction>(this,
-                                                           shortName,
-                                                           longName,
-                                                           help);
+        registerOption<CommandLineHandler, memberFunction>(this, shortName, longName, help);
     }
 };
 
@@ -102,34 +97,24 @@ CommandLineHandler::CommandLineHandler()
     , newInstance(false)
 {
     option<&CommandLineHandler::showVersion>(
-                QLatin1Char('v'),
-                QLatin1String("--version"),
-                tr("Display the version"));
+        QLatin1Char('v'), QLatin1String("--version"), tr("Display the version"));
 
     option<&CommandLineHandler::justQuit>(
-                QChar(),
-                QLatin1String("--quit"),
-                tr("Only check validity of arguments"));
+        QChar(), QLatin1String("--quit"), tr("Only check validity of arguments"));
 
     option<&CommandLineHandler::setDisableOpenGL>(
-                QChar(),
-                QLatin1String("--disable-opengl"),
-                tr("Disable hardware accelerated rendering"));
+        QChar(), QLatin1String("--disable-opengl"), tr("Disable hardware accelerated rendering"));
 
     option<&CommandLineHandler::setExportMap>(
-                QChar(),
-                QLatin1String("--export-map"),
-                tr("Export the specified tmx file to target"));
+        QChar(), QLatin1String("--export-map"), tr("Export the specified tmx file to target"));
 
     option<&CommandLineHandler::showExportFormats>(
-                QChar(),
-                QLatin1String("--export-formats"),
-                tr("Print a list of supported export formats"));
+        QChar(), QLatin1String("--export-formats"), tr("Print a list of supported export formats"));
 
     option<&CommandLineHandler::startNewInstance>(
-                QChar(),
-                QLatin1String("--new-instance"),
-                tr("Start a new instance, even if an instance is already running"));
+        QChar(),
+        QLatin1String("--new-instance"),
+        tr("Start a new instance, even if an instance is already running"));
 }
 
 void CommandLineHandler::showVersion()
@@ -236,11 +221,14 @@ int main(int argc, char *argv[])
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.filesToOpen().length() < 2) {
-            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
+            qWarning().noquote() << QCoreApplication::translate(
+                "Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
             return 1;
         }
         int index = 0;
-        const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
+        const QString *filter = commandLine.filesToOpen().length() > 2
+                                    ? &commandLine.filesToOpen().at(index++)
+                                    : nullptr;
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
@@ -258,7 +246,8 @@ int main(int argc, char *argv[])
                 }
             }
             if (!chosenFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
+                qWarning().noquote() << QCoreApplication::translate(
+                    "Command line", "Format not recognized (see --export-formats)");
                 return 1;
             }
         } else {
@@ -269,14 +258,17 @@ int main(int argc, char *argv[])
                     continue;
                 if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                     if (chosenFormat) {
-                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
+                        qWarning().noquote() << QCoreApplication::translate(
+                            "Command line",
+                            "Non-unique file extension. Can't determine correct export format.");
                         return 1;
                     }
                     chosenFormat = format;
                 }
             }
             if (!chosenFormat) {
-                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
+                qWarning().noquote() << QCoreApplication::translate(
+                    "Command line", "No exporter found for target file.");
                 return 1;
             }
         }
@@ -285,7 +277,8 @@ int main(int argc, char *argv[])
         MapReader reader;
         QScopedPointer<Map> map(reader.readMap(sourceFile));
         if (!map) {
-            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
+            qWarning().noquote() << QCoreApplication::translate("Command line",
+                                                                "Failed to load source map.");
             return 1;
         }
 
@@ -293,7 +286,8 @@ int main(int argc, char *argv[])
         bool success = chosenFormat->write(map.data(), targetFile);
 
         if (!success) {
-            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
+            qWarning().noquote() << QCoreApplication::translate(
+                "Command line", "Failed to export map to target file.");
             return 1;
         }
         return 0;
@@ -324,8 +318,7 @@ int main(int argc, char *argv[])
 
     a.setActivationWindow(&w);
 
-    QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
-                     &w, SLOT(openFile(QString)));
+    QObject::connect(&a, SIGNAL(fileOpenRequest(QString)), &w, SLOT(openFile(QString)));
 
     if (!commandLine.filesToOpen().isEmpty()) {
         for (const QString &fileName : commandLine.filesToOpen())

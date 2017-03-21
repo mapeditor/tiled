@@ -32,7 +32,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-static const char * const TYPE_KEY = "AddPropertyDialog/PropertyType";
+static const char *const TYPE_KEY = "AddPropertyDialog/PropertyType";
 
 AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
@@ -46,12 +46,12 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     QString stringType = typeToName(QVariant::String);
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),   false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
+    mUi->typeBox->addItem(typeToName(QVariant::Bool), false);
+    mUi->typeBox->addItem(typeToName(QVariant::Color), QColor());
     mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
     mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
-    mUi->typeBox->addItem(stringType,                   QString());
+    mUi->typeBox->addItem(typeToName(QVariant::Int), 0);
+    mUi->typeBox->addItem(stringType, QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
@@ -62,10 +62,8 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
 
     mUi->typeBox->setCurrentText(lastType);
 
-    connect(mUi->name, &QLineEdit::textChanged,
-            this, &AddPropertyDialog::nameChanged);
-    connect(mUi->typeBox, &QComboBox::currentTextChanged,
-            this, &AddPropertyDialog::typeChanged);
+    connect(mUi->name, &QLineEdit::textChanged, this, &AddPropertyDialog::nameChanged);
+    connect(mUi->typeBox, &QComboBox::currentTextChanged, this, &AddPropertyDialog::typeChanged);
 }
 
 AddPropertyDialog::~AddPropertyDialog()

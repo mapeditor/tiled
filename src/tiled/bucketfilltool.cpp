@@ -25,11 +25,11 @@
 
 #include "addremovetileset.h"
 #include "brushitem.h"
-#include "tilepainter.h"
-#include "tile.h"
-#include "mapscene.h"
 #include "mapdocument.h"
+#include "mapscene.h"
 #include "painttilelayer.h"
+#include "tile.h"
+#include "tilepainter.h"
 
 #include <QApplication>
 
@@ -38,8 +38,7 @@ using namespace Tiled::Internal;
 
 BucketFillTool::BucketFillTool(QObject *parent)
     : AbstractTileTool(tr("Bucket Fill Tool"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-bucket-fill.png")),
+                       QIcon(QLatin1String(":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
                        parent)
     , mIsActive(false)
@@ -69,9 +68,7 @@ void BucketFillTool::deactivate(MapScene *scene)
     mIsActive = false;
 }
 
-static void fillWithStamp(TileLayer &layer,
-                          const TileStamp &stamp,
-                          const QRegion &mask)
+static void fillWithStamp(TileLayer &layer, const TileStamp &stamp, const QRegion &mask)
 {
     const QSize size = stamp.maxSize();
 
@@ -109,7 +106,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         const TileStampVariation &variation = mStamp.variations().first();
         TileLayer *stampLayer = variation.tileLayer();
         if (stampLayer->size() == QSize(1, 1) &&
-                stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
+            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
             return;
     }
 
@@ -158,18 +155,14 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!mFillOverlay) {
         // Create a new overlay region
         const QRect fillBounds = mFillRegion.boundingRect();
-        mFillOverlay = SharedTileLayer(new TileLayer(QString(),
-                                                     fillBounds.x(),
-                                                     fillBounds.y(),
-                                                     fillBounds.width(),
-                                                     fillBounds.height()));
+        mFillOverlay = SharedTileLayer(new TileLayer(
+            QString(), fillBounds.x(), fillBounds.y(), fillBounds.width(), fillBounds.height()));
     }
 
     // Paint the new overlay
     if (!mIsRandom) {
         if (fillRegionChanged || mStamp.variations().size() > 1) {
-            fillWithStamp(*mFillOverlay, mStamp,
-                          mFillRegion.translated(-mFillOverlay->position()));
+            fillWithStamp(*mFillOverlay, mStamp, mFillRegion.translated(-mFillOverlay->position()));
             fillRegionChanged = true;
         }
     } else {
@@ -196,11 +189,8 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (!preview)
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
-                                               currentTileLayer(),
-                                               preview->x(),
-                                               preview->y(),
-                                               preview);
+    PaintTileLayer *paint =
+        new PaintTileLayer(mapDocument(), currentTileLayer(), preview->x(), preview->y(), preview);
 
     paint->setText(QCoreApplication::translate("Undo Commands", "Fill Area"));
 
@@ -235,8 +225,7 @@ void BucketFillTool::languageChanged()
     setShortcut(QKeySequence(tr("F")));
 }
 
-void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
-                                        MapDocument *newDocument)
+void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument)
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
@@ -278,17 +267,14 @@ void BucketFillTool::makeConnections()
         return;
 
     // Overlay may need to be cleared if a region changed
-    connect(mapDocument(), &MapDocument::regionChanged,
-            this, &BucketFillTool::clearOverlay);
+    connect(mapDocument(), &MapDocument::regionChanged, this, &BucketFillTool::clearOverlay);
 
     // Overlay needs to be cleared if we switch to another layer
-    connect(mapDocument(), &MapDocument::currentLayerChanged,
-            this, &BucketFillTool::clearOverlay);
+    connect(mapDocument(), &MapDocument::currentLayerChanged, this, &BucketFillTool::clearOverlay);
 
     // Overlay needs be cleared if the selection changes, since
     // the overlay may be bound or may need to be bound to the selection
-    connect(mapDocument(), &MapDocument::selectedAreaChanged,
-            this, &BucketFillTool::clearOverlay);
+    connect(mapDocument(), &MapDocument::selectedAreaChanged, this, &BucketFillTool::clearOverlay);
 }
 
 void BucketFillTool::clearConnections(MapDocument *mapDocument)
@@ -296,14 +282,11 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     if (!mapDocument)
         return;
 
-    disconnect(mapDocument, &MapDocument::regionChanged,
-               this, &BucketFillTool::clearOverlay);
+    disconnect(mapDocument, &MapDocument::regionChanged, this, &BucketFillTool::clearOverlay);
 
-    disconnect(mapDocument, &MapDocument::currentLayerChanged,
-               this, &BucketFillTool::clearOverlay);
+    disconnect(mapDocument, &MapDocument::currentLayerChanged, this, &BucketFillTool::clearOverlay);
 
-    disconnect(mapDocument, &MapDocument::selectedAreaChanged,
-               this, &BucketFillTool::clearOverlay);
+    disconnect(mapDocument, &MapDocument::selectedAreaChanged, this, &BucketFillTool::clearOverlay);
 }
 
 void BucketFillTool::setRandom(bool value)
@@ -329,8 +312,7 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
     for (const QRect &rect : region.translated(-tileLayer.position()).rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                tileLayer.setCell(_x, _y,
-                                  mRandomCellPicker.pick());
+                tileLayer.setCell(_x, _y, mRandomCellPicker.pick());
             }
         }
     }

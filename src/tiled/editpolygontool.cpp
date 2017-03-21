@@ -68,18 +68,37 @@ public:
     }
 
     enum { Type = UserType + 2 };
-    int type() const override { return Type; }
+    int type() const override
+    {
+        return Type;
+    }
 
-    MapObjectItem *mapObjectItem() const { return mMapObjectItem; }
-    MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
+    MapObjectItem *mapObjectItem() const
+    {
+        return mMapObjectItem;
+    }
+    MapObject *mapObject() const
+    {
+        return mMapObjectItem->mapObject();
+    }
 
-    int pointIndex() const { return mPointIndex; }
+    int pointIndex() const
+    {
+        return mPointIndex;
+    }
 
     void setPointPosition(const QPointF &pos);
 
     // These hide the QGraphicsItem members
-    void setSelected(bool selected) { mSelected = selected; update(); }
-    bool isSelected() const { return mSelected; }
+    void setSelected(bool selected)
+    {
+        mSelected = selected;
+        update();
+    }
+    bool isSelected() const
+    {
+        return mSelected;
+    }
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -110,9 +129,7 @@ QRectF PointHandle::boundingRect() const
     return QRectF(-5, -5, 10 + 1, 10 + 1);
 }
 
-void PointHandle::paint(QPainter *painter,
-                        const QStyleOptionGraphicsItem *,
-                        QWidget *)
+void PointHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     painter->setPen(Qt::black);
     if (mSelected) {
@@ -127,9 +144,9 @@ void PointHandle::paint(QPainter *painter,
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),
-          QIcon(QLatin1String(":images/24x24/tool-edit-polygons.png")),
-          QKeySequence(tr("E")),
-          parent)
+                         QIcon(QLatin1String(":images/24x24/tool-edit-polygons.png")),
+                         QKeySequence(tr("E")),
+                         parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
     , mClickedHandle(nullptr)
@@ -152,24 +169,23 @@ void EditPolygonTool::activate(MapScene *scene)
     // TODO: Could be more optimal by separating the updating of handles from
     // the creation and removal of handles depending on changes in the
     // selection, and by only updating the handles of the objects that changed.
-    connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-            this, SLOT(updateHandles()));
-    connect(scene, SIGNAL(selectedObjectItemsChanged()),
-            this, SLOT(updateHandles()));
+    connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject *>)), this, SLOT(updateHandles()));
+    connect(scene, SIGNAL(selectedObjectItemsChanged()), this, SLOT(updateHandles()));
 
-    connect(mapDocument(), SIGNAL(objectsRemoved(QList<MapObject*>)),
-            this, SLOT(objectsRemoved(QList<MapObject*>)));
+    connect(mapDocument(),
+            SIGNAL(objectsRemoved(QList<MapObject *>)),
+            this,
+            SLOT(objectsRemoved(QList<MapObject *>)));
 }
 
 void EditPolygonTool::deactivate(MapScene *scene)
 {
-    disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
-               this, SLOT(updateHandles()));
-    disconnect(scene, SIGNAL(selectedObjectItemsChanged()),
-               this, SLOT(updateHandles()));
+    disconnect(
+        mapDocument(), SIGNAL(objectsChanged(QList<MapObject *>)), this, SLOT(updateHandles()));
+    disconnect(scene, SIGNAL(selectedObjectItemsChanged()), this, SLOT(updateHandles()));
 
     // Delete all handles
-    QMapIterator<MapObjectItem*, QList<PointHandle*> > i(mHandles);
+    QMapIterator<MapObjectItem *, QList<PointHandle *>> i(mHandles);
     while (i.hasNext())
         qDeleteAll(i.next().value());
 
@@ -184,8 +200,7 @@ void EditPolygonTool::mouseEntered()
 {
 }
 
-void EditPolygonTool::mouseMoved(const QPointF &pos,
-                                 Qt::KeyboardModifiers modifiers)
+void EditPolygonTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
@@ -212,11 +227,10 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     }
 }
 
-template <class T>
-static T *first(const QList<QGraphicsItem *> &items)
+template <class T> static T *first(const QList<QGraphicsItem *> &items)
 {
     foreach (QGraphicsItem *item, items) {
-        if (T *t = qgraphicsitem_cast<T*>(item))
+        if (T *t = qgraphicsitem_cast<T *>(item))
             return t;
     }
     return nullptr;
@@ -225,7 +239,7 @@ static T *first(const QList<QGraphicsItem *> &items)
 static QTransform viewTransform(QGraphicsSceneMouseEvent *event)
 {
     if (QWidget *widget = event->widget())
-        if (QGraphicsView *view = static_cast<QGraphicsView*>(widget->parent()))
+        if (QGraphicsView *view = static_cast<QGraphicsView *>(widget->parent()))
             return view->transform();
     return QTransform();
 }
@@ -241,25 +255,20 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
 
-        const QList<QGraphicsItem *> items = mapScene()->items(mStart,
-                                                               Qt::IntersectsItemShape,
-                                                               Qt::DescendingOrder,
-                                                               viewTransform(event));
+        const QList<QGraphicsItem *> items = mapScene()->items(
+            mStart, Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform(event));
 
         mClickedObjectItem = first<MapObjectItem>(items);
         mClickedHandle = first<PointHandle>(items);
         break;
     }
     case Qt::RightButton: {
-        const QList<QGraphicsItem *> items = mapScene()->items(event->scenePos(),
-                                                               Qt::IntersectsItemShape,
-                                                               Qt::DescendingOrder,
-                                                               viewTransform(event));
+        const QList<QGraphicsItem *> items = mapScene()->items(
+            event->scenePos(), Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform(event));
 
         PointHandle *clickedHandle = first<PointHandle>(items);
         if (clickedHandle || !mSelectedHandles.isEmpty()) {
-            showHandleContextMenu(clickedHandle,
-                                  event->screenPos());
+            showHandleContextMenu(clickedHandle, event->screenPos());
         } else {
             AbstractObjectTool::mousePressed(event);
         }
@@ -279,7 +288,7 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     switch (mMode) {
     case NoMode:
         if (mClickedHandle) {
-            QSet<PointHandle*> selection = mSelectedHandles;
+            QSet<PointHandle *> selection = mSelectedHandles;
             const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedHandle))
@@ -292,7 +301,7 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             }
             setSelectedHandles(selection);
         } else if (mClickedObjectItem) {
-            QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
+            QSet<MapObjectItem *> selection = mapScene()->selectedObjectItems();
             const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedObjectItem))
@@ -307,10 +316,10 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             updateHandles();
         } else if (!mSelectedHandles.isEmpty()) {
             // First clear the handle selection
-            setSelectedHandles(QSet<PointHandle*>());
+            setSelectedHandles(QSet<PointHandle *>());
         } else {
             // If there is no handle selection, clear the object selection
-            mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>());
+            mapScene()->setSelectedObjectItems(QSet<MapObjectItem *>());
             updateHandles();
         }
         break;
@@ -358,10 +367,10 @@ void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
  */
 void EditPolygonTool::updateHandles()
 {
-    const QSet<MapObjectItem*> &selection = mapScene()->selectedObjectItems();
+    const QSet<MapObjectItem *> &selection = mapScene()->selectedObjectItems();
 
     // First destroy the handles for objects that are no longer selected
-    QMutableMapIterator<MapObjectItem*, QList<PointHandle*> > i(mHandles);
+    QMutableMapIterator<MapObjectItem *, QList<PointHandle *>> i(mHandles);
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
@@ -385,7 +394,7 @@ void EditPolygonTool::updateHandles()
         QPolygonF polygon = object->polygon();
         polygon.translate(object->position());
 
-        QList<PointHandle*> pointHandles = mHandles.value(item);
+        QList<PointHandle *> pointHandles = mHandles.value(item);
 
         // Create missing handles
         while (pointHandles.size() < polygon.size()) {
@@ -434,23 +443,22 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
     rect.setWidth(qMax(qreal(1), rect.width()));
     rect.setHeight(qMax(qreal(1), rect.height()));
 
-    const QSet<MapObjectItem*> oldSelection = mapScene()->selectedObjectItems();
+    const QSet<MapObjectItem *> oldSelection = mapScene()->selectedObjectItems();
 
     if (oldSelection.isEmpty()) {
         // Allow selecting some map objects only when there aren't any selected
-        QSet<MapObjectItem*> selectedItems;
+        QSet<MapObjectItem *> selectedItems;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect,
-                                                        Qt::IntersectsItemShape,
-                                                        Qt::DescendingOrder,
-                                                        viewTransform(event))) {
-            MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
+        foreach (QGraphicsItem *item,
+                 mapScene()->items(
+                     rect, Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform(event))) {
+            MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem *>(item);
             if (mapObjectItem)
                 selectedItems.insert(mapObjectItem);
         }
 
 
-        QSet<MapObjectItem*> newSelection;
+        QSet<MapObjectItem *> newSelection;
 
         if (event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier)) {
             newSelection = oldSelection | selectedItems;
@@ -462,13 +470,12 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
         updateHandles();
     } else {
         // Update the selected handles
-        QSet<PointHandle*> selectedHandles;
+        QSet<PointHandle *> selectedHandles;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect,
-                                                        Qt::IntersectsItemShape,
-                                                        Qt::DescendingOrder,
-                                                        viewTransform(event))) {
-            if (PointHandle *handle = dynamic_cast<PointHandle*>(item))
+        foreach (QGraphicsItem *item,
+                 mapScene()->items(
+                     rect, Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform(event))) {
+            if (PointHandle *handle = dynamic_cast<PointHandle *>(item))
                 selectedHandles.insert(handle);
         }
 
@@ -514,8 +521,7 @@ void EditPolygonTool::startMoving()
     }
 }
 
-void EditPolygonTool::updateMovingItems(const QPointF &pos,
-                                        Qt::KeyboardModifiers modifiers)
+void EditPolygonTool::updateMovingItems(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
@@ -567,7 +573,7 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
 
     // TODO: This isn't really optimal. Would be better to have a single undo
     // command that supports changing multiple map objects.
-    QMapIterator<MapObject*, QPolygonF> i(mOldPolygons);
+    QMapIterator<MapObject *, QPolygonF> i(mOldPolygons);
     while (i.hasNext()) {
         i.next();
         undoStack->push(new ChangePolygon(mapDocument(), i.key(), i.value()));
@@ -579,8 +585,7 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
     mOldPolygons.clear();
 }
 
-void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
-                                            QPoint screenPos)
+void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos)
 {
     if (clickedHandle && !mSelectedHandles.contains(clickedHandle))
         setSelectedHandle(clickedHandle);
@@ -609,9 +614,8 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     menu.exec(screenPos);
 }
 
-typedef QMap<MapObject*, RangeSet<int> > PointIndexesByObject;
-static PointIndexesByObject
-groupIndexesByObject(const QSet<PointHandle*> &handles)
+typedef QMap<MapObject *, RangeSet<int>> PointIndexesByObject;
+static PointIndexesByObject groupIndexesByObject(const QSet<PointHandle *> &handles)
 {
     PointIndexesByObject result;
 
@@ -630,7 +634,7 @@ void EditPolygonTool::deleteNodes()
         return;
 
     PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QMapIterator<MapObject *, RangeSet<int>> i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
 
@@ -657,9 +661,7 @@ void EditPolygonTool::deleteNodes()
             // We've removed the entire object
             undoStack->push(new RemoveMapObject(mapDocument(), object));
         } else {
-            undoStack->push(new ChangePolygon(mapDocument(), object,
-                                              newPolygon,
-                                              oldPolygon));
+            undoStack->push(new ChangePolygon(mapDocument(), object, newPolygon, oldPolygon));
         }
     }
 
@@ -673,9 +675,8 @@ void EditPolygonTool::deleteNodes()
  * This method can deal with both polygons as well as polylines. For polygons,
  * pass <code>true</code> for \a closed.
  */
-static QPolygonF joinPolygonNodes(const QPolygonF &polygon,
-                                  const RangeSet<int> &indexRanges,
-                                  bool closed)
+static QPolygonF
+joinPolygonNodes(const QPolygonF &polygon, const RangeSet<int> &indexRanges, bool closed)
 {
     if (indexRanges.isEmpty())
         return polygon;
@@ -748,9 +749,8 @@ static QPolygonF joinPolygonNodes(const QPolygonF &polygon,
  * This method can deal with both polygons as well as polylines. For polygons,
  * pass <code>true</code> for \a closed.
  */
-static QPolygonF splitPolygonSegments(const QPolygonF &polygon,
-                                      const RangeSet<int> &indexRanges,
-                                      bool closed)
+static QPolygonF
+splitPolygonSegments(const QPolygonF &polygon, const RangeSet<int> &indexRanges, bool closed)
 {
     if (indexRanges.isEmpty())
         return polygon;
@@ -793,7 +793,7 @@ void EditPolygonTool::joinNodes()
         return;
 
     const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QMapIterator<MapObject *, RangeSet<int>> i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
     bool macroStarted = false;
@@ -804,8 +804,7 @@ void EditPolygonTool::joinNodes()
 
         const bool closed = object->shape() == MapObject::Polygon;
         QPolygonF oldPolygon = object->polygon();
-        QPolygonF newPolygon = joinPolygonNodes(oldPolygon, indexRanges,
-                                                closed);
+        QPolygonF newPolygon = joinPolygonNodes(oldPolygon, indexRanges, closed);
 
         if (newPolygon.size() < oldPolygon.size()) {
             if (!macroStarted) {
@@ -813,9 +812,7 @@ void EditPolygonTool::joinNodes()
                 macroStarted = true;
             }
 
-            undoStack->push(new ChangePolygon(mapDocument(), object,
-                                              newPolygon,
-                                              oldPolygon));
+            undoStack->push(new ChangePolygon(mapDocument(), object, newPolygon, oldPolygon));
         }
     }
 
@@ -829,7 +826,7 @@ void EditPolygonTool::splitSegments()
         return;
 
     const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, RangeSet<int> > i(p);
+    QMapIterator<MapObject *, RangeSet<int>> i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
     bool macroStarted = false;
@@ -840,8 +837,7 @@ void EditPolygonTool::splitSegments()
 
         const bool closed = object->shape() == MapObject::Polygon;
         QPolygonF oldPolygon = object->polygon();
-        QPolygonF newPolygon = splitPolygonSegments(oldPolygon, indexRanges,
-                                                    closed);
+        QPolygonF newPolygon = splitPolygonSegments(oldPolygon, indexRanges, closed);
 
         if (newPolygon.size() > oldPolygon.size()) {
             if (!macroStarted) {
@@ -849,9 +845,7 @@ void EditPolygonTool::splitSegments()
                 macroStarted = true;
             }
 
-            undoStack->push(new ChangePolygon(mapDocument(), object,
-                                              newPolygon,
-                                              oldPolygon));
+            undoStack->push(new ChangePolygon(mapDocument(), object, newPolygon, oldPolygon));
         }
     }
 

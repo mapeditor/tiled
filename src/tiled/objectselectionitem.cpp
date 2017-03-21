@@ -44,15 +44,32 @@ static const qreal labelDistance = 12;
 static QPointF alignmentOffset(QRectF &r, Alignment alignment)
 {
     switch (alignment) {
-    case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);               break;
-    case TopRight:      return QPointF(r.width(), 0);                   break;
-    case Left:          return QPointF(0, r.height() / 2);              break;
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);  break;
-    case Right:         return QPointF(r.width(), r.height() / 2);      break;
-    case BottomLeft:    return QPointF(0, r.height());                  break;
-    case Bottom:        return QPointF(r.width() / 2, r.height());      break;
-    case BottomRight:   return QPointF(r.width(), r.height());          break;
+    case TopLeft:
+        break;
+    case Top:
+        return QPointF(r.width() / 2, 0);
+        break;
+    case TopRight:
+        return QPointF(r.width(), 0);
+        break;
+    case Left:
+        return QPointF(0, r.height() / 2);
+        break;
+    case Center:
+        return QPointF(r.width() / 2, r.height() / 2);
+        break;
+    case Right:
+        return QPointF(r.width(), r.height() / 2);
+        break;
+    case BottomLeft:
+        return QPointF(0, r.height());
+        break;
+    case Bottom:
+        return QPointF(r.width() / 2, r.height());
+        break;
+    case BottomRight:
+        return QPointF(r.width(), r.height());
+        break;
     }
     return QPointF();
 }
@@ -67,8 +84,7 @@ static void align(QRectF &r, Alignment alignment)
  * bounds of its visualization that the MapRenderer::boundingRect function
  * returns.
  */
-static QRectF objectBounds(const MapObject *object,
-                           const MapRenderer *renderer)
+static QRectF objectBounds(const MapObject *object, const MapRenderer *renderer)
 {
     if (!object->cell().isEmpty()) {
         // Tile objects can have a tile offset, which is scaled along with the image
@@ -140,9 +156,7 @@ public:
     void syncWithMapObject(MapRenderer *renderer);
 
     QRectF boundingRect() const override;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *,
-               QWidget *) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     QRectF mBoundingRect;
@@ -170,19 +184,13 @@ QRectF MapObjectOutline::boundingRect() const
     return mBoundingRect;
 }
 
-void MapObjectOutline::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *,
-                          QWidget *)
+void MapObjectOutline::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    const QLineF horizontal[2] = {
-        QLineF(mBoundingRect.topLeft(), mBoundingRect.topRight()),
-        QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight())
-    };
+    const QLineF horizontal[2] = {QLineF(mBoundingRect.topLeft(), mBoundingRect.topRight()),
+                                  QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight())};
 
-    const QLineF vertical[2] = {
-        QLineF(mBoundingRect.topLeft(), mBoundingRect.bottomLeft()),
-        QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())
-    };
+    const QLineF vertical[2] = {QLineF(mBoundingRect.topLeft(), mBoundingRect.bottomLeft()),
+                                QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())};
 
     QPen dashPen(Qt::DashLine);
     dashPen.setCosmetic(true);
@@ -208,14 +216,15 @@ public:
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }
 
-    MapObject *mapObject() const { return mObject; }
+    MapObject *mapObject() const
+    {
+        return mObject;
+    }
     void syncWithMapObject(MapRenderer *renderer);
     void updateColor();
 
     QRectF boundingRect() const override;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *,
-               QWidget *) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     QRectF mBoundingRect;
@@ -234,7 +243,7 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
     const QFontMetricsF metrics(QGuiApplication::font());
     QRectF boundingRect = metrics.boundingRect(mObject->name());
     boundingRect.translate(-boundingRect.width() / 2, -labelDistance);
-    boundingRect.adjust(-labelMargin*2, -labelMargin, labelMargin*2, labelMargin);
+    boundingRect.adjust(-labelMargin * 2, -labelMargin, labelMargin * 2, labelMargin);
 
     QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
     QRectF bounds = objectBounds(mObject, renderer);
@@ -273,9 +282,7 @@ QRectF MapObjectLabel::boundingRect() const
     return mBoundingRect.adjusted(0, 0, 1, 1);
 }
 
-void MapObjectLabel::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *,
-                           QWidget *)
+void MapObjectLabel::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::black);
@@ -284,11 +291,11 @@ void MapObjectLabel::paint(QPainter *painter,
     painter->setBrush(mColor);
     painter->drawRoundedRect(mBoundingRect, 4, 4);
 
-    QPointF textPos(-(mBoundingRect.width() - labelMargin*4) / 2, -labelDistance);
+    QPointF textPos(-(mBoundingRect.width() - labelMargin * 4) / 2, -labelDistance);
 
     painter->drawRoundedRect(mBoundingRect, 4, 4);
     painter->setPen(Qt::black);
-    painter->drawText(textPos + QPointF(1,1), mObject->name());
+    painter->drawText(textPos + QPointF(1, 1), mObject->name());
     painter->setPen(Qt::white);
     painter->drawText(textPos, mObject->name());
 }
@@ -299,40 +306,43 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
 {
     setFlag(QGraphicsItem::ItemHasNoContents);
 
-    connect(mapDocument, &MapDocument::selectedObjectsChanged,
-            this, &ObjectSelectionItem::selectedObjectsChanged);
+    connect(mapDocument,
+            &MapDocument::selectedObjectsChanged,
+            this,
+            &ObjectSelectionItem::selectedObjectsChanged);
 
-    connect(mapDocument, &MapDocument::mapChanged,
-            this, &ObjectSelectionItem::mapChanged);
+    connect(mapDocument, &MapDocument::mapChanged, this, &ObjectSelectionItem::mapChanged);
 
-    connect(mapDocument, &MapDocument::layerAdded,
-            this, &ObjectSelectionItem::layerAdded);
+    connect(mapDocument, &MapDocument::layerAdded, this, &ObjectSelectionItem::layerAdded);
 
-    connect(mapDocument, &MapDocument::layerAboutToBeRemoved,
-            this, &ObjectSelectionItem::layerAboutToBeRemoved);
+    connect(mapDocument,
+            &MapDocument::layerAboutToBeRemoved,
+            this,
+            &ObjectSelectionItem::layerAboutToBeRemoved);
 
-    connect(mapDocument, &MapDocument::layerChanged,
-            this, &ObjectSelectionItem::layerChanged);
+    connect(mapDocument, &MapDocument::layerChanged, this, &ObjectSelectionItem::layerChanged);
 
-    connect(mapDocument, &MapDocument::objectsChanged,
-            this, &ObjectSelectionItem::syncOverlayItems);
+    connect(
+        mapDocument, &MapDocument::objectsChanged, this, &ObjectSelectionItem::syncOverlayItems);
 
-    connect(mapDocument, &MapDocument::objectsAdded,
-            this, &ObjectSelectionItem::objectsAdded);
+    connect(mapDocument, &MapDocument::objectsAdded, this, &ObjectSelectionItem::objectsAdded);
 
-    connect(mapDocument, &MapDocument::objectsRemoved,
-            this, &ObjectSelectionItem::objectsRemoved);
+    connect(mapDocument, &MapDocument::objectsRemoved, this, &ObjectSelectionItem::objectsRemoved);
 
-    connect(mapDocument, &MapDocument::tileTypeChanged,
-            this, &ObjectSelectionItem::tileTypeChanged);
+    connect(
+        mapDocument, &MapDocument::tileTypeChanged, this, &ObjectSelectionItem::tileTypeChanged);
 
     Preferences *prefs = Preferences::instance();
 
-    connect(prefs, &Preferences::objectLabelVisibilityChanged,
-            this, &ObjectSelectionItem::objectLabelVisibilityChanged);
+    connect(prefs,
+            &Preferences::objectLabelVisibilityChanged,
+            this,
+            &ObjectSelectionItem::objectLabelVisibilityChanged);
 
-    connect(prefs, &Preferences::objectTypesChanged,
-            this, &ObjectSelectionItem::updateObjectLabelColors);
+    connect(prefs,
+            &Preferences::objectTypesChanged,
+            this,
+            &ObjectSelectionItem::updateObjectLabelColors);
 
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
@@ -399,7 +409,7 @@ void ObjectSelectionItem::layerChanged(Layer *layer)
     syncOverlayItems(objectGroup->objects());
 }
 
-void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
+void ObjectSelectionItem::syncOverlayItems(const QList<MapObject *> &objects)
 {
     MapRenderer *renderer = mMapDocument->renderer();
 
@@ -458,10 +468,10 @@ void ObjectSelectionItem::objectLabelVisibilityChanged()
 
 void ObjectSelectionItem::addRemoveObjectLabels()
 {
-    QHash<MapObject*, MapObjectLabel*> labelItems;
+    QHash<MapObject *, MapObjectLabel *> labelItems;
     MapRenderer *renderer = mMapDocument->renderer();
 
-    auto ensureLabel = [this,&labelItems,renderer] (MapObject *object) {
+    auto ensureLabel = [this, &labelItems, renderer](MapObject *object) {
         if (labelItems.contains(object))
             return;
 
@@ -483,7 +493,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
             if (ObjectGroup *objectGroup = layer->asObjectGroup())
                 for (MapObject *object : objectGroup->objects())
                     ensureLabel(object);
-    }
+        }
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())
@@ -499,7 +509,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
 
 void ObjectSelectionItem::addRemoveObjectOutlines()
 {
-    QHash<MapObject*, MapObjectOutline*> outlineItems;
+    QHash<MapObject *, MapObjectOutline *> outlineItems;
     MapRenderer *renderer = mMapDocument->renderer();
 
     for (MapObject *mapObject : mMapDocument->selectedObjects()) {

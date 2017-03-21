@@ -37,12 +37,10 @@ matrix:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
         - sudo add-apt-repository ppa:smspillaz/verapp-latest -y
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools binutils zlib1g-dev
-        - sudo apt-get install tcl -y
-        - sudo apt-get install vera++ -
+        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools binutils zlib1g-dev vera++ tcl -y
         - source /opt/qt58/bin/qt58-env.sh
       script:
-        - vera++ -R T008 -R L005  src/tiled/*
+        - vera++ -R T008 -R L005  src/tiled/*.cpp
         - mkdir Tiled ; cd Tiled/
         - qmake ../tiled.pro TILED_VERSION=$TILED_VERSION TILED_LINUX_ARCHIVE=true
         - make

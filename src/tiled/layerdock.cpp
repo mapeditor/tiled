@@ -23,6 +23,7 @@
 
 #include "layerdock.h"
 
+#include "eyevisibilitydelegate.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -31,28 +32,27 @@
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "eyevisibilitydelegate.h"
 
-#include <QBoxLayout>
 #include <QApplication>
+#include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QLabel>
 #include <QMenu>
 #include <QSlider>
-#include <QUndoStack>
 #include <QToolBar>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-LayerDock::LayerDock(QWidget *parent):
-    QDockWidget(parent),
-    mOpacityLabel(new QLabel),
-    mOpacitySlider(new QSlider(Qt::Horizontal)),
-    mLayerView(new LayerView),
-    mMapDocument(nullptr),
-    mUpdatingSlider(false),
-    mChangingLayerOpacity(false)
+LayerDock::LayerDock(QWidget *parent)
+    : QDockWidget(parent)
+    , mOpacityLabel(new QLabel)
+    , mOpacitySlider(new QSlider(Qt::Horizontal))
+    , mLayerView(new LayerView)
+    , mMapDocument(nullptr)
+    , mUpdatingSlider(false)
+    , mChangingLayerOpacity(false)
 {
     setObjectName(QLatin1String("layerDock"));
 
@@ -100,8 +100,7 @@ LayerDock::LayerDock(QWidget *parent):
     setWidget(widget);
     retranslateUi();
 
-    connect(mOpacitySlider, SIGNAL(valueChanged(int)),
-            this, SLOT(sliderValueChanged(int)));
+    connect(mOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
 }
 
@@ -116,12 +115,11 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::currentLayerChanged,
-                this, &LayerDock::updateOpacitySlider);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &LayerDock::layerChanged);
-        connect(mMapDocument, &MapDocument::editLayerNameRequested,
-                this, &LayerDock::editLayerName);
+        connect(
+            mMapDocument, &MapDocument::currentLayerChanged, this, &LayerDock::updateOpacitySlider);
+        connect(mMapDocument, &MapDocument::layerChanged, this, &LayerDock::layerChanged);
+        connect(
+            mMapDocument, &MapDocument::editLayerNameRequested, this, &LayerDock::editLayerName);
     }
 
     mLayerView->setMapDocument(mapDocument);
@@ -142,8 +140,7 @@ void LayerDock::changeEvent(QEvent *e)
 
 void LayerDock::updateOpacitySlider()
 {
-    const bool enabled = mMapDocument &&
-                         mMapDocument->currentLayer() != nullptr;
+    const bool enabled = mMapDocument && mMapDocument->currentLayer() != nullptr;
 
     mOpacitySlider->setEnabled(enabled);
     mOpacityLabel->setEnabled(enabled);
@@ -199,9 +196,8 @@ void LayerDock::sliderValueChanged(int opacity)
     if (static_cast<int>(layer->opacity() * 100) != opacity) {
         LayerModel *layerModel = mMapDocument->layerModel();
         mChangingLayerOpacity = true;
-        layerModel->setData(layerModel->index(layer),
-                            qreal(opacity) / 100,
-                            LayerModel::OpacityRole);
+        layerModel->setData(
+            layerModel->index(layer), qreal(opacity) / 100, LayerModel::OpacityRole);
         mChangingLayerOpacity = false;
     }
 }
@@ -224,8 +220,7 @@ LayerView::LayerView(QWidget *parent)
     setModel(mProxyModel);
     setItemDelegate(new EyeVisibilityDelegate(this));
 
-    connect(this, SIGNAL(pressed(QModelIndex)),
-            SLOT(indexPressed(QModelIndex)));
+    connect(this, SIGNAL(pressed(QModelIndex)), SLOT(indexPressed(QModelIndex)));
 }
 
 QSize LayerView::sizeHint() const
@@ -239,8 +234,10 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
         mMapDocument->disconnect(this);
 
         QItemSelectionModel *s = selectionModel();
-        disconnect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-                   this, SLOT(currentRowChanged(QModelIndex)));
+        disconnect(s,
+                   SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+                   this,
+                   SLOT(currentRowChanged(QModelIndex)));
 
         if (QWidget *w = indexWidget(currentIndex())) {
             commitData(w);
@@ -253,12 +250,14 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mProxyModel->setSourceModel(mMapDocument->layerModel());
 
-        connect(mMapDocument, &MapDocument::currentLayerChanged,
-                this, &LayerView::currentLayerChanged);
+        connect(
+            mMapDocument, &MapDocument::currentLayerChanged, this, &LayerView::currentLayerChanged);
 
         QItemSelectionModel *s = selectionModel();
-        connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-                this, SLOT(currentRowChanged(QModelIndex)));
+        connect(s,
+                SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+                this,
+                SLOT(currentRowChanged(QModelIndex)));
 
         currentLayerChanged(mMapDocument->currentLayer());
     } else {

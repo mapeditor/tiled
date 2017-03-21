@@ -22,22 +22,19 @@
 
 #include "changeimagelayerproperties.h"
 
-#include "mapdocument.h"
 #include "imagelayer.h"
+#include "mapdocument.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeImageLayerProperties::ChangeImageLayerProperties(
-        MapDocument *mapDocument,
-        ImageLayer *imageLayer,
-        const QColor &color,
-        const QString &path)
-    : QUndoCommand(
-          QCoreApplication::translate(
-              "Undo Commands", "Change Image Layer Properties"))
+ChangeImageLayerProperties::ChangeImageLayerProperties(MapDocument *mapDocument,
+                                                       ImageLayer *imageLayer,
+                                                       const QColor &color,
+                                                       const QString &path)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Image Layer Properties"))
     , mMapDocument(mapDocument)
     , mImageLayer(imageLayer)
     , mUndoColor(imageLayer->transparentColor())
@@ -70,4 +67,3 @@ void ChangeImageLayerProperties::undo()
 
     emit mMapDocument->imageLayerChanged(mImageLayer);
 }
-

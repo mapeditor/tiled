@@ -48,9 +48,7 @@ int ObjectTypesModel::columnCount(const QModelIndex &parent) const
     return parent.isValid() ? 0 : 2;
 }
 
-QVariant ObjectTypesModel::headerData(int section,
-                                      Qt::Orientation orientation,
-                                      int role) const
+QVariant ObjectTypesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal) {
         if (role == Qt::DisplayRole) {
@@ -86,9 +84,7 @@ QVariant ObjectTypesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool ObjectTypesModel::setData(const QModelIndex &index,
-                               const QVariant &value,
-                               int role)
+bool ObjectTypesModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
         mObjectTypes[index.row()].name = value.toString().trimmed();
@@ -114,8 +110,7 @@ void ObjectTypesModel::setObjectTypeColor(int objectIndex, const QColor &color)
     emit dataChanged(mi, mi);
 }
 
-void ObjectTypesModel::setObjectTypeProperties(int objectIndex,
-                                               const Properties &properties)
+void ObjectTypesModel::setObjectTypeProperties(int objectIndex, const Properties &properties)
 {
     mObjectTypes[objectIndex].defaultProperties = properties;
 }

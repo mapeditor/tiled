@@ -34,12 +34,14 @@ class StringHash
 public:
     StringHash()
         : hash(0)
-    {}
+    {
+    }
 
     StringHash(const QByteArray &s)
         : string(s)
         , hash(qHash(s))
-    {}
+    {
+    }
 
     QByteArray string;
     uint hash;
@@ -64,7 +66,7 @@ Id::Id(const char *name)
     static uint firstUnusedId = 1;
 
     static QByteArray temp;
-    temp.setRawData(name, qstrlen(name));                           // avoid copying data
+    temp.setRawData(name, qstrlen(name)); // avoid copying data
 
     StringHash sh(temp);
 
@@ -72,7 +74,7 @@ Id::Id(const char *name)
 
     if (id == 0) {
         id = firstUnusedId++;
-        sh.string = QByteArray(temp.constData(), temp.length());    // copy
+        sh.string = QByteArray(temp.constData(), temp.length()); // copy
         idFromString.insert(sh, id);
         stringFromId.insert(id, sh);
     }

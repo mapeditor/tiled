@@ -46,7 +46,8 @@ static qreal sign(qreal value)
     return value < 0 ? -1 : 1;
 }
 
-void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
+                                                             Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF pixelCoords = renderer->screenToPixelCoords(pos);

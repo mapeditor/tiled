@@ -42,20 +42,18 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     plainTextEdit = new QPlainTextEdit;
     plainTextEdit->setReadOnly(true);
 
-    plainTextEdit->setStyleSheet(QString::fromUtf8(
-                            "QAbstractScrollArea {"
-                            " background-color: black;"
-                            " color:green;"
-                            "}"
-                            ));
+    plainTextEdit->setStyleSheet(QString::fromUtf8("QAbstractScrollArea {"
+                                                   " background-color: black;"
+                                                   " color:green;"
+                                                   "}"));
 
     layout->addWidget(plainTextEdit);
 
     for (LoggingInterface *output : PluginManager::objects<LoggingInterface>())
         registerOutput(output);
 
-    connect(PluginManager::instance(), &PluginManager::objectAdded,
-            this, &ConsoleDock::onObjectAdded);
+    connect(
+        PluginManager::instance(), &PluginManager::objectAdded, this, &ConsoleDock::onObjectAdded);
 
     setWidget(widget);
 }
@@ -66,8 +64,7 @@ ConsoleDock::~ConsoleDock()
 
 void ConsoleDock::appendInfo(const QString &str)
 {
-    plainTextEdit->appendHtml(QLatin1String("<pre>") + str +
-                              QLatin1String("</pre>"));
+    plainTextEdit->appendHtml(QLatin1String("<pre>") + str + QLatin1String("</pre>"));
 }
 
 void ConsoleDock::appendError(const QString &str)
@@ -78,16 +75,14 @@ void ConsoleDock::appendError(const QString &str)
 
 void ConsoleDock::onObjectAdded(QObject *object)
 {
-    if (LoggingInterface *output = qobject_cast<LoggingInterface*>(object))
+    if (LoggingInterface *output = qobject_cast<LoggingInterface *>(object))
         registerOutput(output);
 }
 
 void ConsoleDock::registerOutput(LoggingInterface *output)
 {
-    connect(output, &LoggingInterface::info,
-            this, &ConsoleDock::appendInfo);
-    connect(output, &LoggingInterface::error,
-            this, &ConsoleDock::appendError);
+    connect(output, &LoggingInterface::info, this, &ConsoleDock::appendInfo);
+    connect(output, &LoggingInterface::error, this, &ConsoleDock::appendError);
 }
 
 } // namespace Internal

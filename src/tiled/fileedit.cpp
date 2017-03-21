@@ -54,18 +54,15 @@ FileEdit::FileEdit(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
 
-    connect(mLineEdit, SIGNAL(textEdited(QString)),
-            this, SIGNAL(filePathChanged(QString)));
-    connect(mLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(validate(QString)));
-    connect(button, SIGNAL(clicked()),
-            this, SLOT(buttonClicked()));
+    connect(mLineEdit, SIGNAL(textEdited(QString)), this, SIGNAL(filePathChanged(QString)));
+    connect(mLineEdit, SIGNAL(textChanged(QString)), this, SLOT(validate(QString)));
+    connect(button, SIGNAL(clicked()), this, SLOT(buttonClicked()));
 }
 
 void FileEdit::setFilePath(const QString &filePath)
 {
-     if (mLineEdit->text() != filePath)
-         mLineEdit->setText(filePath);
+    if (mLineEdit->text() != filePath)
+        mLineEdit->setText(filePath);
 }
 
 QString FileEdit::filePath() const
@@ -109,10 +106,8 @@ void FileEdit::validate(const QString &text)
 
 void FileEdit::buttonClicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(window(),
-                                                    tr("Choose a File"),
-                                                    mLineEdit->text(),
-                                                    mFilter);
+    QString filePath =
+        QFileDialog::getOpenFileName(window(), tr("Choose a File"), mLineEdit->text(), mFilter);
     if (filePath.isNull())
         return;
     mLineEdit->setText(filePath);

@@ -72,16 +72,14 @@ namespace {
 class SetTerrainImage : public QUndoCommand
 {
 public:
-    SetTerrainImage(TilesetDocument *tilesetDocument,
-                    int terrainId,
-                    int tileId)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Terrain Image"))
+    SetTerrainImage(TilesetDocument *tilesetDocument, int terrainId, int tileId)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Terrain Image"))
         , mTerrainModel(tilesetDocument->terrainModel())
         , mTerrainId(terrainId)
         , mOldImageTileId(tilesetDocument->tileset()->terrain(terrainId)->imageTileId())
         , mNewImageTileId(tileId)
-    {}
+    {
+    }
 
     void undo() override
     {
@@ -101,7 +99,6 @@ private:
 };
 
 } // anonymous namespace
-
 
 
 TilesetEditor::TilesetEditor(QObject *parent)
@@ -149,27 +146,44 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
-    connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
+    connect(
+        mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
     connect(mEditTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
 
-    connect(mTerrainDock, &TerrainDock::currentTerrainChanged, this, &TilesetEditor::currentTerrainChanged);
-    connect(mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
-    connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
+    connect(mTerrainDock,
+            &TerrainDock::currentTerrainChanged,
+            this,
+            &TilesetEditor::currentTerrainChanged);
+    connect(
+        mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
+    connect(mTerrainDock,
+            &TerrainDock::removeTerrainTypeRequested,
+            this,
+            &TilesetEditor::removeTerrainType);
 
-    connect(this, &TilesetEditor::currentTileChanged,
-            mTileAnimationEditor, &TileAnimationEditor::setTile);
-    connect(this, &TilesetEditor::currentTileChanged,
-            mTileCollisionEditor, &TileCollisionEditor::setTile);
+    connect(this,
+            &TilesetEditor::currentTileChanged,
+            mTileAnimationEditor,
+            &TileAnimationEditor::setTile);
+    connect(this,
+            &TilesetEditor::currentTileChanged,
+            mTileCollisionEditor,
+            &TileCollisionEditor::setTile);
 
-    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
-            this, &TilesetEditor::updateTilesetView);
+    connect(TilesetManager::instance(),
+            &TilesetManager::tilesetImagesChanged,
+            this,
+            &TilesetEditor::updateTilesetView);
 
     retranslateUi();
-    connect(Preferences::instance(), &Preferences::languageChanged, this, &TilesetEditor::retranslateUi);
+    connect(Preferences::instance(),
+            &Preferences::languageChanged,
+            this,
+            &TilesetEditor::retranslateUi);
 }
 
 void TilesetEditor::saveState()
@@ -191,15 +205,15 @@ void TilesetEditor::restoreState()
 
 void TilesetEditor::addDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument *>(document);
     Q_ASSERT(tilesetDocument);
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
 
 
-    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
-            tilesetDocument->tileset()->name();
+    QString path =
+        QLatin1String("TilesetEditor/TilesetScale/") + tilesetDocument->tileset()->name();
     qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
     view->zoomable()->setScale(scale);
 
@@ -210,15 +224,21 @@ void TilesetEditor::addDocument(Document *document)
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
     view->setModel(tilesetModel);
 
-    connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
-            tilesetModel, &TilesetModel::tilesChanged);
-    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
-            tilesetModel, &TilesetModel::tileChanged);
-    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
-            tilesetModel, &TilesetModel::tileChanged);
+    connect(tilesetDocument,
+            &TilesetDocument::tileTerrainChanged,
+            tilesetModel,
+            &TilesetModel::tilesChanged);
+    connect(tilesetDocument,
+            &TilesetDocument::tileImageSourceChanged,
+            tilesetModel,
+            &TilesetModel::tileChanged);
+    connect(tilesetDocument,
+            &TilesetDocument::tileAnimationChanged,
+            tilesetModel,
+            &TilesetModel::tileChanged);
 
-    connect(tilesetDocument, &TilesetDocument::tilesetChanged,
-            this, &TilesetEditor::tilesetChanged);
+    connect(
+        tilesetDocument, &TilesetDocument::tilesetChanged, this, &TilesetEditor::tilesetChanged);
 
     connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
@@ -234,7 +254,7 @@ void TilesetEditor::addDocument(Document *document)
 
 void TilesetEditor::removeDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument *>(document);
     Q_ASSERT(tilesetDocument);
     Q_ASSERT(mViewForTileset.contains(tilesetDocument));
 
@@ -242,8 +262,8 @@ void TilesetEditor::removeDocument(Document *document)
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
 
-    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
-            tilesetDocument->tileset()->name();
+    QString path =
+        QLatin1String("TilesetEditor/TilesetScale/") + tilesetDocument->tileset()->name();
     Preferences::instance()->settings()->setValue(path, view->scale());
 
     // remove first, to keep it valid while the current widget changes
@@ -253,7 +273,7 @@ void TilesetEditor::removeDocument(Document *document)
 
 void TilesetEditor::setCurrentDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument *>(document);
     Q_ASSERT(tilesetDocument || !document);
 
     if (mCurrentTilesetDocument == tilesetDocument)
@@ -297,23 +317,17 @@ QWidget *TilesetEditor::editorWidget() const
 
 QList<QToolBar *> TilesetEditor::toolBars() const
 {
-    return QList<QToolBar*> {
-        mMainToolBar,
-        mTilesetToolBar
-    };
+    return QList<QToolBar *>{mMainToolBar, mTilesetToolBar};
 }
 
 QList<QDockWidget *> TilesetEditor::dockWidgets() const
 {
-    return QList<QDockWidget*> {
-        mPropertiesDock,
-        mTerrainDock
-    };
+    return QList<QDockWidget *>{mPropertiesDock, mTerrainDock};
 }
 
 TilesetView *TilesetEditor::currentTilesetView() const
 {
-    return static_cast<TilesetView*>(mWidgetStack->currentWidget());
+    return static_cast<TilesetView *>(mWidgetStack->currentWidget());
 }
 
 Tileset *TilesetEditor::currentTileset() const
@@ -332,7 +346,7 @@ Zoomable *TilesetEditor::zoomable() const
 
 void TilesetEditor::currentWidgetChanged()
 {
-    auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
+    auto view = static_cast<TilesetView *>(mWidgetStack->currentWidget());
     setCurrentDocument(view ? view->tilesetDocument() : nullptr);
 }
 
@@ -350,7 +364,7 @@ void TilesetEditor::selectionChanged()
         return;
 
     const TilesetModel *model = view->tilesetModel();
-    QList<Tile*> selectedTiles;
+    QList<Tile *> selectedTiles;
 
     for (const QModelIndex &index : indexes)
         if (Tile *tile = model->tileAt(index))
@@ -364,7 +378,7 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
     if (!index.isValid())
         return;
 
-    auto model = static_cast<const TilesetModel*>(index.model());
+    auto model = static_cast<const TilesetModel *>(index.model());
     setCurrentTile(model->tileAt(index));
 }
 
@@ -377,12 +391,12 @@ void TilesetEditor::indexPressed(const QModelIndex &index)
 
 void TilesetEditor::tilesetChanged()
 {
-    auto *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    auto *tilesetDocument = static_cast<TilesetDocument *>(sender());
     auto *tilesetView = mViewForTileset.value(tilesetDocument);
     auto *model = tilesetView->tilesetModel();
 
     if (tilesetDocument == mCurrentTilesetDocument)
-        setCurrentTile(nullptr);        // It may be gone
+        setCurrentTile(nullptr); // It may be gone
 
     tilesetView->updateBackgroundColor();
     model->tilesetChanged();
@@ -439,10 +453,8 @@ void TilesetEditor::addTiles()
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
-    const QStringList files = QFileDialog::getOpenFileNames(mMainWindow->window(),
-                                                            tr("Add Tiles"),
-                                                            startLocation,
-                                                            filter);
+    const QStringList files = QFileDialog::getOpenFileNames(
+        mMainWindow->window(), tr("Add Tiles"), startLocation, filter);
     struct LoadedFile {
         QString imageSource;
         QPixmap image;
@@ -458,10 +470,10 @@ void TilesetEditor::addTiles()
                 continue;
             QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
             QMessageBox warning(QMessageBox::Warning,
-                        tr("Add Tiles"),
-                        tr("Tile \"%1\" already exists in the tileset!").arg(file),
-                        QMessageBox::Yes | QMessageBox::No,
-                        mMainWindow->window());
+                                tr("Add Tiles"),
+                                tr("Tile \"%1\" already exists in the tileset!").arg(file),
+                                QMessageBox::Yes | QMessageBox::No,
+                                mMainWindow->window());
             warning.setDefaultButton(QMessageBox::Yes);
             warning.setInformativeText(tr("Add anyway?"));
             warning.setCheckBox(checkBox);
@@ -473,7 +485,7 @@ void TilesetEditor::addTiles()
         }
         const QPixmap image(file);
         if (!image.isNull()) {
-            loadedFiles.append(LoadedFile { file, image });
+            loadedFiles.append(LoadedFile{file, image});
         } else {
             QMessageBox warning(QMessageBox::Warning,
                                 tr("Add Tiles"),
@@ -492,7 +504,7 @@ void TilesetEditor::addTiles()
 
     prefs->setLastPath(Preferences::ImageFile, files.last());
 
-    QList<Tile*> tiles;
+    QList<Tile *> tiles;
     tiles.reserve(loadedFiles.size());
 
     for (LoadedFile &loadedFile : loadedFiles) {
@@ -505,8 +517,7 @@ void TilesetEditor::addTiles()
     mCurrentTilesetDocument->undoStack()->push(new AddTiles(mCurrentTilesetDocument, tiles));
 }
 
-static bool hasTileReferences(MapDocument *mapDocument,
-                              std::function<bool(const Cell &)> condition)
+static bool hasTileReferences(MapDocument *mapDocument, std::function<bool(const Cell &)> condition)
 {
     for (Layer *layer : mapDocument->map()->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
@@ -557,13 +568,13 @@ void TilesetEditor::removeTiles()
 
     const QModelIndexList indexes = view->selectionModel()->selectedIndexes();
     const TilesetModel *model = view->tilesetModel();
-    QList<Tile*> tiles;
+    QList<Tile *> tiles;
 
     for (const QModelIndex &index : indexes)
         if (Tile *tile = model->tileAt(index))
             tiles.append(tile);
 
-    auto matchesAnyTile = [&tiles] (const Cell &cell) {
+    auto matchesAnyTile = [&tiles](const Cell &cell) {
         if (Tile *tile = cell.tile())
             return tiles.contains(tile);
         return false;
@@ -628,13 +639,11 @@ void TilesetEditor::addTerrainType()
     if (!tileset)
         return;
 
-    Terrain *terrain = new Terrain(tileset->terrainCount(),
-                                   tileset,
-                                   QString(), mCurrentTile ? mCurrentTile->id() : -1);
+    Terrain *terrain = new Terrain(
+        tileset->terrainCount(), tileset, QString(), mCurrentTile ? mCurrentTile->id() : -1);
     terrain->setName(tr("New Terrain"));
 
-    mCurrentTilesetDocument->undoStack()->push(new AddTerrain(mCurrentTilesetDocument,
-                                                              terrain));
+    mCurrentTilesetDocument->undoStack()->push(new AddTerrain(mCurrentTilesetDocument, terrain));
 
     // Select the newly added terrain and edit its name
     mTerrainDock->editTerrainName(terrain);
@@ -646,8 +655,7 @@ void TilesetEditor::removeTerrainType()
     if (!terrain)
         return;
 
-    RemoveTerrain *removeTerrain = new RemoveTerrain(mCurrentTilesetDocument,
-                                                     terrain);
+    RemoveTerrain *removeTerrain = new RemoveTerrain(mCurrentTilesetDocument, terrain);
 
     /*
      * Clear any references to the terrain that is about to be removed with
@@ -665,8 +673,7 @@ void TilesetEditor::removeTerrainType()
         }
 
         if (tileTerrain != tile->terrain()) {
-            changes.insert(tile, ChangeTileTerrain::Change(tile->terrain(),
-                                                           tileTerrain));
+            changes.insert(tile, ChangeTileTerrain::Change(tile->terrain(), tileTerrain));
         }
     }
 
@@ -689,9 +696,8 @@ void TilesetEditor::setTerrainImage(Tile *tile)
     if (!terrain)
         return;
 
-    mCurrentTilesetDocument->undoStack()->push(new SetTerrainImage(mCurrentTilesetDocument,
-                                                                   terrain->id(),
-                                                                   tile->id()));
+    mCurrentTilesetDocument->undoStack()->push(
+        new SetTerrainImage(mCurrentTilesetDocument, terrain->id(), tile->id()));
 }
 
 void TilesetEditor::updateAddRemoveActions()

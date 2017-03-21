@@ -32,9 +32,7 @@
 namespace Tiled {
 namespace Internal {
 
-void eraseRegionObjectGroup(MapDocument *mapDocument,
-                            ObjectGroup *layer,
-                            const QRegion &where)
+void eraseRegionObjectGroup(MapDocument *mapDocument, ObjectGroup *layer, const QRegion &where)
 {
     QUndoStack *undo = mapDocument->undoStack();
 
@@ -76,10 +74,9 @@ QRegion tileRegionOfObjectGroup(const ObjectGroup *layer)
     return ret;
 }
 
-const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
-                                        const QRegion &where)
+const QList<MapObject *> objectsInRegion(const ObjectGroup *layer, const QRegion &where)
 {
-    QList<MapObject*> ret;
+    QList<MapObject *> ret;
     for (MapObject *obj : layer->objects()) {
         // TODO: we are checking bounds, which is only correct for rectangles and
         // tile objects. polygons and polylines are not covered correctly by this

@@ -30,14 +30,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
-    QFrame(parent, Qt::Popup),
-    mUi(new Ui::ImageColorPickerWidget)
+ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent)
+    : QFrame(parent, Qt::Popup)
+    , mUi(new Ui::ImageColorPickerWidget)
 {
     mUi->setupUi(this);
 
-    connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent*)), SLOT(onMouseMove(QMouseEvent*)));
-    connect(mUi->imageArea, SIGNAL(mouseReleased(QMouseEvent*)), SLOT(onMouseRelease(QMouseEvent*)));
+    connect(mUi->imageArea, SIGNAL(mouseMoved(QMouseEvent *)), SLOT(onMouseMove(QMouseEvent *)));
+    connect(
+        mUi->imageArea, SIGNAL(mouseReleased(QMouseEvent *)), SLOT(onMouseRelease(QMouseEvent *)));
 
     mPreviewIcon = QPixmap(Utils::dpiScaled(QSize(96, 24)));
     mPreviewIcon.fill(Qt::transparent);
@@ -60,12 +61,14 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     mScaleY = 1;
 
     QRectF rct = QApplication::desktop()->availableGeometry(this);
-    double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
+    double maxW = rct.width() * (2.0 / 3.0), maxH = rct.height() * (2.0 / 3.0);
 
     if (mImage.width() > maxW || mImage.height() > maxH) {
-        pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio);
-        mScaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
-        mScaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
+        pix = pix.scaled((int) maxW, (int) maxH, Qt::KeepAspectRatio);
+        mScaleX =
+            (double) qMin(mImage.width(), pix.width()) / (double) qMax(mImage.width(), pix.width());
+        mScaleY = (double) qMin(mImage.height(), pix.height()) /
+                  (double) qMax(mImage.height(), pix.height());
     }
 
     mUi->imageArea->setPixmap(pix);
@@ -76,11 +79,10 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     return true;
 }
 
-void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
+void ImageColorPickerWidget::onMouseMove(QMouseEvent *event)
 {
     if (!mImage.isNull()) {
-        mPreviewColor = mImage.pixel(event->pos().x() / mScaleX,
-                                     event->pos().y() / mScaleY);
+        mPreviewColor = mImage.pixel(event->pos().x() / mScaleX, event->pos().y() / mScaleY);
         if (!mPreviewColor.isValid())
             mPreviewColor = mSelectedColor;
 
@@ -92,7 +94,7 @@ void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
     }
 }
 
-void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
+void ImageColorPickerWidget::onMouseRelease(QMouseEvent *event)
 {
     if (event->button() == Qt::MouseButton::LeftButton) {
         if (!mImage.isNull()) {

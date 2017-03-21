@@ -60,12 +60,10 @@ void ChangeMapObjectsOrder::undo()
     else
         to += mCount;
 
-    mMapDocument->mapObjectModel()->moveObjects(mObjectGroup,
-                                                from, to, mCount);
+    mMapDocument->mapObjectModel()->moveObjects(mObjectGroup, from, to, mCount);
 }
 
 void ChangeMapObjectsOrder::redo()
 {
-    mMapDocument->mapObjectModel()->moveObjects(mObjectGroup,
-                                                mFrom, mTo, mCount);
+    mMapDocument->mapObjectModel()->moveObjects(mObjectGroup, mFrom, mTo, mCount);
 }

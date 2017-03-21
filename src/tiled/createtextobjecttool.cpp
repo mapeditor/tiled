@@ -38,7 +38,8 @@ CreateTextObjectTool::CreateTextObjectTool(QObject *parent)
     languageChanged();
 }
 
-void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
+                                                         Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 

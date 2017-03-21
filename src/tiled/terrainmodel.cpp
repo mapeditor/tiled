@@ -27,8 +27,8 @@
 #include "mapdocument.h"
 #include "renameterrain.h"
 #include "terrain.h"
-#include "tileset.h"
 #include "tile.h"
+#include "tileset.h"
 
 #include <QApplication>
 #include <QFont>
@@ -37,30 +37,30 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TerrainModel::TerrainModel(MapDocument *mapDocument,
-                           QObject *parent):
-    QAbstractItemModel(parent),
-    mMapDocument(mapDocument)
+TerrainModel::TerrainModel(MapDocument *mapDocument, QObject *parent)
+    : QAbstractItemModel(parent)
+    , mMapDocument(mapDocument)
 {
-    connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
-            this, SLOT(tilesetAboutToBeAdded(int)));
-    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-            this, SLOT(tilesetAdded()));
-    connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
-            this, SLOT(tilesetAboutToBeRemoved(int)));
-    connect(mapDocument, SIGNAL(tilesetRemoved(Tileset*)),
-            this, SLOT(tilesetRemoved()));
+    connect(
+        mapDocument, SIGNAL(tilesetAboutToBeAdded(int)), this, SLOT(tilesetAboutToBeAdded(int)));
+    connect(mapDocument, SIGNAL(tilesetAdded(int, Tileset *)), this, SLOT(tilesetAdded()));
+    connect(mapDocument,
+            SIGNAL(tilesetAboutToBeRemoved(int)),
+            this,
+            SLOT(tilesetAboutToBeRemoved(int)));
+    connect(mapDocument, SIGNAL(tilesetRemoved(Tileset *)), this, SLOT(tilesetRemoved()));
 
-    connect(mapDocument, &MapDocument::tilesetNameChanged,
-            this, &TerrainModel::tilesetChanged);
-    connect(mapDocument, &MapDocument::tilesetTerrainAboutToBeAdded,
-            this, &TerrainModel::terrainAboutToBeAdded);
-    connect(mapDocument, &MapDocument::tilesetTerrainAdded,
-            this, &TerrainModel::terrainAdded);
-    connect(mapDocument, &MapDocument::tilesetTerrainAboutToBeRemoved,
-            this, &TerrainModel::terrainAboutToBeRemoved);
-    connect(mapDocument, &MapDocument::tilesetTerrainRemoved,
-            this, &TerrainModel::terrainRemoved);
+    connect(mapDocument, &MapDocument::tilesetNameChanged, this, &TerrainModel::tilesetChanged);
+    connect(mapDocument,
+            &MapDocument::tilesetTerrainAboutToBeAdded,
+            this,
+            &TerrainModel::terrainAboutToBeAdded);
+    connect(mapDocument, &MapDocument::tilesetTerrainAdded, this, &TerrainModel::terrainAdded);
+    connect(mapDocument,
+            &MapDocument::tilesetTerrainAboutToBeRemoved,
+            this,
+            &TerrainModel::terrainAboutToBeRemoved);
+    connect(mapDocument, &MapDocument::tilesetTerrainRemoved, this, &TerrainModel::terrainRemoved);
 }
 
 TerrainModel::~TerrainModel()
@@ -145,7 +145,7 @@ QVariant TerrainModel::data(const QModelIndex &index, int role) const
         }
         case Qt::BackgroundRole: {
             QColor bg = QApplication::palette().alternateBase().color();
-            return bg;//.darker(103);
+            return bg; //.darker(103);
         }
         }
     }
@@ -170,7 +170,7 @@ Terrain *TerrainModel::terrainAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    if (Tileset *tileset = static_cast<Tileset*>(index.internalPointer()))
+    if (Tileset *tileset = static_cast<Tileset *>(index.internalPointer()))
         return tileset->terrain(index.row());
 
     return nullptr;
@@ -211,7 +211,7 @@ void TerrainModel::terrainAboutToBeAdded(Tileset *tileset, int terrainId)
 void TerrainModel::terrainAdded(Tileset *tileset)
 {
     endInsertRows();
-    tilesetChanged(tileset);    // for the TerrainFilterModel
+    tilesetChanged(tileset); // for the TerrainFilterModel
 }
 
 void TerrainModel::terrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain)
@@ -223,5 +223,5 @@ void TerrainModel::terrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain)
 void TerrainModel::terrainRemoved(Tileset *tileset)
 {
     endRemoveRows();
-    tilesetChanged(tileset);    // for the TerrainFilterModel
+    tilesetChanged(tileset); // for the TerrainFilterModel
 }

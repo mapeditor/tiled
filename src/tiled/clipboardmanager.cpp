@@ -28,9 +28,9 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
-#include "tmxmapformat.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tmxmapformat.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -38,15 +38,15 @@
 #include <QSet>
 #include <QUndoStack>
 
-static const char * const TMX_MIMETYPE = "text/tmx";
+static const char *const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 ClipboardManager *ClipboardManager::mInstance;
 
-ClipboardManager::ClipboardManager() :
-    mHasMap(false)
+ClipboardManager::ClipboardManager()
+    : mHasMap(false)
 {
     mClipboard = QApplication::clipboard();
     connect(mClipboard, SIGNAL(dataChanged()), SLOT(updateHasMap()));
@@ -96,8 +96,8 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     const Map *map = mapDocument->map();
     const QRegion &selectedArea = mapDocument->selectedArea();
-    const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
-    const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
+    const QList<MapObject *> &selectedObjects = mapDocument->selectedObjects();
+    const TileLayer *tileLayer = dynamic_cast<const TileLayer *>(currentLayer);
     Layer *copyLayer = nullptr;
 
     if (!selectedArea.isEmpty() && tileLayer) {
@@ -118,9 +118,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     }
 
     // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(),
-                0, 0,
-                map->tileWidth(), map->tileHeight());
+    Map copyMap(map->orientation(), 0, 0, map->tileWidth(), map->tileHeight());
 
     copyMap.setRenderOrder(map->renderOrder());
 
@@ -168,7 +166,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     }
 
     QUndoStack *undoStack = mapDocument->undoStack();
-    QList<MapObject*> pastedObjects;
+    QList<MapObject *> pastedObjects;
     pastedObjects.reserve(objectGroup->objectCount());
 
     undoStack->beginMacro(tr("Paste Objects"));
@@ -180,9 +178,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
         pastedObjects.append(objectClone);
-        undoStack->push(new AddMapObject(mapDocument,
-                                         currentObjectGroup,
-                                         objectClone));
+        undoStack->push(new AddMapObject(mapDocument, currentObjectGroup, objectClone));
     }
     undoStack->endMacro();
 
@@ -192,8 +188,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
 void ClipboardManager::updateHasMap()
 {
     const QMimeData *data = mClipboard->mimeData();
-    const bool mapInClipboard =
-            data && data->hasFormat(QLatin1String(TMX_MIMETYPE));
+    const bool mapInClipboard = data && data->hasFormat(QLatin1String(TMX_MIMETYPE));
 
     if (mapInClipboard != mHasMap) {
         mHasMap = mapInClipboard;

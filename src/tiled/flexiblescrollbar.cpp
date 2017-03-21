@@ -30,7 +30,8 @@ FlexibleScrollBar::FlexibleScrollBar(Qt::Orientation orientation, QWidget *paren
     , mDesiredMinimum(0)
     , mDesiredMaximum(0)
     , mAllowRangeChange(false)
-{}
+{
+}
 
 void FlexibleScrollBar::forceSetValue(int value)
 {
@@ -66,8 +67,7 @@ void FlexibleScrollBar::sliderChange(QAbstractSlider::SliderChange change)
             } else if (min > val || max < val) {
                 // shrink only as much as allowed by the current value
                 allowNextRangeChange();
-                setRange(std::min(mDesiredMinimum, val),
-                         std::max(mDesiredMaximum, val));
+                setRange(std::min(mDesiredMinimum, val), std::max(mDesiredMaximum, val));
                 return;
             }
         }

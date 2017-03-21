@@ -28,7 +28,7 @@ namespace Internal {
 class ActionManagerPrivate
 {
 public:
-    QHash<Id, QAction*> mIdToAction;
+    QHash<Id, QAction *> mIdToAction;
 };
 
 static ActionManager *m_instance = nullptr;
