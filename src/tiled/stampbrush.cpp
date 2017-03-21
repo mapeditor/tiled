@@ -263,6 +263,16 @@ void StampBrush::endCapture()
                              map->tileWidth(),
                              map->tileHeight());
 
+        //gets if the relative stagger should be the same as the base layer
+        int staggerIndexOffSet;
+        if (tileLayer->map()->staggerAxis() == Map::StaggerX)
+            staggerIndexOffSet = captured.x() % 2;
+        else
+            staggerIndexOffSet = captured.y() % 2;
+
+        stamp->setStaggerAxis(map->staggerAxis());
+        stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + staggerIndexOffSet) % 2));
+
         // Add tileset references to map
         foreach (const SharedTileset &tileset, capture->usedTilesets())
             stamp->addTileset(tileset);
@@ -380,12 +390,62 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
+        QHash<TileLayer *, TileLayer *> shiftedCopies;
 
         for (const QPoint &p : list) {
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
             TileLayer *stamp = variation.tileLayer();
+
+            Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+            Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
+            Map::StaggerIndex stampStaggerIndex = variation.map->staggerIndex();
+
+            //if staggered map, makes sure stamp stays the same
+            if (mapDocument()->map()->isStaggered()
+                    && ((mapStaggerAxis == Map::StaggerY)? stamp->height() > 1 : stamp->width() > 1)) {
+
+                if (mapStaggerAxis == Map::StaggerY) {
+                    bool topIsOdd = (p.y() - stamp->height() / 2) & 1;
+
+                    if ((stampStaggerIndex == mapStaggerIndex) == topIsOdd) {
+                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
+                        if (!shiftedStamp) {
+                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedCopies.insert(stamp, shiftedStamp);
+
+                            shiftedStamp->resize(QSize(shiftedStamp->width() + 1, shiftedStamp->height()), QPoint());
+
+                            for (int y = (stampStaggerIndex + 1) & 1; y < shiftedStamp->height(); y += 2) {
+                                for (int x = shiftedStamp->width() - 2; x >= 0; --x)
+                                    shiftedStamp->setCell(x + 1, y, shiftedStamp->cellAt(x, y));
+                                shiftedStamp->setCell(0, y, Cell());
+                            }
+                        }
+                        stamp = shiftedStamp;
+                    }
+                } else {
+                    bool leftIsOdd = (p.x() - stamp->width() / 2) & 1;
+
+                    if ((stampStaggerIndex == mapStaggerIndex) == leftIsOdd) {
+                        TileLayer *shiftedStamp = shiftedCopies.value(stamp);
+                        if (!shiftedStamp) {
+                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedCopies.insert(stamp, shiftedStamp);
+
+                            shiftedStamp->resize(QSize(shiftedStamp->width(), shiftedStamp->height() + 1), QPoint());
+
+                            for (int x = (stampStaggerIndex + 1) & 1; x < shiftedStamp->width(); x += 2) {
+                                for (int y = shiftedStamp->height() - 2; y >= 0; --y)
+                                    shiftedStamp->setCell(x, y + 1, shiftedStamp->cellAt(x, y));
+                                shiftedStamp->setCell(x, 0, Cell());
+                            }
+                        }
+                        stamp = shiftedStamp;
+                    }
+                }
+            }
 
             QRegion stampRegion;
             if (regionCache.contains(stamp)) {
@@ -415,6 +475,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
+
+        qDeleteAll(shiftedCopies);
 
         mPreviewLayer = preview;
     }

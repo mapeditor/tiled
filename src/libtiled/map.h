@@ -357,6 +357,12 @@ public:
      */
     bool isTilesetUsed(const Tileset *tileset) const;
 
+    /**
+     * Returns whether the map is staggered
+     */
+    bool isStaggered() const
+    { return orientation() == Hexagonal || orientation() == Staggered; }
+
     LayerDataFormat layerDataFormat() const
     { return mLayerDataFormat; }
     void setLayerDataFormat(LayerDataFormat format)
