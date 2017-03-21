@@ -31,6 +31,7 @@
 #include "tile.h"
 
 #include <QGuiApplication>
+#include <QTimerEvent>
 
 namespace Tiled {
 namespace Internal {
@@ -127,11 +128,11 @@ static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 }
 
 
-class MapObjectOutline : public QGraphicsItem
+class MapObjectOutline : public QGraphicsObject
 {
 public:
     MapObjectOutline(MapObject *object, QGraphicsItem *parent = nullptr)
-        : QGraphicsItem(parent)
+        : QGraphicsObject(parent)
         , mObject(object)
     {
         setZValue(1); // makes sure outlines are above labels
@@ -144,9 +145,16 @@ public:
                const QStyleOptionGraphicsItem *,
                QWidget *) override;
 
+protected:
+    void timerEvent(QTimerEvent *event) override;
+
 private:
     QRectF mBoundingRect;
     MapObject *mObject;
+
+    // Marching ants effect
+    int mUpdateTimer = startTimer(250);
+    int offset = 0;
 };
 
 void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
@@ -174,25 +182,37 @@ void MapObjectOutline::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *)
 {
-    const QLineF horizontal[2] = {
+    const QLineF lines[4] = {
         QLineF(mBoundingRect.topLeft(), mBoundingRect.topRight()),
-        QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight())
-    };
-
-    const QLineF vertical[2] = {
+        QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight()),
         QLineF(mBoundingRect.topLeft(), mBoundingRect.bottomLeft()),
         QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())
     };
 
-    QPen dashPen(Qt::DashLine);
-    dashPen.setCosmetic(true);
-    dashPen.setDashOffset(qMax(qreal(0), x()));
-    painter->setPen(dashPen);
-    painter->drawLines(horizontal, 2);
+    // Draw a solid white line
+    QPen pen(Qt::SolidLine);
+    pen.setCosmetic(true);
+    pen.setColor(Qt::white);
+    painter->setPen(pen);
+    painter->drawLines(lines, 4);
 
-    dashPen.setDashOffset(qMax(qreal(0), y()));
-    painter->setPen(dashPen);
-    painter->drawLines(vertical, 2);
+    // Draw a black dashed line above above the white line
+    pen.setColor(Qt::black);
+    pen.setStyle(Qt::DashLine);
+    pen.setDashOffset(offset);
+    painter->setPen(pen);
+    painter->drawLines(lines, 4);
+
+    // Update offset used in drawing black dashed line
+    offset++;
+}
+
+void MapObjectOutline::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == mUpdateTimer)
+        update();
+    else
+        QGraphicsObject::timerEvent(event);
 }
 
 
