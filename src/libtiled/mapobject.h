@@ -179,11 +179,15 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
-    void flip(FlipDirection direction);
+    void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
 
 private:
+    void flipRectObject(const QTransform &flipTransform);
+    void flipPolygonObject(const QTransform &flipTransform);
+    void flipTileObject(const QTransform &flipTransform);
+
     int mId;
     QString mName;
     QString mType;
