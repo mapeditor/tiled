@@ -113,12 +113,12 @@ void CommandDataModel::removeRows(QModelIndexList indices)
     }
 }
 
-int CommandDataModel::rowCount(const QModelIndex &parent = QModelIndex()) const
+int CommandDataModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mCommands.size() + 1;
 }
 
-int CommandDataModel::columnCount(const QModelIndex &parent = QModelIndex()) const
+int CommandDataModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 3;
 }

@@ -70,12 +70,12 @@ public:
     /**
      * Returns the number of rows (this includes the <New Command> row).
      */
-    int rowCount(const QModelIndex &) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data at <i>index</i> for the given <i>role</i>.

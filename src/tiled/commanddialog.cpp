@@ -80,46 +80,50 @@ void CommandDialog::closeEvent(QCloseEvent *event)
 void CommandDialog::setShortcut(const QKeySequence &keySequence)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+    if (current.row() < mUi->treeView->model()->rowCount())
         mUi->treeView->model()->setShortcut(current, keySequence);
 }
 
 void CommandDialog::setSaveBeforeExecute(int state)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+    if (current.row() < mUi->treeView->model()->rowCount())
         mUi->treeView->model()->setSaveBeforeExecute(current, state);
 }
 
 void CommandDialog::setCommand(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
-    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()))
+    if (current.row() < mUi->treeView->model()->rowCount())
         mUi->treeView->model()->setCommand(current, text);
 }
 
 void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
 {
-    if (current.row() < mUi->treeView->model()->rowCount(QModelIndex()) - 1) {
-        mUi->commandEdit->setEnabled(true);
-        mUi->browseButton->setEnabled(true);
-        mUi->keySequenceEdit->setEnabled(true);
-        mUi->clearButton->setEnabled(true);
-        mUi->saveBox->setEnabled(true);
+    bool enable = true;
+
+    if (current.row() < mUi->treeView->model()->rowCount() - 1) {
+        mUi->commandEdit->setEnabled(enable);
+        mUi->browseButton->setEnabled(enable);
+        mUi->keySequenceEdit->setEnabled(enable);
+        mUi->clearButton->setEnabled(enable);
+        mUi->saveBox->setEnabled(enable);
 
         mUi->keySequenceEdit->setKeySequence(mUi->treeView->model()->shortcut(current));
         mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute(current));
         mUi->commandEdit->setText(mUi->treeView->model()->command(current));
     }
     else {
+        enable = false;
+
         mUi->commandEdit->clear();
         mUi->keySequenceEdit->clear();
-        mUi->saveBox->setChecked(false);
-        mUi->commandEdit->setEnabled(false);
-        mUi->browseButton->setEnabled(false);
-        mUi->keySequenceEdit->setEnabled(false);
-        mUi->clearButton->setEnabled(false);
-        mUi->saveBox->setEnabled(false);
+        mUi->saveBox->setChecked(enable);
+        mUi->commandEdit->setEnabled(enable);
+        mUi->browseButton->setEnabled(enable);
+        mUi->keySequenceEdit->setEnabled(enable);
+        mUi->clearButton->setEnabled(enable);
+        mUi->saveBox->setEnabled(enable);
     }
 }
 
