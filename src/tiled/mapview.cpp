@@ -320,27 +320,31 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
         int horizontalValue = 0,  verticalValue = 0;
 
-        if ((pos.x() + 20) > mRect.width()) {
-            horizontalValue = hBar->value() + 20;
+        if ((pos.x() + 5) > mRect.width()) {
+            horizontalValue = hBar->value() + 5;
+            cursor().setPos(mLastMousePos - *(new QPoint(5, 0)));
         }
 
-        if ((pos.x() - 20) < 0) {
-            horizontalValue = hBar->value() + (hBar->value() <= 0? 0 : -20);
+        if ((pos.x() - 5) < 0) {
+            horizontalValue = hBar->value() + (hBar->value() <= 0? 0 : -5);
+            cursor().setPos(mLastMousePos + *(new QPoint(5, 0)));
         }
 
-        if ((pos.y() + 20) > mRect.height()) {
-            verticalValue = vBar->value() + 20;
+        if ((pos.y() + 5) > mRect.height()) {
+            verticalValue = vBar->value() + 5;
+            cursor().setPos(mLastMousePos - *(new QPoint(0, 5)));
         }
 
-        if ((pos.y() - 20) < 0) {
-            verticalValue = vBar->value() + (vBar->value() <= 0 ? 0 : -20);
+        if ((pos.y() - 5) < 0) {
+            verticalValue = vBar->value() + (vBar->value() <= 0 ? 0 : -5);
+            cursor().setPos(mLastMousePos + *(new QPoint(0, 5)));
         }
 
-        if(horizontalValue) {
+        if (horizontalValue) {
             hBar->forceSetValue(horizontalValue);
         }
 
-        if(verticalValue) {
+        if (verticalValue) {
             vBar->forceSetValue(verticalValue);
         }
 
