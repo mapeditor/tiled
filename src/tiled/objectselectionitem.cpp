@@ -153,8 +153,8 @@ private:
     MapObject *mObject;
 
     // Marching ants effect
-    int mUpdateTimer = startTimer(250);
-    int offset = 0;
+    int mUpdateTimer = startTimer(100);
+    int mOffset = 0;
 };
 
 void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
@@ -199,20 +199,20 @@ void MapObjectOutline::paint(QPainter *painter,
     // Draw a black dashed line above above the white line
     pen.setColor(Qt::black);
     pen.setStyle(Qt::DashLine);
-    pen.setDashOffset(offset);
+    pen.setDashOffset(mOffset);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
-
-    // Update offset used in drawing black dashed line
-    offset++;
 }
 
 void MapObjectOutline::timerEvent(QTimerEvent *event)
 {
-    if (event->timerId() == mUpdateTimer)
+    if (event->timerId() == mUpdateTimer) {
+        // Update offset used in drawing black dashed line
+        mOffset++;
         update();
-    else
+    } else {
         QGraphicsObject::timerEvent(event);
+    }
 }
 
 
