@@ -287,7 +287,6 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
         return;
     }
 
-
     QGraphicsView::mouseReleaseEvent(event);
 }
 
@@ -312,7 +311,7 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (event->buttons() & Qt::LeftButton){
+    if (event->buttons() & Qt::LeftButton) {
         auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
         auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
 
@@ -321,27 +320,27 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
         int horizontalValue = 0,  verticalValue = 0;
 
-        if ( (pos.x() + 20) > mRect.width() ) {
+        if ((pos.x() + 20) > mRect.width()) {
             horizontalValue = hBar->value() + 20;
         }
 
-        if ( (pos.x() - 20) < 0 ) {
+        if ((pos.x() - 20) < 0) {
             horizontalValue = hBar->value() + (hBar->value() <= 0? 0 : -20);
         }
 
-        if ( (pos.y() + 20) > mRect.height() ) {
+        if ((pos.y() + 20) > mRect.height()) {
             verticalValue = vBar->value() + 20;
         }
 
-        if ( (pos.y() - 20) < 0 ) {
+        if ((pos.y() - 20) < 0) {
             verticalValue = vBar->value() + (vBar->value() <= 0 ? 0 : -20);
         }
 
-        if(horizontalValue){
+        if(horizontalValue) {
             hBar->forceSetValue(horizontalValue);
         }
 
-        if(verticalValue){
+        if(verticalValue) {
             vBar->forceSetValue(verticalValue);
         }
 
