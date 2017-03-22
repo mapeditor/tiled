@@ -20,8 +20,6 @@
 
 #include "mapview.h"
 
-#include <iostream>
-
 #include "flexiblescrollbar.h"
 #include "mapscene.h"
 #include "preferences.h"
