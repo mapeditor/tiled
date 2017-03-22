@@ -93,6 +93,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, SLOT(setObjectLineWidth(qreal)));
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
+    connect(mUi->wheelZoomsDefault, &QCheckBox::toggled,
+            preferences, &Preferences::setZoomWheelByDefault);
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -146,6 +148,7 @@ void PreferencesDialog::fromPreferences()
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    mUi->wheelZoomsDefault->setChecked(prefs->zoomWheelByDefault());
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());

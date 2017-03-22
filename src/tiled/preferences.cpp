@@ -84,6 +84,7 @@ Preferences::Preferences()
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
+    mZoomWheelByDefault = boolValue("ZoomWheelByDefault");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
 #if defined(Q_OS_MAC)
@@ -564,6 +565,15 @@ void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 
     mSettings->setValue(QLatin1String("Plugins/Disabled"), disabledPlugins);
     mSettings->setValue(QLatin1String("Plugins/Enabled"), enabledPlugins);
+}
+
+void Preferences::setZoomWheelByDefault(bool mode)
+{
+    if (mZoomWheelByDefault == mode)
+        return;
+
+    mZoomWheelByDefault = mode;
+    mSettings->setValue(QLatin1String("Interface/ZoomWheelByDefault"), mode);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const

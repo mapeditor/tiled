@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -67,7 +67,7 @@
     </widget>
     <widget class="QMenu" name="menuCommand">
      <property name="title">
-      <string>Commands</string>
+      <string>Command</string>
      </property>
      <addaction name="actionEditCommands"/>
     </widget>
