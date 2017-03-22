@@ -68,6 +68,8 @@ private slots:
     void pickColorFromImage();
     void colorSelected(QColor);
 
+    void on_buttonBox_accepted();
+
 private:
     void setMode(Mode mode);
 
