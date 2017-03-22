@@ -542,9 +542,19 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             QMenu selectUnderlyingMenu;
 
             for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
-                const QString& objectName = underlyingObjects[levelNum]->mapObject()->name();
-                QString actionName = QLatin1String(levelNum < 9 ? "&" : "") + tr("%n) ", "", levelNum + 1)
-                        + (objectName.isEmpty() ? tr("Unnamed object") : objectName);
+                QString objectName = underlyingObjects[levelNum]->mapObject()->name();
+                const QString& objectType = underlyingObjects[levelNum]->mapObject()->type();
+                if (objectName.isEmpty()) {
+                    if (objectType.isEmpty())
+                        objectName = tr("Unnamed object");
+                    else
+                        objectName = tr("Instance of %1").arg(objectType);
+                }
+                QString actionName;
+                if (levelNum < 9)
+                    actionName = tr("&%1) %2").arg(levelNum + 1).arg(objectName);
+                else
+                    actionName = tr("%1) %2").arg(levelNum + 1).arg(objectName);
                 QAction *action = selectUnderlyingMenu.addAction(actionName);
                 action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
             }
@@ -567,8 +577,9 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 }
                 mapScene()->setSelectedObjectItems(selection);
             }
-        } else
+        } else {
             AbstractObjectTool::mousePressed(event);
+        }
         break;
     default:
         AbstractObjectTool::mousePressed(event);
