@@ -112,8 +112,16 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
  */
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
-    if(repeatedX()){ x %= width(); if(x<0) x+= width(); }
-    if(repeatedY()){ y %= height(); if(y<0) y+= height(); }
+    if (repeatedX()) {
+        x %= width();
+        if(x<0)
+            x+= width();
+    }
+    if (repeatedY()) {
+        y %= height();
+        if(y<0)
+            y+= height();
+    }
     Q_ASSERT(contains(x, y));
 
     Cell &existingCell = mGrid[x + y * mWidth];

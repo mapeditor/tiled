@@ -570,7 +570,7 @@ static void readLayerAttributes(Layer &layer,
     const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
-    bool ok, ok2;
+    bool ok;
     const float opacity = opacityRef.toFloat(&ok);
     if (ok)
         layer.setOpacity(opacity);
@@ -582,13 +582,9 @@ static void readLayerAttributes(Layer &layer,
     const QPointF offset(atts.value(QLatin1String("offsetx")).toDouble(),
                          atts.value(QLatin1String("offsety")).toDouble());
 
-    QPointF moveSpeed(atts.value(QLatin1String("moveSpeedX")).toDouble(&ok),
-                            atts.value(QLatin1String("moveSpeedY")).toDouble(&ok2));
+    QPointF moveSpeed(atts.value(QLatin1String("moveSpeedX")).toDouble(),
+                      atts.value(QLatin1String("moveSpeedY")).toDouble());
 
-    if(!ok) moveSpeed.setX(1.0);
-    if(!ok2) moveSpeed.setY(1.0);
-
-    QLatin1String yes("true");
     const bool repeatX = atts.value(QLatin1String("repeatedX")).toInt();
     const bool repeatY = atts.value(QLatin1String("repeatedY")).toInt();
 
