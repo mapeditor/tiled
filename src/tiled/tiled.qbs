@@ -67,6 +67,8 @@ QtGuiApplication {
         "abstracttool.h",
         "actionmanager.cpp",
         "actionmanager.h",
+        "actionshortcuthandler.cpp",
+        "actionshortcuthandler.h",
         "addpropertydialog.cpp",
         "addpropertydialog.h",
         "addpropertydialog.ui",
@@ -480,7 +482,12 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
         qbs.installDir: "share/applications"
-        files: [ "../../tiled.desktop" ]
+        files: [
+            "../../tiled.desktop",
+            "shortcutdialog.cpp",
+            "shortcutdialog.h",
+            "shortcutdialog.ui",
+        ]
     }
 
     Group {

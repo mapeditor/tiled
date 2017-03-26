@@ -21,6 +21,9 @@
 #pragma once
 
 #include <QDialog>
+#include <QVector>
+#include <QKeySequence>
+#include <QMap>
 
 class QModelIndex;
 
@@ -49,18 +52,27 @@ protected:
 private slots:
     void languageSelected(int index);
 
+    void on_resetButton_clicked();
+    void on_keySequenceEdit_editingFinished();
+    void on_scWidget_itemSelectionChanged();
+
 private:
     void fromPreferences();
 
     void retranslateUi();
 
     void styleComboChanged(int index);
+    void addItem(QString name, QString key);
 
     void autoUpdateToggled(bool checked);
     void checkForUpdates();
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
+
+    // Keyboard Shortcut Handlers
+    QVector<QKeySequence> originalKeySequences;
+    QMap<QString ,QAction*> itemIndex; // Stores QAction pointers by keys of their text.
 };
 
 

@@ -70,6 +70,7 @@
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "actionshortcuthandler.h" // ADDED - LOGAN SPENCER
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -461,6 +462,31 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(autoMappingWarning(bool)));
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
+
+    /* ADDED BY LOGAN SPENCER - Adding actions into the Singleton class ActionShorcutHandler */
+    // This is an example of how actions are added one by one, manually
+    ActionShortcutHandler::getInstance().addAction(mUi->actionSave);
+    ActionShortcutHandler::getInstance().addAction(mUi->actionOpen);
+    ActionShortcutHandler::getInstance().addAction(mUi->actionHighlightCurrentLayer);
+    ActionShortcutHandler::getInstance().addAction(mUi->actionPaste);
+    ActionShortcutHandler::getInstance().addAction(mUi->actionZoomIn);
+    ActionShortcutHandler::getInstance().addAction(mUi->actionZoomOut);
+    ActionShortcutHandler::getInstance().addAction(redoAction);
+    ActionShortcutHandler::getInstance().addAction(undoAction);
+
+    // This adds all the actions found in the map editor toolbar (The main actions toolbar)
+    QList<QToolBar*> _bar = mapEditor->toolBars();
+    ActionShortcutHandler::getInstance().addActionList(_bar.at(1)->actions().toVector());
+
+    // This adds all of the actions found in the dock widgets.
+    /* *** For some reason, Add Property, Remove property, Rename Property,
+     *     Add Terrain, Remove terrain are all added multiple times. My code
+     *     for adding ensures that duplicates are not added, so I do now know
+     *     know where this stems from quite yet                             */
+    QList<QDockWidget*> dockWidgets = findChildren<QDockWidget*>();
+    ActionShortcutHandler::getInstance().addDockWidgetList(dockWidgets.toVector());           // LOGAN SPENCER - 3-24-2017
+    ActionShortcutHandler::getInstance().populateAListFromWList();
+    ActionShortcutHandler::getInstance().updateAllActionShortcutText();
 }
 
 MainWindow::~MainWindow()
