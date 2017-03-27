@@ -601,22 +601,38 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         const Qt::KeyboardModifiers modifiers = event->modifiers();
         QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
         if (modifiers & Qt::AltModifier) {
-            auto underlyingObjects = objectItemsAt(event->scenePos());
+            const auto underlyingObjects = objectItemsAt(event->scenePos());
             if (underlyingObjects.isEmpty())
                 break;
 
-            int lastSelectedIndex = -1;
-            for (auto selected : selection)
-                lastSelectedIndex = std::max(lastSelectedIndex, underlyingObjects.indexOf(selected));
-            do lastSelectedIndex = (lastSelectedIndex + 1) % underlyingObjects.size();
-            while (selection.contains(underlyingObjects.at(lastSelectedIndex))
-                   && lastSelectedIndex != underlyingObjects.size() - 1);
-            mClickedObjectItem = underlyingObjects.at(lastSelectedIndex);
+            // Determine the item after the last selected item
+            MapObjectItem *nextItem = underlyingObjects.first();
+            for (int i = underlyingObjects.size() - 1; i >= 0; --i) {
+                MapObjectItem *underlyingObject = underlyingObjects.at(i);
+                if (selection.contains(underlyingObject))
+                    break;
+                nextItem = underlyingObject;
+            }
+
+            // If the first and last item are already selected, try to find the
+            // first non-selected item. If even that fails, we pretend to have
+            // clicked the first item as usual to allow toggling the selection.
+            if (selection.contains(nextItem)) {
+                for (int i = 1; i < underlyingObjects.size() - 2; ++i) {
+                    MapObjectItem *underlyingObject = underlyingObjects.at(i);
+                    if (!selection.contains(underlyingObject)) {
+                        nextItem = underlyingObject;
+                        break;
+                    }
+                }
+            }
+
+            mClickedObjectItem = nextItem;
         }
         if (mClickedObjectItem) {
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                if (!(modifiers & Qt::AltModifier) && selection.contains(mClickedObjectItem))
-                    selection.remove(mClickedObjectItem);// Removal is not supported in alt+click mode
+                if (selection.contains(mClickedObjectItem))
+                    selection.remove(mClickedObjectItem);
                 else
                     selection.insert(mClickedObjectItem);
                 mapScene()->setSelectedObjectItems(selection);
