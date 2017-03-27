@@ -47,6 +47,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <QUndoStack>
+#include <QMenu>
 
 #include <cmath>
 
@@ -533,6 +534,53 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
         break;
     }
+    case Qt::RightButton:
+        if (event->modifiers() & Qt::AltModifier) {
+            QList<MapObjectItem*> underlyingObjects = objectItemsAt(event->scenePos());
+            if (underlyingObjects.empty())
+                break;
+            QMenu selectUnderlyingMenu;
+
+            for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
+                QString objectName = underlyingObjects[levelNum]->mapObject()->name();
+                const QString& objectType = underlyingObjects[levelNum]->mapObject()->type();
+                if (objectName.isEmpty()) {
+                    if (objectType.isEmpty())
+                        objectName = tr("Unnamed object");
+                    else
+                        objectName = tr("Instance of %1").arg(objectType);
+                }
+                QString actionName;
+                if (levelNum < 9)
+                    actionName = tr("&%1) %2").arg(levelNum + 1).arg(objectName);
+                else
+                    actionName = tr("%1) %2").arg(levelNum + 1).arg(objectName);
+                QAction *action = selectUnderlyingMenu.addAction(actionName);
+                action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
+            }
+
+            QAction *action = selectUnderlyingMenu.exec(event->screenPos());
+
+            if (!action)
+                break;
+
+            if (MapObjectItem* objectToBeSelected = action->data().value<MapObjectItem*>()) {
+                auto selection = mapScene()->selectedObjectItems();
+                if (event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+                    if (selection.contains(objectToBeSelected))
+                        selection.remove(objectToBeSelected);
+                    else
+                        selection.insert(objectToBeSelected);
+                } else {
+                    selection.clear();
+                    selection.insert(objectToBeSelected);
+                }
+                mapScene()->setSelectedObjectItems(selection);
+            }
+        } else {
+            AbstractObjectTool::mousePressed(event);
+        }
+        break;
     default:
         AbstractObjectTool::mousePressed(event);
         break;
@@ -551,11 +599,24 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             break;
         }
         const Qt::KeyboardModifiers modifiers = event->modifiers();
+        QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
+        if (modifiers & Qt::AltModifier) {
+            auto underlyingObjects = objectItemsAt(event->scenePos());
+            if (underlyingObjects.isEmpty())
+                break;
+
+            int lastSelectedIndex = -1;
+            for (auto selected : selection)
+                lastSelectedIndex = std::max(lastSelectedIndex, underlyingObjects.indexOf(selected));
+            do lastSelectedIndex = (lastSelectedIndex + 1) % underlyingObjects.size();
+            while (selection.contains(underlyingObjects.at(lastSelectedIndex))
+                   && lastSelectedIndex != underlyingObjects.size() - 1);
+            mClickedObjectItem = underlyingObjects.at(lastSelectedIndex);
+        }
         if (mClickedObjectItem) {
-            QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
-                if (selection.contains(mClickedObjectItem))
-                    selection.remove(mClickedObjectItem);
+                if (!(modifiers & Qt::AltModifier) && selection.contains(mClickedObjectItem))
+                    selection.remove(mClickedObjectItem);// Removal is not supported in alt+click mode
                 else
                     selection.insert(mClickedObjectItem);
                 mapScene()->setSelectedObjectItems(selection);

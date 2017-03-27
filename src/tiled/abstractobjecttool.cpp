@@ -86,6 +86,7 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
             duplicateObjects();
             return;
         }
+        break;
     }
 
     event->ignore();
@@ -133,9 +134,22 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
+{
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    QList<MapObjectItem*> objectList;
+    for (auto item : items) {
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+            objectList.append(objectItem);
+    }
+    return objectList;
+}
+
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
     for (QGraphicsItem *item : items) {
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
