@@ -100,7 +100,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     if (!tilesetFormat)
         tilesetFormat = &tsxTilesetFormat;
 
-    // todo: workaround to avoid it writing the tileset like an extenal tileset reference
+    // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
@@ -110,7 +110,10 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
+
+    mTileset->setFileName(fileName);
     setFileName(fileName);
+
     mLastSaved = QFileInfo(fileName).lastModified();
 
     emit saved();
