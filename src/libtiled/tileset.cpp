@@ -28,8 +28,10 @@
  */
 
 #include "tileset.h"
-#include "tile.h"
+
 #include "terrain.h"
+#include "tile.h"
+#include "tilesetformat.h"
 
 #include <QBitmap>
 
@@ -60,6 +62,16 @@ Tileset::~Tileset()
 {
     qDeleteAll(mTiles);
     qDeleteAll(mTerrainTypes);
+}
+
+void Tileset::setFormat(TilesetFormat *format)
+{
+    mFormat = format;
+}
+
+TilesetFormat *Tileset::format() const
+{
+    return mFormat;
 }
 
 /**
@@ -608,6 +620,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
     std::swap(mLoaded, other.mLoaded);
     std::swap(mBackgroundColor, other.mBackgroundColor);
+    std::swap(mFormat, other.mFormat);
 
     // Don't swap mWeakPointer, since it's a reference to this.
 
@@ -640,6 +653,7 @@ SharedTileset Tileset::clone() const
     c->mTerrainDistancesDirty = mTerrainDistancesDirty;
     c->mLoaded = mLoaded;
     c->mBackgroundColor = mBackgroundColor;
+    c->mFormat = mFormat;
 
     QMapIterator<int, Tile*> tileIterator(mTiles);
     while (tileIterator.hasNext()) {

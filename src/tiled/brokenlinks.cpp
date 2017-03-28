@@ -490,7 +490,7 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
 
         // It could be, that we have already loaded this tileset.
         SharedTileset newTileset = TilesetManager::instance()->findTileset(fileName);
-        if (!newTileset) {
+        if (!newTileset || !newTileset->loaded()) {
             newTileset = Tiled::readTileset(fileName, &error);
 
             if (!newTileset) {

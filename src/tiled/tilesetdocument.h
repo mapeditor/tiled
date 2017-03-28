@@ -24,7 +24,6 @@
 #include "tileset.h"
 
 #include <QList>
-#include <QPointer>
 
 namespace Tiled {
 
@@ -48,6 +47,7 @@ public:
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
+    bool canReload() const;
     bool reload(QString *error);
 
     /**
@@ -57,9 +57,6 @@ public:
     static TilesetDocument *load(const QString &fileName,
                                  TilesetFormat *format,
                                  QString *error = nullptr);
-
-    TilesetFormat *readerFormat() const;
-    void setReaderFormat(TilesetFormat *format);
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
@@ -148,9 +145,6 @@ private slots:
 private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
-
-    QPointer<TilesetFormat> mReaderFormat;
-    QPointer<TilesetFormat> mWriterFormat;
 
     TilesetTerrainModel *mTerrainModel;
 
