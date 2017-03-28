@@ -622,6 +622,7 @@ void Tileset::swap(Tileset &other)
 SharedTileset Tileset::clone() const
 {
     SharedTileset c = create(mName, mTileWidth, mTileHeight, mTileSpacing, mMargin);
+    c->setProperties(properties());
 
     // mFileName stays empty
     c->mImageReference = mImageReference;
