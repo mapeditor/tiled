@@ -618,7 +618,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             // first non-selected item. If even that fails, we pretend to have
             // clicked the first item as usual to allow toggling the selection.
             if (selection.contains(nextItem)) {
-                for (int i = 1; i < underlyingObjects.size() - 2; ++i) {
+                for (int i = 1; i < underlyingObjects.size() - 1; ++i) {
                     MapObjectItem *underlyingObject = underlyingObjects.at(i);
                     if (!selection.contains(underlyingObject)) {
                         nextItem = underlyingObject;
