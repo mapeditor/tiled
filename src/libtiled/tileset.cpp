@@ -586,6 +586,10 @@ void Tileset::setTileImage(Tile *tile,
 
 void Tileset::swap(Tileset &other)
 {
+    const Properties p = properties();
+    setProperties(other.properties());
+    other.setProperties(p);
+
     std::swap(mFileName, other.mFileName);
     std::swap(mImageReference, other.mImageReference);
     std::swap(mTileWidth, other.mTileWidth);

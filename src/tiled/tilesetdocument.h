@@ -95,7 +95,8 @@ public:
 signals:
     /**
      * This signal is currently used when adding or removing tiles from a
-     * tileset, or when changing the tileset column count or color.
+     * tileset, when changing the tileset column count or color, or when the
+     * tileset has been swapped.
      *
      * @todo Emit more specific signals.
      */
