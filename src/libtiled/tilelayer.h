@@ -266,7 +266,7 @@ public:
      * are rotated within the layer, and the tiles themselves are rotated. The
      * dimensions of the tile layer are swapped.
      */
-    void rotateHexagonal(RotateDirection direction);
+    void rotateHexagonal(RotateDirection direction, Tiled::Map::StaggerIndex, Tiled::Map::StaggerAxis);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.

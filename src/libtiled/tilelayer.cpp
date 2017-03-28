@@ -312,7 +312,7 @@ void TileLayer::rotate(RotateDirection direction)
     mGrid = newGrid;
 }
 
-void TileLayer::rotateHexagonal(RotateDirection direction)
+void TileLayer::rotateHexagonal(RotateDirection direction,Map::StaggerIndex,Map::StaggerAxis)
 {
     int newWidth = mHeight;
     int newHeight = mWidth;
