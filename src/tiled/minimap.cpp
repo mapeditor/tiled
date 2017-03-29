@@ -22,21 +22,13 @@
 #include "minimap.h"
 
 #include "documentmanager.h"
-#include "imagelayer.h"
 #include "map.h"
-#include "mapdocument.h"
-#include "mapobject.h"
-#include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapview.h"
-#include "objectgroup.h"
-#include "preferences.h"
-#include "tilelayer.h"
 #include "utils.h"
 #include "zoomable.h"
 
 #include <QCursor>
-#include <QPainter>
 #include <QResizeEvent>
 #include <QScrollBar>
 #include <QUndoStack>
