@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vea en el fichero AUTHORS una lista completa de los colaboradores)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Usted puede modificar y redistribuir este programa bajo los terminos de la GPL (versión 2 ó superior). Una copia de la GPL se encuentra en el fichero &apos;COPYING&apos; que acompaña a Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vea en el fichero AUTHORS una lista completa de los colaboradores)&lt;/p&gt;
+&lt;p align="center"&gt;Usted puede modificar y redistribuir este programa bajo los terminos de la GPL (versión 2 ó superior). Una copia de la GPL se encuentra en el fichero 'COPYING' que acompaña a Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Extensión de archivo no única. No se puede determinar el formato correcto al que exportar.</translation>
     </message>
     <message>
@@ -139,7 +139,7 @@
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation>Argumento largo desconocido %1: %2 </translation>
+        <translation>Argumento largo desconocido %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -862,15 +862,15 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Orientación del Mapa no soportada: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Orientación del Mapa no soportada: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parámetros del conjunto de patrones no válidos para el conjunto de patrones &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Parámetros del conjunto de patrones no válidos para el conjunto de patrones '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Método de compresión &apos;%1&apos; no soportado</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Método de compresión '%1' no soportado</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Datos corruptos para la Capa &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Datos corruptos para la Capa '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>El archivo no contiene tipos.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>¡Ya soy un patrocinador!</translation>
     </message>
     <message>
@@ -1665,7 +1665,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Qué es Esto</translation>
     </message>
     <message>
@@ -1953,12 +1953,12 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>¡No se pudo analizar la cabezera del archivo!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>¡No se pudo analizar la cabezera de la capa!</translation>
     </message>
     <message>
@@ -1993,7 +1993,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>¡No se puede grabar una capa sin patrones!</translation>
     </message>
     <message>
@@ -2208,49 +2208,49 @@ Línea %1, columna %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Atributo &apos;%2&apos; = &apos;%3&apos; no tiene sentido. Ignorando este atributo.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Atributo '%2' = '%3' no tiene sentido. Ignorando este atributo.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>¿Usted olvidó un guión bajo en la capa &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>¿Usted olvidó un guión bajo en la capa '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>La capa &apos;%1&apos; no se reconoció como una válida para Automapeado.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>La capa '%1' no se reconoció como una válida para Automapeado.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>La capa &apos;regions_input&apos; no debe aparecer más de una vez.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>La capa 'regions_input' no debe aparecer más de una vez.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>Las capas &apos;regions_*&apos; deben ser capas de patrones.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>Las capas 'regions_*' deben ser capas de patrones.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>La capa &apos;regions_output&apos; no debe aparecer más de una vez.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>La capa 'regions_output' no debe aparecer más de una vez.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>Las capas &apos;input_*&apos; y &apos;inputnot_*&apos; deben ser capas de patrones.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>Las capas 'input_*' y 'inputnot_*' deben ser capas de patrones.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>No se encontró la capa &apos;regions&apos; ó &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>No se encontró la capa 'regions' ó 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>No se encontró la capa &apos;regions&apos; ó &apos;regions_output&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>No se encontró la capa 'regions' ó 'regions_output'.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2670,8 +2670,8 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>El número de columnas de patrones en el conjunto &apos;%1&apos; parece haber sido cambiado de %2 a %3. ¿Deseas ajustar las referencias de los patrones?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>El número de columnas de patrones en el conjunto '%1' parece haber sido cambiado de %2 a %3. ¿Deseas ajustar las referencias de los patrones?</translation>
     </message>
 </context>
 <context>
@@ -3532,8 +3532,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Falló al cargar la imagen de conjunto de patrones &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Falló al cargar la imagen de conjunto de patrones '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3717,7 +3717,7 @@ Por favor seleccione un formato específico.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;¡Gracias por tu apoyo!&lt;/h3&gt;
@@ -3727,7 +3727,7 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Ya no soy más un patrocinador</translation>
     </message>
     <message>
@@ -3745,7 +3745,7 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>¡Ya soy un patrocinador!</translation>
     </message>
 </context>
@@ -4275,8 +4275,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>¡El conjunto de patrones &quot;%1&quot; está siendo todavía utilizado por el mapa!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>¡El conjunto de patrones "%1" está siendo todavía utilizado por el mapa!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4334,8 +4334,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>No se pudo cargar &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>No se pudo cargar "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4452,7 +4452,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+182"/>
         <source>TMX Viewer</source>
-        <translation>TMX Viewer</translation>
+        <translation>Visor TMX</translation>
     </message>
 </context>
 <context>

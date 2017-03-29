@@ -110,6 +110,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
 
+    PluginManager::addObject(mTmxMapFormat);
+    PluginManager::addObject(mTsxTilesetFormat);
+
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
 
@@ -120,9 +123,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
-
-    PluginManager::addObject(mTmxMapFormat);
-    PluginManager::addObject(mTsxTilesetFormat);
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -817,7 +817,7 @@ bool MainWindow::saveDocumentAs(Document *document)
     return saveDocument(document, fileName);
 }
 
-bool isEmbeddedTilesetDocument(Document *document)
+static bool isEmbeddedTilesetDocument(Document *document)
 {
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document))
         return tilesetDocument->isEmbedded();
@@ -1464,7 +1464,7 @@ void MainWindow::updateActions()
     mUi->actionExportAsImage->setEnabled(mapDocument);
     mUi->actionExport->setEnabled(mapDocument);
     mUi->actionExportAs->setEnabled(mapDocument);
-    mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->readerFormat()));
+    mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->canReload()));
     mUi->actionClose->setEnabled(document);
     mUi->actionCloseAll->setEnabled(document);
 

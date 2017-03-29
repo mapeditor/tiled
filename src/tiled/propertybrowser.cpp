@@ -270,8 +270,10 @@ void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
 {
-    if (mObject == tileset)
+    if (mObject == tileset) {
         updateProperties();
+        updateCustomProperties();   // Tileset may have been swapped
+    }
 }
 
 void PropertyBrowser::tileChanged(Tile *tile)

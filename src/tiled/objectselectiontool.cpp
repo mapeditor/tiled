@@ -47,6 +47,7 @@
 #include <QKeyEvent>
 #include <QTransform>
 #include <QUndoStack>
+#include <QMenu>
 
 #include <cmath>
 
@@ -533,6 +534,53 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
         break;
     }
+    case Qt::RightButton:
+        if (event->modifiers() & Qt::AltModifier) {
+            QList<MapObjectItem*> underlyingObjects = objectItemsAt(event->scenePos());
+            if (underlyingObjects.empty())
+                break;
+            QMenu selectUnderlyingMenu;
+
+            for (int levelNum = 0; levelNum < underlyingObjects.size(); ++levelNum) {
+                QString objectName = underlyingObjects[levelNum]->mapObject()->name();
+                const QString& objectType = underlyingObjects[levelNum]->mapObject()->type();
+                if (objectName.isEmpty()) {
+                    if (objectType.isEmpty())
+                        objectName = tr("Unnamed object");
+                    else
+                        objectName = tr("Instance of %1").arg(objectType);
+                }
+                QString actionName;
+                if (levelNum < 9)
+                    actionName = tr("&%1) %2").arg(levelNum + 1).arg(objectName);
+                else
+                    actionName = tr("%1) %2").arg(levelNum + 1).arg(objectName);
+                QAction *action = selectUnderlyingMenu.addAction(actionName);
+                action->setData(QVariant::fromValue(underlyingObjects[levelNum]));
+            }
+
+            QAction *action = selectUnderlyingMenu.exec(event->screenPos());
+
+            if (!action)
+                break;
+
+            if (MapObjectItem* objectToBeSelected = action->data().value<MapObjectItem*>()) {
+                auto selection = mapScene()->selectedObjectItems();
+                if (event->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+                    if (selection.contains(objectToBeSelected))
+                        selection.remove(objectToBeSelected);
+                    else
+                        selection.insert(objectToBeSelected);
+                } else {
+                    selection.clear();
+                    selection.insert(objectToBeSelected);
+                }
+                mapScene()->setSelectedObjectItems(selection);
+            }
+        } else {
+            AbstractObjectTool::mousePressed(event);
+        }
+        break;
     default:
         AbstractObjectTool::mousePressed(event);
         break;
@@ -551,8 +599,37 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             break;
         }
         const Qt::KeyboardModifiers modifiers = event->modifiers();
+        QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
+        if (modifiers & Qt::AltModifier) {
+            const auto underlyingObjects = objectItemsAt(event->scenePos());
+            if (underlyingObjects.isEmpty())
+                break;
+
+            // Determine the item after the last selected item
+            MapObjectItem *nextItem = underlyingObjects.first();
+            for (int i = underlyingObjects.size() - 1; i >= 0; --i) {
+                MapObjectItem *underlyingObject = underlyingObjects.at(i);
+                if (selection.contains(underlyingObject))
+                    break;
+                nextItem = underlyingObject;
+            }
+
+            // If the first and last item are already selected, try to find the
+            // first non-selected item. If even that fails, we pretend to have
+            // clicked the first item as usual to allow toggling the selection.
+            if (selection.contains(nextItem)) {
+                for (int i = 1; i < underlyingObjects.size() - 1; ++i) {
+                    MapObjectItem *underlyingObject = underlyingObjects.at(i);
+                    if (!selection.contains(underlyingObject)) {
+                        nextItem = underlyingObject;
+                        break;
+                    }
+                }
+            }
+
+            mClickedObjectItem = nextItem;
+        }
         if (mClickedObjectItem) {
-            QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedObjectItem))
                     selection.remove(mClickedObjectItem);

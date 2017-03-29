@@ -495,7 +495,7 @@ void TilesetView::setMarkAnimatedTiles(bool enabled)
 
 bool TilesetView::event(QEvent *event)
 {
-    if (mZoomable && event->type() == QEvent::Gesture) {
+    if (event->type() == QEvent::Gesture && mZoomable) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
