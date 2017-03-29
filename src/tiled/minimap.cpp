@@ -50,7 +50,11 @@ MiniMap::MiniMap(QWidget *parent)
     , mDragging(false)
     , mMouseMoveCursorState(false)
     , mRedrawMapImage(false)
-    , mRenderFlags(DrawTiles | DrawObjects | DrawImages | IgnoreInvisibleLayer)
+    , mRenderFlags(MiniMapRenderer::DrawTiles
+                   | MiniMapRenderer::DrawObjects
+                   | MiniMapRenderer::DrawImages
+                   | MiniMapRenderer::IgnoreInvisibleLayer)
+    , mMiniMapRenderer(MiniMapRenderer::miniMapRenderer())
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     setMinimumSize(50, 50);
@@ -78,6 +82,7 @@ void MiniMap::setMapDocument(MapDocument *map)
     }
 
     mMapDocument = map;
+    mMiniMapRenderer->setMapDocument(mMapDocument);
 
     if (mMapDocument) {
         connect(mMapDocument->undoStack(), SIGNAL(indexChanged(int)),
@@ -164,11 +169,6 @@ void MiniMap::updateImageRect()
     mImageRect = imageRect;
 }
 
-static bool objectLessThan(const MapObject *a, const MapObject *b)
-{
-    return a->y() < b->y();
-}
-
 void MiniMap::renderMapToImage()
 {
     if (!mMapDocument) {
@@ -189,10 +189,6 @@ void MiniMap::renderMapToImage()
         return;
     }
 
-    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
-    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
-    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
-
     // Determine the largest possible scale
     qreal scale = qMin((qreal) viewSize.width() / mapSize.width(),
                        (qreal) viewSize.height() / mapSize.height());
@@ -207,76 +203,7 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    bool drawObjects = mRenderFlags.testFlag(DrawObjects);
-    bool drawTiles = mRenderFlags.testFlag(DrawTiles);
-    bool drawImages = mRenderFlags.testFlag(DrawImages);
-    bool drawTileGrid = mRenderFlags.testFlag(DrawGrid);
-    bool visibleLayersOnly = mRenderFlags.testFlag(IgnoreInvisibleLayer);
-
-    // Remember the current render flags
-    const Tiled::RenderFlags renderFlags = renderer->flags();
-    renderer->setFlag(ShowTileObjectOutlines, false);
-
-    mMapImage.fill(Qt::transparent);
-    QPainter painter(&mMapImage);
-    painter.setRenderHints(QPainter::SmoothPixmapTransform);
-    painter.setTransform(QTransform::fromScale(scale, scale));
-    painter.translate(margins.left(), margins.top());
-    renderer->setPainterScale(scale);
-
-    LayerIterator iterator(mMapDocument->map());
-    while (const Layer *layer = iterator.next()) {
-        if (visibleLayersOnly && layer->isHidden())
-            continue;
-
-        const auto offset = layer->totalOffset();
-
-        painter.setOpacity(layer->effectiveOpacity());
-        painter.translate(offset);
-
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-
-        if (tileLayer && drawTiles) {
-            renderer->drawTileLayer(&painter, tileLayer);
-        } else if (objGroup && drawObjects) {
-            QList<MapObject*> objects = objGroup->objects();
-
-            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
-                qStableSort(objects.begin(), objects.end(), objectLessThan);
-
-            foreach (const MapObject *object, objects) {
-                if (object->isVisible()) {
-                    if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position());
-                        painter.save();
-                        painter.translate(origin);
-                        painter.rotate(object->rotation());
-                        painter.translate(-origin);
-                    }
-
-                    const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, object, color);
-
-                    if (object->rotation() != qreal(0))
-                        painter.restore();
-                }
-            }
-        } else if (imageLayer && drawImages) {
-            renderer->drawImageLayer(&painter, imageLayer);
-        }
-
-        painter.translate(-offset);
-    }
-
-    if (drawTileGrid) {
-        Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
-    }
-
-    renderer->setFlags(renderFlags);
+    mMiniMapRenderer->renderMinimapToImage(mMapImage, mRenderFlags);
 }
 
 void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)

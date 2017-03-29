@@ -28,6 +28,7 @@ using namespace Tiled::Internal;
 
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
+    , mMiniMapRenderer(MiniMapRenderer::miniMapRenderer())
 {
     setMinimumSize(20, 20);
     setOldSize(QSize(1, 1));
@@ -122,10 +123,13 @@ void ResizeHelper::paintEvent(QPaintEvent *)
 
     pen.setColor(Qt::white);
 
-    painter.setPen(pen);
-    painter.setBrush(Qt::white);
     painter.setOpacity(0.5);
-    painter.drawRect(oldRect);
+    QImage minimap = QImage(oldRect.width() * mScale, oldRect.height() * mScale, QImage::Format_ARGB32_Premultiplied);
+    mMiniMapRenderer->renderMinimapToImage(minimap, MiniMapRenderer::DrawObjects
+                                           | MiniMapRenderer::DrawImages
+                                           | MiniMapRenderer::DrawTiles
+                                           | MiniMapRenderer::IgnoreInvisibleLayer);
+    painter.drawImage(oldRect, minimap);
 
     pen.setColor(Qt::black);
     pen.setStyle(Qt::DashLine);

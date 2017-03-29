@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "minimaprenderer.h"
+
 #include <QPoint>
 #include <QSize>
 #include <QWidget>
@@ -103,6 +105,8 @@ private:
     QPoint mOrigOffset;
     bool mDragging;
     double mScale;
+
+    MiniMapRenderer* mMiniMapRenderer;
 };
 
 } // namespace Internal
