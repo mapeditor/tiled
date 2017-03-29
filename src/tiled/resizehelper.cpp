@@ -172,13 +172,9 @@ void ResizeHelper::recalculateScale()
     if (_size.isEmpty())
         return;
 
-    const int width = (mOldSize.width() < mNewSize.width()) ?
-        mNewSize.width() :
-        2 * mOldSize.width() - mNewSize.width();
+    const int width = mNewSize.width();
 
-    const int height = (mOldSize.height() < mNewSize.height()) ?
-        mNewSize.height() :
-        2 * mOldSize.height() - mNewSize.height();
+    const int height = mNewSize.height();
 
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;
