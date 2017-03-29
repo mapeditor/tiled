@@ -25,7 +25,6 @@
 #include <QPoint>
 
 namespace Tiled {
-namespace Internal {
 
 class Hex
 {
@@ -33,6 +32,10 @@ public:
     Hex(int x, int y, int z);
 
     Hex(QPoint staggerPoint,
+        Map::StaggerIndex staggerIndex,
+        Map::StaggerAxis staggerAxis);
+
+    Hex(int col, int row,
         Map::StaggerIndex staggerIndex,
         Map::StaggerAxis staggerAxis);
 
@@ -45,14 +48,16 @@ public:
     int y() const { return mY; }
     int z() const { return mZ; }
 
-    int setX(int x) { mX = x; }
-    int setY(int y) { mY = y; }
-    int setZ(int z) { mZ = z; }
+    void setX(int x) { mX = x; }
+    void setY(int y) { mY = y; }
+    void setZ(int z) { mZ = z; }
 
     Hex operator +(const Hex& h);
     Hex operator -(const Hex& h);
     Hex operator *(const float& f);
     Hex operator /(const float& f);
+    void operator +=(const Hex& h);
+    void operator -=(const Hex& h);
 
 private:
     int mX;
@@ -60,5 +65,4 @@ private:
     int mZ;
 };
 
-} // namespace Internal
 } // namespace Tiled

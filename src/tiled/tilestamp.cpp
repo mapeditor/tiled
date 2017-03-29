@@ -232,6 +232,22 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
 
     for (const TileStampVariation &variation : flipped.variations()) {
         TileLayer *layer = variation.tileLayer();
+
+        Map::StaggerIndex staggerIndex = variation.map->staggerIndex();
+        Map::StaggerAxis staggerAxis = variation.map->staggerAxis();
+
+        if (variation.map->orientation() == Map::Staggered || variation.map->orientation() == Map::Hexagonal) {
+            if (staggerAxis == Map::StaggerY)
+            {
+                if ((direction == FlipVertically && !(layer->height() & 1)) || direction == FlipHorizontally)
+                    variation.map->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + 1) & 1));
+
+            } else {
+                if ((direction == FlipHorizontally && !(layer->width() & 1)) || direction == FlipVertically)
+                    variation.map->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + 1) & 1));
+            }
+        }
+
         if (variation.map->orientation() == Map::Hexagonal)
             layer->flipHexagonal(direction);
         else
@@ -253,7 +269,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     for (const TileStampVariation &variation : rotated.variations()) {
         TileLayer *layer = variation.tileLayer();
         if (variation.map->orientation() == Map::Hexagonal)
-            layer->rotateHexagonal(direction,variation.map->staggerIndex(),variation.map->StaggerAxis);
+            layer->rotateHexagonal(direction,variation.map->staggerIndex(),variation.map->staggerAxis());
         else
             layer->rotate(direction);
 

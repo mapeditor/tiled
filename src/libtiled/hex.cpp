@@ -20,8 +20,7 @@
 
 #include "hex.h"
 
-namespace Tiled {
-namespace Internal {
+using namespace Tiled;
 
 Hex::Hex(int x, int y, int z):
     mX(x),
@@ -32,24 +31,31 @@ Hex::Hex(QPoint point,
          Map::StaggerIndex staggerIndex,
          Map::StaggerAxis staggerAxis)
 {
+    Hex(point.x(),point.y(),staggerIndex,staggerAxis);
+}
+
+Hex::Hex(int col, int row,
+    Map::StaggerIndex staggerIndex,
+    Map::StaggerAxis staggerAxis)
+{
     if (staggerAxis == Map::StaggerX) {
         if (staggerIndex == Map::StaggerEven) {
-            mX = point.x;
-            mZ = point.y - (point.x + (point.x & 1)) / 2;
+            mX = col;
+            mZ = row - (col + (col & 1)) / 2;
             mY = -mX - mZ;
         } else {
-            mX = point.x;
-            mZ = point.y - (point.x - (point.x & 1)) / 2;
+            mX = col;
+            mZ = row - (col - (col & 1)) / 2;
             mY = -mX - mZ;
         }
     } else {
         if (staggerIndex == Map::StaggerEven) {
-            mX = point.x - (point.y + (point.y & 1)) / 2;
-            mZ = point.y;
+            mX = col - (row + (row & 1)) / 2;
+            mZ = row;
             mY = -mX - mZ;
         } else {
-            mX = point.x - (point.y - (point.y & 1)) / 2;
-            mZ = point.y;
+            mX = col - (row - (row & 1)) / 2;
+            mZ = row;
             mY = -mX - mZ;
         }
     }
@@ -62,19 +68,19 @@ QPoint Hex::toStagger(Map::StaggerIndex staggerIndex,
 
     if (staggerAxis == Map::StaggerX) {
         if (staggerIndex == Map::StaggerEven) {
-            point.x = mX;
-            point.y = mZ + (mX + (mX & 1)) / 2;
+            point.setX(mX);
+            point.setY(mZ + (mX + (mX & 1)) / 2);
         } else {
-            point.x = mX;
-            point.y = mZ + (mX - (mX & 1)) / 2;
+            point.setX(mX);
+            point.setY(mZ + (mX - (mX & 1)) / 2);
         }
     } else {
         if (staggerIndex == Map::StaggerEven) {
-            point.x = mX + (mZ - (mZ & 1)) / 2;
-            point.y = mZ;
+            point.setX(mX + (mZ + (mZ & 1)) / 2);
+            point.setY(mZ);
         } else {
-            point.x = mX + (mZ + (mZ & 1)) / 2;
-            point.y = mZ;
+            point.setX(mX + (mZ - (mZ & 1)) / 2);
+            point.setY(mZ);
         }
     }
 
@@ -97,23 +103,34 @@ void Hex::rotate(RotateDirection direction)
 
 Hex Hex::operator +(const Hex& h)
 {
-    return Hex(this->x + h.x, this->y + h.y, this->z + h.z);
+    return Hex(mX + h.x(), mY + h.y(), mZ + h.z());
 }
 
 Hex Hex::operator -(const Hex& h)
 {
-    return Hex(this->x - h.x, this->y - h.y, this->z - h.z);
+    return Hex(mX - h.x(), mY - h.y(), mZ - h.z());
 }
 
 Hex Hex::operator *(const float& f)
 {
-    return Hex(this->x*f, this->y*f, this->z*f);
+    return Hex(mX*f, mY*f, mZ*f);
 }
 
 Hex Hex::operator /(const float& f)
 {
-    return Hex(this->x/f, this->y/f, this->z/f);
+    return Hex(mX/f, mY/f, mZ/f);
 }
 
-} // namespace Tiled
-} // namespace Internal
+void Hex::operator +=(const Hex& h)
+{
+    mX += h.x();
+    mY += h.y();
+    mZ += h.z();
+}
+
+void Hex::operator -=(const Hex& h)
+{
+    mX -= h.x();
+    mY -= h.y();
+    mZ -= h.z();
+}
