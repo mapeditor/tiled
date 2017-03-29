@@ -32,7 +32,6 @@ SOURCES += compression.cpp \
     gidmapper.cpp \
     grouplayer.cpp \
     hexagonalrenderer.cpp \
-    hex.cpp \
     imagelayer.cpp \
     imagereference.cpp \
     isometricrenderer.cpp \
@@ -62,7 +61,6 @@ HEADERS += compression.h \
     gidmapper.h \
     grouplayer.h \
     hexagonalrenderer.h \
-    hex.h \ 
     imagelayer.h \
     imagereference.h \
     isometricrenderer.h \
