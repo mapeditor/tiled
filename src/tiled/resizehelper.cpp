@@ -189,14 +189,14 @@ void ResizeHelper::recalculateScale()
     if (_size.isEmpty())
         return;
 
-    const int width = std::max(mNewSize.width(), mOldSize.width());
+    const int width = qMax(mNewSize.width(), mOldSize.width());
 
-    const int height = std::max(mNewSize.height(), mOldSize.height());
+    const int height = qMax(mNewSize.height(), mOldSize.height());
 
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;
     const double scaleH = _size.height() / (double) height;
-    mScale = std::min(scaleW, scaleH);
+    mScale = qMin(scaleW, scaleH);
 
     update();
 }
