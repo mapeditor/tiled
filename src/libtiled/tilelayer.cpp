@@ -312,11 +312,11 @@ void TileLayer::rotate(RotateDirection direction)
     mGrid = newGrid;
 }
 
-void TileLayer::rotateHexagonal(RotateDirection direction,Map::StaggerIndex staggerIndex,Map::StaggerAxis staggerAxis)
+void TileLayer::rotateHexagonal(RotateDirection direction, Map::StaggerIndex staggerIndex, Map::StaggerAxis staggerAxis)
 {
-    Hex botRight(mWidth,mHeight,staggerIndex,staggerAxis);
-    Hex topRight(mWidth,0,staggerIndex,staggerAxis);
-    Hex center(mWidth/2,mHeight/2,staggerIndex,staggerAxis);
+    Hex botRight(mWidth, mHeight, staggerIndex, staggerAxis);
+    Hex topRight(mWidth, 0, staggerIndex, staggerAxis);
+    Hex center(mWidth / 2, mHeight / 2, staggerIndex, staggerAxis);
 
     botRight -= center;
     topRight -= center;
@@ -324,11 +324,11 @@ void TileLayer::rotateHexagonal(RotateDirection direction,Map::StaggerIndex stag
     botRight.rotate(RotateRight);
     topRight.rotate(RotateRight);
 
-    int newWidth = topRight.toStagger(staggerIndex,staggerAxis).x()*2 + 2;
-    int newHeight = botRight.toStagger(staggerIndex,staggerAxis).y()*2 + 2;
+    int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
+    int newHeight = botRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
     QVector<Cell> newGrid(newWidth * newHeight);
 
-    Hex newCenter(newWidth/2,newHeight/2,staggerIndex,staggerAxis);
+    Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
     /* https://github.com/bjorn/tiled/pull/1447
 
@@ -372,14 +372,14 @@ void TileLayer::rotateHexagonal(RotateDirection direction,Map::StaggerIndex stag
             dest.setFlippedAntiDiagonally((mask & 2) != 0);
             dest.setRotatedHexagonal120((mask & 1) != 0);
 
-            Hex rotatedHex(x,y,staggerIndex,staggerAxis);
+            Hex rotatedHex(x, y, staggerIndex, staggerAxis);
             rotatedHex -= center;
             rotatedHex.rotate(direction);
             rotatedHex += newCenter;
 
-            QPoint rotatedPoint = rotatedHex.toStagger(staggerIndex,staggerAxis);
+            QPoint rotatedPoint = rotatedHex.toStaggered(staggerIndex, staggerAxis);
 
-            int index = rotatedPoint.y()*newWidth + rotatedPoint.x();
+            int index = rotatedPoint.y() * newWidth + rotatedPoint.x();
 
             newGrid[index] = dest;
         }
@@ -391,16 +391,15 @@ void TileLayer::rotateHexagonal(RotateDirection direction,Map::StaggerIndex stag
 
     QRect filledRect = region().boundingRect();
 
-    if(staggerAxis == Map::StaggerY)
-    {
-        if(filledRect.y() & 1)
-            filledRect.adjust(0,-1,0,0);
+    if (staggerAxis == Map::StaggerY) {
+        if (filledRect.y() & 1)
+            filledRect.adjust(0, -1, 0, 0);
     } else {
-        if(filledRect.x() & 1)
-            filledRect.adjust(-1,0,0,0);
+        if (filledRect.x() & 1)
+            filledRect.adjust(-1, 0, 0, 0);
     }
 
-    resize(filledRect.size(),-filledRect.topLeft());
+    resize(filledRect.size(), -filledRect.topLeft());
 }
 
 

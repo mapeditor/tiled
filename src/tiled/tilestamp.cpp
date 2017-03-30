@@ -221,6 +221,12 @@ TileStampVariation TileStamp::randomVariation() const
     return randomPicker.pick()->map;
 }
 
+
+static Map::StaggerIndex invertStaggerIndex(Map::StaggerIndex staggerIndex)
+{
+    return static_cast<Map::StaggerIndex>(!staggerIndex);
+}
+
 /**
  * Returns a new stamp where all variations have been flipped in the given
  * \a direction.
@@ -236,15 +242,15 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
         Map::StaggerIndex staggerIndex = variation.map->staggerIndex();
         Map::StaggerAxis staggerAxis = variation.map->staggerAxis();
 
-        if (variation.map->orientation() == Map::Staggered || variation.map->orientation() == Map::Hexagonal) {
+        if (variation.map->isStaggered()) {
             if (staggerAxis == Map::StaggerY)
             {
                 if ((direction == FlipVertically && !(layer->height() & 1)) || direction == FlipHorizontally)
-                    variation.map->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + 1) & 1));
+                    variation.map->setStaggerIndex(invertStaggerIndex(staggerIndex));
 
             } else {
                 if ((direction == FlipHorizontally && !(layer->width() & 1)) || direction == FlipVertically)
-                    variation.map->setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex + 1) & 1));
+                    variation.map->setStaggerIndex(invertStaggerIndex(staggerIndex));
             }
         }
 

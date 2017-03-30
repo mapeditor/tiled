@@ -1,21 +1,28 @@
 /*
- * hex.h
+ * hex.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * This file is part of libtiled.
  *
- * This file is part of Tiled.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "hex.h"
@@ -25,18 +32,26 @@ using namespace Tiled;
 Hex::Hex(int x, int y, int z):
     mX(x),
     mY(y),
-    mZ(z) { }
+    mZ(z)
+{ }
 
 Hex::Hex(QPoint point,
          Map::StaggerIndex staggerIndex,
          Map::StaggerAxis staggerAxis)
 {
-    Hex(point.x(),point.y(),staggerIndex,staggerAxis);
+    setStaggered(point.x(), point.y(), staggerIndex, staggerAxis);
 }
 
 Hex::Hex(int col, int row,
-    Map::StaggerIndex staggerIndex,
-    Map::StaggerAxis staggerAxis)
+         Map::StaggerIndex staggerIndex,
+         Map::StaggerAxis staggerAxis)
+{
+    setStaggered(col, row, staggerIndex, staggerAxis);
+}
+
+void Hex::setStaggered(int col, int row,
+                       Map::StaggerIndex staggerIndex,
+                       Map::StaggerAxis staggerAxis)
 {
     if (staggerAxis == Map::StaggerX) {
         if (staggerIndex == Map::StaggerEven) {
@@ -61,8 +76,8 @@ Hex::Hex(int col, int row,
     }
 }
 
-QPoint Hex::toStagger(Map::StaggerIndex staggerIndex,
-                      Map::StaggerAxis staggerAxis)
+QPoint Hex::toStaggered(Map::StaggerIndex staggerIndex,
+                        Map::StaggerAxis staggerAxis) const
 {
     QPoint point;
 
@@ -90,7 +105,7 @@ QPoint Hex::toStagger(Map::StaggerIndex staggerIndex,
 void Hex::rotate(RotateDirection direction)
 {
     int tX = mX;
-    if(direction == RotateLeft) {
+    if (direction == RotateLeft) {
         mX = -mY;
         mY = -mZ;
         mZ = -tX;
@@ -101,36 +116,40 @@ void Hex::rotate(RotateDirection direction)
     }
 }
 
-Hex Hex::operator +(const Hex& h)
+Hex Hex::operator +(Hex h) const
 {
     return Hex(mX + h.x(), mY + h.y(), mZ + h.z());
 }
 
-Hex Hex::operator -(const Hex& h)
+Hex Hex::operator -(Hex h) const
 {
     return Hex(mX - h.x(), mY - h.y(), mZ - h.z());
 }
 
-Hex Hex::operator *(const float& f)
+Hex Hex::operator *(float f) const
 {
     return Hex(mX*f, mY*f, mZ*f);
 }
 
-Hex Hex::operator /(const float& f)
+Hex Hex::operator /(float f) const
 {
     return Hex(mX/f, mY/f, mZ/f);
 }
 
-void Hex::operator +=(const Hex& h)
+Hex& Hex::operator +=(Hex h)
 {
     mX += h.x();
     mY += h.y();
     mZ += h.z();
+
+    return *this;
 }
 
-void Hex::operator -=(const Hex& h)
+Hex& Hex::operator -=(Hex h)
 {
     mX -= h.x();
     mY -= h.y();
     mZ -= h.z();
+
+    return *this;
 }
