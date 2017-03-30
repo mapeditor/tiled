@@ -117,4 +117,10 @@ void MiniMapRenderer::setMapDocument(MapDocument* map)
     mMapDocument = map;
 }
 
-MiniMapRenderer::MiniMapRenderer() {}
+MiniMapRenderer::MiniMapRenderer()
+{
+}
+
+MiniMapRenderer::~MiniMapRenderer()
+{
+}

@@ -167,7 +167,7 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
 
     if (pos != mMouseAnchorPoint) {
         QPoint shift((pos.x() - mMouseAnchorPoint.x()) / mScale,
-                         (pos.y() - mMouseAnchorPoint.y()) / mScale);
+                     (pos.y() - mMouseAnchorPoint.y()) / mScale);
         if (mOldSize.width() > mNewSize.width())
             shift.setX(-shift.x());
         if (mOldSize.height() > mNewSize.height())
