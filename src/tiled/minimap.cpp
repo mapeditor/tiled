@@ -46,7 +46,7 @@ MiniMap::MiniMap(QWidget *parent)
                    | MiniMapRenderer::DrawObjects
                    | MiniMapRenderer::DrawImages
                    | MiniMapRenderer::IgnoreInvisibleLayer)
-    , mMiniMapRenderer(MiniMapRenderer::miniMapRenderer())
+    , mMiniMapRenderer(MiniMapRenderer::instance())
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     setMinimumSize(50, 50);

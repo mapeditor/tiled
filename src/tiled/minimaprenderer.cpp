@@ -13,7 +13,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MiniMapRenderer* MiniMapRenderer::miniMapRenderer()
+MiniMapRenderer* MiniMapRenderer::instance()
 {
     static MiniMapRenderer* singletonRenderer = new MiniMapRenderer();
     return singletonRenderer;

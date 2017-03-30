@@ -41,11 +41,14 @@ public:
 
     Q_DECLARE_FLAGS(MiniMapRenderFlags, MiniMapRenderFlag)
 
-    static MiniMapRenderer* miniMapRenderer();
+    static MiniMapRenderer* instance();
     void renderMinimapToImage(QImage& image, const MiniMapRenderFlags minimapRenderFlags) const;
     void setMapDocument(MapDocument* map);
 private:
     MiniMapRenderer();
+    ~MiniMapRenderer();
+    MiniMapRenderer(MiniMapRenderer const&) = delete;
+    MiniMapRenderer& operator= (MiniMapRenderer const&) = delete;
 
     MapDocument* mMapDocument;
 };
