@@ -106,9 +106,20 @@ void ResizeHelper::paintEvent(QPaintEvent *)
     if (_size.isEmpty())
         return;
 
-    double origX = (_size.width() - mNewSize.width() * mScale) / 2 + 0.5;
-    double origY = (_size.height() - mNewSize.height() * mScale) / 2 + 0.5;
-    const QRect oldRect(mOffset, mOldSize);
+    QSize computeOrigFrom(qMax(mNewSize.width(), mOldSize.width()),
+                          qMax(mNewSize.height(), mOldSize.height()));
+    double origX = (_size.width() - computeOrigFrom.width() * mScale) / 2 + 0.5;
+    double origY = (_size.height() - computeOrigFrom.height() * mScale) / 2 + 0.5;
+    QPoint oldRectOffset, newRectOffset;
+    if (computeOrigFrom.width() == mOldSize.width())
+        newRectOffset.setX(-mOffset.x());
+    else
+        oldRectOffset.setX(mOffset.x());
+    if (computeOrigFrom.height() == mOldSize.height())
+        newRectOffset.setY(-mOffset.y());
+    else
+        oldRectOffset.setY(mOffset.y());
+    const QRect oldRect(oldRectOffset, mOldSize);
 
     QPainter painter(this);
 
@@ -119,7 +130,7 @@ void ResizeHelper::paintEvent(QPaintEvent *)
     pen.setCosmetic(true);
 
     painter.setPen(pen);
-    painter.drawRect(QRect(QPoint(0, 0), mNewSize));
+    painter.drawRect(QRect(newRectOffset, mNewSize));
 
     pen.setColor(Qt::white);
 
@@ -155,7 +166,13 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
     const QPoint &pos = event->pos();
 
     if (pos != mMouseAnchorPoint) {
-        setOffset(mOrigOffset + (pos - mMouseAnchorPoint) / mScale);
+        QPoint shift((pos.x() - mMouseAnchorPoint.x()) / mScale,
+                         (pos.y() - mMouseAnchorPoint.y()) / mScale);
+        if (mOldSize.width() > mNewSize.width())
+            shift.setX(-shift.x());
+        if (mOldSize.height() > mNewSize.height())
+            shift.setY(-shift.y());
+        setOffset(mOrigOffset + shift);
         emit offsetChanged(mOffset);
     }
 }
@@ -172,10 +189,14 @@ void ResizeHelper::recalculateScale()
     if (_size.isEmpty())
         return;
 
+    const int width = std::max(mNewSize.width(), mOldSize.width());
+
+    const int height = std::max(mNewSize.height(), mOldSize.height());
+
     // Pick the smallest scale
-    const double scaleW = _size.width() / (double) mNewSize.width();
-    const double scaleH = _size.height() / (double) mNewSize.height();
-    mScale = (scaleW < scaleH) ? scaleW : scaleH;
+    const double scaleW = _size.width() / (double) width;
+    const double scaleH = _size.height() / (double) height;
+    mScale = std::min(scaleW, scaleH);
 
     update();
 }
