@@ -300,9 +300,9 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
         case Layer::ObjectGroupType: {
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
-            // Remove objects that will fall outside of the map
             for (MapObject *o : objectGroup->objects()) {
                 if (removeObjects && !visibleIn(visibleArea, o, mRenderer)) {
+                    // Remove objects that will fall outside of the map
                     new RemoveMapObject(this, o, command);
                 } else {
                     QPointF oldPos = o->position();
