@@ -26,6 +26,9 @@ static bool objectLessThan(const MapObject *a, const MapObject *b)
 
 void MiniMapRenderer::renderMinimapToImage(QImage& image, const MiniMapRenderFlags minimapRenderFlags) const
 {
+    if (!mMapDocument)
+        return;
+    
     MapRenderer *renderer = mMapDocument->renderer();
 
     bool drawObjects = minimapRenderFlags.testFlag(MiniMapRenderFlag::DrawObjects);
