@@ -196,9 +196,10 @@ void MapObjectOutline::paint(QPainter *painter,
     painter->setPen(pen);
     painter->drawLines(lines, 4);
 
-    // Draw a black dashed line above above the white line
+    // Draw a black dashed line above the white line
     pen.setColor(Qt::black);
-    pen.setStyle(Qt::DashLine);
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setDashPattern({5, 5});
     pen.setDashOffset(mOffset);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
