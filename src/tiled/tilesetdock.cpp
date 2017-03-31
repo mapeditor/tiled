@@ -829,6 +829,7 @@ void TilesetDock::exportTileset()
     }
 
     externalTileset->setFileName(fileName);
+    externalTileset->setFormat(format);
 
     QUndoCommand *command = new ReplaceTileset(mMapDocument,
                                                mapTilesetIndex,
