@@ -1,3 +1,43 @@
+### 1.0.0 (... 2017)
+
+* Added support for editing external tilesets (#242)
+* Added a text object with configurable font and wrapping (#1429)
+* Added layer grouping (#1038)
+* Added Tile.type and inherit tile object properties from the tile (#436, #1248)
+* Added a start page
+* Added selection of underlying objects with Alt modifier (by Yuriy, #1491)
+* Added an option to disable safe writing of files (#1402, #1404)
+* Added invert selection action (by Leon Moctezuma, #1423)
+* Added support for isometric terrain overlays and tile collision objects (#419, #757)
+* Added 180-degree mirroring mode to terrain brush with Alt modifier
+* Added short and consistent map format names to use with --export-map (by Marce Coll, #1382)
+* Added Swap Tiles action (by Alexander Münch, #866)
+* Added tileset background color property (#227)
+* Added 60 degree tile rotation support for hexagonal maps (by Victor Nicolaichuk, #1447)
+* Added a check for duplicates when adding tiles (by Simião, #1227)
+* Added option to run commands from menu as well as edit them (by Ketan Gupta, #943)
+* Added custom shortcuts for commands (by Ketan Gupta, #1456)
+* Added optional ID and Position columns to objects view (by i-ka, #1462)
+* Added an executable picker for custom commands (by Ketan Gupta, #942)
+* Added marching ants effect on selected objects (by Mohamed Thabet, #1489)
+* Added all open tilesets to the Tilesets view
+* Remember last view on map also for closed files (#905)
+* Remember tileset zoom level in the tileset editor (by Artem Sharganov, #408)
+* Change current layer depending on selected objects (by Glavak, #1424)
+* Improved support for using Tiled on HiDpi screens
+* Improved the behavior of the tile selection tool
+* Made Ctrl+D duplicate objects instead of deleting them
+* Use an eye icon instead of a checkbox for layer visibility (by Ketan Gupta, #1127)
+* Linux: Added MIME type for tileset files
+* Fixed handling of broken tile references, which now render as a red marker
+* Fixed manual reloading of images for image collection tilesets
+* Fixed Offset Layers tool to wait until mouse is moved
+* Fixed current stamp to always update when a tile is clicked
+* Fixed handling of pinch gestures (#1305)
+* Fixed flipping a group of objects to work like expected (by Vitek1425, #1475)
+* Fixed stamp brush to work better on staggered maps (by Bdtrotte)
+* Added Ukrainian translation (by Olexandr Nesterenko)
+
 ### 0.18.2 (21 February 2017)
 
 * Fixed crash when deleting multiple selected objects
