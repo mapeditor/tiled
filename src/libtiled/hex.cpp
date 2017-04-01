@@ -128,12 +128,12 @@ Hex Hex::operator -(Hex h) const
 
 Hex Hex::operator *(float f) const
 {
-    return Hex(mX*f, mY*f, mZ*f);
+    return Hex(mX * f, mY * f, mZ * f);
 }
 
 Hex Hex::operator /(float f) const
 {
-    return Hex(mX/f, mY/f, mZ/f);
+    return Hex(mX / f, mY / f, mZ / f);
 }
 
 Hex& Hex::operator +=(Hex h)

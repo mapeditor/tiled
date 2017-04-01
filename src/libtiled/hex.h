@@ -47,7 +47,7 @@ public:
         Map::StaggerAxis staggerAxis);
 
     QPoint toStaggered(Map::StaggerIndex staggerIndex,
-                     Map::StaggerAxis staggerAxis) const;
+                       Map::StaggerAxis staggerAxis) const;
 
     void rotate(RotateDirection direction);
 

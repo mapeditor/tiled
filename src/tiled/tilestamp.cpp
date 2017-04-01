@@ -275,7 +275,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     for (const TileStampVariation &variation : rotated.variations()) {
         TileLayer *layer = variation.tileLayer();
         if (variation.map->orientation() == Map::Hexagonal)
-            layer->rotateHexagonal(direction,variation.map->staggerIndex(),variation.map->staggerAxis());
+            layer->rotateHexagonal(direction, variation.map->staggerIndex(), variation.map->staggerAxis());
         else
             layer->rotate(direction);
 
