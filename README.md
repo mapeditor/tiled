@@ -54,6 +54,16 @@ it to tiled.pro, for example:
 
 You can now simply run Tiled using bin/tiled.
 
+For windows and msvc something like this:
+
+qbs setup-toolchains --detect
+qbs setup-qt <path_to_qmake.exe> qt5
+qbs config defaultProfile qt5
+qbs config profiles.qt5.baseProfile profile:MSVC2015-amd64_x86
+qbs profile:qt5
+
+read more https://doc.qt.io/qbs/configuring.html and https://doc.qt.io/qbs/qt-versions.html
+
 Installing
 -------------------------------------------------------------------------------
 
@@ -76,3 +86,6 @@ By default, Tiled and its plugins are compiled with an Rpath so that they can
 find the shared libtiled library when running it straight after compile. When
 packaging for a distribution, this Rpath should generally be disabled by
 appending `RPATH=no` to the qmake command.
+
+Use windeployqt for deployment process for Windows (https://doc.qt.io/qt-5/windows-deployment.html)
+
