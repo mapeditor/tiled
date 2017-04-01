@@ -127,6 +127,7 @@ private slots:
     void zoomOut();
     void zoomNormal();
     void setFullScreen(bool fullScreen);
+    void toggleClearView(bool clearView);
 
     bool newTileset(const QString &path = QString());
     void newTilesets(const QStringList &paths);

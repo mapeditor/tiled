@@ -316,6 +316,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
+    /*Add appropriate slot*/
+    connect(mUi->actionClearView, &QAction::toggled, this, &MainWindow::toggleClearView);
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
@@ -498,10 +500,15 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    writeSettings();
-
     if (confirmAllSave())
+    {
+        //Make sure user won't end up in view mode on next launch
+        if(mUi->actionClearView->isChecked())
+            toggleClearView(false);
+
+        writeSettings();
         event->accept();
+    }
     else
         event->ignore();
 }
@@ -1127,6 +1134,46 @@ void MainWindow::setFullScreen(bool fullScreen)
         setWindowState(windowState() | Qt::WindowFullScreen);
     else
         setWindowState(windowState() & ~Qt::WindowFullScreen);
+}
+
+void MainWindow::toggleClearView(bool clearView)
+{
+    //Static vectors keep list of visible docks and toolbars before toggle
+    static std::vector<bool> visibleDocks, visibleToolbars;
+    QList<QDockWidget*> docks = this->findChildren<QDockWidget*>();
+    QList<QToolBar*> toolbars = this->findChildren<QToolBar*>();
+
+    if(clearView)
+    {
+        visibleDocks.clear();
+        visibleToolbars.clear();
+        mDocumentManager->saveState();
+        for(auto dock : docks)
+        {
+            visibleDocks.push_back(dock->isVisible());
+            dock->hide();
+        }
+        for(auto toolbar : toolbars)
+        {
+            visibleToolbars.push_back(toolbar->isVisible());
+            toolbar->setVisible(false);
+        }
+    }
+    else
+    {
+        if(visibleDocks.empty() || visibleToolbars.empty())
+            return;
+        for(auto i=0; i<docks.size(); i++)
+        {
+            if(visibleDocks.at(i))
+                docks.at(i)->show();
+        }
+        for(auto i=0; i<toolbars.size(); i++)
+        {
+            if(visibleToolbars.at(i))
+                toolbars.at(i)->show();
+        }
+    }
 }
 
 bool MainWindow::newTileset(const QString &path)
