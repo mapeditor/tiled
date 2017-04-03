@@ -41,23 +41,20 @@ namespace Internal {
 
 class MapDocument;
 
-class InputIndexName
+class InputConditions
 {
 public:
-    QVector<TileLayer*> listYes;
-    QVector<TileLayer*> listNo;
+    QVector<TileLayer*> listYes;    // "input"
+    QVector<TileLayer*> listNo;     // "inputnot"
 };
 
-class InputIndex : public QMap<QString, InputIndexName>
-{
-public:
-    QSet<QString> names;
-};
+// Maps layer names to their conditions
+typedef QMap<QString, InputConditions> InputIndex;
 
+// Maps an index to a group of input layers
 class InputLayers : public QMap<QString, InputIndex>
 {
 public:
-    QSet<QString> indexes;
     QSet<QString> names; // all names
 };
 
@@ -87,7 +84,8 @@ public:
      * here.
      *
      * @param workingDocument: the map to work on.
-     * @param rules: The rule map which should be used for automapping
+     * @param rules: The rule map which should be used for automapping. The
+     *               AutoMapper takes ownership of this map.
      * @param rulePath: The filepath to the rule map.
      */
     AutoMapper(MapDocument *workingDocument, Map *rules,
