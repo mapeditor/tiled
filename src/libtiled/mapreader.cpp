@@ -582,7 +582,16 @@ static void readLayerAttributes(Layer &layer,
     const QPointF offset(atts.value(QLatin1String("offsetx")).toDouble(),
                          atts.value(QLatin1String("offsety")).toDouble());
 
+    QPointF moveSpeed(atts.value(QLatin1String("moveSpeedX")).toDouble(),
+                      atts.value(QLatin1String("moveSpeedY")).toDouble());
+
+    const bool repeatX = atts.value(QLatin1String("repeatedX")).toInt();
+    const bool repeatY = atts.value(QLatin1String("repeatedY")).toInt();
+
     layer.setOffset(offset);
+    layer.setMoveSpeed(moveSpeed);
+    layer.setRepeatedX(repeatX);
+    layer.setRepeatedY(repeatY);
 }
 
 TileLayer *MapReaderPrivate::readTileLayer()

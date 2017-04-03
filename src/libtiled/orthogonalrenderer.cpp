@@ -229,6 +229,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     int endX = layer->width() - 1;
     int endY = layer->height() - 1;
 
+    if(layer->repeatedX())
+        endX = map()->width();
+    if(layer->repeatedY())
+        endY = map()->height();
+
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
         drawMargins.setTop(drawMargins.top() - tileHeight);
@@ -241,10 +246,14 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
         rect.translate(-layerPos);
 
-        startX = qMax(qFloor(rect.x() / tileWidth), 0);
-        startY = qMax(qFloor(rect.y() / tileHeight), 0);
-        endX = qMin(qCeil(rect.right()) / tileWidth, endX);
-        endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
+        if (!layer->repeatedX()) {
+            startX = qMax(qFloor(rect.x() / tileWidth), 0);
+            endX = qMin(qCeil(rect.right()) / tileWidth, endX);
+        }
+        if (!layer->repeatedY()) {
+            startY = qMax(qFloor(rect.y() / tileHeight), 0);
+            endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
+        }
     }
 
     // Return immediately when there is nothing to draw

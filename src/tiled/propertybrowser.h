@@ -150,7 +150,11 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        CustomProperty
+        CustomProperty,
+        MoveSpeedXProperty,
+        MoveSpeedYProperty,
+        RepeatedXProperty,
+        RepeatedYProperty
     };
 
     void addMapProperties();

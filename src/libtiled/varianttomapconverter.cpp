@@ -340,6 +340,13 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
         const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
                              variantMap[QLatin1String("offsety")].toDouble());
         layer->setOffset(offset);
+
+        const QPointF moveSpeed(variantMap[QLatin1String("moveSpeedX")].toDouble(),
+                             variantMap[QLatin1String("moveSpeedY")].toDouble());
+        layer->setMoveSpeed(moveSpeed);
+
+        layer->setRepeatedX(variantMap[QLatin1String("repeatedX")].toBool());
+        layer->setRepeatedY(variantMap[QLatin1String("repeatedY")].toBool());
     }
 
     return layer;

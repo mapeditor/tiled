@@ -105,5 +105,72 @@ private:
     QPointF mNewOffset;
 };
 
+/**
+ * Used for changing the layer move speed.
+ */
+class SetLayerMoveSpeed : public QUndoCommand
+{
+public:
+    SetLayerMoveSpeed(MapDocument *mapDocument,
+                   Layer *layer,
+                   const QPointF &offset,
+                   QUndoCommand *parent = nullptr);
+
+    void undo() override { setMoveSpeed(mOldOffset); }
+    void redo() override { setMoveSpeed(mNewOffset); }
+
+    int id() const override { return Cmd_ChangeLayerOffset; }
+
+private:
+    void setMoveSpeed(const QPointF &moveSpeed);
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    QPointF mOldOffset;
+    QPointF mNewOffset;
+};
+
+/**
+ * Used for changing layer horizontal repetition.
+ */
+class SetLayerRepeatedX : public QUndoCommand
+{
+public:
+    SetLayerRepeatedX(MapDocument *mapDocument,
+                    Layer *layer,
+                    bool repeatedX);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    bool mRepeatedX;
+};
+
+/**
+ * Used for changing layer vertical repetition.
+ */
+class SetLayerRepeatedY : public QUndoCommand
+{
+public:
+    SetLayerRepeatedY(MapDocument *mapDocument,
+                    Layer *layer,
+                    bool repeatedY);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    bool mRepeatedY;
+};
+
 } // namespace Internal
 } // namespace Tiled

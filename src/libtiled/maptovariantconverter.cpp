@@ -487,6 +487,15 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
         layerVariant[QLatin1String("offsety")] = offset.y();
     }
 
+    const QPointF moveSpeed = layer.moveSpeed();
+    const QPointF neutral(1.0, 1.0);
+    if (moveSpeed!=neutral) {
+        layerVariant[QLatin1String("moveSpeedX")] = moveSpeed.x();
+        layerVariant[QLatin1String("moveSpeedY")] = moveSpeed.y();
+    }
+    layerVariant[QLatin1String("repeatedX")] = layer.repeatedX();
+    layerVariant[QLatin1String("repeatedY")] = layer.repeatedY();
+
     addProperties(layerVariant, layer.properties());
 }
 

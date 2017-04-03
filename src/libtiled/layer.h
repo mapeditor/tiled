@@ -154,6 +154,14 @@ public:
     void setOffset(const QPointF &offset);
     QPointF offset() const;
 
+    void setMoveSpeed(const QPointF &moveSpeed);
+    QPointF moveSpeed() const;
+
+    void setRepeatedX(const bool repeatX);
+    bool repeatedX() const;
+    void setRepeatedY(const bool repeatY);
+    bool repeatedY() const;
+
     QPointF totalOffset() const;
 
     virtual bool isEmpty() const = 0;
@@ -224,7 +232,10 @@ protected:
     int mY;
     QPointF mOffset;
     float mOpacity;
+    QPointF mMoveSpeed;
     bool mVisible;
+    bool mRepeatedX;
+    bool mRepeatedY;
     Map *mMap;
     GroupLayer *mParentLayer;
 
@@ -249,6 +260,53 @@ inline QPointF Layer::offset() const
     return mOffset;
 }
 
+/**
+ * Sets the movement speed multiplier of this layer.
+ */
+inline void Layer::setMoveSpeed(const QPointF &moveSpeed)
+{
+    mMoveSpeed = moveSpeed;
+}
+
+/**
+ * Returns the movement speed multiplier of this layer.
+ */
+inline QPointF Layer::moveSpeed() const
+{
+    return mMoveSpeed;
+}
+
+/**
+ * Sets this layer to be repeated horizontally or not.
+ */
+inline void Layer::setRepeatedX(const bool repeatX)
+{
+    mRepeatedX = repeatX;
+}
+
+/**
+ * Sets this layer to be repeated vertically or not.
+ */
+inline void Layer::setRepeatedY(const bool repeatY)
+{
+    mRepeatedY = repeatY;
+}
+
+/**
+ * Returns true if this layer is repeated horizontally.
+ */
+inline bool Layer::repeatedX() const
+{
+    return mRepeatedX;
+}
+
+/**
+ * Returns true if this layer is repeated vertically.
+ */
+inline bool Layer::repeatedY() const
+{
+    return mRepeatedY;
+}
 
 /**
  * An iterator for iterating over the layers of a map. When iterating forward,

@@ -27,6 +27,7 @@ namespace Tiled {
 
 class GroupLayer;
 class Layer;
+class TileLayer;
 class Map;
 
 namespace Internal {
@@ -81,6 +82,10 @@ public:
     void setLayerVisible(Layer *layer, bool visible);
     void setLayerOpacity(Layer *layer, float opacity);
     void setLayerOffset(Layer *layer, const QPointF &offset);
+    void setLayerMoveSpeed(Layer *layer, const QPointF &moveSpeed);
+    void setLayerRepeatedX(Layer *layer, bool repeatedX);
+    void setLayerRepeatedY(Layer *layer, bool repeatedY);
+    void setLayerSize(TileLayer *layer, const QSize &size);
 
     void renameLayer(Layer *layer, const QString &name);
 
