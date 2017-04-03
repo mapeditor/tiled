@@ -176,7 +176,7 @@ public:
     DrawOrder drawOrder() const;
     void setDrawOrder(DrawOrder drawOrder);
 
-    Layer *clone() const override;
+    ObjectGroup *clone() const override;
 
     void resetObjectIds();
     int highestObjectId() const;

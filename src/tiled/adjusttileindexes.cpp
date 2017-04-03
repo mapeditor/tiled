@@ -214,7 +214,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         ObjectGroup *objectGroup = nullptr;
         if (fromTile->objectGroup())
-            objectGroup = static_cast<ObjectGroup*>(fromTile->objectGroup()->clone());
+            objectGroup = fromTile->objectGroup()->clone();
 
         applyMetaData(toTile,
                       fromTile->properties(),

@@ -507,7 +507,7 @@ Layer *TileLayer::mergedWith(Layer *other) const
     const QRect unitedBounds = bounds().united(o->bounds());
     const QPoint offset = position() - unitedBounds.topLeft();
 
-    TileLayer *merged = static_cast<TileLayer*>(clone());
+    TileLayer *merged = clone();
     merged->resize(unitedBounds.size(), offset);
     merged->merge(o->position() - unitedBounds.topLeft(), o);
     return merged;
@@ -553,7 +553,7 @@ bool TileLayer::isEmpty() const
  *
  * \sa Layer::clone()
  */
-Layer *TileLayer::clone() const
+TileLayer *TileLayer::clone() const
 {
     return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight));
 }

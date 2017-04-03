@@ -327,7 +327,7 @@ public:
      */
     bool isEmpty() const override;
 
-    virtual Layer *clone() const override;
+    TileLayer *clone() const override;
 
     // Enable easy iteration over cells with range-based for
     QVector<Cell>::iterator begin() { return mGrid.begin(); }

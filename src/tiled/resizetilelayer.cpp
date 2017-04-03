@@ -43,7 +43,7 @@ ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
     , mOriginalLayer(layer)
 {
     // Create the resized layer (once)
-    mResizedLayer = static_cast<TileLayer*>(layer->clone());
+    mResizedLayer = layer->clone();
     mResizedLayer->resize(size, offset);
 }
 

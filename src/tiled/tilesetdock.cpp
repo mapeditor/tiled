@@ -530,7 +530,7 @@ void TilesetDock::deleteTilesetView(int index)
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
-        TileLayer *cleaned = static_cast<TileLayer *>(mCurrentTiles->clone());
+        TileLayer *cleaned = mCurrentTiles->clone();
         cleaned->removeReferencesToTileset(tileset);
         setCurrentTiles(cleaned);
     }

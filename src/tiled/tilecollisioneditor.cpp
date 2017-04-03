@@ -193,7 +193,7 @@ void TileCollisionEditor::setTile(Tile *tile)
 
         ObjectGroup *objectGroup;
         if (tile->objectGroup())
-            objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+            objectGroup = tile->objectGroup()->clone();
         else
             objectGroup = new ObjectGroup;
 
@@ -253,8 +253,8 @@ void TileCollisionEditor::applyChanges()
         return;
 
     MapDocument *dummyDocument = mMapScene->mapDocument();
-    Layer *objectGroup = dummyDocument->map()->layerAt(1);
-    ObjectGroup *clonedGroup = static_cast<ObjectGroup*>(objectGroup->clone());
+    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(dummyDocument->map()->layerAt(1));
+    ObjectGroup *clonedGroup = objectGroup->clone();
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
@@ -279,7 +279,7 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
     ObjectGroup *objectGroup;
     if (tile->objectGroup())
-        objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+        objectGroup = tile->objectGroup()->clone();
     else
         objectGroup = new ObjectGroup;
 

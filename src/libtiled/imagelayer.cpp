@@ -73,7 +73,7 @@ bool ImageLayer::isEmpty() const
     return mImage.isNull();
 }
 
-Layer *ImageLayer::clone() const
+ImageLayer *ImageLayer::clone() const
 {
     return initializeClone(new ImageLayer(mName, mX, mY));
 }

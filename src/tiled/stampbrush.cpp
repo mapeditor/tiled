@@ -412,7 +412,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                     if ((stampStaggerIndex == mapStaggerIndex) == topIsOdd) {
                         TileLayer *shiftedStamp = shiftedCopies.value(stamp);
                         if (!shiftedStamp) {
-                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedStamp = stamp->clone();
                             shiftedCopies.insert(stamp, shiftedStamp);
 
                             shiftedStamp->resize(QSize(shiftedStamp->width() + 1, shiftedStamp->height()), QPoint());
@@ -431,7 +431,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                     if ((stampStaggerIndex == mapStaggerIndex) == leftIsOdd) {
                         TileLayer *shiftedStamp = shiftedCopies.value(stamp);
                         if (!shiftedStamp) {
-                            shiftedStamp = static_cast<TileLayer *>(stamp->clone());
+                            shiftedStamp = stamp->clone();
                             shiftedCopies.insert(stamp, shiftedStamp);
 
                             shiftedStamp->resize(QSize(shiftedStamp->width(), shiftedStamp->height() + 1), QPoint());
