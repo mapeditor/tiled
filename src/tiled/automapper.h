@@ -178,9 +178,8 @@ private:
     /**
      * sets up the tilesets which are used in automapping.
      * @return returns true when anything is ok, false when errors occurred.
-     *        (in that case will be a msg box anyway)
      */
-    bool setupTilesets(Map *src, Map *dst);
+    bool setupTilesets();
 
     /**
      * Returns the conjunction of all regions of all setlayers.

@@ -337,7 +337,7 @@ bool AutoMapper::prepareAutoMap()
     if (!setupCorrectIndexes())
         return false;
 
-    if (!setupTilesets(mMapRules, mMapWork))
+    if (!setupTilesets())
         return false;
 
     return true;
@@ -375,7 +375,7 @@ bool AutoMapper::setupMissingLayers()
 
 bool AutoMapper::setupCorrectIndexes()
 {
-    // make sure all indexes of the layer translationtables are correct.
+    // make sure all indexes of the layer translation tables are correct.
     for (RuleOutput &translationTable : mLayerList) {
         foreach (Layer *layerKey, translationTable.keys()) {
             QString name = layerKey->name();
@@ -396,44 +396,16 @@ bool AutoMapper::setupCorrectIndexes()
     return true;
 }
 
-// This cannot just be replaced by MapDocument::unifyTileset(Map),
-// because here mAddedTileset is modified.
-bool AutoMapper::setupTilesets(Map *src, Map *dst)
+bool AutoMapper::setupTilesets()
 {
-    const QVector<SharedTileset> &existingTilesets = dst->tilesets();
-    TilesetManager *tilesetManager = TilesetManager::instance();
+    Q_ASSERT(mAddedTilesets.isEmpty());
 
-    // Add tilesets that are not yet part of dst map
-    for (const SharedTileset &tileset : src->tilesets()) {
-        if (existingTilesets.contains(tileset))
-            continue;
+    mMapDocument->unifyTilesets(mMapRules, mAddedTilesets);
 
-        QUndoStack *undoStack = mMapDocument->undoStack();
+    const auto &addedTilesets = mAddedTilesets;
+    for (const SharedTileset &tileset : addedTilesets)
+        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
 
-        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
-        if (!replacement) {
-            mAddedTilesets.append(tileset);
-            undoStack->push(new AddTileset(mMapDocument, tileset));
-            continue;
-        }
-
-        // Merge the tile properties
-        for (Tile *replacementTile : replacement->tiles()) {
-            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
-                Properties properties = replacementTile->properties();
-                properties.merge(originalTile->properties());
-                undoStack->push(new ChangeProperties(mMapDocument,
-                                                     tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
-            }
-        }
-
-        if (src->replaceTileset(tileset, replacement))
-            tilesetManager->addReference(replacement);
-
-        tilesetManager->removeReference(tileset);
-    }
     return true;
 }
 
