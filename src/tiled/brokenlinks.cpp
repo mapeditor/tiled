@@ -205,6 +205,7 @@ QVariant BrokenLinksModel::data(const QModelIndex &index, int role) const
             }
             break;
         }
+        break;
 
     case Qt::DecorationRole:
         switch (index.column()) {

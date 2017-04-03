@@ -1012,6 +1012,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
             offset.setY(val.toDouble());
 
         command = new SetLayerOffset(mMapDocument, layer, offset);
+        break;
     }
     default:
         switch (layer->layerType()) {

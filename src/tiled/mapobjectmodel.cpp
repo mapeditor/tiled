@@ -130,9 +130,8 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                         + QLatin1String(", ")
                         + QString::number(mapObject->y())
                         + QLatin1Char(')');
-            default:
-                break;
             }
+            break;
         case Qt::ForegroundRole:
             if (index.column() == 1) {
                 const QPalette palette = QApplication::palette();
@@ -140,8 +139,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                                                                         : QPalette::Active;
                 return palette.brush(typeColorGroup, QPalette::WindowText);
             }
-        case Qt::DecorationRole:
-            return QVariant(); // no icon -> maybe the color?
+            return QVariant();
         case Qt::CheckStateRole:
             if (index.column() > 0)
                 return QVariant();
