@@ -374,7 +374,7 @@ public:
     void initializeObjectIds(ObjectGroup &objectGroup);
 
 private:
-    friend class GroupLayer;    // so it cal call adoptLayer
+    friend class GroupLayer;    // so it can call adoptLayer
 
     void adoptLayer(Layer *layer);
 
