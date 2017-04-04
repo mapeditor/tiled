@@ -772,6 +772,7 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
     for (auto it = layerTranslation.begin(), end = layerTranslation.end(); it != end; ++it) {
         Layer *from = it.key();
         Layer *to = mMapWork->layerAt(it.value());
+
         foreach (const QRect &rect, region.rects()) {
             if (TileLayer *fromTileLayer = from->asTileLayer()) {
                 TileLayer *toTileLayer = to->asTileLayer();
@@ -789,6 +790,18 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
                                  rect.x() + offset.x(), rect.y() + offset.y());
             } else {
                 Q_ASSERT(false);
+            }
+        }
+
+        // Copy any custom properties set on the output layer
+        if (!from->properties().isEmpty()) {
+            Properties mergedProperties = to->properties();
+            mergedProperties.merge(from->properties());
+
+            if (mergedProperties != to->properties()) {
+                QUndoStack *undoStack = mMapDocument->undoStack();
+                undoStack->push(new ChangeProperties(mMapDocument, QString(),
+                                                     to, mergedProperties));
             }
         }
     }
