@@ -31,7 +31,6 @@
 
 #include "tiled_global.h"
 
-#include "hex.h"
 #include "map.h"
 #include "layer.h"
 #include "tiled.h"
@@ -268,7 +267,7 @@ public:
      * are rotated within the layer, and the tiles themselves are rotated. The
      * dimensions of the tile layer are swapped.
      */
-    void rotateHexagonal(RotateDirection direction, Map::StaggerIndex staggerIndex, Map::StaggerAxis staggerAxis);
+    void rotateHexagonal(RotateDirection direction, Map *map);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.

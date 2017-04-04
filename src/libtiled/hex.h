@@ -33,6 +33,9 @@
 
 namespace Tiled {
 
+/**
+ * Represents a hex position in cube coordinates.
+ */
 class Hex
 {
 public:
@@ -63,10 +66,8 @@ public:
                       Map::StaggerIndex staggerIndex,
                       Map::StaggerAxis staggerAxis);
 
-    Hex operator + (Hex h) const;
+    Hex operator +(Hex h) const;
     Hex operator -(Hex h) const;
-    Hex operator *(float f) const;
-    Hex operator /(float f) const;
     Hex& operator +=(Hex h);
     Hex& operator -=(Hex h);
 

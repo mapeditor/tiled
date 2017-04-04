@@ -126,16 +126,6 @@ Hex Hex::operator -(Hex h) const
     return Hex(mX - h.x(), mY - h.y(), mZ - h.z());
 }
 
-Hex Hex::operator *(float f) const
-{
-    return Hex(mX * f, mY * f, mZ * f);
-}
-
-Hex Hex::operator /(float f) const
-{
-    return Hex(mX / f, mY / f, mZ / f);
-}
-
 Hex& Hex::operator +=(Hex h)
 {
     mX += h.x();
