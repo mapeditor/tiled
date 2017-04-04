@@ -504,8 +504,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
         toggleClearView(false);
         writeSettings();
         event->accept();
-    } else
+    } else {
         event->ignore();
+    }
 }
 
 void MainWindow::changeEvent(QEvent *event)
@@ -1133,8 +1134,8 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
-    QList<QDockWidget*> docks = this->findChildren<QDockWidget*>();
-    QList<QToolBar*> toolbars = this->findChildren<QToolBar*>();
+    QList<QDockWidget*> docks = findChildren<QDockWidget*>();
+    QList<QToolBar*> toolbars = findChildren<QToolBar*>();
 
     if (clearView) {
         mHiddenDocks.clear();
@@ -1142,12 +1143,12 @@ void MainWindow::toggleClearView(bool clearView)
 
         for (auto dock : docks) {
             if (dock->isVisible())
-                mHiddenDocks.push_back(dock);
+                mHiddenDocks.append(dock);
             dock->hide();
         }
         for (auto toolbar : toolbars) {
             if (toolbar->isVisible())
-                mHiddenToolbars.push_back(toolbar);
+                mHiddenToolbars.append(toolbar);
             toolbar->hide();
         }      
     } else {
@@ -1155,6 +1156,9 @@ void MainWindow::toggleClearView(bool clearView)
             dock->show();
         for (auto toolbar : mHiddenToolbars)
             toolbar->show();
+
+        mHiddenDocks.clear();
+        mHiddenToolbars.clear();
     }
 }
 
