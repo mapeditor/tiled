@@ -600,7 +600,7 @@
     <string>Clear View</string>
    </property>
    <property name="shortcut">
-    <string>Q</string>
+    <string>Tab</string>
    </property>
   </action>
  </widget>

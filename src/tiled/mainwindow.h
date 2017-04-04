@@ -228,6 +228,9 @@ private:
     TsxTilesetFormat *mTsxTilesetFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
+
+    QList<QDockWidget*> mHiddenDocks;
+    QList<QToolBar*> mHiddenToolbars;
 };
 
 } // namespace Internal

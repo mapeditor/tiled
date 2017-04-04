@@ -499,16 +499,12 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (confirmAllSave())
-    {
+    if (confirmAllSave()) {
         //Make sure user won't end up in view mode on next launch
-        if(mUi->actionClearView->isChecked())
-            toggleClearView(false);
-
+        toggleClearView(false);
         writeSettings();
         event->accept();
-    }
-    else
+    } else
         event->ignore();
 }
 
@@ -1137,41 +1133,31 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
-    //Static vectors keep list of visible docks and toolbars before toggle
-    static std::vector<bool> visibleDocks, visibleToolbars;
     QList<QDockWidget*> docks = this->findChildren<QDockWidget*>();
     QList<QToolBar*> toolbars = this->findChildren<QToolBar*>();
 
-    if(clearView)
-    {
-        visibleDocks.clear();
-        visibleToolbars.clear();
-        mDocumentManager->saveState();
-        for(auto dock : docks)
-        {
-            visibleDocks.push_back(dock->isVisible());
+    if (clearView) {
+        mHiddenDocks.clear();
+        mHiddenToolbars.clear();
+
+        for (auto dock : docks) {
+            if (dock->isVisible())
+                mHiddenDocks.push_back(dock);
             dock->hide();
         }
-        for(auto toolbar : toolbars)
-        {
-            visibleToolbars.push_back(toolbar->isVisible());
-            toolbar->setVisible(false);
-        }
-    }
-    else
-    {
-        if(visibleDocks.empty() || visibleToolbars.empty())
-            return;
-        for(auto i=0; i<docks.size(); i++)
-        {
-            if(visibleDocks.at(i))
-                docks.at(i)->show();
-        }
-        for(auto i=0; i<toolbars.size(); i++)
-        {
-            if(visibleToolbars.at(i))
-                toolbars.at(i)->show();
-        }
+        for (auto toolbar : toolbars) {
+            if (toolbar->isVisible())
+                mHiddenToolbars.push_back(toolbar);
+            toolbar->hide();
+        }      
+        //mUi->menuBar->hide();
+    } else {
+        //mUi->menuBar->show();
+        for (auto dock : mHiddenDocks)
+            dock->show();
+
+        for (auto toolbar : mHiddenToolbars)
+            toolbar->show();
     }
 }
 
