@@ -25,8 +25,12 @@
 #include "languagemanager.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
+#include "actionshortcuthandler.h"
 
 #include <QSortFilterProxyModel>
+#include <QList>
+#include <QVector>
+#include <QTreeWidget>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -108,6 +112,16 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
+
+    // Keyboard Shortcut Tab ----------------------------
+    QString toolText;
+    foreach (QAction *_action, ActionShortcutHandler::getInstance().getActionList()) {
+        // Get tooltip of current QAction
+        toolText = ActionShortcutHandler::getInstance().getToolip(_action);
+        addItem(toolText, _action->shortcut().toString()); // Add item to our tree
+        originalKeySequences.append(_action->shortcut()); // Add key sequence to original list
+        itemIndex.insert(toolText, _action); // Save the connection between the tooltip and QAction
+    }
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -212,4 +226,57 @@ void PreferencesDialog::checkForUpdates()
         updater->checkForUpdates();
         // todo: do something with the last checked label
     }
+}
+
+/* ----------  Keyboard Shortcut Tab Functions  ----- Logan Spencer ------  */
+void PreferencesDialog::addItem(QString name, QString key) {
+    QTreeWidgetItem *item = new QTreeWidgetItem(mUi->scWidget);
+    item->setText(0, name);
+    item->setText(1, key);
+    mUi->scWidget->addTopLevelItem(item);
+}
+
+/* Resets the values of the shortcuts back to their state when the windows was opened */
+void Tiled::Internal::PreferencesDialog::on_resetButton_clicked()
+{
+    // Reset all changed shorcuts since window opening
+    int i = 0;
+    foreach (QAction *_action, ActionShortcutHandler::getInstance().getActionList()) {
+        _action->setShortcut(originalKeySequences.at(i));
+        ActionShortcutHandler::getInstance().updateActionShortcutText(_action);
+        mUi->scWidget->topLevelItem(i++)->setText(1, _action->shortcut().toString());
+    }
+
+}
+
+/* If a new item is selected we need to update what we are trying to control, this
+ * gets the selection and ensures that what we are editing is what we have selected */
+void Tiled::Internal::PreferencesDialog::on_scWidget_itemSelectionChanged()
+{
+    QList<QTreeWidgetItem*> selectedCommand = mUi->scWidget->selectedItems();
+    QString str;
+    QTreeWidgetItem *_selected = selectedCommand.at(0);
+    str = _selected->text(0);
+
+    mUi->keySequenceEdit->setKeySequence(itemIndex.find(str).value()->shortcut());
+}
+
+void Tiled::Internal::PreferencesDialog::on_keySequenceEdit_editingFinished()
+{
+    // Get selected command, have to return as a list then get index 0 of that list
+    QList<QTreeWidgetItem*> selectedCommand = mUi->scWidget->selectedItems();
+    QTreeWidgetItem *_selected = selectedCommand.at(0);
+
+    // Get the text of the first column, this is used as the identifier for our items
+    QString str;
+    str = _selected->text(0);
+
+    //Get the QAction at the index where our str is, then set the new shortcut key
+    itemIndex.find(str).value()->setShortcut(mUi->keySequenceEdit->keySequence());
+
+    // Reset shortcut text in Widget
+    _selected->setText(1, mUi->keySequenceEdit->keySequence().toString());
+
+    // Update the shortcut text held by our Global UpdateActionShorcutClass
+    ActionShortcutHandler::getInstance().updateActionShortcutText(itemIndex.find(str).value());
 }
