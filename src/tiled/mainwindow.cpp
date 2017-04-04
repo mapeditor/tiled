@@ -316,6 +316,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
+    connect(mUi->actionClearView, &QAction::toggled, this, &MainWindow::toggleClearView);
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
@@ -498,12 +499,14 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    writeSettings();
-
-    if (confirmAllSave())
+    if (confirmAllSave()) {
+        //Make sure user won't end up in view mode on next launch
+        toggleClearView(false);
+        writeSettings();
         event->accept();
-    else
+    } else {
         event->ignore();
+    }
 }
 
 void MainWindow::changeEvent(QEvent *event)
@@ -1127,6 +1130,36 @@ void MainWindow::setFullScreen(bool fullScreen)
         setWindowState(windowState() | Qt::WindowFullScreen);
     else
         setWindowState(windowState() & ~Qt::WindowFullScreen);
+}
+
+void MainWindow::toggleClearView(bool clearView)
+{
+    QList<QDockWidget*> docks = findChildren<QDockWidget*>();
+    QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+
+    if (clearView) {
+        mHiddenDocks.clear();
+        mHiddenToolbars.clear();
+
+        for (auto dock : docks) {
+            if (dock->isVisible())
+                mHiddenDocks.append(dock);
+            dock->hide();
+        }
+        for (auto toolbar : toolbars) {
+            if (toolbar->isVisible())
+                mHiddenToolbars.append(toolbar);
+            toolbar->hide();
+        }      
+    } else {
+        for (auto dock : mHiddenDocks)
+            dock->show();
+        for (auto toolbar : mHiddenToolbars)
+            toolbar->show();
+
+        mHiddenDocks.clear();
+        mHiddenToolbars.clear();
+    }
 }
 
 bool MainWindow::newTileset(const QString &path)
