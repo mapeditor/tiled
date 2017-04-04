@@ -1150,12 +1150,9 @@ void MainWindow::toggleClearView(bool clearView)
                 mHiddenToolbars.push_back(toolbar);
             toolbar->hide();
         }      
-        //mUi->menuBar->hide();
     } else {
-        //mUi->menuBar->show();
         for (auto dock : mHiddenDocks)
             dock->show();
-
         for (auto toolbar : mHiddenToolbars)
             toolbar->show();
     }
