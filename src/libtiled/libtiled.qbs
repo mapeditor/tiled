@@ -42,6 +42,8 @@ DynamicLibrary {
         "gidmapper.h",
         "grouplayer.cpp",
         "grouplayer.h",
+        "hex.cpp",
+        "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
         "imagelayer.cpp",

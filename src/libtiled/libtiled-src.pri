@@ -4,6 +4,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/filesystemwatcher.cpp \
     $$PWD/gidmapper.cpp \
     $$PWD/grouplayer.cpp \
+    $$PWD/hex.cpp \
     $$PWD/hexagonalrenderer.cpp \
     $$PWD/imagelayer.cpp \
     $$PWD/imagereference.cpp \
@@ -33,6 +34,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/filesystemwatcher.h \
     $$PWD/gidmapper.h \
     $$PWD/grouplayer.h \
+    $$PWD/hex.h \
     $$PWD/hexagonalrenderer.h \
     $$PWD/imagelayer.h \
     $$PWD/imagereference.h \

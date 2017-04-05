@@ -1,4 +1,4 @@
-/* 
+/*
  * tilelayer.cpp
  * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
@@ -29,8 +29,8 @@
 
 #include "tilelayer.h"
 
-#include "map.h"
 #include "tile.h"
+#include "hex.h"
 
 using namespace Tiled;
 
@@ -312,11 +312,26 @@ void TileLayer::rotate(RotateDirection direction)
     mGrid = newGrid;
 }
 
-void TileLayer::rotateHexagonal(RotateDirection direction)
+void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 {
-    int newWidth = mHeight;
-    int newHeight = mWidth;
+    Map::StaggerIndex staggerIndex = map->staggerIndex();
+    Map::StaggerAxis staggerAxis = map->staggerAxis();
+
+    Hex bottomRight(mWidth, mHeight, staggerIndex, staggerAxis);
+    Hex topRight(mWidth, 0, staggerIndex, staggerAxis);
+    Hex center(mWidth / 2, mHeight / 2, staggerIndex, staggerAxis);
+
+    bottomRight -= center;
+    topRight -= center;
+
+    bottomRight.rotate(RotateRight);
+    topRight.rotate(RotateRight);
+
+    int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
+    int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
     QVector<Cell> newGrid(newWidth * newHeight);
+
+    Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
     /* https://github.com/bjorn/tiled/pull/1447
 
@@ -360,16 +375,34 @@ void TileLayer::rotateHexagonal(RotateDirection direction)
             dest.setFlippedAntiDiagonally((mask & 2) != 0);
             dest.setRotatedHexagonal120((mask & 1) != 0);
 
-            if (direction == RotateRight)
-                newGrid[x * newWidth + (mHeight - y - 1)] = dest;
-            else
-                newGrid[(mWidth - x - 1) * newWidth + y] = dest;
+            Hex rotatedHex(x, y, staggerIndex, staggerAxis);
+            rotatedHex -= center;
+            rotatedHex.rotate(direction);
+            rotatedHex += newCenter;
+
+            QPoint rotatedPoint = rotatedHex.toStaggered(staggerIndex, staggerAxis);
+
+            int index = rotatedPoint.y() * newWidth + rotatedPoint.x();
+
+            newGrid[index] = dest;
         }
     }
 
     mWidth = newWidth;
     mHeight = newHeight;
     mGrid = newGrid;
+
+    QRect filledRect = region().boundingRect();
+
+    if (staggerAxis == Map::StaggerY) {
+        if (filledRect.y() & 1)
+            map->invertStaggerIndex();
+    } else {
+        if (filledRect.x() & 1)
+            map->invertStaggerIndex();
+    }
+
+    resize(filledRect.size(), -filledRect.topLeft());
 }
 
 
