@@ -264,8 +264,9 @@ public:
 
     /**
      * Hexagonal rotate this tile layer by 60 degrees left or right. The tile positions
-     * are rotated within the layer, and the tiles themselves are rotated. The
-     * dimensions of the tile layer are swapped.
+     * are rotated within the layer, and the tiles themselves are rotated.
+     * As a temporary measure, a Map* is passed to give information about stagger index
+     * and axis, which affects rotation. The stagger index of this map can change.
      */
     void rotateHexagonal(RotateDirection direction, Map *map);
 
