@@ -135,12 +135,7 @@ void ResizeHelper::paintEvent(QPaintEvent *)
     pen.setColor(Qt::white);
 
     painter.setOpacity(0.5);
-    QImage minimap = QImage(oldRect.width() * mScale, oldRect.height() * mScale, QImage::Format_ARGB32_Premultiplied);
-    mMiniMapRenderer->renderToImage(minimap, MiniMapRenderer::DrawObjects
-                                           | MiniMapRenderer::DrawImages
-                                           | MiniMapRenderer::DrawTiles
-                                           | MiniMapRenderer::IgnoreInvisibleLayer);
-    painter.drawImage(oldRect, minimap);
+    painter.drawImage(oldRect, mMinimap);
 
     pen.setColor(Qt::black);
     pen.setStyle(Qt::DashLine);
@@ -197,6 +192,12 @@ void ResizeHelper::recalculateScale()
     const double scaleW = _size.width() / (double) width;
     const double scaleH = _size.height() / (double) height;
     mScale = qMin(scaleW, scaleH);
+
+    mMinimap = QImage(mOldSize * mScale, QImage::Format_ARGB32_Premultiplied);
+    mMiniMapRenderer->renderToImage(mMinimap, MiniMapRenderer::DrawObjects
+                                           | MiniMapRenderer::DrawImages
+                                           | MiniMapRenderer::DrawTiles
+                                           | MiniMapRenderer::IgnoreInvisibleLayer);
 
     update();
 }

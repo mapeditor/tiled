@@ -107,6 +107,7 @@ private:
     double mScale;
 
     MiniMapRenderer* mMiniMapRenderer;
+    QImage mMinimap;
 };
 
 } // namespace Internal
