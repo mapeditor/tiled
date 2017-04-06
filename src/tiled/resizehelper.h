@@ -90,6 +90,8 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void wheelEvent(QWheelEvent *event) override;
+
     void resizeEvent(QResizeEvent *event) override;
 
     void recalculateScale();
@@ -108,6 +110,7 @@ private:
 
     MiniMapRenderer* mMiniMapRenderer;
     QImage mMinimap;
+    double mZoom = 0;
 };
 
 } // namespace Internal

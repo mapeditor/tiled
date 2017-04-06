@@ -154,6 +154,15 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+void ResizeHelper::wheelEvent(QWheelEvent *event)
+{
+    if (event->delta() > 0)// zooming in
+        mZoom += 0.2;
+    else
+        mZoom -= 0.2;
+    recalculateScale();
+}
+
 void ResizeHelper::resizeEvent(QResizeEvent *)
 {
     recalculateScale();
@@ -177,7 +186,16 @@ void ResizeHelper::recalculateScale()
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;
     const double scaleH = _size.height() / (double) height;
-    const double newScale = qMin(scaleW, scaleH);
+    double newScale = qMin(scaleW, scaleH);
+
+    const double maxScaleW = _size.width() / (double) mNewSize.width();
+    const double maxScaleH = _size.height() / (double) mNewSize.height();
+    const double maxScaleAdd = qMin(maxScaleW, maxScaleH) - newScale;
+
+    mZoom = qMin(mZoom, maxScaleAdd);
+    mZoom = qMax(mZoom, 0.0);
+
+    newScale += mZoom;
 
     if (newScale != mScale) {
         mScale = newScale;
