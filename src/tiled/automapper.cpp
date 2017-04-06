@@ -206,6 +206,13 @@ bool AutoMapper::setupRuleMapTileLayers()
                 continue;
             }
 
+            // for each index, creates an InputIndex, that will
+            // hold all the InputConditions for each layer that exist
+            // with this index, and index them by name.
+            // So an InputConditions holds all the layer that share
+            // the same name and index.
+            // The InputConditions are divided in listNo and listYes.
+
             mInputRules.names.insert(name);
 
             if (!mInputRules.contains(index))
@@ -221,6 +228,7 @@ bool AutoMapper::setupRuleMapTileLayers()
 
             continue;
         }
+        // Update output tile and object layer list.
 
         if (layerName.startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             if (layer->isTileLayer())
@@ -279,6 +287,16 @@ static bool compareRuleRegion(const QRegion &r1, const QRegion &r2)
     return p1.y() < p2.y() || (p1.y() == p2.y() && p1.x() < p2.x());
 }
 
+/* Get the list of coherentRegions from the union of mLayerInputRegions and
+ * mLayerOutputRegions, then checks that inputRegions match with
+ * outputRegions
+ * cf geometry.cpp for coherentRegions,
+ * 'coherent' means that either the rectangle is overlapping the region or
+ * the rectangle contains at least one tile, which is a direct neighbour
+ * to a tile, which belongs to the region.
+ * coherentRegions returns an array of coherentRegions from a region.
+ */
+
 bool AutoMapper::setupRuleList()
 {
     Q_ASSERT(mRulesInput.isEmpty());
@@ -297,6 +315,11 @@ bool AutoMapper::setupRuleList()
     mRulesInput.resize(combinedRegions.size());
     mRulesOutput.resize(combinedRegions.size());
 
+    /*  adds all the inputRegion that form a coherentRegion with a 
+     *  combinedRegion (ie a coherent region resulting from the union of
+     *  input and output Region) to the mRulesInput
+     */
+
     for (const QRegion &reg : rulesInput) {
         for (int i = 0; i < combinedRegions.size(); ++i) {
             if (reg.intersects(combinedRegions[i])) {
@@ -306,6 +329,8 @@ bool AutoMapper::setupRuleList()
         }
     }
 
+    // Does the same for outputRegions
+
     for (const QRegion &reg : rulesOutput) {
         for (int i = 0; i < combinedRegions.size(); ++i) {
             if (reg.intersects(combinedRegions[i])) {
@@ -314,6 +339,10 @@ bool AutoMapper::setupRuleList()
             }
         }
     }
+
+    /*  Checks that an inputRegion and an outputRegion of the same idx form
+     *  a coherent region
+     * */
 
     Q_ASSERT(mRulesInput.size() == mRulesOutput.size());
     for (int i = 0; i < mRulesInput.size(); ++i) {
@@ -346,6 +375,8 @@ bool AutoMapper::setupMissingLayers()
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     // make sure all needed layers are there:
+    //  Creates the missing ones if needed
+
     foreach (const QString &name, mTouchedTileLayers) {
         if (mMapWork->indexOfLayer(name, Layer::TileLayerType) != -1)
             continue;
@@ -374,6 +405,8 @@ bool AutoMapper::setupMissingLayers()
 bool AutoMapper::setupCorrectIndexes()
 {
     // make sure all indexes of the layer translation tables are correct.
+    // apply corrections where needed 
+
     for (RuleOutput &translationTable : mLayerList) {
         foreach (Layer *layerKey, translationTable.keys()) {
             QString name = layerKey->name();
@@ -397,7 +430,6 @@ bool AutoMapper::setupCorrectIndexes()
 bool AutoMapper::setupTilesets()
 {
     Q_ASSERT(mAddedTilesets.isEmpty());
-
     mMapDocument->unifyTilesets(mMapRules, mAddedTilesets);
 
     const auto &addedTilesets = mAddedTilesets;
@@ -508,9 +540,16 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
         bool anyMatch = false;
 
         const auto &inputRules = mInputRules;
+
+        // Loops on all inputIndex for the given inputRules
+        // inputIndex are the rules associated with a single numeral index
         for (const InputIndex &inputIndex : inputRules) {
             bool allLayerNamesMatch = true;
 
+            // iterator for the InputConditions for each inputIndex, 
+            // indexed by name.
+            // Rem: an InputConditions is made of a listYes and listNo for
+            // all the input and inputnot layers of the same name and idx
             QMapIterator<QString, InputConditions> inputIndexIterator(inputIndex);
             while (inputIndexIterator.hasNext()) {
                 inputIndexIterator.next();
@@ -519,16 +558,25 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
                 const InputConditions &conditions = inputIndexIterator.value();
 
                 const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
+                bool dummyCreated = false;
+                const TileLayer *setLayer;
+                // If the inputLayer has no matching work map layer,
+                // we create a dummy empty one
                 if (i == -1) {
-                    allLayerNamesMatch = false;
-                } else {
-                    const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
-                    allLayerNamesMatch &= compareLayerTo(setLayer,
-                                                         conditions.listYes,
-                                                         conditions.listNo,
-                                                         ruleInputRegion,
-                                                         QPoint(x, y));
+                    dummyCreated = true;
+                    setLayer = new TileLayer(name, 0, 0,
+                                     mMapWork->width(),
+                                     mMapWork->height());
                 }
+                else {
+                    setLayer = mMapWork->layerAt(i)->asTileLayer();
+                }
+                allLayerNamesMatch &= compareLayerTo(setLayer,
+                                                     conditions.listYes,
+                                                     conditions.listNo,
+                                                     ruleInputRegion,
+                                                     QPoint(x, y));
+                if (dummyCreated) delete setLayer;
             }
             if (allLayerNamesMatch) {
                 anyMatch = true;
@@ -749,7 +797,7 @@ static bool compareLayerTo(const TileLayer *setLayer,
                 if (listNo.isEmpty()) {
                     if (matchListYes)
                         continue;
-                    if (!ruleDefinedListYes && !cells.contains(c1))
+                    if (!ruleDefinedListYes)
                         continue;
                     return false;
                 }
