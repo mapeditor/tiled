@@ -3101,7 +3101,7 @@ Please select specific format.</source>
         <location line="-874"/>
         <location line="+1212"/>
         <source>Views and Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд та панелі</translation>
     </message>
     <message>
         <location line="-1209"/>
@@ -3524,7 +3524,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не знайдено плиток в зображені набору плиток ,які відповідали би вказаним параметрам!</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3701,12 +3701,16 @@ Please select specific format.</source>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Дякуємо Вам за підтримку!&lt;/h3&gt;
+&lt;p&gt;Ваша підтримка в якості спонсору дуже важлива для мене - головного розробника та керівника проекту Tiled. Це дозволить мені приділяти менше часу на заробіток і більше на розвиток Tiled.&lt;/p&gt;
+&lt;p&gt;Слідкуйте за оновленнями в стрічці активності на моїй сторінці Patreon, аби бути в курсі подій у розвитку Tiled. Ще раз дякую за Вашу підтримку!&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I'm no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Я більше не спонсор</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3720,7 +3724,7 @@ Please select specific format.</source>
     <message>
         <location line="+12"/>
         <source>I'm already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Я вже спонсор!</translation>
     </message>
 </context>
 <context>
@@ -3729,12 +3733,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/preferencesdialog.cpp" line="-127"/>
         <location line="+123"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Типові системні</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Остання перевірка: %1</translation>
     </message>
 </context>
 <context>
@@ -4232,7 +4236,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Задати теку штампів</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4250,12 +4254,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>The tileset "%1" is still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Набір плиток "%1" вже використовується на карті!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вилучити набір плиток та всі посилання на плитки в даному наборі?</translation>
     </message>
     <message>
         <location line="+81"/>
@@ -4314,17 +4318,17 @@ Please select specific format.</source>
     <message>
         <location line="+57"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Одна чи більше плиток для вилучення використовується на карті!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove all references to these tiles?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вилучити всі посилання на ці плитки?</translation>
     </message>
     <message>
         <location line="-207"/>
         <source>Edit &amp;Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати інформацію дільниці</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -4413,12 +4417,12 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл на запис.</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли TMW-eAthena collision (*.wlk)</translation>
     </message>
 </context>
 <context>
@@ -4426,7 +4430,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+182"/>
         <source>TMX Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>TMX оглядач</translation>
     </message>
 </context>
 <context>
@@ -4469,7 +4473,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeobjectgroupproperties.cpp" line="+39"/>
         <source>Change Object Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити властивості прошарку об'єктів</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
@@ -4499,7 +4503,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити виділене</translation>
     </message>
     <message>
         <location filename="../src/tiled/erasetiles.cpp" line="+39"/>
@@ -4592,12 +4596,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути прошарок нижче</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути прошарок вище</translation>
     </message>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+40"/>
@@ -4618,17 +4622,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити властивості прошарку зображення</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+133"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити плитку дільниці</translation>
     </message>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити зображення дільниці</translation>
     </message>
     <message>
         <location filename="../src/tiled/changelayer.cpp" line="+41"/>
@@ -4678,24 +4682,24 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
         <source>Change Image Layer Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити позицію прошарку зображення</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути об'єкт вище</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути об'єкт нижче</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити анімацію плитки</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+16"/>
@@ -4705,38 +4709,38 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути об'єкт на передній план</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Посунути об'єкт на задній план</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Rotate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Обертати об'єкт</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити ширину плитки</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити висоту плитки</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити довжину сторони гекса</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити колір фону</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4751,17 +4755,17 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити орієнатцію</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити порядок малювання</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити формат даних прошарку</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
@@ -4778,7 +4782,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити зображення плитки</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
@@ -4788,11 +4792,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Перевернути %n об'єкт</numerusform>
+        <numerusform>Перевернути %n об'єкта</numerusform>
+        <numerusform>Перевернути %n об'єктів</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
