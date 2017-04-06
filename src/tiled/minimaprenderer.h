@@ -42,7 +42,7 @@ public:
 
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 
-    static MiniMapRenderer* instance();
+    static MiniMapRenderer& instance();
     void renderToImage(QImage& image, RenderFlags renderFlags) const;
     void setMapDocument(MapDocument* map);
 private:

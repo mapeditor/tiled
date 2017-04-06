@@ -201,7 +201,7 @@ void ResizeHelper::recalculateScale()
     if (newScale != mScale) {
         mScale = newScale;
         mMinimap = QImage(mOldSize * mScale, QImage::Format_ARGB32_Premultiplied);
-        mMiniMapRenderer->renderToImage(mMinimap, MiniMapRenderer::DrawObjects
+        mMiniMapRenderer.renderToImage(mMinimap, MiniMapRenderer::DrawObjects
                                                | MiniMapRenderer::DrawImages
                                                | MiniMapRenderer::DrawTiles
                                                | MiniMapRenderer::IgnoreInvisibleLayer);

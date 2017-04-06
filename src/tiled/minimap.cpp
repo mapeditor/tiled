@@ -74,7 +74,7 @@ void MiniMap::setMapDocument(MapDocument *map)
     }
 
     mMapDocument = map;
-    mMiniMapRenderer->setMapDocument(mMapDocument);
+    mMiniMapRenderer.setMapDocument(mMapDocument);
 
     if (mMapDocument) {
         connect(mMapDocument->undoStack(), SIGNAL(indexChanged(int)),
@@ -195,7 +195,7 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    mMiniMapRenderer->renderToImage(mMapImage, mRenderFlags);
+    mMiniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 
 void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)

@@ -35,9 +35,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MiniMapRenderer* MiniMapRenderer::instance()
+MiniMapRenderer& MiniMapRenderer::instance()
 {
-    static MiniMapRenderer* singletonRenderer = new MiniMapRenderer();
+    static MiniMapRenderer singletonRenderer;
     return singletonRenderer;
 }
 

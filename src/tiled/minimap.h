@@ -71,7 +71,7 @@ private:
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
     MiniMapRenderer::RenderFlags mRenderFlags;
-    MiniMapRenderer* mMiniMapRenderer;
+    MiniMapRenderer& mMiniMapRenderer;
 
     QRect viewportRect() const;
     QPointF mapToScene(QPoint p) const;

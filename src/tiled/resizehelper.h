@@ -108,7 +108,7 @@ private:
     bool mDragging;
     double mScale;
 
-    MiniMapRenderer* mMiniMapRenderer;
+    MiniMapRenderer& mMiniMapRenderer;
     QImage mMinimap;
     double mZoom;
 };
