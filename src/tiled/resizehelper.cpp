@@ -177,13 +177,16 @@ void ResizeHelper::recalculateScale()
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;
     const double scaleH = _size.height() / (double) height;
-    mScale = qMin(scaleW, scaleH);
+    const double newScale = qMin(scaleW, scaleH);
 
-    mMinimap = QImage(mOldSize * mScale, QImage::Format_ARGB32_Premultiplied);
-    mMiniMapRenderer->renderToImage(mMinimap, MiniMapRenderer::DrawObjects
-                                           | MiniMapRenderer::DrawImages
-                                           | MiniMapRenderer::DrawTiles
-                                           | MiniMapRenderer::IgnoreInvisibleLayer);
+    if (newScale != mScale) {
+        mScale = newScale;
+        mMinimap = QImage(mOldSize * mScale, QImage::Format_ARGB32_Premultiplied);
+        mMiniMapRenderer->renderToImage(mMinimap, MiniMapRenderer::DrawObjects
+                                               | MiniMapRenderer::DrawImages
+                                               | MiniMapRenderer::DrawTiles
+                                               | MiniMapRenderer::IgnoreInvisibleLayer);
+    }
 
     update();
 }
