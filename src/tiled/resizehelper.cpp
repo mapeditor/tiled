@@ -28,6 +28,7 @@ using namespace Tiled::Internal;
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
     , mMiniMapRenderer(MiniMapRenderer::instance())
+    , mZoom(0)
 {
     setMinimumSize(20, 20);
     setOldSize(QSize(1, 1));

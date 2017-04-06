@@ -110,7 +110,7 @@ private:
 
     MiniMapRenderer* mMiniMapRenderer;
     QImage mMinimap;
-    double mZoom = 0;
+    double mZoom;
 };
 
 } // namespace Internal
