@@ -1,7 +1,8 @@
 /*
  * minimaprenderer.h
  * Copyright 2017, Yuriy Natarov <natarur@gmail.com>
- * Based on a minimap by Christoph Schnackenberg and Thorbjørn Lindeijer
+ * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
+ * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -31,7 +32,7 @@ namespace Internal {
 class MiniMapRenderer
 {
 public:
-    enum MiniMapRenderFlag {
+    enum RenderFlag {
         DrawObjects             = 0x0001,
         DrawTiles               = 0x0002,
         DrawImages              = 0x0004,
@@ -39,10 +40,10 @@ public:
         DrawGrid                = 0x0010
     };
 
-    Q_DECLARE_FLAGS(MiniMapRenderFlags, MiniMapRenderFlag)
+    Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 
     static MiniMapRenderer* instance();
-    void renderMinimapToImage(QImage& image, const MiniMapRenderFlags minimapRenderFlags) const;
+    void renderToImage(QImage& image, RenderFlags renderFlags) const;
     void setMapDocument(MapDocument* map);
 private:
     MiniMapRenderer();
@@ -53,7 +54,7 @@ private:
     MapDocument* mMapDocument;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMapRenderer::MiniMapRenderFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMapRenderer::RenderFlags)
 
 } // namespace Internal
 } // namespace Tiled

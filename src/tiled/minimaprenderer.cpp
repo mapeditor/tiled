@@ -1,3 +1,25 @@
+/*
+ * minimaprenderer.cpp
+ * Copyright 2017, Yuriy Natarov <natarur@gmail.com>
+ * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
+ * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "minimaprenderer.h"
 
 #include "imagelayer.h"
@@ -24,21 +46,21 @@ static bool objectLessThan(const MapObject *a, const MapObject *b)
     return a->y() < b->y();
 }
 
-void MiniMapRenderer::renderMinimapToImage(QImage& image, const MiniMapRenderFlags minimapRenderFlags) const
+void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) const
 {
     if (!mMapDocument)
         return;
     
     MapRenderer *renderer = mMapDocument->renderer();
 
-    bool drawObjects = minimapRenderFlags.testFlag(MiniMapRenderFlag::DrawObjects);
-    bool drawTiles = minimapRenderFlags.testFlag(MiniMapRenderFlag::DrawTiles);
-    bool drawImages = minimapRenderFlags.testFlag(MiniMapRenderFlag::DrawImages);
-    bool drawTileGrid = minimapRenderFlags.testFlag(MiniMapRenderFlag::DrawGrid);
-    bool visibleLayersOnly = minimapRenderFlags.testFlag(MiniMapRenderFlag::IgnoreInvisibleLayer);
+    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawObjects);
+    bool drawTiles = renderFlags.testFlag(RenderFlag::DrawTiles);
+    bool drawImages = renderFlags.testFlag(RenderFlag::DrawImages);
+    bool drawTileGrid = renderFlags.testFlag(RenderFlag::DrawGrid);
+    bool visibleLayersOnly = renderFlags.testFlag(RenderFlag::IgnoreInvisibleLayer);
 
     // Remember the current render flags
-    const Tiled::RenderFlags renderFlags = renderer->flags();
+    const Tiled::RenderFlags rendererFlags = renderer->flags();
     renderer->setFlag(ShowTileObjectOutlines, false);
 
     QSize mapSize = renderer->mapSize();
@@ -109,7 +131,7 @@ void MiniMapRenderer::renderMinimapToImage(QImage& image, const MiniMapRenderFla
                            prefs->gridColor());
     }
 
-    renderer->setFlags(renderFlags);
+    renderer->setFlags(rendererFlags);
 }
 
 void MiniMapRenderer::setMapDocument(MapDocument* map)

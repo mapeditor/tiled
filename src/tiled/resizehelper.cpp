@@ -136,7 +136,7 @@ void ResizeHelper::paintEvent(QPaintEvent *)
 
     painter.setOpacity(0.5);
     QImage minimap = QImage(oldRect.width() * mScale, oldRect.height() * mScale, QImage::Format_ARGB32_Premultiplied);
-    mMiniMapRenderer->renderMinimapToImage(minimap, MiniMapRenderer::DrawObjects
+    mMiniMapRenderer->renderToImage(minimap, MiniMapRenderer::DrawObjects
                                            | MiniMapRenderer::DrawImages
                                            | MiniMapRenderer::DrawTiles
                                            | MiniMapRenderer::IgnoreInvisibleLayer);

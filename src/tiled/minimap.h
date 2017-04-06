@@ -41,8 +41,8 @@ public:
 
     void setMapDocument(MapDocument *);
 
-    MiniMapRenderer::MiniMapRenderFlags renderFlags() const { return mRenderFlags; }
-    void setRenderFlags(MiniMapRenderer::MiniMapRenderFlags flags) { mRenderFlags = flags; }
+    MiniMapRenderer::RenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(MiniMapRenderer::RenderFlags flags) { mRenderFlags = flags; }
 
     QSize sizeHint() const override;
 
@@ -70,7 +70,7 @@ private:
     QPoint mDragOffset;
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
-    MiniMapRenderer::MiniMapRenderFlags mRenderFlags;
+    MiniMapRenderer::RenderFlags mRenderFlags;
     MiniMapRenderer* mMiniMapRenderer;
 
     QRect viewportRect() const;

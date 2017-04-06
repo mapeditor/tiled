@@ -195,7 +195,7 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    mMiniMapRenderer->renderMinimapToImage(mMapImage, mRenderFlags);
+    mMiniMapRenderer->renderToImage(mMapImage, mRenderFlags);
 }
 
 void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
