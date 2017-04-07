@@ -241,7 +241,7 @@
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation>Harita en az 48 x 48 tile boyutunda olmalı!</translation>
+        <translation>Katman en az 48 x 48 tile boyutunda olmalı!</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -698,12 +698,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation>Haritayı &amp;Dengele...</translation>
+        <translation>Haritayı &amp;Kaydır...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Offsets everything in a layer</source>
-        <translation>Katmandaki her şey dengeler</translation>
+        <translation>Katmandaki her şeyi kaydırır</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1178,12 +1178,12 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/offsetmapdialog.ui" line="+17"/>
         <source>Offset Map</source>
         <translatorcomment>Daha iyi bir çeviri bulunmalı. (Tüm Offset içerikleri için.)</translatorcomment>
-        <translation>Ofset Harita</translation>
+        <translation>Harita Kaydırma</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Offset Contents of Map</source>
-        <translation>Harita İçeriğini Düzenle</translation>
+        <translation>Harita İçeriğini Kaydır</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2048,7 +2048,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+26"/>
         <source>Offset</source>
-        <translation>Ofset</translation>
+        <translation>Kaydırma</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2145,7 +2145,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation>Nesneyi Öne Getir</translation>
+        <translation>Nesneyi Yükselt</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2155,7 +2155,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation>Nesneyi Arkaya Düşür</translation>
+        <translation>Nesneyi Alçalt</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2165,7 +2165,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation>Nesneyi En Öne Getir</translation>
+        <translation>Nesneyi En Üste Yükselt</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2175,7 +2175,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
-        <translation>Nesneyi En Arkaya Düşür</translation>
+        <translation>Nesneyi En Alta Alçalt</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2840,7 +2840,7 @@ Onu değiştirmek istiyor musunuz?</translation>
         <location filename="../src/tiled/layeroffsettool.cpp" line="+38"/>
         <location line="+94"/>
         <source>Offset Layers</source>
-        <translation>Ofset Katmanları</translation>
+        <translation>Katmanları Kaydır</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -3158,15 +3158,14 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+52"/>
         <source>Offset Map</source>
-        <translation>Ofset Harita</translation>
+        <translation>Harita Kaydırma</translation>
     </message>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Çevir</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>%n Nesneyi Döndür</numerusform>
+        <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
@@ -3965,14 +3964,14 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+9"/>
         <location line="+29"/>
         <source>Horizontal Offset</source>
-        <translation>Yatay Ofset</translation>
+        <translation>Yatay Kaydırma</translation>
     </message>
     <message>
         <location line="-37"/>
         <location line="+9"/>
         <location line="+29"/>
         <source>Vertical Offset</source>
-        <translation>Dikey Ofset</translation>
+        <translation>Dikey Kaydırma</translation>
     </message>
     <message>
         <location line="-41"/>
@@ -4025,7 +4024,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+11"/>
         <source>Drawing Offset</source>
-        <translation>Çizim Ofset</translation>
+        <translation>Çizim Kaydırma</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -4535,7 +4534,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+42"/>
         <source>Offset Layer</source>
-        <translation>Ofset Katmanı</translation>
+        <translation>Katman Kaydır</translation>
     </message>
     <message>
         <location filename="../src/tiled/painttilelayer.cpp" line="+51"/>
@@ -4582,7 +4581,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+22"/>
         <source>Change Drawing Offset</source>
-        <translation>Çizim Dengesini Değiştir</translation>
+        <translation>Çizim Kaydırmasını Değiştir</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4597,12 +4596,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation>Katmanı Aşağı Taşı</translation>
+        <translation>Katmanı Alçalt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation>Katmanı Yukarı Taşı</translation>
+        <translation>Katmanı Yükselt</translation>
     </message>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+40"/>
@@ -4653,7 +4652,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation>Katman Dengesini Değiştir</translation>
+        <translation>Katman Kaydırmasını Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
@@ -4689,13 +4688,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation>Nesneyi Öne Getir</translation>
+        <translation>Nesneyi Yükselt</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation>Nesneyi Arkaya Düşür</translation>
+        <translation>Nesneyi Alçalt</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
@@ -4710,12 +4709,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation>Nesneyi En Öne Getir</translation>
+        <translation>Nesneyi En Üste Yükselt</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation>Nesneyi En Arkaya Düşür</translation>
+        <translation>Nesneyi En Alta Alçalt</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
