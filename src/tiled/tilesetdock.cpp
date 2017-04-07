@@ -35,6 +35,7 @@
 #include "preferences.h"
 #include "replacetileset.h"
 #include "swaptiles.h"
+#include "replaceselectedobjectstile.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -514,6 +515,8 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             this, &TilesetDock::updateCurrentTiles);
     connect(view, &TilesetView::swapTilesRequested,
             this, &TilesetDock::swapTiles);
+    connect(view, &TilesetView::replaceSelectedObjectsTileRequested,
+            this, &TilesetDock::replaceSelectedObjectsTile);
 }
 
 void TilesetDock::deleteTilesetView(int index)
@@ -938,4 +941,18 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
+}
+
+void TilesetDock::replaceSelectedObjectsTile(Tile *tile)
+{
+    if (!mMapDocument)
+        return;
+
+    auto &selectedObjects = mMapDocument->selectedObjects();
+
+    if (selectedObjects.isEmpty())
+        return;
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new ReplaceSelectedObjectsTile(mMapDocument, selectedObjects, tile));
 }

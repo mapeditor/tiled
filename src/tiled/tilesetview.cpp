@@ -699,6 +699,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             swapTilesAction->setEnabled(exactlyTwoTilesSelected);
             connect(swapTilesAction, SIGNAL(triggered()),
                     SLOT(swapTiles()));
+
+            bool onlyOneTileSelected =
+                    (selectionModel()->selectedIndexes().size() == 1);
+
+            QAction *replaceSelectedObjectsTileAction = menu.addAction(tr("&Replace Tile of Selected Object/s"));
+            replaceSelectedObjectsTileAction->setEnabled(onlyOneTileSelected);
+            // replaceSelectedObjectsTileAction->setEnabled(at least one object is selected);
+            connect(replaceSelectedObjectsTileAction , SIGNAL(triggered()),
+                    SLOT(replaceSelectedObjectsTile()));
         }
 
         menu.addSeparator();
@@ -753,6 +762,14 @@ void TilesetView::swapTiles()
         return;
 
     emit swapTilesRequested(tile1, tile2);
+}
+
+void TilesetView::replaceSelectedObjectsTile()
+{
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    const TilesetModel *model = tilesetModel();
+    Tile *tile = model->tileAt(selectedIndexes[0]);
+    emit replaceSelectedObjectsTileRequested(tile);
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
