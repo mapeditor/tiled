@@ -22,14 +22,16 @@ public:
                               const QList<MapObject *> &mapObjects,
                               Tile *tile);
 
-     void undo() { replace(); }
-     void redo() { replace(); }
+    void undo() { restore(); }
+    void redo() { replace(); }
 
 private:
     void replace();
+    void restore();
 
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
+    QList<Tile *> mOldTiles;
     Tile *mTile;
 };
 
