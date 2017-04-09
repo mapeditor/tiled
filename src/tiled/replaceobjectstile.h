@@ -2,8 +2,8 @@
 #define REPLACEOBJECTSTILE_H
 
 #include "undocommands.h"
-
 #include "mapobject.h"
+
 #include <QList>
 #include <QUndoCommand>
 
@@ -32,7 +32,7 @@ private:
 
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
-    QList<Tile *> mOldTiles;
+    QList<Tile *> mOriginalTiles;
     Tile *mTile;
 };
 

@@ -23,10 +23,10 @@ void ReplaceObjectsTile::replace()
 {
     Tile * const tile = mTile;
 
-    mOldTiles.clear();
+    mOriginalTiles.clear();
 
     for (MapObject *object : mMapObjects) {
-        mOldTiles.append(object->cell().tile());
+        mOriginalTiles.append(object->cell().tile());
         swapObjectTile(object, tile);
     }
 
@@ -35,8 +35,8 @@ void ReplaceObjectsTile::replace()
 
 void ReplaceObjectsTile::restore()
 {
-    for(int i=0; i<mMapObjects.size(); i++)
-        swapObjectTile(mMapObjects[i], mOldTiles[i]);
+    for (int i = 0; i < mMapObjects.size(); ++i)
+        swapObjectTile(mMapObjects[i], mOriginalTiles[i]);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
