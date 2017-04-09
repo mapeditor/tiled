@@ -190,6 +190,7 @@ SOURCES += aboutdialog.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
     reparentlayers.cpp \
+    replaceobjectstile.cpp \
     replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
@@ -239,8 +240,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    replaceobjectstile.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -362,6 +362,7 @@ HEADERS += aboutdialog.h \
     renamelayer.h \
     renameterrain.h \
     reparentlayers.h \
+    replaceobjectstile.h \
     replacetileset.h \
     resizedialog.h \
     resizehelper.h \
@@ -413,8 +414,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    replaceobjectstile.h
+    zoomable.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \
