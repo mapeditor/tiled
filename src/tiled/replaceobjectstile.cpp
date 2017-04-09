@@ -45,8 +45,6 @@ void ReplaceObjectsTile::swapObjectTile(MapObject *object, Tile *tile) {
     Cell cell = object->cell();
     cell.setTile(tile);
     object->setCell(cell);
-    if (object->size() != tile->size())
-        object->setSize(tile->size());
 }
 
 } // namespace Internal
