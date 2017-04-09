@@ -1,13 +1,9 @@
 #include "replaceobjectstile.h"
 
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "mapobjectmodel.h"
-#include "objectgroup.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
-#include <iostream>
 
 namespace Tiled {
 namespace Internal {
