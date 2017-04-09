@@ -16,7 +16,8 @@ ReplaceObjectsTile::ReplaceObjectsTile(MapDocument *mapDocument,
                                        const QList<MapObject *> &mapObjects,
                                        Tile *tile)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Replace Object/s Tile"))
+                                               "Replace %n Object/s Tile",
+                                               nullptr, mapObjects.size()))
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
     , mTile(tile)
