@@ -1,5 +1,5 @@
-#ifndef REPLACESELECTEDOBJECTSTILE_H
-#define REPLACESELECTEDOBJECTSTILE_H
+#ifndef REPLACEOBJECTSTILE_H
+#define REPLACEOBJECTSTILE_H
 
 #include "undocommands.h"
 
@@ -15,12 +15,12 @@ namespace Internal {
 
 class MapDocument;
 
-class ReplaceSelectedObjectsTile : public QUndoCommand
+class ReplaceObjectsTile : public QUndoCommand
 {
 public:
-    ReplaceSelectedObjectsTile(MapDocument *mapDocument,
-                              const QList<MapObject *> &mapObjects,
-                              Tile *tile);
+    ReplaceObjectsTile(MapDocument *mapDocument,
+                       const QList<MapObject *> &mapObjects,
+                       Tile *tile);
 
     void undo() { restore(); }
     void redo() { replace(); }
@@ -38,4 +38,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // REPLACESELECTEDOBJECTSTILE_H
+#endif // REPLACEOBJECTSTILE_H

@@ -240,7 +240,7 @@ SOURCES += aboutdialog.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
-    replaceselectedobjectstile.cpp
+    replaceobjectstile.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -414,7 +414,7 @@ HEADERS += aboutdialog.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
     zoomable.h \
-    replaceselectedobjectstile.h
+    replaceobjectstile.h
 
 FORMS += aboutdialog.ui \
     addpropertydialog.ui \

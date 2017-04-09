@@ -1,4 +1,4 @@
-#include "replaceselectedobjectstile.h"
+#include "replaceobjectstile.h"
 
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -12,17 +12,17 @@
 namespace Tiled {
 namespace Internal {
 
-ReplaceSelectedObjectsTile::ReplaceSelectedObjectsTile(MapDocument *mapDocument,
-                                                       const QList<MapObject *> &mapObjects,
-                                                       Tile *tile)
+ReplaceObjectsTile::ReplaceObjectsTile(MapDocument *mapDocument,
+                                       const QList<MapObject *> &mapObjects,
+                                       Tile *tile)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Replace Selected Object/s Tile"))
+                                               "Replace Object/s Tile"))
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
     , mTile(tile)
 {}
 
-void ReplaceSelectedObjectsTile::replace()
+void ReplaceObjectsTile::replace()
 {
     Tile * const tile = mTile;
 
@@ -44,7 +44,7 @@ void ReplaceSelectedObjectsTile::replace()
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
 
-void ReplaceSelectedObjectsTile::restore()
+void ReplaceObjectsTile::restore()
 {
     auto swapObjectTile = [=](MapObject *object, Tile *tile) {
         Cell cell = object->cell();
@@ -54,9 +54,8 @@ void ReplaceSelectedObjectsTile::restore()
             object->setSize(tile->size());
     };
 
-    for(int i=0; i<mMapObjects.size(); i++) {
+    for(int i=0; i<mMapObjects.size(); i++)
         swapObjectTile(mMapObjects[i], mOldTiles[i]);
-    }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 

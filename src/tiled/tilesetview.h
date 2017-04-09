@@ -134,7 +134,6 @@ private slots:
     void swapTiles();
     void replaceSelectedObjectsTile();
     void setDrawGrid(bool drawGrid);
-
     void adjustScale();
 
 private:

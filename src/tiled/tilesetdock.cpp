@@ -35,7 +35,7 @@
 #include "preferences.h"
 #include "replacetileset.h"
 #include "swaptiles.h"
-#include "replaceselectedobjectstile.h"
+#include "replaceobjectstile.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -954,5 +954,5 @@ void TilesetDock::replaceSelectedObjectsTile(Tile *tile)
         return;
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new ReplaceSelectedObjectsTile(mMapDocument, selectedObjects, tile));
+    undoStack->push(new ReplaceObjectsTile(mMapDocument, selectedObjects, tile));
 }
