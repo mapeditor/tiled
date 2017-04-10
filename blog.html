@@ -1,16 +1,28 @@
 ---
 layout: default
-title: Blog
+title: News Archive
 ---
 
-<h1>Blog</h1>
+<h1>News Archive</h1>
 
-{% for post in site.categories.blog %}
+{% for post in site.categories.blog  %}
+  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
 
-<h2>
-    &raquo; {{ post.date | date_to_string }} - <a href="{{ post.url }}">{{ post.title }}</a>
-</h2>
+  {% if forloop.first %}
+    <h2>{{this_year}}</h2>
+    <ul>
+  {% endif %}
 
-<p>{{ post.content }}</p>
+  <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a> <small style="color: #818181;">- {{ post.date | date: "%B %e" }}</small></li>
 
+  {% if forloop.last %}
+    </ul>
+  {% else %}
+    {% if this_year != next_year %}
+      </ul>
+      <h2>{{next_year}}</h2>
+      <ul>
+    {% endif %}
+  {% endif %}
 {% endfor %}

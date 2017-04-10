@@ -390,6 +390,23 @@
         <div class="col-sm-7">
           <div class="my-box">
             <div style="margin: -10px -10px 10px -10px; border-top-right-radius: 4px; border-top-left-radius: 4px; padding: 1px; background-color: #EEE; background-image: linear-gradient(to bottom, #FFF 0px, rgba(255,255,255,0) 100%); background-repeat: repeat-x; text-shadow: 0px 1px 0px #FFF; text-align: center; border-bottom: 1px solid rgb(200,200,200);">
+                <h4 class="text-muted">Recent News</h4>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+{% for post in site.categories.news limit:3 %}
+
+            <div class="news-item">
+             <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_string }}</small></h4>
+            </div>
+
+{% endfor %}
+<p style="text-align: right; margin-right: 10px;"><a href="/news.html">News Archive &raquo;</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="my-box">
+            <div style="margin: -10px -10px 10px -10px; border-top-right-radius: 4px; border-top-left-radius: 4px; padding: 1px; background-color: #EEE; background-image: linear-gradient(to bottom, #FFF 0px, rgba(255,255,255,0) 100%); background-repeat: repeat-x; text-shadow: 0px 1px 0px #FFF; text-align: center; border-bottom: 1px solid rgb(200,200,200);">
                 <h4 class="text-muted">Sponsors</h4>
             </div>
             <div class="row">

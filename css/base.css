@@ -67,6 +67,26 @@ body {
     background: white;
 }
 
+.post-header .meta {
+    font-size: 90%;
+    color: #818181;
+    margin-bottom: 20px;
+}
+
+.post-navigation {
+    margin: 1em 0;
+}
+
+.post-navigation > .prev {
+    display: block;
+    float: left;
+}
+
+.post-navigation > .next {
+    display: block;
+    float: right;
+}
+
 #navbar {
     max-width: 1140px;
     margin-left: auto;

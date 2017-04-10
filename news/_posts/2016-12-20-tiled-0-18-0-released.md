@@ -42,7 +42,7 @@ The `tmxrasterizer` tool shipping with Tiled was improved a bit and is now set u
 
 <img src="http://discourse.mapeditor.org/uploads/mapeditor/original/1X/6dba9d0cd1ea1ebc5d175dc376e8a650000a9764.png" width="690" height="348">
 
-(the maps shows here are from [The Mana World](https://www.themanaworld.org/))
+(the maps shown here are from [The Mana World](https://www.themanaworld.org/))
 
 ## Change log
 
