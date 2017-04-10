@@ -28,8 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
 #include "layer.h"
 #include "object.h"
@@ -211,16 +210,16 @@ public:
 
     StaggerIndex staggerIndex() const;
     void setStaggerIndex(StaggerIndex staggerIndex);
+    void invertStaggerIndex();
 
     /**
      * Returns the margins that have to be taken into account when figuring
      * out which part of the map to repaint after changing some tiles.
      */
-    QMargins drawMargins() const { return mDrawMargins; }
+    QMargins drawMargins() const;
+    void invalidateDrawMargins();
 
     QMargins computeLayerOffsetMargins() const;
-
-    void recomputeDrawMargins();
 
     /**
      * Returns the number of layers of this map.
@@ -243,6 +242,9 @@ public:
     int imageLayerCount() const
     { return layerCount(Layer::ImageLayerType); }
 
+    int groupLayerCount() const
+    { return layerCount(Layer::GroupLayerType); }
+
     /**
      * Returns the layer at the specified index.
      */
@@ -255,7 +257,6 @@ public:
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
-    QList<Layer*> layers(Layer::TypeFlag type) const;
     QList<ObjectGroup*> objectGroups() const;
     QList<TileLayer*> tileLayers() const;
 
@@ -291,8 +292,9 @@ public:
      * the map, and their saving order.
      *
      * @param tileset the tileset to add
+     * @return whether the tileset wasn't already part of the map
      */
-    void addTileset(const SharedTileset &tileset);
+    bool addTileset(const SharedTileset &tileset);
 
     /**
      * Convenience function to be used together with Layer::usedTilesets()
@@ -324,8 +326,10 @@ public:
      * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
      * Also replaces the old tileset with the new tileset in the list of
      * tilesets.
+     *
+     * @return whether the new tileset was added to the map
      */
-    void replaceTileset(const SharedTileset &oldTileset,
+    bool replaceTileset(const SharedTileset &oldTileset,
                         const SharedTileset &newTileset);
 
     /**
@@ -362,14 +366,10 @@ public:
     Map *clone() const;
 
     /**
-     * Creates a new map that contains the given \a layer. The map size will be
-     * determined by the size of the layer.
-     *
-     * The orientation defaults to Unknown and the tile width and height will
-     * default to 0. In case this map needs to be rendered, these properties
-     * will need to be properly set.
+     * Returns whether the map is staggered
      */
-    static Map *fromLayer(Layer *layer);
+    bool isStaggered() const
+    { return orientation() == Hexagonal || orientation() == Staggered; }
 
     LayerDataFormat layerDataFormat() const
     { return mLayerDataFormat; }
@@ -379,9 +379,14 @@ public:
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
+    void initializeObjectIds(ObjectGroup &objectGroup);
 
 private:
+    friend class GroupLayer;    // so it can call adoptLayer
+
     void adoptLayer(Layer *layer);
+
+    void recomputeDrawMargins() const;
 
     Orientation mOrientation;
     RenderOrder mRenderOrder;
@@ -393,7 +398,8 @@ private:
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
-    QMargins mDrawMargins;
+    mutable QMargins mDrawMargins;
+    mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
@@ -429,6 +435,16 @@ inline Map::StaggerIndex Map::staggerIndex() const
 inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 {
     mStaggerIndex = staggerIndex;
+}
+
+inline void Map::invertStaggerIndex()
+{
+    mStaggerIndex = static_cast<StaggerIndex>(!mStaggerIndex);
+}
+
+inline void Map::invalidateDrawMargins()
+{
+    mDrawMarginsDirty = true;
 }
 
 /**
@@ -488,5 +504,3 @@ TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 Q_DECLARE_METATYPE(Tiled::Map::Orientation)
 Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
 Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)
-
-#endif // MAP_H

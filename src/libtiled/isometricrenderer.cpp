@@ -65,14 +65,23 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
-    if (!object->cell().isEmpty()) {
-        const QPointF bottomCenter = pixelToScreenCoords(object->position());
-        const Tile *tile = object->cell().tile;
-        const QSize imgSize = tile->image().size();
-        const QPoint tileOffset = tile->offset();
-        const QSizeF objectSize = object->size();
-        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+    if (object->shape() == MapObject::Text) {
+        const QPointF topLeft = pixelToScreenCoords(object->position());
+        return QRectF(topLeft, object->size());
+    } else if (!object->cell().isEmpty()) {
+        const QSizeF objectSize { object->size() };
 
+        QSizeF scale { 1.0, 1.0 };
+        QPoint tileOffset;
+
+        if (const Tile *tile = object->cell().tile()) {
+            QSize imgSize = tile->size();
+            scale = QSizeF(objectSize.width() / imgSize.width(),
+                           objectSize.height() / imgSize.height());
+            tileOffset = tile->offset();
+        }
+
+        const QPointF bottomCenter = pixelToScreenCoords(object->position());
         return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
                       bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                       objectSize.width(),
@@ -105,7 +114,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    if (!object->cell().isEmpty()) {
+    if (!object->cell().isEmpty() || object->shape() == MapObject::Text) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
@@ -129,6 +138,8 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
             }
             break;
         }
+        case MapObject::Text:
+            break;  // already handled above
         }
     }
     return path;
@@ -237,7 +248,9 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    renderer.render(cell, QPointF(x, (float)y / 2), QSizeF(0, 0),
+                    Tile *tile = cell.tile();
+                    QSize size = tile ? tile->size() : map()->tileSize();
+                    renderer.render(cell, QPointF(x, (float)y / 2), size,
                                     CellRenderer::BottomLeft);
                 }
             }
@@ -286,15 +299,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        const Tile *tile = cell.tile;
-        const QSize imgSize = tile->size();
         const QPointF pos = pixelToScreenCoords(object->position());
-        const QPointF tileOffset = tile->offset();
 
         CellRenderer(painter).render(cell, pos, object->size(),
                                      CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
+            QSizeF imgSize;
+            QPointF tileOffset;
+
+            if (const Tile *tile = cell.tile()) {
+                imgSize = tile->size();
+                tileOffset = tile->offset();
+            } else {
+                imgSize = object->size();
+            }
+
             QRectF rect(QPointF(pos.x() - imgSize.width() / 2 + tileOffset.x(),
                                 pos.y() - imgSize.height() + tileOffset.y()),
                         imgSize);
@@ -307,6 +327,15 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(rect);
         }
+    } else if (object->shape() == MapObject::Text) {
+        const QPointF pos = pixelToScreenCoords(object->position());
+        const auto& textData = object->textData();
+
+        painter->setFont(textData.font);
+        painter->setPen(textData.color);
+        painter->drawText(QRectF(pos, object->size()),
+                          textData.text,
+                          textData.textOption());
     } else {
         const qreal lineWidth = objectLineWidth();
         const qreal scale = painterScale();
@@ -436,6 +465,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawPoint(screenPolygon.first());
             break;
         }
+        case MapObject::Text:
+            break;  // already handled above
         }
     }
 

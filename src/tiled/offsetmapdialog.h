@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -29,6 +28,9 @@ class OffsetMapDialog;
 }
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -42,7 +44,7 @@ public:
 
     ~OffsetMapDialog();
 
-    QList<int> affectedLayerIndexes() const;
+    QList<Layer*> affectedLayers() const;
     QRect affectedBoundingRect() const;
 
     QPoint offset() const;
@@ -72,5 +74,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OFFSETMAPDIALOG_H

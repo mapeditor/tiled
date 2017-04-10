@@ -5,9 +5,14 @@ isEmpty(QT_VERSION) {
 
 include(tiled.pri)
 
-!minQtVersion(5, 1, 0) {
+!minQtVersion(5, 4, 0) {
     message("Cannot build Tiled with Qt version $${QT_VERSION}")
-    error("Use at least Qt 5.1.0.")
+    error("Use at least Qt 5.4.0.")
+}
+
+win* {
+    message("Building Tiled for Windows using qmake is no longer supported")
+    error("Use the tiled.qbs project file instead")
 }
 
 TEMPLATE  = subdirs

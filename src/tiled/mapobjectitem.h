@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPOBJECTITEM_H
-#define MAPOBJECTITEM_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QGraphicsItem>
@@ -74,9 +73,10 @@ public:
                QWidget *widget = nullptr) override;
 
     /**
-     * Resizes the associated map object. The \a size is given in tiles.
+     * Resizes the associated map object. The \a bounds are given in pixel
+     * coordinates.
      */
-    void resizeObject(const QSizeF &size);
+    void resizeObject(const QRectF &bounds);
 
     /**
      * Sets a new polygon on the associated object.
@@ -108,4 +108,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAPOBJECTITEM_H
+Q_DECLARE_METATYPE(Tiled::Internal::MapObjectItem*)

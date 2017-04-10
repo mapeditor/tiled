@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2016 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле &apos;COPYING&apos; поставляемым с Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
+&lt;p align="center"&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле 'COPYING' поставляемым с Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -48,7 +48,7 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+227"/>
+        <location filename="../src/tiled/main.cpp" line="+229"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
         <translation>Синтакс экспорта --export-map [format] &lt;tmx файл&gt; &lt;целевой файл&gt;</translation>
     </message>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Не уникальное расширение файла. Невозможно определить формат экспорта.</translation>
     </message>
     <message>
@@ -86,7 +86,7 @@
         <translation>Настройки</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+27"/>
         <source>&amp;Save map before executing</source>
         <translation>&amp;Сохранить карту перед выполнением</translation>
     </message>
@@ -94,7 +94,7 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="-189"/>
+        <location filename="../src/tiled/main.cpp" line="-188"/>
         <source>Display the version</source>
         <translation>Отобразить версию</translation>
     </message>
@@ -214,9 +214,22 @@
     </message>
 </context>
 <context>
+    <name>Defold::DefoldPlugin</name>
+    <message>
+        <location filename="../src/plugins/defold/defoldplugin.cpp" line="+58"/>
+        <source>Defold files (*.tilemap)</source>
+        <translation>Defold файлы (*.tilemap)</translation>
+    </message>
+    <message>
+        <location line="+69"/>
+        <source>Could not open file for writing.</source>
+        <translation>Не удается открыть файл для записи.</translation>
+    </message>
+</context>
+<context>
     <name>Droidcraft::DroidcraftPlugin</name>
     <message>
-        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+57"/>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
         <translation>Это неверный Droidcraft map файл!</translation>
     </message>
@@ -373,6 +386,19 @@
     </message>
 </context>
 <context>
+    <name>Gmx::GmxPlugin</name>
+    <message>
+        <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
+        <source>Could not open file for writing.</source>
+        <translation>Не удалось открыть файл для записи.</translation>
+    </message>
+    <message>
+        <location line="+143"/>
+        <source>GameMaker room files (*.room.gmx)</source>
+        <translation>Файлы GameMaker room (*.room.gmx)</translation>
+    </message>
+</context>
+<context>
     <name>Json::JsonMapFormat</name>
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
@@ -390,7 +416,7 @@
         <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+39"/>
         <source>Error while writing file:
 %1</source>
         <translation>Ошибка во время записи файла:
@@ -453,7 +479,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+46"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+49"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
@@ -468,7 +494,7 @@
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+12"/>
         <source>&amp;Help</source>
         <translation>&amp;Помощь</translation>
     </message>
@@ -488,7 +514,7 @@
         <translation>Отображать &amp;имена объектов</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+30"/>
         <source>Main Toolbar</source>
         <translation>Главная панель инструментов</translation>
     </message>
@@ -638,7 +664,33 @@
         <translation>Авто карта во время рисования</translation>
     </message>
     <message>
-        <location line="-170"/>
+        <location line="+8"/>
+        <source>Paste &amp;in Place</source>
+        <translation>Вставить на &amp;место</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+124"/>
+        <source>Ctrl+Shift+V</source>
+        <translation>Ctrl+Shift+V</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Full Screen</source>
+        <translation>На весь экран</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>F11</source>
+        <translation>F11</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Snap To &amp;Pixels</source>
+        <translation>Привязывать к &amp;пикселям</translation>
+    </message>
+    <message>
+        <location line="-200"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Вырезать</translation>
     </message>
@@ -763,9 +815,17 @@
         <translation>Добавить правило Авто-карты</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+570"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+581"/>
         <source>All Files (*)</source>
         <translation>Все файлы (*)</translation>
+    </message>
+</context>
+<context>
+    <name>MapDocument</name>
+    <message>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
+        <source>Tile</source>
+        <translation>Тайл</translation>
     </message>
 </context>
 <context>
@@ -801,16 +861,16 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+32"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+58"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Не поддерживаемая ориентация карты: &quot;%1&quot;</translation>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Не поддерживаемая ориентация карты: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+133"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Неверный параметр набора тайлов: &apos;%1&apos;</translation>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Неверный параметр набора тайлов: '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -825,7 +885,7 @@ Line %1, column %2</source>
     <message>
         <location line="+44"/>
         <location line="+43"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+218"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+219"/>
         <source>Invalid tile: %1</source>
         <translation>Неверный тайл: %1</translation>
     </message>
@@ -854,22 +914,22 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Метод компрессии &apos;%1&apos; не поддерживается</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Метод компрессии '%1' не поддерживается</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Содержимое слоя &apos;%1&apos; повреждено</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Содержимое слоя '%1' повреждено</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Не удается обработать тайл по координатам (%1, %2) на слое &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Не удается обработать тайл по координатам (%1, %2) на слое '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -879,7 +939,7 @@ Line %1, column %2</source>
         <translation>Тайл используется, но не указан набор тайлов</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+115"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
         <source>Could not open file for writing.</source>
         <translation>Не удается открыть файл для записи.</translation>
     </message>
@@ -957,7 +1017,7 @@ Line %1, column %2</source>
     <name>NewTilesetDialog</name>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+231"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+235"/>
         <source>New Tileset</source>
         <translation>Новый набор тайлов</translation>
     </message>
@@ -987,12 +1047,12 @@ Line %1, column %2</source>
         <translation>&amp;Имя:</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+38"/>
         <source>&amp;Browse...</source>
         <translation>&amp;Обзор...</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+20"/>
         <source>Use transparent color:</source>
         <translation>Использовать цвет прозрачности:</translation>
     </message>
@@ -1002,7 +1062,12 @@ Line %1, column %2</source>
         <translation>Ширина тайла:</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="+38"/>
+        <source>Pick color from image</source>
+        <translation>Взять цвет с изображения</translation>
+    </message>
+    <message>
+        <location line="-138"/>
         <location line="+42"/>
         <location line="+26"/>
         <location line="+16"/>
@@ -1016,12 +1081,12 @@ Line %1, column %2</source>
         <translation>Изображение</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+22"/>
         <source>Source:</source>
         <translation>Источник:</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
         <translation>Отступ по краям набора тайлов.</translation>
     </message>
@@ -1054,18 +1119,18 @@ Line %1, column %2</source>
 <context>
     <name>ObjectTypes</name>
     <message>
-        <location filename="../src/tiled/objecttypes.cpp" line="+42"/>
+        <location filename="../src/tiled/objecttypes.cpp" line="+43"/>
         <source>Could not open file for writing.</source>
         <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+64"/>
         <source>Could not open file.</source>
         <translation>Не удается открыть файл.</translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <location line="+10"/>
+        <source>File doesn't contain object types.</source>
         <translation>Файл не содержит типов объектов.</translation>
     </message>
     <message>
@@ -1124,18 +1189,24 @@ Line %1, column %2</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+23"/>
-        <location line="+43"/>
+        <location line="+10"/>
+        <location line="+46"/>
+        <source> tiles</source>
+        <translation> тайлов</translation>
+    </message>
+    <message>
+        <location line="-30"/>
+        <location line="+46"/>
         <source>Wrap</source>
         <translation>Перенос</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-39"/>
         <source>Y:</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+46"/>
         <source>Layers:</source>
         <translation>Слои:</translation>
     </message>
@@ -1184,7 +1255,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Я уже спонсор!</translation>
     </message>
     <message>
@@ -1211,12 +1282,12 @@ Line %1, column %2</source>
         <translation>Сохранение и загрузка</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-478"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-489"/>
         <source>XML</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+85"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+79"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (без сжатия)</translation>
@@ -1320,6 +1391,45 @@ Line %1, column %2</source>
     <message>
         <location line="+27"/>
         <location line="+6"/>
+        <source>Theme</source>
+        <translation>Тема</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+67"/>
+        <location line="+122"/>
+        <source>Native</source>
+        <translation>Нативный</translation>
+    </message>
+    <message>
+        <location line="-121"/>
+        <location line="+122"/>
+        <source>Fusion</source>
+        <translation>Fusion</translation>
+    </message>
+    <message>
+        <location line="-121"/>
+        <location line="+122"/>
+        <source>Tiled Fusion</source>
+        <translation>Tiled Fusion</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
+        <source>Selection color:</source>
+        <translation>Цвет выделения:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Style:</source>
+        <translation>Стиль:</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Base color:</source>
+        <translation>Базовый цвет:</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <location line="+6"/>
         <source>Updates</source>
         <translation>Обновления</translation>
     </message>
@@ -1417,7 +1527,7 @@ Line %1, column %2</source>
 <context>
     <name>QtBoolPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1696"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1703"/>
         <source>True</source>
         <translation>Да</translation>
     </message>
@@ -1430,7 +1540,7 @@ Line %1, column %2</source>
 <context>
     <name>QtCharEdit</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1700"/>
+        <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1712"/>
         <source>Clear Char</source>
         <translation>Очистить символ</translation>
     </message>
@@ -1555,7 +1665,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Что это</translation>
     </message>
     <message>
@@ -1567,7 +1677,7 @@ Line %1, column %2</source>
 <context>
     <name>QtFontEditWidget</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+211"/>
+        <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -1837,18 +1947,18 @@ Line %1, column %2</source>
 <context>
     <name>ReplicaIsland::ReplicaIslandPlugin</name>
     <message>
-        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+59"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
         <source>Cannot open Replica Island map file!</source>
         <translation>Не удается открыть Replica Insland файл!</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Не удается распарсить заголовок файла!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Не удается распарсить заголовок слоя!</translation>
     </message>
     <message>
@@ -1883,7 +1993,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Не удается сохранить не тайловый слой!</translation>
     </message>
     <message>
@@ -1916,16 +2026,24 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+6"/>
+        <location line="+33"/>
+        <location line="+32"/>
+        <location line="+23"/>
+        <source> tiles</source>
+        <translation> тайлов</translation>
+    </message>
+    <message>
+        <location line="-75"/>
         <source>Width:</source>
         <translation>Ширина:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+10"/>
         <source>Height:</source>
         <translation>Высота:</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+26"/>
         <source>Offset</source>
         <translation>Смещение</translation>
     </message>
@@ -1935,9 +2053,14 @@ Line %1, column %2</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+23"/>
         <source>Y:</source>
         <translation></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>Remove objects outside of the map</source>
+        <translation>Удалить объекты за пределами карты</translation>
     </message>
 </context>
 <context>
@@ -1951,6 +2074,14 @@ Line %1, column %2</source>
         <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation>T-Engine4 map файлы (*.lua)</translation>
+    </message>
+</context>
+<context>
+    <name>TextEditorDialog</name>
+    <message>
+        <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
+        <source>Edit Text</source>
+        <translation>Редактировать текст</translation>
     </message>
 </context>
 <context>
@@ -1969,8 +2100,14 @@ Line %1, column %2</source>
 </context>
 <context>
     <name>Tiled::Internal::AbstractObjectTool</name>
+    <message>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
+        <location line="+70"/>
+        <source>Reset Tile Size</source>
+        <translation>Сбросить размер плитки</translation>
+    </message>
     <message numerus="yes">
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+182"/>
+        <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Дублировать %n объект</numerusform>
@@ -1988,7 +2125,7 @@ Line %1, column %2</source>
         </translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+18"/>
         <source>Flip Horizontally</source>
         <translation>Перевернуть по горизонтали</translation>
     </message>
@@ -2074,49 +2211,49 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Параметр &apos;%2&apos; = &apos;%3&apos; не выполняет ничего важного. Параметр игнорируется.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Параметр '%2' = '%3' не выполняет ничего важного. Параметр игнорируется.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Вы забыли подчеркивание в слое &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Вы забыли подчеркивание в слое '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Слой &apos;%1&apos; не является действительным слоем для Авто-карты.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Слой '%1' не является действительным слоем для Авто-карты.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos; слой может объявляться лишь однократно.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input' слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos; слои должны быть слоями тайлов.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*' слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos; слой может объявляться лишь однократно.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output' слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; и &apos;inputnot_*&apos; слои должны быть слоями тайлов.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*' и 'inputnot_*' слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>Не найдено слоев 'regions' и 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_outpu&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>Не найдено слоев 'regions' и 'regions_outpu'.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2258,7 +2395,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::ClipboardManager</name>
     <message>
-        <location filename="../src/tiled/clipboardmanager.cpp" line="+166"/>
+        <location filename="../src/tiled/clipboardmanager.cpp" line="+171"/>
         <source>Paste Objects</source>
         <translation>Вставить объекты</translation>
     </message>
@@ -2391,7 +2528,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+133"/>
+        <location filename="../src/tiled/command.cpp" line="+144"/>
         <source>Unable to create/open %1</source>
         <translation>Не удалось создать/открыть %1</translation>
     </message>
@@ -2510,7 +2647,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+369"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+412"/>
         <source>%1:
 
 %2</source>
@@ -2519,14 +2656,24 @@ Line %1, column %2</source>
 %2</translation>
     </message>
     <message>
-        <location line="+250"/>
+        <location line="+146"/>
+        <source>Copy File Path</source>
+        <translation>Копировать путь к файлу</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Open Containing Folder...</source>
+        <translation>Открыть папку, содержащую карту...</translation>
+    </message>
+    <message>
+        <location line="+141"/>
         <source>Tileset Columns Changed</source>
         <translation>Столбцы набора тайлов изменены</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Число столбцов в наборе тайлов &apos;%1&apos;, возможно, были изменены с %2 по %3. Хотите настроить ссылки тайлов?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Число столбцов в наборе тайлов '%1', возможно, были изменены с %2 по %3. Хотите настроить ссылки тайлов?</translation>
     </message>
 </context>
 <context>
@@ -2592,13 +2739,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::Eraser</name>
     <message>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
-        <location line="+36"/>
+        <location line="+56"/>
         <source>Eraser</source>
         <translation>Ластик</translation>
     </message>
     <message>
-        <location line="-33"/>
-        <location line="+34"/>
+        <location line="-53"/>
+        <location line="+54"/>
         <source>E</source>
         <translation></translation>
     </message>
@@ -2651,7 +2798,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::FileChangedWarning</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="-553"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-600"/>
         <source>File change detected. Discard changes and reload the map?</source>
         <translation>Обнаружены изменения файла. Отменить изменения и перезагрузить карту?</translation>
     </message>
@@ -2667,7 +2814,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+218"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+217"/>
         <source>Layers</source>
         <translation>Слои</translation>
     </message>
@@ -2685,7 +2832,7 @@ Do you want to replace it?</source>
         <translation>Слой</translation>
     </message>
     <message>
-        <location line="+160"/>
+        <location line="+130"/>
         <source>Show Other Layers</source>
         <translation>Показать другие слои</translation>
     </message>
@@ -2714,13 +2861,13 @@ Do you want to replace it?</source>
     <name>Tiled::Internal::MagicWandTool</name>
     <message>
         <location filename="../src/tiled/magicwandtool.cpp" line="+39"/>
-        <location line="+52"/>
+        <location line="+58"/>
         <source>Magic Wand</source>
         <translation>Волшебная палочка</translation>
     </message>
     <message>
-        <location line="-49"/>
-        <location line="+50"/>
+        <location line="-55"/>
+        <location line="+56"/>
         <source>W</source>
         <translation>W</translation>
     </message>
@@ -2728,7 +2875,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+235"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+236"/>
         <location line="+11"/>
         <source>Undo</source>
         <translation>Отменить</translation>
@@ -2740,7 +2887,7 @@ Do you want to replace it?</source>
         <translation>Повторить</translation>
     </message>
     <message>
-        <location line="+89"/>
+        <location line="+94"/>
         <source>Ctrl+T</source>
         <translation></translation>
     </message>
@@ -2761,23 +2908,29 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1413"/>
+        <location line="+1402"/>
         <source>Random Mode</source>
         <translation>Случайный режим</translation>
     </message>
     <message>
-        <location line="-1410"/>
+        <location line="-1399"/>
         <source>D</source>
         <translation></translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1408"/>
+        <location line="+1397"/>
         <source>&amp;Layer</source>
         <translation>&amp;Слой</translation>
     </message>
     <message>
-        <location line="-1232"/>
+        <location line="-1396"/>
+        <location line="+1397"/>
+        <source>&amp;New</source>
+        <translation>&amp;Новый</translation>
+    </message>
+    <message>
+        <location line="-1210"/>
         <source>Object Types Editor</source>
         <translation>Редактор типов объектов</translation>
     </message>
@@ -2797,7 +2950,7 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>X</source>
         <translation></translation>
     </message>
@@ -2822,35 +2975,50 @@ Do you want to replace it?</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+133"/>
         <source>Error Opening Map</source>
         <translation>Ошибка открытия карты</translation>
     </message>
     <message>
         <location line="+83"/>
-        <location line="+181"/>
-        <location line="+334"/>
+        <location line="+196"/>
+        <location line="+296"/>
         <source>All Files (*)</source>
         <translation>Все файлы (*)</translation>
     </message>
     <message>
-        <location line="-504"/>
+        <location line="-481"/>
         <source>Open Map</source>
         <translation>Открыть карту</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location line="+73"/>
+        <location line="+88"/>
         <source>Error Saving Map</source>
         <translation>Ошибка сохранения карты</translation>
     </message>
     <message>
-        <location line="-31"/>
+        <location line="-46"/>
         <source>untitled.tmx</source>
         <translation>безымянный.tmx</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+12"/>
+        <source>Extension Mismatch</source>
+        <translation>Несоответствие расширений</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file extension does not match the chosen file type.</source>
+        <translation>Расширение файла не соответствует выбранному типу файлов.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
+        <translation>Tiled может не распознать тип загружаемого файла автоматически при загрузке. Вы уверены, что хотите сохранить файл с этим расширением?</translation>
+    </message>
+    <message>
+        <location line="+45"/>
         <source>Unsaved Changes</source>
         <translation>Не сохраненные изменения</translation>
     </message>
@@ -2913,27 +3081,17 @@ Please select specific format.</source>
         <translation>Переписать файлы</translation>
     </message>
     <message>
-        <location line="+71"/>
-        <source>Cut</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+592"/>
+        <location line="+621"/>
         <source>[*]%1</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+137"/>
         <source>Error Reloading Map</source>
         <translation>Ошибка загрузки карты</translation>
     </message>
     <message>
-        <location line="-654"/>
-        <source>Delete</source>
-        <translation>Удалить</translation>
-    </message>
-    <message>
-        <location line="+133"/>
+        <location line="-516"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
         <translation>Ошибка чтения набора тайлов</translation>
@@ -2944,25 +3102,25 @@ Please select specific format.</source>
         <translation>Предупреждение авто-карты</translation>
     </message>
     <message>
-        <location line="-905"/>
-        <location line="+1234"/>
+        <location line="-886"/>
+        <location line="+1212"/>
         <source>Views and Toolbars</source>
         <translation>Окна и панели</translation>
     </message>
     <message>
-        <location line="-1231"/>
-        <location line="+1232"/>
+        <location line="-1209"/>
+        <location line="+1210"/>
         <source>Tile Animation Editor</source>
         <translation>Редактор анимации</translation>
     </message>
     <message>
-        <location line="-1230"/>
-        <location line="+1231"/>
+        <location line="-1208"/>
+        <location line="+1209"/>
         <source>Tile Collision Editor</source>
         <translation>Редактор столкновений</translation>
     </message>
     <message>
-        <location line="-1197"/>
+        <location line="-1175"/>
         <source>Alt+Left</source>
         <translation>Alt+Left</translation>
     </message>
@@ -2972,7 +3130,7 @@ Please select specific format.</source>
         <translation>Alt+Right</translation>
     </message>
     <message>
-        <location line="+756"/>
+        <location line="+737"/>
         <source>Add External Tileset(s)</source>
         <translation>Добавить внешний набор тайлов</translation>
     </message>
@@ -2999,7 +3157,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+244"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+246"/>
         <source>untitled.tmx</source>
         <translation>безымянный.tmx</translation>
     </message>
@@ -3009,7 +3167,7 @@ Please select specific format.</source>
         <translation>Изменить размер карты</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+52"/>
         <source>Offset Map</source>
         <translation>Смещение карты</translation>
     </message>
@@ -3023,7 +3181,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+36"/>
         <source>Tile Layer %1</source>
         <translation>Слой тайлов %1</translation>
     </message>
@@ -3038,12 +3196,12 @@ Please select specific format.</source>
         <translation>Слой изображений %1</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+24"/>
         <source>Copy of %1</source>
         <translation>Копия %1</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+7"/>
         <source>Duplicate Layer</source>
         <translation>Дублировать слой</translation>
     </message>
@@ -3060,10 +3218,10 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Tileset Changes</source>
-        <translation></translation>
+        <translation>Изменения набора тайлов</translation>
     </message>
     <message numerus="yes">
-        <location line="+189"/>
+        <location line="+190"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Дублировать %n объект</numerusform>
@@ -3072,7 +3230,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Удалить %n объект</numerusform>
@@ -3089,28 +3247,52 @@ Please select specific format.</source>
             <numerusform>Переместить %n объектов на слой</numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <location line="+37"/>
+        <source>Move %n Object(s) Up</source>
+        <translation><numerusform>Передвинуть %n объект вверх</numerusform>
+        <numerusform>Передвинуть %n объекта вверх</numerusform>
+        <numerusform>Передвинуть %n объектов вверх</numerusform>
+        </translation></message>
+    <message numerus="yes">
+        <location line="+36"/>
+        <source>Move %n Object(s) Down</source>
+        <translation><numerusform>Передвинуть %n объект вниз</numerusform>
+        <numerusform>Передвинуть %n объекта вниз</numerusform>
+        <numerusform>Передвинуть %n объектов вниз</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+60"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+19"/>
         <source>Ctrl+Shift+D</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+11"/>
+        <source>Ctrl+J</source>
+        <translation>Ctrl+J</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+J</source>
+        <translation>Ctrl+Shift+J</translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Ctrl+Shift+Up</source>
         <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3118,7 +3300,7 @@ Please select specific format.</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+60"/>
         <source>Select &amp;All</source>
         <translation>Выделить вс&amp;ё</translation>
     </message>
@@ -3134,16 +3316,33 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add &amp;Tile Layer</source>
-        <translation>Добавить &amp;слой тайлов</translation>
+        <source>&amp;Tile Layer</source>
+        <translation>Слой &amp;плиток</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Add &amp;Object Layer</source>
-        <translation>Добавить слой &amp;объектов</translation>
+        <source>&amp;Object Layer</source>
+        <translation>Слой &amp;объектов</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+1"/>
+        <source>&amp;Image Layer</source>
+        <translation>Слой &amp;изображений</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+197"/>
+        <source>Layer via Copy</source>
+        <translation>Слой через копирование</translation>
+    </message>
+    <message>
+        <location line="-196"/>
+        <location line="+196"/>
+        <source>Layer via Cut</source>
+        <translation>Слой через вырезание</translation>
+    </message>
+    <message>
+        <location line="-192"/>
         <source>Select Pre&amp;vious Layer</source>
         <translation>Выделить &amp;предыдущий слой</translation>
     </message>
@@ -3167,8 +3366,18 @@ Please select specific format.</source>
         <source>Show/&amp;Hide all Other Layers</source>
         <translation>Показать/&amp;спрятать другие слои</translation>
     </message>
+    <message>
+        <location line="+45"/>
+        <source>Cut</source>
+        <translation>Вырезать</translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Delete</source>
+        <translation>Удалить</translation>
+    </message>
     <message numerus="yes">
-        <location line="+248"/>
+        <location line="+327"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Дублировать %n объект</numerusform>
@@ -3196,12 +3405,12 @@ Please select specific format.</source>
         <translation>Удалить объекты</translation>
     </message>
     <message>
-        <location line="-259"/>
+        <location line="-417"/>
         <source>&amp;Duplicate Layer</source>
         <translation>&amp;Дублировать слой</translation>
     </message>
     <message>
-        <location line="-80"/>
+        <location line="-84"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
@@ -3211,12 +3420,7 @@ Please select specific format.</source>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location line="+76"/>
-        <source>Add &amp;Image Layer</source>
-        <translation>Добавить слой &amp;изображений</translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+82"/>
         <source>&amp;Merge Layer Down</source>
         <translation>Объединить слой с п&amp;редыдущим</translation>
     </message>
@@ -3234,7 +3438,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapObjectModel</name>
     <message>
-        <location filename="../src/tiled/mapobjectmodel.cpp" line="+152"/>
+        <location filename="../src/tiled/mapobjectmodel.cpp" line="+150"/>
         <source>Change Object Name</source>
         <translation>Переименовать объект</translation>
     </message>
@@ -3244,7 +3448,7 @@ Please select specific format.</source>
         <translation>Сменить тип объекта</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+49"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
@@ -3330,15 +3534,15 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="-38"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="-40"/>
         <location line="+7"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Не удалось загрузить изображение для набора тайлов: &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Не удалось загрузить изображение для набора тайлов: '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3346,28 +3550,28 @@ Please select specific format.</source>
         <translation>Не удалось найти тайлы в изображении набора тайлов, соответствующие заданным параметрам!</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+44"/>
         <source>Tileset Image</source>
-        <translation></translation>
+        <translation>Изображение набора тайлов</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
-        <location line="+302"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+309"/>
+        <location line="+300"/>
         <source>Select Objects</source>
         <translation>Выбрать объекты</translation>
     </message>
     <message>
-        <location line="-300"/>
-        <location line="+301"/>
+        <location line="-298"/>
+        <location line="+299"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message numerus="yes">
-        <location line="-190"/>
-        <location line="+548"/>
+        <location line="-186"/>
+        <location line="+582"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Переместить %n объект</numerusform>
@@ -3376,7 +3580,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+67"/>
+        <location line="+87"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Повернуть %n объект</numerusform>
@@ -3438,7 +3642,7 @@ Please select specific format.</source>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation>Выберите файл типов объектов...</translation>
+        <translation>Выберите файл типов объектов</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3485,7 +3689,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::ObjectsDock</name>
     <message>
-        <location filename="../src/tiled/objectsdock.cpp" line="+145"/>
+        <location filename="../src/tiled/objectsdock.cpp" line="+170"/>
         <source>Object Properties</source>
         <translation>Параметры объекта</translation>
     </message>
@@ -3498,6 +3702,16 @@ Please select specific format.</source>
         <location line="-2"/>
         <source>Objects</source>
         <translation>Объекты</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Move Objects Up</source>
+        <translation>Переместить объекты вверх</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Objects Down</source>
+        <translation>Переместить объекты вниз</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3512,11 +3726,11 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::PatreonDialog</name>
     <message>
-        <location filename="../src/tiled/patreondialog.cpp" line="+66"/>
+        <location filename="../src/tiled/patreondialog.cpp" line="+68"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Спасибо за поддержку!&lt;/h3&gt;
@@ -3526,7 +3740,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>Я больше не спонсор</translation>
     </message>
     <message>
@@ -3544,20 +3758,20 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>Я уже спонсор!</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+62"/>
-        <location line="+107"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-127"/>
+        <location line="+123"/>
         <source>System default</source>
         <translation>Системные настройки</translation>
     </message>
     <message>
-        <location line="-15"/>
+        <location line="-6"/>
         <source>Last checked: %1</source>
         <translation>Последняя проверка: %1</translation>
     </message>
@@ -3565,23 +3779,38 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::PropertiesDock</name>
     <message>
-        <location filename="../src/tiled/propertiesdock.cpp" line="+270"/>
+        <location filename="../src/tiled/propertiesdock.cpp" line="+278"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+104"/>
         <source>Add Property</source>
         <translation>Добавить параметр</translation>
     </message>
     <message>
-        <location line="-50"/>
-        <location line="+52"/>
+        <location line="-102"/>
+        <location line="+104"/>
         <source>Rename Property</source>
         <translation>Переименовать параметр</translation>
     </message>
     <message>
-        <location line="-4"/>
+        <location line="-71"/>
+        <source>Convert To</source>
+        <translation>Конвертировать в</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Rename...</source>
+        <translation>Переименовать...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove</source>
+        <translation>Убрать</translation>
+    </message>
+    <message>
+        <location line="+65"/>
         <source>Properties</source>
         <translation>Параметры</translation>
     </message>
@@ -3614,7 +3843,7 @@ Please select specific format.</source>
         <translation>Руководство</translation>
     </message>
     <message>
-        <location line="+474"/>
+        <location line="+485"/>
         <source>Columns</source>
         <translation>Столбцы</translation>
     </message>
@@ -3629,17 +3858,17 @@ Please select specific format.</source>
         <translation>Относительный шанс выбора этого тайла</translation>
     </message>
     <message>
-        <location line="+282"/>
+        <location line="+286"/>
         <source>Error Reading Tileset</source>
         <translation>Ошибка чтения набора тайлов</translation>
     </message>
     <message>
-        <location line="+117"/>
+        <location line="+142"/>
         <source>Custom Properties</source>
         <translation>Свои параметры</translation>
     </message>
     <message>
-        <location line="-608"/>
+        <location line="-637"/>
         <source>Map</source>
         <translation>Карта</translation>
     </message>
@@ -3683,19 +3912,19 @@ Please select specific format.</source>
         <translation>Видимость</translation>
     </message>
     <message>
-        <location line="-424"/>
-        <location line="+404"/>
+        <location line="-435"/>
+        <location line="+415"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-403"/>
-        <location line="+404"/>
+        <location line="-414"/>
+        <location line="+415"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-402"/>
+        <location line="-413"/>
         <source>Odd</source>
         <translation>Нечетное</translation>
     </message>
@@ -3705,7 +3934,7 @@ Please select specific format.</source>
         <translation>Четное</translation>
     </message>
     <message>
-        <location line="+331"/>
+        <location line="+342"/>
         <source>Orientation</source>
         <translation>Ориентация</translation>
     </message>
@@ -3868,13 +4097,13 @@ Please select specific format.</source>
     <name>Tiled::Internal::SelectSameTileTool</name>
     <message>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
-        <location line="+56"/>
+        <location line="+62"/>
         <source>Select Same Tile</source>
         <translation>Выбрать одинаковые тайлы</translation>
     </message>
     <message>
-        <location line="-53"/>
-        <location line="+54"/>
+        <location line="-59"/>
+        <location line="+60"/>
         <source>S</source>
         <translation>S</translation>
     </message>
@@ -3883,13 +4112,13 @@ Please select specific format.</source>
     <name>Tiled::Internal::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
-        <location line="+128"/>
+        <location line="+127"/>
         <source>Stamp Brush</source>
         <translation>Штамп</translation>
     </message>
     <message>
-        <location line="-125"/>
-        <location line="+126"/>
+        <location line="-124"/>
+        <location line="+125"/>
         <source>B</source>
         <translation></translation>
     </message>
@@ -3912,7 +4141,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TerrainDock</name>
     <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+219"/>
+        <location filename="../src/tiled/terraindock.cpp" line="+222"/>
         <source>Terrains</source>
         <translation>Участки</translation>
     </message>
@@ -3931,6 +4160,14 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TextPropertyEdit</name>
+    <message>
+        <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::TileAnimationEditor</name>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-58"/>
@@ -3941,7 +4178,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+373"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+263"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
@@ -3960,18 +4197,18 @@ Please select specific format.</source>
     <name>Tiled::Internal::TileSelectionTool</name>
     <message>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+34"/>
-        <location line="+81"/>
+        <location line="+96"/>
         <source>Rectangular Select</source>
         <translation>Прямоугольное выделение</translation>
     </message>
     <message>
-        <location line="-78"/>
-        <location line="+79"/>
+        <location line="-93"/>
+        <location line="+94"/>
         <source>R</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-56"/>
+        <location line="-71"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Прямоугольник: (%3 x %4)</translation>
     </message>
@@ -3992,7 +4229,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TileStampsDock</name>
     <message>
-        <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
+        <location filename="../src/tiled/tilestampsdock.cpp" line="+194"/>
         <source>Delete Stamp</source>
         <translation>Удалить штамп</translation>
     </message>
@@ -4045,14 +4282,14 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+708"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+731"/>
         <source>Remove Tileset</source>
         <translation>Удалить набор тайлов</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Набор тайлов &quot;%1&quot; используется на карте!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>Набор тайлов "%1" используется на карте!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4110,8 +4347,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>Не загружено &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>Не загружено "%1"!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4151,7 +4388,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+615"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+639"/>
         <source>Tile &amp;Properties...</source>
         <translation>Свойства &amp;тайла...</translation>
     </message>
@@ -4205,17 +4442,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation></translation>
+        <translation>Обнаружены несколько слоёв столкновений!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation></translation>
+        <translation>Не найден слой столкновений!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation>Не удаётся открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -4228,7 +4465,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+182"/>
         <source>TMX Viewer</source>
-        <translation></translation>
+        <translation>TMX Обозреватель</translation>
     </message>
 </context>
 <context>
@@ -4274,7 +4511,7 @@ Please select specific format.</source>
         <translation>Изменить свойства слоя объектов</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeproperties.cpp" line="+38"/>
+        <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
         <source>Change %1 Properties</source>
         <translation>Изменить параметры %1</translation>
     </message>
@@ -4362,7 +4599,7 @@ Please select specific format.</source>
         <translation>Изменить размер объекта</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-765"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-788"/>
         <source>Import Tileset</source>
         <translation>Импортировать набор тайлов</translation>
     </message>
@@ -4423,7 +4660,7 @@ Please select specific format.</source>
         <translation>Удалить участок</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileterrain.cpp" line="+131"/>
+        <location filename="../src/tiled/changetileterrain.cpp" line="+133"/>
         <source>Change Tile Terrain</source>
         <translation>Изменить участок тайла</translation>
     </message>
@@ -4483,7 +4720,7 @@ Please select specific format.</source>
         <translation>Изменить позицию слоя изображений</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changemapobjectsorder.cpp" line="+44"/>
+        <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
         <translation>Поднять объект</translation>
@@ -4495,12 +4732,12 @@ Please select specific format.</source>
         <translation>Опустить объект</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
+        <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
         <source>Change Tile Animation</source>
         <translation>Изменить анимацию тайла</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
+        <location filename="../src/tiled/changetileobjectgroup.cpp" line="+16"/>
         <source>Change Tile Collision</source>
         <translation>Изменить столкновение тайла</translation>
     </message>
@@ -4567,11 +4804,13 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
+        <location line="+14"/>
         <source>Change Tile Probability</source>
         <translation>Изменить вероятность тайла</translation>
     </message>
     <message>
-        <location filename="../src/tiled/adjusttileindexes.cpp" line="+39"/>
+        <location filename="../src/tiled/adjusttileindexes.cpp" line="-134"/>
+        <location line="+89"/>
         <source>Adjust Tile Indexes</source>
         <translation>Отрегулировать индексы тайлов</translation>
     </message>
@@ -4585,11 +4824,20 @@ Please select specific format.</source>
         <source>Replace Tileset</source>
         <translation>Заменить набор тайлов</translation>
     </message>
+    <message numerus="yes">
+        <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
+        <source>Flip %n Object(s)</source>
+        <translation>
+            <numerusform>Отразить %n объект</numerusform>
+            <numerusform>Отразить %n объекта</numerusform>
+            <numerusform>Отразить %n объектов</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+35"/>
+        <location filename="../src/tiled/utils.cpp" line="+37"/>
         <source>Image files</source>
         <translation>Графические файлы</translation>
     </message>

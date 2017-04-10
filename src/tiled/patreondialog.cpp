@@ -22,6 +22,7 @@
 #include "ui_patreondialog.h"
 
 #include "preferences.h"
+#include "utils.h"
 
 #include <QDesktopServices>
 
@@ -35,6 +36,8 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
 
     ui->setupUi(this);
     ui->maybeLaterButton->setVisible(false);
+
+    resize(Utils::dpiScaled(size()));
 
     connect(ui->gotoPatreon, SIGNAL(clicked()), SLOT(openPatreonPage()));
     connect(ui->alreadyPatron, SIGNAL(clicked()), SLOT(togglePatreonStatus()));

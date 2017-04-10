@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSELECTIONTOOL_H
-#define OBJECTSELECTIONTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
@@ -32,9 +31,11 @@ class QGraphicsItem;
 namespace Tiled {
 namespace Internal {
 
-class RotateHandle;
-class ResizeHandle;
+class Handle;
 class MapObjectItem;
+class OriginIndicator;
+class ResizeHandle;
+class RotateHandle;
 class SelectionRectangle;
 
 class ObjectSelectionTool : public AbstractObjectTool
@@ -59,7 +60,7 @@ public:
     void languageChanged() override;
 
 private slots:
-    void updateHandles();
+    void updateHandles(bool resetOriginIndicator = true);
     void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
@@ -69,6 +70,7 @@ private:
         NoAction,
         Selecting,
         Moving,
+        MovingOrigin,
         Rotating,
         Resizing
     };
@@ -78,17 +80,22 @@ private:
         Rotate,
     };
 
+    void updateHover(const QPointF &pos);
     void updateSelection(const QPointF &pos,
                          Qt::KeyboardModifiers modifiers);
 
     void startSelecting();
 
-    void startMoving(Qt::KeyboardModifiers modifiers);
+    void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
-    void startRotating();
+    void startMovingOrigin(const QPointF &pos);
+    void updateMovingOrigin(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void finishMovingOrigin();
+
+    void startRotating(const QPointF &pos);
     void updateRotatingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
     void finishRotating(const QPointF &pos);
@@ -100,7 +107,7 @@ private:
                                   const QPointF &screenPos,
                                   Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
-    
+
     void setMode(Mode mode);
     void saveSelectionState();
 
@@ -127,12 +134,18 @@ private:
     RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
+
     MapObjectItem *mHoveredObjectItem;
+    Handle *mHoveredHandle;
+
     MapObjectItem *mClickedObjectItem;
+    OriginIndicator *mClickedOriginIndicator;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;
 
     QVector<MovingObject> mMovingObjects;
+
+    QPointF mOldOriginPosition;
 
     QPointF mAlignPosition;
     QPointF mOrigin;
@@ -141,11 +154,10 @@ private:
     Mode mMode;
     Action mAction;
     QPointF mStart;
+    QPointF mStartOffset;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTSELECTIONTOOL_H

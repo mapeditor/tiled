@@ -22,12 +22,15 @@
 #include "ui_commanddialog.h"
 
 #include "commanddatamodel.h"
+#include "commandmanager.h"
 #include "utils.h"
 
 #include <QShortcut>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QModelIndex>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -37,12 +40,26 @@ CommandDialog::CommandDialog(QWidget *parent)
     , mUi(new Ui::CommandDialog)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
-    mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
 
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    connect(mUi->saveBox, &QCheckBox::stateChanged,
+            this, &CommandDialog::setSaveBeforeExecute);
+
+    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+            this, &CommandDialog::setShortcut);
+
+    connect(mUi->commandEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setCommand);
+
+    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
+            this, &CommandDialog::updateWidgets);
+
+    connect(mUi->browseButton, &QPushButton::clicked,
+            this, &CommandDialog::openFileDialog);
 }
 
 CommandDialog::~CommandDialog()
@@ -51,17 +68,71 @@ CommandDialog::~CommandDialog()
     delete mUi;
 }
 
-void CommandDialog::accept()
+void CommandDialog::closeEvent(QCloseEvent *event)
 {
-    QDialog::accept();
+    QDialog::closeEvent(event);
 
-    mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
     mUi->treeView->model()->commit();
+
+    CommandManager::instance()->updateActions();
+}
+
+void CommandDialog::setShortcut(const QKeySequence &keySequence)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setShortcut(current, keySequence);
+}
+
+void CommandDialog::setSaveBeforeExecute(int state)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setSaveBeforeExecute(current, state);
+}
+
+void CommandDialog::setCommand(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setCommand(current, text);
+}
+
+void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
+{
+    bool enable = (current.row() < mUi->treeView->model()->rowCount() - 1);
+
+    mUi->saveBox->setEnabled(enable);
+    mUi->commandEdit->setEnabled(enable);
+    mUi->browseButton->setEnabled(enable);
+    mUi->keySequenceEdit->setEnabled(enable);
+    mUi->clearButton->setEnabled(enable);
+    mUi->saveBox->setEnabled(enable);
+
+    if (enable) {
+        const Command command = mUi->treeView->model()->command(current);
+        mUi->commandEdit->setText(command.command);
+        mUi->keySequenceEdit->setKeySequence(command.shortcut);
+        mUi->saveBox->setChecked(command.saveBeforeExecute);
+    } else {
+        mUi->commandEdit->clear();
+        mUi->keySequenceEdit->clear();
+    }
+}
+
+void CommandDialog::openFileDialog()
+{
+    QString caption = tr("Select Executable");
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
+
+    if (!executableName.isEmpty())
+        mUi->commandEdit->setText(executableName);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
     : QTreeView(parent)
-    , mModel(new CommandDataModel)
+    , mModel(CommandManager::instance()->commandDataModel())
 {
     setModel(mModel);
     setRootIsDecorated(false);
@@ -70,8 +141,8 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     setColumnWidth(0, 200);
     QHeaderView *h = header();
     h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
-    h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
 
@@ -82,11 +153,6 @@ CommandTreeView::CommandTreeView(QWidget *parent)
 
     connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
                     SLOT(handleRowsRemoved(QModelIndex, int, int)));
-}
-
-CommandTreeView::~CommandTreeView()
-{
-    delete mModel;
 }
 
 void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)

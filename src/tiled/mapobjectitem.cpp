@@ -118,11 +118,11 @@ void MapObjectItem::paint(QPainter *painter,
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
 }
 
-void MapObjectItem::resizeObject(const QSizeF &size)
+void MapObjectItem::resizeObject(const QRectF &bounds)
 {
-    // Not using the MapObjectModel because it is also used during object
-    // creation, when the object is not actually part of the map yet.
-    mObject->setSize(size);
+    // Not using the MapObjectModel because it is used during object creation,
+    // when the object is not actually part of the map yet.
+    mObject->setBounds(bounds);
     syncWithMapObject();
 }
 
@@ -136,9 +136,11 @@ void MapObjectItem::setPolygon(const QPolygonF &polygon)
 
 QColor MapObjectItem::objectColor(const MapObject *object)
 {
+    const QString effectiveType = object->effectiveType();
+
     // See if this object type has a color associated with it
     for (const ObjectType &type : Preferences::instance()->objectTypes()) {
-        if (type.name.compare(object->type(), Qt::CaseInsensitive) == 0)
+        if (type.name.compare(effectiveType, Qt::CaseInsensitive) == 0)
             return type.color;
     }
 

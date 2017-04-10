@@ -93,7 +93,7 @@ struct TilesetHelper
 
     void setTextureCoordinates(TileData &data, const Cell &cell) const
     {
-        const int tileId = cell.tile->id();
+        const int tileId = cell.tileId();
         const int column = tileId % mTilesPerRow;
         const int row = tileId / mTilesPerRow;
 
@@ -137,7 +137,7 @@ static void drawTileLayer(QSGNode *parent,
             if (cell.isEmpty())
                 continue;
 
-            Tileset *tileset = cell.tile->tileset();
+            Tileset *tileset = cell.tileset();
 
             if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
                 if (!tileData.isEmpty()) {
@@ -152,7 +152,11 @@ static void drawTileLayer(QSGNode *parent,
             if (!helper.texture())
                 continue;
 
-            const QSize size = cell.tile->size();
+            Tile *tile = cell.tile();
+            if (!tile)
+                continue;   // todo: render "missing tile" marker
+
+            const QSize size = tile->size();
             const QPoint offset = tileset->tileOffset();
 
             TileData data;
@@ -236,7 +240,7 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         const MapItem *mapItem = static_cast<MapItem*>(parent());
 
         TilesetHelper helper(mapItem);
-        Tileset *tileset = mCell.tile->tileset();
+        Tileset *tileset = mCell.tileset();
         helper.setTileset(tileset);
 
         if (!helper.texture())
@@ -246,7 +250,11 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         const int tileWidth = map->tileWidth();
         const int tileHeight = map->tileHeight();
 
-        const QSize size = mCell.tile->size();
+        Tile *tile = mCell.tile();
+        if (!tile)
+            return nullptr;   // todo: render "missing tile" marker
+
+        const QSize size = tile->size();
         const QPoint offset = tileset->tileOffset();
 
         QVector<TileData> data(1);

@@ -20,6 +20,7 @@
 
 #include "tileselectionitem.h"
 
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -39,8 +40,10 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
 
     connect(mMapDocument, &MapDocument::selectedAreaChanged,
             this, &TileSelectionItem::selectionChanged);
-    connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
-            this, &TileSelectionItem::currentLayerIndexChanged);
+    connect(mapDocument, &MapDocument::layerChanged,
+            this, &TileSelectionItem::layerChanged);
+    connect(mMapDocument, &MapDocument::currentLayerChanged,
+            this, &TileSelectionItem::currentLayerChanged);
 
     updateBoundingRect();
 }
@@ -74,10 +77,17 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     update(mMapDocument->renderer()->boundingRect(changedArea));
 }
 
-void TileSelectionItem::currentLayerIndexChanged()
+void TileSelectionItem::layerChanged(Layer *layer)
 {
-    if (Layer *layer = mMapDocument->currentLayer())
-        setPos(layer->offset());
+    if (auto currentLayer = mMapDocument->currentLayer())
+        if (currentLayer->isParentOrSelf(layer))
+            setPos(currentLayer->totalOffset());
+}
+
+void TileSelectionItem::currentLayerChanged(Layer *layer)
+{
+    if (layer)
+        setPos(layer->totalOffset());
 }
 
 void TileSelectionItem::updateBoundingRect()

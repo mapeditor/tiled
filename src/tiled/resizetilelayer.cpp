@@ -33,50 +33,40 @@ using namespace Tiled::Internal;
 ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
                                  TileLayer *layer,
                                  const QSize &size,
-                                 const QPoint &offset)
+                                 const QPoint &offset,
+                                 QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Resize Layer"))
+                                               "Resize Layer"),
+                   parent)
     , mMapDocument(mapDocument)
-    , mIndex(mapDocument->map()->layers().indexOf(layer))
-    , mOriginalLayer(nullptr)
+    , mDone(false)
+    , mOriginalLayer(layer)
 {
-    Q_ASSERT(mIndex != -1);
-
     // Create the resized layer (once)
-    mResizedLayer = static_cast<TileLayer*>(layer->clone());
+    mResizedLayer = layer->clone();
     mResizedLayer->resize(size, offset);
 }
 
 ResizeTileLayer::~ResizeTileLayer()
 {
-    delete mOriginalLayer;
-    delete mResizedLayer;
+    if (mDone)
+        delete mOriginalLayer;
+    else
+        delete mResizedLayer;
 }
 
 void ResizeTileLayer::undo()
 {
-    Q_ASSERT(!mResizedLayer);
-    mResizedLayer = static_cast<TileLayer*>(swapLayer(mOriginalLayer));
-    mOriginalLayer = nullptr;
+    Q_ASSERT(mDone);
+    LayerModel *layerModel = mMapDocument->layerModel();
+    layerModel->replaceLayer(mResizedLayer, mOriginalLayer);
+    mDone = false;
 }
 
 void ResizeTileLayer::redo()
 {
-    Q_ASSERT(!mOriginalLayer);
-    mOriginalLayer = static_cast<TileLayer*>(swapLayer(mResizedLayer));
-    mResizedLayer = nullptr;
-}
-
-Layer *ResizeTileLayer::swapLayer(Layer *layer)
-{
-    const int currentIndex = mMapDocument->currentLayerIndex();
-
+    Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    Layer *replaced = layerModel->takeLayerAt(mIndex);
-    layerModel->insertLayer(mIndex, layer);
-
-    if (mIndex == currentIndex)
-        mMapDocument->setCurrentLayerIndex(mIndex);
-
-    return replaced;
+    layerModel->replaceLayer(mOriginalLayer, mResizedLayer);
+    mDone = true;
 }

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TENGINEPLUGIN_H
-#define TENGINEPLUGIN_H
+#pragma once
 
 #include "tengine_global.h"
 
@@ -43,6 +42,7 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 private:
@@ -54,5 +54,3 @@ private:
 };
 
 } // namespace Tengine
-
-#endif // TENGINEPLUGIN_H

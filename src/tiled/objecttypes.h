@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTTYPES_H
-#define OBJECTTYPES_H
+#pragma once
 
 #include <QString>
 #include <QColor>
@@ -73,7 +72,9 @@ class ObjectTypesReader
 public:
     ObjectTypes readObjectTypes(const QString &fileName);
 
-    void readObjectTypeProperty(QXmlStreamReader& xml, Properties& props);
+    void readObjectTypeProperty(QXmlStreamReader& xml,
+                                Properties &props,
+                                const QString &filePath);
 
     QString errorString() const { return mError; }
 
@@ -83,5 +84,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTTYPES_H

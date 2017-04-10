@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPFORMAT_H
-#define MAPFORMAT_H
+#pragma once
 
 #include "pluginmanager.h"
 
@@ -69,7 +68,9 @@ public:
 
     /**
      * Returns the absolute paths for the files that will be written by
-     * the map writer.
+     * this format for a given map.
+     *
+     * This is supported for Export formats only!
      */
     virtual QStringList outputFiles(const Map *, const QString &fileName) const
     { return QStringList(fileName); }
@@ -78,6 +79,11 @@ public:
      * Returns name filter for files in this map format.
      */
     virtual QString nameFilter() const = 0;
+
+    /**
+     * Returns short name for this map format
+     */
+    virtual QString shortName() const = 0;
 
     /**
      * Returns whether this map format supports reading the given file.
@@ -101,6 +107,8 @@ public:
  */
 class TILEDSHARED_EXPORT MapFormat : public FileFormat
 {
+    Q_OBJECT
+
 public:
     explicit MapFormat(QObject *parent = nullptr)
         : FileFormat(parent)
@@ -168,14 +176,15 @@ class FormatHelper
 {
 public:
     FormatHelper(FileFormat::Capabilities capabilities,
-                 QString initialFilter)
+                 QString initialFilter = QString())
         : mFilter(std::move(initialFilter))
     {
         PluginManager::each<Format>([this,capabilities](Format *format) {
             if (format->hasCapabilities(capabilities)) {
                 const QString nameFilter = format->nameFilter();
 
-                mFilter += QLatin1String(";;");
+                if (!mFilter.isEmpty())
+                    mFilter += QLatin1String(";;");
                 mFilter += nameFilter;
 
                 mFormats.append(format);
@@ -200,5 +209,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPFORMAT_H

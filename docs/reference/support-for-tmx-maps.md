@@ -29,6 +29,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [TMXParser](https://github.com/solar-storm-studios/TMXParser) General *.tmx tileset data loader. Intended to be used with TSXParser for external tileset loading. (No internal tileset support)
 * [TSXParser](https://github.com/solar-storm-studios/TSXParser) General *.tsx tileset data loader. Intended to be used with TMXParser.
 * [TMXLoader](https://bitbucket.org/martingrant/tmxloader) based on [RapidXml](http://rapidxml.sourceforge.net/). Limited functionality (check the [website](http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/) for details).
+* [tmxlite](https://github.com/fallahn/tmxlite) C++14 map parser with compressed map support but no external linking required. Includes examples for SFML and SDL2 rendering. Currently has full tmx support up to 0.16. (Zlib/libpng)
 
 ### C#/.NET ###
 * [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended) has a Tiled map loader and renderer that works with MonoGame on all platforms that support portable class libraries.
@@ -54,14 +55,14 @@ These libraries typically include only a TMX parser, but no rendering support. T
     - [AndroidTMXLoader](https://github.com/davidmi/Android-TMX-Loader) loads TMX data into an object and renders to an Android Bitmap (limited functionality)
     - [libtiled-java port](http://chiselapp.com/user/devnewton/repository/libtiled-android/index) is a port of the libtiled-java to be used on Android phones.
 
-### Objective-C & Swift
-* [TilemapKit](http://tilemapkit.com) is an actively maintained TMX loader and hierarchical tilemap object model for use with iOS projects. Can be integrated with any C/C++/Objective-C/Swift codebase and used for custom renderers.
-
 ### PHP
 * [PHP TMX Viewer](https://github.com/sebbu2/php-tmx-viewer) by sebbu : render the map as an image (allow some modifications as well)
 
 ### Pike
 * [TMX parser](https://gitlab.com/tmx-parser/tmx-parser): a simple loader for TMX maps (CSV format only).
+
+### Processing
+* [linux-man/ptmx](https://github.com/linux-man/ptmx): Add Tiled maps to your Processing sketch.
 
 ### Python
 * [pytmxlib](http://pytmxlib.readthedocs.org/en/latest/): library for programmatic manipulation of TMX maps
@@ -87,20 +88,25 @@ Following entries are integrated solutions for specific game engines. They are t
 * [cocos2d (Python)](http://python.cocos2d.org/) supports loading [Tiled maps](http://python.cocos2d.org/doc/programming_guide/tiled_map.html) through its `cocos.tiles` module.
 * [cocos2d-x (C++)](http://www.cocos2d-x.org/) supports loading TMX maps through the [CCTMXTiledMap](http://www.cocos2d-x.org/reference/native-cpp/V2.1.4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html) class.
 * [cocos2d-objc (Objective-C, Swift)](http://www.cocos2d-objc.org/) (previously known as: cocos2d-iphone, cocos2d-swift, cocos2d-spritebuilder) supports loading TMX maps through [CCTiledMap](http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html)
-* [TilemapKit](http://tilemapkit.com) is an actively maintained tilemapping framework for Cocos2D. It supports all TMX tilemap types, including staggered iso and all hex variations.
+* [TilemapKit](http://tilemapkit.com) is a tilemapping framework for Cocos2D. It supports all TMX tilemap types, including staggered iso and all hex variations. No longer in development.
 
 ### Construct 2 - Scirra
 * [Construct 2](http://www.scirra.com), since the Beta Release 149, officially supports TMX maps, and importing it by simple dragging the file inside the editor. [Official Note](https://www.scirra.com/construct2/releases/r149)
 
 ### Corona SDK
 
-* [Lime](https://github.com/OutlawGameTools/Lime2DTileEngine) is a 2D engine for making tile-based games with Corona SDK and Tiled
+* [PonyTiled](https://github.com/ponywolf/ponytiled) is a simple Tiled Map Loader for Corona SDK ([forum announcement](http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826))
+* [Dusk Engine](https://github.com/GymbylCoding/Dusk-Engine) is a fully featured Tiled map game engine for Corona SDK
 
 ### Flixel
 * Lithander demonstrated his [Flash TMX parser combined with Flixel rendering](http://blog.pixelpracht.net/?p=59)
 
 ### Game Maker
 * [Tiled2GM Converter](http://gmc.yoyogames.com/index.php?showtopic=539494) by Dmi7ry
+
+### Godot
+
+* [Tiled Map Importer](https://godotengine.org/asset-library/asset/25) imports each map as Godot scene which can be instanced or inherited ([forum announcement](http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1))
 
 ### Haxe
 * [HaxePunk](https://github.com/HaxePunk/tiled) Tiled Loader for HaxePunk
@@ -120,6 +126,7 @@ Following entries are integrated solutions for specific game engines. They are t
 * [GameJs](http://gamejs.org) JavaScript library for game programming; a thin wrapper to draw on HTML5 canvas and other useful modules for game development
 * [Crafty](http://craftyjs.com) JavaScript HTML5 Game Engine; supports loading Tiled maps through an external component [TiledMapBuilder](https://github.com/Kibo/TiledMapBuilder).
 * [Phaser](http://www.phaser.io) A fast, free and fun open source framework supporting both JavaScript and TypeScript ([Tiled tutorial](http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/))
+* [linux-man/p5.tiledmap](https://github.com/linux-man/p5.tiledmap) adds Tiled maps to [p5.js](http://p5js.org/).
 
 ### indielib-crossplatform
 * [indielib cross-platform](http://www.indielib.com) supports loading TMX maps through the [C++/TinyXML based tmx-parser](http://code.google.com/p/tmx-parser/) by KonoM (BSD)
@@ -140,6 +147,9 @@ Following entries are integrated solutions for specific game engines. They are t
 
 ### Node.js
 * [node-tmx-parser](https://github.com/andrewrk/node-tmx-parser) - loads the TMX file into a JavaScript object
+
+### Orx Portable Game Engine
+* [TMX to ORX Converter](http://orx-project.org/wiki/tutorials/community/sausage/tmx_to_orx) Tutorial and converter download for Orx.
 
 ### Pygame
 * [Pygame map loader](http://www.pygame.org/project/1158/) by dr0id
@@ -166,7 +176,9 @@ Following entries are integrated solutions for specific game engines. They are t
 * [Slick2D](http://slick.ninjacave.com) supports loading TMX maps through [TiledMap](http://slick.ninjacave.com/javadoc/org/newdawn/slick/tiled/TiledMap.html).
 
 ### Sprite Kit Framework
-* [TilemapKit](http://tilemapkit.com) is an actively maintained tilemapping framework for Sprite Kit. It supports all TMX tilemap types, including staggered iso and all hex variations.
+* [SKTilemap](https://github.com/TomLinthwaite/SKTilemap) is built from the ground up in Swift. It's up to date, full of features and easy to integrate into any Sprite Kit project. Supports iOS and OSX.
+* [SKTiled](https://github.com/mfessenden/SKTiled) - A Swift framework for working with Tiled assets in SpriteKit.
+* [TilemapKit](http://tilemapkit.com) is a tilemapping framework for Sprite Kit. It supports all TMX tilemap types, including staggered iso and all hex variations. No longer in development.
 * [JSTileMap](https://github.com/slycrel/JSTileMap) is a lightweight SpriteKit implementation of the TMX format supporting iOS 7 and OS X 10.9 and above.
 
 ### TERRA Engine (Delphi/Pascal)

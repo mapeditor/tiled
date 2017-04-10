@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETERRAIN_H
-#define ADDREMOVETERRAIN_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -30,7 +29,7 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 /**
  * Abstract base class for AddTerrain and RemoveTerrain.
@@ -38,8 +37,7 @@ class MapDocument;
 class AddRemoveTerrain : public QUndoCommand
 {
 public:
-    AddRemoveTerrain(MapDocument *mapDocument,
-                     Tileset *tileset,
+    AddRemoveTerrain(TilesetDocument *tilesetDocument,
                      int index,
                      Terrain *terrain);
     ~AddRemoveTerrain();
@@ -49,7 +47,7 @@ protected:
     void removeTerrain();
 
 private:
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tileset *mTileset;
     int mIndex;
     Terrain *mTerrain;
@@ -62,7 +60,7 @@ private:
 class AddTerrain : public AddRemoveTerrain
 {
 public:
-    AddTerrain(MapDocument *mapDocument, Terrain *terrain);
+    AddTerrain(TilesetDocument *tilesetDocument, Terrain *terrain);
 
     void undo() override { removeTerrain(); }
     void redo() override { addTerrain(); }
@@ -74,7 +72,7 @@ public:
 class RemoveTerrain : public AddRemoveTerrain
 {
 public:
-    RemoveTerrain(MapDocument *mapDocument, Terrain *terrain);
+    RemoveTerrain(TilesetDocument *tilesetDocument, Terrain *terrain);
 
     void undo() override { addTerrain(); }
     void redo() override { removeTerrain(); }
@@ -82,5 +80,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVETERRAIN_H

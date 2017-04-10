@@ -1,47 +1,49 @@
 clone_depth: 200
-version: '0.16.{build}'
+version: '0.18.{build}'
 
 environment:
   global:
-    MINGW: C:\Qt\Tools\mingw492_32
+    MINGW: C:\Qt\Tools\mingw530_32
   matrix:
-    - QTDIR: C:\Qt\5.5\mingw492_32
-    - QTDIR: C:\Qt\5.5\msvc2013_64
+    - QTDIR: C:\Qt\5.7\mingw53_32
+    - QTDIR: C:\Qt\5.7\msvc2013_64
 
 configuration: Release
 
 install:
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
+  - choco install -y qbs
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
   - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
+  - set TILED_SPARKLE=true
   - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
   - if defined APPVEYOR_REPO_TAG_NAME set TILED_RELEASE=true
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
   - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
-  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SPARKLE=true
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
-  - cp dist/win/WiXModule.qbs C:\Qt\Tools\QtCreator\share\qtcreator\qbs\share\qbs\modules\wix\WiXModule.qbs
+  - qbs --version
   - qbs setup-toolchains --detect
-  - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
-  - qbs config profiles.i686-w64-mingw32.cpp.nmPath nm.exe
-  - qbs config profiles.i686-w64-mingw32.cpp.objcopyPath objcopy.exe
-  - qbs config profiles.i686-w64-mingw32.cpp.stripPath strip.exe
   - qbs setup-qt %QTDIR%\bin\qmake.exe qt
   - qbs config defaultProfile qt
   - qbs install --all-products --install-root install-root release
 
 after_build:
-  - cd qt-release
-  - cd dist*
+  - cd release
+  - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
   - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
+  - cd ..
+  - cd archive*
+  - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - name: Installer
     path: 'tiled-*.msi'
+  - name: Archive
+    path: 'tiled-*.7z'
   - name: AppCast
     path: 'appcast-win*-snapshots.xml'
 
@@ -57,12 +59,12 @@ deploy:
 
   - provider: FTP
     protocol: sftp
-    host: files.mapeditor.org
+    host: update.mapeditor.org
     username: bjorn
     password:
       secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
-    folder: public_html/files.mapeditor.org/public/daily
-    artifact: /.*\.msi/
+    folder: sparkle/snapshots-win
+    artifact: /.*\.(msi|7z)/
     on:
         branch: snapshot
         appveyor_repo_tag: false

@@ -19,8 +19,7 @@
 * this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LAYEROFFSETTOOL_H
-#define LAYEROFFSETTOOL_H
+#pragma once
 
 #include "abstracttool.h"
 
@@ -50,13 +49,16 @@ protected slots:
     void updateEnabledState() override;
 
 private:
+    void startDrag(const QPointF &pos);
+    void finishDrag();
+
     bool mMousePressed;
+    bool mDragging;
     bool mApplyingChange;
-    QPointF mMouseStart;
+    QPointF mMouseScreenStart;
+    QPointF mMouseSceneStart;
     QPointF mOldOffset;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYEROFFSETTOOL_H

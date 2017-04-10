@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGESELECTEDAREA_H
-#define CHANGESELECTEDAREA_H
+#pragma once
 
 #include <QRegion>
 #include <QUndoCommand>
@@ -37,7 +36,8 @@ public:
      * the given \a selection.
      */
     ChangeSelectedArea(MapDocument *mapDocument,
-                        const QRegion &selection);
+                       const QRegion &selection,
+                       QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
@@ -51,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGESELECTEDAREA_H

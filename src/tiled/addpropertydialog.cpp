@@ -24,6 +24,7 @@
 
 #include "preferences.h"
 #include "properties.h"
+#include "utils.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -40,19 +41,24 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
+
+    QString stringType = typeToName(QVariant::String);
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Bool)));
-    mUi->typeBox->addItem(QLatin1String(QVariant::typeToName(QVariant::Int)));
-    mUi->typeBox->addItem(QLatin1String("float"));
-    mUi->typeBox->addItem(QLatin1String("string"));
+    mUi->typeBox->addItem(typeToName(QVariant::Bool),   false);
+    mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
+    mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
+    mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
+    mUi->typeBox->addItem(stringType,                   QString());
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
-    QString lastType = s->value(QLatin1String(TYPE_KEY), QLatin1String("string")).toString();
+    QString lastType = s->value(QLatin1String(TYPE_KEY), stringType).toString();
 
     mUi->typeBox->setCurrentText(lastType);
 
@@ -72,10 +78,9 @@ QString AddPropertyDialog::propertyName() const
     return mUi->name->text();
 }
 
-QVariant::Type AddPropertyDialog::propertyType() const
+QVariant AddPropertyDialog::propertyValue() const
 {
-    QString typeText = mUi->typeBox->currentText();
-    return nameToType(typeText);
+    return mUi->typeBox->currentData();
 }
 
 void AddPropertyDialog::nameChanged(const QString &text)

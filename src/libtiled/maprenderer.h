@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPRENDERER_H
-#define MAPRENDERER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -259,7 +258,12 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter);
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
+    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -268,13 +272,12 @@ public:
 
 private:
     QPainter * const mPainter;
-    Tile *mTile;
+    const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
+    const CellType mCellType;
 };
 
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::RenderFlags)
-
-#endif // MAPRENDERER_H

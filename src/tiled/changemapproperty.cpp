@@ -186,5 +186,5 @@ void ChangeMapProperty::swap()
     }
     }
 
-    mMapDocument->emitMapChanged();
+    emit mMapDocument->mapChanged();
 }

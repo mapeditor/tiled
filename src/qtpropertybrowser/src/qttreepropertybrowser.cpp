@@ -51,6 +51,32 @@
 #include <QFocusEvent>
 #include <QStyle>
 #include <QPalette>
+#include <QScreen>
+
+static qreal defaultDpiScale()
+{
+    if (const QScreen *screen = QGuiApplication::primaryScreen())
+        return screen->logicalDotsPerInchX() / 96.0;
+    return 1.0;
+}
+
+static qreal dpiScaled(qreal value)
+{
+#ifdef Q_OS_MAC
+    // On mac the DPI is always 72 so we should not scale it
+    return value;
+#else
+    static const qreal scale = defaultDpiScale();
+    return value * scale;
+#endif
+}
+
+static QSize dpiScaled(QSize value)
+{
+    return QSize(qRound(dpiScaled(value.width())),
+                 qRound(dpiScaled(value.height())));
+}
+
 
 #if QT_VERSION >= 0x040400
 QT_BEGIN_NAMESPACE
@@ -409,7 +435,7 @@ void QtPropertyEditorDelegate::drawDisplay(QPainter *painter, const QStyleOption
 QSize QtPropertyEditorDelegate::sizeHint(const QStyleOptionViewItem &option,
             const QModelIndex &index) const
 {
-    return QItemDelegate::sizeHint(option, index) + QSize(3, 4);
+    return QItemDelegate::sizeHint(option, index) + dpiScaled(QSize(3, 4));
 }
 
 bool QtPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)

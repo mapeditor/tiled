@@ -27,19 +27,19 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILESET_H
-#define TILESET_H
+#pragma once
 
 #include "imagereference.h"
 #include "object.h"
 
 #include <QColor>
 #include <QList>
-#include <QVector>
+#include <QPixmap>
 #include <QPoint>
+#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
-#include <QPixmap>
+#include <QVector>
 
 class QImage;
 
@@ -47,6 +47,7 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
+class TilesetFormat;
 class Terrain;
 
 typedef QSharedPointer<Tileset> SharedTileset;
@@ -64,6 +65,16 @@ class TILEDSHARED_EXPORT Tileset : public Object
     Q_OBJECT
 
 public:
+    /**
+     * The orientation of the tileset determines the projection used in the
+     * TileCollisionEditor and for the terrain information overlay of the
+     * TilesetView.
+     */
+    enum Orientation {
+        Orthogonal,
+        Isometric,
+    };
+
     /**
      * Creates a new tileset with the given parameters. Using this function
      * makes sure the internal weak pointer is initialized, which enables the
@@ -104,6 +115,9 @@ public:
     void setFileName(const QString &fileName);
     bool isExternal() const;
 
+    void setFormat(TilesetFormat *format);
+    TilesetFormat *format() const;
+
     int tileWidth() const;
     int tileHeight() const;
 
@@ -119,6 +133,12 @@ public:
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
 
+    Orientation orientation() const;
+    void setOrientation(Orientation orientation);
+
+    QSize gridSize() const;
+    void setGridSize(QSize gridSize);
+
     const QMap<int, Tile*> &tiles() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
@@ -126,15 +146,20 @@ public:
     int tileCount() const;
 
     int columnCount() const;
+    int rowCount() const;
     void setColumnCount(int columnCount);
     int expectedColumnCount() const;
-    void syncExpectedColumnCount();
+    int expectedRowCount() const;
+    void syncExpectedColumnsAndRows();
 
     int imageWidth() const;
     int imageHeight() const;
 
     QColor transparentColor() const;
     void setTransparentColor(const QColor &c);
+
+    const QColor &backgroundColor() const;
+    void setBackgroundColor(QColor color);
 
     void setImageReference(const ImageReference &reference);
 
@@ -149,6 +174,7 @@ public:
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
+    int rowCountForHeight(int height) const;
 
     const QList<Terrain*> &terrains() const;
     int terrainCount() const;
@@ -181,6 +207,27 @@ public:
     bool loaded() const;
     bool imageLoaded() const;
 
+    void swap(Tileset &other);
+
+    SharedTileset clone() const;
+
+    /**
+     * Helper function that converts the tileset orientation to a string value.
+     * Useful for map writers.
+     *
+     * @return The tileset orientation as a lowercase string.
+     */
+    static QString orientationToString(Orientation);
+
+    /**
+     * Helper function that converts a string to a tileset orientation enumerator.
+     * Useful for map readers.
+     *
+     * @return The tileset orientation matching the given string, or
+     *         Tileset::Orthogonal if the string is unrecognized.
+     */
+    static Orientation orientationFromString(const QString &);
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();
@@ -193,13 +240,18 @@ private:
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
+    Orientation mOrientation;
+    QSize mGridSize;
     int mColumnCount;
     int mExpectedColumnCount;
+    int mExpectedRowCount;
     QMap<int, Tile*> mTiles;
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
     bool mLoaded;
+    QColor mBackgroundColor;
+    QPointer<TilesetFormat> mFormat;
 
     QWeakPointer<Tileset> mWeakPointer;
 };
@@ -304,7 +356,40 @@ inline void Tileset::setTileOffset(QPoint offset)
 }
 
 /**
- * Returns a const reference to the list of tiles in this tileset.
+ * Returns the orientation of the tiles in this tileset.
+ */
+inline Tileset::Orientation Tileset::orientation() const
+{
+    return mOrientation;
+}
+
+/**
+ * @see orientation
+ */
+inline void Tileset::setOrientation(Orientation orientation)
+{
+    mOrientation = orientation;
+}
+
+/**
+ * Returns the grid size that is used when the tileset has Isometric
+ * orientation.
+ */
+inline QSize Tileset::gridSize() const
+{
+    return mGridSize;
+}
+
+/**
+ * @see gridSize
+ */
+inline void Tileset::setGridSize(QSize gridSize)
+{
+    mGridSize = gridSize;
+}
+
+/**
+ * Returns a const reference to the tiles in this tileset.
  */
 inline const QMap<int, Tile *> &Tileset::tiles() const
 {
@@ -358,13 +443,24 @@ inline int Tileset::expectedColumnCount() const
 }
 
 /**
- * Sets the expected column count to the actual column count. Usually called
- * after checking with the user whether he wants the map to be adjusted to a
- * change to the tileset image width.
+ * Returns the number of tile rows expected to be in the tileset image. This
+ * may differ from the actual amount of rows encountered when loading the
+ * image, and is checked when automatically adjusting tile indexes.
  */
-inline void Tileset::syncExpectedColumnCount()
+inline int Tileset::expectedRowCount() const
+{
+    return mExpectedRowCount;
+}
+
+/**
+ * Sets the expected column and row count to the actual column count. Usually
+ * called after checking with the user whether he wants the map to be adjusted
+ * to a change to the tileset image size.
+ */
+inline void Tileset::syncExpectedColumnsAndRows()
 {
     mExpectedColumnCount = mColumnCount;
+    mExpectedRowCount = rowCount();
 }
 
 /**
@@ -390,6 +486,22 @@ inline int Tileset::imageHeight() const
 inline QColor Tileset::transparentColor() const
 {
     return mImageReference.transparentColor;
+}
+
+/**
+ * Returns the background color of this tileset.
+ */
+inline const QColor &Tileset::backgroundColor() const
+{
+    return mBackgroundColor;
+}
+
+/**
+ * Sets the background color of this tileset.
+ */
+inline void Tileset::setBackgroundColor(QColor color)
+{
+    mBackgroundColor = color;
 }
 
 /**
@@ -510,5 +622,3 @@ inline bool Tileset::imageLoaded() const
 }
 
 } // namespace Tiled
-
-#endif // TILESET_H

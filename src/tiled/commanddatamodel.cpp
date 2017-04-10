@@ -21,6 +21,7 @@
 #include "commanddatamodel.h"
 
 #include <QMenu>
+#include <QKeySequence>
 #include <QSignalMapper>
 #include <QMimeData>
 
@@ -29,25 +30,21 @@ using namespace Tiled::Internal;
 
 const char *commandMimeType = "application/x-tiled-commandptr";
 
-CommandDataModel::CommandDataModel()
+CommandDataModel::CommandDataModel(QObject *parent)
+    : QAbstractTableModel(parent)
 {
-    // Load saveBeforeExecute option
-    QVariant s = mSettings.value(QLatin1String("saveBeforeExecute"), true);
-    mSaveBeforeExecute = s.toBool();
-
     // Load command list
     const QVariant variant = mSettings.value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
-    foreach (const QVariant &commandVariant, commands)
+    for (const QVariant &commandVariant : commands)
         mCommands.append(Command::fromQVariant(commandVariant));
 
     // Add default commands the first time the app has booted up.
-    // This is useful on it's own and helps demonstrate how to use the commands.
+    // This is useful on its own and helps demonstrate how to use the commands.
 
-    const QString addPrefStr = QLatin1String("addedDefaultCommands");
-    const bool addedCommands = mSettings.value(addPrefStr, false).toBool();
-    if (!addedCommands) {
-
+    const QString addedDefaultKey = QLatin1String("addedDefaultCommands");
+    const bool addedDefault = mSettings.value(addedDefaultKey, false).toBool();
+    if (!addedDefault) {
         // Disable default commands by default so user gets an informative
         // warning when clicking the command button for the first time
         Command command(false);
@@ -62,15 +59,12 @@ CommandDataModel::CommandDataModel()
         }
 
         commit();
-        mSettings.setValue(addPrefStr, true);
+        mSettings.setValue(addedDefaultKey, true);
     }
 }
 
 void CommandDataModel::commit()
 {
-    // Save saveBeforeExecute option
-    mSettings.setValue(QLatin1String("saveBeforeExecute"), mSaveBeforeExecute);
-
     // Save command list
     QList<QVariant> commands;
     foreach (const Command &command, mCommands)
@@ -80,7 +74,7 @@ void CommandDataModel::commit()
 
 Command CommandDataModel::firstEnabledCommand() const
 {
-    foreach (const Command &command, mCommands)
+    for (const Command &command : mCommands)
         if (command.isEnabled)
             return command;
 
@@ -141,8 +135,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return command.name;
-            if (index.column() == CommandColumn)
-                return command.command;
+            if (index.column() == ShortcutColumn)
+                return command.shortcut;
         } else {
             if (index.column() == NameColumn) {
                 if (role == Qt::EditRole)
@@ -157,8 +151,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
         if (isNormalRow) {
             if (index.column() == NameColumn)
                 return tr("Set a name for this command");
-            if (index.column() == CommandColumn)
-                return tr("Set the shell command to execute");
+            if (index.column() == ShortcutColumn)
+                return tr("Shortcut for this command");
             if (index.column() == EnabledColumn)
                 return tr("Show or hide this command in the command list");
         } else
@@ -194,9 +188,6 @@ bool CommandDataModel::setData(const QModelIndex &index,
             if (!text.isEmpty()) {
                 if (index.column() == NameColumn) {
                     command.name = value.toString();
-                    isModified = true;
-                } else if (index.column() == CommandColumn) {
-                    command.command = value.toString();
                     isModified = true;
                 }
             }
@@ -252,7 +243,7 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
         f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
-        else
+        else if (index.column() == NameColumn)
             f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
@@ -271,7 +262,7 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
 
     const char *sectionLabels[3] = {
         QT_TR_NOOP("Name"),
-        QT_TR_NOOP("Command"),
+        QT_TR_NOOP("Shortcut"),
         QT_TR_NOOP("Enable") };
 
     return tr(sectionLabels[section]);
@@ -339,7 +330,7 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
 {
     int row = -1;
 
-    foreach (const QModelIndex &index, indices) {
+    for (const QModelIndex &index : indices) {
         // Only generate mime data on command rows
         if (index.row() < 0 || index.row() >= mCommands.size())
             return nullptr;
@@ -430,6 +421,44 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
     }
 
     return false;
+}
+
+void CommandDataModel::setCommand(const QModelIndex &index, const QString &value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].command = value;
+}
+
+void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence &value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow) {
+        mCommands[index.row()].shortcut = value;
+
+        QModelIndex shortcutIndex = this->index(index.row(), ShortcutColumn);
+        emit dataChanged(shortcutIndex, shortcutIndex);
+    }
+}
+
+void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].saveBeforeExecute = value;
+}
+
+Command CommandDataModel::command(const QModelIndex &index) const
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        return mCommands[index.row()];
+    else
+        return Command();
 }
 
 bool CommandDataModel::move(int commandIndex, int newIndex)

@@ -4,7 +4,7 @@ TiledQtGuiApplication {
     name: "tmxviewer"
 
     Depends { name: "libtiled" }
-    Depends { name: "Qt"; submodules: ["widgets"] }
+    Depends { name: "Qt"; submodules: ["widgets"]; versionAtLeast: "5.4" }
 
     cpp.includePaths: ["."]
 
@@ -15,4 +15,12 @@ TiledQtGuiApplication {
         "tmxviewer.cpp",
         "tmxviewer.h",
     ]
+
+    Group {
+        name: "Man page (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/man/man1"
+        files: [ "../../man/tmxviewer.1" ]
+    }
 }

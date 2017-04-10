@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERDOCK_H
-#define LAYERDOCK_H
+#pragma once
 
 #include "mapdocument.h"
 
@@ -28,9 +27,9 @@
 #include <QTreeView>
 #include <QToolButton>
 
+class QAbstractProxyModel;
 class QLabel;
 class QModelIndex;
-class QTreeView;
 class QUndoStack;
 
 namespace Tiled {
@@ -61,7 +60,7 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void layerChanged(int index);
+    void layerChanged(Layer *layer);
     void editLayerName();
     void sliderValueChanged(int opacity);
 
@@ -70,6 +69,7 @@ private:
 
     QLabel *mOpacityLabel;
     QSlider *mOpacitySlider;
+    QToolButton *mNewLayerButton;
     LayerView *mLayerView;
     MapDocument *mMapDocument;
     bool mUpdatingSlider;
@@ -90,20 +90,21 @@ public:
     QSize sizeHint() const override;
     void setMapDocument(MapDocument *mapDocument);
 
+    void editLayerModelIndex(const QModelIndex &layerModelIndex);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
-    void currentRowChanged(const QModelIndex &index);
-    void indexPressed(const QModelIndex &index);
-    void currentLayerIndexChanged(int index);
+    void currentRowChanged(const QModelIndex &proxyIndex);
+    void indexPressed(const QModelIndex &proxyIndex);
+    void currentLayerChanged(Layer *layer);
 
 private:
     MapDocument *mMapDocument;
+    QAbstractProxyModel *mProxyModel;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERDOCK_H

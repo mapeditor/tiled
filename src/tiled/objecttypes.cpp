@@ -20,14 +20,15 @@
 
 #include "objecttypes.h"
 
+#include "properties.h"
+#include "savefile.h"
+
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDir>
 #include <QFile>
-#include <QSaveFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include "properties.h"
 
 namespace Tiled {
 namespace Internal {
@@ -37,14 +38,16 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 {
     mError.clear();
 
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "Could not open file for writing.");
         return false;
     }
 
-    QXmlStreamWriter writer(&file);
+    const QDir fileDir(QFileInfo(fileName).path());
+
+    QXmlStreamWriter writer(file.device());
 
     writer.setAutoFormatting(true);
     writer.setAutoFormattingIndent(1);
@@ -60,12 +63,21 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
         QMapIterator<QString,QVariant> it(objectType.defaultProperties);
         while (it.hasNext()) {
             it.next();
+
+            int type = it.value().userType();
+
             writer.writeStartElement(QLatin1String("property"));
             writer.writeAttribute(QLatin1String("name"), it.key());
-            writer.writeAttribute(QLatin1String("type"), typeToName(it.value().type()));
+            writer.writeAttribute(QLatin1String("type"), typeToName(type));
 
-            if (!it.value().isNull())
-                writer.writeAttribute(QLatin1String("default"), it.value().toString());
+            if (!it.value().isNull()) {
+                QString value = toExportValue(it.value()).toString();
+
+                if (type == filePathTypeId())
+                    value = fileDir.relativeFilePath(value);
+
+                writer.writeAttribute(QLatin1String("default"), value);
+            }
 
             writer.writeEndElement();
         }
@@ -97,6 +109,8 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
         return objectTypes;
     }
 
+    const QString filePath(QFileInfo(fileName).path());
+
     QXmlStreamReader reader(&file);
 
     if (!reader.readNextStartElement() || reader.name() != QLatin1String("objecttypes")) {
@@ -116,7 +130,7 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
             Properties props;
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("property")){
-                    readObjectTypeProperty(reader, props);
+                    readObjectTypeProperty(reader, props, filePath);
                 } else {
                     reader.skipCurrentElement();
                 }
@@ -138,8 +152,17 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     return objectTypes;
 }
 
-void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml, Properties& props) {
-    
+static QString resolveReference(const QString &reference, const QString &filePath)
+{
+    if (!reference.isEmpty() && QDir::isRelativePath(reference))
+        return QDir::cleanPath(filePath + QLatin1Char('/') + reference);
+    return reference;
+}
+
+void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml,
+                                               Properties &props,
+                                               const QString &filePath)
+{
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
     const QXmlStreamAttributes atts = xml.attributes();
@@ -148,9 +171,12 @@ void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml, Properties
     QVariant defaultValue(atts.value(QLatin1String("default")).toString());
 
     if (!typeName.isEmpty()) {
-        QVariant::Type type = nameToType(typeName);
-        if (type != QVariant::Invalid)
-            defaultValue.convert(type);
+        int type = nameToType(typeName);
+
+        if (type == filePathTypeId())
+            defaultValue = resolveReference(defaultValue.toString(), filePath);
+
+        defaultValue = fromExportValue(defaultValue, type);
     }
 
     props.insert(name, defaultValue);

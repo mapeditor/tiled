@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JSONPLUGIN_H
-#define JSONPLUGIN_H
+#pragma once
 
 #include "json_global.h"
 
@@ -66,6 +65,7 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName) override;
 
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 protected:
@@ -88,6 +88,7 @@ public:
     bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 protected:
@@ -95,5 +96,3 @@ protected:
 };
 
 } // namespace Json
-
-#endif // JSONPLUGIN_H

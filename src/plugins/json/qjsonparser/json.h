@@ -7,8 +7,7 @@
 **
 ****************************************************************************/
 
-#ifndef JSON_H
-#define JSON_H
+#pragma once
 
 #include <QByteArray>
 #include <QVariant>
@@ -57,6 +56,4 @@ private:
     bool m_autoFormatting;
     QString m_autoFormattingIndent;
 };
-
-#endif // JSON_H
 

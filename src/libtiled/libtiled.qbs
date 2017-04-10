@@ -4,34 +4,46 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.4" }
 
     Properties {
-        condition: !qbs.targetOS.contains("windows")
+        condition: !(qbs.toolchain.contains("msvc") ||
+                     (qbs.toolchain.contains("mingw") && Qt.core.versionMinor < 6))
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII"
+        ];
+        if (project.linuxArchive)
+            defs.push("TILED_LINUX_ARCHIVE");
+        return defs;
+    }
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 
     bundle.isBundle: false
-    cpp.installNamePrefix: "@rpath"
+    cpp.sonamePrefix: qbs.targetOS.contains("darwin") ? "@rpath" : undefined
 
     files: [
         "compression.cpp",
         "compression.h",
+        "filesystemwatcher.cpp",
+        "filesystemwatcher.h",
         "gidmapper.cpp",
         "gidmapper.h",
+        "grouplayer.cpp",
+        "grouplayer.h",
+        "hex.cpp",
+        "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
         "imagelayer.cpp",
@@ -67,10 +79,14 @@ DynamicLibrary {
         "pluginmanager.h",
         "properties.cpp",
         "properties.h",
+        "savefile.cpp",
+        "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
         "terrain.h",
         "tile.cpp",
+        "tileanimationdriver.cpp",
+        "tileanimationdriver.h",
         "tiled_global.h",
         "tiled.h",
         "tile.h",
@@ -80,9 +96,18 @@ DynamicLibrary {
         "tileset.h",
         "tilesetformat.cpp",
         "tilesetformat.h",
+        "tilesetmanager.cpp",
+        "tilesetmanager.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
     ]
+
+    Group {
+        condition: project.installHeaders
+        qbs.install: true
+        qbs.installDir: "include/tiled"
+        fileTagsFilter: "hpp"
+    }
 
     Export {
         Depends { name: "cpp" }

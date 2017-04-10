@@ -51,6 +51,7 @@ Map::Map():
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextObjectId(1)
 {
@@ -68,6 +69,7 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
+    mDrawMarginsDirty(true),
     mLayerDataFormat(Base64Zlib),
     mNextObjectId(1)
 {
@@ -76,6 +78,14 @@ Map::Map(Orientation orientation,
 Map::~Map()
 {
     qDeleteAll(mLayers);
+}
+
+QMargins Map::drawMargins() const
+{
+    if (mDrawMarginsDirty)
+        recomputeDrawMargins();
+
+    return mDrawMargins;
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -111,7 +121,7 @@ QMargins Map::computeLayerOffsetMargins() const
  * Recomputes the draw margins for this map and each of its tilesets. Needed
  * after the tile offset of a tileset has changed for example.
  */
-void Map::recomputeDrawMargins()
+void Map::recomputeDrawMargins() const
 {
     int maxTileSize = 0;
     QMargins offsetMargins;
@@ -136,30 +146,25 @@ void Map::recomputeDrawMargins()
                             offsetMargins.top() + maxTileSize - mTileHeight,
                             offsetMargins.right() + maxTileSize - mTileWidth,
                             offsetMargins.bottom());
+
+    mDrawMarginsDirty = false;
 }
 
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
        if (layer->layerType() == type)
            count++;
     return count;
 }
 
-QList<Layer*> Map::layers(Layer::TypeFlag type) const
-{
-    QList<Layer*> layers;
-    for (Layer *layer : mLayers)
-        if (layer->layerType() == type)
-            layers.append(layer);
-    return layers;
-}
-
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (ObjectGroup *og = layer->asObjectGroup())
             layers.append(og);
     return layers;
@@ -168,7 +173,8 @@ QList<ObjectGroup*> Map::objectGroups() const
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (TileLayer *tl = layer->asTileLayer())
             layers.append(tl);
     return layers;
@@ -200,12 +206,8 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (ObjectGroup *group = layer->asObjectGroup()) {
-        for (MapObject *o : group->objects()) {
-            if (o->id() == 0)
-                o->setId(takeNextObjectId());
-        }
-    }
+    if (ObjectGroup *group = layer->asObjectGroup())
+        initializeObjectIds(*group);
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -215,9 +217,13 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
-void Map::addTileset(const SharedTileset &tileset)
+bool Map::addTileset(const SharedTileset &tileset)
 {
+    if (mTilesets.contains(tileset))
+        return false;
+
     mTilesets.append(tileset);
+    return true;
 }
 
 void Map::addTilesets(const QSet<SharedTileset> &tilesets)
@@ -228,6 +234,7 @@ void Map::addTilesets(const QSet<SharedTileset> &tilesets)
 
 void Map::insertTileset(int index, const SharedTileset &tileset)
 {
+    Q_ASSERT(!mTilesets.contains(tileset));
     mTilesets.insert(index, tileset);
 }
 
@@ -241,17 +248,27 @@ void Map::removeTilesetAt(int index)
     mTilesets.remove(index);
 }
 
-void Map::replaceTileset(const SharedTileset &oldTileset,
+bool Map::replaceTileset(const SharedTileset &oldTileset,
                          const SharedTileset &newTileset)
 {
+    Q_ASSERT(oldTileset != newTileset);
+
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
 
-    for (Layer *layer : mLayers)
+    const auto &layers = mLayers;
+    for (Layer *layer : layers) {
         layer->replaceReferencesToTileset(oldTileset.data(),
                                           newTileset.data());
+    }
 
-    mTilesets.replace(index, newTileset);
+    if (mTilesets.contains(newTileset)) {
+        mTilesets.remove(index);
+        return false;
+    } else {
+        mTilesets.replace(index, newTileset);
+        return true;
+    }
 }
 
 bool Map::isTilesetUsed(const Tileset *tileset) const
@@ -267,8 +284,12 @@ Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
     o->mRenderOrder = mRenderOrder;
+    o->mHexSideLength = mHexSideLength;
+    o->mStaggerAxis = mStaggerAxis;
+    o->mStaggerIndex = mStaggerIndex;
     o->mBackgroundColor = mBackgroundColor;
     o->mDrawMargins = mDrawMargins;
+    o->mDrawMarginsDirty = mDrawMarginsDirty;
     for (const Layer *layer : mLayers) {
         Layer *clone = layer->clone();
         clone->setMap(o);
@@ -278,6 +299,14 @@ Map *Map::clone() const
     o->mLayerDataFormat = mLayerDataFormat;
     o->setProperties(properties());
     return o;
+}
+
+void Map::initializeObjectIds(ObjectGroup &objectGroup)
+{
+    for (MapObject *o : objectGroup) {
+        if (o->id() == 0)
+            o->setId(takeNextObjectId());
+    }
 }
 
 
@@ -390,11 +419,4 @@ Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
         renderOrder = Map::LeftUp;
     }
     return renderOrder;
-}
-
-Map *Map::fromLayer(Layer *layer)
-{
-    Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
-    result->addLayer(layer);
-    return result;
 }

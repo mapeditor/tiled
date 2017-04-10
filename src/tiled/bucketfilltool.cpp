@@ -213,7 +213,7 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(paint);
-    mapDocument()->emitRegionEdited(fillRegion, currentTileLayer());
+    emit mapDocument()->regionEdited(fillRegion, currentTileLayer());
 }
 
 void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *)
@@ -282,7 +282,7 @@ void BucketFillTool::makeConnections()
             this, &BucketFillTool::clearOverlay);
 
     // Overlay needs to be cleared if we switch to another layer
-    connect(mapDocument(), &MapDocument::currentLayerIndexChanged,
+    connect(mapDocument(), &MapDocument::currentLayerChanged,
             this, &BucketFillTool::clearOverlay);
 
     // Overlay needs be cleared if the selection changes, since
@@ -299,7 +299,7 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, &MapDocument::regionChanged,
                this, &BucketFillTool::clearOverlay);
 
-    disconnect(mapDocument, &MapDocument::currentLayerIndexChanged,
+    disconnect(mapDocument, &MapDocument::currentLayerChanged,
                this, &BucketFillTool::clearOverlay);
 
     disconnect(mapDocument, &MapDocument::selectedAreaChanged,
@@ -346,8 +346,8 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
 
         if (mIsRandom) {
             for (const Cell &cell : *variation.tileLayer()) {
-                if (!cell.isEmpty())
-                    mRandomCellPicker.add(cell, cell.tile->probability());
+                if (const Tile *tile = cell.tile())
+                    mRandomCellPicker.add(cell, tile->probability());
             }
         }
     }

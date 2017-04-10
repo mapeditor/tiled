@@ -29,14 +29,15 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 5.1) development libraries are installed:
+Make sure the Qt (>= 5.4) development libraries are installed:
 
-* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev libqt5opengl5-dev`
-* In Fedora:        `yum install qt-devel`
+* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
+* In Fedora:        `sudo dnf builddep tiled`
 * In Arch Linux:    `pacman -S qt`
 * In Mac OS X with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
+* Or you can download Qt from: https://www.qt.io/download-open-source/
 
 Now you can compile by running:
 

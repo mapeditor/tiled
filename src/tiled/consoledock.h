@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONSOLEDOCK_H
-#define CONSOLEDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QPlainTextEdit>
@@ -33,7 +32,7 @@ namespace Internal {
 class ConsoleDock : public QDockWidget
 {
     Q_OBJECT
-    
+
 public:
     explicit ConsoleDock(QWidget *parent = nullptr);
     ~ConsoleDock();
@@ -52,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CONSOLEDOCK_H

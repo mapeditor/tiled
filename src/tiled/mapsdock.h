@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSDOCK_H
-#define MAPSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -33,7 +32,6 @@ class QTreeView;
 namespace Tiled {
 namespace Internal {
 
-class MainWindow;
 class MapsView;
 
 class MapsDock : public QDockWidget
@@ -41,7 +39,7 @@ class MapsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MapsDock(MainWindow *mainWindow, QWidget *parent = nullptr);
+    MapsDock(QWidget *parent = nullptr);
 
 private slots:
     void browse();
@@ -66,7 +64,7 @@ class MapsView : public QTreeView
     Q_OBJECT
 
 public:
-    MapsView(MainWindow *mainWindow, QWidget *parent = nullptr);
+    MapsView(QWidget *parent = nullptr);
 
     /**
      * Returns a sensible size hint.
@@ -82,11 +80,8 @@ private slots:
     void onActivated(const QModelIndex &index);
 
 private:
-    MainWindow *mMainWindow;
     QFileSystemModel *mFSModel;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSDOCK_H

@@ -78,12 +78,12 @@ Map *ClipboardManager::map() const
     return format.fromByteArray(data);
 }
 
-void ClipboardManager::setMap(const Map *map)
+void ClipboardManager::setMap(const Map &map)
 {
     TmxMapFormat format;
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(map));
+    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(&map));
 
     mClipboard->setMimeData(mimeData);
 }
@@ -101,13 +101,16 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     Layer *copyLayer = nullptr;
 
     if (!selectedArea.isEmpty() && tileLayer) {
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+
         // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(selectedArea.translated(-tileLayer->x(),
-                                                             -tileLayer->y()));
+        copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+        copyLayer->setPosition(area.boundingRect().topLeft());
+
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
-        foreach (const MapObject *mapObject, selectedObjects)
+        for (const MapObject *mapObject : selectedObjects)
             objectGroup->addObject(mapObject->clone());
         copyLayer = objectGroup;
     } else {
@@ -116,7 +119,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     // Create a temporary map to write to the clipboard
     Map copyMap(map->orientation(),
-                copyLayer->width(), copyLayer->height(),
+                0, 0,
                 map->tileWidth(), map->tileHeight());
 
     copyMap.setRenderOrder(map->renderOrder());
@@ -127,13 +130,13 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     copyMap.addLayer(copyLayer);
 
-    setMap(&copyMap);
+    setMap(copyMap);
 }
 
 void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
                                         MapDocument *mapDocument,
                                         const MapView *view,
-                                        PasteMode mode)
+                                        PasteFlags flags)
 {
     Layer *currentLayer = mapDocument->currentLayer();
     if (!currentLayer)
@@ -143,32 +146,38 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     if (!currentObjectGroup)
         return;
 
-    // Determine where to insert the objects
-    const MapRenderer *renderer = mapDocument->renderer();
-    const QPointF center = objectGroup->objectsBoundingRect().center();
+    QPointF insertPos;
 
-    // Take the mouse position if the mouse is on the view, otherwise
-    // take the center of the view.
-    QPoint viewPos;
-    if (view->underMouse())
-        viewPos = view->mapFromGlobal(QCursor::pos());
-    else
-        viewPos = QPoint(view->width() / 2, view->height() / 2);
+    if (!(flags & PasteInPlace)) {
+        // Determine where to insert the objects
+        const MapRenderer *renderer = mapDocument->renderer();
+        const QPointF center = objectGroup->objectsBoundingRect().center();
 
-    const QPointF scenePos = view->mapToScene(viewPos);
-    QPointF insertPos = renderer->screenToPixelCoords(scenePos) - center;
-    SnapHelper(renderer).snap(insertPos);
+        // Take the mouse position if the mouse is on the view, otherwise
+        // take the center of the view.
+        QPoint viewPos;
+        if (view->underMouse())
+            viewPos = view->mapFromGlobal(QCursor::pos());
+        else
+            viewPos = QPoint(view->width() / 2, view->height() / 2);
+
+        const QPointF scenePos = view->mapToScene(viewPos);
+
+        insertPos = renderer->screenToPixelCoords(scenePos) - center;
+        SnapHelper(renderer).snap(insertPos);
+    }
 
     QUndoStack *undoStack = mapDocument->undoStack();
     QList<MapObject*> pastedObjects;
     pastedObjects.reserve(objectGroup->objectCount());
 
     undoStack->beginMacro(tr("Paste Objects"));
-    foreach (const MapObject *mapObject, objectGroup->objects()) {
-        if (mode == NoTileObjects && !mapObject->cell().isEmpty())
+    for (const MapObject *mapObject : objectGroup->objects()) {
+        if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
             continue;
 
         MapObject *objectClone = mapObject->clone();
+        objectClone->resetId();
         objectClone->setPosition(objectClone->position() + insertPos);
         pastedObjects.append(objectClone);
         undoStack->push(new AddMapObject(mapDocument,

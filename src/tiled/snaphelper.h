@@ -1,6 +1,7 @@
 /*
  * snaphelper.h
  * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SNAPHELPER_H
-#define SNAPHELPER_H
+#pragma once
 
 #include "maprenderer.h"
 
@@ -33,7 +33,7 @@ public:
 
     void toggleSnap();
 
-    bool snaps() const { return mSnapToGrid || mSnapToFineGrid; }
+    bool snaps() const { return mSnapToGrid || mSnapToFineGrid || mSnapToPixels; }
 
     void snap(QPointF &pixelPos) const;
 
@@ -41,9 +41,8 @@ private:
     const MapRenderer *mRenderer;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
+    bool mSnapToPixels;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SNAPHELPER_H

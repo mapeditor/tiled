@@ -11,6 +11,7 @@ moc_*.cpp
 ui_*.h
 qrc_*
 *.qmlc
+default/
 
 # Build artifacts on Windows
 tiled.exe
@@ -31,7 +32,8 @@ translations/phony_target.app
 *.pro.user*
 *.qbs.user*
 
-tests/test_mapreader
+tests/mapreader/mapreader
+tests/staggeredrenderer/staggeredrenderer
 
 # Ronn html outputs
 man/*.1.html

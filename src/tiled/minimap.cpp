@@ -32,6 +32,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tilelayer.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QCursor>
@@ -94,7 +95,7 @@ void MiniMap::setMapDocument(MapDocument *map)
 
 QSize MiniMap::sizeHint() const
 {
-    return QSize(200, 200);
+    return Utils::dpiScaled(QSize(200, 200));
 }
 
 void MiniMap::scheduleMapImageUpdate()
@@ -117,7 +118,7 @@ void MiniMap::paintEvent(QPaintEvent *pe)
     QPainter p(this);
     p.setRenderHints(QPainter::SmoothPixmapTransform);
 
-    QColor backgroundColor(Qt::darkGray);
+    QColor backgroundColor(palette().dark().color());
     if (mMapDocument && mMapDocument->map()->backgroundColor().isValid())
         backgroundColor = mMapDocument->map()->backgroundColor();
     p.setBrush(backgroundColor);
@@ -176,7 +177,11 @@ void MiniMap::renderMapToImage()
     }
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QRect r = contentsRect();
+#if QT_VERSION >= 0x050600
+    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
+#else
+    const QSize viewSize = contentsRect().size() * devicePixelRatio();
+#endif
     QSize mapSize = renderer->mapSize();
 
     if (mapSize.isEmpty()) {
@@ -189,8 +194,8 @@ void MiniMap::renderMapToImage()
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) r.width() / mapSize.width(),
-                       (qreal) r.height() / mapSize.height());
+    qreal scale = qMin((qreal) viewSize.width() / mapSize.width(),
+                       (qreal) viewSize.height() / mapSize.height());
 
     // Allocate a new image when the size changed
     const QSize imageSize = mapSize * scale;
@@ -219,12 +224,15 @@ void MiniMap::renderMapToImage()
     painter.translate(margins.left(), margins.top());
     renderer->setPainterScale(scale);
 
-    foreach (const Layer *layer, mMapDocument->map()->layers()) {
-        if (visibleLayersOnly && !layer->isVisible())
+    LayerIterator iterator(mMapDocument->map());
+    while (const Layer *layer = iterator.next()) {
+        if (visibleLayersOnly && layer->isHidden())
             continue;
 
-        painter.setOpacity(layer->opacity());
-        painter.translate(layer->offset());
+        const auto offset = layer->totalOffset();
+
+        painter.setOpacity(layer->effectiveOpacity());
+        painter.translate(offset);
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
@@ -259,7 +267,7 @@ void MiniMap::renderMapToImage()
             renderer->drawImageLayer(&painter, imageLayer);
         }
 
-        painter.translate(-layer->offset());
+        painter.translate(-offset);
     }
 
     if (drawTileGrid) {

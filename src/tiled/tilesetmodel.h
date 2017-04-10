@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETMODEL_H
-#define TILESETMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 
@@ -126,7 +125,7 @@ public slots:
      * Tiles that are not from the tileset displayed by this model are simply
      * ignored. All tiles in the list are assumed to be from the same tileset.
      *
-     * \sa MapDocument::tileTerrainChanged
+     * \sa TilesetDocument::tileTerrainChanged
      */
     void tilesChanged(const QList<Tile*> &tiles);
 
@@ -134,7 +133,8 @@ public slots:
      * Should be called when anything changes about the given \a tile that
      * affects its display in any views on this model.
      *
-     * \sa MapDocument::tileAnimationChanged
+     * \sa TilesetDocument::tileAnimationChanged
+     * \sa TilesetDocument::tileImageSourceChanged
      */
     void tileChanged(Tile *tile);
 
@@ -147,5 +147,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETMODEL_H

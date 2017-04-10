@@ -20,7 +20,7 @@
 
 #include "changetileprobability.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -28,16 +28,30 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile*>& tiles,
                                              float probability)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
 {
     mProbabilities.reserve(tiles.size());
-    for (int i = 0; i < tiles.size(); ++ i) {
+    for (int i = 0; i < tiles.size(); ++ i)
         mProbabilities.append(probability);
-    }
+
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
+
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile *> &tiles,
+                                             const QList<float> &probabilities,
+                                             QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
+    , mTiles(tiles)
+    , mProbabilities(probabilities)
+{
+    Q_ASSERT(mTiles.size() == mProbabilities.size());
     setText(QCoreApplication::translate("Undo Commands",
                                         "Change Tile Probability"));
 }
@@ -45,11 +59,11 @@ ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
 void ChangeTileProbability::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {
-        Tile* tile = mTiles[i];
+        Tile *tile = mTiles[i];
         float probability = tile->probability();
         tile->setProbability(mProbabilities[i]);
         mProbabilities[i] = probability;
-        mMapDocument->emitTileProbabilityChanged(tile);
+        emit mTilesetDocument->tileProbabilityChanged(tile);
     }
 }
 

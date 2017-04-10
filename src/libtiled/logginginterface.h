@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LOGGINGINTERFACE_H
-#define LOGGINGINTERFACE_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -64,5 +63,3 @@ signals:
 };
 
 } // namespace Tiled
-
-#endif // LOGGINGINTERFACE_H

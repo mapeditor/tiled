@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILESETFORMAT_H
-#define TILESETFORMAT_H
+#pragma once
 
 #include "mapformat.h"
 #include "tileset.h"
@@ -41,6 +40,8 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT TilesetFormat : public FileFormat
 {
+    Q_OBJECT
+
 public:
     explicit TilesetFormat(QObject *parent = nullptr)
         : FileFormat(parent)
@@ -75,5 +76,3 @@ TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")
-
-#endif // MAPFORMAT_H

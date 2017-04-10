@@ -21,15 +21,16 @@
  */
 
 #include "commandlineparser.h"
-#include "mainwindow.h"
 #include "languagemanager.h"
-#include "pluginmanager.h"
+#include "mainwindow.h"
 #include "mapdocument.h"
-#include "mapreader.h"
 #include "mapformat.h"
+#include "mapreader.h"
+#include "pluginmanager.h"
 #include "preferences.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"
+#include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "winsparkleautoupdater.h"
@@ -39,8 +40,14 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtPlugin>
-#include <QStyle>
-#include <QStyleFactory>
+
+#ifdef TILED_LINUX_ARCHIVE
+#include <QSvgRenderer>
+#endif
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -129,8 +136,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << qPrintable(QApplication::applicationDisplayName())
-                   << qPrintable(QApplication::applicationVersion());
+        qWarning().noquote() << QApplication::applicationDisplayName()
+                             << QApplication::applicationVersion();
         quit = true;
     }
 }
@@ -154,11 +161,11 @@ void CommandLineHandler::showExportFormats()
 {
     PluginManager::instance()->loadPlugins();
 
-    qWarning() << qPrintable(tr("Export formats:"));
-    auto formats = PluginManager::objects<MapFormat>();
+    qWarning().noquote() << tr("Export formats:");
+    const auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning() << " " << format->nameFilter();
+            qWarning(" %s", qUtf8Printable(format->shortName()));
     }
 
     quit = true;
@@ -169,9 +176,33 @@ void CommandLineHandler::startNewInstance()
     newInstance = true;
 }
 
+
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN
+    // Make console output work on Windows, if running in a console.
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        FILE *dummy = nullptr;
+        freopen_s(&dummy, "CONOUT$", "w", stdout);
+        freopen_s(&dummy, "CONOUT$", "w", stderr);
+    }
+#endif
+
+#if QT_VERSION >= 0x050600
+    QGuiApplication::setFallbackSessionManagementEnabled(false);
+#endif
+
+    // Enable support for highres images (added in Qt 5.1, but off by default)
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     TiledApplication a(argc, argv);
+
+#ifdef TILED_LINUX_ARCHIVE
+    // Workaround to get the SVG image format plugin to be shipped by
+    // linuxdeployqt (see probonopd/linuxdeployqt#82).
+    QSvgRenderer svgRenderer;
+    Q_UNUSED(svgRenderer)
+#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
@@ -186,26 +217,7 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
-    // Enable support for highres images (added in Qt 5.1, but off by default)
-    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
-
-#ifndef Q_OS_WIN
-    QString baseName = QApplication::style()->objectName();
-    if (baseName == QLatin1String("windows")) {
-        // Avoid Windows 95 style at all cost
-        if (QStyleFactory::keys().contains(QLatin1String("Fusion"))) {
-            baseName = QLatin1String("fusion"); // Qt5
-        } else { // Qt4
-            // e.g. if we are running on a KDE4 desktop
-            QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
-            if (desktopEnvironment == "kde")
-                baseName = QLatin1String("plastique");
-            else
-                baseName = QLatin1String("cleanlooks");
-        }
-        a.setStyle(QStyleFactory::create(baseName));
-    }
-#endif
+    StyleHelper::initialize();
 
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
@@ -224,8 +236,7 @@ int main(int argc, char *argv[])
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.filesToOpen().length() < 2) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Export syntax is --export-map [format] <tmx file> <target file>"));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
             return 1;
         }
         int index = 0;
@@ -241,14 +252,13 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
+                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
                     chosenFormat = format;
                     break;
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "Format not recognized (see --export-formats)"));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
                 return 1;
             }
         } else {
@@ -259,16 +269,14 @@ int main(int argc, char *argv[])
                     continue;
                 if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                     if (chosenFormat) {
-                        qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                             "Non-unique file extension. Can't determine correct export format."));
+                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
                         return 1;
                     }
                     chosenFormat = format;
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "No exporter found for target file."));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
                 return 1;
             }
         }
@@ -277,8 +285,7 @@ int main(int argc, char *argv[])
         MapReader reader;
         QScopedPointer<Map> map(reader.readMap(sourceFile));
         if (!map) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to load source map."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
@@ -286,15 +293,19 @@ int main(int argc, char *argv[])
         bool success = chosenFormat->write(map.data(), targetFile);
 
         if (!success) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to export map to target file."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
             return 1;
         }
         return 0;
     }
 
     if (!commandLine.filesToOpen().isEmpty() && !commandLine.newInstance) {
-        QJsonDocument doc(QJsonArray::fromStringList(commandLine.filesToOpen()));
+        // Convert files to absolute paths because the already running Tiled
+        // instance likely does not have the same working directory.
+        QStringList absolutePaths;
+        for (const QString &fileName : commandLine.filesToOpen())
+            absolutePaths.append(QFileInfo(fileName).absoluteFilePath());
+        QJsonDocument doc(QJsonArray::fromStringList(absolutePaths));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
@@ -317,7 +328,7 @@ int main(int argc, char *argv[])
                      &w, SLOT(openFile(QString)));
 
     if (!commandLine.filesToOpen().isEmpty()) {
-        foreach (const QString &fileName, commandLine.filesToOpen())
+        for (const QString &fileName : commandLine.filesToOpen())
             w.openFile(fileName);
     } else if (Preferences::instance()->openLastFilesOnStartup()) {
         w.openLastFiles();

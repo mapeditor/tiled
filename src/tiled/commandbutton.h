@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDBUTTON_H
-#define COMMANDBUTTON_H
+#pragma once
 
 #include <QToolButton>
 
@@ -44,7 +43,6 @@ protected:
 private slots:
     void runCommand();
     void showDialog();
-    void populateMenu();
 
 private:
     void retranslateUi();
@@ -54,5 +52,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PREFERENCESDIALOG_H

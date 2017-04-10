@@ -127,7 +127,7 @@ bool QtLocalPeer::isClient()
     }
 #endif
     if (!res)
-        qWarning("QtSingleCoreApplication: listen on local socket failed, %s", qPrintable(server->errorString()));
+        qWarning("QtSingleCoreApplication: listen on local socket failed, %s", qUtf8Printable(server->errorString()));
     QObject::connect(server, SIGNAL(newConnection()), SLOT(receiveConnection()));
     return false;
 }

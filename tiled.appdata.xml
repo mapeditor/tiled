@@ -5,6 +5,14 @@
  <project_license>GPL-2.0+ and BSD-2-Clause</project_license>
  <name>Tiled</name>
  <summary>General purpose map editor</summary>
+ <keywords>
+  <keyword>2D</keyword>
+  <keyword>mapeditor</keyword>
+  <keyword>tool</keyword>
+  <keyword>development</keyword>
+  <keyword>tile</keyword>
+  <keyword>editor</keyword>
+ </keywords>
  <description>
   <p>
    Tiled is a general purpose 2D level editor with powerful tile map editing

@@ -86,7 +86,7 @@ void ColorDelegate::paint(QPainter *painter,
 QSize ColorDelegate::sizeHint(const QStyleOptionViewItem &,
                               const QModelIndex &) const
 {
-    return QSize(50, 20);
+    return Utils::dpiScaled(QSize(50, 20));
 }
 
 
@@ -99,6 +99,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     , mUpdating(false)
 {
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
 
     mUi->objectTypesTable->setModel(mObjectTypesModel);
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
@@ -137,12 +138,12 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     Utils::setThemeIcon(mRemovePropertyAction, "remove");
 
     QToolBar *objectTypesToolBar = new QToolBar(this);
-    objectTypesToolBar->setIconSize(QSize(16, 16));
+    objectTypesToolBar->setIconSize(Utils::smallIconSize());
     objectTypesToolBar->addAction(mAddObjectTypeAction);
     objectTypesToolBar->addAction(mRemoveObjectTypeAction);
 
     QToolBar *propertiesToolBar = new QToolBar(this);
-    propertiesToolBar->setIconSize(QSize(16, 16));
+    propertiesToolBar->setIconSize(Utils::smallIconSize());
     propertiesToolBar->addAction(mAddPropertyAction);
     propertiesToolBar->addAction(mRemovePropertyAction);
     propertiesToolBar->addAction(mRenamePropertyAction);
@@ -177,10 +178,12 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->actionExport, SIGNAL(triggered()),
             SLOT(exportObjectTypes()));
 
-    connect(mObjectTypesModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            SLOT(applyObjectTypes()));
-    connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(applyObjectTypes()));
+    connect(mObjectTypesModel, &ObjectTypesModel::dataChanged,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsInserted,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsRemoved,
+            this, &ObjectTypesEditor::applyObjectTypes);
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &ObjectTypesEditor::propertyValueChanged);
@@ -241,8 +244,7 @@ void ObjectTypesEditor::addObjectType()
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);
     sm->setCurrentIndex(newIndex, QItemSelectionModel::Current);
-    mUi->objectTypesTable->setFocus();
-    mUi->objectTypesTable->scrollTo(newIndex);
+    mUi->objectTypesTable->edit(newIndex);
 }
 
 void ObjectTypesEditor::selectedObjectTypesChanged()
@@ -445,7 +447,7 @@ void ObjectTypesEditor::updateProperties()
         const QString &name = it.key();
         const AggregatedPropertyData &data = it.value();
 
-        QtVariantProperty *property = createProperty(data.value().type(), name);
+        QtVariantProperty *property = createProperty(data.value().userType(), name);
         property->setValue(data.value());
 
         bool everywhere = data.presenceCount() == selectedRows.size();
@@ -490,7 +492,7 @@ void ObjectTypesEditor::addProperty()
 {
     AddPropertyDialog dialog(window());
     if (dialog.exec() == AddPropertyDialog::Accepted)
-        addProperty(dialog.propertyName(), QVariant(dialog.propertyType()));
+        addProperty(dialog.propertyName(), QVariant(dialog.propertyValue()));
 }
 
 void ObjectTypesEditor::addProperty(const QString &name, const QVariant &value)

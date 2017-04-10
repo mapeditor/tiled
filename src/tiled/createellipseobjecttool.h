@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEELLIPSEOBJECTTOOL_H
-#define CREATEELLIPSEOBJECTTOOL_H
+#pragma once
 
 #include "createscalableobjecttool.h"
 
@@ -39,5 +38,3 @@ protected:
 
 }
 }
-
-#endif // CREATEELLIPSEOBJECTTOOL_H

@@ -21,16 +21,15 @@
 #include "droidcraftplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilelayer.h"
 #include "compression.h"
 
 #include <QFile>
-#include <QFileInfo>
-#include <QSaveFile>
 
-using namespace Droidcraft;
+namespace Droidcraft {
 
 DroidcraftPlugin::DroidcraftPlugin()
 {
@@ -88,7 +87,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
 bool DroidcraftPlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("dat");
+    return fileName.endsWith(QLatin1String(".dat"), Qt::CaseInsensitive);
 }
 
 // Writer
@@ -118,7 +117,7 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (Tile *tile = mapLayer->cellAt(x, y).tile)
+            if (Tile *tile = mapLayer->cellAt(x, y).tile())
                 uncompressed[y * width + x] = (unsigned char) tile->id();
         }
     }
@@ -126,13 +125,13 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     QByteArray compressed = compress(uncompressed, Gzip);
 
     // Write QByteArray
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    file.write(compressed);
+    file.device()->write(compressed);
 
     if (!file.commit()) {
         mError = file.errorString();
@@ -147,7 +146,14 @@ QString DroidcraftPlugin::nameFilter() const
     return tr("Droidcraft map files (*.dat)");
 }
 
+QString DroidcraftPlugin::shortName() const
+{
+    return QLatin1String("droidcraft");
+}
+
 QString DroidcraftPlugin::errorString() const
 {
     return mError;
 }
+
+} // namespace Droidcraft

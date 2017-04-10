@@ -20,7 +20,7 @@
 
 #include "changetileterrain.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -29,16 +29,16 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileTerrain::ChangeTileTerrain()
-    : mMapDocument(nullptr)
+    : mTilesetDocument(nullptr)
     , mTileset(nullptr)
     , mMergeable(false)
 {
     initText();
 }
 
-ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
+ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
                                      Tile *tile, unsigned terrain)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTileset(tile->tileset())
     , mMergeable(true)
 {
@@ -46,9 +46,11 @@ ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
     mChanges.insert(tile, Change(tile->terrain(), terrain));
 }
 
-ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
-                                     const Changes &changes)
-    : mMapDocument(mapDocument)
+ChangeTileTerrain::ChangeTileTerrain(TilesetDocument *tilesetDocument,
+                                     const Changes &changes,
+                                     QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
     , mTileset(changes.begin().key()->tileset())
     , mChanges(changes)
     , mMergeable(true)
@@ -58,6 +60,9 @@ ChangeTileTerrain::ChangeTileTerrain(MapDocument *mapDocument,
 
 void ChangeTileTerrain::undo()
 {
+    if (mChanges.isEmpty())
+        return;
+
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;
@@ -73,11 +78,14 @@ void ChangeTileTerrain::undo()
         ++i;
     }
 
-    mMapDocument->emitTileTerrainChanged(changedTiles);
+    emit mTilesetDocument->tileTerrainChanged(changedTiles);
 }
 
 void ChangeTileTerrain::redo()
 {
+    if (mChanges.isEmpty())
+        return;
+
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;
@@ -93,7 +101,7 @@ void ChangeTileTerrain::redo()
         ++i;
     }
 
-    mMapDocument->emitTileTerrainChanged(changedTiles);
+    emit mTilesetDocument->tileTerrainChanged(changedTiles);
 }
 
 bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
@@ -102,7 +110,7 @@ bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
         return false;
 
     const ChangeTileTerrain *o = static_cast<const ChangeTileTerrain*>(other);
-    if (o->mMapDocument && !(mMapDocument == o->mMapDocument &&
+    if (o->mTilesetDocument && !(mTilesetDocument == o->mTilesetDocument &&
                              mTileset == o->mTileset))
         return false;
 

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LANGUAGEMANAGER_H
-#define LANGUAGEMANAGER_H
+#pragma once
 
 #include <QStringList>
 
@@ -61,5 +60,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LANGUAGEMANAGER_H

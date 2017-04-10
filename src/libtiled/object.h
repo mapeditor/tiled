@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include <QObject>
 
@@ -119,10 +118,8 @@ public:
     { mProperties.remove(name); }
 
 private:
-    TypeId mTypeId;
+    const TypeId mTypeId;
     Properties mProperties;
 };
 
 } // namespace Tiled
-
-#endif // OBJECT_H

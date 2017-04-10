@@ -1,6 +1,7 @@
 /*
  * flipmapobjects.cpp
  * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
  * This file is part of Tiled.
  *
@@ -39,13 +40,39 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands",
                                         "Flip %n Object(s)",
                                         nullptr, mapObjects.size()));
+
+    //computing objects center
+    QRectF boundaryObjectsRect;
+    for (MapObject *object : mMapObjects) {
+        QTransform objectTransform;
+        objectTransform.translate(object->x(), object->y());
+        objectTransform.rotate(object->rotation());
+        objectTransform.translate(-object->x(), -object->y());
+
+        if (!object->cell().isEmpty()) { //computing bound rect for cell
+            QRectF cellRect = QRectF(object->x(),
+                                     object->y(),
+                                     object->width(), -object->height()).normalized();
+            boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(cellRect));
+        } else if (!object->polygon().empty()) { //computing bound rect for polygon
+            const QPolygonF &objectPolygon = object->polygon();
+            QTransform polygonToMapTransform;
+            polygonToMapTransform.translate(object->x(),
+                                            object->y());
+            polygonToMapTransform.rotate(object->rotation());
+            boundaryObjectsRect = boundaryObjectsRect.united(polygonToMapTransform.mapRect(QRectF(objectPolygon.boundingRect())));
+        } else { //computing bound rect for other
+            boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(object->bounds()));
+        }
+    }
+    mObjectsCenter = boundaryObjectsRect.center();
 }
 
 void FlipMapObjects::flip()
 {
-    // TODO: Flip them properly as a group
-    foreach (MapObject *object, mMapObjects)
-        object->flip(mFlipDirection);
+    //flip objects
+    for (MapObject *object : mMapObjects)
+        object->flip(mFlipDirection, mObjectsCenter);
 
-    mMapDocument->mapObjectModel()->emitObjectsChanged(mMapObjects);
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

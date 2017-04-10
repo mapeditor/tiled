@@ -18,8 +18,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_BROKENLINKS_H
-#define TILED_INTERNAL_BROKENLINKS_H
+#pragma once
+
+#include "tileset.h"
 
 #include <QAbstractListModel>
 #include <QWidget>
@@ -38,11 +39,12 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class Document;
+class TilesetDocument;
 
 enum BrokenLinkType {
-    TileImageSource,
-    TilesetFileName,
+    MapTilesetReference,
+    TilesetTileImageSource,
     TilesetImageSource,
 };
 
@@ -50,11 +52,12 @@ struct BrokenLink {
     BrokenLinkType type;
 
     union {
-        Tileset *tileset;
-        Tile *tile;
+        Tileset *_tileset;
+        Tile *_tile;
     };
 
     QString filePath() const;
+    Tileset *tileset() const;
 };
 
 
@@ -64,14 +67,15 @@ class BrokenLinksModel : public QAbstractListModel
     Q_PROPERTY(bool hasBrokenLinks READ hasBrokenLinks NOTIFY hasBrokenLinksChanged)
 
 public:
-    BrokenLinksModel(MapDocument *mapDocument, QObject *parent = nullptr);
+    BrokenLinksModel(QObject *parent = nullptr);
 
-    MapDocument *mapDocument() const;
+    void setDocument(Document *document);
+    Document *document() const;
 
     void refresh();
     bool hasBrokenLinks() const;
 
-    const BrokenLink &brokenLink(const QModelIndex &index) const;
+    const BrokenLink &brokenLink(int index) const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -84,19 +88,25 @@ signals:
 private slots:
     void tileImageSourceChanged(Tile *tile);
     void tilesetChanged(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *tileset);
+
+    void tilesetAdded(int index, Tileset *tileset);
+    void tilesetRemoved(Tileset *tileset);
+    void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
 
 private:
+    void connectToTileset(const SharedTileset &tileset);
+    void disconnectFromTileset(const SharedTileset &tileset);
+
     void removeLink(int index);
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     QVector<BrokenLink> mBrokenLinks;
 };
 
 
-inline MapDocument *BrokenLinksModel::mapDocument() const
+inline Document *BrokenLinksModel::document() const
 {
-    return mMapDocument;
+    return mDocument;
 }
 
 inline bool BrokenLinksModel::hasBrokenLinks() const
@@ -104,9 +114,9 @@ inline bool BrokenLinksModel::hasBrokenLinks() const
     return !mBrokenLinks.isEmpty();
 }
 
-inline const BrokenLink &BrokenLinksModel::brokenLink(const QModelIndex &index) const
+inline const BrokenLink &BrokenLinksModel::brokenLink(int index) const
 {
-    return mBrokenLinks.at(index.row());
+    return mBrokenLinks.at(index);
 }
 
 
@@ -138,5 +148,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_BROKENLINKS_H

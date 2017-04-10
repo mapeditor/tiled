@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ERASER_H
-#define ERASER_H
+#pragma once
 
 #include "abstracttiletool.h"
 
@@ -46,12 +45,18 @@ protected:
 
 private:
     void doErase(bool continuation);
+    QRect eraseArea() const;
 
-    bool mErasing;
+    enum Mode {
+        Nothing,
+        Erase,
+        RectangleErase
+    };
+
+    Mode mMode;
     QPoint mLastTilePos;
+    QPoint mStart;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ERASER_H

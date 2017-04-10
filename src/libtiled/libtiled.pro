@@ -22,62 +22,12 @@ win32 {
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
+
+!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
+
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 
-SOURCES += compression.cpp \
-    gidmapper.cpp \
-    hexagonalrenderer.cpp \
-    imagelayer.cpp \
-    imagereference.cpp \
-    isometricrenderer.cpp \
-    layer.cpp \
-    map.cpp \
-    mapobject.cpp \
-    mapreader.cpp \
-    maprenderer.cpp \
-    maptovariantconverter.cpp \
-    mapwriter.cpp \
-    objectgroup.cpp \
-    orthogonalrenderer.cpp \
-    plugin.cpp \
-    pluginmanager.cpp \
-    properties.cpp \
-    staggeredrenderer.cpp \
-    tile.cpp \
-    tilelayer.cpp \
-    tileset.cpp \
-    tilesetformat.cpp \
-    varianttomapconverter.cpp
-HEADERS += compression.h \
-    gidmapper.h \
-    hexagonalrenderer.h \
-    imagelayer.h \
-    imagereference.h \
-    isometricrenderer.h \
-    layer.h \
-    logginginterface.h \
-    map.h \
-    mapformat.h \
-    mapobject.h \
-    mapreader.h \
-    maprenderer.h \
-    maptovariantconverter.h \
-    mapwriter.h \
-    object.h \
-    objectgroup.h \
-    orthogonalrenderer.h \
-    plugin.h \
-    pluginmanager.h \
-    properties.h \
-    staggeredrenderer.h \
-    terrain.h \
-    tile.h \
-    tiled.h \
-    tiled_global.h \
-    tilelayer.h \
-    tileset.h \
-    tilesetformat.h \
-    varianttomapconverter.h
+include(./libtiled-src.pri)
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

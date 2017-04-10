@@ -18,12 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESELECTIONITEM_H
-#define TILESELECTIONITEM_H
+#pragma once
 
 #include <QGraphicsObject>
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -49,7 +51,9 @@ private slots:
     void selectionChanged(const QRegion &newSelection,
                           const QRegion &oldSelection);
 
-    void currentLayerIndexChanged();
+    void layerChanged(Layer *layer);
+
+    void currentLayerChanged(Layer *layer);
 
 private:
     void updateBoundingRect();
@@ -60,5 +64,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESELECTIONITEM_H

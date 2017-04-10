@@ -70,17 +70,18 @@ QSharedPointer<Tileset> Tile::sharedTileset() const
 }
 
 /**
- * Returns the image for rendering this tile, taking into account tile
- * animations.
+ * Returns the tile to render when taking into account tile animations.
+ *
+ * \warning May return null when the tileset is invalid or the image could
+ *          not be loaded.
  */
-const QPixmap &Tile::currentFrameImage() const
+const Tile *Tile::currentFrameTile() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->findTile(frame.tileId)->image();
-    } else {
-        return mImage;
+        return mTileset->findTile(frame.tileId);
     }
+    return this;
 }
 
 /**
@@ -147,9 +148,26 @@ ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
  */
 void Tile::setFrames(const QVector<Frame> &frames)
 {
+    resetAnimation();
     mFrames = frames;
+}
+
+/**
+ * Resets the tile animation. Returns whether this caused the current tileId to
+ * change.
+ */
+bool Tile::resetAnimation()
+{
+    if (!isAnimated())
+        return false;
+
+    Frame previousFrame = mFrames.at(mCurrentFrameIndex);
+    Frame currentFrame = mFrames.at(0);
+
     mCurrentFrameIndex = 0;
     mUnusedTime = 0;
+
+    return previousFrame.tileId != currentFrame.tileId;
 }
 
 /**
@@ -174,4 +192,26 @@ bool Tile::advanceAnimation(int ms)
     }
 
     return previousTileId != frame.tileId;
+}
+
+/**
+ * Returns a duplicate of this tile, to be added to the given \a tileset.
+ */
+Tile *Tile::clone(Tileset *tileset) const
+{
+    Tile *c = new Tile(mImage, mId, tileset);
+    c->setProperties(properties());
+
+    c->mImageSource = mImageSource;
+    c->mTerrain = mTerrain;
+    c->mProbability = mProbability;
+
+    if (mObjectGroup)
+        c->mObjectGroup = mObjectGroup->clone();
+
+    c->mFrames = mFrames;
+    c->mCurrentFrameIndex = mCurrentFrameIndex;
+    c->mUnusedTime = mUnusedTime;
+
+    return c;
 }

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="45" height="31" tilewidth="16" tileheight="16" nextobjectid="37">
+ <properties>
+  <property name="enemyTint" type="color" value="#ffa33636"/>
+ </properties>
+ <tileset firstgid="1" name="outdoor" tilewidth="16" tileheight="16" tilecount="288" columns="24">
+  <image source="buch-outdoor.png" width="384" height="192"/>
+  <terraintypes>
+   <terrain name="Grass" tile="150"/>
+   <terrain name="Dirt" tile="100"/>
+   <terrain name="Dark Dirt" tile="34"/>
+   <terrain name="Water" tile="171"/>
+  </terraintypes>
+  <tile id="0" terrain="0,0,0,1"/>
+  <tile id="1" terrain="0,0,1,1"/>
+  <tile id="2" terrain="0,0,1,1"/>
+  <tile id="3" terrain="0,0,1,1"/>
+  <tile id="4" terrain="0,0,1,1"/>
+  <tile id="5" terrain="0,0,1,0"/>
+  <tile id="6" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="7" terrain="1,1,1,2"/>
+  <tile id="8" terrain="1,1,2,2"/>
+  <tile id="9" terrain="1,1,2,2"/>
+  <tile id="10" terrain="1,1,2,2"/>
+  <tile id="11" terrain="1,1,2,2"/>
+  <tile id="12" terrain="1,1,2,1"/>
+  <tile id="13" terrain="0,0,0,2"/>
+  <tile id="14" terrain="0,0,2,2"/>
+  <tile id="15" terrain="0,0,2,2"/>
+  <tile id="16" terrain="0,0,2,2"/>
+  <tile id="17" terrain="0,0,2,2"/>
+  <tile id="18" terrain="0,0,2,0"/>
+  <tile id="24" terrain="0,1,0,1"/>
+  <tile id="25" terrain="1,1,1,0"/>
+  <tile id="26" terrain="1,1,0,1"/>
+  <tile id="27" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="28" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="29" terrain="1,0,1,0"/>
+  <tile id="30" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="31" terrain="1,2,1,2"/>
+  <tile id="32" terrain="2,2,2,1"/>
+  <tile id="33" terrain="2,2,1,2"/>
+  <tile id="34" terrain="2,2,2,2"/>
+  <tile id="35" terrain="2,2,2,2"/>
+  <tile id="36" terrain="2,1,2,1"/>
+  <tile id="37" terrain="0,2,0,2"/>
+  <tile id="38" terrain="2,2,2,0"/>
+  <tile id="39" terrain="2,2,0,2"/>
+  <tile id="40" terrain="2,2,2,2"/>
+  <tile id="42" terrain="2,0,2,0"/>
+  <tile id="48" terrain="0,1,0,1"/>
+  <tile id="49" terrain="1,0,1,1"/>
+  <tile id="50" terrain="0,1,1,1"/>
+  <tile id="51" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="52" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="53" terrain="1,0,1,0"/>
+  <tile id="54" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="55" terrain="1,2,1,2"/>
+  <tile id="56" terrain="2,1,2,2"/>
+  <tile id="57" terrain="1,2,2,2"/>
+  <tile id="58" terrain="2,2,2,2"/>
+  <tile id="59" terrain="2,2,2,2"/>
+  <tile id="60" terrain="2,1,2,1"/>
+  <tile id="61" terrain="0,2,0,2"/>
+  <tile id="62" terrain="2,0,2,2"/>
+  <tile id="63" terrain="0,2,2,2"/>
+  <tile id="66" terrain="2,0,2,0"/>
+  <tile id="72" terrain="0,1,0,1"/>
+  <tile id="73" terrain="0,1,1,0"/>
+  <tile id="74" terrain="1,0,0,1"/>
+  <tile id="75" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="76" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="77" terrain="1,0,1,0"/>
+  <tile id="78" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="79" terrain="1,2,1,2"/>
+  <tile id="80" terrain="1,2,2,1"/>
+  <tile id="81" terrain="2,1,1,2"/>
+  <tile id="82" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="83" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="84" terrain="2,1,2,1"/>
+  <tile id="85" terrain="0,2,0,2"/>
+  <tile id="86" terrain="0,2,2,0"/>
+  <tile id="87" terrain="2,0,0,2"/>
+  <tile id="90" terrain="2,0,2,0"/>
+  <tile id="96" terrain="0,1,0,1"/>
+  <tile id="97" terrain="1,0,0,1"/>
+  <tile id="98" terrain="0,1,1,0"/>
+  <tile id="99" terrain="1,1,1,1" probability="0.05"/>
+  <tile id="100" terrain="1,1,1,1"/>
+  <tile id="101" terrain="1,0,1,0"/>
+  <tile id="102" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="103" terrain="1,2,1,2"/>
+  <tile id="104" terrain="2,1,1,2"/>
+  <tile id="105" terrain="1,2,2,1"/>
+  <tile id="106" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="107" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="108" terrain="2,1,2,1"/>
+  <tile id="109" terrain="0,2,0,2"/>
+  <tile id="110" terrain="2,0,0,2"/>
+  <tile id="111" terrain="0,2,2,0"/>
+  <tile id="114" terrain="2,0,2,0"/>
+  <tile id="120" terrain="0,1,0,0"/>
+  <tile id="121" terrain="1,1,0,0"/>
+  <tile id="122" terrain="1,1,0,0"/>
+  <tile id="123" terrain="1,1,0,0"/>
+  <tile id="124" terrain="1,1,0,0"/>
+  <tile id="125" terrain="1,0,0,0"/>
+  <tile id="126" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="127" terrain="1,2,1,1"/>
+  <tile id="128" terrain="2,2,1,1"/>
+  <tile id="129" terrain="2,2,1,1"/>
+  <tile id="130" terrain="2,2,1,1"/>
+  <tile id="131" terrain="2,2,1,1"/>
+  <tile id="132" terrain="2,1,1,1"/>
+  <tile id="133" terrain="0,2,0,0"/>
+  <tile id="134" terrain="2,2,0,0"/>
+  <tile id="135" terrain="2,2,0,0"/>
+  <tile id="136" terrain="2,2,0,0"/>
+  <tile id="137" terrain="2,2,0,0"/>
+  <tile id="138" terrain="2,0,0,0"/>
+  <tile id="144" terrain="0,0,0,3"/>
+  <tile id="145" terrain="0,0,3,3"/>
+  <tile id="146" terrain="0,0,3,3"/>
+  <tile id="147" terrain="0,0,3,3"/>
+  <tile id="148" terrain="0,0,3,3"/>
+  <tile id="149" terrain="0,0,3,0"/>
+  <tile id="150" terrain="0,0,0,0"/>
+  <tile id="151" terrain="1,1,1,3"/>
+  <tile id="152" terrain="1,1,3,3"/>
+  <tile id="153" terrain="1,1,3,3"/>
+  <tile id="154" terrain="1,1,3,3"/>
+  <tile id="155" terrain="1,1,3,3"/>
+  <tile id="156" terrain="1,1,3,1"/>
+  <tile id="168" terrain="0,3,0,3"/>
+  <tile id="169" terrain="3,3,3,0"/>
+  <tile id="170" terrain="3,3,0,3"/>
+  <tile id="171" terrain="3,3,3,3"/>
+  <tile id="172" terrain="3,3,3,3"/>
+  <tile id="173" terrain="3,0,3,0"/>
+  <tile id="174" terrain="0,0,0,0"/>
+  <tile id="175" terrain="1,3,1,3"/>
+  <tile id="176" terrain="3,3,3,1"/>
+  <tile id="177" terrain="3,3,1,3"/>
+  <tile id="178" terrain="3,3,3,3"/>
+  <tile id="179" terrain="3,3,3,3"/>
+  <tile id="180" terrain="3,1,3,1"/>
+  <tile id="192" terrain="0,3,0,3"/>
+  <tile id="193" terrain="3,0,3,3"/>
+  <tile id="194" terrain="0,3,3,3"/>
+  <tile id="195" terrain="3,3,3,3"/>
+  <tile id="196" terrain="3,3,3,3"/>
+  <tile id="197" terrain="3,0,3,0"/>
+  <tile id="198" terrain="0,0,0,0"/>
+  <tile id="199" terrain="1,3,1,3"/>
+  <tile id="200" terrain="3,1,3,3"/>
+  <tile id="201" terrain="1,3,3,3"/>
+  <tile id="202" terrain="3,3,3,3"/>
+  <tile id="203" terrain="3,3,3,3"/>
+  <tile id="204" terrain="3,1,3,1"/>
+  <tile id="216" terrain="0,3,0,3"/>
+  <tile id="217" terrain="0,3,3,0"/>
+  <tile id="218" terrain="3,0,0,3"/>
+  <tile id="219" terrain="3,3,3,3"/>
+  <tile id="220" terrain="3,3,3,3"/>
+  <tile id="221" terrain="3,0,3,0"/>
+  <tile id="222" terrain="0,0,0,0"/>
+  <tile id="223" terrain="1,3,1,3"/>
+  <tile id="224" terrain="1,3,3,1"/>
+  <tile id="225" terrain="3,1,1,3"/>
+  <tile id="226" terrain="3,3,3,3"/>
+  <tile id="227" terrain="3,3,3,3"/>
+  <tile id="228" terrain="3,1,3,1"/>
+  <tile id="240" terrain="0,3,0,3"/>
+  <tile id="241" terrain="3,0,0,3"/>
+  <tile id="242" terrain="0,3,3,0"/>
+  <tile id="243" terrain="3,3,3,3"/>
+  <tile id="244" terrain="3,3,3,3"/>
+  <tile id="245" terrain="3,0,3,0"/>
+  <tile id="246" terrain="0,0,0,0"/>
+  <tile id="247" terrain="1,3,1,3"/>
+  <tile id="248" terrain="3,1,1,3"/>
+  <tile id="249" terrain="1,3,3,1"/>
+  <tile id="250" terrain="3,3,3,3"/>
+  <tile id="251" terrain="3,3,3,3"/>
+  <tile id="252" terrain="3,1,3,1"/>
+  <tile id="264" terrain="0,3,0,0"/>
+  <tile id="265" terrain="3,3,0,0"/>
+  <tile id="266" terrain="3,3,0,0"/>
+  <tile id="267" terrain="3,3,0,0"/>
+  <tile id="268" terrain="3,3,0,0"/>
+  <tile id="269" terrain="3,0,0,0"/>
+  <tile id="270" terrain="0,0,0,0"/>
+  <tile id="271" terrain="1,3,1,1"/>
+  <tile id="272" terrain="3,3,1,1"/>
+  <tile id="273" terrain="3,3,1,1"/>
+  <tile id="274" terrain="3,3,1,1"/>
+  <tile id="275" terrain="3,3,1,1"/>
+  <tile id="276" terrain="3,1,1,1"/>
+ </tileset>
+ <layer name="Ground" width="45" height="31">
+  <data encoding="base64" compression="zlib">
+   eJyNWE1vVVUU3Y0KQeXL4kBL7QAiEkcopQOIkjgysXagYeLIpE0HGucEtY5U6giw1Bj8AdiWxhZ+ANLS4nv+AJKW1+TVH9DklWfSR+LeeWt51j3eWxmsnPvuPR9rr7P3Pvu8hpkd7DFb8dYb24Pf89bFtOOio8/xquNreZ/jdccxx0nH53j+SN7F81nHOfz+BGs1vP0C706i/1kZ+6asMWRdrvMY+4q3bzmedTwj/FfAO/i2HVcc10s4f+t4QzidcEw6vnd8lz0HfrAu3wOO8xj3seO44AT6cY0GONPWTx1jjp8cvzjO4Fsbfan/luP3XXgrJ+4XtWnjeQX9VzBmErgsdud8lXdwCb94G5w3HE+g+R5ZcwDPDx114U3dY569wkW5UZ8J8I6+AfalPbT7MvhS03nMMV3CNzT+A5zHMt70obvezjrWwfue47HwynUhH3JivwG01E1Be0cs8eW3mOd9x2lwXHVsOx7AP8bgI/PCZ5+PmwHvHceSaK76UZO2cGyg1X2mT/eKrtOwUX2Le/RcicbB4zfHyz6239sPs3VijtB6E33XRPPr0CbXmpwaAvrEPPyBvsDvOn4IbQ+4jkHnDaxfE52POl6zFIe0n1oH12Vw37Hq2HzH8W5o6DgE9FrRn+l7uk8rVvSZi6LvDdF4GaBPU2edS32kDjub1vWrMt6Mq8gJkc/OwQbypq9T54jrKcfVkrl+Fq5ctwn9/hTOZefIgPC+7VhEW9tFb+bwyL2Rw3le5DHGeVuY6xrma0DPJtpYL+Ip/JT+TM7uT9/k649jji3MEWMO+5gF2Py4hLOel8y/A1bMKdRbeW8K99BkzlIOmMVe37GuL2u+y/PYCNbbAkfGwCo0vyX9cq0nwbcsXnP/e97xAjADzutoQ6def3+kJ2lMnCmZL/wl/C7y87bsTXDuOB5Bt//jpbgiflBlQwe6am4bE40Dw6J1PscW9inmiJhlvvzVcaAn7fnT8JyC/ZG77u/SX3Nx8CPnQNRxl6xY05XZPYN5HoBv+F+VL49kccF9on9GG757q2J84KXMD0bBrw/+EHt7yro5umqOh7IW1330FHtNvkvQdg72co8GKtajnn2ib+QJ1p7T2XMgzlDPI//mv+C8Db5NWVO/MeangB/Bt4Y9CnuXs7FVIEfWofy9d5cxPF8mRKtNaDQLvxiy5O/xvgMteQ5si7Y1PLdkf8owjvW+hIan7L85gnXJRLd/wQ+ZD+jPjOU1K9ao1JLfeWatgfdtvGcNsBtnzjcu+/+VdWMubNA6i3lNx9MWahl7qvUHa1RqS79pWjord9C/hedFjLsKaByQ72KJLax1437GmqZX+OV2Mz+FP9y0dI52wKuFd3y/CH3Zh1qz1f7x7n62X/USHm3ggqU7pdYyeZ57EedTxI3W1XXw25T1a+DFs4vn/Bz4d7BHm5bOOe4XvzdLeBBRO0YdwzszeYevjFvymYg1xiv1qFvKtx1o17QUi1EXMHYOgfsR8G9Z8hXWiZyrjvFVnFl/kfOxjDdrmeAZeeuapTOce8x6gHquAVEv6jnL51VozH6shdbAn3VnrBvxdtCS7/LdeUv/NUQNxntlG7ypK/dxHWuw/tbzlTVIrMlaKu4Zeu4egm30I+a/WbTL+KaaHoeWh8GX+sZ/I1HnDlixFr9nqY5dtFQztjK+vMurbsH7hqU7J/X+GxyXMGcNWJI9oy9csOJ/PKEr/0cJe96Dvjdl/3g/2ZZ1uH9/Wbe2GnR8AC7Rb8dSPOV2jaIfc7ae6ew7akX/nQRP+kC8j/OO98vgvA95Yj/q2v2SK7Sm5fx5rC2gT/R/YsXacRT7EeMXLMVdcNa4rYrByMd6B676j44+3QFn1U7jTLkzz6nGw/I93m9Yyot5HcdzhPkrELkrYjD8mnGZc2a9pnUO+Q5mPEO/fivG21Grtktty+8eqjM58b873tk+s25c6t0+cNdS/cAYv1Oxfhn6pR20oh+dzvoOZ/b+A6OnAUo=
+  </data>
+ </layer>
+ <layer name="Fringe" width="45" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzVl9lNw0AURZ8ltgr4YquAjliaYPl8DdAChCVABRB2KkBhpwK2sKQC4FgiShQ8tseMx/aVjmRLY+fO3JnnFxGRGZiVamkBFos2EaOBQGQw6N6PFmcltcbwOx50vU+neKYztsb1OmzAZq4uo9XxbjO2wfUBHMJRjt5c6RyacAlXcF2oGzu9wCu0YCohpwcPftJqFdZ+r9uGMf1nvWjtwX7P/UiEN5vzUiZRW5Qao9QarUHRftKI2qLUGKXWaCOjZ9/zprYoNUapNdrM+Hsu5m0jaotSY5Rao62M73Ax70d4gme4yOgjSb01tH/eu/947xd8izvfS7Ds6F2+VZP8e5oVx+8rY0/D90dN385QPnuapN7DZnxvT1O2HiCNqtYD2GaXt3aot9tQh62K9CJn+DyFEziuiOd7fN7BLdyUxDN5C7kL+Yf74I8+8fkB7/AGQ+zdYU/7t21YI/IWchfyD/dBoibwO1nwmSNvIXch/3AfxCopE18ibyF3If9wH8TKNhOfMq2nTSZ5yXSeTOvZn0nU83Mw78Bb1P/tUKbzlHY9k87jD20Li3Y=
+  </data>
+ </layer>
+ <objectgroup name="Objects">
+  <object id="1" name="maggots" type="location" x="435" y="74" width="155" height="99">
+   <properties>
+    <property name="spawncount" type="int" value="5"/>
+    <property name="spawntype" value="maggot"/>
+   </properties>
+  </object>
+  <object id="2" name="discover chest" type="trigger" x="201" y="200" width="127" height="127">
+   <properties>
+    <property name="script" value="chest-discovered.lua"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="3" name="unreachable" type="Fixture" x="2" y="158">
+   <properties>
+    <property name="friction" type="float" value="1"/>
+    <property name="static" type="bool" value="true"/>
+   </properties>
+   <polygon points="0,0 55,-23 96,-117 110,-61 104,-42 119,-33 116,6 104,9 100,36 60,43 53,58 43,58 34,74 21,69 18,90 0,89"/>
+  </object>
+  <object id="5" name="guard" type="NPC" x="22" y="361">
+   <polyline points="-3,120 87,91 154,96 181,16 273,-1"/>
+  </object>
+  <object id="6" name="guard" type="NPC" x="277" y="18">
+   <polyline points="0,0 75,78 133,82 176,179 274,183"/>
+  </object>
+  <object id="10" gid="282" x="413.333" y="225.333" width="16" height="16"/>
+  <object id="11" gid="282" x="421.667" y="218" width="16" height="16"/>
+  <object id="12" gid="2147483930" x="423" y="235.333" width="16" height="16"/>
+  <object id="13" gid="282" x="5" y="70" width="16" height="16"/>
+  <object id="14" gid="282" x="-3.66667" y="80.3333" width="16" height="16"/>
+  <object id="16" gid="283" x="538" y="418.333" width="16" height="16"/>
+  <object id="17" gid="283" x="407.667" y="462" width="16" height="16"/>
+  <object id="18" gid="283" x="417" y="473.667" width="16" height="16"/>
+  <object id="19" gid="283" x="402.667" y="469" width="16" height="16"/>
+  <object id="21" gid="2147483930" x="683.333" y="260.5" width="16" height="16"/>
+  <object id="22" gid="282" x="692.167" y="269.167" width="16" height="16"/>
+  <object id="23" gid="282" x="701.667" y="247.833" width="16" height="16"/>
+  <object id="24" gid="282" x="688.5" y="242" width="16" height="16"/>
+  <object id="25" gid="282" x="670.5" y="263.5" width="16" height="16"/>
+  <object id="26" gid="282" x="680" y="284" width="16" height="16"/>
+  <object id="27" gid="282" x="643.833" y="283.667" width="16" height="16"/>
+  <object id="28" gid="282" x="63.4165" y="386" width="16" height="16"/>
+  <object id="29" gid="282" x="9.0835" y="356.167" width="16" height="16"/>
+  <object id="30" gid="282" x="11.9165" y="385" width="16" height="16"/>
+  <object id="31" gid="282" x="54.2495" y="378.5" width="16" height="16"/>
+  <object id="32" gid="2147483930" x="2.4165" y="364.5" width="16" height="16"/>
+  <object id="33" gid="2147483930" x="41.5835" y="382.833" width="16" height="16"/>
+  <object id="34" type="Sign" gid="257" x="670.667" y="87" width="16" height="16">
+   <properties>
+    <property name="text" value="East West"/>
+   </properties>
+  </object>
+  <object id="36" name="player-start" type="Location" x="192" y="160" width="16" height="16"/>
+ </objectgroup>
+</map>

@@ -18,19 +18,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETILES_H
-#define ADDREMOVETILES_H
+#pragma once
 
 #include <QUndoCommand>
 
 namespace Tiled {
 
 class Tile;
-class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 /**
  * Abstract base class for AddTiles and RemoveTiles.
@@ -38,8 +36,7 @@ class MapDocument;
 class AddRemoveTiles : public QUndoCommand
 {
 public:
-    AddRemoveTiles(MapDocument *mapDocument,
-                   Tileset *tileset,
+    AddRemoveTiles(TilesetDocument *tilesetDocument,
                    const QList<Tile*> &tiles,
                    bool add);
 
@@ -50,8 +47,7 @@ protected:
     void removeTiles();
 
 private:
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
+    TilesetDocument *mTilesetDocument;
     QList<Tile*> mTiles;
     bool mTilesAdded;
 };
@@ -62,8 +58,7 @@ private:
 class AddTiles : public AddRemoveTiles
 {
 public:
-    AddTiles(MapDocument *mapDocument,
-             Tileset *tileset,
+    AddTiles(TilesetDocument *tilesetDocument,
              const QList<Tile*> &tiles);
 
     void undo() override
@@ -79,8 +74,7 @@ public:
 class RemoveTiles : public AddRemoveTiles
 {
 public:
-    RemoveTiles(MapDocument *mapDocument,
-                Tileset *tileset,
+    RemoveTiles(TilesetDocument *tilesetDocument,
                 const QList<Tile *> &tiles);
 
     void undo() override
@@ -92,5 +86,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_ADDREMOVETILES_H

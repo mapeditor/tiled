@@ -43,13 +43,14 @@
 #include <qtvariantproperty.h>
 
 // libtiled
-#include <tile.h>
-#include <tileset.h>
 #include <layer.h>
-#include <terrain.h>
 #include <mapdocument.h>
 #include <mapobject.h>
 #include <objectgroup.h>
+#include <terrain.h>
+#include <tile.h>
+#include <tileset.h>
+#include <tilesetmanager.h>
 
 // tiled
 #include "abstractobjecttool.h"
@@ -57,5 +58,4 @@
 
 #include "documentmanager.h"
 #include "mapscene.h"
-#include "tilesetmanager.h"
 #include "tmxmapformat.h"

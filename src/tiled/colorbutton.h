@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COLORBUTTON_H
-#define COLORBUTTON_H
+#pragma once
 
 #include <QColor>
 #include <QToolButton>
@@ -44,14 +43,15 @@ public:
 signals:
     void colorChanged(const QColor &color);
 
-private slots:
-    void pickColor();
+protected:
+    void changeEvent(QEvent *e) override;
 
 private:
+    void pickColor();
+    void updateIcon();
+
     QColor mColor;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COLORBUTTON_H

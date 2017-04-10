@@ -1,0 +1,4 @@
+[Thumbnailer Entry]
+TryExec=tmxrasterizer
+Exec=tmxrasterizer --size %s %u %o
+MimeType=application/x-tiled-tmx

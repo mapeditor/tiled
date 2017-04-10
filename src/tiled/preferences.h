@@ -1,6 +1,7 @@
 /*
  * preferences.h
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PREFERENCES_H
-#define PREFERENCES_H
+#pragma once
 
 #include <QColor>
 #include <QDate>
@@ -50,6 +50,7 @@ public:
     bool showTileAnimations() const { return mShowTileAnimations; }
     bool snapToGrid() const { return mSnapToGrid; }
     bool snapToFineGrid() const { return mSnapToFineGrid; }
+    bool snapToPixels() const { return mSnapToPixels; }
     QColor gridColor() const { return mGridColor; }
     int gridFine() const { return mGridFine; }
     qreal objectLineWidth() const { return mObjectLineWidth; }
@@ -66,6 +67,21 @@ public:
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
 
+    enum ApplicationStyle {
+        SystemDefaultStyle,
+        FusionStyle,
+        TiledStyle
+    };
+
+    ApplicationStyle applicationStyle() const;
+    void setApplicationStyle(ApplicationStyle style);
+
+    QColor baseColor() const;
+    void setBaseColor(const QColor &color);
+
+    QColor selectionColor() const;
+    void setSelectionColor(const QColor &color);
+
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
 
@@ -74,6 +90,9 @@ public:
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
+
+    bool safeSavingEnabled() const;
+    void setSafeSavingEnabled(bool enabled);
 
     QString language() const;
     void setLanguage(const QString &language);
@@ -131,6 +150,7 @@ public slots:
     void setShowTileAnimations(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
+    void setSnapToPixels(bool snapToPixels);
     void setGridColor(QColor gridColor);
     void setGridFine(int gridFine);
     void setObjectLineWidth(qreal lineWidth);
@@ -146,6 +166,7 @@ signals:
     void showTileAnimationsChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
+    void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
     void gridFineChanged(int gridFine);
     void objectLineWidthChanged(qreal lineWidth);
@@ -153,7 +174,13 @@ signals:
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
 
+    void applicationStyleChanged(ApplicationStyle);
+    void baseColorChanged(const QColor &baseColor);
+    void selectionColorChanged(const QColor &selectionColor);
+
     void useOpenGLChanged(bool useOpenGL);
+
+    void languageChanged();
 
     void objectTypesChanged();
 
@@ -180,6 +207,7 @@ private:
     bool mShowTileAnimations;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
+    bool mSnapToPixels;
     QColor mGridColor;
     int mGridFine;
     qreal mObjectLineWidth;
@@ -187,10 +215,14 @@ private:
     bool mShowTilesetGrid;
     bool mOpenLastFilesOnStartup;
     ObjectLabelVisiblity mObjectLabelVisibility;
+    ApplicationStyle mApplicationStyle;
+    QColor mBaseColor;
+    QColor mSelectionColor;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
+    bool mSafeSavingEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
@@ -210,6 +242,26 @@ private:
     static Preferences *mInstance;
 };
 
+
+inline Preferences::ApplicationStyle Preferences::applicationStyle() const
+{
+    return mApplicationStyle;
+}
+
+inline QColor Preferences::baseColor() const
+{
+    return mBaseColor;
+}
+
+inline QColor Preferences::selectionColor() const
+{
+    return mSelectionColor;
+}
+
+inline bool Preferences::safeSavingEnabled() const
+{
+    return mSafeSavingEnabled;
+}
 
 inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
 {
@@ -243,5 +295,3 @@ inline bool Preferences::openLastFilesOnStartup() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PREFERENCES_H

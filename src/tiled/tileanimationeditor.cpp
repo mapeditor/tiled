@@ -22,13 +22,13 @@
 #include "ui_tileanimationeditor.h"
 
 #include "changetileanimation.h"
-#include "mapdocument.h"
 #include "mapobject.h"
 #include "rangeset.h"
 #include "tile.h"
 #include "tileanimationdriver.h"
 #include "tiled.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -257,9 +257,9 @@ const QVector<Frame> &FrameListModel::frames() const
 
 
 TileAnimationEditor::TileAnimationEditor(QWidget *parent)
-    : QWidget(parent, Qt::Window)
+    : QDialog(parent, Qt::Window)
     , mUi(new Ui::TileAnimationEditor)
-    , mMapDocument(nullptr)
+    , mTilesetDocument(nullptr)
     , mTile(nullptr)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
@@ -268,13 +268,11 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mPreviewUnusedTime(0)
 {
     mUi->setupUi(this);
-
-    Zoomable *zoomable = new Zoomable(this);
-    zoomable->connectToComboBox(mUi->zoomComboBox);
+    resize(Utils::dpiScaled(size()));
 
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
-    mUi->tilesetView->setZoomable(zoomable);
+    mUi->tilesetView->zoomable()->setComboBox(mUi->zoomComboBox);
 
     connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(addFrameForTileAt(QModelIndex)));
@@ -303,29 +301,30 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    mUi->horizontalSplitter->setSizes(QList<int>() << 128 << 512);
+    mUi->horizontalSplitter->setSizes(QList<int>()
+                                      << Utils::dpiScaled(128)
+                                      << Utils::dpiScaled(512));
 }
 
 TileAnimationEditor::~TileAnimationEditor()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 
-void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
+void TileAnimationEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
+    if (mTilesetDocument)
+        mTilesetDocument->disconnect(this);
 
-    mMapDocument = mapDocument;
-    mUi->tilesetView->setMapDocument(mapDocument);
+    mTilesetDocument = tilesetDocument;
+    mUi->tilesetView->setTilesetDocument(tilesetDocument);
 
-    if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
-                SLOT(tileAnimationChanged(Tile*)));
-        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(tilesetFileNameChanged(Tileset*)));
+    if (mTilesetDocument) {
+        connect(mTilesetDocument, &TilesetDocument::tileAnimationChanged,
+                this, &TileAnimationEditor::tileAnimationChanged);
 
-        connect(mMapDocument, &MapDocument::currentObjectChanged,
+        connect(mTilesetDocument, &TilesetDocument::currentObjectChanged,
                 this, &TileAnimationEditor::currentObjectChanged);
     }
 }
@@ -345,14 +344,9 @@ void TileAnimationEditor::setTile(Tile *tile)
         mFrameListModel->setFrames(nullptr, QVector<Frame>());
     }
 
-    mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());
+    mUi->frameList->setEnabled(tile);
 
     resetPreview();
-}
-
-void TileAnimationEditor::writeSettings()
-{
-    Utils::saveGeometry(this);
 }
 
 void TileAnimationEditor::closeEvent(QCloseEvent *event)
@@ -386,10 +380,10 @@ void TileAnimationEditor::hideEvent(QHideEvent *)
 
 void TileAnimationEditor::framesEdited()
 {
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mTilesetDocument->undoStack();
 
     mApplyingChanges = true;
-    undoStack->push(new ChangeTileAnimation(mMapDocument,
+    undoStack->push(new ChangeTileAnimation(mTilesetDocument,
                                             mTile,
                                             mFrameListModel->frames()));
     mApplyingChanges = false;
@@ -408,19 +402,13 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
     mFrameListModel->setFrames(tile->tileset(), tile->frames());
 }
 
-void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
-{
-    if (mTile && mTile->tileset() == tileset)
-        mUi->frameList->setEnabled(!tileset->isExternal());
-}
-
 void TileAnimationEditor::currentObjectChanged(Object *object)
 {
     // If a tile object is selected, edit the animation frames for that tile
     if (object && object->typeId() == Object::MapObjectType) {
         const Cell &cell = static_cast<MapObject*>(object)->cell();
-        if (cell.tile)
-            setTile(cell.tile);
+        if (Tile *tile = cell.tile())
+            setTile(tile);
     }
 }
 
@@ -428,31 +416,25 @@ void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
 {
     Q_ASSERT(mTile);
 
-    if (mTile->tileset()->isExternal())
-        return;
-
     const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
     mFrameListModel->addTileIdAsFrame(tile->id());
 }
 
 void TileAnimationEditor::undo()
 {
-    if (mMapDocument)
-        mMapDocument->undoStack()->undo();
+    if (mTilesetDocument)
+        mTilesetDocument->undoStack()->undo();
 }
 
 void TileAnimationEditor::redo()
 {
-    if (mMapDocument)
-        mMapDocument->undoStack()->redo();
+    if (mTilesetDocument)
+        mTilesetDocument->undoStack()->redo();
 }
 
 void TileAnimationEditor::delete_()
 {
-    if (!mMapDocument || !mTile)
-        return;
-
-    if (mTile->tileset()->isExternal())
+    if (!mTilesetDocument || !mTile)
         return;
 
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
@@ -461,7 +443,7 @@ void TileAnimationEditor::delete_()
     if (indexes.isEmpty())
         return;
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoStack *undoStack = mTilesetDocument->undoStack();
     undoStack->beginMacro(tr("Delete Frames"));
 
     RangeSet<int> ranges;

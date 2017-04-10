@@ -25,20 +25,21 @@
 #include "gidmapper.h"
 #include "map.h"
 #include "mapobject.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "objectgroup.h"
 
-#include <QSaveFile>
 #include <QFileInfo>
 #include <QDir>
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
 
-using namespace Flare;
 using namespace Tiled;
+
+namespace Flare {
 
 FlarePlugin::FlarePlugin()
 {
@@ -187,7 +188,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         } else {
             if (newsection) {
                 if (map->indexOfLayer(sectionName) == -1) {
-                    objectgroup = new ObjectGroup(sectionName, 0,0,map->width(), map->height());
+                    objectgroup = new ObjectGroup(sectionName, 0, 0);
                     map->addLayer(objectgroup);
                 } else {
                     objectgroup = dynamic_cast<ObjectGroup*>(map->layerAt(map->indexOfLayer(sectionName)));
@@ -255,12 +256,17 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
 bool FlarePlugin::supportsFile(const QString &fileName) const
 {
-    return QFileInfo(fileName).suffix() == QLatin1String("txt");
+    return fileName.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive);
 }
 
 QString FlarePlugin::nameFilter() const
 {
     return tr("Flare map files (*.txt)");
+}
+
+QString FlarePlugin::shortName() const
+{
+    return QLatin1String("flare");
 }
 
 QString FlarePlugin::errorString() const
@@ -270,14 +276,14 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    QTextStream out(&file);
+    QTextStream out(file.device());
     out.setCodec("UTF-8");
 
     const int mapWidth = map->width();
@@ -295,7 +301,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     Properties::const_iterator it = map->properties().constBegin();
     Properties::const_iterator it_end = map->properties().constEnd();
     for (; it != it_end; ++it) {
-        out << it.key() << "=" << it.value().toString() << "\n";
+        out << it.key() << "=" << toExportValue(it.value()).toString() << "\n";
     }
     out << "\n";
 
@@ -324,9 +330,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             for (int y = 0; y < mapHeight; ++y) {
                 for (int x = 0; x < mapWidth; ++x) {
                     Cell t = tileLayer->cellAt(x, y);
-                    int id = 0;
-                    if (t.tile)
-                        id = gidMapper.cellToGid(t);
+                    int id = gidMapper.cellToGid(t);
                     out << id;
                     if (x < mapWidth - 1)
                         out << ",";
@@ -381,3 +385,5 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     return true;
 }
+
+} // namespace Flare

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -44,7 +43,10 @@ public:
     const QSize &newSize() const;
     const QPoint &offset() const;
 
+    bool removeObjects() const;
+
 private slots:
+    void removeObjectsToggled(bool removeObjects);
     void updateOffsetBounds(const QRect &bounds);
 
 private:
@@ -53,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEDIALOG_H

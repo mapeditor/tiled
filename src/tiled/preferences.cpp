@@ -1,6 +1,7 @@
 /*
  * preferences.cpp
  * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,6 +25,7 @@
 #include "languagemanager.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
+#include "savefile.h"
 #include "tilesetmanager.h"
 
 #include <QDebug>
@@ -59,10 +61,13 @@ Preferences::Preferences()
     mMapRenderOrder = static_cast<Map::RenderOrder>
             (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
+    mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
     mSettings->endGroup();
+
+    SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
@@ -71,6 +76,7 @@ Preferences::Preferences()
     mShowTileAnimations = boolValue("ShowTileAnimations", true);
     mSnapToGrid = boolValue("SnapToGrid");
     mSnapToFineGrid = boolValue("SnapToFineGrid");
+    mSnapToPixels = boolValue("SnapToPixels");
     mGridColor = colorValue("GridColor", Qt::black);
     mGridFine = intValue("GridFine", 4);
     mObjectLineWidth = realValue("ObjectLineWidth", 2);
@@ -80,6 +86,15 @@ Preferences::Preferences()
     mUseOpenGL = boolValue("OpenGL");
     mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
             (intValue("ObjectLabelVisibility", AllObjectLabels));
+#if defined(Q_OS_MAC)
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", SystemDefaultStyle));
+#else
+    mApplicationStyle = static_cast<ApplicationStyle>
+            (intValue("ApplicationStyle", TiledStyle));
+#endif
+    mBaseColor = colorValue("BaseColor", Qt::lightGray);
+    mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -158,6 +173,36 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     emit objectLabelVisibilityChanged(visibility);
 }
 
+void Preferences::setApplicationStyle(ApplicationStyle style)
+{
+    if (mApplicationStyle == style)
+        return;
+
+    mApplicationStyle = style;
+    mSettings->setValue(QLatin1String("Interface/ApplicationStyle"), style);
+    emit applicationStyleChanged(style);
+}
+
+void Preferences::setBaseColor(const QColor &color)
+{
+    if (mBaseColor == color)
+        return;
+
+    mBaseColor = color;
+    mSettings->setValue(QLatin1String("Interface/BaseColor"), color.name());
+    emit baseColorChanged(color);
+}
+
+void Preferences::setSelectionColor(const QColor &color)
+{
+    if (mSelectionColor == color)
+        return;
+
+    mSelectionColor = color;
+    mSettings->setValue(QLatin1String("Interface/SelectionColor"), color.name());
+    emit selectionColorChanged(color);
+}
+
 void Preferences::setShowGrid(bool showGrid)
 {
     if (mShowGrid == showGrid)
@@ -212,6 +257,16 @@ void Preferences::setSnapToFineGrid(bool snapToFineGrid)
     mSnapToFineGrid = snapToFineGrid;
     mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
     emit snapToFineGridChanged(mSnapToFineGrid);
+}
+
+void Preferences::setSnapToPixels(bool snapToPixels)
+{
+    if (mSnapToPixels == snapToPixels)
+        return;
+
+    mSnapToPixels = snapToPixels;
+    mSettings->setValue(QLatin1String("Interface/SnapToPixels"), mSnapToPixels);
+    emit snapToPixelsChanged(mSnapToPixels);
 }
 
 void Preferences::setGridColor(QColor gridColor)
@@ -295,7 +350,6 @@ void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
                         mMapRenderOrder);
 }
 
-
 bool Preferences::dtdEnabled() const
 {
     return mDtdEnabled;
@@ -305,6 +359,13 @@ void Preferences::setDtdEnabled(bool enabled)
 {
     mDtdEnabled = enabled;
     mSettings->setValue(QLatin1String("Storage/DtdEnabled"), enabled);
+}
+
+void Preferences::setSafeSavingEnabled(bool enabled)
+{
+    mSafeSavingEnabled = enabled;
+    mSettings->setValue(QLatin1String("Storage/SafeSavingEnabled"), enabled);
+    SaveFile::setSafeSavingEnabled(enabled);
 }
 
 QString Preferences::language() const
@@ -322,6 +383,7 @@ void Preferences::setLanguage(const QString &language)
                         mLanguage);
 
     LanguageManager::instance()->installTranslators();
+    emit languageChanged();
 }
 
 bool Preferences::reloadTilesetsOnChange() const
@@ -398,9 +460,9 @@ QString Preferences::lastPath(FileType fileType) const
 
     if (path.isEmpty()) {
         DocumentManager *documentManager = DocumentManager::instance();
-        MapDocument *mapDocument = documentManager->currentDocument();
-        if (mapDocument)
-            path = QFileInfo(mapDocument->fileName()).path();
+        Document *document = documentManager->currentDocument();
+        if (document)
+            path = QFileInfo(document->fileName()).path();
     }
 
     if (path.isEmpty()) {
@@ -416,6 +478,9 @@ QString Preferences::lastPath(FileType fileType) const
  */
 void Preferences::setLastPath(FileType fileType, const QString &path)
 {
+    if (path.isEmpty())
+        return;
+
     mSettings->setValue(lastPathKey(fileType), path);
 }
 
@@ -533,11 +598,7 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
 
 static QString dataLocation()
 {
-#if QT_VERSION >= 0x050400
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-#else
-    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#endif
 }
 
 QString Preferences::stampsDirectory() const

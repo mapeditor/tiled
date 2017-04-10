@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPER_H
-#define AUTOMAPPER_H
+#pragma once
 
 #include "tileset.h"
 
@@ -42,23 +41,20 @@ namespace Internal {
 
 class MapDocument;
 
-class InputIndexName
+class InputConditions
 {
 public:
-    QVector<TileLayer*> listYes;
-    QVector<TileLayer*> listNo;
+    QVector<TileLayer*> listYes;    // "input"
+    QVector<TileLayer*> listNo;     // "inputnot"
 };
 
-class InputIndex : public QMap<QString, InputIndexName>
-{
-public:
-    QSet<QString> names;
-};
+// Maps layer names to their conditions
+typedef QMap<QString, InputConditions> InputIndex;
 
+// Maps an index to a group of input layers
 class InputLayers : public QMap<QString, InputIndex>
 {
 public:
-    QSet<QString> indexes;
     QSet<QString> names; // all names
 };
 
@@ -85,18 +81,19 @@ public:
     /**
      * Constructs an AutoMapper.
      * All data structures, which only rely on the rules map are setup
-     * here. 
-     * 
+     * here.
+     *
      * @param workingDocument: the map to work on.
-     * @param rules: The rule map which should be used for automapping
+     * @param rules: The rule map which should be used for automapping. The
+     *               AutoMapper takes ownership of this map.
      * @param rulePath: The filepath to the rule map.
      */
-    AutoMapper(MapDocument *workingDocument, Map *rules, 
+    AutoMapper(MapDocument *workingDocument, Map *rules,
                const QString &rulePath);
     ~AutoMapper();
 
     /**
-     * Checks if the passed \a ruleLayerName is used in this instance 
+     * Checks if the passed \a ruleLayerName is used in this instance
      * of Automapper.
      */
     bool ruleLayerNameUsed(QString ruleLayerName) const;
@@ -179,14 +176,13 @@ private:
     /**
      * sets up the tilesets which are used in automapping.
      * @return returns true when anything is ok, false when errors occurred.
-     *        (in that case will be a msg box anyway)
      */
-    bool setupTilesets(Map *src, Map *dst);
+    bool setupTilesets();
 
     /**
-     * Returns the conjunction of of all regions of all setlayers
+     * Returns the conjunction of all regions of all setlayers.
      */
-    const QRegion getSetLayersRegion();
+    QRegion getSetLayersRegion() const;
 
     /**
      * This copies all Tiles from TileLayer src to TileLayer dst
@@ -199,7 +195,7 @@ private:
      * so the maybe existing tile in dst will not be overwritten.
      *
      */
-    void copyTileRegion(TileLayer *src_lr, int src_x, int src_y,
+    void copyTileRegion(const TileLayer *src_lr, int src_x, int src_y,
                         int width, int height, TileLayer *dst_lr,
                         int dst_x, int dst_y);
 
@@ -211,7 +207,7 @@ private:
      * and its \a width and \a height. The parameter \a dst_x and \a dst_y
      * offset the copied objects in the destination object group.
      */
-    void copyObjectRegion(ObjectGroup *src_lr, int src_x, int src_y,
+    void copyObjectRegion(const ObjectGroup *src_lr, int src_x, int src_y,
                           int width, int height, ObjectGroup *dst_lr,
                           int dst_x, int dst_y);
 
@@ -224,7 +220,7 @@ private:
      * should get copied into which layers of the working map.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-                       const RuleOutput *LayerTranslation);
+                       const RuleOutput &LayerTranslation);
 
     /**
      * This goes through all the positions of the mMapWork and checks if
@@ -279,9 +275,9 @@ private:
     QVector<SharedTileset> mAddedTilesets;
 
     /**
-     * description see: mAddedTilesets, just described by Strings
+     * description see: mAddedTilesets
      */
-    QList<QString> mAddedTileLayers;
+    QVector<Layer*> mAddedLayers;
 
     /**
      * Points to the tilelayer, which defines the input regions.
@@ -303,9 +299,9 @@ private:
      * List of Regions in mMapRules to know where the input rules are
      */
     QVector<QRegion> mRulesInput;
-    
+
     /**
-     * List of regions in mMapRules to know where the output of a 
+     * List of regions in mMapRules to know where the output of a
      * rule is.
      * mRulesOutput[i] is the output of that rule,
      * which has the input at mRulesInput[i], meaning that mRulesInput
@@ -326,7 +322,7 @@ private:
      * The list is used to hold different translation tables
      * => one of the tables is chosen by chance, so randomness is available
      */
-    QList<RuleOutput*> mLayerList;
+    QVector<RuleOutput> mLayerList;
 
     /**
      * store the name of the processed rules file, to have detailed
@@ -362,5 +358,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPER_H

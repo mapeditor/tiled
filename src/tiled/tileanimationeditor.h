@@ -18,10 +18,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILEANIMATIONEDITOR_H
-#define TILED_INTERNAL_TILEANIMATIONEDITOR_H
+#pragma once
 
-#include <QWidget>
+#include <QDialog>
 #include <QModelIndex>
 
 namespace Ui {
@@ -32,15 +31,15 @@ namespace Tiled {
 
 class Object;
 class Tile;
+class TileAnimationDriver;
 class Tileset;
 
 namespace Internal {
 
 class FrameListModel;
-class MapDocument;
-class TileAnimationDriver;
+class TilesetDocument;
 
-class TileAnimationEditor : public QWidget
+class TileAnimationEditor : public QDialog
 {
     Q_OBJECT
 
@@ -48,9 +47,7 @@ public:
     explicit TileAnimationEditor(QWidget *parent = nullptr);
     ~TileAnimationEditor();
 
-    void setMapDocument(MapDocument *mapDocument);
-
-    void writeSettings();
+    void setTilesetDocument(TilesetDocument *tilesetDocument);
 
 signals:
     void closed();
@@ -68,7 +65,6 @@ protected:
 private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
-    void tilesetFileNameChanged(Tileset *);
     void currentObjectChanged(Object *object);
 
     void addFrameForTileAt(const QModelIndex &index);
@@ -83,7 +79,7 @@ private slots:
 private:
     Ui::TileAnimationEditor *mUi;
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;
@@ -95,5 +91,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILEANIMATIONEDITOR_H

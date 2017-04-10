@@ -30,8 +30,9 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 
-#include <QSettings>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QSettings>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
@@ -45,13 +46,7 @@ using namespace Tiled::Internal;
 template<typename Type>
 static Type comboBoxValue(QComboBox *comboBox)
 {
-#if QT_VERSION >= 0x050200
-    const QVariant currentData = comboBox->currentData();
-#else
-    const int currentIndex = comboBox->currentIndex();
-    const QVariant currentData = comboBox->itemData(currentIndex);
-#endif
-    return currentData.value<Type>();
+    return comboBox->currentData().value<Type>();
 }
 
 template<typename Type>
@@ -71,6 +66,8 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    mUi->buttonBox->button(QDialogButtonBox::Save)->setText(tr("Save As..."));
 
     // Restore previously used settings
     Preferences *prefs = Preferences::instance();

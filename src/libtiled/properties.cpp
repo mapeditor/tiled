@@ -28,6 +28,8 @@
 
 #include "properties.h"
 
+#include <QColor>
+
 namespace Tiled {
 
 void Properties::merge(const Properties &other)
@@ -60,24 +62,75 @@ void AggregatedProperties::aggregate(const Properties &properties)
     ++mAggregatedCount;
 }
 
-QString typeToName(QVariant::Type type)
+QString typeToName(int type)
 {
-    if (type == QVariant::String)
+    switch (type) {
+    case QVariant::String:
         return QStringLiteral("string");
-    if (type == QVariant::Double)
+    case QVariant::Double:
         return QStringLiteral("float");
-
+    case QVariant::Color:
+        return QStringLiteral("color");
+    default:
+        if (type == filePathTypeId())
+            return QStringLiteral("file");
+    }
     return QLatin1String(QVariant::typeToName(type));
 }
 
-QVariant::Type nameToType(const QString &name)
+int nameToType(const QString &name)
 {
     if (name == QLatin1String("string"))
         return QVariant::String;
     if (name == QLatin1String("float"))
         return QVariant::Double;
+    if (name == QLatin1String("color"))
+        return QVariant::Color;
+    if (name == QLatin1String("file"))
+        return filePathTypeId();
 
     return QVariant::nameToType(name.toLatin1().constData());
+}
+
+static QString colorToString(const QColor &color)
+{
+    if (!color.isValid())
+        return QString();
+
+    return color.name(QColor::HexArgb);
+}
+
+QVariant toExportValue(const QVariant &value)
+{
+    int type = value.userType();
+
+    if (type == QVariant::Color)
+        return colorToString(value.value<QColor>());
+    if (type == filePathTypeId())
+        return value.value<FilePath>().absolutePath;
+
+    return value;
+}
+
+int filePathTypeId()
+{
+    return qMetaTypeId<FilePath>();
+}
+
+QVariant fromExportValue(const QVariant &value, int type)
+{
+    if (type == QVariant::Invalid)
+        return value;
+
+    if (value.userType() == type)
+        return value;
+
+    if (type == filePathTypeId())
+        return QVariant::fromValue(FilePath { value.toString() });
+
+    QVariant variant(value);
+    variant.convert(type);
+    return variant;
 }
 
 } // namespace Tiled

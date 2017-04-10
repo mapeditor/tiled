@@ -177,8 +177,7 @@ QVector<QRegion> coherentRegions(const QRegion &region)
     QVector<QRect> rects = region.rects();
 
     while (!rects.isEmpty()) {
-        QRegion newCoherentRegion = rects.last();
-        rects.pop_back();
+        QRegion newCoherentRegion = rects.takeLast();
 
         // Add up all coherent rects until there is no rect left which is
         // coherent to the newly created region.

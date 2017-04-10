@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 SUBDIRS = csv \
+          defold \
           droidcraft \
           flare \
+          gmx \
           json \
           lua \
           replicaisland \

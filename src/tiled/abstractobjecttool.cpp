@@ -28,6 +28,8 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "raiselowerhelper.h"
+#include "resizemapobject.h"
+#include "tile.h"
 #include "utils.h"
 
 #include <QKeyEvent>
@@ -38,6 +40,20 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+
+static bool isTileObject(MapObject *mapObject)
+{
+    return !mapObject->cell().isEmpty();
+}
+
+static bool isResizedTileObject(MapObject *mapObject)
+{
+    if (const auto tile = mapObject->cell().tile())
+        return mapObject->size() != tile->size();
+    return false;
+}
+
 
 AbstractObjectTool::AbstractObjectTool(const QString &name,
                                        const QIcon &icon,
@@ -65,6 +81,12 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_D:
+        if (event->modifiers() & Qt::ControlModifier) {
+            duplicateObjects();
+            return;
+        }
+        break;
     }
 
     event->ignore();
@@ -81,12 +103,14 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->offset();
+        offsetPos -= layer->totalOffset();
+
+    const QPoint pixelPos = offsetPos.toPoint();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
+    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -110,9 +134,23 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
+{
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    QList<MapObjectItem*> objectList;
+    for (auto item : items) {
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+            objectList.append(objectItem);
+    }
+    return objectList;
+}
+
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
-    foreach (QGraphicsItem *item, mMapScene->items(pos)) {
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    for (QGraphicsItem *item : items) {
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
     }
@@ -127,6 +165,29 @@ void AbstractObjectTool::duplicateObjects()
 void AbstractObjectTool::removeObjects()
 {
     mapDocument()->removeObjects(mapDocument()->selectedObjects());
+}
+
+void AbstractObjectTool::resetTileSize()
+{
+    QList<QUndoCommand*> commands;
+
+    for (auto mapObject : mapDocument()->selectedObjects()) {
+        if (!isResizedTileObject(mapObject))
+            continue;
+
+        commands << new ResizeMapObject(mapDocument(),
+                                        mapObject,
+                                        mapObject->cell().tile()->size(),
+                                        mapObject->size());
+    }
+
+    if (!commands.isEmpty()) {
+        QUndoStack *undoStack = mapDocument()->undoStack();
+        undoStack->beginMacro(tr("Reset Tile Size"));
+        for (auto command : commands)
+            undoStack->push(command);
+        undoStack->endMacro();
+    }
 }
 
 void AbstractObjectTool::flipHorizontally()
@@ -187,6 +248,17 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
     removeAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
+    bool anyTileObjectSelected = std::any_of(selectedObjects.begin(),
+                                             selectedObjects.end(),
+                                             isTileObject);
+
+    if (anyTileObjectSelected) {
+        auto resetTileSizeAction = menu.addAction(tr("Reset Tile Size"), this, SLOT(resetTileSize()));
+        resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
+                                                    selectedObjects.end(),
+                                                    isResizedTileObject));
+    }
+
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
     menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
@@ -204,7 +276,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        foreach (ObjectGroup *objectGroup, objectGroups) {
+        for (ObjectGroup *objectGroup : objectGroups) {
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             action->setData(QVariant::fromValue(objectGroup));
         }
@@ -214,8 +286,6 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QAction *propertiesAction = menu.addAction(propIcon,
                                                tr("Object &Properties..."));
-    // TODO: Implement editing of properties for multiple objects
-    propertiesAction->setEnabled(selectedObjects.size() == 1);
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
@@ -227,7 +297,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (action == propertiesAction) {
         MapObject *mapObject = selectedObjects.first();
         mapDocument()->setCurrentObject(mapObject);
-        mapDocument()->emitEditCurrentObject();
+        emit mapDocument()->editCurrentObject();
         return;
     }
 

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LUAPLUGIN_H
-#define LUAPLUGIN_H
+#pragma once
 
 #include "lua_global.h"
 
@@ -31,6 +30,7 @@
 #include <QObject>
 
 namespace Tiled {
+class GroupLayer;
 class MapObject;
 class ObjectGroup;
 class Properties;
@@ -55,18 +55,26 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
     void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid);
+    void writeLayers(LuaTableWriter &,
+                     const QList<Tiled::Layer*> &layers,
+                     Tiled::Map::LayerDataFormat format);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
                         Tiled::Map::LayerDataFormat);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
+    void writeGroupLayer(LuaTableWriter &, const Tiled::GroupLayer *,
+                         Tiled::Map::LayerDataFormat);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
+    void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
+    void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
 
     QString mError;
     QDir mMapDir;     // The directory in which the map is being saved
@@ -74,5 +82,3 @@ private:
 };
 
 } // namespace Lua
-
-#endif // LUAPLUGIN_H

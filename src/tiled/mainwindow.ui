@@ -13,6 +13,9 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
@@ -38,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -55,7 +58,20 @@
      </property>
      <addaction name="actionClearRecentFiles"/>
     </widget>
-    <addaction name="actionNew"/>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>&amp;New</string>
+     </property>
+     <addaction name="actionNewMap"/>
+     <addaction name="actionNewTileset"/>
+    </widget>
+    <widget class="QMenu" name="menuCommand">
+     <property name="title">
+      <string>Commands</string>
+     </property>
+     <addaction name="actionEditCommands"/>
+    </widget>
+    <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
     <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
@@ -66,6 +82,8 @@
     <addaction name="actionExportAs"/>
     <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
+    <addaction name="separator"/>
+    <addaction name="menuCommand"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
@@ -78,6 +96,7 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="actionPasteInPlace"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
@@ -95,7 +114,6 @@
     <property name="title">
      <string>&amp;Map</string>
     </property>
-    <addaction name="actionNewTileset"/>
     <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
@@ -118,51 +136,42 @@
      <addaction name="actionLabelsForSelectedObjects"/>
      <addaction name="actionLabelsForAllObjects"/>
     </widget>
+    <widget class="QMenu" name="menuSnapping">
+     <property name="title">
+      <string>Snapping</string>
+     </property>
+     <addaction name="actionSnapNothing"/>
+     <addaction name="actionSnapToGrid"/>
+     <addaction name="actionSnapToFineGrid"/>
+     <addaction name="actionSnapToPixels"/>
+    </widget>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
-    <addaction name="actionSnapToGrid"/>
-    <addaction name="actionSnapToFineGrid"/>
+    <addaction name="menuSnapping"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
+    <addaction name="separator"/>
+    <addaction name="actionFullScreen"/>
+    <addaction name="actionClearView"/>
+   </widget>
+   <widget class="QMenu" name="menuTileset">
+    <property name="title">
+     <string>Tileset</string>
+    </property>
+    <addaction name="actionTilesetProperties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
+   <addaction name="menuTileset"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <property name="windowTitle">
-    <string>Main Toolbar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionNew"/>
-   <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
-   <addaction name="separator"/>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="toolsToolBar">
-   <property name="windowTitle">
-    <string>Tools</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -253,7 +262,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>Map &amp;Properties</string>
+    <string>Map &amp;Properties...</string>
    </property>
   </action>
   <action name="actionAutoMap">
@@ -284,20 +293,7 @@
     <string>Save &amp;As...</string>
    </property>
   </action>
-  <action name="actionNew">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New...</string>
-   </property>
-  </action>
   <action name="actionNewTileset">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
-   </property>
    <property name="text">
     <string>New &amp;Tileset...</string>
    </property>
@@ -529,6 +525,82 @@
    </property>
    <property name="text">
     <string>AutoMap While Drawing</string>
+   </property>
+  </action>
+  <action name="actionNewMap">
+   <property name="text">
+    <string>New Map...</string>
+   </property>
+  </action>
+  <action name="actionPasteInPlace">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Paste &amp;in Place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="actionFullScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Full Screen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionSnapToPixels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to &amp;Pixels</string>
+   </property>
+  </action>
+  <action name="actionTilesetProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Tileset &amp;Properties...</string>
+   </property>
+  </action>
+  <action name="actionSnapNothing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No Snapping</string>
+   </property>
+  </action>
+  <action name="actionEditCommands">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/24x24/system-run.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Edit Commands...</string>
+   </property>
+  </action>
+  <action name="actionClearView">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Clear View</string>
+   </property>
+   <property name="shortcut">
+    <string>Tab</string>
    </property>
   </action>
  </widget>

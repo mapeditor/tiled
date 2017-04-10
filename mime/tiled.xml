@@ -6,4 +6,10 @@
     <glob pattern="*.tmx"/>
     <sub-class-of type="application/xml"/>
   </mime-type>
+  <mime-type type="application/x-tiled-tsx">
+    <comment>Tiled tileset</comment>
+    <generic-icon name="application-x-tiled"/>
+    <glob pattern="*.tsx"/>
+    <sub-class-of type="application/xml"/>
+  </mime-type>
 </mime-info>

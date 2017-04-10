@@ -1,6 +1,6 @@
 /*
  * tileselectiontool.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESELECTIONTOOL_H
-#define TILESELECTIONTOOL_H
+#pragma once
 
 #include "abstracttiletool.h"
 
@@ -33,6 +32,7 @@ class TileSelectionTool : public AbstractTileTool
 public:
     TileSelectionTool(QObject *parent = nullptr);
 
+    void mouseMoved(const QPointF &pos,Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
@@ -53,12 +53,14 @@ private:
 
     QRect selectedArea() const;
 
+    void clearSelection();
+
+    QPoint mMouseScreenStart;
     QPoint mSelectionStart;
     SelectionMode mSelectionMode;
+    bool mMouseDown;
     bool mSelecting;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESELECTIONTOOL_H

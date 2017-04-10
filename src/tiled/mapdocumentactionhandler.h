@@ -1,6 +1,6 @@
 /*
  * mapdocumentactionhandler.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
@@ -19,12 +19,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPDOCUMENTACTIONHANDLER_H
-#define MAPDOCUMENTACTIONHANDLER_H
+#pragma once
 
 #include <QObject>
 
 class QAction;
+class QMenu;
 
 namespace Tiled {
 
@@ -42,6 +42,11 @@ class MapDocumentActionHandler : public QObject
 {
     Q_OBJECT
 
+    enum LayerViaVariant {
+        ViaCopy,
+        ViaCut,
+    };
+
 public:
     explicit MapDocumentActionHandler(QObject *parent = nullptr);
     ~MapDocumentActionHandler();
@@ -54,32 +59,45 @@ public:
     MapDocument *mapDocument() const { return mMapDocument; }
 
     QAction *actionSelectAll() const { return mActionSelectAll; }
+    QAction *actionSelectInverse() const { return mActionSelectInverse; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
 
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
     QAction *actionAddImageLayer() const { return mActionAddImageLayer; }
+    QAction *actionAddGroupLayer() const { return mActionAddGroupLayer; }
+    QAction *actionLayerViaCopy() const { return mActionLayerViaCopy; }
+    QAction *actionLayerViaCut() const { return mActionLayerViaCut; }
+    QAction *actionGroupLayers() const { return mActionGroupLayers; }
+    QAction *actionUngroupLayers() const { return mActionUngroupLayers; }
+
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
-    QAction *actionSelectPreviousLayer() const
-    { return mActionSelectPreviousLayer; }
+    QAction *actionSelectPreviousLayer() const { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
     QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
-    QAction *actionToggleOtherLayers() const
-    { return mActionToggleOtherLayers; }
+    QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
     QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
 
+    QMenu *createNewLayerMenu(QWidget *parent) const;
+    QMenu *createGroupLayerMenu(QWidget *parent) const;
+
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 
 public slots:
+    void cut();
+    void copy();
+    void delete_(); // 'delete' is a reserved word
+
     void selectAll();
+    void selectInverse();
     void selectNone();
 
     void copyPosition();
@@ -89,6 +107,13 @@ public slots:
     void addTileLayer();
     void addObjectGroup();
     void addImageLayer();
+    void addGroupLayer();
+    void layerViaCopy() { layerVia(ViaCopy); }
+    void layerViaCut() { layerVia(ViaCut); }
+    void layerVia(LayerViaVariant variant);
+    void groupLayers();
+    void ungroupLayers();
+
     void duplicateLayer();
     void mergeLayerDown();
     void selectPreviousLayer();
@@ -110,12 +135,19 @@ private:
     MapDocument *mMapDocument;
 
     QAction *mActionSelectAll;
+    QAction *mActionSelectInverse;
     QAction *mActionSelectNone;
     QAction *mActionCropToSelection;
 
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
     QAction *mActionAddImageLayer;
+    QAction *mActionAddGroupLayer;
+    QAction *mActionLayerViaCopy;
+    QAction *mActionLayerViaCut;
+    QAction *mActionGroupLayers;
+    QAction *mActionUngroupLayers;
+
     QAction *mActionDuplicateLayer;
     QAction *mActionMergeLayerDown;
     QAction *mActionRemoveLayer;
@@ -134,5 +166,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPDOCUMENTACTIONHANDLER_H

@@ -20,37 +20,36 @@
 
 #include "renameterrain.h"
 
-#include "mapdocument.h"
 #include "terrain.h"
-#include "terrainmodel.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
+#include "tilesetterrainmodel.h"
 
 #include <QCoreApplication>
 
 namespace Tiled {
 namespace Internal {
 
-RenameTerrain::RenameTerrain(MapDocument *mapDocument,
-                             Tileset *tileset,
+RenameTerrain::RenameTerrain(TilesetDocument *tilesetDocument,
                              int terrainId,
                              const QString &newName)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Terrain Name"))
-    , mTerrainModel(mapDocument->terrainModel())
-    , mTileset(tileset)
+    , mTerrainModel(tilesetDocument->terrainModel())
+    , mTileset(tilesetDocument->tileset().data())
     , mTerrainId(terrainId)
-    , mOldName(tileset->terrain(terrainId)->name())
+    , mOldName(mTileset->terrain(terrainId)->name())
     , mNewName(newName)
 {}
 
 void RenameTerrain::undo()
 {
-    mTerrainModel->setTerrainName(mTileset, mTerrainId, mOldName);
+    mTerrainModel->setTerrainName(mTerrainId, mOldName);
 }
 
 void RenameTerrain::redo()
 {
-    mTerrainModel->setTerrainName(mTileset, mTerrainId, mNewName);
+    mTerrainModel->setTerrainName(mTerrainId, mNewName);
 }
 
 } // namespace Internal

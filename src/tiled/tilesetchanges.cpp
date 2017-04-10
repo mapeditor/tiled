@@ -21,8 +21,7 @@
 
 #include "tilesetchanges.h"
 
-#include "mapdocument.h"
-#include "tileset.h"
+#include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
 #include <QCoreApplication>
@@ -30,53 +29,49 @@
 namespace Tiled {
 namespace Internal {
 
-RenameTileset::RenameTileset(MapDocument *mapDocument,
-                             Tileset *tileset,
+RenameTileset::RenameTileset(TilesetDocument *tilesetDocument,
                              const QString &newName)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Tileset Name"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldName(tileset->name())
+    , mTilesetDocument(tilesetDocument)
+    , mOldName(tilesetDocument->tileset()->name())
     , mNewName(newName)
 {}
 
 void RenameTileset::undo()
 {
-    mMapDocument->setTilesetName(mTileset, mOldName);
+    mTilesetDocument->setTilesetName(mOldName);
 }
 
 void RenameTileset::redo()
 {
-    mMapDocument->setTilesetName(mTileset, mNewName);
+    mTilesetDocument->setTilesetName(mNewName);
 }
 
 
-ChangeTilesetTileOffset::ChangeTilesetTileOffset(MapDocument *mapDocument,
-                                                 Tileset *tileset,
+ChangeTilesetTileOffset::ChangeTilesetTileOffset(TilesetDocument *tilesetDocument,
                                                  QPoint tileOffset)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Drawing Offset"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldTileOffset(tileset->tileOffset())
+    , mTilesetDocument(tilesetDocument)
+    , mOldTileOffset(tilesetDocument->tileset()->tileOffset())
     , mNewTileOffset(tileOffset)
 {}
 
 void ChangeTilesetTileOffset::undo()
 {
-    mMapDocument->setTilesetTileOffset(mTileset, mOldTileOffset);
+    mTilesetDocument->setTilesetTileOffset(mOldTileOffset);
 }
 
 void ChangeTilesetTileOffset::redo()
 {
-    mMapDocument->setTilesetTileOffset(mTileset, mNewTileOffset);
+    mTilesetDocument->setTilesetTileOffset(mNewTileOffset);
 }
 
 bool ChangeTilesetTileOffset::mergeWith(const QUndoCommand *other)
 {
     const ChangeTilesetTileOffset *o = static_cast<const ChangeTilesetTileOffset*>(other);
-    if (!(mMapDocument == o->mMapDocument && mTileset == o->mTileset))
+    if (mTilesetDocument != o->mTilesetDocument)
         return false;
 
     mNewTileOffset = o->mNewTileOffset;
@@ -102,13 +97,11 @@ bool TilesetParameters::operator != (const TilesetParameters &other) const
            margin               != other.margin;
 }
 
-ChangeTilesetParameters::ChangeTilesetParameters(MapDocument *mapDocument,
-                                                 Tileset &tileset,
+ChangeTilesetParameters::ChangeTilesetParameters(TilesetDocument *tilesetDocument,
                                                  const TilesetParameters &parameters)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Edit Tileset"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
-    , mOldParameters(tileset)
+    , mTilesetDocument(tilesetDocument)
+    , mOldParameters(*tilesetDocument->tileset())
     , mNewParameters(parameters)
 {
 }
@@ -125,41 +118,103 @@ void ChangeTilesetParameters::redo()
 
 void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
 {
-    QString oldImageSource = mTileset.imageSource();
+    Tileset &tileset = *mTilesetDocument->tileset();
 
-    mTileset.setImageSource(parameters.imageSource);
-    mTileset.setTransparentColor(parameters.transparentColor);
-    mTileset.setTileSize(parameters.tileSize);
-    mTileset.setTileSpacing(parameters.tileSpacing);
-    mTileset.setMargin(parameters.margin);
+    QString oldImageSource = tileset.imageSource();
+
+    tileset.setImageSource(parameters.imageSource);
+    tileset.setTransparentColor(parameters.transparentColor);
+    tileset.setTileSize(parameters.tileSize);
+    tileset.setTileSpacing(parameters.tileSpacing);
+    tileset.setMargin(parameters.margin);
 
     auto tilesetManager = TilesetManager::instance();
 
-    if (oldImageSource != mTileset.imageSource())
-        tilesetManager->tilesetImageSourceChanged(mTileset, oldImageSource);
-    if (mTileset.loadImage())
-        emit tilesetManager->tilesetChanged(&mTileset);
+    if (oldImageSource != tileset.imageSource())
+        tilesetManager->tilesetImageSourceChanged(tileset, oldImageSource);
+    if (tileset.loadImage())
+        emit tilesetManager->tilesetImagesChanged(&tileset);
 
-    emit mMapDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
-ChangeTilesetColumnCount::ChangeTilesetColumnCount(MapDocument *mapDocument,
-                                                   Tileset &tileset,
+
+ChangeTilesetColumnCount::ChangeTilesetColumnCount(TilesetDocument *tilesetDocument,
                                                    int columnCount)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Columns"))
-    , mMapDocument(mapDocument)
-    , mTileset(tileset)
+    , mTilesetDocument(tilesetDocument)
     , mColumnCount(columnCount)
 {
 }
 
 void ChangeTilesetColumnCount::swap()
 {
-    int oldColumnCount = mTileset.columnCount();
-    mTileset.setColumnCount(mColumnCount);
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    int oldColumnCount = tileset.columnCount();
+    tileset.setColumnCount(mColumnCount);
     mColumnCount = oldColumnCount;
 
-    emit mMapDocument->tilesetChanged(&mTileset);
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+ChangeTilesetBackgroundColor::ChangeTilesetBackgroundColor(TilesetDocument *tilesetDocument,
+                                                           const QColor &color)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Background Color"))
+    , mTilesetDocument(tilesetDocument)
+    , mColor(color)
+{
+}
+
+void ChangeTilesetBackgroundColor::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    QColor color = tileset.backgroundColor();
+    tileset.setBackgroundColor(mColor);
+    mColor = color;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+
+ChangeTilesetOrientation::ChangeTilesetOrientation(TilesetDocument *tilesetDocument,
+                                                   Tileset::Orientation orientation)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Orientation"))
+    , mTilesetDocument(tilesetDocument)
+    , mOrientation(orientation)
+{
+}
+
+void ChangeTilesetOrientation::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    Tileset::Orientation orientation = tileset.orientation();
+    tileset.setOrientation(mOrientation);
+    mOrientation = orientation;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+
+ChangeTilesetGridSize::ChangeTilesetGridSize(TilesetDocument *tilesetDocument,
+                                             QSize gridSize)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Grid Size"))
+    , mTilesetDocument(tilesetDocument)
+    , mGridSize(gridSize)
+{
+}
+
+void ChangeTilesetGridSize::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    QSize gridSize = tileset.gridSize();
+    tileset.setGridSize(mGridSize);
+    mGridSize = gridSize;
+
+    emit mTilesetDocument->tilesetChanged(&tileset);
 }
 
 } // namespace Internal

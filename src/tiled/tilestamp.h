@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILESTAMP_H
-#define TILED_INTERNAL_TILESTAMP_H
+#pragma once
 
 #include "map.h"
 #include "tiled.h"
@@ -117,5 +116,3 @@ inline void TileStamp::addVariation(const TileStampVariation &variation)
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILESTAMP_H

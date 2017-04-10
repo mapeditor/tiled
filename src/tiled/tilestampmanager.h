@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESTAMPMANAGER_H
-#define TILESTAMPMANAGER_H
+#pragma once
 
 #include "tilestamp.h"
 
@@ -120,5 +119,3 @@ inline TileStampModel *TileStampManager::tileStampModel() const
 
 } // namespace Tiled::Internal
 } // namespace Tiled
-
-#endif // TILESTAMPMANAGER_H

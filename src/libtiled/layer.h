@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LAYER_H
-#define LAYER_H
+#pragma once
 
 #include "object.h"
 #include "tileset.h"
@@ -41,6 +40,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Map;
 class ImageLayer;
 class ObjectGroup;
@@ -57,7 +57,8 @@ public:
     enum TypeFlag {
         TileLayerType   = 0x01,
         ObjectGroupType = 0x02,
-        ImageLayerType  = 0x04
+        ImageLayerType  = 0x04,
+        GroupLayerType  = 0x08
     };
 
     enum { AnyLayerType = 0xFF };
@@ -65,8 +66,7 @@ public:
     /**
      * Constructor.
      */
-    Layer(TypeFlag type, const QString &name, int x, int y,
-          int width, int height);
+    Layer(TypeFlag type, const QString &name, int x, int y);
 
     /**
      * Returns the type of this layer.
@@ -93,10 +93,14 @@ public:
      */
     void setOpacity(float opacity) { mOpacity = opacity; }
 
+    float effectiveOpacity() const;
+
     /**
      * Returns the visibility of this layer.
      */
     bool isVisible() const { return mVisible; }
+
+    bool isHidden() const;
 
     /**
      * Sets the visibility of this layer.
@@ -109,10 +113,14 @@ public:
     Map *map() const { return mMap; }
 
     /**
-     * Sets the map this layer is part of. Should only be called from the
-     * Map class.
+     * Returns the parent layer, if any.
      */
-    void setMap(Map *map) { mMap = map; }
+    GroupLayer *parentLayer() const { return mParentLayer; }
+
+    bool isParentOrSelf(const Layer *candidate) const;
+    int depth() const;
+    int siblingIndex() const;
+    QList<Layer*> siblings() const;
 
     /**
      * Returns the x position of this layer (in tiles).
@@ -145,30 +153,10 @@ public:
     void setPosition(QPoint pos) { setPosition(pos.x(), pos.y()); }
     void setPosition(int x, int y) { mX = x; mY = y; }
 
-    /**
-     * Returns the width of this layer.
-     */
-    int width() const { return mWidth; }
-
-    /**
-     * Returns the height of this layer.
-     */
-    int height() const { return mHeight; }
-
-    /**
-     * Returns the size of this layer.
-     */
-    QSize size() const { return QSize(mWidth, mHeight); }
-
-    void setSize(const QSize &size);
-
-    /**
-     * Returns the bounds of this layer.
-     */
-    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
-
     void setOffset(const QPointF &offset);
     QPointF offset() const;
+
+    QPointF totalOffset() const;
 
     virtual bool isEmpty() const = 0;
 
@@ -214,36 +202,38 @@ public:
     bool isTileLayer() const { return mLayerType == TileLayerType; }
     bool isObjectGroup() const { return mLayerType == ObjectGroupType; }
     bool isImageLayer() const { return mLayerType == ImageLayerType; }
+    bool isGroupLayer() const { return mLayerType == GroupLayerType; }
 
     // These actually return this layer cast to one of its subclasses.
     TileLayer *asTileLayer();
     ObjectGroup *asObjectGroup();
     ImageLayer *asImageLayer();
+    GroupLayer *asGroupLayer();
 
 protected:
+    /**
+     * Sets the map this layer is part of. Should only be called from the
+     * Map class.
+     */
+    virtual void setMap(Map *map) { mMap = map; }
+    void setParentLayer(GroupLayer *groupLayer) { mParentLayer = groupLayer; }
+
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
     TypeFlag mLayerType;
     int mX;
     int mY;
-    int mWidth;
-    int mHeight;
     QPointF mOffset;
     float mOpacity;
     bool mVisible;
     Map *mMap;
+    GroupLayer *mParentLayer;
+
+    friend class Map;
+    friend class GroupLayer;
 };
 
-
-/**
- * Sets the size of this layer.
- */
-inline void Layer::setSize(const QSize &size)
-{
-    mWidth = size.width();
-    mHeight = size.height();
-}
 
 /**
  * Sets the drawing offset in pixels of this layer.
@@ -261,6 +251,88 @@ inline QPointF Layer::offset() const
     return mOffset;
 }
 
-} // namespace Tiled
 
-#endif // LAYER_H
+/**
+ * An iterator for iterating over the layers of a map. When iterating forward,
+ * group layers are traversed after their children.
+ *
+ * Modifying the layer hierarchy while an iterator is active will lead to
+ * undefined results!
+ */
+class TILEDSHARED_EXPORT LayerIterator
+{
+public:
+    LayerIterator(const Map *map);
+    LayerIterator(Layer *start);
+
+    Layer *currentLayer() const;
+    int currentSiblingIndex() const;
+
+    bool hasNextSibling() const;
+    bool hasPreviousSibling() const;
+    bool hasParent() const;
+
+    Layer *next();
+    Layer *previous();
+
+    void toFront();
+    void toBack();
+
+private:
+    const Map *mMap;
+    Layer *mCurrentLayer;
+    int mSiblingIndex;
+};
+
+
+/**
+ * Iterate the given map, starting from the first layer.
+ */
+inline LayerIterator::LayerIterator(const Map *map)
+    : mMap(map)
+    , mCurrentLayer(nullptr)
+    , mSiblingIndex(-1)
+{}
+
+/**
+ * Iterate the layer's map, starting at the given \a layer.
+ */
+inline LayerIterator::LayerIterator(Layer *start)
+    : mMap(start ? start->map() : nullptr)
+    , mCurrentLayer(start)
+    , mSiblingIndex(start ? start->siblingIndex() : -1)
+{}
+
+inline Layer *LayerIterator::currentLayer() const
+{
+    return mCurrentLayer;
+}
+
+inline int LayerIterator::currentSiblingIndex() const
+{
+    return mSiblingIndex;
+}
+
+inline bool LayerIterator::hasNextSibling() const
+{
+    if (!mCurrentLayer)
+        return false;
+
+    return mSiblingIndex + 1 < mCurrentLayer->siblings().size();
+}
+
+inline bool LayerIterator::hasPreviousSibling() const
+{
+    return mSiblingIndex > 0;
+}
+
+inline bool LayerIterator::hasParent() const
+{
+    return mCurrentLayer && mCurrentLayer->parentLayer();
+}
+
+
+TILEDSHARED_EXPORT int globalIndex(Layer *layer);
+TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
+
+} // namespace Tiled

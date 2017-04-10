@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILETERRAIN_H
-#define CHANGETILETERRAIN_H
+#pragma once
 
 #include <QMap>
 #include <QUndoCommand>
@@ -33,7 +32,7 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileTerrain : public QUndoCommand
 {
@@ -59,12 +58,13 @@ public:
     /**
      * Changes the terrain of \a tile.
      */
-    ChangeTileTerrain(MapDocument *mapDocument, Tile *tile, unsigned terrain);
+    ChangeTileTerrain(TilesetDocument *tilesetDocument, Tile *tile, unsigned terrain);
 
     /**
      * Applies the given terrain \a changes.
      */
-    ChangeTileTerrain(MapDocument *mapDocument, const Changes &changes);
+    ChangeTileTerrain(TilesetDocument *tilesetDocument, const Changes &changes,
+                      QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
@@ -75,7 +75,7 @@ public:
 private:
     void initText();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tileset *mTileset;
     Changes mChanges;
     bool mMergeable;
@@ -83,5 +83,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGETILETERRAIN_H

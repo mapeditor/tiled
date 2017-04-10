@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPINGUTILS_H
-#define AUTOMAPPINGUTILS_H
+#pragma once
 
 #include <QRegion>
 
@@ -32,16 +31,14 @@ namespace Internal {
 
 class MapDocument;
 
-const QList<MapObject*> objectsInRegion(ObjectGroup *layer,
+const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
                                         const QRegion &where);
 
 void eraseRegionObjectGroup(MapDocument *mapDocument,
                             ObjectGroup *layer,
                             const QRegion &where);
 
-QRegion tileRegionOfObjectGroup(ObjectGroup *layer);
+QRegion tileRegionOfObjectGroup(const ObjectGroup *layer);
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPINGUTILS_H

@@ -28,8 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECTGROUP_H
-#define OBJECTGROUP_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -71,7 +70,7 @@ public:
     /**
      * Constructor with some parameters.
      */
-    ObjectGroup(const QString &name, int x, int y, int width, int height);
+    ObjectGroup(const QString &name, int x, int y);
 
     /**
      * Destructor.
@@ -179,9 +178,12 @@ public:
     DrawOrder drawOrder() const;
     void setDrawOrder(DrawOrder drawOrder);
 
-    Layer *clone() const override;
+    ObjectGroup *clone() const override;
 
-    // Enable easy iteration over cells with range-based for
+    void resetObjectIds();
+    int highestObjectId() const;
+
+    // Enable easy iteration over objects with range-based for
     QList<MapObject*>::iterator begin() { return mObjects.begin(); }
     QList<MapObject*>::iterator end() { return mObjects.end(); }
     QList<MapObject*>::const_iterator begin() const { return mObjects.begin(); }
@@ -247,5 +249,3 @@ TILEDSHARED_EXPORT ObjectGroup::DrawOrder drawOrderFromString(const QString &);
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::ObjectGroup*)
-
-#endif // OBJECTGROUP_H

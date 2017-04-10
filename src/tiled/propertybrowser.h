@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTYBROWSER_H
-#define PROPERTYBROWSER_H
+#pragma once
 
 #include <QHash>
 #include <QUndoCommand>
@@ -35,6 +34,7 @@ namespace Tiled {
 
 class Object;
 class ImageLayer;
+class Layer;
 class Map;
 class MapObject;
 class ObjectGroup;
@@ -44,7 +44,9 @@ class Tileset;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
+class TilesetDocument;
 
 class PropertyBrowser : public QtTreePropertyBrowser
 {
@@ -64,10 +66,10 @@ public:
     Object *object() const;
 
     /**
-     * Sets the \a mapDocument, used for keeping track of changes and for
+     * Sets the \a document, used for keeping track of changes and for
      * undo/redo support.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
     /**
      * Returns whether the given \a item displays a custom property.
@@ -87,11 +89,12 @@ private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
     void objectsTypeChanged(const QList<MapObject*> &objects);
-    void layerChanged(int index);
+    void layerChanged(Layer *layer);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
+    void tileTypeChanged(Tile *tile);
     void terrainChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -118,11 +121,18 @@ private:
         RotationProperty,
         VisibleProperty,
         OpacityProperty,
+        TextProperty,
+        TextAlignmentProperty,
+        FontProperty,
+        WordWrapProperty,
         OffsetXProperty,
         OffsetYProperty,
         ColorProperty,
+        BackgroundColorProperty,
         TileWidthProperty,
         TileHeightProperty,
+        GridWidthProperty,
+        GridHeightProperty,
         OrientationProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
@@ -149,6 +159,7 @@ private:
     void addTileLayerProperties();
     void addObjectGroupProperties();
     void addImageLayerProperties();
+    void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
     void addTerrainProperties();
@@ -160,14 +171,20 @@ private:
     void applyTileLayerValue(PropertyId id, const QVariant &val);
     void applyObjectGroupValue(PropertyId id, const QVariant &val);
     void applyImageLayerValue(PropertyId id, const QVariant &val);
+    void applyGroupLayerValue(PropertyId id, const QVariant &val);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,
-                                      const QString &name,
-                                      QtProperty *parent);
+                                      const QString &name);
+
+    using QtTreePropertyBrowser::addProperty;
+    QtVariantProperty *addProperty(PropertyId id,
+                                   int type,
+                                   const QString &name,
+                                   QtProperty *parent);
 
     void addProperties();
     void removeProperties();
@@ -179,7 +196,9 @@ private:
     void updatePropertyColor(const QString &name);
 
     Object *mObject;
+    Document *mDocument;
     MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;
@@ -194,6 +213,7 @@ private:
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
+    QStringList mTilesetOrientationNames;
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;
@@ -213,5 +233,3 @@ inline void PropertyBrowser::retranslateUi()
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PROPERTYBROWSER_H

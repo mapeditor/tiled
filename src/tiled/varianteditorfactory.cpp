@@ -22,6 +22,8 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "textpropertyedit.h"
+#include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
@@ -58,7 +60,7 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
 
     QToolButton *resetButton = new QToolButton(this);
     resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
-    resetButton->setIconSize(QSize(16, 16));
+    resetButton->setIconSize(Utils::smallIconSize());
     resetButton->setAutoRaise(true);
     Utils::setThemeIcon(resetButton, "edit-clear");
 
@@ -80,6 +82,7 @@ VariantEditorFactory::~VariantEditorFactory()
 {
     qDeleteAll(mFileEditToProperty.keys());
     qDeleteAll(mTilesetEditToProperty.keys());
+    qDeleteAll(mTextPropertyEditToProperty.keys());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -97,15 +100,16 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 {
     const int type = manager->propertyType(property);
 
-    if (type == VariantPropertyManager::filePathTypeId()) {
+    if (type == filePathTypeId()) {
         FileEdit *editor = new FileEdit(parent);
-        editor->setFilePath(manager->value(property).toString());
+        FilePath filePath = manager->value(property).value<FilePath>();
+        editor->setFilePath(filePath.absolutePath);
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
-        connect(editor, SIGNAL(filePathChanged(const QString &)),
-                this, SLOT(fileEditFilePathChanged(const QString &)));
+        connect(editor, &FileEdit::filePathChanged,
+                this, &VariantEditorFactory::fileEditFilePathChanged);
         connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
 
@@ -114,7 +118,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
         auto editor = new TilesetParametersEdit(parent);
-        editor->setTileset(manager->value(property).value<EmbeddedTileset>());
+        editor->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
         mCreatedTilesetEdits[property].append(editor);
         mTilesetEditToProperty[editor] = property;
 
@@ -122,6 +126,23 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, SLOT(slotEditorDestroyed(QObject *)));
 
         return editor;
+    }
+
+    if (type == QVariant::String) {
+        bool multiline = manager->attributeValue(property, QLatin1String("multiline")).toBool();
+        if (multiline) {
+            auto editor = new TextPropertyEdit(parent);
+            editor->setText(manager->value(property).toString());
+            mCreatedTextPropertyEdits[property].append(editor);
+            mTextPropertyEditToProperty[editor] = property;
+
+            connect(editor, &TextPropertyEdit::textChanged,
+                    this, &VariantEditorFactory::textPropertyEditTextChanged);
+            connect(editor, SIGNAL(destroyed(QObject *)),
+                    this, SLOT(slotEditorDestroyed(QObject *)));
+
+            return editor;
+        }
     }
 
     QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
@@ -162,12 +183,18 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
                                                const QVariant &value)
 {
     if (mCreatedFileEdits.contains(property)) {
-        for (FileEdit *edit : mCreatedFileEdits[property])
-            edit->setFilePath(value.toString());
+        for (FileEdit *edit : mCreatedFileEdits[property]) {
+            FilePath filePath = value.value<FilePath>();
+            edit->setFilePath(filePath.absolutePath);
+        }
     }
     else if (mCreatedTilesetEdits.contains(property)) {
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
-            edit->setTileset(value.value<EmbeddedTileset>());
+            edit->setTilesetDocument(value.value<TilesetDocument*>());
+    }
+    else if (mCreatedTextPropertyEdits.contains(property)) {
+        for (TextPropertyEdit *edit : mCreatedTextPropertyEdits[property])
+            edit->setText(value.toString());
     }
 }
 
@@ -181,6 +208,7 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
                 edit->setFilter(value.toString());
         }
     }
+    // changing of "multiline" attribute currently not supported
 }
 
 void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
@@ -189,6 +217,19 @@ void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
     Q_ASSERT(fileEdit);
 
     if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, QVariant::fromValue(FilePath { value }));
+    }
+}
+
+void VariantEditorFactory::textPropertyEditTextChanged(const QString &value)
+{
+    auto textPropertyEdit = qobject_cast<TextPropertyEdit*>(sender());
+    Q_ASSERT(textPropertyEdit);
+
+    if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
         QtVariantPropertyManager *manager = propertyManager(property);
         if (!manager)
             return;
@@ -220,6 +261,19 @@ void VariantEditorFactory::slotEditorDestroyed(QObject *object)
             mCreatedTilesetEdits[property].removeAll(tilesetEdit);
             if (mCreatedTilesetEdits[property].isEmpty())
                 mCreatedTilesetEdits.remove(property);
+            return;
+        }
+    }
+
+    // Check if it was a TextPropertyEdit
+    {
+        TextPropertyEdit *textPropertyEdit = static_cast<TextPropertyEdit*>(object);
+
+        if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
+            mTextPropertyEditToProperty.remove(textPropertyEdit);
+            mCreatedTextPropertyEdits[property].removeAll(textPropertyEdit);
+            if (mCreatedTextPropertyEdits[property].isEmpty())
+                mCreatedTextPropertyEdits.remove(property);
             return;
         }
     }

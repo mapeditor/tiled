@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HEXAGONALRENDERER_H
-#define HEXAGONALRENDERER_H
+#pragma once
 
 #include "orthogonalrenderer.h"
 
@@ -107,5 +106,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // HEXAGONALRENDERER_H

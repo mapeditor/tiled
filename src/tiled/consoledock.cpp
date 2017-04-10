@@ -37,7 +37,7 @@ ConsoleDock::ConsoleDock(QWidget *parent)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(5);
+    layout->setMargin(0);
 
     plainTextEdit = new QPlainTextEdit;
     plainTextEdit->setReadOnly(true);

@@ -22,13 +22,14 @@
 #include "variantpropertymanager.h"
 
 #include "mapdocument.h"
+#include "textpropertyedit.h"
+#include "tilesetdocument.h"
 
 #include <QFileInfo>
 
 namespace Tiled {
 namespace Internal {
 
-class FilePathPropertyType {};
 class TilesetParametersPropertyType {};
 
 } // namespace Tiled
@@ -36,7 +37,6 @@ class TilesetParametersPropertyType {};
 
 // Needs to be up here rather than at the bottom of the file to make a
 // static_assert in qMetaTypeId work (as of C++11)
-Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)
 Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
 
 
@@ -46,6 +46,7 @@ namespace Internal {
 VariantPropertyManager::VariantPropertyManager(QObject *parent)
     : QtVariantPropertyManager(parent)
     , mSuggestionsAttribute(QStringLiteral("suggestions"))
+    , mMultilineAttribute(QStringLiteral("multiline"))
     , mImageMissingIcon(QStringLiteral("://images/16x16/image-missing.png"))
 {
     mImageMissingIcon.addPixmap(QPixmap(QStringLiteral("://images/32x32/image-missing.png")));
@@ -72,7 +73,7 @@ int VariantPropertyManager::valueType(int propertyType) const
     if (propertyType == filePathTypeId())
         return QVariant::String;
     if (propertyType == tilesetParametersTypeId())
-        return qMetaTypeId<EmbeddedTileset>();
+        return qMetaTypeId<TilesetDocument*>();
     return QtVariantPropertyManager::valueType(propertyType);
 }
 
@@ -105,15 +106,14 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
             return mValues[property].filter;
         return QVariant();
     }
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        return mSuggestions[property];
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute)
+            return mStringAttributes[property].suggestions;
+        if (attribute == mMultilineAttribute)
+            return mStringAttributes[property].multiline;
+    }
 
     return QtVariantPropertyManager::attributeValue(property, attribute);
-}
-
-int VariantPropertyManager::filePathTypeId()
-{
-    return qMetaTypeId<FilePathPropertyType>();
 }
 
 int VariantPropertyManager::tilesetParametersTypeId()
@@ -127,16 +127,26 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
         QVariant value = mValues[property].value;
         int typeId = propertyType(property);
 
-        if (typeId == filePathTypeId())
-            return QFileInfo(value.toString()).fileName();
+        if (typeId == filePathTypeId()) {
+            FilePath filePath = value.value<FilePath>();
+            QString path = filePath.absolutePath;
+            if (path.endsWith(QLatin1Char('/')))
+                path.chop(1);
+            return QFileInfo(path).fileName();
+        }
 
         if (typeId == tilesetParametersTypeId()) {
-            EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
-            if (embeddedTileset.tileset())
-                return QFileInfo(embeddedTileset.tileset()->imageSource()).fileName();
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                return QFileInfo(tilesetDocument->tileset()->imageSource()).fileName();
         }
 
         return value.toString();
+    }
+
+    auto stringAttributesIt = mStringAttributes.find(property);
+    if (stringAttributesIt != mStringAttributes.end()) {
+        if ((*stringAttributesIt).multiline)
+            return escapeNewlines(value(property).toString());
     }
 
     return QtVariantPropertyManager::valueText(property);
@@ -150,17 +160,15 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
         int typeId = propertyType(property);
 
         if (typeId == filePathTypeId())
-            filePath = value.toString();
+            filePath = value.value<FilePath>().absolutePath;
 
         if (typeId == tilesetParametersTypeId()) {
-            EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
-            if (embeddedTileset.tileset())
-                filePath = embeddedTileset.tileset()->imageSource();
+            if (TilesetDocument *tilesetDocument = value.value<TilesetDocument*>())
+                filePath = tilesetDocument->tileset()->imageSource();
         }
 
-        // This assumes the file path is an image reference, which is currently
-        // always the case, but it won't be when external tileset references
-        // are added to the property browser.
+        // TODO: This assumes the file path is an image reference. It should be
+        // replaced with a more generic icon.
         if (filePath.isEmpty() || !QFile::exists(filePath))
             return QIcon::fromTheme(QLatin1String("image-missing"), mImageMissingIcon);
         else
@@ -204,8 +212,16 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         return;
     }
 
-    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        mSuggestions[property] = val.toStringList();
+    if (mStringAttributes.contains(property)) {
+        if (attribute == mSuggestionsAttribute) {
+            mStringAttributes[property].suggestions = val.toStringList();
+            return;
+        }
+        if (attribute == mMultilineAttribute) {
+            mStringAttributes[property].multiline = val.toBool();
+            return;
+        }
+    }
 
     QtVariantPropertyManager::setAttribute(property, attribute, val);
 }
@@ -218,7 +234,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     else if (type == tilesetParametersTypeId())
         mValues[property] = Data();
     else if (type == QVariant::String)
-        mSuggestions[property] = QStringList();
+        mStringAttributes[property] = StringAttributes();
 
     QtVariantPropertyManager::initializeProperty(property);
 }
@@ -226,7 +242,7 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
 void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
-    mSuggestions.remove(property);
+    mStringAttributes.remove(property);
     QtVariantPropertyManager::uninitializeProperty(property);
 }
 

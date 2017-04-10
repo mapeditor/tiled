@@ -21,6 +21,7 @@
 
 #include "offsetlayer.h"
 
+#include "imagelayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -34,7 +35,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 OffsetLayer::OffsetLayer(MapDocument *mapDocument,
-                         int index,
+                         Layer *layer,
                          const QPoint &offset,
                          const QRect &bounds,
                          bool wrapX,
@@ -42,62 +43,66 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Offset Layer"))
     , mMapDocument(mapDocument)
-    , mIndex(index)
-    , mOriginalLayer(nullptr)
+    , mDone(false)
+    , mOriginalLayer(layer)
+    , mOffsetLayer(nullptr)
 {
-    // Create the offset layer (once)
-    Layer *layer = mMapDocument->map()->layerAt(mIndex);
-    mOffsetLayer = layer->clone();
-
-    switch (mOffsetLayer->layerType()) {
+    switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
+        mOffsetLayer = layer->clone();
         static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
-    case Layer::ObjectGroupType: {
-        // Object groups need offset and bounds converted to pixel units
+    case Layer::ObjectGroupType:
+        mOffsetLayer = layer->clone();
+        // fall through
+    case Layer::ImageLayerType:
+    case Layer::GroupLayerType: {
+        // These layers need offset and bounds converted to pixel units
         MapRenderer *renderer = mapDocument->renderer();
         const QPointF origin = renderer->tileToPixelCoords(QPointF());
         const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
-        static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+
+        if (mOriginalLayer->layerType() == Layer::ObjectGroupType) {
+            static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+        } else {
+            // (wrapping not supported for image layers and group layers)
+            mOldOffset = mOriginalLayer->offset();
+            mNewOffset = mOldOffset + pixelOffset;
+        }
         break;
     }
-    case Layer::ImageLayerType:
-        // Nothing done for the image layer at the moment
-        break;
     }
 }
 
 OffsetLayer::~OffsetLayer()
 {
-    delete mOriginalLayer;
-    delete mOffsetLayer;
+    if (mOffsetLayer) {
+        if (mDone)
+            delete mOriginalLayer;
+        else
+            delete mOffsetLayer;
+    }
 }
 
 void OffsetLayer::undo()
 {
-    Q_ASSERT(!mOffsetLayer);
-    mOffsetLayer = swapLayer(mOriginalLayer);
-    mOriginalLayer = nullptr;
+    Q_ASSERT(mDone);
+    LayerModel *layerModel = mMapDocument->layerModel();
+    if (mOffsetLayer)
+        layerModel->replaceLayer(mOffsetLayer, mOriginalLayer);
+    else
+        layerModel->setLayerOffset(mOriginalLayer, mOldOffset);
+    mDone = false;
 }
 
 void OffsetLayer::redo()
 {
-    Q_ASSERT(!mOriginalLayer);
-    mOriginalLayer = swapLayer(mOffsetLayer);
-    mOffsetLayer = nullptr;
-}
-
-Layer *OffsetLayer::swapLayer(Layer *layer)
-{
-    const int currentIndex = mMapDocument->currentLayerIndex();
-
+    Q_ASSERT(!mDone);
     LayerModel *layerModel = mMapDocument->layerModel();
-    Layer *replaced = layerModel->takeLayerAt(mIndex);
-    layerModel->insertLayer(mIndex, layer);
-
-    if (mIndex == currentIndex)
-        mMapDocument->setCurrentLayerIndex(mIndex);
-
-    return replaced;
+    if (mOffsetLayer)
+        layerModel->replaceLayer(mOriginalLayer, mOffsetLayer);
+    else
+        layerModel->setLayerOffset(mOriginalLayer, mNewOffset);
+    mDone = true;
 }

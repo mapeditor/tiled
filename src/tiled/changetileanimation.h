@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_CHANGETILEANIMATION_H
-#define TILED_INTERNAL_CHANGETILEANIMATION_H
+#pragma once
 
 #include "tile.h"
 
@@ -28,14 +27,15 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileAnimation : public QUndoCommand
 {
 public:
-    ChangeTileAnimation(MapDocument *mapDocument,
+    ChangeTileAnimation(TilesetDocument *document,
                         Tile *tile,
-                        const QVector<Frame> &frames);
+                        const QVector<Frame> &frames,
+                        QUndoCommand *parent = nullptr);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -43,12 +43,10 @@ public:
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     QVector<Frame> mFrames;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_CHANGETILEANIMATION_H

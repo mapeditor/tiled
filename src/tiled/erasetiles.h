@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ERASETILES_H
-#define ERASETILES_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -65,5 +64,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ERASETILES_H

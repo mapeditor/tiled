@@ -21,13 +21,13 @@
 #include "tengineplugin.h"
 
 #include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
+#include "properties.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "objectgroup.h"
-#include "mapobject.h"
-#include "properties.h"
 
-#include <QSaveFile>
 #include <QTextStream>
 #include <QHash>
 #include <QList>
@@ -44,12 +44,12 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
-    QTextStream out(&file);
+    QTextStream out(file.device());
 
     // Write the header
     QString header = map->property("header").toString();
@@ -83,7 +83,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Properties currentTile = cachedTiles["?"];
-            foreach (Layer *layer, map->layers()) {
+            for (Layer *layer : map->layers()) {
                 // If the layer name does not start with one of the tile properties, skip it
                 QString layerKey;
                 QListIterator<QString> propertyIterator = propertyOrder;
@@ -94,20 +94,18 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                         break;
                     }
                 }
-                if (layerKey.isEmpty()) {
+
+                if (layerKey.isEmpty())
                     continue;
-                }
-                TileLayer *tileLayer = layer->asTileLayer();
-                ObjectGroup *objectLayer = layer->asObjectGroup();
+
                 // Process the Tile Layer
-                if (tileLayer) {
-                    Tile *tile = tileLayer->cellAt(x, y).tile;
-                    if (tile) {
+                if (TileLayer *tileLayer = layer->asTileLayer()) {
+                    if (Tile *tile = tileLayer->cellAt(x, y).tile()) {
                         currentTile["display"] = tile->property("display");
                         currentTile[layerKey] = tile->property("value");
                     }
                 // Process the Object Layer
-                } else if (objectLayer) {
+                } else if (ObjectGroup *objectLayer = layer->asObjectGroup()) {
                     for (const MapObject *obj : objectLayer->objects()) {
                         if (floor(obj->y()) <= y && y <= floor(obj->y() + obj->height())) {
                             if (floor(obj->x()) <= x && x <= floor(obj->x() + obj->width())) {
@@ -293,6 +291,11 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 QString TenginePlugin::nameFilter() const
 {
     return tr("T-Engine4 map files (*.lua)");
+}
+
+QString TenginePlugin::shortName() const
+{
+    return QLatin1String("te4");
 }
 
 QString TenginePlugin::errorString() const

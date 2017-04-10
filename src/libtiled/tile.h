@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include "object.h"
 
@@ -79,6 +78,12 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
  */
 struct Frame
 {
+    bool operator == (const Frame &frame) const
+    {
+        return tileId == frame.tileId &&
+                duration == frame.duration;
+    }
+
     int tileId;
     int duration;
 };
@@ -101,7 +106,7 @@ public:
     const QPixmap &image() const;
     void setImage(const QPixmap &image);
 
-    const QPixmap &currentFrameImage() const;
+    const Tile *currentFrameTile() const;
 
     const QString &imageSource() const;
     void setImageSource(const QString &imageSource);
@@ -111,6 +116,9 @@ public:
     QSize size() const;
 
     QPoint offset() const;
+
+    const QString &type() const;
+    void setType(const QString &type);
 
     Terrain *terrainAtCorner(int corner) const;
 
@@ -131,15 +139,19 @@ public:
     void setFrames(const QVector<Frame> &frames);
     bool isAnimated() const;
     int currentFrameIndex() const;
+    bool resetAnimation();
     bool advanceAnimation(int ms);
 
     bool imageLoaded() const;
+
+    Tile *clone(Tileset *tileset) const;
 
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
     QString mImageSource;
+    QString mType;
     unsigned mTerrain;
     float mProbability;
     ObjectGroup *mObjectGroup;
@@ -223,6 +235,25 @@ inline QSize Tile::size() const
 }
 
 /**
+ * Returns the type of this tile. Tile objects that do not have a type
+ * explicitly set on them are assumed to be of the type returned by this
+ * function.
+ */
+inline const QString &Tile::type() const
+{
+    return mType;
+}
+
+/**
+ * Sets the type of this tile.
+ * \sa type()
+ */
+inline void Tile::setType(const QString &type)
+{
+    mType = type;
+}
+
+/**
  * Returns the terrain id at a given corner.
  */
 inline int Tile::cornerTerrainId(int corner) const
@@ -295,5 +326,3 @@ inline bool Tile::imageLoaded() const
 }
 
 } // namespace Tiled
-
-#endif // TILE_H

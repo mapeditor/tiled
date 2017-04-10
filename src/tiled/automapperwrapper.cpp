@@ -40,34 +40,34 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     while (index < autoMapper.size()) {
         AutoMapper *a = autoMapper.at(index);
         if (a->prepareAutoMap()) {
-            touchedLayers|= a->getTouchedTileLayers();
+            touchedLayers |= a->getTouchedTileLayers();
             index++;
         } else {
             autoMapper.remove(index);
         }
     }
     foreach (const QString &layerName, touchedLayers) {
-        const int layerindex = map->indexOfLayer(layerName);
-        Q_ASSERT(layerindex != -1);
-        mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
+        const int layerIndex = map->indexOfLayer(layerName);
+        Q_ASSERT(layerIndex != -1);
+        mLayersBefore.append(static_cast<TileLayer*>(map->layerAt(layerIndex)->clone()));
     }
 
     for (AutoMapper *a : autoMapper)
         a->autoMap(where);
 
+    int beforeIndex = 0;
     foreach (const QString &layerName, touchedLayers) {
-        const int layerindex = map->indexOfLayer(layerName);
+        const int layerIndex = map->indexOfLayer(layerName);
         // layer index exists, because AutoMapper is still alive, don't check
-        Q_ASSERT(layerindex != -1);
-        mLayersAfter << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
-    }
-    // reduce memory usage by saving only diffs
-    Q_ASSERT(mLayersAfter.size() == mLayersBefore.size());
-    for (int i = 0; i < mLayersAfter.size(); ++i) {
-        TileLayer *before = mLayersBefore.at(i);
-        TileLayer *after = mLayersAfter.at(i);
-        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
+        Q_ASSERT(layerIndex != -1);
+        TileLayer *before = mLayersBefore.at(beforeIndex);
+        TileLayer *after = static_cast<TileLayer*>(map->layerAt(layerIndex));
 
+        if (before->drawMargins() != after->drawMargins())
+            emit mMapDocument->tileLayerDrawMarginsChanged(after);
+
+        // reduce memory usage by saving only diffs
+        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
         TileLayer *before1 = before->copy(diffRegion);
         TileLayer *after1 = after->copy(diffRegion);
 
@@ -75,11 +75,11 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         after1->setPosition(diffRegion.topLeft());
         before1->setName(before->name());
         after1->setName(after->name());
-        mLayersBefore.replace(i, before1);
-        mLayersAfter.replace(i, after1);
+        mLayersBefore.replace(beforeIndex, before1);
+        mLayersAfter.append(after1);
 
         delete before;
-        delete after;
+        ++beforeIndex;
     }
 
     for (AutoMapper *a : autoMapper)
@@ -88,20 +88,17 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
 
 AutoMapperWrapper::~AutoMapperWrapper()
 {
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i)
-        delete *i;
-    for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i)
-        delete *i;
+    qDeleteAll(mLayersAfter);
+    qDeleteAll(mLayersBefore);
 }
 
 void AutoMapperWrapper::undo()
 {
     Map *map = mMapDocument->map();
     for (TileLayer *layer : mLayersBefore) {
-        const int layerindex = map->indexOfLayer(layer->name());
-        if (layerindex != -1)
-            patchLayer(layerindex, layer);
+        const int layerIndex = map->indexOfLayer(layer->name());
+        if (layerIndex != -1)
+            patchLayer(layerIndex, layer);
     }
 }
 
@@ -109,11 +106,10 @@ void AutoMapperWrapper::redo()
 {
     Map *map = mMapDocument->map();
     for (TileLayer *layer : mLayersAfter) {
-        const int layerindex = map->indexOfLayer(layer->name());
-        if (layerindex != -1)
-            patchLayer(layerindex, layer);
+        const int layerIndex = map->indexOfLayer(layer->name());
+        if (layerIndex != -1)
+            patchLayer(layerIndex, layer);
     }
-
 }
 
 void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
@@ -124,7 +120,9 @@ void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
     Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
     TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
 
-    t->setCells(b.left() - t->x(), b.top() - t->y(), layer,
+    t->setCells(b.left() - t->x(),
+                b.top() - t->y(),
+                layer,
                 b.translated(-t->position()));
-    mMapDocument->emitRegionChanged(b, t);
+    emit mMapDocument->regionChanged(b, t);
 }

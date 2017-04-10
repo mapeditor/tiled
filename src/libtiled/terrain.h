@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TERRAIN_H
-#define TERRAIN_H
+#pragma once
 
 #include "object.h"
 #include "tileset.h"
@@ -74,6 +73,8 @@ public:
     int transitionDistance(int targetTerrainType) const;
     void setTransitionDistance(int targetTerrainType, int distance);
     void setTransitionDistances(const QVector<int> &transitionDistances);
+
+    Terrain *clone(Tileset *tileset) const;
 
 private:
     int mId;
@@ -173,8 +174,17 @@ inline void Terrain::setTransitionDistances(const QVector<int> &transitionDistan
     mTransitionDistance = transitionDistances;
 }
 
+/**
+ * Returns a duplicate of this terrain, to be added to the given \a tileset.
+ */
+inline Terrain *Terrain::clone(Tileset *tileset) const
+{
+    Terrain *c = new Terrain(mId, tileset, mName, mImageTileId);
+    c->setProperties(properties());
+    c->mTransitionDistance = mTransitionDistance;
+    return c;
+}
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Terrain*)
-
-#endif // TERRAIN_H

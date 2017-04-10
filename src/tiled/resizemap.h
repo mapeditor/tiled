@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEMAP_H
-#define RESIZEMAP_H
+#pragma once
 
 #include <QSize>
 #include <QUndoCommand>
@@ -36,7 +35,9 @@ class MapDocument;
 class ResizeMap : public QUndoCommand
 {
 public:
-    ResizeMap(MapDocument *mapDocument, const QSize &size);
+    ResizeMap(MapDocument *mapDocument,
+              const QSize &size,
+              QUndoCommand *parent = nullptr);
 
     void undo() override;
     void redo() override;
@@ -50,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEMAP_H
