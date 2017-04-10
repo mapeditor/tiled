@@ -394,7 +394,7 @@
             </div>
             <div class="row">
               <div class="col-xs-12">
-{% for post in site.categories.news limit:3 %}
+{% for post in site.posts limit:3 %}
 
             <div class="news-item">
              <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a><br/><small>{{ post.date | date_to_long_string }}</small></h4>
