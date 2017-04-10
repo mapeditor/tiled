@@ -265,7 +265,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     if (mLayer->map()->orientation() == Map::Orthogonal)
         drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
     else
-        drawIsometricTileLayer(node, mapItem, mLayer, mVisibleTiles);
+        drawIsometricTileLayer(node, mapItem, mLayer, mLayer->bounds());
 
     return node;
 }
