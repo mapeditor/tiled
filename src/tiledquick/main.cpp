@@ -17,9 +17,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.addImportPath(qmlDir);
-
-    QString mainQml(qmlDir + QStringLiteral("/tiledquick/main.qml"));
-    engine.load(QUrl::fromLocalFile(mainQml));
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();
 }
