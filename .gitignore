@@ -10,6 +10,7 @@ Makefile*
 moc_*.cpp
 ui_*.h
 qrc_*
+*.qmlc
 
 # Build artifacts on Windows
 tiled.exe
