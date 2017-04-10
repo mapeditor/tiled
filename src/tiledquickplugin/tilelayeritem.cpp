@@ -117,7 +117,7 @@ private:
  * sequentially drawn tiles are using the same tileset, they will share a
  * single geometry node.
  */
-static void drawTileLayer(QSGNode *parent,
+static void drawOrthogonalTileLayer(QSGNode *parent,
                           const MapItem *mapItem,
                           const TileLayer *layer,
                           const QRect &rect)
@@ -169,6 +169,64 @@ static void drawTileLayer(QSGNode *parent,
         parent->appendChildNode(new TilesNode(helper.texture(), tileData));
 }
 
+/**
+ * Draws an isometric tile layer by adding nodes to the scene graph. As long
+ * sequentially drawn tiles are using the same tileset, they will share a
+ * single geometry node.
+ */
+static void drawIsometricTileLayer(QSGNode *parent,
+                                   const MapItem *mapItem,
+                                   const TileLayer *layer,
+                                   const QRect &rect)
+{
+    TilesetHelper helper(mapItem);
+
+    const Map *map = mapItem->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+
+    QVector<TileData> tileData;
+    tileData.reserve(TilesNode::MaxTileCount);
+
+    const int startX = (layer->bounds().width() * tileWidth) / 2;
+
+    for (int y = rect.top(); y <= rect.bottom(); ++y) {
+        for (int x = rect.left(); x <= rect.right(); ++x) {
+            const Cell &cell = layer->cellAt(x, y);
+            if (cell.isEmpty())
+                continue;
+
+            Tileset *tileset = cell.tile->tileset();
+
+            if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
+                if (!tileData.isEmpty()) {
+                    parent->appendChildNode(new TilesNode(helper.texture(),
+                                                          tileData));
+                    tileData.resize(0);
+                }
+
+                helper.setTileset(tileset);
+            }
+
+            if (!helper.texture())
+                continue;
+
+            const QSize size = cell.tile->size();
+
+            TileData data;
+            data.x = startX + (-y * (tileWidth / 2)) + (x * (tileWidth / 2));
+            data.y = (y * (tileHeight / 2)) + (x * (tileHeight / 2));
+            data.width = size.width();
+            data.height = size.height();
+            helper.setTextureCoordinates(data, cell);
+            tileData.append(data);
+        }
+    }
+
+    if (!tileData.isEmpty())
+        parent->appendChildNode(new TilesNode(helper.texture(), tileData));
+}
+
 } // anonymous namespace
 
 
@@ -204,7 +262,10 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     node->setFlag(QSGNode::OwnedByParent);
 
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    drawTileLayer(node, mapItem, mLayer, mVisibleTiles);
+    if (mLayer->map()->orientation() == Map::Orthogonal)
+        drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
+    else
+        drawIsometricTileLayer(node, mapItem, mLayer, mVisibleTiles);
 
     return node;
 }
