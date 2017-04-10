@@ -3,13 +3,10 @@ import qbs 1.0
 DynamicLibrary {
     targetName: "tiledquickplugin"
 
-    condition: Qt.core.versionMajor >= 5
-
     Depends { name: "libtiled" }
-    Depends { name: "Qt.core" }     // for the Qt version check
     Depends {
-        condition: Qt.core.versionMajor >= 5
         name: "Qt"; submodules: ["qml", "quick"]
+        versionAtLeast: "5.4"
     }
 
     cpp.cxxLanguageVersion: "c++11"

@@ -4,12 +4,10 @@ QtGuiApplication {
     name: "tiledquick"
     targetName: name
 
-    condition: Qt.core.versionMajor >= 5
-
-    Depends { name: "Qt.core" }     // for the Qt version check
     Depends {
-        condition: Qt.core.versionMajor >= 5
-        name: "Qt"; submodules: ["quick", "widgets"]
+        name: "Qt"
+        submodules: ["core", "quick", "widgets"]
+        versionAtLeast: "5.4"
     }
 
     cpp.includePaths: ["."]
@@ -18,6 +16,7 @@ QtGuiApplication {
 
     files: [
         "main.cpp",
+        "qml.qrc",
     ]
 
     Properties {
@@ -36,15 +35,5 @@ QtGuiApplication {
                 return "bin"
         }
         fileTagsFilter: product.type
-    }
-
-    Group {
-        name: "QML files"
-        qbs.install: true
-        qbs.installDir: installBase + "qml/tiledquick"
-        files: [
-            "DragArea.qml",
-            "main.qml",
-        ]
     }
 }
