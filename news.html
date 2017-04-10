@@ -5,7 +5,7 @@ title: News Archive
 
 <h1>News Archive</h1>
 
-{% for post in site.categories.blog  %}
+{% for post in site.categories.news  %}
   {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
   {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
 
