@@ -269,7 +269,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     if (mLayer->map()->orientation() == Map::Orthogonal)
         drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
     else
-        drawIsometricTileLayer(node, mapItem, mLayer, mLayer->bounds());
+        drawIsometricTileLayer(node, mapItem, mLayer, mVisibleTiles);
 
     return node;
 }
@@ -277,7 +277,8 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-    const QRect rect = mapItem->visibleTileArea(mLayer);
+    const QRect rect = mLayer->map()->orientation() == Map::Orthogonal
+            ? mapItem->visibleTileArea(mLayer) : mLayer->bounds();
 
     if (mVisibleTiles != rect) {
         mVisibleTiles = rect;
