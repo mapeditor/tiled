@@ -94,12 +94,12 @@ public:
                        const QList<MapObject *> &mapObjects,
                        Tile *tile);
 
-    void undo() { restore(); }
-    void redo() { replace(); }
+    void undo() override { restoreTiles(); }
+    void redo() override { changeTiles(); }
 
 private:
-    void replace();
-    void restore();
+    void changeTiles();
+    void restoreTiles();
 
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
