@@ -22,12 +22,19 @@ ReplaceObjectsTile::ReplaceObjectsTile(MapDocument *mapDocument,
         mOriginalTiles.append(object->cell().tile());
 }
 
+static void setObjectTile(MapObject *object, Tile *tile)
+{
+    Cell cell = object->cell();
+    cell.setTile(tile);
+    object->setCell(cell);
+}
+
 void ReplaceObjectsTile::replace()
 {
     Tile * const tile = mTile;
 
     for (MapObject *object : mMapObjects)
-        swapObjectTile(object, tile);
+        setObjectTile(object, tile);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
@@ -35,15 +42,9 @@ void ReplaceObjectsTile::replace()
 void ReplaceObjectsTile::restore()
 {
     for (int i = 0; i < mMapObjects.size(); ++i)
-        swapObjectTile(mMapObjects[i], mOriginalTiles[i]);
+        setObjectTile(mMapObjects[i], mOriginalTiles[i]);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
-}
-
-void ReplaceObjectsTile::swapObjectTile(MapObject *object, Tile *tile) {
-    Cell cell = object->cell();
-    cell.setTile(tile);
-    object->setCell(cell);
 }
 
 } // namespace Internal

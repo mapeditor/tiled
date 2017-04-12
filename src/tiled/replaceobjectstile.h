@@ -28,7 +28,6 @@ public:
 private:
     void replace();
     void restore();
-    void swapObjectTile(MapObject *object, Tile *tile);
 
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
