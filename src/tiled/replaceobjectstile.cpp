@@ -17,18 +17,17 @@ ReplaceObjectsTile::ReplaceObjectsTile(MapDocument *mapDocument,
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
     , mTile(tile)
-{}
+{
+    for (MapObject *object : mMapObjects)
+        mOriginalTiles.append(object->cell().tile());
+}
 
 void ReplaceObjectsTile::replace()
 {
     Tile * const tile = mTile;
 
-    mOriginalTiles.clear();
-
-    for (MapObject *object : mMapObjects) {
-        mOriginalTiles.append(object->cell().tile());
+    for (MapObject *object : mMapObjects)
         swapObjectTile(object, tile);
-    }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
