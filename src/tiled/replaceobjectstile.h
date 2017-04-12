@@ -15,10 +15,10 @@ namespace Internal {
 
 class MapDocument;
 
-class ReplaceObjectsTile : public QUndoCommand
+class ChangeMapObjectsTile : public QUndoCommand
 {
 public:
-    ReplaceObjectsTile(MapDocument *mapDocument,
+    ChangeMapObjectsTile(MapDocument *mapDocument,
                        const QList<MapObject *> &mapObjects,
                        Tile *tile);
 

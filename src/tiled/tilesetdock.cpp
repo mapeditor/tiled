@@ -954,5 +954,5 @@ void TilesetDock::replaceSelectedObjectsTile(Tile *tile)
         return;
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new ReplaceObjectsTile(mMapDocument, selectedObjects, tile));
+    undoStack->push(new ChangeMapObjectsTile(mMapDocument, selectedObjects, tile));
 }

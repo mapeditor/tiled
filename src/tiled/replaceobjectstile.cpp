@@ -8,7 +8,7 @@
 namespace Tiled {
 namespace Internal {
 
-ReplaceObjectsTile::ReplaceObjectsTile(MapDocument *mapDocument,
+ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
                                        const QList<MapObject *> &mapObjects,
                                        Tile *tile)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
@@ -29,7 +29,7 @@ static void setObjectTile(MapObject *object, Tile *tile)
     object->setCell(cell);
 }
 
-void ReplaceObjectsTile::replace()
+void ChangeMapObjectsTile::replace()
 {
     Tile * const tile = mTile;
 
@@ -39,7 +39,7 @@ void ReplaceObjectsTile::replace()
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
 
-void ReplaceObjectsTile::restore()
+void ChangeMapObjectsTile::restore()
 {
     for (int i = 0; i < mMapObjects.size(); ++i)
         setObjectTile(mMapObjects[i], mOriginalTiles[i]);
