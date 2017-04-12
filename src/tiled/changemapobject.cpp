@@ -99,23 +99,27 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    for (MapObject *object : mMapObjects)
-        mOriginalTiles.append(object->cell().tile());
+    for (MapObject *object : mMapObjects){
+        mOldTiles.append(object->cell().tile());
+        mOldSize.append(object->size());
+        mSizePreserved.append(object->size() == object->cell().tile()->size());
+    }
 }
 
-static void setObjectTile(MapObject *object, Tile *tile)
+static void setObjectTile(MapObject *object, Tile * const tile, bool updateSize)
 {
     Cell cell = object->cell();
     cell.setTile(tile);
     object->setCell(cell);
+
+    if(updateSize)
+        object->setSize(tile->size());
 }
 
 void ChangeMapObjectsTile::replace()
 {
-    Tile * const tile = mTile;
-
-    for (MapObject *object : mMapObjects)
-        setObjectTile(object, tile);
+    for(int i=0; i<mMapObjects.size(); i++)
+        setObjectTile(mMapObjects[i], mTile, mSizePreserved[i]);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
@@ -123,7 +127,7 @@ void ChangeMapObjectsTile::replace()
 void ChangeMapObjectsTile::restore()
 {
     for (int i = 0; i < mMapObjects.size(); ++i)
-        setObjectTile(mMapObjects[i], mOriginalTiles[i]);
+        setObjectTile(mMapObjects[i], mOldTiles[i], mSizePreserved[i]);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

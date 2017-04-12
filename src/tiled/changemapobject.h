@@ -103,8 +103,10 @@ private:
 
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
-    QList<Tile *> mOriginalTiles;
-    Tile *mTile;
+    Tile * const mTile;
+    QList<Tile *> mOldTiles;
+    QList<QSizeF> mOldSize;
+    QList<bool> mSizePreserved;
 };
 
 } // namespace Internal
