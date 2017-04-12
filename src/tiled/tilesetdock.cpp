@@ -950,9 +950,16 @@ void TilesetDock::replaceSelectedObjectsTile(Tile *tile)
 
     auto &selectedObjects = mMapDocument->selectedObjects();
 
-    if (selectedObjects.isEmpty())
+    // Only change tiles of tile objects
+    QList<MapObject *> filterdObjects;
+
+    for(auto object : selectedObjects)
+        if(!object->cell().isEmpty())
+            filterdObjects.append(object);
+
+    if (filterdObjects.isEmpty())
         return;
 
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new ChangeMapObjectsTile(mMapDocument, selectedObjects, tile));
+    undoStack->push(new ChangeMapObjectsTile(mMapDocument, filterdObjects, tile));
 }
