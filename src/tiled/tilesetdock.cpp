@@ -35,7 +35,7 @@
 #include "preferences.h"
 #include "replacetileset.h"
 #include "swaptiles.h"
-#include "replaceobjectstile.h"
+#include "changemapobject.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"

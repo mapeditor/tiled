@@ -190,7 +190,6 @@ SOURCES += aboutdialog.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
     reparentlayers.cpp \
-    replaceobjectstile.cpp \
     replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
@@ -362,7 +361,6 @@ HEADERS += aboutdialog.h \
     renamelayer.h \
     renameterrain.h \
     reparentlayers.h \
-    replaceobjectstile.h \
     replacetileset.h \
     resizedialog.h \
     resizehelper.h \
