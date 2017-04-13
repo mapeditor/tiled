@@ -130,7 +130,7 @@ private slots:
     void refreshTilesetMenu();
 
     void swapTiles(Tile *tileA, Tile *tileB);
-    void replaceSelectedObjectsTile(Tile *tile);
+    void changeSelectedMapObjectsTile(Tile *tile);
 
 private:
     void setCurrentTile(Tile *tile);

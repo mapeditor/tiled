@@ -515,8 +515,8 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             this, &TilesetDock::updateCurrentTiles);
     connect(view, &TilesetView::swapTilesRequested,
             this, &TilesetDock::swapTiles);
-    connect(view, &TilesetView::replaceSelectedObjectsTileRequested,
-            this, &TilesetDock::replaceSelectedObjectsTile);
+    connect(view, &TilesetView::changeSelectedMapObjectsTileRequested,
+            this, &TilesetDock::changeSelectedMapObjectsTile);
 }
 
 void TilesetDock::deleteTilesetView(int index)
@@ -943,7 +943,7 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }
 
-void TilesetDock::replaceSelectedObjectsTile(Tile *tile)
+void TilesetDock::changeSelectedMapObjectsTile(Tile *tile)
 {
     if (!mMapDocument)
         return;
