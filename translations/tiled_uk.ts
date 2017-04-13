@@ -4206,7 +4206,7 @@ Please select specific format.</source>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрати теку штампів</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -4412,7 +4412,7 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не знайдено прошарок зіткнень!</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -4704,7 +4704,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+16"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити зіткнення плитки</translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
