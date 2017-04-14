@@ -2110,7 +2110,7 @@ Line %1, column %2</source>
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum kettőzése</numerusform>
+            <numerusform>Objektum kettőzése</numerusform>
             <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
@@ -2118,7 +2118,7 @@ Line %1, column %2</source>
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum eltávolítása</numerusform>
+            <numerusform>Objektum eltávolítása</numerusform>
             <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
@@ -2186,7 +2186,7 @@ Line %1, column %2</source>
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n objektum áthelyezése rétegre</numerusform>
+            <numerusform>Objektum áthelyezése rétegre</numerusform>
             <numerusform>%n objektum áthelyezése rétegre</numerusform>
         </translation>
     </message>
@@ -2692,7 +2692,7 @@ Line %1, column %2</source>
         <location line="+227"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>%n pont áthelyezése</numerusform>
+            <numerusform>Pont áthelyezése</numerusform>
             <numerusform>%n pont áthelyezése</numerusform>
         </translation>
     </message>
@@ -2701,7 +2701,7 @@ Line %1, column %2</source>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>%n csomópont törlése</numerusform>
+            <numerusform>Csomópont törlése</numerusform>
             <numerusform>%n csomópont törlése</numerusform>
         </translation>
     </message>
@@ -3144,7 +3144,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>%n csempekészlet hozzáadása</numerusform>
+            <numerusform>Csempekészlet hozzáadása</numerusform>
             <numerusform>%n csempekészlet hozzáadása</numerusform>
         </translation>
     </message>
@@ -3170,7 +3170,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum forgatása</numerusform>
+            <numerusform>Objektum forgatása</numerusform>
             <numerusform>%n objektum forgatása</numerusform>
         </translation>
     </message>
@@ -3218,7 +3218,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+190"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum kettőzése</numerusform>
+            <numerusform>Objektum kettőzése</numerusform>
             <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
@@ -3226,7 +3226,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+21"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum eltávolítása</numerusform>
+            <numerusform>Objektum eltávolítása</numerusform>
             <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
@@ -3234,7 +3234,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n objektum áthelyezése rétegre</numerusform>
+            <numerusform>Objektum áthelyezése rétegre</numerusform>
             <numerusform>%n objektum áthelyezése rétegre</numerusform>
         </translation>
     </message>
@@ -3242,7 +3242,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
         <translation>
-            <numerusform>%n objektum mozgatása fel</numerusform>
+            <numerusform>Objektum mozgatása fel</numerusform>
             <numerusform>%n objektum mozgatása fel</numerusform>
         </translation>
     </message>
@@ -3250,7 +3250,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
         <translation>
-            <numerusform>%n objektum mozgatása le</numerusform>
+            <numerusform>Objektum mozgatása le</numerusform>
             <numerusform>%n objektum mozgatása le</numerusform>
         </translation>
     </message>
@@ -3373,7 +3373,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+327"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum kettőzése</numerusform>
+            <numerusform>Objektum kettőzése</numerusform>
             <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
@@ -3381,7 +3381,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum eltávolítása</numerusform>
+            <numerusform>Objektum eltávolítása</numerusform>
             <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
@@ -3565,7 +3565,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+582"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum áthelyezése</numerusform>
+            <numerusform>Objektum áthelyezése</numerusform>
             <numerusform>%n objektum áthelyezése</numerusform>
         </translation>
     </message>
@@ -3573,7 +3573,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+87"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum forgatása</numerusform>
+            <numerusform>Objektum forgatása</numerusform>
             <numerusform>%n objektum forgatása</numerusform>
         </translation>
     </message>
@@ -3581,7 +3581,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum átméretezése</numerusform>
+            <numerusform>Objektum átméretezése</numerusform>
             <numerusform>%n objektum átméretezése</numerusform>
         </translation>
     </message>
@@ -3705,7 +3705,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n objektum áthelyezése rétegre</numerusform>
+            <numerusform>Objektum áthelyezése rétegre</numerusform>
             <numerusform>%n objektum áthelyezése rétegre</numerusform>
         </translation>
     </message>
@@ -4815,7 +4815,7 @@ Válasszon egy adott formátumot.</translation>
         <location line="+39" filename="../src/tiled/flipmapobjects.cpp"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum tükrözése</numerusform>
+            <numerusform>Objektum tükrözése</numerusform>
             <numerusform>%n objektum tükrözése</numerusform>
         </translation>
     </message>
