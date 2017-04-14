@@ -943,19 +943,24 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
 }
 
+static QList<MapObject*> chooseTileObjects(QList<MapObject*> objects)
+{
+    QList<MapObject*> tileObjects;
+
+    for (auto object : objects)
+        if (!object->cell().isEmpty() && object->cell().tile() != nullptr)
+            tileObjects.append(object);
+
+    return tileObjects;
+}
+
 void TilesetDock::changeSelectedMapObjectsTile(Tile *tile)
 {
     if (!mMapDocument)
         return;
 
-    auto &selectedObjects = mMapDocument->selectedObjects();
-
     // Only change tiles of tile objects
-    QList<MapObject*> tileObjects;
-
-    for (auto object : selectedObjects)
-        if (!object->cell().isEmpty())
-            tileObjects.append(object);
+    QList<MapObject*> tileObjects = chooseTileObjects(mMapDocument->selectedObjects());
 
     if (tileObjects.isEmpty())
         return;
