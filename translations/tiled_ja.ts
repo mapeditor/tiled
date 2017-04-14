@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled マップエディタ&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;著作権 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(このプロジェクトへの全貢献者の一覧については、AUTHORS ファイルを参照してください。)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;このプログラムは GPL (バージョン 2 またはそれ以降のバージョン) の定める条件の下で改変または再頒布することができます。GPL のコピーは Tiled と一緒に配布された COPYING ファイルを参照してください。&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled マップエディタ&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;著作権 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(このプロジェクトへの全貢献者の一覧については、AUTHORS ファイルを参照してください。)&lt;/p&gt;
+&lt;p align="center"&gt;このプログラムは GPL (バージョン 2 またはそれ以降のバージョン) の定める条件の下で改変または再頒布することができます。GPL のコピーは Tiled と一緒に配布された COPYING ファイルを参照してください。&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>拡張子がありません。出力フォーマットを指定してください.</translation>
     </message>
     <message>
@@ -218,7 +218,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+58"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Defold ファイル (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -395,7 +395,7 @@
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker ルームファイル (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -862,15 +862,15 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>マップの回転がサポートされていないものです: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>マップの回転がサポートされていないものです: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>タイルセットのパラメータが無効です &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>タイルセットのパラメータが無効です '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -914,22 +914,22 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>&apos;%1&apos;という圧縮方法には対応していません</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>'%1'という圧縮方法には対応していません</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>レイヤー &apos;%1&apos; のデータが壊れています</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>レイヤー '%1' のデータが壊れています</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>レイヤー &apos;%3&apos;の(%1,%2)のタイルをパースできません</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>レイヤー '%3'の(%1,%2)のタイルをパースできません</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1130,7 +1130,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>オブジェクト・タイプがファイルに含まれていない.</translation>
     </message>
     <message>
@@ -1255,7 +1255,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>私は既にパトロンです!</translation>
     </message>
     <message>
@@ -1382,7 +1382,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation>ピクセル</translation>
+        <translation> ピクセル</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1666,7 +1666,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>ヒント</translation>
     </message>
     <message>
@@ -1954,12 +1954,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>ファイルヘッダを読み込めませんでした!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>レイヤーヘッダが解析できませんでした!</translation>
     </message>
     <message>
@@ -1994,7 +1994,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>非タイルレイヤーは保存できません!</translation>
     </message>
     <message>
@@ -2074,7 +2074,7 @@ Line %1, column %2</source>
     <message>
         <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation>Tエンジン4 マップファイル (*.lue)</translation>
+        <translation>Tエンジン4 マップファイル (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -2206,49 +2206,49 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: プロパティ &apos;%2&apos; = &apos;%3&apos; は無効です。このプロパティは無視されました.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': プロパティ '%2' = '%3' は無効です。このプロパティは無視されました.</translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>レイヤー &apos;%1&apos; のアンダースコアを忘れていませんか?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>レイヤー '%1' のアンダースコアを忘れていませんか?</translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>レイヤー &apos;%1&apos;は自動マップ用のレイヤーとして認識できません.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>レイヤー '%1'は自動マップ用のレイヤーとして認識できません.</translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos;レイヤーは１つも存在してはいけません.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input'レイヤーは１つも存在してはいけません.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos;レイヤーはタイル・レイヤーである必要があります.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*'レイヤーはタイル・レイヤーである必要があります.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos;レイヤーは１つも存在してはいけません.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output'レイヤーは１つも存在してはいけません.</translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos;と&apos;inputnot_*&apos;レイヤーはタイル・レイヤーである必要があります.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*'と'inputnot_*'レイヤーはタイル・レイヤーである必要があります.</translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>&apos;regions&apos;、または&apos;regions_input&apos;レイヤーが見つかりません.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>'regions'、または'regions_input'レイヤーが見つかりません.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>&apos;regions&apos;、または&apos;regions_output&apos;レイヤーが見つかりません.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>'regions'、または'regions_output'レイヤーが見つかりません.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2668,7 +2668,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
         <translation>タイルセット %1 の列数は %2 から %3 へ変更されました。タイルへの参照を変更しますか?</translation>
     </message>
 </context>
@@ -3519,8 +3519,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>タイルセットの画像 &apos;%1&apos; の読み込みに失敗.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>タイルセットの画像 '%1' の読み込みに失敗.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3700,7 +3700,7 @@ Please select specific format.</source>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;ご支援頂きありがとうございます！&lt;/h3&gt;
@@ -3710,7 +3710,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation>しばらく支援していない</translation>
     </message>
     <message>
@@ -3728,7 +3728,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation>もう寄付したよ!</translation>
     </message>
 </context>
@@ -4258,8 +4258,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>タイルセット &quot;%1&quot;はまだマップで使われています!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>タイルセット "%1"はまだマップで使われています!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4317,8 +4317,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>&quot;%1&quot;を読み込めません!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>"%1"を読み込めません!</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4427,7 +4427,7 @@ Please select specific format.</source>
     <message>
         <location line="+30"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation>TMW-eAthena collision files (*.wlk)</translation>
+        <translation>TMW-eAthena コリジョンファイル (*.wlk)</translation>
     </message>
 </context>
 <context>
