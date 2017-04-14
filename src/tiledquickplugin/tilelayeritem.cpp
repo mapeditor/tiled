@@ -191,7 +191,8 @@ public:
         mTilesHigh(rect.height()),
         mTileWidth(mapItem->map()->tileWidth()),
         mTileHeight(mapItem->map()->tileHeight()),
-        mTilesCreated(0)
+        mTilesCreated(0),
+        mStartPos(QPoint((rect.width() * mTileWidth) / 2, 0))
     {
     }
 
@@ -213,6 +214,7 @@ private:
     const int mTileHeight;
     QVector<TileData> mTileData;
     int mTilesCreated;
+    QPoint mStartPos;
 };
 
 QPoint IsometricRenderHelper::indexToMapPos(int index) const
@@ -223,7 +225,7 @@ QPoint IsometricRenderHelper::indexToMapPos(int index) const
 // http://clintbellanger.net/articles/isometric_math/
 QPoint IsometricRenderHelper::mapToScreen(const QPoint &mapPosInTiles) const
 {
-    return QPoint((mapPosInTiles.x() - mapPosInTiles.y()) * (mTileWidth / 2),
+    return QPoint(mStartPos.x() + (mapPosInTiles.x() - mapPosInTiles.y()) * (mTileWidth / 2),
                   (mapPosInTiles.x() + mapPosInTiles.y()) * (mTileHeight / 2));
 }
 
@@ -250,7 +252,6 @@ void IsometricRenderHelper::appendTileData(int index)
         return;
 
     const QPoint screenPos = mapToScreen(mapPos);
-//    qDebug() << "appendTileData:" << "index" << index << mTilesWide << "*" << mTilesHigh << "(" << mTilesWide * mTilesHigh << ")" << screenPos;
     TileData data;
     data.x = screenPos.x();
     data.y = screenPos.y();
