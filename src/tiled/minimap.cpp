@@ -23,6 +23,7 @@
 
 #include "documentmanager.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapview.h"
 #include "utils.h"
@@ -46,7 +47,6 @@ MiniMap::MiniMap(QWidget *parent)
                    | MiniMapRenderer::DrawObjects
                    | MiniMapRenderer::DrawImages
                    | MiniMapRenderer::IgnoreInvisibleLayer)
-    , mMiniMapRenderer(MiniMapRenderer::instance())
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     setMinimumSize(50, 50);
@@ -74,7 +74,6 @@ void MiniMap::setMapDocument(MapDocument *map)
     }
 
     mMapDocument = map;
-    mMiniMapRenderer.setMapDocument(mMapDocument);
 
     if (mMapDocument) {
         connect(mMapDocument->undoStack(), SIGNAL(indexChanged(int)),
@@ -195,7 +194,8 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    mMiniMapRenderer.renderToImage(mMapImage, mRenderFlags);
+    MiniMapRenderer miniMapRenderer(mMapDocument);
+    miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 
 void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)

@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include "mapdocument.h"
-
 #include <QImage>
 
 namespace Tiled {
 namespace Internal {
+
+class MapDocument;
 
 class MiniMapRenderer
 {
@@ -42,16 +42,12 @@ public:
 
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 
-    static MiniMapRenderer& instance();
-    void renderToImage(QImage& image, RenderFlags renderFlags) const;
-    void setMapDocument(MapDocument* map);
-private:
-    MiniMapRenderer();
-    ~MiniMapRenderer();
-    MiniMapRenderer(MiniMapRenderer const&) = delete;
-    MiniMapRenderer& operator= (MiniMapRenderer const&) = delete;
+    MiniMapRenderer(MapDocument *mapDocument);
 
-    MapDocument* mMapDocument;
+    void renderToImage(QImage &image, RenderFlags renderFlags) const;
+
+private:
+    MapDocument *mMapDocument;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMapRenderer::RenderFlags)

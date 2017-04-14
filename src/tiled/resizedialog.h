@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <functional>
+
 namespace Ui {
 class ResizeDialog;
 }
@@ -40,10 +42,12 @@ public:
 
     void setOldSize(const QSize &size);
 
-    const QSize &newSize() const;
-    const QPoint &offset() const;
+    QSize newSize() const;
+    QPoint offset() const;
 
     bool removeObjects() const;
+
+    void setMiniMapRenderer(std::function<QImage (QSize)> renderer);
 
 private slots:
     void removeObjectsToggled(bool removeObjects);

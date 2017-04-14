@@ -20,11 +20,11 @@
 
 #pragma once
 
-#include "minimaprenderer.h"
-
 #include <QPoint>
 #include <QSize>
 #include <QWidget>
+
+#include <functional>
 
 class QMouseEvent;
 class QResizeEvent;
@@ -43,32 +43,22 @@ class ResizeHelper : public QWidget
 public:
     ResizeHelper(QWidget *parent = nullptr);
 
-    const QSize &oldSize() const
-    { return mOldSize; }
+    QSize oldSize() const { return mOldSize; }
+    QSize newSize() const { return mNewSize; }
+    QPoint offset() const { return mOffset; }
+    QRect offsetBounds() const { return mOffsetBounds; }
 
-    const QSize &newSize() const
-    { return mNewSize; }
-
-    const QPoint &offset() const
-    { return mOffset; }
-
-    const QRect &offsetBounds() const
-    { return mOffsetBounds; }
+    void setMiniMapRenderer(std::function<QImage (QSize)> renderer);
 
 signals:
     void offsetChanged(const QPoint &offset);
-
     void offsetXChanged(int value);
-
     void offsetYChanged(int value);
-
     void offsetBoundsChanged(const QRect &bounds);
 
 public slots:
     void setOldSize(const QSize &size);
-
     void setNewSize(const QSize &size);
-
     void setOffset(const QPoint &offset);
 
     /** Method to set only the X offset, provided for convenience. */
@@ -85,17 +75,12 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-
     void mousePressEvent(QMouseEvent *event) override;
-
     void mouseMoveEvent(QMouseEvent *event) override;
-
     void wheelEvent(QWheelEvent *event) override;
-
     void resizeEvent(QResizeEvent *event) override;
 
     void recalculateScale();
-
     void recalculateMinMaxOffset();
 
 private:
@@ -108,9 +93,9 @@ private:
     bool mDragging;
     double mScale;
 
-    MiniMapRenderer& mMiniMapRenderer;
-    QImage mMinimap;
+    QImage mMiniMap;
     double mZoom;
+    std::function<QImage(QSize)> mMiniMapRenderer;
 };
 
 } // namespace Internal

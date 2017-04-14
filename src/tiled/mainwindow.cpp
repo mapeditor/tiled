@@ -48,6 +48,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "minimaprenderer.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
@@ -1287,6 +1288,14 @@ void MainWindow::resizeMap()
 
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(map->size());
+    resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
+        QImage image(size, QImage::Format_ARGB32_Premultiplied);
+        MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
+                                                   | MiniMapRenderer::DrawImages
+                                                   | MiniMapRenderer::DrawTiles
+                                                   | MiniMapRenderer::IgnoreInvisibleLayer);
+        return image;
+    });
 
     if (resizeDialog.exec()) {
         const QSize &newSize = resizeDialog.newSize();

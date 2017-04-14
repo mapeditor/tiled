@@ -23,6 +23,7 @@
 #include "minimaprenderer.h"
 
 #include "imagelayer.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -35,10 +36,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MiniMapRenderer& MiniMapRenderer::instance()
+MiniMapRenderer::MiniMapRenderer(MapDocument *mapDocument)
+    : mMapDocument(mapDocument)
 {
-    static MiniMapRenderer singletonRenderer;
-    return singletonRenderer;
 }
 
 static bool objectLessThan(const MapObject *a, const MapObject *b)
@@ -50,7 +50,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 {
     if (!mMapDocument)
         return;
-    
+
     MapRenderer *renderer = mMapDocument->renderer();
 
     bool drawObjects = renderFlags.testFlag(RenderFlag::DrawObjects);
@@ -132,17 +132,4 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     }
 
     renderer->setFlags(rendererFlags);
-}
-
-void MiniMapRenderer::setMapDocument(MapDocument* map)
-{
-    mMapDocument = map;
-}
-
-MiniMapRenderer::MiniMapRenderer()
-{
-}
-
-MiniMapRenderer::~MiniMapRenderer()
-{
 }

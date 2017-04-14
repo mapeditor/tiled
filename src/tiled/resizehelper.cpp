@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "resizehelper.h"
 
 #include <QMouseEvent>
@@ -27,7 +28,6 @@ using namespace Tiled::Internal;
 
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
-    , mMiniMapRenderer(MiniMapRenderer::instance())
     , mZoom(0)
 {
     setMinimumSize(20, 20);
@@ -99,6 +99,11 @@ void ResizeHelper::setNewHeight(int height)
     recalculateScale();
 }
 
+void ResizeHelper::setMiniMapRenderer(std::function<QImage (QSize)> renderer)
+{
+    mMiniMapRenderer = renderer;
+}
+
 void ResizeHelper::paintEvent(QPaintEvent *)
 {
     const QSize _size = size() - QSize(2, 2);
@@ -124,7 +129,14 @@ void ResizeHelper::paintEvent(QPaintEvent *)
     pen.setColor(Qt::white);
 
     painter.setOpacity(0.5);
-    painter.drawImage(oldRect, mMinimap);
+
+    if (mMiniMap.isNull()) {
+        painter.setPen(pen);
+        painter.setBrush(Qt::white);
+        painter.drawRect(oldRect);
+    } else {
+        painter.drawImage(oldRect, mMiniMap);
+    }
 
     pen.setColor(Qt::black);
     pen.setStyle(Qt::DashLine);
@@ -198,15 +210,18 @@ void ResizeHelper::recalculateScale()
 
     newScale += mZoom;
 
-    if (newScale != mScale) {
-        mScale = newScale;
-        mMinimap = QImage(mOldSize * mScale, QImage::Format_ARGB32_Premultiplied);
-        mMiniMapRenderer.renderToImage(mMinimap, MiniMapRenderer::DrawObjects
-                                               | MiniMapRenderer::DrawImages
-                                               | MiniMapRenderer::DrawTiles
-                                               | MiniMapRenderer::IgnoreInvisibleLayer);
+    if (newScale != mScale && mMiniMapRenderer) {
+        const qreal ratio =
+#if QT_VERSION >= 0x050600
+                devicePixelRatioF();
+#else
+                devicePixelRatio();
+#endif
+        const QSize size = mOldSize * (newScale * ratio);
+        mMiniMap = mMiniMapRenderer(size);
     }
 
+    mScale = newScale;
     update();
 }
 
