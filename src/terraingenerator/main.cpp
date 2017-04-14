@@ -43,12 +43,14 @@ struct CommandLineOptions {
         , showVersion(false)
         , overwrite(false)
         , embedImage(false)
+        , columns(16)
     {}
 
     bool showHelp;
     bool showVersion;
     bool overwrite;
     bool embedImage;
+    int columns;
     QString target;
     QStringList sources;
     QStringList terrainPriority;
@@ -66,6 +68,7 @@ static void showHelp()
             "  -h --help        : Display this help.\n"
             "  -v --version     : Display the version.\n"
             "     --overwrite   : Target is overwritten rather than extended.\n"
+            "     --columns N   : Amount of columns in the target tileset image (default: 16).\n"
             "  -e --embed-image : Tile images will be embedded in the TSX file instead\n"
             "                     of being saved as a separated PNG file.\n"
             "  -c --combine T1[ T2 [Tn ...]]\n"
@@ -185,6 +188,19 @@ static bool parseCommandLineArguments(CommandLineOptions &options)
             // What follows is a list of input tilesets.
             inSource = true;
             argCount = 0;
+        } else if (arg == QLatin1String("--columns")) {
+            i++;
+            if (i >= arguments.size()) {
+                qWarning() << "Missing argument to" << arg << "option";
+                return false;
+            }
+            const QString& arg2 = arguments.at(i);
+            bool ok = false;
+            options.columns = arg2.toInt(&ok);
+            if (!ok || options.columns <= 0) {
+                qWarning() << "Invalid or missing argument to" << arg << "option";
+                return false;
+            }
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
@@ -579,9 +595,9 @@ int main(int argc, char *argv[])
         targetTileset->setImageSource(QString());
     } else {
         // Save the target tileset image as separate file.
-        int columns = qMin(16, targetTileset->tileCount());
-        int rows = targetTileset->tileCount() / 16;
-        if (targetTileset->tileCount() % 16 > 0)
+        int columns = qMin(options.columns, targetTileset->tileCount());
+        int rows = targetTileset->tileCount() / options.columns;
+        if (targetTileset->tileCount() % options.columns > 0)
             ++rows;
 
         qWarning() << "Writing external tileset image.";
@@ -594,8 +610,8 @@ int main(int argc, char *argv[])
         QPainter painter(&image);
 
         for (Tile *tile : targetTileset->tiles()) {
-            int x = (tile->id() % 16) * targetTileset->tileWidth();
-            int y = (tile->id() / 16) * targetTileset->tileHeight();
+            int x = (tile->id() % options.columns) * targetTileset->tileWidth();
+            int y = (tile->id() / options.columns) * targetTileset->tileHeight();
             painter.drawPixmap(x, y, tile->image());
         }
 
@@ -604,6 +620,7 @@ int main(int argc, char *argv[])
         image.save(imageFileName);
 
         targetTileset->setImageSource(imageFileName);
+        targetTileset->setColumnCount(options.columns);
     }
 
     // Save the target tileset
