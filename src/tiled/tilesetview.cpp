@@ -702,13 +702,14 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
             bool onlyOneTileSelected =
                     (selectionModel()->selectedIndexes().size() == 1);
+
             // TODO: check that at least one object is selected
 
             QAction *changeSelectedMapObjectsTileAction =
-                    menu.addAction(tr("&Replace Tile of Selected Object/s"));
+                    menu.addAction(tr("&Replace Tile of Selected Objects"));
             changeSelectedMapObjectsTileAction->setEnabled(onlyOneTileSelected);
-            connect(changeSelectedMapObjectsTileAction , SIGNAL(triggered()),
-                    SLOT(changeSelectedMapObjectsTile()));
+            connect(changeSelectedMapObjectsTileAction, &QAction::triggered,
+                    this, &TilesetView::changeSelectedMapObjectsTile);
         }
 
         menu.addSeparator();

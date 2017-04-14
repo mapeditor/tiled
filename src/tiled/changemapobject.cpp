@@ -90,8 +90,8 @@ void ChangeMapObjectCells::swap()
 }
 
 ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
-                                       const QList<MapObject *> &mapObjects,
-                                       Tile *tile)
+                                           const QList<MapObject *> &mapObjects,
+                                           Tile *tile)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change %n Object/s Tile",
                                                nullptr, mapObjects.size()))
@@ -99,10 +99,11 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    for (MapObject *object : mMapObjects){
-        mOldTiles.append(object->cell().tile());
+    for (MapObject *object : mMapObjects) {
         mOldSize.append(object->size());
-        mSizePreserved.append(object->size() == object->cell().tile()->size());
+        Tile *tile = object->cell().tile();
+        mOldTiles.append(tile);
+        mSizePreserved.append(object->size() == tile->size());
     }
 }
 
@@ -112,7 +113,7 @@ static void setObjectTile(MapObject *object, Tile * const tile, bool updateSize)
     cell.setTile(tile);
     object->setCell(cell);
 
-    if(updateSize)
+    if (updateSize)
         object->setSize(tile->size());
 }
 
@@ -126,7 +127,7 @@ void ChangeMapObjectsTile::restoreTiles()
 
 void ChangeMapObjectsTile::changeTiles()
 {
-    for(int i = 0; i < mMapObjects.size(); i++)
+    for (int i = 0; i < mMapObjects.size(); i++)
         setObjectTile(mMapObjects[i], mTile, mSizePreserved[i]);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
