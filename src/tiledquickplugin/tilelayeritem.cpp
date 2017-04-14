@@ -29,6 +29,7 @@
 #include "mapitem.h"
 #include "tilesnode.h"
 
+#include <QtMath>
 #include <QQuickWindow>
 
 using namespace Tiled;
@@ -173,62 +174,208 @@ static void drawOrthogonalTileLayer(QSGNode *parent,
         parent->appendChildNode(new TilesNode(helper.texture(), tileData));
 }
 
-/**
- * Draws an isometric tile layer by adding nodes to the scene graph. As long
- * sequentially drawn tiles are using the same tileset, they will share a
- * single geometry node.
- */
-static void drawIsometricTileLayer(QSGNode *parent,
-                                   const MapItem *mapItem,
-                                   const TileLayer *layer,
-                                   const QRect &rect)
+// Avoids passing lots of variables to static free functions.
+class IsometricRenderHelper
 {
-    TilesetHelper helper(mapItem);
-
-    const Map *map = mapItem->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    QVector<TileData> tileData;
-    tileData.reserve(TilesNode::MaxTileCount);
-
-    const int startX = (layer->bounds().width() * tileWidth) / 2;
-
-    for (int y = rect.top(); y <= rect.bottom(); ++y) {
-        for (int x = rect.left(); x <= rect.right(); ++x) {
-            const Cell &cell = layer->cellAt(x, y);
-            if (cell.isEmpty())
-                continue;
-
-            Tileset *tileset = cell.tile->tileset();
-
-            if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
-                if (!tileData.isEmpty()) {
-                    parent->appendChildNode(new TilesNode(helper.texture(),
-                                                          tileData));
-                    tileData.resize(0);
-                }
-
-                helper.setTileset(tileset);
-            }
-
-            if (!helper.texture())
-                continue;
-
-            const QSize size = cell.tile->size();
-
-            TileData data;
-            data.x = startX + (-y * (tileWidth / 2)) + (x * (tileWidth / 2));
-            data.y = (y * (tileHeight / 2)) + (x * (tileHeight / 2));
-            data.width = size.width();
-            data.height = size.height();
-            helper.setTextureCoordinates(data, cell);
-            tileData.append(data);
-        }
+public:
+    IsometricRenderHelper(QSGNode *parent,
+                          const MapItem *mapItem,
+                          const TileLayer *layer,
+                          const QRect &rect) :
+        mParent(parent),
+        mMapItem(mapItem),
+        mLayer(layer),
+        mRect(rect),
+        mTilesetHelper(mapItem),
+        mTilesWide(rect.width()),
+        mTilesHigh(rect.height()),
+        mTileWidth(mapItem->map()->tileWidth()),
+        mTileHeight(mapItem->map()->tileHeight()),
+        mTilesCreated(0)
+    {
     }
 
-    if (!tileData.isEmpty())
-        parent->appendChildNode(new TilesNode(helper.texture(), tileData));
+    void addTilesToNode();
+
+private:
+    QPoint indexToMapPos(int index) const;
+    QPoint mapToScreen(const QPoint &mapPosInTiles) const;
+    void appendTileData(int index);
+
+    QSGNode *mParent;
+    const MapItem *mMapItem;
+    const TileLayer *mLayer;
+    const QRect mRect;
+    TilesetHelper mTilesetHelper;
+    const int mTilesWide;
+    const int mTilesHigh;
+    const int mTileWidth;
+    const int mTileHeight;
+    QVector<TileData> mTileData;
+    int mTilesCreated;
+};
+
+QPoint IsometricRenderHelper::indexToMapPos(int index) const
+{
+    return QPoint((index % mTilesWide), qFloor(index / mTilesWide));
+}
+
+// http://clintbellanger.net/articles/isometric_math/
+QPoint IsometricRenderHelper::mapToScreen(const QPoint &mapPosInTiles) const
+{
+    return QPoint((mapPosInTiles.x() - mapPosInTiles.y()) * (mTileWidth / 2),
+                  (mapPosInTiles.x() + mapPosInTiles.y()) * (mTileHeight / 2));
+}
+
+void IsometricRenderHelper::appendTileData(int index)
+{
+    const QPoint mapPos = indexToMapPos(index);
+    const Cell &cell = mLayer->cellAt(mapPos.x(), mapPos.y());
+    if (cell.isEmpty())
+        return;
+
+    Tileset *tileset = cell.tile->tileset();
+
+    if (tileset != mTilesetHelper.tileset() || mTileData.size() == TilesNode::MaxTileCount) {
+        if (!mTileData.isEmpty()) {
+            mParent->appendChildNode(new TilesNode(mTilesetHelper.texture(),
+                                                   mTileData));
+            mTileData.resize(0);
+        }
+
+        mTilesetHelper.setTileset(tileset);
+    }
+
+    if (!mTilesetHelper.texture())
+        return;
+
+    const QPoint screenPos = mapToScreen(mapPos);
+//    qDebug() << "appendTileData:" << "index" << index << mTilesWide << "*" << mTilesHigh << "(" << mTilesWide * mTilesHigh << ")" << screenPos;
+    TileData data;
+    data.x = screenPos.x();
+    data.y = screenPos.y();
+    const QSize size = cell.tile->size();
+    data.width = size.width();
+    data.height = size.height();
+    mTilesetHelper.setTextureCoordinates(data, cell);
+    mTileData.append(data);
+    ++mTilesCreated;
+}
+
+// TODO: make this function work with a subset of the entire layer rect
+void IsometricRenderHelper::addTilesToNode()
+{
+    mTileData.reserve(TilesNode::MaxTileCount);
+
+    const int tileCount = mTilesWide * mTilesHigh;
+    if (tileCount == 0)
+        return;
+
+    int i = 0;
+    appendTileData(i);
+
+    int z = 1;
+    // This loop takes us down to the widest point of the "diamond".
+    // For example, with a 15 x 10 map, this loop will create items
+    // up to and including the row starting with index 135 (marked (a)):
+    //
+    //                  0
+    //               15    1
+    //            30   16     2
+    //         ..    ..   ..    ..
+    //      135        ...         9                   (a)
+    //         136 122       ...  24 10
+    //            137 123    ...     25 11
+    //              ..       ...           ..
+    //                140 126  ...       28  14        (b)
+    //                   ..     ...       ..
+    //                      ..   ...   ..
+    //                         148  134
+    //                            149
+    //
+    // The process is similar for a differently sized map;
+    // we swap some checks around to check for height instead of width, for example.
+    // Start off assuming that one is bigger than the other to save some code.
+    int smallerDimension = mTilesHigh;
+    int largerDimension = mTilesWide;
+    bool widthLarger = true;
+    // Check that our assumption is true.
+    if (mTilesWide < mTilesHigh) {
+        smallerDimension = mTilesWide;
+        largerDimension = mTilesHigh;
+        widthLarger = false;
+    }
+
+    while (z < smallerDimension) {
+        // * mTilesWide because we always start from the left
+        // and move to the right.
+        i = z * mTilesWide;
+
+        do {
+            appendTileData(i);
+            i -= mTilesWide - 1;
+        } while (i > 0);
+
+        ++z;
+    }
+
+    int rowEndIndex = widthLarger ? 0 : (mTilesWide * 2) - 1;
+    while (z < largerDimension) {
+        // We've reached the "widest" point of the "diamond"
+        // ( (a) on the diagram above).
+        // From now on we'll be completing the next part.
+        // If the map is square, this loop will be skipped.
+        // However, for the 15 x 10 example we've been using,
+        // The loop will continue until we've created the last row
+        // of the "widest" part ( (b) on the diagram above).
+
+        if (mTilesWide > mTilesHigh) {
+            // z will be 10 the first time this code is hit, so:
+            //         z - (mTilesHigh - 1)
+            //        10 - (    10    - 1)
+            //        10 - (          9  )
+            //           1
+            // The first part of the calculation gets us to the first index
+            // of the last "row" we were on:
+            //     (mTilesHigh - 1) * mTilesWide
+            //     (10        - 1) *     15
+            //                9    *     15
+            //                    135
+            // 135 + 1 = 136. The index then increases by 1 from then on.
+            i = ((mTilesHigh - 1) * mTilesWide) + (z - (mTilesHigh - 1));
+        } else {
+            i = (mTilesWide * z);
+        }
+
+        do {
+            appendTileData(i);
+            i -= mTilesWide - 1;
+        } while (widthLarger ? i > 0 : i >= rowEndIndex);
+
+        ++z;
+        rowEndIndex += mTilesWide;
+    }
+
+    // Go back to the index of the last tile that we created.
+    i += mTilesWide - 1;
+
+    if (widthLarger) {
+        rowEndIndex = (mTilesWide * 2) - 1;
+    }
+    while (mTilesCreated < tileCount) {
+        i = ((mTilesHigh - 1) * mTilesWide) + (z - (mTilesHigh - 1));
+
+        do {
+            appendTileData(i);
+            i -= mTilesWide - 1;
+        } while (i >= rowEndIndex);
+
+        ++z;
+        rowEndIndex += mTilesWide;
+    }
+
+    if (!mTileData.isEmpty())
+        mParent->appendChildNode(new TilesNode(mTilesetHelper.texture(), mTileData));
 }
 
 } // anonymous namespace
@@ -269,7 +416,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     if (mLayer->map()->orientation() == Map::Orthogonal)
         drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
     else
-        drawIsometricTileLayer(node, mapItem, mLayer, mVisibleTiles);
+        IsometricRenderHelper(node, mapItem, mLayer, mVisibleTiles).addTilesToNode();
 
     return node;
 }
