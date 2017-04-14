@@ -20,10 +20,10 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation></translation>
     </message>
@@ -55,7 +55,7 @@
     </message>
     <message>
         <location line="+12"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation></translation>
     </message>
     <message>
@@ -213,12 +213,12 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+58"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>Defold files (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not open file for writing.</translation>
     </message>
 </context>
 <context>
@@ -339,7 +339,7 @@
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation></translation>
+        <translation>&amp;Include background colour</translation>
     </message>
 </context>
 <context>
@@ -385,12 +385,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not open file for writing.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker room files (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -659,28 +659,28 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Paste &amp;in Place</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+124"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Full Screen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Snap To &amp;Pixels</translation>
     </message>
     <message>
         <location line="-200"/>
@@ -818,7 +818,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile</translation>
     </message>
 </context>
 <context>
@@ -853,14 +853,14 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
+        <source>Unsupported map orientation: "%1"</source>
         <translation></translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
+        <source>Invalid tileset parameters for tileset '%1'</source>
         <translation></translation>
     </message>
     <message>
@@ -905,7 +905,7 @@ Line %1, column %2</source>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
+        <source>Compression method '%1' not supported</source>
         <translation></translation>
     </message>
     <message>
@@ -913,13 +913,13 @@ Line %1, column %2</source>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
+        <source>Corrupt layer data for layer '%1'</source>
         <translation></translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
         <translation></translation>
     </message>
     <message>
@@ -1045,7 +1045,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Use transparent color:</source>
-        <translation></translation>
+        <translation>Use transparent colour:</translation>
     </message>
     <message>
         <location line="+129"/>
@@ -1055,7 +1055,7 @@ Line %1, column %2</source>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished"></translation>
+        <translation>Pick colour from image</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1121,7 +1121,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+10"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation></translation>
     </message>
     <message>
@@ -1181,7 +1181,7 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation> tiles</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -1244,7 +1244,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation></translation>
     </message>
     <message>
@@ -1360,7 +1360,7 @@ Line %1, column %2</source>
     <message>
         <location line="+36"/>
         <source>Grid color:</source>
-        <translation></translation>
+        <translation>Grid colour:</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -1381,40 +1381,40 @@ Line %1, column %2</source>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+67"/>
         <location line="+122"/>
         <source>Native</source>
-        <translation type="unfinished"></translation>
+        <translation>Native</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Tiled Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Fusion</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
         <source>Selection color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Selection colour:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Style:</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Base colour:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1654,7 +1654,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation></translation>
     </message>
     <message>
@@ -1942,12 +1942,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation></translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation></translation>
     </message>
     <message>
@@ -1982,7 +1982,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation></translation>
     </message>
     <message>
@@ -2019,7 +2019,7 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation> tiles</translation>
     </message>
     <message>
         <location line="-75"/>
@@ -2049,7 +2049,7 @@ Line %1, column %2</source>
     <message>
         <location line="+47"/>
         <source>Remove objects outside of the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove objects outside of the map</translation>
     </message>
 </context>
 <context>
@@ -2070,7 +2070,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit Text</translation>
     </message>
 </context>
 <context>
@@ -2093,7 +2093,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset Tile Size</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
@@ -2197,48 +2197,48 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
         <translation></translation>
     </message>
     <message>
         <location line="+71"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
+        <source>Did you forget an underscore in layer '%1'?</source>
         <translation></translation>
     </message>
     <message>
         <location line="+62"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
         <translation></translation>
     </message>
     <message>
         <location line="-105"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
+        <source>'regions_input' layer must not occur more than once.</source>
         <translation></translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
+        <source>'regions_*' layers must be tile layers.</source>
         <translation></translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
+        <source>'regions_output' layer must not occur more than once.</source>
         <translation></translation>
     </message>
     <message>
         <location line="+41"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
         <translation></translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
+        <source>No 'regions' or 'regions_input' layer found.</source>
         <translation></translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
+        <source>No 'regions' or 'regions_output' layer found.</source>
         <translation></translation>
     </message>
     <message>
@@ -2639,12 +2639,12 @@ Line %1, column %2</source>
     <message>
         <location line="+146"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Copy File Path</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Containing Folder...</translation>
     </message>
     <message>
         <location line="+141"/>
@@ -2653,8 +2653,8 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</translation>
     </message>
 </context>
 <context>
@@ -2905,7 +2905,7 @@ Do you want to replace it?</source>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;New</translation>
     </message>
     <message>
         <location line="-1210"/>
@@ -2983,17 +2983,17 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Extension Mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension Mismatch</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>The file extension does not match the chosen file type.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</translation>
     </message>
     <message>
         <location line="+45"/>
@@ -3222,19 +3222,15 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Move %n Object(s) Up</numerusform>
+        <numerusform>Move %n Objects Up</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Move %n Object(s) Down</numerusform>
+        <numerusform>Move %n Objects Down</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3251,12 +3247,12 @@ Please select specific format.</source>
     <message>
         <location line="+11"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -3291,29 +3287,29 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tile Layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Object Layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Image Layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer via Copy</translation>
     </message>
     <message>
         <location line="-196"/>
         <location line="+196"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer via Cut</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -3343,12 +3339,12 @@ Please select specific format.</source>
     <message>
         <location line="+45"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Cut</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
@@ -3513,7 +3509,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
+        <source>Failed to load tileset image '%1'.</source>
         <translation></translation>
     </message>
     <message>
@@ -3652,7 +3648,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation></translation>
+        <translation>Colour</translation>
     </message>
 </context>
 <context>
@@ -3675,12 +3671,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Objects Up</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Move Objects Down</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3698,13 +3694,13 @@ Please select specific format.</source>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m no longer a patron</source>
+        <source>I'm no longer a patron</source>
         <translation></translation>
     </message>
     <message>
@@ -3718,7 +3714,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>I&apos;m already a patron!</source>
+        <source>I'm already a patron!</source>
         <translation></translation>
     </message>
 </context>
@@ -3757,17 +3753,17 @@ Please select specific format.</source>
     <message>
         <location line="-71"/>
         <source>Convert To</source>
-        <translation type="unfinished"></translation>
+        <translation>Convert To</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rename...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -3845,7 +3841,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Background Color</source>
-        <translation></translation>
+        <translation>Background Colour</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -3981,7 +3977,7 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Color</source>
-        <translation></translation>
+        <translation>Colour</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4004,7 +4000,7 @@ Please select specific format.</source>
         <location line="-71"/>
         <location line="+39"/>
         <source>Transparent Color</source>
-        <translation></translation>
+        <translation>Transparent Colour</translation>
     </message>
     <message>
         <location line="-29"/>
@@ -4124,7 +4120,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4248,7 +4244,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
+        <source>The tileset "%1" is still in use by the map!</source>
         <translation></translation>
     </message>
     <message>
@@ -4307,7 +4303,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+52"/>
-        <source>Could not load &quot;%1&quot;!</source>
+        <source>Could not load "%1"!</source>
         <translation></translation>
     </message>
     <message>
@@ -4735,7 +4731,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation></translation>
+        <translation>Change Background Colour</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4787,11 +4783,9 @@ Please select specific format.</source>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Flip %n Object(s)</numerusform>
+        <numerusform>Flip %n Objects</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Utils</name>
