@@ -244,6 +244,8 @@ QtGuiApplication {
         "minimapdock.cpp",
         "minimapdock.h",
         "minimap.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "movelayer.cpp",
         "movelayer.h",
         "movemapobject.cpp",

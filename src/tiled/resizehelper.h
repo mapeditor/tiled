@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "minimaprenderer.h"
+
 #include <QPoint>
 #include <QSize>
 #include <QWidget>
@@ -88,6 +90,8 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void wheelEvent(QWheelEvent *event) override;
+
     void resizeEvent(QResizeEvent *event) override;
 
     void recalculateScale();
@@ -103,6 +107,10 @@ private:
     QPoint mOrigOffset;
     bool mDragging;
     double mScale;
+
+    MiniMapRenderer& mMiniMapRenderer;
+    QImage mMinimap;
+    double mZoom;
 };
 
 } // namespace Internal
