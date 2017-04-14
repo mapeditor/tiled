@@ -178,10 +178,12 @@ static void drawOrthogonalTileLayer(QSGNode *parent,
 class IsometricRenderHelper
 {
 public:
-    IsometricRenderHelper(QSGNode *parent,
+    IsometricRenderHelper(Tiled::MapRenderer *renderer,
+                          QSGNode *parent,
                           const MapItem *mapItem,
                           const TileLayer *layer,
                           const QRect &rect) :
+        mRenderer(renderer),
         mParent(parent),
         mMapItem(mapItem),
         mLayer(layer),
@@ -200,9 +202,9 @@ public:
 
 private:
     QPoint indexToMapPos(int index) const;
-    QPoint mapToScreen(const QPoint &mapPosInTiles) const;
     void appendTileData(int index);
 
+    Tiled::MapRenderer *mRenderer;
     QSGNode *mParent;
     const MapItem *mMapItem;
     const TileLayer *mLayer;
@@ -220,13 +222,6 @@ private:
 QPoint IsometricRenderHelper::indexToMapPos(int index) const
 {
     return QPoint((index % mTilesWide), qFloor(index / mTilesWide));
-}
-
-// http://clintbellanger.net/articles/isometric_math/
-QPoint IsometricRenderHelper::mapToScreen(const QPoint &mapPosInTiles) const
-{
-    return QPoint(mStartPos.x() + (mapPosInTiles.x() - mapPosInTiles.y()) * (mTileWidth / 2),
-                  (mapPosInTiles.x() + mapPosInTiles.y()) * (mTileHeight / 2));
 }
 
 void IsometricRenderHelper::appendTileData(int index)
@@ -251,7 +246,7 @@ void IsometricRenderHelper::appendTileData(int index)
     if (!mTilesetHelper.texture())
         return;
 
-    const QPoint screenPos = mapToScreen(mapPos);
+    const QPointF screenPos = mRenderer->tileToScreenCoords(mapPos).toPoint();
     TileData data;
     data.x = screenPos.x();
     data.y = screenPos.y();
@@ -417,7 +412,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     if (mLayer->map()->orientation() == Map::Orthogonal)
         drawOrthogonalTileLayer(node, mapItem, mLayer, mVisibleTiles);
     else
-        IsometricRenderHelper(node, mapItem, mLayer, mVisibleTiles).addTilesToNode();
+        IsometricRenderHelper(mRenderer, node, mapItem, mLayer, mVisibleTiles).addTilesToNode();
 
     return node;
 }
