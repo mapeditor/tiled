@@ -105,7 +105,6 @@ private:
     const QList<MapObject *> mMapObjects;
     Tile * const mTile;
     QList<Tile *> mOldTiles;
-    QList<QSizeF> mOldSize;
     QList<bool> mSizePreserved;
 };
 

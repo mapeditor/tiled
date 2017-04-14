@@ -100,7 +100,6 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
     , mTile(tile)
 {
     for (MapObject *object : mMapObjects) {
-        mOldSize.append(object->size());
         Tile *tile = object->cell().tile();
         mOldTiles.append(tile);
         mSizePreserved.append(object->size() == tile->size());
