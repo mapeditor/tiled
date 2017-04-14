@@ -236,7 +236,7 @@ void IsometricRenderHelper::appendTileData(int index)
     if (cell.isEmpty())
         return;
 
-    Tileset *tileset = cell.tile->tileset();
+    Tileset *tileset = cell.tile()->tileset();
 
     if (tileset != mTilesetHelper.tileset() || mTileData.size() == TilesNode::MaxTileCount) {
         if (!mTileData.isEmpty()) {
@@ -255,7 +255,7 @@ void IsometricRenderHelper::appendTileData(int index)
     TileData data;
     data.x = screenPos.x();
     data.y = screenPos.y();
-    const QSize size = cell.tile->size();
+    const QSize size = cell.tile()->size();
     data.width = size.width();
     data.height = size.height();
     mTilesetHelper.setTextureCoordinates(data, cell);
