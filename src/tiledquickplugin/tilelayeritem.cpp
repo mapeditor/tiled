@@ -248,8 +248,8 @@ void IsometricRenderHelper::appendTileData(int index)
 
     const QPointF screenPos = mRenderer->tileToScreenCoords(mapPos).toPoint();
     TileData data;
-    data.x = screenPos.x();
-    data.y = screenPos.y();
+    data.x = screenPos.x() - mTileWidth / 2;
+    data.y = screenPos.y() - mTileHeight / 2;
     const QSize size = cell.tile()->size();
     data.width = size.width();
     data.height = size.height();
