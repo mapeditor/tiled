@@ -173,7 +173,8 @@ ApplicationWindow {
                     } else if (mapLoader.status === Tiled.MapLoader.Error) {
                         mapLoader.error
                     } else {
-                        var tileCoords = mapItem.screenToTileCoords(singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+                        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+                        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
                         tileCoords.x.toFixed(0) + ", " + tileCoords.y.toFixed(0)
                     }
                 }
