@@ -91,8 +91,8 @@ class ChangeMapObjectsTile : public QUndoCommand
 {
 public:
     ChangeMapObjectsTile(MapDocument *mapDocument,
-                       const QList<MapObject *> &mapObjects,
-                       Tile *tile);
+                         const QList<MapObject *> &mapObjects,
+                         Tile *tile);
 
     void undo() override { restoreTiles(); }
     void redo() override { changeTiles(); }
