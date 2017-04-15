@@ -58,6 +58,15 @@ public:
 
     QRectF boundingRect() const;
 
+    Q_INVOKABLE QPointF screenToTileCoords(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF screenToTileCoords(const QPoint &position) const;
+    Q_INVOKABLE QPointF tileToScreenCoords(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF tileToScreenCoords(const QPoint &position) const;
+    Q_INVOKABLE QPointF screenToPixelCoords(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF screenToPixelCoords(const QPoint &position) const;
+    Q_INVOKABLE QPointF pixelToScreenCoords(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF pixelToScreenCoords(const QPoint &position) const;
+
     void componentComplete();
 
 signals:

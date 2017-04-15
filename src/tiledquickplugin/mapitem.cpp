@@ -91,6 +91,46 @@ QRectF MapItem::boundingRect() const
     return QRectF(QPointF(), mRenderer->mapSize());
 }
 
+QPointF MapItem::screenToTileCoords(qreal x, qreal y) const
+{
+    return mRenderer->screenToTileCoords(x, y);
+}
+
+QPointF MapItem::screenToTileCoords(const QPoint &position) const
+{
+    return mRenderer->screenToTileCoords(position);
+}
+
+QPointF MapItem::tileToScreenCoords(qreal x, qreal y) const
+{
+    return mRenderer->tileToScreenCoords(x, y);
+}
+
+QPointF MapItem::tileToScreenCoords(const QPoint &position) const
+{
+    return mRenderer->tileToScreenCoords(position);
+}
+
+QPointF MapItem::screenToPixelCoords(qreal x, qreal y) const
+{
+    return mRenderer->screenToPixelCoords(x, y);
+}
+
+QPointF MapItem::screenToPixelCoords(const QPoint &position) const
+{
+    return mRenderer->screenToPixelCoords(position);
+}
+
+QPointF MapItem::pixelToScreenCoords(qreal x, qreal y) const
+{
+    return mRenderer->pixelToScreenCoords(x, y);
+}
+
+QPointF MapItem::pixelToScreenCoords(const QPoint &position) const
+{
+    return mRenderer->pixelToScreenCoords(position);
+}
+
 void MapItem::componentComplete()
 {
     QQuickItem::componentComplete();
