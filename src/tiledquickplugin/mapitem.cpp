@@ -93,41 +93,57 @@ QRectF MapItem::boundingRect() const
 
 QPointF MapItem::screenToTileCoords(qreal x, qreal y) const
 {
+    if (!mRenderer)
+        return QPointF(x, y);
     return mRenderer->screenToTileCoords(x, y);
 }
 
 QPointF MapItem::screenToTileCoords(const QPointF &position) const
 {
+    if (!mRenderer)
+        return position;
     return mRenderer->screenToTileCoords(position);
 }
 
 QPointF MapItem::tileToScreenCoords(qreal x, qreal y) const
 {
+    if (!mRenderer)
+        return QPointF(x, y);
     return mRenderer->tileToScreenCoords(x, y);
 }
 
 QPointF MapItem::tileToScreenCoords(const QPointF &position) const
 {
+    if (!mRenderer)
+        return position;
     return mRenderer->tileToScreenCoords(position);
 }
 
 QPointF MapItem::screenToPixelCoords(qreal x, qreal y) const
 {
+    if (!mRenderer)
+        return QPointF(x, y);
     return mRenderer->screenToPixelCoords(x, y);
 }
 
 QPointF MapItem::screenToPixelCoords(const QPointF &position) const
 {
+    if (!mRenderer)
+        return position;
     return mRenderer->screenToPixelCoords(position);
 }
 
 QPointF MapItem::pixelToScreenCoords(qreal x, qreal y) const
 {
+    if (!mRenderer)
+        return QPointF(x, y);
     return mRenderer->pixelToScreenCoords(x, y);
 }
 
 QPointF MapItem::pixelToScreenCoords(const QPointF &position) const
 {
+    if (!mRenderer)
+        return position;
     return mRenderer->pixelToScreenCoords(position);
 }
 
