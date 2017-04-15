@@ -168,12 +168,14 @@ ApplicationWindow {
         RowLayout {
             Label {
                 text: {
-                    if (mapLoader.status === Tiled.MapLoader.Null)
+                    if (mapLoader.status === Tiled.MapLoader.Null) {
                         qsTr("No map file loaded")
-                    else if (mapLoader.status === Tiled.MapLoader.Error)
+                    } else if (mapLoader.status === Tiled.MapLoader.Error) {
                         mapLoader.error
-                    else
-                        mapLoader.source
+                    } else {
+                        var tileCoords = mapItem.screenToTileCoords(singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+                        tileCoords.x.toFixed(0) + ", " + tileCoords.y.toFixed(0)
+                    }
                 }
             }
         }
