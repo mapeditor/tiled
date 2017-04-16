@@ -1,8 +1,8 @@
 # General build artifacts
 build/
 bin/
-lib/tiled/plugins/*
-lib/*.so*
+lib/
+qml/
 Makefile*
 *.o
 *.qm
@@ -24,6 +24,13 @@ automappingconverter.exe
 *.lib
 *.exp
 *.intermediate.manifest
+src/libtiled/debug/
+src/tiledquick/debug/
+src/tiledquick/uic_wrapper.bat
+src/tiledquickplugin/debug/
+tiledquick.exe
+tiledquick.ilk
+tiledquick.pdb
 
 # Build artifacts on Mac
 translations/phony_target.app
