@@ -46,7 +46,9 @@ void MapLoader::setSource(const QUrl &source)
 
     Tiled::MapReader mapReader;
 
-    Tiled::Map *map = mapReader.readMap(source.toLocalFile());
+    const QString qrcScheme = QStringLiteral("qrc");
+    const bool isQrcScheme = source.scheme() == qrcScheme;
+    Tiled::Map *map = mapReader.readMap(isQrcScheme ? source.toString().mid(qrcScheme.length()) : source.toLocalFile());
     Status status = map ? Ready : Error;
     QString error = map ? QString() : mapReader.errorString();
 
