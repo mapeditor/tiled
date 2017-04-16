@@ -7,6 +7,7 @@ Makefile*
 *.o
 *.qm
 *.moc
+moc_predefs.h
 moc_*.cpp
 ui_*.h
 qrc_*
@@ -14,23 +15,16 @@ qrc_*
 default/
 
 # Build artifacts on Windows
-tiled.exe
-tmxrasterizer.exe
-tmxviewer.exe
-automappingconverter.exe
 *.dll
 *.obj
 *.a
 *.lib
 *.exp
 *.intermediate.manifest
-src/libtiled/debug/
-src/tiledquick/debug/
-src/tiledquick/uic_wrapper.bat
-src/tiledquickplugin/debug/
-tiledquick.exe
-tiledquick.ilk
-tiledquick.pdb
+*.exe
+*.ilk
+*.pdb
+*uic_wrapper.bat
 
 # Build artifacts on Mac
 translations/phony_target.app
