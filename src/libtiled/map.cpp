@@ -407,3 +407,6 @@ Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
     }
     return renderOrder;
 }
+
+
+//Just a comment.
