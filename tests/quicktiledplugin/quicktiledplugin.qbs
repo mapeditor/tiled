@@ -15,11 +15,9 @@ QtGuiApplication {
     }
 
     qbs.setupRunEnvironment: {
-//        Environment.putEnv("QML2_IMPORT_PATH", "../../qml")
         // TODO: don't hard-code qml directory
         Environment.putEnv("QML2_IMPORT_PATH", "C:/dev/tiled-qt5_dev_debug-Debug/qtc_qt5_dev__07a3bce7-debug/install-root/qml")
-        var path = Environment.getEnv("PATH");
-        Environment.putEnv("PATH", path + ";C:/dev/tiled-qt5_dev_debug-Debug/qtc_qt5_dev__07a3bce7-debug/libtiled.qtc-qt5-dev--07a3bce7.dbe717e3");
+        // TODO: copy tiled.dll etc. to our build directory
     }
 
     files: [
