@@ -1,12 +1,13 @@
 # General build artifacts
 build/
 bin/
-lib/tiled/plugins/*
-lib/*.so*
+lib/
+qml/
 Makefile*
 *.o
 *.qm
 *.moc
+moc_predefs.h
 moc_*.cpp
 ui_*.h
 qrc_*
@@ -14,16 +15,16 @@ qrc_*
 default/
 
 # Build artifacts on Windows
-tiled.exe
-tmxrasterizer.exe
-tmxviewer.exe
-automappingconverter.exe
 *.dll
 *.obj
 *.a
 *.lib
 *.exp
 *.intermediate.manifest
+*.exe
+*.ilk
+*.pdb
+*uic_wrapper.bat
 
 # Build artifacts on Mac
 translations/phony_target.app
