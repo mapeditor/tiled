@@ -256,8 +256,6 @@ void IsometricRenderHelper::addTilesToNode()
 
     mTileData.reserve(TilesNode::MaxTileCount);
 
-    mTileData.reserve(TilesNode::MaxTileCount);
-
     for (int y = mRect.top(); y <= mRect.bottom(); ++y) {
         int _x = 0;
         int _y = y;
