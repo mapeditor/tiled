@@ -37,6 +37,29 @@ MapLoader::~MapLoader()
 {
 }
 
+/*
+    If \a url is a local file returns a path suitable for passing to QFile.
+    Otherwise returns an empty string.
+*/
+static QString urlToLocalFileOrQrc(const QUrl &url)
+{
+    if (url.scheme().compare(QLatin1String("qrc"), Qt::CaseInsensitive) == 0) {
+        if (url.authority().isEmpty())
+            return QLatin1Char(':') + url.path();
+        return QString();
+    }
+
+#if defined(Q_OS_ANDROID)
+    else if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
+        if (url.authority().isEmpty())
+            return url.toString();
+        return QString();
+    }
+#endif
+
+    return url.toLocalFile();
+}
+
 void MapLoader::setSource(const QUrl &source)
 {
     if (m_source == source)
@@ -46,9 +69,7 @@ void MapLoader::setSource(const QUrl &source)
 
     Tiled::MapReader mapReader;
 
-    const QString qrcScheme = QStringLiteral("qrc");
-    const bool isQrcScheme = source.scheme() == qrcScheme;
-    Tiled::Map *map = mapReader.readMap(isQrcScheme ? source.toString().mid(qrcScheme.length()) : source.toLocalFile());
+    Tiled::Map *map = mapReader.readMap(urlToLocalFileOrQrc(source));
     Status status = map ? Ready : Error;
     QString error = map ? QString() : mapReader.errorString();
 
