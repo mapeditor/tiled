@@ -189,20 +189,15 @@ public:
         mLayer(layer),
         mRect(rect),
         mTilesetHelper(mapItem),
-        mTilesWide(rect.width()),
-        mTilesHigh(rect.height()),
         mTileWidth(mapItem->map()->tileWidth()),
-        mTileHeight(mapItem->map()->tileHeight()),
-        mTilesCreated(0),
-        mStartPos(QPoint((rect.width() * mTileWidth) / 2, 0))
+        mTileHeight(mapItem->map()->tileHeight())
     {
     }
 
     void addTilesToNode();
 
 private:
-    QPoint indexToMapPos(int index) const;
-    void appendTileData(int index);
+    void appendTileData(int x, int y);
 
     Tiled::MapRenderer *mRenderer;
     QSGNode *mParent;
@@ -210,24 +205,14 @@ private:
     const TileLayer *mLayer;
     const QRect mRect;
     TilesetHelper mTilesetHelper;
-    const int mTilesWide;
-    const int mTilesHigh;
     const int mTileWidth;
     const int mTileHeight;
     QVector<TileData> mTileData;
-    int mTilesCreated;
-    QPoint mStartPos;
 };
 
-QPoint IsometricRenderHelper::indexToMapPos(int index) const
+void IsometricRenderHelper::appendTileData(int x, int y)
 {
-    return QPoint((index % mTilesWide), qFloor(index / mTilesWide));
-}
-
-void IsometricRenderHelper::appendTileData(int index)
-{
-    const QPoint mapPos = indexToMapPos(index);
-    const Cell &cell = mLayer->cellAt(mapPos.x(), mapPos.y());
+    const Cell &cell = mLayer->cellAt(x, y);
     if (cell.isEmpty())
         return;
 
@@ -248,12 +233,11 @@ void IsometricRenderHelper::appendTileData(int index)
 
     Tile *tile = cell.tile();
     if (!tile) {
-        ++mTilesCreated;
         // todo: render "missing tile" marker
         return;
     }
 
-    const QPointF screenPos = mRenderer->tileToScreenCoords(mapPos).toPoint();
+    const QPointF screenPos = mRenderer->tileToScreenCoords(x, y).toPoint();
     TileData data;
     data.x = screenPos.x() - mTileWidth / 2;
     data.y = screenPos.y() - mTileHeight / 2;
@@ -262,119 +246,38 @@ void IsometricRenderHelper::appendTileData(int index)
     data.height = size.height();
     mTilesetHelper.setTextureCoordinates(data, cell);
     mTileData.append(data);
-    ++mTilesCreated;
 }
 
 // TODO: make this function work with a subset of the entire layer rect
 void IsometricRenderHelper::addTilesToNode()
 {
-    const int tileCount = mTilesWide * mTilesHigh;
-    if (tileCount == 0)
+    if (mRect.isEmpty())
         return;
 
     mTileData.reserve(TilesNode::MaxTileCount);
 
-    int i = 0;
-    appendTileData(i);
+    mTileData.reserve(TilesNode::MaxTileCount);
 
-    int z = 1;
-    // This loop takes us down to the widest point of the "diamond".
-    // For example, with a 15 x 10 map, this loop will create items
-    // up to and including the row starting with index 135 (marked (a)):
-    //
-    //                  0
-    //               15    1
-    //            30   16     2
-    //         ..    ..   ..    ..
-    //      135        ...         9                   (a)
-    //         136 122       ...  24 10
-    //            137 123    ...     25 11
-    //              ..       ...           ..
-    //                140 126  ...       28  14        (b)
-    //                   ..     ...       ..
-    //                      ..   ...   ..
-    //                         148  134
-    //                            149
-    //
-    // The process is similar for a differently sized map;
-    // we swap some checks around to check for height instead of width, for example.
-    // Start off assuming that one is bigger than the other to save some code.
-    int smallerDimension = mTilesHigh;
-    int largerDimension = mTilesWide;
-    bool widthLarger = true;
-    // Check that our assumption is true.
-    if (mTilesWide < mTilesHigh) {
-        smallerDimension = mTilesWide;
-        largerDimension = mTilesHigh;
-        widthLarger = false;
-    }
+    for (int y = mRect.top(); y <= mRect.bottom(); ++y) {
+        int _x = 0;
+        int _y = y;
 
-    while (z < smallerDimension) {
-        // * mTilesWide because we always start from the left
-        // and move to the right.
-        i = z * mTilesWide;
-
-        do {
-            appendTileData(i);
-            i -= mTilesWide - 1;
-        } while (i > 0);
-
-        ++z;
-    }
-
-    int rowEndIndex = widthLarger ? 0 : (mTilesWide * 2) - 1;
-    while (z < largerDimension) {
-        // We've reached the "widest" point of the "diamond"
-        // ( (a) on the diagram above).
-        // From now on we'll be completing the next part.
-        // If the map is square, this loop will be skipped.
-        // However, for the 15 x 10 example we've been using,
-        // The loop will continue until we've created the last row
-        // of the "widest" part ( (b) on the diagram above).
-
-        if (mTilesWide > mTilesHigh) {
-            // z will be 10 the first time this code is hit, so:
-            //         z - (mTilesHigh - 1)
-            //        10 - (    10    - 1)
-            //        10 - (          9  )
-            //           1
-            // The first part of the calculation gets us to the first index
-            // of the last "row" we were on:
-            //     (mTilesHigh - 1) * mTilesWide
-            //     (10        - 1) *     15
-            //                9    *     15
-            //                    135
-            // 135 + 1 = 136. The index then increases by 1 from then on.
-            i = ((mTilesHigh - 1) * mTilesWide) + (z - (mTilesHigh - 1));
-        } else {
-            i = (mTilesWide * z);
+        while (_x <= mRect.right() && _y >= mRect.top()) {
+            appendTileData(_x, _y);
+            ++_x;
+            --_y;
         }
-
-        do {
-            appendTileData(i);
-            i -= mTilesWide - 1;
-        } while (widthLarger ? i > 0 : i >= rowEndIndex);
-
-        ++z;
-        rowEndIndex += mTilesWide;
     }
 
-    // Go back to the index of the last tile that we created.
-    i += mTilesWide - 1;
+    for (int x = mRect.left() + 1; x <= mRect.right(); ++x) {
+        int _x = x;
+        int _y = mRect.bottom();
 
-    if (widthLarger) {
-        rowEndIndex = (mTilesWide * 2) - 1;
-    }
-    while (mTilesCreated < tileCount) {
-        i = ((mTilesHigh - 1) * mTilesWide) + (z - (mTilesHigh - 1));
-
-        do {
-            appendTileData(i);
-            i -= mTilesWide - 1;
-        } while (i >= rowEndIndex);
-
-        ++z;
-        rowEndIndex += mTilesWide;
+        while (_x <= mRect.right() && _y >= mRect.top()) {
+            appendTileData(_x, _y);
+            ++_x;
+            --_y;
+        }
     }
 
     if (!mTileData.isEmpty())
