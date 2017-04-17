@@ -24,6 +24,8 @@
 #include "mapdocument.h"
 #include "map.h"
 
+#include <QQueue>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -201,87 +203,64 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)
     const int layerSize = layerWidth * layerHeight;
 
     // Create a queue to hold cells that need filling
-    QList<QPoint> fillPositions;
-    fillPositions.append(fillOrigin);
+    QQueue<QPoint> fillPositions;
+    fillPositions.enqueue(fillOrigin);
 
     // Create an array that will store which cells have been processed
     // This is faster than checking if a given cell is in the region/list
-    QVector<quint8> processedCellsVec(layerSize);
-    quint8 *processedCells = processedCellsVec.data();
+    QVector<bool> processedCellsVec(layerSize);
+    bool *processedCells = processedCellsVec.data();
 
     // Loop through queued positions and fill them, while at the same time
     // checking adjacent positions to see if they should be added
-    while (!fillPositions.empty()) {
-        const QPoint currentPoint = fillPositions.takeFirst();
+    while (!fillPositions.isEmpty()) {
+        const QPoint currentPoint = fillPositions.dequeue();
         const int startOfLine = currentPoint.y() * layerWidth;
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (left > 0 && layer->cellAt(left - 1, currentPoint.y()) == matchCell)
+        while (left > 0 && layer->cellAt(left - 1, currentPoint.y()) == matchCell) {
             --left;
+            processedCells[startOfLine + left] = true;
+        }
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (right + 1 < layerWidth && layer->cellAt(right + 1, currentPoint.y()) == matchCell)
+        while (right + 1 < layerWidth && layer->cellAt(right + 1, currentPoint.y()) == matchCell) {
             ++right;
+            processedCells[startOfLine + right] = true;
+        }
 
         // Add cells between left and right to the region
         fillRegion += QRegion(left, currentPoint.y(), right - left + 1, 1);
 
-        // Add cell strip to processed cells
-        memset(&processedCells[startOfLine + left],
-               1,
-               right - left);
+        // Loop between left and right and check if cells above or below need
+        // to be added to the queue.
+        auto findFillPositions = [=,&fillPositions](int y) {
+            bool adjacentCellAdded = false;
 
-        // These variables cache whether the last cell was added to the queue
-        // or not as an optimization, since adjacent cells on the x axis
-        // do not need to be added to the queue.
-        bool lastAboveCell = false;
-        bool lastBelowCell = false;
+            for (int x = left; x <= right; ++x) {
+                const int index = y * layerWidth + x;
 
-        // Loop between left and right and check if cells above or
-        // below need to be added to the queue
-        for (int x = left; x <= right; ++x) {
-            const QPoint fillPoint(x, currentPoint.y());
-
-            // Check cell above
-            if (fillPoint.y() > 0) {
-                QPoint aboveCell(fillPoint.x(), fillPoint.y() - 1);
-                if (!processedCells[aboveCell.y() * layerWidth + aboveCell.x()] &&
-                    layer->cellAt(aboveCell) == matchCell)
-                {
-                    // Do not add the above cell to the queue if its
-                    // x-adjacent cell was added.
-                    if (!lastAboveCell)
-                        fillPositions.append(aboveCell);
-
-                    lastAboveCell = true;
+                if (!processedCells[index] && layer->cellAt(x, y) == matchCell) {
+                    // Do not add the cell to the queue if an adjacent cell was added.
+                    if (!adjacentCellAdded) {
+                        fillPositions.enqueue(QPoint(x, y));
+                        adjacentCellAdded = true;
+                    }
                 } else {
-                    lastAboveCell = false;
+                    adjacentCellAdded = false;
                 }
 
-                processedCells[aboveCell.y() * layerWidth + aboveCell.x()] = 1;
+                processedCells[index] = true;
             }
+        };
 
-            // Check cell below
-            if (fillPoint.y() + 1 < layerHeight) {
-                QPoint belowCell(fillPoint.x(), fillPoint.y() + 1);
-                if (!processedCells[belowCell.y() * layerWidth + belowCell.x()] &&
-                    layer->cellAt(belowCell) == matchCell)
-                {
-                    // Do not add the below cell to the queue if its
-                    // x-adjacent cell was added.
-                    if (!lastBelowCell)
-                        fillPositions.append(belowCell);
+        if (currentPoint.y() > 0)
+            findFillPositions(currentPoint.y() - 1);
 
-                    lastBelowCell = true;
-                } else {
-                    lastBelowCell = false;
-                }
-
-                processedCells[belowCell.y() * layerWidth + belowCell.x()] = 1;
-            }
-        }
+        if (currentPoint.y() + 1 < layerHeight)
+            findFillPositions(currentPoint.y() + 1);
     }
 
     return fillRegion;
