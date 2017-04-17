@@ -231,7 +231,7 @@ void IsometricRenderHelper::appendTileData(int index)
     if (cell.isEmpty())
         return;
 
-    Tileset *tileset = cell.tile()->tileset();
+    Tileset *tileset = cell.tileset();
 
     if (tileset != mTilesetHelper.tileset() || mTileData.size() == TilesNode::MaxTileCount) {
         if (!mTileData.isEmpty()) {
@@ -245,6 +245,13 @@ void IsometricRenderHelper::appendTileData(int index)
 
     if (!mTilesetHelper.texture())
         return;
+
+    Tile *tile = cell.tile();
+    if (!tile) {
+        ++mTilesCreated;
+        // todo: render "missing tile" marker
+        return;
+    }
 
     const QPointF screenPos = mRenderer->tileToScreenCoords(mapPos).toPoint();
     TileData data;
@@ -261,11 +268,11 @@ void IsometricRenderHelper::appendTileData(int index)
 // TODO: make this function work with a subset of the entire layer rect
 void IsometricRenderHelper::addTilesToNode()
 {
-    mTileData.reserve(TilesNode::MaxTileCount);
-
     const int tileCount = mTilesWide * mTilesHigh;
     if (tileCount == 0)
         return;
+
+    mTileData.reserve(TilesNode::MaxTileCount);
 
     int i = 0;
     appendTileData(i);
