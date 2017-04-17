@@ -6,17 +6,17 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietoja Tiled:istä</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Lahjoita</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
@@ -25,7 +25,11 @@
 &lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
 &lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Kenttäeditori&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versio %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(katso AUTHORS tiedosto nähdäksesi kaikki osallistujat)&lt;/p&gt;
+&lt;p align="center"&gt;Voit muokata ja levittää tätä ohjelmaa GPL -lisenssin alaisesti (versio 2 tai uudempi). Kopio lisenssistä on 'COPYING' tiedostossa.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -33,12 +37,12 @@
     <message>
         <location filename="../src/tiled/addpropertydialog.ui" line="+14"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ominaisuus</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ominaisuuden nimi</translation>
     </message>
 </context>
 <context>
@@ -46,32 +50,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+229"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Viennin syntaksi on --export-map [tiedostomuoto] &lt;tmx-tiedosto&gt; &lt;kohdetiedosto&gt;</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostomuotoa ei tunnistettu (katso --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Non-unique file extension. Can't determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäselvä tiedostomuoto. Oikeaa vientimuotoa ei havaittu.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei löydetty kääntäjää halutulle tiedostomuodolle.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentän lähdetiedoston lataus epäonnistui.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentän muuntaminen kohdetiedostoksi epäonnistui.</translation>
     </message>
 </context>
 <context>
@@ -79,12 +83,12 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ominaisuudet</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tallenna kenttä ennen suoritusta</translation>
     </message>
 </context>
 <context>
@@ -92,37 +96,37 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-188"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä versio</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarkista ainoastaan argumenttien kelvollisuus</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista laitteistopohjainen kiihdytys käytöstä</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie määritetty tmx -tiedosto kohteeseen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä lista tuetuista tiedostomuodoista</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation type="unfinished"></translation>
+        <translation>Käynnistä uusi instanssi vaikka sellainen olisi jo käynnissä</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tiedostomuodot</translation>
     </message>
 </context>
 <context>
@@ -130,33 +134,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen argumentti %1: yksinäinen tavuviiva</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuntematon pitkä argumentti %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuntematon lyhyt argumentti %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttö:
+  %1 [argumentit] [tiedostot...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Asetukset:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä tämän opas</translation>
     </message>
 </context>
 <context>
@@ -164,12 +169,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedosto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versio</translation>
     </message>
 </context>
 <context>
@@ -177,22 +182,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna kaikki nimellä %1</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki tiedostot (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled kenttätiedostot (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa kenttä</translation>
     </message>
 </context>
 <context>
@@ -200,12 +205,12 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>TIedostoa ei voitu avata kirjoitettavaksi.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV tiedostot (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -213,12 +218,12 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+58"/>
         <source>Defold files (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Korostetut tiedostot (*.tilemap)</translation>
     </message>
     <message>
         <location line="+69"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
 </context>
 <context>
@@ -226,27 +231,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä ei ole kelvollinen Droidcraft kenttätiedosto!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentällä saa olla vain yksi tilelayer!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>Layerin täytyy olla kooltaan 48x48 tileä!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidcraft kenttätiedostot (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -254,44 +259,44 @@
     <message>
         <location filename="../src/tiled/editterraindialog.ui" line="+14"/>
         <source>Edit Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa terrainin tietoja</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+3"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Kumoa</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Tee uudelleen</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyyhi</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää terrainin tyyppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista terrainin tyyppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
 </context>
 <context>
@@ -299,47 +304,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie kuvatiedostona</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Sijainti</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Selaa...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Asetukset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sisällytä vain &amp;näkyvät layerit</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä nykyistä &amp;zoomaustasoa</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Piirrä tileruudukko</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sisällytä taustaväri</translation>
     </message>
 </context>
 <context>
@@ -347,37 +352,37 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata lukemista varten.</translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe ladatessa tilesetiä %1, joka laajentuu %2. Polkua ei löytynyt!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer-aluetta ei voi lisätä ilman tileset-aluetta.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Error mapping tile id %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe piirrettäessä tileä %1.</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä ei näytä olevan kelvollinen flare-kenttä. Flare-kenttä koostuu ainakin otsikosta, tilesetistä sekä yhdestä tilelayerista.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Flare kenttätiedostot (*.txt)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
 </context>
 <context>
@@ -385,12 +390,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker huonetiedostot (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -398,33 +403,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata lukemista varten.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Virhe tiedoston parseroinnissa.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kirjoitettaessa tiedostoa:
+%1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json kenttätiedostot (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript kenttätiedostot (*.js)</translation>
     </message>
 </context>
 <context>
@@ -432,28 +438,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata lukemista varten.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Virhe tiedoston parseroinnissa.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kirjoitettaessa tiedostoa:
+%1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json tileset-tiedostot (*.json)</translation>
     </message>
 </context>
 <context>
@@ -461,12 +468,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+58"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua tiedostot (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -474,343 +481,343 @@
     <message>
         <location filename="../src/tiled/mainwindow.ui" line="+49"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tiedosto</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Viimeisimmät tiedostot</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Muokkaa</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ohje</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kenttä</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Näytä</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä objektin &amp;Nimet</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Main Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Päätyökalupalkki</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Työkalut</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avaa...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tallenna</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lopeta</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopioi</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Liitä</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;About Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tietoja TIled:istä</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Tietoja Qt:stä</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>&amp;Resize Map...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Muuta kentän kokoa...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Map &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentän &amp;ominaisuudet</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>AutoMap</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattilisäys</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä &amp;ruudukko</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna &amp;nimellä...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uusi...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>New &amp;Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi &amp;tileset...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sulje</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähennä</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Loitonna</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Normal Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tavallinen koko</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location line="+142"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Tule projektin suojelijaksi</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallenna Kaikki</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentaatio</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ei koskaan</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Vain &amp;valituille objekteille</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kaikille objekteille</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattilisäys piirrettäessä</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>Liitä &amp;sijaintiin</translation>
     </message>
     <message>
         <location line="+3"/>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+124"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Full Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Koko näyttö</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Snap To &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartu pikseleihin</translation>
     </message>
     <message>
         <location line="-200"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Leikkaa</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä kentän aloituspistettä...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Offsets everything in a layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Siirtää kaikkia layerilla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Asetukset...</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Clear Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjennä viimeisimmät tiedostot</translation>
     </message>
     <message>
         <location line="+87"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lisää ulkoinen tileset...</translation>
     </message>
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie &amp;kuvana...</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>E&amp;xport As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vie nimellä...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Snap to Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tartu ruudukkoon</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>C&amp;lose All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sulje kaikki</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poista</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Highlight Current Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Korosta nykyinen layeri</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä tileobjektin &amp;ääriviivat</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartu tarkkaan ruudukkoon</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä tileanimaatiot</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Lataa uudelleen</translation>
     </message>
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiledin automaattipiirron sääntötiedostojen muunnin</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi automaattipiirron sääntö</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+581"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki tiedostot (*)</translation>
     </message>
 </context>
 <context>
@@ -818,7 +825,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile</translation>
     </message>
 </context>
 <context>
@@ -826,87 +833,89 @@
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+140"/>
         <source>Not a map file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei ole kenttätiedosto.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei ole tileset -tiedosto.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%3
+
+Rivi %1, kolumni %2</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei löydy: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voida lukea: %1</translation>
     </message>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
         <source>Unsupported map orientation: "%1"</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei-tuettu kentän suunta: "%1"</translation>
     </message>
     <message>
         <location line="+102"/>
         <location line="+21"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+138"/>
         <source>Invalid tileset parameters for tileset '%1'</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheelliset parametrit tilesetille '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Invalid tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen tilen tunniste: %1</translation>
     </message>
     <message>
         <location line="+228"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Liian monta &lt;tile&gt; elementtiä</translation>
     </message>
     <message>
         <location line="+44"/>
         <location line="+43"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+219"/>
         <source>Invalid tile: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen tile: %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen piirtojärjestys: %1</translation>
     </message>
     <message>
         <location line="+154"/>
         <source>Invalid points data for polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe polygonin pisteiden datassa</translation>
     </message>
     <message>
         <location line="-285"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-90"/>
         <source>Unknown encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuntematon enkoodaus: %1</translation>
     </message>
     <message>
         <location line="-181"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa upotettua kuvaa tilelle %1</translation>
     </message>
     <message>
         <location line="+176"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method '%1' not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakkausmetodia '%1' ei tueta</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -914,30 +923,30 @@ Line %1, column %2</source>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
         <source>Corrupt layer data for layer '%1'</source>
-        <translation type="unfinished"></translation>
+        <translation>Vahingoittunut data layerille '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu lukea tilen dataa  (%1,%2) layerilta '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+44"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile käytössä mutta tilesetiä ei ole määritetty</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoittamista varten.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-170"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheellinen (negatiivinen) tilen tunniste: %1</translation>
     </message>
 </context>
 <context>
@@ -945,63 +954,63 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newmapdialog.ui" line="+14"/>
         <source>New Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi kenttä</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Map size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentän koko</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+68"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys:</translation>
     </message>
     <message>
         <location line="-58"/>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> tile(j)ä</translation>
     </message>
     <message>
         <location line="-10"/>
         <location line="+68"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus:</translation>
     </message>
     <message>
         <location line="-32"/>
         <source>Tile size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen koko</translation>
     </message>
     <message>
         <location line="+16"/>
         <location line="+26"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenttä</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suuntautuminen:</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilelayerin tiedostomuoto:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished"></translation>
+        <translation>TIlen renderöintijärjestys:</translation>
     </message>
 </context>
 <context>
@@ -1010,52 +1019,52 @@ Line %1, column %2</source>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+235"/>
         <source>New Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi tileset</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Perustuu tilesetin kuvaan</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Collection of Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvakokoelma</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyppi:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nimi:</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Selaa...</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä läpinäkyvää väriä:</translation>
     </message>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen leveys:</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Pick color from image</source>
-        <translation type="unfinished"></translation>
+        <translation>Poimi väri kuvasta</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -1064,47 +1073,47 @@ Line %1, column %2</source>
         <location line="+16"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuva</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähde:</translation>
     </message>
     <message>
         <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjä tila tilesetin reunoilla.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Marginaali:</translation>
     </message>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen korkeus:</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>The space between the tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjä tila tilejen välissä.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Spacing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Välistys:</translation>
     </message>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa tilesetiä</translation>
     </message>
 </context>
 <context>
@@ -1112,24 +1121,26 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypes.cpp" line="+43"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>File doesn't contain object types.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedosto ei sisällä objektityyppejä.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%3
+
+Rivi %1, kolumni %2</translation>
     </message>
 </context>
 <context>
@@ -1137,27 +1148,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.ui" line="+14"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektityyppien muokkain</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedosto</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Export Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie objektityypit...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Import Object Types...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuo objektityypit...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Choose Object Types File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse objektityyppien tiedosto...</translation>
     </message>
 </context>
 <context>
@@ -1165,7 +1176,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/offsetmapdialog.ui" line="+17"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä kentän aloituspistettä</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1175,59 +1186,59 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation> tilet</translation>
     </message>
     <message>
         <location line="-30"/>
         <location line="+46"/>
         <source>Wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Sidonta</translation>
     </message>
     <message>
         <location line="-39"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Layerit:</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>All Visible Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki näkyvät layerit</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki layerit</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Selected Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitty layer</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajat:</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Whole Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Koko kenttä</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Current Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nykyinen valinta</translation>
     </message>
 </context>
 <context>
@@ -1235,22 +1246,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Tule suojelijaksi</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>Vieraile osoitteessa: https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I'm already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Olen jo suojelija!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Ehkä myöhemmin</translation>
     </message>
 </context>
 <context>
@@ -1258,189 +1269,189 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Asetukset</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Yleinen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Saving and Loading</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tallennetaan ja ladataan</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-489"/>
         <source>XML</source>
-        <translation type="unfinished"></translation>
+        <translation>XML</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+79"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (uncompressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (pakkaamaton)</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (gzip compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (gzip pakattu)</translation>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Base64 (zlib compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (zlib pakattu)</translation>
     </message>
     <message>
         <location line="-2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Alaoikealle</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Yläoikealle</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Alavasemmalle</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylävasemmalle</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Päivitä tilesetin kuvat niiden muuttuessa</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ei ole käytössä oletuksena koska reference ulkoiseen DTD:hen tiedetään aiheuttavan ongelmia joillakin XML parseroijilla.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Include &amp;DTD reference in saved maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Sisällytä &amp;DTD reference tallennetuissa kentissä</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttöliittymä</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kieli:</translation>
     </message>
     <message>
         <location line="-7"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Laitteistokiihdytetty piirto (OpenGL)</translation>
     </message>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa viimeisimmät tiedostot ohjelman käynnistyessä</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruudukon väri:</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Fine grid divisions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarkka ruudukon jaottelu:</translation>
     </message>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <translation> pikseliä</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektin ääriviivan paksuus:</translation>
     </message>
     <message>
         <location line="+27"/>
         <location line="+6"/>
         <source>Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Teema</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+67"/>
         <location line="+122"/>
         <source>Native</source>
-        <translation type="unfinished"></translation>
+        <translation>Native</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location line="-121"/>
         <location line="+122"/>
         <source>Tiled Fusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled Fusion</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
         <source>Selection color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valinnan väri:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyli:</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Base color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pohjaväri:</translation>
     </message>
     <message>
         <location line="+27"/>
         <location line="+6"/>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitykset</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Check Now</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarkista nyt</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Automatically check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Tarkista päivitykset automaattisesti</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Liitännäiset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttöön otetut liitännäiset</translation>
     </message>
 </context>
 <context>
@@ -1448,22 +1459,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Käytetään skriptiä %1 lukemaan %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Käytetään skriptiä %1 kirjoittamaan %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe skriptissä. Tarkista konsoli.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skripti palautti epätoden. Ole hyvä ja tarkista konsoli.</translation>
     </message>
 </context>
 <context>
@@ -1471,7 +1482,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladataan uudelleen python-skriptejä</translation>
     </message>
 </context>
 <context>
@@ -1479,22 +1490,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/automappingconverter/convertercontrol.h" line="+33"/>
         <source>v0.8 and before</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.8 ja ennen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.9 ja jälkeen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>tuntematon</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not a map</source>
-        <translation type="unfinished"></translation>
+        <translation>ei kenttä</translation>
     </message>
 </context>
 <context>
@@ -1504,13 +1515,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Tosi</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Epätosi</translation>
     </message>
 </context>
 <context>
@@ -1518,12 +1529,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1703"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Tosi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Epätosi</translation>
     </message>
 </context>
 <context>
@@ -1531,7 +1542,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1712"/>
         <source>Clear Char</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjennä merkit</translation>
     </message>
 </context>
 <context>
@@ -1539,7 +1550,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1547,22 +1558,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4736"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Punainen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Vihreä</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Sininen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Läpinäkyvä</translation>
     </message>
 </context>
 <context>
@@ -1570,97 +1581,97 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-214"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuoli</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuoli ylös</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Risti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Odota</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation type="unfinished"></translation>
+        <translation>IBeam</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Koko pystysuunnassa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Koko vaakasuunnassa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vaaka- ja pystysuuntainen skaalaus</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaaka- ja pystysuuntainen skaalaus</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mittakaava joka suunnassa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Blank</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyhjä</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Halkaise pystysuunnassa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Halkaise vaakasuunnassa</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osoitin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Kielletty</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Avoin käsi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Suljettu käsi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>What's This</source>
-        <translation type="unfinished"></translation>
+        <translation>Mikä tämä on</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiireinen</translation>
     </message>
 </context>
 <context>
@@ -1668,12 +1679,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse fontti</translation>
     </message>
 </context>
 <context>
@@ -1681,37 +1692,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-362"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation>Suku</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Point Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Pisteen koko</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Lihavoi</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kursivoi</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleviivattu</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Yliviivattu</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Kerning</source>
-        <translation type="unfinished"></translation>
+        <translation>Välistys</translation>
     </message>
 </context>
 <context>
@@ -1719,7 +1730,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+238"/>
         <source>Clear Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tyhjennä pika</translation>
     </message>
 </context>
 <context>
@@ -1727,17 +1738,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3533"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieli</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Maa</translation>
     </message>
 </context>
 <context>
@@ -1745,17 +1756,17 @@ Line %1, column %2</source>
     <message>
         <location line="+409"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1763,17 +1774,17 @@ Line %1, column %2</source>
     <message>
         <location line="-319"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1781,17 +1792,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-144"/>
         <source>[%1, %2, %3] (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3] (%4)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei asetettu</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>[%1, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2]</translation>
     </message>
 </context>
 <context>
@@ -1799,27 +1810,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1701"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus</translation>
     </message>
 </context>
 <context>
@@ -1827,27 +1838,27 @@ Line %1, column %2</source>
     <message>
         <location line="-611"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3 x %4]</translation>
     </message>
     <message>
         <location line="+120"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus</translation>
     </message>
 </context>
 <context>
@@ -1855,17 +1866,17 @@ Line %1, column %2</source>
     <message>
         <location line="-534"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus</translation>
     </message>
 </context>
 <context>
@@ -1874,32 +1885,32 @@ Line %1, column %2</source>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Virheellinen&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>[%1, %2, %3, %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3, %4]</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaakasuunnan sääntö</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>Pystysuunnan sääntö</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Venytys pystysuunnassa</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Venytys vaakasuunnassa</translation>
     </message>
 </context>
 <context>
@@ -1907,17 +1918,17 @@ Line %1, column %2</source>
     <message>
         <location line="-2280"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus</translation>
     </message>
 </context>
 <context>
@@ -1925,12 +1936,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+478"/>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Ominaisuus</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Arvo</translation>
     </message>
 </context>
 <context>
@@ -1938,67 +1949,67 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida avata Replica Island kenttätiedostoa!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can't parse file header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedoston otsaketta ei voida lukea!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can't parse layer header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voida lukea layerin otsaketietoja!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Inconsistent layer sizes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Layerit ovat erikokoisia!</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File ended in middle of layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Layertiedosto päättyi kesken!</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unexpected data at end of file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedoston loppuosa on virheellinen!</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Replica Island kenttätiedostot (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voida avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun täytyy määrittää background_index ominaisuus kentälle!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Can't save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vain tilelayerin voi tallentaa!</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>You must define a type property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun täytyy määrittää tyyppi-ominaisuus joka layerilla!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun täytyy määrittää tile_index ominaisuus joka layerilla!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun täytyy määrittää scroll_speed ominaisuus joka layerilla!</translation>
     </message>
 </context>
 <context>
@@ -2006,12 +2017,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/resizedialog.ui" line="+14"/>
         <source>Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta kokoa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Koko</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2019,37 +2030,37 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> tile(j)ä</translation>
     </message>
     <message>
         <location line="-75"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus:</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirto</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Remove objects outside of the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista objektit kentän ulkopuolelta</translation>
     </message>
 </context>
 <context>
@@ -2057,12 +2068,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+49"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu avata tiedostoa kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>T-Engine4 kenttätiedostot (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -2070,7 +2081,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/texteditordialog.ui" line="+14"/>
         <source>Edit Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa tekstiä</translation>
     </message>
 </context>
 <context>
@@ -2078,13 +2089,13 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.ui" line="+14"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa tilen animaatioita</translation>
     </message>
     <message>
         <location line="+99"/>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="+523"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Esikatselu</translation>
     </message>
 </context>
 <context>
@@ -2093,90 +2104,90 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+167"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Palauta tilen koko</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Monista %n objekti(a)</numerusform>
+        <numerusform>Monista %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Poista %n objekti(a)</numerusform>
+        <numerusform>Poista %n objektia</numerusform>
         </translation></message>
     <message>
         <location line="+18"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Käännä vaakasuuntaisesti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Käännä pystysuuntaisesti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta objekti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>PageUp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Laske objekti</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>PageDown</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta objekti ylös</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Pudota Objekti alimmaiseksi</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message numerus="yes">
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n Objekti(a) layerille</numerusform>
+        <numerusform>Siirrö %n objektia layerille</numerusform>
         </translation></message>
     <message>
         <location line="+11"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektin &amp;ominaisuudet...</translation>
     </message>
 </context>
 <context>
@@ -2184,7 +2195,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttiletool.cpp" line="+124"/>
         <source>empty</source>
-        <translation type="unfinished"></translation>
+        <translation>tyhjä</translation>
     </message>
 </context>
 <context>
@@ -2192,53 +2203,53 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>'%1': ominaisuus '%2' = '%3' ei ole järjellinen. Tämä ominaisuus jätetään huomiotta.</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Did you forget an underscore in layer '%1'?</source>
-        <translation type="unfinished"></translation>
+        <translation>Unohditko alaviivan layerilla '%1'?</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layeria '%1' ei tunnisteta kelvolliseksi automaattipiirtoa varten.</translation>
     </message>
     <message>
         <location line="-105"/>
         <source>'regions_input' layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>'regions_input' layer saa esiintyä vain kerran.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
         <source>'regions_*' layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>'regions_*' -layerien täytyy olla tile layereita.</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>'regions_output' layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>'regions_output' layer saa esiintyä vain kerran.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>'input_*' ja 'inputnot_*' layereiden täytyy olla tilelayereita.</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>No 'regions' or 'regions_input' layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei löydetty 'regions' tai 'regions_input' layeria.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No 'regions' or 'regions_output' layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei löydetty 'regions' tai 'regions_output' layeria.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei löydetty input_&lt;name&gt; layeria!</translation>
     </message>
     <message>
         <location line="+165"/>
@@ -2251,31 +2262,35 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+103"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Hyväksy automaattipiirron säännöt</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>No rules file found at:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sääntötiedostoa ei löytynyt:
+%1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Error opening rules file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe avattaessa sääntötiedostoa:
+%1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File not found:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei löytynyt:
+%1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sääntötiedoston avaus epäonnistui:
+%1</translation>
     </message>
 </context>
 <context>
@@ -2283,7 +2298,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+144"/>
         <source>Tileset image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset kuva</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2293,22 +2308,22 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Tile image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilekuva</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostonimi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Sijainti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyppi</translation>
     </message>
 </context>
 <context>
@@ -2316,42 +2331,42 @@ Line %1, column %2</source>
     <message>
         <location line="+66"/>
         <source>Some files could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Joitain tiedostoja ei löydetty</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>One or more files referenced by the map could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yhtä tai useampaa kentän tiedostoa ei löytynyt. Voit etsiä niitä tämän alta.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Locate File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Paikanna tiedosto...</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Locate File</source>
-        <translation type="unfinished"></translation>
+        <translation>Paikanna tiedosto</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Loading Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kuvan latauksessa</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki tiedostot (*)</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Locate External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Etsi ulkoinen tileset</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa tilesetiä</translation>
     </message>
 </context>
 <context>
@@ -2360,13 +2375,13 @@ Line %1, column %2</source>
         <location filename="../src/tiled/bucketfilltool.cpp" line="+40"/>
         <location line="+194"/>
         <source>Bucket Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Täyttötyökalu</translation>
     </message>
     <message>
         <location line="-191"/>
         <location line="+192"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
 </context>
 <context>
@@ -2374,7 +2389,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/clipboardmanager.cpp" line="+171"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Liitä objekteja/objektit</translation>
     </message>
 </context>
 <context>
@@ -2382,32 +2397,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commandbutton.cpp" line="+130"/>
         <source>Execute Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorita komento</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location line="-67"/>
         <source>Error Executing Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe komennon suorittamisessa</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>You do not have any commands setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinulla ei ole yhtään asetettua komentoa.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa komentoja...</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa komentoja...</translation>
     </message>
 </context>
 <context>
@@ -2415,83 +2430,83 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commanddatamodel.cpp" line="+60"/>
         <source>Open in text editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa tekstieditorissa</translation>
     </message>
     <message>
         <location line="+91"/>
         <location line="+69"/>
         <source>&lt;new command&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;uusi komento&gt;</translation>
     </message>
     <message>
         <location line="-61"/>
         <source>Set a name for this command</source>
-        <translation type="unfinished"></translation>
+        <translation>Anna nimi tälle komennolle</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set the shell command to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Anna suoritettava komentorivikomento</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä tai piilota tämä komento listalla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add a new command</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi komento</translation>
     </message>
     <message>
         <location line="+107"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Komento</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Ota käyttöön</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä ylös</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä alas</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorita</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorita komentorivillä</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (kopio)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi komento</translation>
     </message>
 </context>
 <context>
@@ -2499,7 +2514,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+44"/>
         <source>Edit Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa komentoja</translation>
     </message>
 </context>
 <context>
@@ -2507,37 +2522,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/command.cpp" line="+144"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu luoda/avata %1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voitu lisätä suoritusoikeuksia %1:lle</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Komennon käynnistyminen epäonnistui.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Komento epäonnistui.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished"></translation>
+        <translation>Komennon aikakatkaisu.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tapahtui tuntematon virhe.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe suoritettaessa %1</translation>
     </message>
 </context>
 <context>
@@ -2545,7 +2560,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Virheenetsintäkonsoli</translation>
     </message>
 </context>
 <context>
@@ -2553,12 +2568,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+39"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Luo ellipsi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
 </context>
 <context>
@@ -2566,7 +2581,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createobjecttool.cpp" line="+46"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
 </context>
 <context>
@@ -2574,12 +2589,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+39"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää polygoni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
@@ -2587,12 +2602,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+39"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää polygoniviiva</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
 </context>
 <context>
@@ -2600,12 +2615,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+39"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää nelikulmio</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2613,12 +2628,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+79"/>
         <source>Insert Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää tile</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2628,27 +2643,29 @@ Line %1, column %2</source>
         <source>%1:
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:
+
+%2</translation>
     </message>
     <message>
         <location line="+146"/>
         <source>Copy File Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopioi tiedostopolku</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Open Containing Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa sisältävä kansio...</translation>
     </message>
     <message>
         <location line="+141"/>
         <source>Tileset Columns Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesetin kolumni muuttui</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumni tilesetissö '%1' näyttää muuttuneen %2:sta %3:een. Haluatko säätää tilen ominaisuuksia?</translation>
     </message>
 </context>
 <context>
@@ -2657,38 +2674,38 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editpolygontool.cpp" line="+129"/>
         <location line="+209"/>
         <source>Edit Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa polygoneja</translation>
     </message>
     <message>
         <location line="-207"/>
         <location line="+208"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message numerus="yes">
         <location line="+227"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n Piste(ttä)</numerusform>
+        <numerusform>Siirrä %n pisteitä</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation type="unfinished"><numerusform>Poista %n Node(ja)</numerusform>
+        <numerusform>Poista %n Nodea</numerusform>
         </translation></message>
     <message>
         <location line="-40"/>
         <location line="+215"/>
         <source>Join Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Liitä Nodet</translation>
     </message>
     <message>
         <location line="-214"/>
         <location line="+250"/>
         <source>Split Segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Halkaise segmentit</translation>
     </message>
 </context>
 <context>
@@ -2696,12 +2713,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="+149"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>New Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi Terrain</translation>
     </message>
 </context>
 <context>
@@ -2710,13 +2727,13 @@ Line %1, column %2</source>
         <location filename="../src/tiled/eraser.cpp" line="+35"/>
         <location line="+56"/>
         <source>Eraser</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyyhekumi</translation>
     </message>
     <message>
         <location line="-53"/>
         <location line="+54"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
 </context>
 <context>
@@ -2724,43 +2741,44 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie kuvatiedostona</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 on jo olemassa.
+Haluatko korvata sen?</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Muistialueen ylitys</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keskusmuisti ei riitä kuvalle. Vähennä zoomausta tai käytä 64-bittistä versiota Tiledistä.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuva on liian iso</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lopullinen kuva olisi %1 x %2 pikseliä ja veisi %3 gigaa muistia. Tiled ei pysty luomaan tällaista kuvaa. Kokeile vähentää kuvan zoomausta.</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuva</translation>
     </message>
 </context>
 <context>
@@ -2768,7 +2786,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-600"/>
         <source>File change detected. Discard changes and reload the map?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostossa havaittiin muutos. Peru muutokset ja lataa kenttä uudelleen?</translation>
     </message>
 </context>
 <context>
@@ -2776,7 +2794,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+113"/>
         <source>Choose a File</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse tiedosto</translation>
     </message>
 </context>
 <context>
@@ -2784,12 +2802,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/layerdock.cpp" line="+217"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Layerit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Läpinäkyvyys:</translation>
     </message>
 </context>
 <context>
@@ -2797,17 +2815,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/layermodel.cpp" line="+151"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer</translation>
     </message>
     <message>
         <location line="+130"/>
         <source>Show Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä muut layerit</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota muut layerit</translation>
     </message>
 </context>
 <context>
@@ -2822,7 +2840,7 @@ Do you want to replace it?</source>
         <location line="-92"/>
         <location line="+93"/>
         <source>M</source>
-        <translation type="unfinished"></translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -2831,13 +2849,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+39"/>
         <location line="+58"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>Taikasauva</translation>
     </message>
     <message>
         <location line="-55"/>
         <location line="+56"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -2846,276 +2864,277 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/mainwindow.cpp" line="+236"/>
         <location line="+11"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Kumoa</translation>
     </message>
     <message>
         <location line="-10"/>
         <location line="+9"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Tee uudelleen</translation>
     </message>
     <message>
         <location line="+94"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location line="+23"/>
         <location line="+1402"/>
         <source>Random Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Satunnaistila</translation>
     </message>
     <message>
         <location line="-1399"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+1397"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Layer</translation>
     </message>
     <message>
         <location line="-1396"/>
         <location line="+1397"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uusi</translation>
     </message>
     <message>
         <location line="-1210"/>
         <source>Object Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektityyppien muokkain</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Tab</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Ctrl+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Tab</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location line="+133"/>
         <source>Error Opening Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe avatessa kenttää</translation>
     </message>
     <message>
         <location line="+83"/>
         <location line="+196"/>
         <location line="+296"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki tiedostot (*)</translation>
     </message>
     <message>
         <location line="-481"/>
         <source>Open Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa kenttä</translation>
     </message>
     <message>
         <location line="+25"/>
         <location line="+88"/>
         <source>Error Saving Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe tallennettaessa kenttää</translation>
     </message>
     <message>
         <location line="-46"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished"></translation>
+        <translation>nimetön.tmx</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Extension Mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Laajennusta ei löydy</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostolaajennus ei sovi valittuun tiedostotyyppiin.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled ei välttämättä tunnista automaattisesti tiedostoja latausvaiheessa. Haluatko varmasti tallentaa tällä tiedostopäätteellä?</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Unsaved Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallentamattomat muutokset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikkia muutoksia ei ole tallennettu. Haluatko tallentaa ne nyt?</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Viety nimellä %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+117"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kentän viennissä</translation>
     </message>
     <message>
         <location line="-80"/>
         <source>Export As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie nimellä...</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Non-unique file extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Epäselvä tiedostolaajennus</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuntematon tiedostopääte.
+Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Unknown File Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuntematon tiedostomuoto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation type="unfinished"></translation>
+        <translation>Annetulla tiedostonimellä ei ole yhtään tunnettua tiedostomuotoa.</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jotkut vietävistä tiedostoista ovat jo olemassa:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Haluatko korvata nämä tiedostot?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylikirjoita tiedostot</translation>
     </message>
     <message>
         <location line="+621"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1</translation>
     </message>
     <message>
         <location line="+137"/>
         <source>Error Reloading Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kentän lataamisessa</translation>
     </message>
     <message>
         <location line="-516"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe tilesetin lukemisessa</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Automatic Mapping Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattipiirron varoitus</translation>
     </message>
     <message>
         <location line="-12"/>
         <source>Automatic Mapping Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaattipiirron virhe</translation>
     </message>
     <message>
         <location line="-874"/>
         <location line="+1212"/>
         <source>Views and Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Näkymät ja työkaluvalikot</translation>
     </message>
     <message>
         <location line="-1209"/>
         <location line="+1210"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileanimaatioiden muokkain</translation>
     </message>
     <message>
         <location line="-1208"/>
         <location line="+1209"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiletörmäysten muokkain</translation>
     </message>
     <message>
         <location line="-1175"/>
         <source>Alt+Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Vasen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Alt+Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Oikea</translation>
     </message>
     <message>
         <location line="+737"/>
         <source>Add External Tileset(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ulkoinen tileset</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Lisää %n tileset(iä)</numerusform>
+        <numerusform>Lisää %n tilesetiä</numerusform>
         </translation></message>
 </context>
 <context>
@@ -3123,12 +3142,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+246"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished"></translation>
+        <translation>nimetön.tmx</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta kentän kokoa</translation>
     </message>
     <message>
         <location line="+52"/>
@@ -3138,38 +3157,38 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Pyöritä %n Objekti(a)</numerusform>
+        <numerusform>Pyöritä %n objektia</numerusform>
         </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile layer %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektilayer %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Image Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvalayer %1</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Copy of %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1:s kopio</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Duplicate Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Monista layer</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Yhdistä layer alempaan</translation>
     </message>
     <message>
         <location line="+238"/>
@@ -3179,37 +3198,37 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Tileset Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesetin muutokset</translation>
     </message>
     <message numerus="yes">
         <location line="+190"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Monista %n objekti(a)</numerusform>
+        <numerusform>Monista %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+21"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Poista %n objekti(a)</numerusform>
+        <numerusform>Poista %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n objekti(a) layerille</numerusform>
+        <numerusform>Siirrä %n objektia layerille</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+37"/>
         <source>Move %n Object(s) Up</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n objekti(a) ylös</numerusform>
+        <numerusform>Siirrä %n objektia ylös</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n objekti(a) alas</numerusform>
+        <numerusform>Siirrä %n objektia ylös</numerusform>
         </translation></message>
 </context>
 <context>
@@ -3217,73 +3236,73 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+60"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Ctrl+Shift+Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Nuoli ylös</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Nuoli alas</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse &amp;kaikki</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä valitse &amp;mitään</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Leikkaa valintaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tile layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Objektilayer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kuvalayer</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+197"/>
         <source>Layer via Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer kopioinnin kautta</translation>
     </message>
     <message>
         <location line="-196"/>
@@ -3294,89 +3313,89 @@ Please select specific format.</source>
     <message>
         <location line="-192"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse edellinen layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse seuraava layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laske layer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä/&amp;Piilota muut layerit</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Leikkaa</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
     <message numerus="yes">
         <location line="+327"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Monista %n objekti(a)</numerusform>
+        <numerusform>Monista %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Poista %n objekti(a)</numerusform>
+        <numerusform>Poista %n objektia</numerusform>
         </translation></message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Monista objektit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista objektit</translation>
     </message>
     <message>
         <location line="-417"/>
         <source>&amp;Duplicate Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Monista layer</translation>
     </message>
     <message>
         <location line="-84"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PageUp</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PageDown</translation>
     </message>
     <message>
         <location line="+82"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yhdistä layer allaolevaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poista layer</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Layer &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Layerin &amp;ominaisuudet...</translation>
     </message>
 </context>
 <context>
@@ -3384,22 +3403,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+150"/>
         <source>Change Object Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda objektin nimeä</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda objektin tyyppiä</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyppi</translation>
     </message>
 </context>
 <context>
@@ -3407,17 +3426,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+83"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Selaa...</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Choose the Maps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kenttien kansio</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Kentät</translation>
     </message>
 </context>
 <context>
@@ -3425,7 +3444,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
         <source>Mini-map</source>
-        <translation type="unfinished"></translation>
+        <translation>Pienoiskenttä</translation>
     </message>
 </context>
 <context>
@@ -3434,45 +3453,45 @@ Please select specific format.</source>
         <location filename="../src/tiled/newmapdialog.cpp" line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-14"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortogonaalinen</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric</source>
-        <translation type="unfinished"></translation>
+        <translation>Isometrinen</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Isometrinen (pinottu)</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Heksagonaalinen (pinottu)</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Tile Layer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile layer 1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Memory Usage Warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Muistinkäytön varoitus</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile layerit tälle kentälle käyttävät %L1 gigaa muistia. Ei luoda yhtään layeria oletuksena.</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>%1 x %2 pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2 pikseliä</translation>
     </message>
 </context>
 <context>
@@ -3481,22 +3500,22 @@ Please select specific format.</source>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-40"/>
         <location line="+7"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image '%1'.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilesetin kuvan '%1' lataaminen epäonnistui.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset-kuvasta ei löytynyt yhtään tileä annetulla koolla, marginaalilla ja välistyksellä!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset-kuva</translation>
     </message>
 </context>
 <context>
@@ -3505,32 +3524,32 @@ Please select specific format.</source>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+309"/>
         <location line="+300"/>
         <source>Select Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse objektit</translation>
     </message>
     <message>
         <location line="-298"/>
         <location line="+299"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message numerus="yes">
         <location line="-186"/>
         <location line="+582"/>
         <source>Move %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Siirrä %n objekti(a)</numerusform>
+        <numerusform>Siirrä %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+87"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation><numerusform>Pyöritä %n objekti(a)</numerusform>
+        <numerusform>Pyöritä %n objektia</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform>
-        <numerusform></numerusform>
+        <translation type="unfinished"><numerusform>Muuta %n objekti(n) kokoa</numerusform>
+        <numerusform>Muuta %n objektin kokoa</numerusform>
         </translation></message>
 </context>
 <context>
@@ -3538,73 +3557,74 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypeseditor.cpp" line="+224"/>
         <source>Add Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää objektin tyyppi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista objektin tyyppi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ominaisuus</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ominaisuus</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+323"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä ominaisuus uudelleen</translation>
     </message>
     <message>
         <location line="-265"/>
         <location line="+129"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kirjoitettaessa objektin tyyppiä</translation>
     </message>
     <message>
         <location line="-128"/>
         <source>Error writing to %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe kirjoitettaessa %1:
+%2</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Choose Object Types File</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse objektin tyyppitiedosto</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+34"/>
         <location line="+44"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektityyppitiedostot (*.xml)</translation>
     </message>
     <message>
         <location line="-62"/>
         <location line="+44"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa objektityyppejä</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>Import Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuo objektityyppejä</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Export Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie objektityyppejä</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi:</translation>
     </message>
 </context>
 <context>
@@ -3612,12 +3632,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objecttypesmodel.cpp" line="+59"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyppi</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri</translation>
     </message>
 </context>
 <context>
@@ -3625,27 +3645,27 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+170"/>
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektin ominaisuudet</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Add Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää objektilayer</translation>
     </message>
     <message>
         <location line="-2"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektit</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Move Objects Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä objektit ylös</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Objects Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä objektit alas</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -3663,12 +3683,16 @@ Please select specific format.</source>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Kiitos tuestasi!&lt;/h3&gt;
+&lt;p&gt;Sinun tukesi suojelijana merkitsee paljon minulle Tiledin pääkehittäjänä ja ylläpitäjänä. Se sallii minun työskennellä enemmän Tiledin parissa kun minun ei tarvitse kuluttaa aikaa saadakseni rahaa muilla keinoin.&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I'm no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>En ole enää suojelija</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3677,12 +3701,16 @@ Please select specific format.</source>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Sinun avullasi voin jatkaa Tiledin kehitystyötä!&lt;/h3&gt;
+&lt;p&gt;Ole kiltti ja harkitse työni tukemista alkamalla suojelijaksi. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
+&lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I'm already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Olen jo suojelija!</translation>
     </message>
 </context>
 <context>
@@ -3691,12 +3719,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/preferencesdialog.cpp" line="-127"/>
         <location line="+123"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Järjestelmän oletus</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Last checked: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeksi tarkistettu: %1</translation>
     </message>
 </context>
 <context>
@@ -3704,18 +3732,18 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+278"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi:</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ominaisuus</translation>
     </message>
     <message>
         <location line="-102"/>
         <location line="+104"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä ominaisuus uudelleen</translation>
     </message>
     <message>
         <location line="-71"/>
@@ -3725,22 +3753,22 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä uudelleen...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
     <message>
         <location line="+65"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Ominaisuudet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ominaisuus</translation>
     </message>
 </context>
 <context>
@@ -3748,72 +3776,72 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+13"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaakasuuntainen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Pystysuuntainen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Top Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ylhäältä alas</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Opas</translation>
     </message>
     <message>
         <location line="+485"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kolumni(a/t)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähde</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>Suhteellinen muutos tähän tileen valitaan</translation>
     </message>
     <message>
         <location line="+286"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe luettaessa tilesetiä</translation>
     </message>
     <message>
         <location line="+142"/>
         <source>Custom Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Mukautetut ominaisuudet</translation>
     </message>
     <message>
         <location line="-637"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kenttä</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Tile Layer Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilelayerin tiedostomuoto</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen renderöintijärjestys</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustaväri</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekti</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3821,71 +3849,71 @@ Please select specific format.</source>
         <location line="+74"/>
         <location line="+60"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location line="-157"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyyppi</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+21"/>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Näkyvä</translation>
     </message>
     <message>
         <location line="-435"/>
         <location line="+415"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="-414"/>
         <location line="+415"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="-413"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Pariton</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>Parillinen</translation>
     </message>
     <message>
         <location line="+342"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Suuntaus</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+66"/>
         <location line="+125"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <location line="-190"/>
         <location line="+66"/>
         <location line="+125"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeus</translation>
     </message>
     <message>
         <location line="-190"/>
         <location line="+167"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen leveys</translation>
     </message>
     <message>
         <location line="-166"/>
         <location line="+167"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen korkeus</translation>
     </message>
     <message>
         <location line="-165"/>
@@ -3905,17 +3933,17 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kierto</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>Kääntö</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Läpinäkyvyys</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3944,12 +3972,12 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Väri</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drawing Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Piirtojärjestys</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3961,13 +3989,13 @@ Please select specific format.</source>
         <location line="+37"/>
         <location line="+39"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuva</translation>
     </message>
     <message>
         <location line="-71"/>
         <location line="+39"/>
         <source>Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Läpinäkyvä väri</translation>
     </message>
     <message>
         <location line="-29"/>
@@ -3977,7 +4005,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostonimi</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3987,12 +4015,12 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Marginaali</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Välistys</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -4003,12 +4031,12 @@ Please select specific format.</source>
         <location line="-133"/>
         <location line="+134"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Tunniste</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Todennäköisyys</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4022,13 +4050,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
         <location line="+62"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse sama tile</translation>
     </message>
     <message>
         <location line="-59"/>
         <location line="+60"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -4037,13 +4065,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
         <location line="+127"/>
         <source>Stamp Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Leimasin</translation>
     </message>
     <message>
         <location line="-124"/>
         <location line="+125"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
 </context>
 <context>
@@ -4058,7 +4086,7 @@ Please select specific format.</source>
         <location line="-111"/>
         <location line="+112"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -4071,7 +4099,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista Terrain</translation>
     </message>
 </context>
 <context>
@@ -4087,7 +4115,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/textpropertyedit.cpp" line="+121"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4095,7 +4123,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-58"/>
         <source>Delete Frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista framet</translation>
     </message>
 </context>
 <context>
@@ -4103,17 +4131,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+263"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Leikkaa</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Törmäyseditori</translation>
     </message>
 </context>
 <context>
@@ -4122,18 +4150,18 @@ Please select specific format.</source>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+34"/>
         <location line="+96"/>
         <source>Rectangular Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Suorakulmainen valinta</translation>
     </message>
     <message>
         <location line="-93"/>
         <location line="+94"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="-71"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 - suorakaide: (%3 x %4)</translation>
     </message>
 </context>
 <context>
@@ -4141,12 +4169,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Leima</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Mahdollisuus</translation>
     </message>
 </context>
 <context>
@@ -4154,12 +4182,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+194"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista leima</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista muunnos</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -4174,7 +4202,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi leima</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4184,12 +4212,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Monista leima</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista valitut</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4199,7 +4227,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Suodatin</translation>
     </message>
 </context>
 <context>
@@ -4207,17 +4235,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+731"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista tileset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset "%1" is still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset "%1" on yhä käytettynä kentässä!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Poista tämä tiletset ja kaikki siihen liittyvät tilet?</translation>
     </message>
     <message>
         <location line="+81"/>
@@ -4227,17 +4255,17 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi tileset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tuo tileset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vie tileset nimellä...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4318,17 +4346,17 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Set Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta terrainin kuva</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Tile &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilen &amp;ominaisuudet...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä &amp;ruudukko</translation>
     </message>
 </context>
 <context>
@@ -4336,7 +4364,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled kenttätiedostot (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4352,12 +4380,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/undodock.cpp" line="+64"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tyhjä&gt;</translation>
     </message>
 </context>
 <context>
@@ -4365,17 +4393,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Useita törmäyslayereita havaittu!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Törmäyslayeria ei löydy!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedostoa ei voitu avata kirjoitusta varten.</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -4388,7 +4416,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+182"/>
         <source>TMX Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>TMX katselin</translation>
     </message>
 </context>
 <context>
@@ -4396,32 +4424,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovelayer.h" line="+67"/>
         <source>Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää layer</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista layer</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovemapobject.cpp" line="+76"/>
         <source>Add Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää objekti</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Remove Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista objekti</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+66"/>
         <source>Add Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää tileset</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista tileset</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+36"/>
@@ -4436,58 +4464,58 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+40"/>
         <source>Change %1 Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda %1 ominaisuutta</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Set Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta ominaisuus</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää ominaisuus</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista ominaisuus</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä ominaisuus uudelleen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta valintaa</translation>
     </message>
     <message>
         <location filename="../src/tiled/erasetiles.cpp" line="+39"/>
         <source>Erase</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyyhi</translation>
     </message>
     <message>
         <location filename="../src/tiled/bucketfilltool.cpp" line="-30"/>
         <source>Fill Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Täytä alue</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Move Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä objektia</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
         <source>Move Object to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä objekti layerille</translation>
     </message>
     <message>
         <location filename="../src/tiled/movetileset.cpp" line="+31"/>
         <source>Move Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä tileset:iä</translation>
     </message>
     <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+42"/>
@@ -4498,43 +4526,43 @@ Please select specific format.</source>
         <location filename="../src/tiled/painttilelayer.cpp" line="+51"/>
         <location line="+22"/>
         <source>Paint</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sivellin</translation>
     </message>
     <message>
         <location filename="../src/tiled/renamelayer.cpp" line="+40"/>
         <source>Rename Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimeä layer uudelleen</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizetilelayer.cpp" line="+37"/>
         <source>Resize Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta layerin kokoa</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizemap.cpp" line="+32"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta kentän kokoa</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Resize Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta objektin kokoa</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-788"/>
         <source>Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuo tileset</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Vie tileset</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetchanges.cpp" line="+36"/>
         <source>Change Tileset Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta tilesetin nimeä</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -4544,12 +4572,12 @@ Please select specific format.</source>
     <message>
         <location line="+50"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa tilesetiä</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Change Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta kolumneja</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -4565,17 +4593,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/changepolygon.cpp" line="+40"/>
         <location line="+12"/>
         <source>Change Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda polygoni</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+69"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää terrain</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista terrain</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
@@ -4595,17 +4623,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changelayer.cpp" line="+41"/>
         <source>Show Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä layer</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota layer</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Change Layer Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta layerin läpinäkyvyyttä</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -4615,80 +4643,80 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
         <source>Show Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä objekti</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Piilota objekti</translation>
     </message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+37"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda terrainin nimi</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+69"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lisää tilet/tilejä</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Poista tilet/tilejä</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
         <source>Change Image Layer Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda kuvalayerin sijaintia</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+46"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta objektia</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Laske objektia</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda tilen animaatiota</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+16"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda tilen törmäystä</translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosta objekti ylimmäiseksi</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Laske objekti alimmaiseksi</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Rotate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Pyöritä objektia</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta tilen leveyttä</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta tilen korkeutta</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4698,7 +4726,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda taustaväri</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4713,12 +4741,12 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta suuntausta</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta renderöintijärjestys</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4729,23 +4757,23 @@ Please select specific format.</source>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
         <location line="+14"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda tilen todennäköisyyttä</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-134"/>
         <location line="+89"/>
         <source>Adjust Tile Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Säädä tilen indeksejä</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda tilekuva</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Korvaa tileset</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
@@ -4759,7 +4787,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/utils.cpp" line="+37"/>
         <source>Image files</source>
-        <translation type="unfinished"></translation>
+        <translation>Kuvatiedostot</translation>
     </message>
 </context>
 </TS>
