@@ -203,6 +203,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
     // Grab layer dimensions for later use.
     const int layerWidth = layer->width();
     const int layerHeight = layer->height();
+    const bool isStaggered = orientation == Map::Hexagonal || orientation == Map::Staggered;
 
     // Create a queue to hold cells that need filling
     QQueue<QPoint> fillPositions;
@@ -236,18 +237,26 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
         // Add cells between left and right to the region
         fillRegion += QRegion(left, currentPoint.y(), right - left + 1, 1);
 
+        bool leftColumnIsStaggered = false;
+        bool rightColumnIsStaggered = false;
+
         // For hexagonal maps with a staggered Y-axis, we may need to extend the search range
-        if (orientation == Map::Hexagonal && staggerAxis == Map::StaggerY) {
-            bool rowIsStaggered = ((layer->y() + currentPoint.y()) & 1) ^ staggerIndex;
-            if (rowIsStaggered)
-                right = qMin(right + 1, layerWidth - 1);
-            else
-                left = qMax(left - 1, 0);
+        if (isStaggered) {
+            if (staggerAxis == Map::StaggerY) {
+                bool rowIsStaggered = ((layer->y() + currentPoint.y()) & 1) ^ staggerIndex;
+                if (rowIsStaggered)
+                    right = qMin(right + 1, layerWidth - 1);
+                else
+                    left = qMax(left - 1, 0);
+            } else {
+                leftColumnIsStaggered = ((layer->x() + left) & 1) ^ staggerIndex;
+                rightColumnIsStaggered = ((layer->x() + right) & 1) ^ staggerIndex;
+            }
         }
 
         // Loop between left and right and check if cells above or below need
         // to be added to the queue.
-        auto findFillPositions = [=,&fillPositions](int y) {
+        auto findFillPositions = [=,&fillPositions](int left, int right, int y) {
             bool adjacentCellAdded = false;
 
             for (int x = left; x <= right; ++x) {
@@ -267,11 +276,33 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             }
         };
 
-        if (currentPoint.y() > 0)
-            findFillPositions(currentPoint.y() - 1);
+        if (currentPoint.y() > 0) {
+            int _left = left;
+            int _right = right;
 
-        if (currentPoint.y() + 1 < layerHeight)
-            findFillPositions(currentPoint.y() + 1);
+            if (isStaggered && staggerAxis == Map::StaggerX) {
+                if (!leftColumnIsStaggered)
+                    _left = qMax(left - 1, 0);
+                if (!rightColumnIsStaggered)
+                    _right = qMin(right + 1, layerWidth - 1);
+            }
+
+            findFillPositions(_left, _right, currentPoint.y() - 1);
+        }
+
+        if (currentPoint.y() + 1 < layerHeight) {
+            int _left = left;
+            int _right = right;
+
+            if (isStaggered && staggerAxis == Map::StaggerX) {
+                if (leftColumnIsStaggered)
+                    _left = qMax(left - 1, 0);
+                if (rightColumnIsStaggered)
+                    _right = qMin(right + 1, layerWidth - 1);
+            }
+
+            findFillPositions(_left, _right, currentPoint.y() + 1);
+        }
     }
 
     return fillRegion;
