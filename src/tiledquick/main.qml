@@ -175,7 +175,7 @@ ApplicationWindow {
                     } else {
                         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
                         var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                        tileCoords.x.toFixed(0) + ", " + tileCoords.y.toFixed(0)
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
                     }
                 }
             }
