@@ -948,7 +948,7 @@ static QList<MapObject*> chooseTileObjects(QList<MapObject*> objects)
     QList<MapObject*> tileObjects;
 
     for (auto object : objects)
-        if (!object->cell().isEmpty() && object->cell().tile() != nullptr)
+        if (!object->cell().isEmpty())
             tileObjects.append(object);
 
     return tileObjects;
