@@ -134,6 +134,9 @@ Following entries are integrated solutions for specific game engines. They are t
 ### LibGDX
 * [libgdx](http://libgdx.badlogicgames.com/), a Java-based Android/desktop/HTML5 game library, [provides](https://github.com/libgdx/libgdx/wiki/Tile-maps) a packer, loader and renderer for TMX maps
 
+### LITIengine
+* [LITIengine](https://litiengine.com) is a 2D Java Game Engine that supports loading, saving and rendering maps in the .tmx format.
+
 ### LÖVE
 * [Simple Tiled Implementation](https://github.com/Karai17/Simple-Tiled-Implementation) Lua loader for the LÖVE (Love2d) game framework.
 
