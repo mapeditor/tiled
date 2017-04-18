@@ -152,12 +152,15 @@ QStringList FrameListModel::mimeTypes() const
 
 QMimeData *FrameListModel::mimeData(const QModelIndexList &indexes) const
 {
+    if (indexes.isEmpty())
+        return nullptr;
+
     QMimeData *mimeData = new QMimeData;
     QByteArray encodedData;
 
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
 
-    foreach (const QModelIndex &index, indexes) {
+    for (const QModelIndex &index : indexes) {
         if (index.isValid()) {
             const Frame &frame = mFrames.at(index.row());
             stream << frame.tileId;
@@ -447,7 +450,7 @@ void TileAnimationEditor::delete_()
     undoStack->beginMacro(tr("Delete Frames"));
 
     RangeSet<int> ranges;
-    foreach (const QModelIndex &index, indexes)
+    for (const QModelIndex &index : indexes)
         ranges.insert(index.row());
 
     // Iterate backwards over the ranges in order to keep the indexes valid

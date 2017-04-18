@@ -223,6 +223,7 @@ LayerView::LayerView(QWidget *parent)
     setUniformRowHeights(true);
     setModel(mProxyModel);
     setItemDelegate(new EyeVisibilityDelegate(this));
+    setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
