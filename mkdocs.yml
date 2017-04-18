@@ -1,8 +1,7 @@
-site_name: Tiled
+site_name: Tiled Documentation
 site_favicon: http://blog.mapeditor.org/favicon.ico
 repo_url: https://github.com/bjorn/tiled
-theme: cerulean
-theme_dir: 'docs_theme'
+theme: readthedocs
 google_analytics: ['UA-380618-1', 'mapeditor.org']
 pages:
 - Index: index.md
@@ -16,3 +15,7 @@ pages:
     - TMX Map Format: reference/tmx-map-format.md
     - TMX Changelog: reference/tmx-changelog.md
     - Libraries and Frameworks: reference/support-for-tmx-maps.md
+extra_css:
+    - css/extra.css
+markdown_extensions:
+  - toc(permalink=true)
