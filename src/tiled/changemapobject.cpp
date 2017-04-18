@@ -99,7 +99,6 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    mCell = Cell(mTile);
     for (MapObject *object : mMapObjects) {
         Cell cell = object->cell();
         mOldCells.append(cell);
@@ -129,8 +128,11 @@ void ChangeMapObjectsTile::restoreTiles()
 
 void ChangeMapObjectsTile::changeTiles()
 {
-    for (int i = 0; i < mMapObjects.size(); ++i)
-        setObjectCell(mMapObjects[i], mCell, mUpdateSize[i]);
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        Cell cell = mMapObjects[i]->cell();
+        cell.setTile(mTile);
+        setObjectCell(mMapObjects[i], cell, mUpdateSize[i]);
+    }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

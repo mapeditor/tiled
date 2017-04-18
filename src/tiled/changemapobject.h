@@ -104,7 +104,6 @@ private:
     MapDocument *mMapDocument;
     const QList<MapObject *> mMapObjects;
     Tile * const mTile;
-    Cell mCell;
     QVector<Cell> mOldCells;
     QVector<bool> mUpdateSize;
 };
