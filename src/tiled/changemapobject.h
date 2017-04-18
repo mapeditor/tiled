@@ -107,7 +107,6 @@ private:
     Cell mCell;
     QVector<Cell> mOldCells;
     QVector<bool> mUpdateSize;
-    QVector<QSizeF> mOldSizes;
 };
 
 } // namespace Internal
