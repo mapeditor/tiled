@@ -87,5 +87,26 @@ private:
     QVector<MapObjectCell> mChanges;
 };
 
+class ChangeMapObjectsTile : public QUndoCommand
+{
+public:
+    ChangeMapObjectsTile(MapDocument *mapDocument,
+                         const QList<MapObject *> &mapObjects,
+                         Tile *tile);
+
+    void undo() override { restoreTiles(); }
+    void redo() override { changeTiles(); }
+
+private:
+    void changeTiles();
+    void restoreTiles();
+
+    MapDocument *mMapDocument;
+    const QList<MapObject *> mMapObjects;
+    Tile * const mTile;
+    QVector<Cell> mOldCells;
+    QVector<bool> mUpdateSize;
+};
+
 } // namespace Internal
 } // namespace Tiled

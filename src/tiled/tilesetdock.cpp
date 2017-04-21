@@ -35,6 +35,7 @@
 #include "preferences.h"
 #include "replacetileset.h"
 #include "swaptiles.h"
+#include "changemapobject.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -514,6 +515,8 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
             this, &TilesetDock::updateCurrentTiles);
     connect(view, &TilesetView::swapTilesRequested,
             this, &TilesetDock::swapTiles);
+    connect(view, &TilesetView::changeSelectedMapObjectsTileRequested,
+            this, &TilesetDock::changeSelectedMapObjectsTile);
 }
 
 void TilesetDock::deleteTilesetView(int index)
@@ -938,4 +941,30 @@ void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->push(new SwapTiles(mMapDocument, tileA, tileB));
+}
+
+static QList<MapObject*> chooseTileObjects(QList<MapObject*> objects)
+{
+    QList<MapObject*> tileObjects;
+
+    for (auto object : objects)
+        if (!object->cell().isEmpty())
+            tileObjects.append(object);
+
+    return tileObjects;
+}
+
+void TilesetDock::changeSelectedMapObjectsTile(Tile *tile)
+{
+    if (!mMapDocument)
+        return;
+
+    // Only change tiles of tile objects
+    QList<MapObject*> tileObjects = chooseTileObjects(mMapDocument->selectedObjects());
+
+    if (tileObjects.isEmpty())
+        return;
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new ChangeMapObjectsTile(mMapDocument, tileObjects, tile));
 }
