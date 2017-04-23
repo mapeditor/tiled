@@ -2035,12 +2035,12 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-75"/>
         <source>Width:</source>
-        <translation>Hoogte:</translation>
+        <translation>Breedte:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Height:</source>
-        <translation>Breedte:</translation>
+        <translation>Hoogte:</translation>
     </message>
     <message>
         <location line="+26"/>
