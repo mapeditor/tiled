@@ -1,7 +1,5 @@
 # Custom Properties
 
-## Overview
-
 One of the major strengths of Tiled is that it allows setting custom properties
 on all of its basic data structures. This way it is possible to include many
 forms of custom information, which can later be used by your game or by the
