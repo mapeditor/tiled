@@ -136,7 +136,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
 
     retranslateUi();
-    resize(300, 300);
+    resize(Utils::dpiScaled(QSize(300, 300)));
     Utils::restoreGeometry(this);
 }
 
