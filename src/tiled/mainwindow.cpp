@@ -1144,28 +1144,24 @@ void MainWindow::toggleClearView(bool clearView)
             toolBars += editor->toolBars();
         }
 
-        for (auto dock : docks) {
-            if (!dock->isHidden()) {
-                if (!mHiddenDocks.contains(dock))
-                    mHiddenDocks.append(dock);
-                dock->hide();
+        auto hideWidget = [this](QWidget *widget) {
+            if (!widget->isHidden()) {
+                if (!mHiddenWidgets.contains(widget))
+                    mHiddenWidgets.append(widget);
+                widget->hide();
             }
-        }
-        for (auto toolBar : toolBars) {
-            if (!toolBar->isHidden()) {
-                if (!mHiddenToolBars.contains(toolBar))
-                    mHiddenToolBars.append(toolBar);
-                toolBar->hide();
-            }
-        }      
-    } else {
-        for (auto dock : mHiddenDocks)
-            dock->setVisible(true);
-        for (auto toolBar : mHiddenToolBars)
-            toolBar->setVisible(true);
+        };
 
-        mHiddenDocks.clear();
-        mHiddenToolBars.clear();
+        for (auto dock : docks)
+            hideWidget(dock);
+        for (auto toolBar : toolBars)
+            hideWidget(toolBar);
+
+    } else {
+        for (auto dock : mHiddenWidgets)
+            dock->setVisible(true);
+
+        mHiddenWidgets.clear();
     }
 }
 

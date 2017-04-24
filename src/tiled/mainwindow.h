@@ -229,8 +229,7 @@ private:
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
-    QList<QDockWidget*> mHiddenDocks;
-    QList<QToolBar*> mHiddenToolBars;
+    QList<QWidget*> mHiddenWidgets;
 };
 
 } // namespace Internal
