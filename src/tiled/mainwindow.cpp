@@ -1282,14 +1282,19 @@ void MainWindow::resizeMap()
 
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(map->size());
-    resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
-        QImage image(size, QImage::Format_ARGB32_Premultiplied);
-        MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
-                                                   | MiniMapRenderer::DrawImages
-                                                   | MiniMapRenderer::DrawTiles
-                                                   | MiniMapRenderer::IgnoreInvisibleLayer);
-        return image;
-    });
+
+    // TODO: Look into fixing up the preview for maps that do not use square
+    // tiles, and possibly also staggered maps.
+    if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
+        resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
+            QImage image(size, QImage::Format_ARGB32_Premultiplied);
+            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
+                                                       | MiniMapRenderer::DrawImages
+                                                       | MiniMapRenderer::DrawTiles
+                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            return image;
+        });
+    }
 
     if (resizeDialog.exec()) {
         const QSize &newSize = resizeDialog.newSize();
