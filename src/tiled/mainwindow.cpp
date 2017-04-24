@@ -1135,36 +1135,37 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
-    QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
-    QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
-
-    for (Editor *editor : mDocumentManager->editors()) {
-        docks += editor->dockWidgets();
-        toolBars += editor->toolBars();
-    }
-
     if (clearView) {
-        mHiddenDocks.clear();
-        mHiddenToolbars.clear();
+        QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+        QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
+
+        for (Editor *editor : mDocumentManager->editors()) {
+            docks += editor->dockWidgets();
+            toolBars += editor->toolBars();
+        }
 
         for (auto dock : docks) {
-            if (dock->isVisible())
-                mHiddenDocks.append(dock);
-            dock->hide();
+            if (!dock->isHidden()) {
+                if (!mHiddenDocks.contains(dock))
+                    mHiddenDocks.append(dock);
+                dock->hide();
+            }
         }
-        for (auto toolbar : toolBars) {
-            if (toolbar->isVisible())
-                mHiddenToolbars.append(toolbar);
-            toolbar->hide();
+        for (auto toolBar : toolBars) {
+            if (!toolBar->isHidden()) {
+                if (!mHiddenToolBars.contains(toolBar))
+                    mHiddenToolBars.append(toolBar);
+                toolBar->hide();
+            }
         }      
     } else {
         for (auto dock : mHiddenDocks)
-            dock->show();
-        for (auto toolbar : mHiddenToolbars)
-            toolbar->show();
+            dock->setVisible(true);
+        for (auto toolBar : mHiddenToolBars)
+            toolBar->setVisible(true);
 
         mHiddenDocks.clear();
-        mHiddenToolbars.clear();
+        mHiddenToolBars.clear();
     }
 }
 
