@@ -93,6 +93,12 @@ Preferences::Preferences()
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", TiledStyle));
 #endif
+
+    // Backwards compatibility check since 'FusionStyle' was removed from the
+    // preferences dialog.
+    if (mApplicationStyle == FusionStyle)
+        mApplicationStyle = TiledStyle;
+
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();

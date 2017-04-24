@@ -58,8 +58,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     mUi->styleCombo->addItems(QStringList()
                               << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Fusion")
                               << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
+    mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -156,7 +158,11 @@ void PreferencesDialog::fromPreferences()
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
-    mUi->styleCombo->setCurrentIndex(prefs->applicationStyle());
+    int styleComboIndex = mUi->styleCombo->findData(prefs->applicationStyle());
+    if (styleComboIndex == -1)
+        styleComboIndex = 1;
+
+    mUi->styleCombo->setCurrentIndex(styleComboIndex);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -183,15 +189,15 @@ void PreferencesDialog::retranslateUi()
     mUi->languageCombo->setItemText(0, tr("System default"));
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
-    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Fusion"));
-    mUi->styleCombo->setItemText(2, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
 }
 
-void PreferencesDialog::styleComboChanged(int index)
+void PreferencesDialog::styleComboChanged()
 {
     Preferences *prefs = Preferences::instance();
+    int style = mUi->styleCombo->currentData().toInt();
 
-    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(index));
+    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(style));
 
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
     mUi->baseColor->setEnabled(!systemStyle);
