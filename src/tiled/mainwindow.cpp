@@ -1135,8 +1135,13 @@ void MainWindow::setFullScreen(bool fullScreen)
 
 void MainWindow::toggleClearView(bool clearView)
 {
-    QList<QDockWidget*> docks = findChildren<QDockWidget*>();
-    QList<QToolBar*> toolbars = findChildren<QToolBar*>();
+    QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+    QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
+
+    for (Editor *editor : mDocumentManager->editors()) {
+        docks += editor->dockWidgets();
+        toolBars += editor->toolBars();
+    }
 
     if (clearView) {
         mHiddenDocks.clear();
@@ -1147,7 +1152,7 @@ void MainWindow::toggleClearView(bool clearView)
                 mHiddenDocks.append(dock);
             dock->hide();
         }
-        for (auto toolbar : toolbars) {
+        for (auto toolbar : toolBars) {
             if (toolbar->isVisible())
                 mHiddenToolbars.append(toolbar);
             toolbar->hide();
