@@ -181,37 +181,40 @@ GroupLayer *Layer::asGroupLayer()
 
 Layer *LayerIterator::next()
 {
-    if (!mCurrentLayer) {
+    Layer *layer = mCurrentLayer;
+    int index = mSiblingIndex;
+
+    if (!layer) {
         // Traverse to the first layer of the map
-        if (mMap && mSiblingIndex == -1 && mMap->layerCount() > 0) {
-            mCurrentLayer = mMap->layerAt(0);
-            mSiblingIndex = 0;
-            return mCurrentLayer;
+        if (mMap && index == -1 && mMap->layerCount() > 0) {
+            layer = mMap->layerAt(0);
+            index = 0;
+        } else {
+            return nullptr;
         }
-        return nullptr;
+    } else {
+        // Traverse to next sibling
+        ++index;
     }
 
-    const auto siblings = mCurrentLayer->siblings();
-    int index = mSiblingIndex + 1;
+    const auto siblings = layer->siblings();
 
     // Traverse to parent layer if last child
     if (index == siblings.size()) {
-        mCurrentLayer = mCurrentLayer->parentLayer();
-        mSiblingIndex = mCurrentLayer ? mCurrentLayer->siblingIndex() : -1;
-        return mCurrentLayer;
-    }
+        layer = layer->parentLayer();
+        index = layer ? layer->siblingIndex() : -1;
+    } else {
+        layer = siblings.at(index);
 
-    // Traverse to next sibling
-    Layer *layer = siblings.at(index);
-
-    // If next layer is a group, traverse to its first child
-    while (layer->isGroupLayer()) {
-        auto groupLayer = static_cast<GroupLayer*>(layer);
-        if (groupLayer->layerCount() > 0) {
-            index = 0;
-            layer = groupLayer->layerAt(0);
-        } else {
-            break;
+        // If next layer is a group, traverse to its first child
+        while (layer->isGroupLayer()) {
+            auto groupLayer = static_cast<GroupLayer*>(layer);
+            if (groupLayer->layerCount() > 0) {
+                index = 0;
+                layer = groupLayer->layerAt(0);
+            } else {
+                break;
+            }
         }
     }
 
