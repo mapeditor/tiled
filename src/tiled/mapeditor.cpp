@@ -62,6 +62,7 @@
 #include "tilestampsdock.h"
 #include "toolmanager.h"
 #include "treeviewcombobox.h"
+#include "undodock.h"
 #include "zoomable.h"
 
 #include <QComboBox>
@@ -121,6 +122,7 @@ MapEditor::MapEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mCurrentMapDocument(nullptr)
     , mMapsDock(new MapsDock(mMainWindow))
+    , mUndoDock(new UndoDock(mMainWindow))
     , mObjectsDock(new ObjectsDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
@@ -192,17 +194,22 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
 
+    mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
 
+    // These dock widgets may not be immediately useful to many people, so
+    // they are hidden by default.
     mMapsDock->setVisible(false);
+    mUndoDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 
     mUncheckableProxyModel->setSourceModel(mReversingProxyModel);
@@ -362,6 +369,7 @@ void MapEditor::setCurrentDocument(Document *document)
     }
 
     mPropertiesDock->setDocument(mapDocument);
+    mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setDocument(mapDocument);
@@ -433,6 +441,7 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mPropertiesDock,
         mLayerDock,
         mMapsDock,
+        mUndoDock,
         mObjectsDock,
         mTilesetDock,
         mTerrainDock,

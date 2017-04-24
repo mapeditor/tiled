@@ -61,6 +61,7 @@ class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
 class UncheckableItemsModel;
+class UndoDock;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -132,6 +133,7 @@ private:
 
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
+    UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;

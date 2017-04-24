@@ -42,6 +42,7 @@
 #include "tilesetmodel.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
+#include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -113,6 +114,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mRemoveTiles(new QAction(this))
     , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
+    , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mZoomComboBox(new QComboBox)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
@@ -129,7 +131,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+
+    mUndoDock->setVisible(false);
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
@@ -271,6 +276,7 @@ void TilesetEditor::setCurrentDocument(Document *document)
     }
 
     mPropertiesDock->setDocument(document);
+    mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mTileAnimationEditor->setTilesetDocument(tilesetDocument);
     mTileCollisionEditor->setTilesetDocument(tilesetDocument);
     mTerrainDock->setDocument(document);
@@ -307,6 +313,7 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
 {
     return QList<QDockWidget*> {
         mPropertiesDock,
+        mUndoDock,
         mTerrainDock
     };
 }

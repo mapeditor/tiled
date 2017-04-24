@@ -44,6 +44,7 @@ class TilesetDocument;
 class TilesetView;
 class TileAnimationEditor;
 class TileCollisionEditor;
+class UndoDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -118,6 +119,7 @@ private:
     QAction *mEditTerrain;
 
     PropertiesDock *mPropertiesDock;
+    UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;

@@ -151,16 +151,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoAction->setIcon(undoIcon);
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
-    mUndoDock = new UndoDock(undoGroup, this);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
 
-//    tabifyDockWidget(undoDock, mMapsDock);
-//    tabifyDockWidget(tileStampsDock, undoDock);
-
-    // These dock widgets may not be immediately useful to many people, so
-    // they are hidden by default.
-    mUndoDock->setVisible(false);
     mConsoleDock->setVisible(false);
 
 //    mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -1461,7 +1453,6 @@ void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
 
-    mViewsAndToolbarsMenu->addAction(mUndoDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
