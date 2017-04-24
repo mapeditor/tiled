@@ -44,6 +44,7 @@
 #include <QCursor>
 #include <QMenu>
 #include <QtCore/qmath.h>
+#include <QStyle>
 
 namespace Tiled {
 namespace Internal {
@@ -80,6 +81,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddImageLayer = new QAction(this);
     mActionAddImageLayer->setIcon(addImageLayerIcon);
     mActionAddGroupLayer = new QAction(this);
+    mActionAddGroupLayer->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirIcon));
 
     mActionLayerViaCopy = new QAction(this);
     mActionLayerViaCopy->setShortcut(tr("Ctrl+J"));
