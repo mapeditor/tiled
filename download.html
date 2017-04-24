@@ -242,7 +242,7 @@ title: Download
             <a id="changes"></a><h3>Recent Releases</h3>
 {% for post in site.posts limit:10 %}
   {% if post.tags contains 'release' %}
-            <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }} <small>({{ post.date | date_to_long_string }})</small></a></h4>
+            <h4><a href="{{ post.url }}" class="news-headline">{{ post.title }}</a> <small>({{ post.date | date_to_long_string }})</small></h4>
   {% endif %}
 {% endfor %}
 
