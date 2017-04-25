@@ -20,6 +20,7 @@ place to refer to for any details about using Tiled.*
 * [Introduction](manual/introduction.md)
 * [Working with Layers](manual/layers.md)
 * [Editing Tile Layers](manual/editing-tile-layers.md)
+* [Working with Objects](manual/objects.md)
 * [Custom Properties](manual/custom-properties.md)
 * [Using the Terrain Tool](manual/using-the-terrain-tool.md)
 * [Using Commands](manual/using-commands.md)

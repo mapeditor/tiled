@@ -56,7 +56,7 @@ tile](custom-properties.md#tile-property-inheritance).
 
 For most map types, objects are positioned in plain pixels. The only exception
 to this are isometric maps (not isometric staggered). For isometric maps, it was
-deamed useful to store their positions in a projected coordinate space. For
+deemed useful to store their positions in a projected coordinate space. For
 this, the isometric tiles are assumed to represent projected squares with both
 sides equal to the _tile height_. If you're using a different coordinate space
 for objects in your isometric game, you'll need to convert these coordinates
@@ -99,7 +99,7 @@ There are many ways in which the layers can be made more powerful:
   even individual objects ([#828](https://github.com/bjorn/tiled/issues/828)).
 * Moving certain map-global properties to the Tile Layer
   ([#149](https://github.com/bjorn/tiled/issues/149)). It would be useful if
-  one map could accomodate layers of different tile sizes and maybe even of
+  one map could accommodate layers of different tile sizes and maybe even of
   different orientation.
 * "Infinite" tile layers that grow automatically
   ([#260](https://github.com/bjorn/tiled/issues/260)).

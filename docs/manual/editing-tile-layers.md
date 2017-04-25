@@ -80,7 +80,7 @@ There are various selection tools that all work in similar fashion:
 * **Magic Wand** allows selection of connected areas filled with the same
   tile (shortcut: `W`)
 
-* **Select Same Tile** allows selection of same-tiles accross the entire layer
+* **Select Same Tile** allows selection of same-tiles across the entire layer
   (shortcut: `S`)
 
 By default, each of these tools replaces the currently selected area. The
