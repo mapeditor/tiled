@@ -36,6 +36,8 @@ After pressing _OK_, Tiled should look as follows:
 
   ![Tileset Added](images/introduction/tiled-new-map-tileset-added.png)
 
-We're ready to select some tiles and start painting!
+We're ready to select some tiles and [start painting](editing-tile-layers.md)!
+But first, let's have a quick look at the [various layer types](layers.md)
+supported by Tiled.
 
 *Most of the manual still needs to be written. Fortunately, there is a very nice [Tiled Map Editor Tutorial Series](http://www.gamefromscratch.com/post/2015/10/14/Tiled-Map-Editor-Tutorial-Series.aspx) on GamesFromScratch.com. In addition, the support for Tiled in various [engines and frameworks](../reference/support-for-tmx-maps.md) often comes with some usage information.*

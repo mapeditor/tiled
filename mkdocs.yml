@@ -6,9 +6,9 @@ google_analytics: ['UA-380618-1', 'mapeditor.org']
 pages:
 - Index: index.md
 - Manual:
-    - Contents: manual/index.md
     - Introduction: manual/introduction.md
     - Working with Layers: manual/layers.md
+    - Editing Tile Layers: manual/editing-tile-layers.md
     - Custom Properties: manual/custom-properties.md
     - Using the Terrain Tool: manual/using-the-terrain-tool.md
     - Using Commands: manual/using-commands.md
