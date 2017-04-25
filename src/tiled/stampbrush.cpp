@@ -368,7 +368,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             return;
 
         QRegion paintedRegion;
-        foreach (const QPoint p, list)
+        for (const QPoint p : list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();

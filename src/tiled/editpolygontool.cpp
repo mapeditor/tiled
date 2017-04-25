@@ -215,7 +215,7 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
 template <class T>
 static T *first(const QList<QGraphicsItem *> &items)
 {
-    foreach (QGraphicsItem *item, items) {
+    for (QGraphicsItem *item : items) {
         if (T *t = qgraphicsitem_cast<T*>(item))
             return t;
     }
@@ -341,11 +341,11 @@ void EditPolygonTool::languageChanged()
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 {
-    foreach (PointHandle *handle, mSelectedHandles)
+    for (PointHandle *handle : mSelectedHandles)
         if (!handles.contains(handle))
             handle->setSelected(false);
 
-    foreach (PointHandle *handle, handles)
+    for (PointHandle *handle : handles)
         if (!mSelectedHandles.contains(handle))
             handle->setSelected(true);
 
@@ -365,7 +365,8 @@ void EditPolygonTool::updateHandles()
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
-            foreach (PointHandle *handle, i.value()) {
+            const auto &handles = i.value();
+            for (PointHandle *handle : handles) {
                 if (handle->isSelected())
                     mSelectedHandles.remove(handle);
                 delete handle;
@@ -377,7 +378,7 @@ void EditPolygonTool::updateHandles()
 
     MapRenderer *renderer = mapDocument()->renderer();
 
-    foreach (MapObjectItem *item, selection) {
+    for (MapObjectItem *item : selection) {
         const MapObject *object = item->mapObject();
         if (!object->cell().isEmpty())
             continue;
@@ -421,7 +422,7 @@ void EditPolygonTool::objectsRemoved(const QList<MapObject *> &objects)
         // finishing the move operation.
         // TODO: In addition to avoiding crashes, it would also be good to
         // disallow other actions while moving.
-        foreach (MapObject *object, objects)
+        for (MapObject *object : objects)
             mOldPolygons.remove(object);
     }
 }
@@ -436,14 +437,16 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
 
     const QSet<MapObjectItem*> oldSelection = mapScene()->selectedObjectItems();
 
+    const auto intersectedItems = mapScene()->items(rect,
+                                                    Qt::IntersectsItemShape,
+                                                    Qt::DescendingOrder,
+                                                    viewTransform(event));
+
     if (oldSelection.isEmpty()) {
         // Allow selecting some map objects only when there aren't any selected
         QSet<MapObjectItem*> selectedItems;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect,
-                                                        Qt::IntersectsItemShape,
-                                                        Qt::DescendingOrder,
-                                                        viewTransform(event))) {
+        for (QGraphicsItem *item : intersectedItems) {
             MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
             if (mapObjectItem)
                 selectedItems.insert(mapObjectItem);
@@ -464,10 +467,7 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
         // Update the selected handles
         QSet<PointHandle*> selectedHandles;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect,
-                                                        Qt::IntersectsItemShape,
-                                                        Qt::DescendingOrder,
-                                                        viewTransform(event))) {
+        for (QGraphicsItem *item : intersectedItems) {
             if (PointHandle *handle = dynamic_cast<PointHandle*>(item))
                 selectedHandles.insert(handle);
         }
@@ -500,7 +500,8 @@ void EditPolygonTool::startMoving()
     mOldPolygons.clear();
     mAlignPosition = renderer->screenToPixelCoords((*mSelectedHandles.begin())->pos());
 
-    foreach (PointHandle *handle, mSelectedHandles) {
+    const auto &selectedHandles = mSelectedHandles;
+    for (PointHandle *handle : selectedHandles) {
         const QPointF pos = renderer->screenToPixelCoords(handle->pos());
         mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
@@ -532,8 +533,10 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         diff = renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }
 
+    const auto &selectedHandles = mSelectedHandles;
+
     int i = 0;
-    foreach (PointHandle *handle, mSelectedHandles) {
+    for (PointHandle *handle : selectedHandles) {
         // update handle position
         const QPointF newScreenPos = mOldHandlePositions.at(i) + diff;
         handle->setPos(newScreenPos);
@@ -616,7 +619,7 @@ groupIndexesByObject(const QSet<PointHandle*> &handles)
     PointIndexesByObject result;
 
     // Build the list of point indexes for each map object
-    foreach (PointHandle *handle, handles) {
+    for (PointHandle *handle : handles) {
         RangeSet<int> &pointIndexes = result[handle->mapObject()];
         pointIndexes.insert(handle->pointIndex());
     }
