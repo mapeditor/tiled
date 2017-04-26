@@ -81,6 +81,8 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"), QVariant::fromValue(Map::CSV));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"), QVariant::fromValue(Map::Base64));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"), QVariant::fromValue(Map::Base64Zlib));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"), QVariant::fromValue(Map::Base64Gzip));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"), QVariant::fromValue(Map::XML));
 
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"), QVariant::fromValue(Map::RightDown));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"), QVariant::fromValue(Map::RightUp));
