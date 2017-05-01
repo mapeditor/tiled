@@ -73,7 +73,7 @@ to quickly erase rectangular areas.
 
 ## Selection Tools
 
-There are various selection tools that all work in similar fashion:
+There are various tile selection tools that all work in similar fashion:
 
 * **Rectangular Select** allows selection of rectangular areas (shortcut: `R`)
 

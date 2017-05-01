@@ -489,7 +489,7 @@
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>Documentation</string>
+    <string>User Manual</string>
    </property>
   </action>
   <action name="actionNoLabels">
