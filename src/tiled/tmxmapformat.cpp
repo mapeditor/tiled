@@ -28,6 +28,7 @@
 
 #include <QBuffer>
 #include <QDir>
+#include <QXmlStreamReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;

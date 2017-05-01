@@ -104,11 +104,11 @@ Preferences::Preferences()
     mSettings->endGroup();
 
     // Retrieve defined object types
-    ObjectTypesReader objectTypesReader;
-    mObjectTypes = objectTypesReader.readObjectTypes(objectTypesFile());
+    ObjectTypesSerializer objectTypesSerializer;
+    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), mObjectTypes);
 
     // For backwards compatibilty, read in object types from settings
-    if (!objectTypesReader.errorString().isEmpty()) {
+    if (!success) {
         mSettings->beginGroup(QLatin1String("ObjectTypes"));
         const QStringList names = mSettings->value(QLatin1String("Names")).toStringList();
         const QStringList colors = mSettings->value(QLatin1String("Colors")).toStringList();

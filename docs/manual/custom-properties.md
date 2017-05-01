@@ -58,8 +58,8 @@ Types Editor, available from the _View_ menu.
 By default, Tiled stores these object types in the user settings. However, since
 you'll often want to share them with other people in your project, you can
 export your object types or change the storage location of the object types
-file. A simple XML file with self-explanatory contents is used to store your
-object types.
+file. A simple XML or JSON file with self-explanatory contents is used to
+store your object types.
 
 The color not only affects the rendering of the various shapes of objects, but
 is also the color of the label which will show up if you give your object a
