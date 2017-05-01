@@ -115,6 +115,7 @@ private slots:
 
     void tilesetChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
+    void tilesetFileNameChanged(const QString &fileName);
 
     void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);

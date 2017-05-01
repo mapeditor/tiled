@@ -499,11 +499,12 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
     mTabBar->insertTab(index, tileset->name());
+    mTabBar->setTabToolTip(index, tileset->fileName());
 
     connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
             this, &TilesetDock::tilesetNameChanged);
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
-            this, &TilesetDock::updateActions);
+            this, &TilesetDock::tilesetFileNameChanged);
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetDock::tilesetChanged);
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
@@ -562,6 +563,7 @@ void TilesetDock::moveTilesetView(int from, int to)
         const SharedTileset &tileset = mTilesets.at(i);
         if (mTabBar->tabText(i) != tileset->name())
             mTabBar->setTabText(i, tileset->name());
+        mTabBar->setTabToolTip(i, tileset->fileName());
     }
 }
 
@@ -886,6 +888,19 @@ void TilesetDock::tilesetNameChanged(Tileset *tileset)
     const int newIndex = indexOf(mTilesetDocuments, tilesetDocument);
     if (index != newIndex)
         moveTilesetView(index, newIndex);
+}
+
+void TilesetDock::tilesetFileNameChanged(const QString &fileName)
+{
+    TilesetDocument *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    Tileset *tileset = tilesetDocument->tileset().data();
+
+    const int index = indexOf(mTilesets, tileset);
+    Q_ASSERT(index != -1);
+
+    mTabBar->setTabToolTip(index, fileName);
+
+    updateActions();
 }
 
 void TilesetDock::tileImageSourceChanged(Tile *tile)
