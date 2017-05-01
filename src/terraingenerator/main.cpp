@@ -500,6 +500,7 @@ int main(int argc, char *argv[])
             QPixmap terrainImage = terrainTile->image();
 
             Tile *newTerrainTile = targetTileset->addTile(terrainImage);
+            newTerrainTile->setProperties(terrainTile->properties());
 
             Terrain *newTerrain =  targetTileset->addTerrain(terrain->name(),
                                                              newTerrainTile->id());
@@ -544,6 +545,7 @@ int main(int argc, char *argv[])
             continue;
 
         QPixmap image;
+        Properties properties;
 
         if (!tile) {
             qWarning() << "Generating" << terrainNames;
@@ -572,6 +574,7 @@ int main(int argc, char *argv[])
                 }
 
                 painter.drawPixmap(0, 0, tile->image());
+                properties.merge(tile->properties());
             }
 
             image = QPixmap::fromImage(tileImage);
@@ -580,10 +583,12 @@ int main(int argc, char *argv[])
                        << QFileInfo(tile->tileset()->fileName()).fileName();
 
             image = tile->image();
+            properties = tile->properties();
         }
 
         Tile *newTile = targetTileset->addTile(image);
         newTile->setTerrain(terrainNames.toTerrain(*targetTileset));
+        newTile->setProperties(properties);
         terrainToTile.insert(terrainNames, newTile);
     }
 
