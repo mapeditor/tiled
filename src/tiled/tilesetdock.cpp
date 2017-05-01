@@ -882,7 +882,7 @@ void TilesetDock::tilesetNameChanged(Tileset *tileset)
 
     mTabBar->setTabText(index, tileset->name());
 
-    std::sort(mTilesetDocuments.begin(), mTilesetDocuments.end(), lessThan);
+    std::stable_sort(mTilesetDocuments.begin(), mTilesetDocuments.end(), lessThan);
 
     auto tilesetDocument = static_cast<TilesetDocument*>(sender());
     const int newIndex = indexOf(mTilesetDocuments, tilesetDocument);
