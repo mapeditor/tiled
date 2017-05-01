@@ -389,8 +389,8 @@ int main(int argc, char *argv[])
     if (!options.overwrite && QFile::exists(options.target)) {
         targetTileset = reader.readTileset(options.target);
         if (!targetTileset) {
-            qFatal("Error reading target tileset:\n%s",
-                   qUtf8Printable(reader.errorString()));
+            qCritical("Error reading target tileset:\n%s",
+                      qUtf8Printable(reader.errorString()));
         }
 
         // Remove empty tiles from the end of the tileset
@@ -416,9 +416,9 @@ int main(int argc, char *argv[])
     for (const QString &sourceFileName : options.sources) {
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
-            qFatal("Error reading source tileset '%s':\n%s",
-                   qUtf8Printable(sourceFileName),
-                   qUtf8Printable(reader.errorString()));
+            qCritical("Error reading source tileset '%s':\n%s",
+                      qUtf8Printable(sourceFileName),
+                      qUtf8Printable(reader.errorString()));
         }
         sources.append(source);
     }
@@ -456,15 +456,15 @@ int main(int argc, char *argv[])
         qWarning() << "Terrains to combine:";
         for (const QStringList &combine : options.combineList) {
             if (combine.isEmpty()) {
-                qFatal("Empty combine set");
+                qCritical("Empty combine set");
             }
             qWarning() << combine;
 
             // Make sure every terrain from this set was defined.
             for (const QString &terrainName : combine)
                 if (!terrains.contains(terrainName))
-                    qFatal("Terrain %s is in combine list, however it wasn't defined by any tileset.",
-                           qUtf8Printable(terrainName));
+                    qCritical("Terrain %s is in combine list, however it wasn't defined by any tileset.",
+                              qUtf8Printable(terrainName));
         }
     }
 
@@ -588,7 +588,7 @@ int main(int argc, char *argv[])
     }
 
     if (targetTileset->tileCount() == 0)
-        qFatal("Target tileset is empty");
+        qCritical("Target tileset is empty");
 
     if (options.embedImage) {
         // Make sure there is no source name, this way the image will be saved in the TSX file.
