@@ -52,11 +52,15 @@ public slots:
 
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void currentObjectChanged(Object *object);
     void updateActions();
 
+    void cutProperty();
+    void copyProperty();
+    void pasteProperties();
     void addProperty();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperty();

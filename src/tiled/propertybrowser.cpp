@@ -207,7 +207,7 @@ void PropertyBrowser::setDocument(Document *document)
     }
 }
 
-bool PropertyBrowser::isCustomPropertyItem(QtBrowserItem *item) const
+bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 {
     return item && mPropertyToId[item->property()] == CustomProperty;
 }

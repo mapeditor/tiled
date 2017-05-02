@@ -65,7 +65,7 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
 
         int type = it.value().userType();
 
-        const QString typeName = typeToName(it.value().userType());
+        const QString typeName = typeToName(type);
         QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
 
         if (type == filePathTypeId())

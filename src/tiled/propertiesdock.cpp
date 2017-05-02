@@ -22,6 +22,7 @@
 
 #include "addpropertydialog.h"
 #include "changeproperties.h"
+#include "clipboardmanager.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -36,7 +37,6 @@
 #include <QEvent>
 #include <QInputDialog>
 #include <QKeyEvent>
-#include <QShortcut>
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
@@ -184,6 +184,51 @@ void PropertiesDock::updateActions()
     mActionRenameProperty->setEnabled(canModify);
 }
 
+void PropertiesDock::cutProperty()
+{
+    copyProperty();
+    removeProperty();
+}
+
+void PropertiesDock::copyProperty()
+{
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!mPropertyBrowser->isCustomPropertyItem(item))
+        return;
+
+    Object *object = mPropertyBrowser->object();
+    if (!object)
+        return;
+
+    const QString name = item->property()->propertyName();
+    const QVariant value = object->property(name);
+
+    Properties properties;
+    properties.insert(name, value);
+
+    ClipboardManager::instance()->setProperties(properties);
+}
+
+void PropertiesDock::pasteProperties()
+{
+    auto clipboardManager = ClipboardManager::instance();
+    if (!clipboardManager->hasProperties())
+        return;
+
+    Object *object = mPropertyBrowser->object();
+    if (!object)
+        return;
+
+    Properties properties = object->properties();
+    properties.merge(clipboardManager->properties());
+
+    if (object->properties() != properties) {
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new ChangeProperties(mDocument, QString(), object,
+                                             properties));
+    }
+}
+
 void PropertiesDock::addProperty()
 {
     AddPropertyDialog dialog(mPropertyBrowser);
@@ -261,53 +306,81 @@ void PropertiesDock::renameProperty(const QString &name)
 
 void PropertiesDock::showContextMenu(const QPoint& pos)
 {   
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!mPropertyBrowser->isCustomPropertyItem(item))
+    const Object *object = mDocument->currentObject();
+    if (!object)
         return;
-    QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
 
-    QString name = item->property()->propertyName();
-    Object *object = mDocument->currentObject();
-    QVariant value = object->property(name);
+    const QtBrowserItem *item = mPropertyBrowser->currentItem();
+    const bool customPropertySelected = mPropertyBrowser->isCustomPropertyItem(item);
 
     QMenu contextMenu(mPropertyBrowser);
+    QAction *cutAction = contextMenu.addAction(tr("Cu&t"));
+    QAction *copyAction = contextMenu.addAction(tr("&Copy"));
+    QAction *pasteAction = contextMenu.addAction(tr("&Paste"));
+    contextMenu.addSeparator();
     QMenu *convertMenu = contextMenu.addMenu(tr("Convert To"));
     QAction *renameAction = contextMenu.addAction(tr("Rename..."));
     QAction *removeAction = contextMenu.addAction(tr("Remove"));
 
+    cutAction->setShortcuts(QKeySequence::Cut);
+    cutAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-cut.png")));
+    cutAction->setEnabled(customPropertySelected);
+    copyAction->setShortcuts(QKeySequence::Copy);
+    copyAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-copy.png")));
+    copyAction->setEnabled(customPropertySelected);
+    pasteAction->setShortcuts(QKeySequence::Paste);
+    pasteAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-paste.png")));
+    pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
     renameAction->setEnabled(mActionRenameProperty->isEnabled());
+    renameAction->setIcon(mActionRenameProperty->icon());
     removeAction->setEnabled(mActionRemoveProperty->isEnabled());
     removeAction->setShortcuts(mActionRemoveProperty->shortcuts());
+    removeAction->setIcon(mActionRemoveProperty->icon());
 
-    const QList<int> convertTo {
-        QVariant::Bool,
-        QVariant::Color,
-        QVariant::Double,
-        filePathTypeId(),
-        QVariant::Int,
-        QVariant::String
-    };
+    Utils::setThemeIcon(cutAction, "edit-cut");
+    Utils::setThemeIcon(copyAction, "edit-copy");
+    Utils::setThemeIcon(pasteAction, "edit-paste");
+    Utils::setThemeIcon(removeAction, "remove");
 
-    for (int toType : convertTo) {
-        QVariant copy = value;
-        if (value.userType() != toType && copy.convert(toType)) {
-            QAction *action = convertMenu->addAction(typeToName(toType));
-            action->setData(copy);
+    QString propertyName;
+
+    if (customPropertySelected) {
+        const int convertTo[] = {
+            QVariant::Bool,
+            QVariant::Color,
+            QVariant::Double,
+            filePathTypeId(),
+            QVariant::Int,
+            QVariant::String
+        };
+
+        propertyName = item->property()->propertyName();
+        const QVariant propertyValue = object->property(propertyName);
+
+        for (int toType : convertTo) {
+            QVariant copy = propertyValue;
+            if (propertyValue.userType() != toType && copy.convert(toType)) {
+                QAction *action = convertMenu->addAction(typeToName(toType));
+                action->setData(copy);
+            }
         }
     }
 
     convertMenu->setEnabled(!convertMenu->actions().isEmpty());
 
-    QAction *selectedItem = contextMenu.exec(globalPos);
-    if (selectedItem == renameAction) {
-        renameProperty();
-    } else if (selectedItem == removeAction) {
-        removeProperty();
-    } else if (selectedItem) {
+    connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperty);
+    connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperty);
+    connect(pasteAction, &QAction::triggered, this, &PropertiesDock::pasteProperties);
+    connect(renameAction, &QAction::triggered, this, static_cast<void (PropertiesDock::*)()>(&PropertiesDock::renameProperty));
+    connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperty);
+
+    const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
+    const QAction *selectedItem = contextMenu.exec(globalPos);
+    if (selectedItem && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->push(new SetProperty(mDocument,
                                         mDocument->currentObjects(),
-                                        name, selectedItem->data()));
+                                        propertyName, selectedItem->data()));
     }
 }
 
@@ -315,12 +388,12 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
 bool PropertiesDock::event(QEvent *event)
 {
     switch (event->type()) {
-    case QEvent::KeyPress:
     case QEvent::ShortcutOverride: {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace) {
-            if (event->type() == QEvent::KeyPress)
-                removeProperty();
+        if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace
+                || keyEvent->matches(QKeySequence::Cut)
+                || keyEvent->matches(QKeySequence::Copy)
+                || keyEvent->matches(QKeySequence::Paste)) {
             event->accept();
             return true;
         }
@@ -334,6 +407,21 @@ bool PropertiesDock::event(QEvent *event)
     }
 
     return QDockWidget::event(event);
+}
+
+void PropertiesDock::keyPressEvent(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::Delete) || event->key() == Qt::Key_Backspace) {
+        removeProperty();
+    } else if (event->matches(QKeySequence::Cut)) {
+        cutProperty();
+    } else if (event->matches(QKeySequence::Copy)) {
+        copyProperty();
+    } else if (event->matches(QKeySequence::Paste)) {
+        pasteProperties();
+    } else {
+        QDockWidget::keyPressEvent(event);
+    }
 }
 
 void PropertiesDock::retranslateUi()
