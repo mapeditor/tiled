@@ -62,8 +62,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
-    connect(mActionRemoveProperty, SIGNAL(triggered()),
-            SLOT(removeProperty()));
+    connect(mActionRemoveProperty, &QAction::triggered,
+            this, &PropertiesDock::removeProperties);
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
@@ -172,60 +172,91 @@ void PropertiesDock::currentObjectChanged(Object *object)
 
 void PropertiesDock::updateActions()
 {
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
+    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
+    bool allCustomProperties = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = isPartOfTileset(mPropertyBrowser->object());
-    bool canModify = isCustomProperty &&
-            (!isTileset || editingTileset) &&
-            anyObjectHasProperty(mDocument->currentObjects(), item->property()->propertyName());
+    bool canModify = allCustomProperties && (!isTileset || editingTileset);
+
+    // Disable remove and rename actions when none of the selected objects
+    // actually have the selected property (it may be inherited).
+    if (canModify) {
+        for (QtBrowserItem *item : items) {
+            if (!anyObjectHasProperty(mDocument->currentObjects(), item->property()->propertyName())) {
+                canModify = false;
+                break;
+            }
+        }
+    }
 
     mActionRemoveProperty->setEnabled(canModify);
-    mActionRenameProperty->setEnabled(canModify);
+    mActionRenameProperty->setEnabled(canModify && items.size() == 1);
 }
 
-void PropertiesDock::cutProperty()
+void PropertiesDock::cutProperties()
 {
-    copyProperty();
-    removeProperty();
+    if (copyProperties())
+        removeProperties();
 }
 
-void PropertiesDock::copyProperty()
+bool PropertiesDock::copyProperties()
 {
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!mPropertyBrowser->isCustomPropertyItem(item))
-        return;
-
     Object *object = mPropertyBrowser->object();
     if (!object)
-        return;
-
-    const QString name = item->property()->propertyName();
-    const QVariant value = object->property(name);
+        return false;
 
     Properties properties;
-    properties.insert(name, value);
+
+    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
+    for (QtBrowserItem *item : items) {
+        if (!mPropertyBrowser->isCustomPropertyItem(item))
+            return false;
+
+        const QString name = item->property()->propertyName();
+        const QVariant value = object->property(name);
+        if (!value.isValid())
+            return false;
+
+        properties.insert(name, value);
+    }
 
     ClipboardManager::instance()->setProperties(properties);
+    return true;
 }
 
 void PropertiesDock::pasteProperties()
 {
     auto clipboardManager = ClipboardManager::instance();
-    if (!clipboardManager->hasProperties())
+
+    Properties pastedProperties = clipboardManager->properties();
+    if (pastedProperties.isEmpty())
         return;
 
-    Object *object = mPropertyBrowser->object();
-    if (!object)
+    const QList<Object *> objects = mDocument->currentObjects();
+    if (objects.isEmpty())
         return;
 
-    Properties properties = object->properties();
-    properties.merge(clipboardManager->properties());
+    QList<QUndoCommand*> commands;
 
-    if (object->properties() != properties) {
+    for (Object *object : objects) {
+        Properties properties = object->properties();
+        properties.merge(pastedProperties);
+
+        if (object->properties() != properties) {
+            commands.append(new ChangeProperties(mDocument, QString(), object,
+                                                 properties));
+        }
+    }
+
+    if (!commands.isEmpty()) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new ChangeProperties(mDocument, QString(), object,
-                                             properties));
+        undoStack->beginMacro(tr("Paste Property/Properties", nullptr,
+                                 pastedProperties.size()));
+
+        for (QUndoCommand *command : commands)
+            undoStack->push(command);
+
+        undoStack->endMacro();
     }
 }
 
@@ -254,21 +285,31 @@ void PropertiesDock::addProperty(const QString &name, const QVariant &value)
     mPropertyBrowser->editCustomProperty(name);
 }
 
-void PropertiesDock::removeProperty()
+void PropertiesDock::removeProperties()
 {
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!mPropertyBrowser->isCustomPropertyItem(item))
-        return;
-
     Object *object = mDocument->currentObject();
     if (!object)
         return;
 
-    const QString name = item->property()->propertyName();
+    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
+    if (items.isEmpty() || !mPropertyBrowser->allCustomPropertyItems(items))
+        return;
+
+    QStringList propertyNames;
+    for (QtBrowserItem *item : items)
+        propertyNames.append(item->property()->propertyName());
+
     QUndoStack *undoStack = mDocument->undoStack();
-    undoStack->push(new RemoveProperty(mDocument,
-                                       mDocument->currentObjects(),
-                                       name));
+    undoStack->beginMacro(tr("Remove Property/Properties", nullptr,
+                             propertyNames.size()));
+
+    for (const QString &name : propertyNames) {
+        undoStack->push(new RemoveProperty(mDocument,
+                                           mDocument->currentObjects(),
+                                           name));
+    }
+
+    undoStack->endMacro();
 }
 
 void PropertiesDock::renameProperty()
@@ -310,8 +351,18 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     if (!object)
         return;
 
-    const QtBrowserItem *item = mPropertyBrowser->currentItem();
-    const bool customPropertySelected = mPropertyBrowser->isCustomPropertyItem(item);
+    const QList<QtBrowserItem *> items = mPropertyBrowser->selectedItems();
+    const bool customPropertiesSelected = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
+
+    bool currentObjectHasAllProperties = true;
+    QStringList propertyNames;
+    for (QtBrowserItem *item : items) {
+        const QString propertyName = item->property()->propertyName();
+        propertyNames.append(propertyName);
+
+        if (!object->hasProperty(propertyName))
+            currentObjectHasAllProperties = false;
+    }
 
     QMenu contextMenu(mPropertyBrowser);
     QAction *cutAction = contextMenu.addAction(tr("Cu&t"));
@@ -324,10 +375,10 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
 
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-cut.png")));
-    cutAction->setEnabled(customPropertySelected);
+    cutAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     copyAction->setShortcuts(QKeySequence::Copy);
     copyAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-copy.png")));
-    copyAction->setEnabled(customPropertySelected);
+    copyAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
     pasteAction->setShortcuts(QKeySequence::Paste);
     pasteAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-paste.png")));
     pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
@@ -342,9 +393,8 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
     Utils::setThemeIcon(pasteAction, "edit-paste");
     Utils::setThemeIcon(removeAction, "remove");
 
-    QString propertyName;
 
-    if (customPropertySelected) {
+    if (customPropertiesSelected) {
         const int convertTo[] = {
             QVariant::Bool,
             QVariant::Color,
@@ -354,36 +404,58 @@ void PropertiesDock::showContextMenu(const QPoint& pos)
             QVariant::String
         };
 
-        propertyName = item->property()->propertyName();
-        const QVariant propertyValue = object->property(propertyName);
-
         for (int toType : convertTo) {
-            QVariant copy = propertyValue;
-            if (propertyValue.userType() != toType && copy.convert(toType)) {
+            bool someDifferentType = false;
+            bool allCanConvert = true;
+
+            for (const QString &propertyName : propertyNames) {
+                QVariant propertyValue = object->property(propertyName);
+
+                if (propertyValue.userType() != toType)
+                    someDifferentType = true;
+
+                if (!propertyValue.convert(toType)) {
+                    allCanConvert = false;
+                    break;
+                }
+            }
+
+            if (someDifferentType && allCanConvert) {
                 QAction *action = convertMenu->addAction(typeToName(toType));
-                action->setData(copy);
+                action->setData(toType);
             }
         }
     }
 
     convertMenu->setEnabled(!convertMenu->actions().isEmpty());
 
-    connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperty);
-    connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperty);
+    connect(cutAction, &QAction::triggered, this, &PropertiesDock::cutProperties);
+    connect(copyAction, &QAction::triggered, this, &PropertiesDock::copyProperties);
     connect(pasteAction, &QAction::triggered, this, &PropertiesDock::pasteProperties);
     connect(renameAction, &QAction::triggered, this, static_cast<void (PropertiesDock::*)()>(&PropertiesDock::renameProperty));
-    connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperty);
+    connect(removeAction, &QAction::triggered, this, &PropertiesDock::removeProperties);
 
     const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
+
     if (selectedItem && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new SetProperty(mDocument,
-                                        mDocument->currentObjects(),
-                                        propertyName, selectedItem->data()));
+        undoStack->beginMacro(tr("Convert Property/Properties", nullptr, items.size()));
+
+        for (const QString &propertyName : propertyNames) {
+            QVariant propertyValue = object->property(propertyName);
+
+            int toType = selectedItem->data().toInt();
+            propertyValue.convert(toType);
+
+            undoStack->push(new SetProperty(mDocument,
+                                            mDocument->currentObjects(),
+                                            propertyName, propertyValue));
+        }
+
+        undoStack->endMacro();
     }
 }
-
 
 bool PropertiesDock::event(QEvent *event)
 {
@@ -412,11 +484,11 @@ bool PropertiesDock::event(QEvent *event)
 void PropertiesDock::keyPressEvent(QKeyEvent *event)
 {
     if (event->matches(QKeySequence::Delete) || event->key() == Qt::Key_Backspace) {
-        removeProperty();
+        removeProperties();
     } else if (event->matches(QKeySequence::Cut)) {
-        cutProperty();
+        cutProperties();
     } else if (event->matches(QKeySequence::Copy)) {
-        copyProperty();
+        copyProperties();
     } else if (event->matches(QKeySequence::Paste)) {
         pasteProperties();
     } else {

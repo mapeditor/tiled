@@ -58,12 +58,12 @@ private slots:
     void currentObjectChanged(Object *object);
     void updateActions();
 
-    void cutProperty();
-    void copyProperty();
+    void cutProperties();
+    bool copyProperties();
     void pasteProperties();
     void addProperty();
     void addProperty(const QString &name, const QVariant &value);
-    void removeProperty();
+    void removeProperties();
     void renameProperty();
     void renameProperty(const QString &name);
     void showContextMenu(const QPoint& pos);

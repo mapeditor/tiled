@@ -80,6 +80,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
+    setAllowMultiSelection(true);
 
     mStaggerAxisNames.append(tr("X"));
     mStaggerAxisNames.append(tr("Y"));
@@ -210,6 +211,18 @@ void PropertyBrowser::setDocument(Document *document)
 bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 {
     return item && mPropertyToId[item->property()] == CustomProperty;
+}
+
+/**
+ * Returns whether the given list of \a items are all custom properties.
+ */
+bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items) const
+{
+    for (QtBrowserItem *item : items)
+        if (mPropertyToId[item->property()] != CustomProperty)
+            return false;
+
+    return true;
 }
 
 void PropertyBrowser::editCustomProperty(const QString &name)

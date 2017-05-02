@@ -15,9 +15,9 @@ On Mac, replace `Ctrl` with the `Command` key.
 * `Alt + Object Resize` - Toggles "Snap to Grid" temporarily
 * `Middle Click` or `Space Bar` - Hold to pan the map view
 * `F5` - Run the [first custom command](using-commands.md)
-* `Ctrl + X` - Cut (tiles or objects)
-* `Ctrl + C` - Copy (tiles or objects)
-* `Ctrl + V` - Paste (tiles or objects)
+* `Ctrl + X` - Cut (tiles, objects or properties)
+* `Ctrl + C` - Copy (tiles, objects or properties)
+* `Ctrl + V` - Paste (tiles, objects or properties)
 * `Del` - Delete (tiles or objects)
 * `H` - Toggle highlighting of the current layer
 * `A` - Invokes [Automapping](https://github.com/bjorn/tiled/wiki/Automapping)
