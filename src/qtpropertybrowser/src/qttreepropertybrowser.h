@@ -87,6 +87,9 @@ public:
     bool isHeaderVisible() const;
     void setHeaderVisible(bool visible);
 
+    bool allowMultiSelection() const;
+    void setAllowMultiSelection(bool multiSelection);
+
     ResizeMode resizeMode() const;
     void setResizeMode(ResizeMode mode);
 
@@ -107,6 +110,8 @@ public:
     bool propertiesWithoutValueMarked() const;
 
     void editItem(QtBrowserItem *item);
+
+    QList<QtBrowserItem *> selectedItems() const;
 
 Q_SIGNALS:
 

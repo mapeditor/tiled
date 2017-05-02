@@ -118,6 +118,8 @@ public:
     void setCurrentItem(QtBrowserItem *browserItem, bool block);
     void editItem(QtBrowserItem *browserItem);
 
+    QList<QtBrowserItem*> selectedItems() const;
+
     void slotCurrentBrowserItemChanged(QtBrowserItem *item);
     void slotCurrentTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *);
 
@@ -134,6 +136,7 @@ private:
     QtPropertyEditorView *m_treeWidget;
 
     bool m_headerVisible;
+    bool m_allowMultiSelection;
     QtTreePropertyBrowser::ResizeMode m_resizeMode;
     class QtPropertyEditorDelegate *m_delegate;
     bool m_markPropertiesWithoutValue;
@@ -452,6 +455,7 @@ bool QtPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
 QtTreePropertyBrowserPrivate::QtTreePropertyBrowserPrivate() :
     m_treeWidget(0),
     m_headerVisible(true),
+    m_allowMultiSelection(false),
     m_resizeMode(QtTreePropertyBrowser::Stretch),
     m_delegate(0),
     m_markPropertiesWithoutValue(false),
@@ -749,6 +753,18 @@ void QtTreePropertyBrowserPrivate::editItem(QtBrowserItem *browserItem)
     }
 }
 
+QList<QtBrowserItem *> QtTreePropertyBrowserPrivate::selectedItems() const
+{
+    const QList<QTreeWidgetItem*> selectedTreeItems = m_treeWidget->selectedItems();
+    QList<QtBrowserItem*> browserItems;
+
+    for (QTreeWidgetItem *treeItem : selectedTreeItems)
+        if (QtBrowserItem *browserItem = m_itemToIndex.value(treeItem, 0))
+            browserItems.append(browserItem);
+
+    return browserItems;
+}
+
 /*!
     \class QtTreePropertyBrowser
 
@@ -886,6 +902,25 @@ void QtTreePropertyBrowser::setHeaderVisible(bool visible)
 
     d_ptr->m_headerVisible = visible;
     d_ptr->m_treeWidget->header()->setVisible(visible);
+}
+
+/*!
+  \property QtTreePropertyBrowser::allowMultiSelection
+  \brief whether to allow multiple selection items.
+*/
+bool QtTreePropertyBrowser::allowMultiSelection() const
+{
+    return d_ptr->m_allowMultiSelection;
+}
+
+void QtTreePropertyBrowser::setAllowMultiSelection(bool multiSelection)
+{
+    if (d_ptr->m_allowMultiSelection == multiSelection)
+        return;
+
+    d_ptr->m_allowMultiSelection = multiSelection;
+    d_ptr->m_treeWidget->setSelectionMode(multiSelection ? QAbstractItemView::ExtendedSelection
+                                                         : QAbstractItemView::SingleSelection);
 }
 
 /*!
@@ -1110,6 +1145,16 @@ void QtTreePropertyBrowser::itemChanged(QtBrowserItem *item)
 void QtTreePropertyBrowser::editItem(QtBrowserItem *item)
 {
     d_ptr->editItem(item);
+}
+
+/*!
+    Returns the selected items.
+
+    \sa setAllowMultiSelection()
+*/
+QList<QtBrowserItem *> QtTreePropertyBrowser::selectedItems() const
+{
+    return d_ptr->selectedItems();
 }
 
 #if QT_VERSION >= 0x040400
