@@ -33,32 +33,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace {
-
-class EditorMapReader : public MapReader
-{
-protected:
-    /**
-     * Overridden in order to check with the TilesetManager whether the tileset
-     * is already loaded.
-     */
-    SharedTileset readExternalTileset(const QString &source, QString *error) override
-    {
-        // Check if this tileset is already loaded
-        TilesetManager *manager = TilesetManager::instance();
-        SharedTileset tileset = manager->findTileset(source);
-
-        // If not, try to load it
-        if (!tileset)
-            tileset = MapReader::readExternalTileset(source, error);
-
-        return tileset;
-    }
-};
-
-} // anonymous namespace
-
-
 TmxMapFormat::TmxMapFormat(QObject *parent)
     : MapFormat(parent)
 {
@@ -68,7 +42,7 @@ Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(fileName);
     if (!map)
         mError = reader.errorString();
@@ -111,7 +85,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.setData(data);
     buffer.open(QBuffer::ReadOnly);
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(&buffer);
     if (!map)
         mError = reader.errorString();
@@ -149,7 +123,7 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     SharedTileset tileset = reader.readTileset(fileName);
     if (!tileset)
         mError = reader.errorString();

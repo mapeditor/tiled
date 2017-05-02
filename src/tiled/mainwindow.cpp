@@ -1246,7 +1246,7 @@ void MainWindow::addExternalTileset()
 
     for (const QString &fileName : fileNames) {
         QString error;
-        SharedTileset tileset = Tiled::readTileset(fileName, &error);
+        SharedTileset tileset = TilesetManager::instance()->loadTileset(fileName, &error);
         if (tileset) {
             tilesets.append(tileset);
         } else if (fileNames.size() == 1) {

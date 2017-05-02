@@ -49,6 +49,7 @@
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
+#include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -1108,7 +1109,7 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
     case FileNameProperty: {
         FilePath filePath = val.value<FilePath>();
         QString error;
-        SharedTileset newTileset = Tiled::readTileset(filePath.absolutePath, &error);
+        SharedTileset newTileset = TilesetManager::instance()->loadTileset(filePath.absolutePath, &error);
         if (!newTileset) {
             QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
             return;
