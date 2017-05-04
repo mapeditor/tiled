@@ -275,6 +275,10 @@ void NewTilesetDialog::browse()
 
         if (!mNameWasEdited)
             mUi->name->setText(QFileInfo(f).completeBaseName());
+            
+        QImage img(f);
+        if(!img.hasAlphaChannel() && img.colorTable().count() > 0)
+            mUi->colorButton->setColor(img.colorTable().first());
     }
 }
 
