@@ -11,7 +11,7 @@ _the first time_, thanks to Leon Moctezuma who helped a lot with the process. We
 were accepted by Google, after which many interested students approached us with
 their proposals and send in pull requests. Two more mentors joined the Tiled
 organization (Erik Schilling and Elvis Stansvik), so we told Google we were
-ready to take on 3 students this year (out of 11 proposals).
+ready to take on 3 students (out of 11 proposals).
 
 Now we're happy to announce that we were granted all three slots! This summer
 we're going to be working with:
