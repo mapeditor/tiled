@@ -53,6 +53,11 @@ class ObjectGroup;
 class TILEDSHARED_EXPORT Map : public Object
 {
     Q_OBJECT
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
+    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
 
     Q_ENUMS(Orientation
             LayerDataFormat
@@ -155,47 +160,47 @@ public:
     /**
      * Returns the width of this map in tiles.
      */
-    int width() const { return mWidth; }
+    int width() const;
 
     /**
      * Sets the width of this map in tiles.
      */
-    void setWidth(int width) { mWidth = width; }
+    void setWidth(int width);
 
     /**
      * Returns the height of this map in tiles.
      */
-    int height() const { return mHeight; }
+    int height() const;
 
     /**
      * Sets the height of this map in tiles.
      */
-    void setHeight(int height) { mHeight = height; }
+    void setHeight(int height);
 
     /**
      * Returns the size of this map. Provided for convenience.
      */
-    QSize size() const { return QSize(mWidth, mHeight); }
+    QSize size() const;
 
     /**
      * Returns the tile width of this map.
      */
-    int tileWidth() const { return mTileWidth; }
+    int tileWidth() const;
 
     /**
      * Sets the width of one tile.
      */
-    void setTileWidth(int width) { mTileWidth = width; }
+    void setTileWidth(int width);
 
     /**
      * Returns the tile height used by this map.
      */
-    int tileHeight() const { return mTileHeight; }
+    int tileHeight() const;
 
     /**
      * Sets the height of one tile.
      */
-    void setTileHeight(int height) { mTileHeight = height; }
+    void setTileHeight(int height);
 
     /**
      * Returns the size of one tile. Provided for convenience.
@@ -380,6 +385,13 @@ public:
     int nextObjectId() const;
     int takeNextObjectId();
     void initializeObjectIds(ObjectGroup &objectGroup);
+
+signals:
+    void widthChanged();
+    void heightChanged();
+    void tileWidthChanged();
+    void tileHeightChanged();
+    void sizeChanged();
 
 private:
     friend class GroupLayer;    // so it can call adoptLayer

@@ -80,6 +80,69 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
+QSize Map::size() const
+{
+     return QSize(mWidth, mHeight);
+}
+
+int Map::width() const
+{
+    return mWidth;
+}
+
+void Map::setWidth(int width)
+{
+    if (width == mWidth)
+        return;
+
+    mWidth = width;
+    emit widthChanged();
+}
+
+int Map::height() const
+{
+    return mHeight;
+}
+
+void Map::setHeight(int height)
+{
+    if (height == mHeight)
+        return;
+
+    mHeight = height;
+    emit heightChanged();
+    emit sizeChanged();
+}
+
+int Map::tileWidth() const
+{
+    return mTileWidth;
+}
+
+void Map::setTileWidth(int width)
+{
+    if (width == mTileWidth)
+        return;
+
+    mTileWidth = width;
+    emit tileWidthChanged();
+    emit sizeChanged();
+}
+
+int Map::tileHeight() const
+{
+    return mTileHeight;
+}
+
+void Map::setTileHeight(int height)
+{
+    if (height == mTileHeight)
+        return;
+
+    mTileHeight = height;
+    emit tileHeightChanged();
+}
+
 QMargins Map::drawMargins() const
 {
     if (mDrawMarginsDirty)
