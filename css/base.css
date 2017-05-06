@@ -101,6 +101,7 @@ body {
 
 #navbar .navbar-nav {
     margin-left: 10px;
+    margin-right: 10px;
 }
 
 #footer {
@@ -134,11 +135,6 @@ body {
     /* center the social buttons */
     #navbar #social-buttons {
         margin-top: 5px;
-    }
-
-    .container-fluid {
-        margin-right: 3%;
-        margin-left: 3%;
     }
 
     #footer .attribution {
