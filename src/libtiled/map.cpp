@@ -80,11 +80,6 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-QSize Map::size() const
-{
-     return QSize(mWidth, mHeight);
-}
-
 int Map::width() const
 {
     return mWidth;
@@ -112,6 +107,11 @@ void Map::setHeight(int height)
     mHeight = height;
     emit heightChanged();
     emit sizeChanged();
+}
+
+QSize Map::size() const
+{
+     return QSize(mWidth, mHeight);
 }
 
 int Map::tileWidth() const
