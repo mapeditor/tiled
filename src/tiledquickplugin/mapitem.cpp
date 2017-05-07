@@ -44,9 +44,8 @@ void MapItem::setMap(Tiled::Map *map)
         return;
 
     mMap = map;
-    emit mapChanged();
-
     refresh();
+    emit mapChanged();
 }
 
 void MapItem::setVisibleArea(const QRectF &visibleArea)
