@@ -80,11 +80,6 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-int Map::width() const
-{
-    return mWidth;
-}
-
 void Map::setWidth(int width)
 {
     if (width == mWidth)
@@ -92,11 +87,6 @@ void Map::setWidth(int width)
 
     mWidth = width;
     emit widthChanged();
-}
-
-int Map::height() const
-{
-    return mHeight;
 }
 
 void Map::setHeight(int height)
@@ -109,16 +99,6 @@ void Map::setHeight(int height)
     emit sizeChanged();
 }
 
-QSize Map::size() const
-{
-     return QSize(mWidth, mHeight);
-}
-
-int Map::tileWidth() const
-{
-    return mTileWidth;
-}
-
 void Map::setTileWidth(int width)
 {
     if (width == mTileWidth)
@@ -127,11 +107,6 @@ void Map::setTileWidth(int width)
     mTileWidth = width;
     emit tileWidthChanged();
     emit sizeChanged();
-}
-
-int Map::tileHeight() const
-{
-    return mTileHeight;
 }
 
 void Map::setTileHeight(int height)

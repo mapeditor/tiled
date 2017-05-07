@@ -160,7 +160,7 @@ public:
     /**
      * Returns the width of this map in tiles.
      */
-    int width() const;
+    int width() const { return mWidth; }
 
     /**
      * Sets the width of this map in tiles.
@@ -170,7 +170,7 @@ public:
     /**
      * Returns the height of this map in tiles.
      */
-    int height() const;
+    int height() const { return mHeight; }
 
     /**
      * Sets the height of this map in tiles.
@@ -180,12 +180,12 @@ public:
     /**
      * Returns the size of this map. Provided for convenience.
      */
-    QSize size() const;
+    QSize size() const { return QSize(mWidth, mHeight); }
 
     /**
      * Returns the tile width of this map.
      */
-    int tileWidth() const;
+    int tileWidth() const { return mTileWidth; }
 
     /**
      * Sets the width of one tile.
@@ -195,7 +195,7 @@ public:
     /**
      * Returns the tile height used by this map.
      */
-    int tileHeight() const;
+    int tileHeight() const { return mTileHeight; }
 
     /**
      * Sets the height of one tile.
