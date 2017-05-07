@@ -22,6 +22,7 @@
 
 #include <QDockWidget>
 #include <QTreeView>
+#include <QSortFilterProxyModel>
 
 class QAbstractProxyModel;
 class QTreeView;
@@ -36,6 +37,19 @@ class Document;
 class MapDocument;
 class MapObjectModel;
 class ObjectsView;
+
+class ObjectsFilter : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+public:
+    ObjectsFilter(QObject *parent = 0);
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+private :
+    bool pass(const QModelIndex index) const;
+};
 
 class ObjectsDock : public QDockWidget
 {
@@ -89,6 +103,7 @@ public:
     void setMapDocument(MapDocument *mapDoc);
 
     MapObjectModel *mapObjectModel() const;
+    QSortFilterProxyModel *mObjectsFilterModel;
 
 protected:
     void selectionChanged(const QItemSelection &selected,

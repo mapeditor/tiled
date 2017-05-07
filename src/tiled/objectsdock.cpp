@@ -51,6 +51,23 @@ static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+ObjectsFilter::ObjectsFilter(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+}
+
+bool ObjectsFilter::filterAcceptsRow(int sourceRow,
+        const QModelIndex &sourceParent) const
+{
+    QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+    return pass(index);
+}
+
+bool ObjectsFilter::pass(const QModelIndex index) const
+{
+    return true;
+}
+
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
     , mObjectsView(new ObjectsView)
@@ -72,8 +89,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     layout->setSpacing(0);
 
     mFilterEdit->setClearButtonEnabled(true);
-//    connect(mFilterEdit, &QLineEdit::textChanged,
-//            mObjectsView->mProxyModel, &ObjectsFilterModel::setFilterFixedString);
+    connect(mFilterEdit, &QLineEdit::textChanged,
+            mObjectsView->mObjectsFilterModel, &ObjectsFilter::setFilterFixedString);
+
     layout->addWidget(mFilterEdit);
 
     layout->addWidget(mObjectsView);
@@ -266,10 +284,12 @@ void ObjectsDock::documentAboutToClose(Document *document)
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
+    , mObjectsFilterModel(new ObjectsFilter(this))
     , mProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
     setUniformRowHeights(true);
+    mProxyModel->setSourceModel(mObjectsFilterModel);
     setModel(mProxyModel);
     setItemDelegate(new EyeVisibilityDelegate(this));
 
@@ -302,7 +322,9 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
+
+        mObjectsFilterModel->setSourceModel(mMapDocument->mapObjectModel());
+//        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
         const int firstSectionSize =
@@ -315,7 +337,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
-        mProxyModel->setSourceModel(nullptr);
+        mObjectsFilterModel->setSourceModel(nullptr);
+//        mProxyModel->setSourceModel(nullptr);
     }
 }
 
@@ -326,6 +349,7 @@ MapObjectModel *ObjectsView::mapObjectModel() const
 
 void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
+//    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
@@ -336,6 +360,7 @@ void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 {
+//    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
@@ -366,6 +391,7 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
+//        const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
         if (MapObject *o = mapObjectModel()->toMapObject(index))
