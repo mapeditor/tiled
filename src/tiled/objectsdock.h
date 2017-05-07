@@ -74,6 +74,7 @@ private:
     MapDocument *mMapDocument;
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMenu *mMoveToMenu;
+    QLineEdit *mFilterEdit;
 };
 
 class ObjectsView : public QTreeView

@@ -38,6 +38,7 @@
 #include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
 #include <QSettings>
 #include <QToolBar>
@@ -53,6 +54,7 @@ using namespace Tiled::Internal;
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
     , mObjectsView(new ObjectsView)
+    , mFilterEdit(new QLineEdit(this))
     , mMapDocument(nullptr)
 {
     setObjectName(QLatin1String("ObjectsDock"));
@@ -68,6 +70,12 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
     layout->setSpacing(0);
+
+    mFilterEdit->setClearButtonEnabled(true);
+//    connect(mFilterEdit, &QLineEdit::textChanged,
+//            mObjectsView->mProxyModel, &ObjectsFilterModel::setFilterFixedString);
+    layout->addWidget(mFilterEdit);
+
     layout->addWidget(mObjectsView);
 
     mActionNewLayer = new QAction(this);
@@ -173,6 +181,7 @@ void ObjectsDock::retranslateUi()
     mActionObjectProperties->setToolTip(tr("Object Properties"));
     mActionMoveUp->setToolTip(tr("Move Objects Up"));
     mActionMoveDown->setToolTip(tr("Move Objects Down"));
+    mFilterEdit->setPlaceholderText(tr("Filter"));
 
     updateActions();
 }
