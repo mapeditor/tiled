@@ -97,7 +97,7 @@ signals:
     /**
      * Emitted when files are dropped at the tileset dock.
      */
-    void tilesetsDropped(const QStringList &paths);
+    void localFilesDropped(const QStringList &paths);
 
 protected:
     void changeEvent(QEvent *e) override;

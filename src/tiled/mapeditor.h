@@ -108,6 +108,8 @@ public slots:
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
 
+    void addExternalTilesets(const QStringList &fileNames);
+
 private slots:
     void currentWidgetChanged();
 
