@@ -584,7 +584,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     if (!fileFormat) {
-        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format"));
+        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format."));
         return false;
     }
 
@@ -1248,7 +1248,8 @@ void MainWindow::addExternalTileset()
         QString error;
         SharedTileset tileset = TilesetManager::instance()->loadTileset(fileName, &error);
         if (tileset) {
-            tilesets.append(tileset);
+            if (!mapDocument->map()->tilesets().contains(tileset))
+                tilesets.append(tileset);
         } else if (fileNames.size() == 1) {
             QMessageBox::critical(this, tr("Error Reading Tileset"), error);
             return;
