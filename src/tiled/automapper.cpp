@@ -677,8 +677,6 @@ static bool compareLayerTo(const TileLayer *setLayer,
         return false;
 
     QVector<Cell> cells;
-    if (listYes.isEmpty())
-        cells = cellsInRegion(listNo, ruleRegion);
     if (listNo.isEmpty())
         cells = cellsInRegion(listYes, ruleRegion);
 
