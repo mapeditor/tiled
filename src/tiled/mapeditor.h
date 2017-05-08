@@ -160,7 +160,7 @@ private:
 
     TileStampManager *mTileStampManager;
 
-    QMap<QString, QVariant> mMapStates;
+    QVariantMap mMapStates;
 };
 
 

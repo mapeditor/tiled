@@ -306,10 +306,8 @@ void MapEditor::addDocument(Document *document)
         if (scale > 0)
             view->zoomable()->setScale(scale);
 
-        const int hor = mapState.value(QLatin1String("scrollX")).toInt();
-        const int ver = mapState.value(QLatin1String("scrollY")).toInt();
-        view->horizontalScrollBar()->setSliderPosition(hor);
-        view->verticalScrollBar()->setSliderPosition(ver);
+        const QPointF viewCenter = mapState.value(QLatin1String("viewCenter")).toPointF();
+        view->forceCenterOn(viewCenter);
 
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
@@ -329,8 +327,7 @@ void MapEditor::removeDocument(Document *document)
     if (!mapDocument->fileName().isEmpty()) {
         QVariantMap mapState;
         mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
-        mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
-        mapState.insert(QLatin1String("scrollY"), mapView->verticalScrollBar()->sliderPosition());
+        mapState.insert(QLatin1String("viewCenter"), mapView->mapToScene(mapView->viewport()->rect().center()));
         mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
         mMapStates.insert(mapDocument->fileName(), mapState);
 
