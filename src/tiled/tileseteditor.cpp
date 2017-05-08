@@ -50,10 +50,12 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QSettings>
 #include <QStackedWidget>
 #include <QStatusBar>
@@ -104,10 +106,58 @@ private:
 } // anonymous namespace
 
 
+class TilesetEditorWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    TilesetEditorWindow(TilesetEditor *editor, QWidget *parent = nullptr)
+        : QMainWindow(parent)
+        , mEditor(editor)
+    {
+        setAcceptDrops(true);
+    }
+
+signals:
+    void localFilesDropped(const QStringList &files);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
+
+private:
+    TilesetEditor *mEditor;
+};
+
+void TilesetEditorWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    Tileset *tileset = mEditor->currentTileset();
+    if (!tileset || !tileset->isCollection())
+        return; // only collection tilesets can accept drops
+
+    const QList<QUrl> urls = e->mimeData()->urls();
+    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
+        e->acceptProposedAction();
+}
+
+void TilesetEditorWindow::dropEvent(QDropEvent *e)
+{
+    QStringList paths;
+    for (const QUrl &url : e->mimeData()->urls()) {
+        const QString localFile = url.toLocalFile();
+        if (!localFile.isEmpty())
+            paths.append(localFile);
+    }
+    if (!paths.isEmpty()) {
+        emit localFilesDropped(paths);
+        e->acceptProposedAction();
+    }
+}
+
 
 TilesetEditor::TilesetEditor(QObject *parent)
     : Editor(parent)
-    , mMainWindow(new QMainWindow)
+    , mMainWindow(new TilesetEditorWindow(this))
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
@@ -154,9 +204,11 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
+    connect(mMainWindow, &TilesetEditorWindow::localFilesDropped, this, &TilesetEditor::addTiles);
+
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
-    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
+    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
     connect(mEditTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
@@ -437,12 +489,8 @@ static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
     return false;
 }
 
-void TilesetEditor::addTiles()
+void TilesetEditor::openAddTilesDialog()
 {
-    Tileset *tileset = currentTileset();
-    if (!tileset)
-        return;
-
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
@@ -450,6 +498,19 @@ void TilesetEditor::addTiles()
                                                             tr("Add Tiles"),
                                                             startLocation,
                                                             filter);
+
+    if (!files.isEmpty())
+        addTiles(files);
+}
+
+void TilesetEditor::addTiles(const QStringList &files)
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    Preferences *prefs = Preferences::instance();
+
     struct LoadedFile {
         QString imageSource;
         QPixmap image;
@@ -717,3 +778,5 @@ void TilesetEditor::updateAddRemoveActions()
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "tileseteditor.moc"
