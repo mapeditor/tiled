@@ -361,7 +361,6 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
-//        mObjectsFilterModel->setSourceModel(nullptr);
         mProxyModel->setSourceModel(nullptr);
     }
 }
@@ -443,7 +442,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o)));
+        scrollTo(mObjectsFilterModel->mapFromSource(mProxyModel->mapFromSource(mapObjectModel()->index(o))));
     }
 }
 
@@ -501,7 +500,7 @@ void ObjectsView::synchronizeSelectedItems()
     QItemSelection itemSelection;
 
     for (MapObject *o : mMapDocument->selectedObjects()) {
-        QModelIndex index = mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o));
+        QModelIndex index = mObjectsFilterModel->mapFromSource(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
         itemSelection.select(index, index);
     }
 
