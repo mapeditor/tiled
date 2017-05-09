@@ -18,6 +18,7 @@ LANGUAGES = \
     fi \
     fr \
     he \
+    hu \
     it \
     ja \
     nb \
