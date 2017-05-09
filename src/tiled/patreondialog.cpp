@@ -41,15 +41,17 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
 
     resize(Utils::dpiScaled(size()));
 
+    const QDate today(QDate::currentDate());
+
+    auto laterMenu = new QMenu(this);
+    laterMenu->addAction(tr("Remind me next week"))->setData(today.addDays(7));
+    laterMenu->addAction(tr("Remind me next month"))->setData(today.addMonths(1));
+    laterMenu->addAction(tr("Don't remind me"))->setData(QDate());
+    ui->maybeLaterButton->setMenu(laterMenu);
+
     connect(ui->gotoPatreon, &QPushButton::clicked, this, &PatreonDialog::openPatreonPage);
     connect(ui->alreadyPatron, &QPushButton::clicked, this, &PatreonDialog::sayThanks);
-
-    auto laterMenu = new QMenu;
-    laterMenu->addAction(tr("Remind me next week"), [this]() { maybeLater(QDate::currentDate().addDays(7)); });
-    laterMenu->addAction(tr("Remind me next month"), [this]() { maybeLater(QDate::currentDate().addMonths(1)); });
-    laterMenu->addAction(tr("Don't remind me"), [this]() { maybeLater(QDate()); });
-
-    ui->maybeLaterButton->setMenu(laterMenu);
+    connect(laterMenu, &QMenu::triggered, this, &PatreonDialog::maybeLater);
 }
 
 PatreonDialog::~PatreonDialog()
@@ -75,8 +77,9 @@ void PatreonDialog::sayThanks()
     close();
 }
 
-void PatreonDialog::maybeLater(const QDate &date)
+void PatreonDialog::maybeLater(QAction *action)
 {
+    const QDate date = action->data().toDate();
     Preferences::instance()->setPatreonDialogReminder(date);
     close();
 }

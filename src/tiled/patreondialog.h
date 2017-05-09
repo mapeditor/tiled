@@ -40,7 +40,7 @@ public:
 private slots:
     void openPatreonPage();
     void sayThanks();
-    void maybeLater(const QDate &date);
+    void maybeLater(QAction *action);
 
 private:
     Ui::PatreonDialog *ui;
