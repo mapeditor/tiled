@@ -51,46 +51,6 @@ static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ObjectsFilter::ObjectsFilter(QObject *parent)
-    : QSortFilterProxyModel(parent)
-{
-}
-
-bool ObjectsFilter::filterAcceptsRow(int sourceRow,
-        const QModelIndex &sourceParent) const
-{
-    QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-    return pass(index);
-}
-
-bool ObjectsFilter::pass(const QModelIndex index) const
-{
-    bool result = false;
-    if ( sourceModel()->rowCount(index) > 0 )
-    {
-        for(int i = 0; i < sourceModel()->rowCount(index); i++)
-        {
-            QModelIndex childIndex = sourceModel()->index(i, 0, index);
-            if ( ! childIndex.isValid() ) break;
-            result = pass(childIndex);
-            if (result) break;
-        }
-    }
-    else
-    {
-        for(int i = 0; i < sourceModel()->columnCount(index); i++)
-        {
-            QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
-            QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
-            if (type.contains(filterRegExp())){
-                result = true;
-                break;
-            }
-        }
-    }
-    return result;
-}
-
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
     , mFilterEdit(new QLineEdit(this))
@@ -113,7 +73,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged,
-            mObjectsView->objectsFilter(), &ObjectsFilter::setFilterFixedString);
+            mObjectsView->objectsFilterModel(), &ObjectsFilterModel::setFilterFixedString);
 
     layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
@@ -308,7 +268,7 @@ void ObjectsDock::documentAboutToClose(Document *document)
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
-    , mObjectsFilterModel(new ObjectsFilter(this))
+    , mObjectsFilterModel(new ObjectsFilterModel(this))
     , mProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
@@ -375,12 +335,10 @@ void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
     const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
 
-    if (MapObject *mapObject = mapObjectModel()->toMapObject(index)){
+    if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
-    }
-    else if (Layer *layer = mapObjectModel()->toLayer(index)){
+    else if (Layer *layer = mapObjectModel()->toLayer(index))
         mMapDocument->setCurrentObject(layer);
-    }
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
@@ -511,4 +469,36 @@ void ObjectsView::synchronizeSelectedItems()
                              QItemSelectionModel::Rows |
                              QItemSelectionModel::Clear);
     mSynching = false;
+}
+
+ObjectsFilterModel::ObjectsFilterModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+}
+
+bool ObjectsFilterModel::filterAcceptsRow(int sourceRow,
+                                          const QModelIndex &sourceParent) const
+{
+    QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+    return display(index);
+}
+
+bool ObjectsFilterModel::display(const QModelIndex index) const
+{
+    if (sourceModel()->rowCount(index) > 0) {
+        for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
+            QModelIndex childIndex = sourceModel()->index(i, 0, index);
+            if (childIndex.isValid() && display(childIndex))
+                return true;
+        }
+    }
+    else {
+        for (int i = 0; i < sourceModel()->columnCount(index); ++i) {
+            QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
+            QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
+            if (type.contains(filterRegExp()))
+                return true;
+        }
+    }
+    return false;
 }

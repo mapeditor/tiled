@@ -38,17 +38,17 @@ class MapDocument;
 class MapObjectModel;
 class ObjectsView;
 
-class ObjectsFilter : public QSortFilterProxyModel
+class ObjectsFilterModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    ObjectsFilter(QObject *parent = 0);
+    ObjectsFilterModel(QObject *parent = 0);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 private :
-    bool pass(const QModelIndex index) const;
+    bool display(const QModelIndex index) const;
 };
 
 class ObjectsDock : public QDockWidget
@@ -103,9 +103,8 @@ public:
     void setMapDocument(MapDocument *mapDoc);
 
     MapObjectModel *mapObjectModel() const;
-    QSortFilterProxyModel *objectsFilter() const;
+    QSortFilterProxyModel *objectsFilterModel() const;
     QAbstractProxyModel *proxyModel() const;
-
 
 protected:
     void selectionChanged(const QItemSelection &selected,
@@ -130,7 +129,7 @@ private:
     bool mSynching;
 };
 
-inline QSortFilterProxyModel *ObjectsView::objectsFilter() const
+inline QSortFilterProxyModel *ObjectsView::objectsFilterModel() const
 {
     return mObjectsFilterModel;
 }
