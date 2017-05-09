@@ -113,7 +113,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged,
-            mObjectsView->mObjectsFilterModel, &ObjectsFilter::setFilterFixedString);
+            mObjectsView->objectsFilter(), &ObjectsFilter::setFilterFixedString);
 
     layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
@@ -279,7 +279,7 @@ void ObjectsDock::saveExpandedGroups()
 
     for (ObjectGroup *og : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->mProxyModel->mapFromSource(sourceIndex));
+        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
         if (mObjectsView->isExpanded(index))
             mExpandedGroups[mMapDocument].append(og);
     }
@@ -292,7 +292,7 @@ void ObjectsDock::restoreExpandedGroups()
 
     for (ObjectGroup *og : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->mProxyModel->mapFromSource(sourceIndex));
+        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
         mObjectsView->setExpanded(index, true);
     }
 }

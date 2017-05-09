@@ -103,8 +103,9 @@ public:
     void setMapDocument(MapDocument *mapDoc);
 
     MapObjectModel *mapObjectModel() const;
-    QSortFilterProxyModel *mObjectsFilterModel;
-    QAbstractProxyModel *mProxyModel;
+    QSortFilterProxyModel *objectsFilter() const;
+    QAbstractProxyModel *proxyModel() const;
+
 
 protected:
     void selectionChanged(const QItemSelection &selected,
@@ -124,8 +125,20 @@ private:
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;
+    QSortFilterProxyModel *mObjectsFilterModel;
+    QAbstractProxyModel *mProxyModel;
     bool mSynching;
 };
+
+inline QSortFilterProxyModel *ObjectsView::objectsFilter() const
+{
+    return mObjectsFilterModel;
+}
+
+inline QAbstractProxyModel *ObjectsView::proxyModel() const
+{
+    return mProxyModel;
+}
 
 } // namespace Internal
 } // namespace Tiled
