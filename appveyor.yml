@@ -2,11 +2,15 @@ clone_depth: 200
 version: '0.18.{build}'
 
 environment:
-  global:
-    MINGW: C:\Qt\Tools\mingw530_32
   matrix:
-    - QTDIR: C:\Qt\5.7\mingw53_32
-    - QTDIR: C:\Qt\5.7\msvc2013_64
+    - QTDIR: C:\Qt\5.8\msvc2013_64
+      PUSH_RELEASE: true
+    - QTDIR: C:\Qt\5.8\mingw53_32
+      MINGW: C:\Qt\Tools\mingw530_32
+      PUSH_RELEASE: true
+    - QTDIR: C:\Qt\5.6\mingw49_32
+      MINGW: C:\Qt\Tools\mingw492_32
+      PUSH_RELEASE: false
 
 configuration: Release
 
@@ -56,6 +60,7 @@ deploy:
     draft: true
     on:
         appveyor_repo_tag: true
+        push_release: true
 
   - provider: FTP
     protocol: sftp
@@ -68,6 +73,7 @@ deploy:
     on:
         branch: snapshot
         appveyor_repo_tag: false
+        push_release: true
 
   - provider: FTP
     protocol: sftp
@@ -80,6 +86,7 @@ deploy:
     on:
         branch: snapshot
         appveyor_repo_tag: false
+        push_release: true
 
 notifications:
   - provider: Webhook
