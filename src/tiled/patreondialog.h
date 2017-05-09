@@ -39,8 +39,8 @@ public:
 
 private slots:
     void openPatreonPage();
-    void togglePatreonStatus();
-    void updatePatreonStatus();
+    void sayThanks();
+    void maybeLater(const QDate &date);
 
 private:
     Ui::PatreonDialog *ui;

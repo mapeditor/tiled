@@ -451,6 +451,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(autoMappingWarning(bool)));
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
+
+    QTimer::singleShot(500, this, [this,preferences]() {
+        if (preferences->shouldShowPatreonDialog())
+            becomePatron();
+    });
 }
 
 MainWindow::~MainWindow()

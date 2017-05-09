@@ -133,6 +133,9 @@ public:
     bool isPatron() const;
     void setPatron(bool isPatron);
 
+    bool shouldShowPatreonDialog() const;
+    void setPatreonDialogReminder(const QDate &date);
+
     bool openLastFilesOnStartup() const;
 
     bool checkForUpdates() const;
@@ -235,6 +238,7 @@ private:
     QString mObjectTypesFile;
 
     QDate mFirstRun;
+    QDate mPatreonDialogTime;
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;
