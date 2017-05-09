@@ -272,6 +272,7 @@ Product {
                 "LICENSE.APACHE",
                 "LICENSE.BSD",
                 "LICENSE.GPL",
+                "dist/.itch.toml"
             ];
 
             if (qbs.targetOS.contains("windows"))
