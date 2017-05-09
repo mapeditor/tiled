@@ -88,22 +88,22 @@
     <message>
         <location line="+39"/>
         <source>Executable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Изпълним файл:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Browse...</source>
-        <translation type="unfinished">Разглеждане…</translation>
+        <translation>Разглеждане…</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пряк пък:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчистване</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -113,7 +113,7 @@
     <message>
         <location line="+46"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Затваряне</translation>
     </message>
 </context>
 <context>
@@ -370,7 +370,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за запис.</translation>
+        <translation>Файлът не може да бъде отворен за запис.</translation>
     </message>
     <message>
         <location line="+294"/>
