@@ -88,22 +88,22 @@
     <message>
         <location line="+39"/>
         <source>Executable:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ausführbare Datei:</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Browse...</source>
-        <translation type="unfinished">Durchsuchen...</translation>
+        <translation>Durchsuchen…</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Shortcut:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tastaturkürzel:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Löschen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -113,7 +113,7 @@
     <message>
         <location line="+46"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schließen</translation>
     </message>
 </context>
 <context>
@@ -471,12 +471,12 @@
     <message>
         <location line="+10"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Neu</translation>
+        <translation>&amp;Neu</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Befehle</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -546,7 +546,7 @@
     <message>
         <location line="+9"/>
         <source>Map &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Karteneigenschaften</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -576,37 +576,37 @@
     <message>
         <location line="+199"/>
         <source>User Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzerhanduch</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Snap to &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auf ganze &amp;Pixel einrasten</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tileset &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset-&amp;Eigenschaften</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kein Einrasten</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">Befehle editieren...</translation>
+        <translation type="unfinished">Befehle bearbeiten…</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Clear View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ansicht löschen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Registerkarte</translation>
     </message>
     <message>
         <location line="-305"/>
@@ -671,7 +671,7 @@
     <message>
         <location line="+5"/>
         <source>New Map...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neue Karte…</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -797,7 +797,7 @@
     <message>
         <location line="-254"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einrasten</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1064,7 +1064,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+60"/>
         <source>Embed in map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">In Karte einbetten</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1271,7 +1271,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+9"/>
         <source>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vielen Dank, dass sie Tiled benutzen! Bitte ziehen Sie in Betracht, die weitere Entwicklung mit einer kleinen monatlichen Spende zu unterstützen.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1281,7 +1281,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ich bin bereits Unterstützer!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1396,12 +1396,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+14"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ausschalten, falls es Schwierigkeiten beim Speichern gibt.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Use safe writing of files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sicherere Speichertechnik verwenden</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1726,7 +1726,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+13"/>
         <source>Pixel Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pixelgröße</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2366,19 +2366,19 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eine oder mehrere verlinkte Dateien nicht gefunden. Bitte manuell ausfindig machen.</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+79"/>
         <location line="+5"/>
         <source>Locate File...</source>
-        <translation>Datei lokalisieren...</translation>
+        <translation type="unfinished">Datei finden…</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset öffnen…</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -2488,12 +2488,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-109"/>
         <source>Shortcut for this command</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tastaturkürzel für diesen Befehl</translation>
     </message>
     <message>
         <location line="+110"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tastaturkürzel</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2546,7 +2546,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+79"/>
         <source>Select Executable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ausführbare Datei auswählen</translation>
     </message>
 </context>
 <context>
@@ -2554,7 +2554,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/commandmanager.cpp" line="+113"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished">Befehle editieren...</translation>
+        <translation type="unfinished">Befehle bearbeiten…</translation>
     </message>
 </context>
 <context>
@@ -2668,7 +2668,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createtextobjecttool.cpp" line="+70"/>
         <source>Insert Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Text einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2678,7 +2678,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+6"/>
         <source>Hello World</source>
-        <translation type="unfinished"></translation>
+        <translation>Hallo Welt</translation>
     </message>
 </context>
 <context>
