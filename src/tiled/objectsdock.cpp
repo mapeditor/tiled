@@ -93,8 +93,8 @@ bool ObjectsFilter::pass(const QModelIndex index) const
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
-    , mObjectsView(new ObjectsView)
     , mFilterEdit(new QLineEdit(this))
+    , mObjectsView(new ObjectsView)
     , mMapDocument(nullptr)
 {
     setObjectName(QLatin1String("ObjectsDock"));
@@ -116,7 +116,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
             mObjectsView->mObjectsFilterModel, &ObjectsFilter::setFilterFixedString);
 
     layout->addWidget(mFilterEdit);
-
     layout->addWidget(mObjectsView);
 
     mActionNewLayer = new QAction(this);
@@ -280,7 +279,7 @@ void ObjectsDock::saveExpandedGroups()
 
     for (ObjectGroup *og : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = proxyModel->mapFromSource(sourceIndex);
+        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->mProxyModel->mapFromSource(sourceIndex));
         if (mObjectsView->isExpanded(index))
             mExpandedGroups[mMapDocument].append(og);
     }
@@ -288,10 +287,12 @@ void ObjectsDock::saveExpandedGroups()
 
 void ObjectsDock::restoreExpandedGroups()
 {
+    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
+
     for (ObjectGroup *og : objectGroups) {
         const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = static_cast<QAbstractProxyModel*>(mObjectsView->model())->mapFromSource(sourceIndex);
+        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->mProxyModel->mapFromSource(sourceIndex));
         mObjectsView->setExpanded(index, true);
     }
 }

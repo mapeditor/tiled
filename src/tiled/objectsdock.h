@@ -84,11 +84,11 @@ private:
     QAction *mActionMoveUp;
     QAction *mActionMoveDown;
 
+    QLineEdit *mFilterEdit;
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMenu *mMoveToMenu;
-    QLineEdit *mFilterEdit;
 };
 
 class ObjectsView : public QTreeView
@@ -104,6 +104,7 @@ public:
 
     MapObjectModel *mapObjectModel() const;
     QSortFilterProxyModel *mObjectsFilterModel;
+    QAbstractProxyModel *mProxyModel;
 
 protected:
     void selectionChanged(const QItemSelection &selected,
@@ -123,7 +124,6 @@ private:
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;
-    QAbstractProxyModel *mProxyModel;
     bool mSynching;
 };
 
