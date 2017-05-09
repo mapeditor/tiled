@@ -41,6 +41,9 @@ class AlignmentPropertyType {};
 Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
 Q_DECLARE_METATYPE(Tiled::Internal::AlignmentPropertyType)
 
+#if QT_VERSION < 0x050500
+Q_DECLARE_METATYPE(Qt::Alignment)
+#endif
 
 namespace Tiled {
 namespace Internal {
