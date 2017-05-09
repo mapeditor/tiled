@@ -65,7 +65,30 @@ bool ObjectsFilter::filterAcceptsRow(int sourceRow,
 
 bool ObjectsFilter::pass(const QModelIndex index) const
 {
-    return true;
+    bool result = false;
+    if ( sourceModel()->rowCount(index) > 0 )
+    {
+        for(int i = 0; i < sourceModel()->rowCount(index); i++)
+        {
+            QModelIndex childIndex = sourceModel()->index(i, 0, index);
+            if ( ! childIndex.isValid() ) break;
+            result = pass(childIndex);
+            if (result) break;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < sourceModel()->columnCount(index); i++)
+        {
+            QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
+            QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
+            if (type.contains(filterRegExp())){
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 ObjectsDock::ObjectsDock(QWidget *parent)
@@ -289,8 +312,11 @@ ObjectsView::ObjectsView(QWidget *parent)
     , mSynching(false)
 {
     setUniformRowHeights(true);
-    mProxyModel->setSourceModel(mObjectsFilterModel);
-    setModel(mProxyModel);
+
+    mObjectsFilterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mObjectsFilterModel->setSourceModel(mProxyModel);
+    setModel(mObjectsFilterModel);
+
     setItemDelegate(new EyeVisibilityDelegate(this));
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -322,9 +348,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-
-        mObjectsFilterModel->setSourceModel(mMapDocument->mapObjectModel());
-//        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
+        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
         const int firstSectionSize =
@@ -337,8 +361,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
-        mObjectsFilterModel->setSourceModel(nullptr);
-//        mProxyModel->setSourceModel(nullptr);
+//        mObjectsFilterModel->setSourceModel(nullptr);
+        mProxyModel->setSourceModel(nullptr);
     }
 }
 
@@ -349,19 +373,19 @@ MapObjectModel *ObjectsView::mapObjectModel() const
 
 void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
-//    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
-    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
 
-    if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
+    if (MapObject *mapObject = mapObjectModel()->toMapObject(index)){
         mMapDocument->setCurrentObject(mapObject);
-    else if (Layer *layer = mapObjectModel()->toLayer(index))
+    }
+    else if (Layer *layer = mapObjectModel()->toLayer(index)){
         mMapDocument->setCurrentObject(layer);
+    }
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 {
-//    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
-    const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
@@ -391,8 +415,7 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
-//        const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
-        const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
+        const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
 
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
@@ -420,7 +443,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
+        scrollTo(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o)));
     }
 }
 
@@ -435,7 +458,7 @@ void ObjectsView::setColumnVisibility(bool visible)
 
     QSettings *settings = Preferences::instance()->settings();
     QVariantList visibleSections;
-    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+    for (int i = 0; i < mObjectsFilterModel->columnCount(); i++) {
         if (!header()->isSectionHidden(i))
             visibleSections.append(i);
     }
@@ -446,7 +469,7 @@ void ObjectsView::showCustomMenu(const QPoint &point)
 {
     Q_UNUSED(point)
     QMenu contextMenu(this);
-    QAbstractItemModel *model = mProxyModel->sourceModel();
+    QAbstractItemModel *model = mObjectsFilterModel->sourceModel();
     for (int i = 0; i < model->columnCount(); i++) {
         if (i == MapObjectModel::Name)
             continue;
@@ -465,7 +488,7 @@ void ObjectsView::restoreVisibleSections()
     QSettings *settings = Preferences::instance()->settings();
     QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
                                                  QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
-    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+    for (int i = 0; i < mObjectsFilterModel->columnCount(); i++) {
         header()->setSectionHidden(i, !visibleSections.contains(i));
     }
 }
@@ -478,7 +501,7 @@ void ObjectsView::synchronizeSelectedItems()
     QItemSelection itemSelection;
 
     for (MapObject *o : mMapDocument->selectedObjects()) {
-        QModelIndex index = mProxyModel->mapFromSource(mapObjectModel()->index(o));
+        QModelIndex index = mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o));
         itemSelection.select(index, index);
     }
 
