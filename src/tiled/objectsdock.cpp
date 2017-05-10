@@ -67,15 +67,14 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    QWidget *widget = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged,
             mObjectsView->objectsFilterModel(), &ObjectsFilterModel::setFilterFixedString);
 
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(0);
+    layout->setSpacing(0);
     layout->addWidget(mFilterEdit);
     layout->addWidget(mObjectsView);
 
@@ -491,27 +490,30 @@ ObjectsFilterModel::ObjectsFilterModel(QObject *parent)
 
 bool ObjectsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-    // Show all if there is no filter string, prevents empty groups from hiding
-    if(filterRegExp().isEmpty()) return true;
+    // Show all if filter string is empty. Prevents hiding empty groups
+    if(filterRegExp().isEmpty())
+        return true;
 
     QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
 
     // sourceParent of a group has no model
-    if(!sourceParent.model()) return hasAnyMatchingObjects(index);
-    else return containsFilterString(index);
+    if(!sourceParent.model())
+        return groupHasAnyMatchingObjects(index);
+    else
+        return objectContainsFilterString(index);
 }
 
-bool ObjectsFilterModel::hasAnyMatchingObjects(const QModelIndex index) const
+bool ObjectsFilterModel::groupHasAnyMatchingObjects(const QModelIndex index) const
 {
     for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
         QModelIndex childIndex = sourceModel()->index(i, 0, index);
-        if (childIndex.isValid() && containsFilterString(childIndex))
+        if (childIndex.isValid() && objectContainsFilterString(childIndex))
             return true;
     }
     return false;
 }
 
-bool ObjectsFilterModel::containsFilterString(const QModelIndex index) const
+bool ObjectsFilterModel::objectContainsFilterString(const QModelIndex index) const
 {
     for (int i = 0; i < sourceModel()->columnCount(index); ++i) {
         QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());

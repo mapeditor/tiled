@@ -138,8 +138,8 @@ protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 
 private :
-    bool hasAnyMatchingObjects(const QModelIndex index) const;
-    bool containsFilterString(const QModelIndex index) const;
+    bool groupHasAnyMatchingObjects(const QModelIndex index) const;
+    bool objectContainsFilterString(const QModelIndex index) const;
 };
 
 } // namespace Internal
