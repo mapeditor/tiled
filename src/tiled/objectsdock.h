@@ -38,19 +38,6 @@ class MapDocument;
 class MapObjectModel;
 class ObjectsView;
 
-class ObjectsFilterModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-
-public:
-    ObjectsFilterModel(QObject *parent = 0);
-
-protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
-private :
-    bool display(const QModelIndex index) const;
-};
-
 class ObjectsDock : public QDockWidget
 {
     Q_OBJECT
@@ -138,6 +125,21 @@ inline QAbstractProxyModel *ObjectsView::proxyModel() const
 {
     return mProxyModel;
 }
+
+class ObjectsFilterModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+public:
+    ObjectsFilterModel(QObject *parent = 0);
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+
+private :
+    bool hasAnyMatchingObjects(const QModelIndex index) const;
+    bool containsFilterString(const QModelIndex index) const;
+};
 
 } // namespace Internal
 } // namespace Tiled

@@ -476,29 +476,35 @@ ObjectsFilterModel::ObjectsFilterModel(QObject *parent)
 {
 }
 
-bool ObjectsFilterModel::filterAcceptsRow(int sourceRow,
-                                          const QModelIndex &sourceParent) const
+bool ObjectsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
+    // Show all if there is no filter string, prevents empty groups from hiding
+    if(filterRegExp().isEmpty()) return true;
+
     QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-    return display(index);
+
+    // sourceParent of a group has no model
+    if(!sourceParent.model()) return hasAnyMatchingObjects(index);
+    else return containsFilterString(index);
 }
 
-bool ObjectsFilterModel::display(const QModelIndex index) const
+bool ObjectsFilterModel::hasAnyMatchingObjects(const QModelIndex index) const
 {
-    if (sourceModel()->rowCount(index) > 0) {
-        for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
-            QModelIndex childIndex = sourceModel()->index(i, 0, index);
-            if (childIndex.isValid() && display(childIndex))
-                return true;
-        }
+    for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
+        QModelIndex childIndex = sourceModel()->index(i, 0, index);
+        if (childIndex.isValid() && containsFilterString(childIndex))
+            return true;
     }
-    else {
-        for (int i = 0; i < sourceModel()->columnCount(index); ++i) {
-            QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
-            QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
-            if (type.contains(filterRegExp()))
-                return true;
-        }
+    return false;
+}
+
+bool ObjectsFilterModel::containsFilterString(const QModelIndex index) const
+{
+    for (int i = 0; i < sourceModel()->columnCount(index); ++i) {
+        QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
+        QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
+        if (type.contains(filterRegExp()))
+            return true;
     }
     return false;
 }
