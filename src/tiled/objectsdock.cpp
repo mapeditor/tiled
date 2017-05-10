@@ -37,6 +37,7 @@
 #include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
@@ -261,6 +262,18 @@ void ObjectsDock::documentAboutToClose(Document *document)
 {
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mExpandedGroups.remove(mapDocument);
+}
+
+void ObjectsDock::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Return && mFilterEdit->hasFocus()) {
+        mObjectsView->setFocus();
+        QModelIndex first = mObjectsView->model()->index(0, 0, QModelIndex());
+        mObjectsView->setCurrentIndex(first);
+    } else if (event->key() == Qt::Key_Escape) {
+        mFilterEdit->clear();
+    } else {
+        QDockWidget::keyPressEvent(event);
+    }
 }
 
 ///// ///// ///// ///// /////

@@ -49,6 +49,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void updateActions();
