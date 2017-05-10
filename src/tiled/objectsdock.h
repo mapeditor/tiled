@@ -63,6 +63,9 @@ private slots:
 private:
     void retranslateUi();
 
+    void saveFilterString();
+    void restoreFilterString();
+
     void saveExpandedGroups();
     void restoreExpandedGroups();
 
@@ -75,6 +78,7 @@ private:
     QLineEdit *mFilterEdit;
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
+    QMap<MapDocument*, QString> mFilterStrings;
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMenu *mMoveToMenu;
 };

@@ -144,6 +144,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
+        saveFilterString();
         saveExpandedGroups();
         mMapDocument->disconnect(this);
     }
@@ -153,6 +154,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
+        restoreFilterString();
         restoreExpandedGroups();
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateActions()));
@@ -230,6 +232,14 @@ void ObjectsDock::objectProperties()
     emit mMapDocument->editCurrentObject();
 }
 
+void ObjectsDock::saveFilterString() {
+    mFilterStrings[mMapDocument] = mFilterEdit->text();
+}
+
+void ObjectsDock::restoreFilterString() {
+    mFilterEdit->setText(mFilterStrings.take(mMapDocument));
+}
+
 void ObjectsDock::saveExpandedGroups()
 {
     mExpandedGroups[mMapDocument].clear();
@@ -259,8 +269,10 @@ void ObjectsDock::restoreExpandedGroups()
 
 void ObjectsDock::documentAboutToClose(Document *document)
 {
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        mFilterStrings.remove(mapDocument);
         mExpandedGroups.remove(mapDocument);
+    }
 }
 
 void ObjectsDock::keyPressEvent(QKeyEvent *event) {
