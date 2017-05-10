@@ -25,7 +25,9 @@ auto-crop to layer locking and bigger projects like improving the custom command
 system, the polygon editing tools, support for infinite maps and moving of
 selected tiles.
 
-Erik Schilling (Ablu) will be the primary mentor for Ketan.
+Erik Schilling (Ablu) will be the primary mentor for Ketan and you can follow
+his progress in
+[this forum thread](http://discourse.mapeditor.org/t/general-improvements-and-bug-fixes-gsoc-17/2354).
 
 ### Ben Trotter (Bdtrotte)
 
