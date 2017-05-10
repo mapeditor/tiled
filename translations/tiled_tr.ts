@@ -42,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation>Özellik ismi</translation>
+        <translation>Özellik adı</translation>
     </message>
 </context>
 <context>
@@ -294,7 +294,7 @@
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -491,7 +491,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation>Nesne &amp;İsimlerini Göster</translation>
+        <translation>Nesne &amp;Adlarını Göster</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -925,7 +925,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-216"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation>Desen %1 için gömülü resim okuma hatası</translation>
+        <translation>Desen %1 için içe gömülü resim okuma hatası</translation>
     </message>
     <message>
         <location line="+211"/>
@@ -1060,7 +1060,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-20"/>
         <source>&amp;Name:</source>
-        <translation>&amp;İsim:</translation>
+        <translation>&amp;Ad:</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -1829,7 +1829,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation>Belirtilmemiş</translation>
+        <translation>Ayarlı değil</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -2141,17 +2141,15 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message>
         <location line="+18"/>
         <source>Flip Horizontally</source>
@@ -2215,10 +2213,9 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
     <message>
         <location line="+11"/>
         <source>Object &amp;Properties...</source>
@@ -2468,7 +2465,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-58"/>
         <source>Set a name for this command</source>
-        <translation>Bu komut için bir isim belirleyin</translation>
+        <translation>Bu komut için bir ad ayarlayın</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2483,7 +2480,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+104"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="-109"/>
@@ -2744,17 +2741,16 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="+230"/>
         <source>Move %n Point(s)</source>
-        <translation><numerusform>%n Noktayı Taşı</numerusform>
+        <translation><numerusform>Noktayı Taşı</numerusform>
         <numerusform>%n Noktayı Taşı</numerusform>
         </translation></message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation>
-            <numerusform>%n Boğumu Sil</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Boğumu Sil</numerusform>
+        <numerusform>%n Boğumu Sil</numerusform>
+        </translation></message>
     <message>
         <location line="-40"/>
         <location line="+215"/>
@@ -3130,7 +3126,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation>Belirtilen dosya adının bilinen bir dosya uzantısı yok.</translation>
+        <translation>Verilen dosya adının bilinen bir dosya uzantısı yok.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3226,10 +3222,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Döndür</numerusform>
+        <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
@@ -3254,7 +3249,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Group Layer</source>
-        <translation>Katmanı Gruba Koy</translation>
+        <translation>Katmanı Gruba Kat</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -3269,7 +3264,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+8"/>
         <source>Duplicate Layer</source>
-        <translation>Katmanı Tekrarla</translation>
+        <translation>Katmanı Kopyala</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3289,38 +3284,33 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+165"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+21"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
-        <translation>
-            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Yukarı Taşı</numerusform>
+        <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation>
-            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Aşağı Taşı</numerusform>
+        <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3403,7 +3393,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+1"/>
         <location line="+3"/>
         <source>&amp;Group Layer</source>
-        <translation>Katmanı &amp;Gruba Koy</translation>
+        <translation>Katmanı &amp;Gruba Kat</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3470,17 +3460,15 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+391"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
@@ -3494,7 +3482,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-514"/>
         <source>&amp;Duplicate Layer</source>
-        <translation>Katmanı Çoğal&amp;t</translation>
+        <translation>Katmanı &amp;Kopyala</translation>
     </message>
     <message>
         <location line="-84"/>
@@ -3558,7 +3546,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
-        <translation><numerusform>%n Desen Seti Ekle</numerusform>
+        <translation><numerusform>Desen Seti Ekle</numerusform>
         <numerusform>%n Desen Seti Ekle</numerusform>
         </translation></message>
     <message>
@@ -3592,7 +3580,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+49"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3759,14 +3747,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="-262"/>
         <location line="+686"/>
         <source>Move %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Taşı</numerusform>
+        <numerusform>%n Nesneyi Taşı</numerusform>
+        </translation></message>
     <message>
         <location line="-566"/>
         <source>Unnamed object</source>
-        <translation>İsimsiz nesne</translation>
+        <translation>Adsız nesne</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3786,17 +3773,15 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+645"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Döndür</numerusform>
+        <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+265"/>
         <source>Resize %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
+        <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::ObjectTypesEditor</name>
@@ -3869,7 +3854,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
 </context>
 <context>
@@ -3915,10 +3900,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::PatreonDialog</name>
@@ -3967,7 +3951,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+325"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
     <message>
         <location line="+178"/>
@@ -4017,7 +4001,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation>İsim Değiştir...</translation>
+        <translation>Adı Değiştir...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4121,7 +4105,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+77"/>
         <location line="+90"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="-205"/>
@@ -4293,7 +4277,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-59"/>
         <source>Group Layer</source>
-        <translation>Katmanı Gruba Koy</translation>
+        <translation>Katmanı Gruba Kat</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4530,7 +4514,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation>Damgayı Tekrarla</translation>
+        <translation>Damgayı Kopyala</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4578,7 +4562,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Embed Tileset</source>
-        <translation>Desen Setini &amp;Göm</translation>
+        <translation>Desen Setini İçe &amp;Göm</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4696,7 +4680,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Set Terrain Image</source>
-        <translation>Zemin Resmini Belirle</translation>
+        <translation>Zemin Resmini Ayarla</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4885,7 +4869,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+42"/>
         <source>Set Property</source>
-        <translation>Özelliği Belirle</translation>
+        <translation>Özelliği Ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5059,8 +5043,8 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+48"/>
         <source>Change %n Object/s Tile</source>
-        <translation><numerusform>%n Nesnenin Desenini Değiştir</numerusform>
-        <numerusform>%n Nesnenin Desenini Değiştir</numerusform>
+        <translation><numerusform>Nesne Desenini Değiştir</numerusform>
+        <numerusform>%n Nesne Desenini Değiştir</numerusform>
         </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
@@ -5193,10 +5177,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <source>Flip %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Çevir</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Çevir</numerusform>
+        <numerusform>%n Nesneyi Çevir</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+34"/>
         <source>Change Tile Type</source>
