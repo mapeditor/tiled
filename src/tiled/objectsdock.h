@@ -58,6 +58,7 @@ private slots:
     void documentAboutToClose(Document *document);
     void moveObjectsUp();
     void moveObjectsDown();
+    void expandFilteredGroups();
 
 private:
     void retranslateUi();

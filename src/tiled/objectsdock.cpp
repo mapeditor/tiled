@@ -70,6 +70,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged,
             mObjectsView->objectsFilterModel(), &ObjectsFilterModel::setFilterFixedString);
+    connect(mFilterEdit, &QLineEdit::textChanged, this, &ObjectsDock::expandFilteredGroups);
     connect(mFilterEdit, &QLineEdit::returnPressed, [&] { mObjectsView->setFocus(); });
 
     QWidget *widget = new QWidget(this);
@@ -273,6 +274,18 @@ void ObjectsDock::keyPressEvent(QKeyEvent *event)
         mFilterEdit->clear();
     else
         QDockWidget::keyPressEvent(event);
+}
+
+void ObjectsDock::expandFilteredGroups()
+{
+    // Don't expand when the filter is cleared
+    if(mFilterEdit->text().isEmpty())
+        return;
+
+    const auto &objectGroups = mMapDocument->map()->objectGroups();
+
+    for (ObjectGroup *og : objectGroups)
+        mObjectsView->setExpanded(getGroupIndex(og), true);
 }
 
 ///// ///// ///// ///// /////
