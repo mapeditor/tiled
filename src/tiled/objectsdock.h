@@ -25,7 +25,6 @@
 #include <QSortFilterProxyModel>
 
 class QAbstractProxyModel;
-class QTreeView;
 
 namespace Tiled {
 
@@ -63,9 +62,6 @@ private slots:
 private:
     void retranslateUi();
 
-    void saveFilterString();
-    void restoreFilterString();
-
     void saveExpandedGroups();
     void restoreExpandedGroups();
 
@@ -81,6 +77,7 @@ private:
     QMap<MapDocument*, QString> mFilterStrings;
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMenu *mMoveToMenu;
+    QModelIndex getGroupIndex(ObjectGroup *og);
 };
 
 class ObjectsView : public QTreeView

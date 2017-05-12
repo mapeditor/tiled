@@ -144,7 +144,7 @@ void ObjectsDock::moveObjectsDown()
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
-        saveFilterString();
+        mFilterStrings[mMapDocument] = mFilterEdit->text();
         saveExpandedGroups();
         mMapDocument->disconnect(this);
     }
@@ -154,7 +154,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        restoreFilterString();
+        mFilterEdit->setText(mFilterStrings.take(mMapDocument));
         restoreExpandedGroups();
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateActions()));
@@ -232,39 +232,30 @@ void ObjectsDock::objectProperties()
     emit mMapDocument->editCurrentObject();
 }
 
-void ObjectsDock::saveFilterString() {
-    mFilterStrings[mMapDocument] = mFilterEdit->text();
-}
-
-void ObjectsDock::restoreFilterString() {
-    mFilterEdit->setText(mFilterStrings.take(mMapDocument));
+QModelIndex ObjectsDock::getGroupIndex(ObjectGroup  *og)
+{
+    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
+    const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
+    return proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
 }
 
 void ObjectsDock::saveExpandedGroups()
 {
     mExpandedGroups[mMapDocument].clear();
 
-    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const auto &objectGroups = mMapDocument->map()->objectGroups();
 
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
-        if (mObjectsView->isExpanded(index))
+    for (ObjectGroup *og : objectGroups)
+        if (mObjectsView->isExpanded(getGroupIndex(og)))
             mExpandedGroups[mMapDocument].append(og);
-    }
 }
 
 void ObjectsDock::restoreExpandedGroups()
 {
-    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
 
-    for (ObjectGroup *og : objectGroups) {
-        const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-        const QModelIndex index = proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
-        mObjectsView->setExpanded(index, true);
-    }
+    for (ObjectGroup *og : objectGroups)
+        mObjectsView->setExpanded(getGroupIndex(og), true);
 }
 
 void ObjectsDock::documentAboutToClose(Document *document)
