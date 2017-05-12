@@ -70,6 +70,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged,
             mObjectsView->objectsFilterModel(), &ObjectsFilterModel::setFilterFixedString);
+    connect(mFilterEdit, &QLineEdit::returnPressed, [&] { mObjectsView->setFocus(); });
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -232,7 +233,7 @@ void ObjectsDock::objectProperties()
     emit mMapDocument->editCurrentObject();
 }
 
-QModelIndex ObjectsDock::getGroupIndex(ObjectGroup  *og)
+QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
 {
     const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
@@ -266,16 +267,12 @@ void ObjectsDock::documentAboutToClose(Document *document)
     }
 }
 
-void ObjectsDock::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return && mFilterEdit->hasFocus()) {
-        mObjectsView->setFocus();
-        QModelIndex first = mObjectsView->model()->index(0, 0, QModelIndex());
-        mObjectsView->setCurrentIndex(first);
-    } else if (event->key() == Qt::Key_Escape) {
+void ObjectsDock::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape)
         mFilterEdit->clear();
-    } else {
+    else
         QDockWidget::keyPressEvent(event);
-    }
 }
 
 ///// ///// ///// ///// /////
