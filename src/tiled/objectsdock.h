@@ -58,13 +58,13 @@ private slots:
     void documentAboutToClose(Document *document);
     void moveObjectsUp();
     void moveObjectsDown();
-    void expandFilteredGroups();
+    void filterObjects();
 
 private:
     void retranslateUi();
 
-    void saveExpandedGroups();
-    void restoreExpandedGroups();
+    void saveExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState);
+    void restoreExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState);
 
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
@@ -75,8 +75,13 @@ private:
     QLineEdit *mFilterEdit;
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
-    QMap<MapDocument*, QString> mFilterStrings;
+
+    // These maps store the state of the object dock for each opened map document
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
+    QMap<MapDocument*, QList<ObjectGroup*> > mPrefilterExpandedGroups;
+    QMap<MapDocument*, QString> mFilterStrings;
+    QMap<MapDocument*, bool> mFilterWasEmpty;
+
     QMenu *mMoveToMenu;
     QModelIndex getGroupIndex(ObjectGroup *og);
 };

@@ -67,10 +67,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
+    mFilterWasEmpty[mMapDocument] = true;
     mFilterEdit->setClearButtonEnabled(true);
-    connect(mFilterEdit, &QLineEdit::textChanged,
-            mObjectsView->objectsFilterModel(), &ObjectsFilterModel::setFilterFixedString);
-    connect(mFilterEdit, &QLineEdit::textChanged, this, &ObjectsDock::expandFilteredGroups);
+    connect(mFilterEdit, &QLineEdit::textChanged, this, &ObjectsDock::filterObjects);
     connect(mFilterEdit, &QLineEdit::returnPressed, [&] { mObjectsView->setFocus(); });
 
     QWidget *widget = new QWidget(this);
@@ -147,7 +146,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
         mFilterStrings[mMapDocument] = mFilterEdit->text();
-        saveExpandedGroups();
+        saveExpandedGroups(mExpandedGroups);
         mMapDocument->disconnect(this);
     }
 
@@ -157,7 +156,7 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 
     if (mMapDocument) {
         mFilterEdit->setText(mFilterStrings.take(mMapDocument));
-        restoreExpandedGroups();
+        restoreExpandedGroups(mExpandedGroups);
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateActions()));
     }
@@ -241,20 +240,20 @@ QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
     return proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
 }
 
-void ObjectsDock::saveExpandedGroups()
+void ObjectsDock::saveExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState)
 {
-    mExpandedGroups[mMapDocument].clear();
+    expansionState[mMapDocument].clear();
 
     const auto &objectGroups = mMapDocument->map()->objectGroups();
 
     for (ObjectGroup *og : objectGroups)
         if (mObjectsView->isExpanded(getGroupIndex(og)))
-            mExpandedGroups[mMapDocument].append(og);
+            expansionState[mMapDocument].append(og);
 }
 
-void ObjectsDock::restoreExpandedGroups()
+void ObjectsDock::restoreExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState)
 {
-    const auto objectGroups = mExpandedGroups.take(mMapDocument);
+    const auto objectGroups = expansionState.take(mMapDocument);
 
     for (ObjectGroup *og : objectGroups)
         mObjectsView->setExpanded(getGroupIndex(og), true);
@@ -268,6 +267,33 @@ void ObjectsDock::documentAboutToClose(Document *document)
     }
 }
 
+void ObjectsDock::filterObjects()
+{
+    // Save the prefilter expansion state if this is the first applied filter
+    if(mFilterWasEmpty[mMapDocument]) {
+        mFilterWasEmpty[mMapDocument] = false;
+        saveExpandedGroups(mPrefilterExpandedGroups);
+    }
+
+    mObjectsView->objectsFilterModel()->setFilterFixedString(mFilterEdit->text());
+
+    if(mFilterEdit->text().isEmpty()) { // Resotre the prefilter expansion state
+        mFilterWasEmpty[mMapDocument] = true;
+        const auto &objectGroups = mMapDocument->map()->objectGroups();
+
+        // Collapse all groups so expansion is restored to the original state
+        for (ObjectGroup *og : objectGroups)
+            mObjectsView->setExpanded(getGroupIndex(og), false);
+
+        restoreExpandedGroups(mPrefilterExpandedGroups);
+    } else { // Expand the filtered Groups
+        const auto &objectGroups = mMapDocument->map()->objectGroups();
+
+        for (ObjectGroup *og : objectGroups)
+            mObjectsView->setExpanded(getGroupIndex(og), true);
+    }
+}
+
 void ObjectsDock::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape)
@@ -276,17 +302,6 @@ void ObjectsDock::keyPressEvent(QKeyEvent *event)
         QDockWidget::keyPressEvent(event);
 }
 
-void ObjectsDock::expandFilteredGroups()
-{
-    // Don't expand when the filter is cleared
-    if(mFilterEdit->text().isEmpty())
-        return;
-
-    const auto &objectGroups = mMapDocument->map()->objectGroups();
-
-    for (ObjectGroup *og : objectGroups)
-        mObjectsView->setExpanded(getGroupIndex(og), true);
-}
 
 ///// ///// ///// ///// /////
 
