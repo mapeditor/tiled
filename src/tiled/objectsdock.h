@@ -76,7 +76,7 @@ private:
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
 
-    // These maps store the state of the object dock for each opened map document
+    // These maps store the state of the objects dock for each opened map document
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMap<MapDocument*, QList<ObjectGroup*> > mPrefilterExpandedGroups;
     QMap<MapDocument*, QString> mFilterStrings;

@@ -302,7 +302,6 @@ void ObjectsDock::keyPressEvent(QKeyEvent *event)
         QDockWidget::keyPressEvent(event);
 }
 
-
 ///// ///// ///// ///// /////
 
 ObjectsView::ObjectsView(QWidget *parent)
