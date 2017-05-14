@@ -146,6 +146,20 @@ QPointF MapItem::pixelToScreenCoords(const QPointF &position) const
     return mRenderer->pixelToScreenCoords(position);
 }
 
+QPointF MapItem::pixelToTileCoords(qreal x, qreal y) const
+{
+    if (!mRenderer)
+        return QPoint(x, y);
+    return mRenderer->pixelToTileCoords(x, y);
+}
+
+QPointF MapItem::pixelToTileCoords(const QPointF &position) const
+{
+    if (!mRenderer)
+        return position;
+    return mRenderer->pixelToTileCoords(position);
+}
+
 void MapItem::componentComplete()
 {
     QQuickItem::componentComplete();

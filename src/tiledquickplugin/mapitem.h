@@ -66,6 +66,8 @@ public:
     Q_INVOKABLE QPointF screenToPixelCoords(const QPointF &position) const;
     Q_INVOKABLE QPointF pixelToScreenCoords(qreal x, qreal y) const;
     Q_INVOKABLE QPointF pixelToScreenCoords(const QPointF &position) const;
+    Q_INVOKABLE QPointF pixelToTileCoords(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF pixelToTileCoords(const QPointF &position) const;
 
     void componentComplete();
 
