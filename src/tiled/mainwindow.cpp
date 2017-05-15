@@ -494,7 +494,7 @@ void MainWindow::commitData(QSessionManager &manager)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (confirmAllSave()) {
-        //Make sure user won't end up in view mode on next launch
+        // Make sure user won't end up in Clear View mode on next launch
         toggleClearView(false);
         writeSettings();
         event->accept();
@@ -1129,32 +1129,31 @@ void MainWindow::setFullScreen(bool fullScreen)
 void MainWindow::toggleClearView(bool clearView)
 {
     if (clearView) {
+        mMainWindowStates.insert(this, saveState());
+
         QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
         QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
 
         for (Editor *editor : mDocumentManager->editors()) {
+            if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+                mMainWindowStates.insert(editorWindow, editorWindow->saveState());
+
             docks += editor->dockWidgets();
             toolBars += editor->toolBars();
         }
 
-        auto hideWidget = [this](QWidget *widget) {
-            if (!widget->isHidden()) {
-                if (!mHiddenWidgets.contains(widget))
-                    mHiddenWidgets.append(widget);
-                widget->hide();
-            }
-        };
-
         for (auto dock : docks)
-            hideWidget(dock);
+            dock->hide();
         for (auto toolBar : toolBars)
-            hideWidget(toolBar);
+            toolBar->hide();
 
     } else {
-        for (auto dock : mHiddenWidgets)
-            dock->setVisible(true);
-
-        mHiddenWidgets.clear();
+        QMapIterator<QMainWindow*, QByteArray> it(mMainWindowStates);
+        while (it.hasNext()) {
+            it.next();
+            it.key()->restoreState(it.value());
+        }
+        mMainWindowStates.clear();
     }
 }
 

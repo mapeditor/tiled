@@ -227,7 +227,7 @@ private:
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
-    QList<QWidget*> mHiddenWidgets;
+    QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
 
 } // namespace Internal
