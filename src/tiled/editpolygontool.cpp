@@ -128,7 +128,7 @@ void PointHandle::paint(QPainter *painter,
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),
           QIcon(QLatin1String(":images/24x24/tool-edit-polygons.png")),
-          QKeySequence(tr("E")),
+          QKeySequence(tr("O")),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
@@ -336,7 +336,7 @@ void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void EditPolygonTool::languageChanged()
 {
     setName(tr("Edit Polygons"));
-    setShortcut(QKeySequence(tr("E")));
+    setShortcut(QKeySequence(tr("O")));
 }
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)

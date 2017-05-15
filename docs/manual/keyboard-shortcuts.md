@@ -62,7 +62,7 @@ On Mac, replace `Ctrl` with the `Command` key.
     * `PgDown` - Lower selected objects (with Manual object drawing order)
     * `Home` - Move selected objects to Top (with Manual object drawing order)
     * `End` - Move selected objects to Bottom (with Manual object drawing order)
-* `E` - Activate Edit Polygons tool
+* `O` - Activate Edit Polygons tool (was `E` until Tiled 1.0)
 * `R` - Activate Insert Rectangle tool
 * `C` - Activate Insert Ellipse tool
 * `P` - Activate Insert Polygon tool
@@ -70,7 +70,7 @@ On Mac, replace `Ctrl` with the `Command` key.
     * `Enter` - Finish creating object
     * `Escape` - Cancel creating object
 * `T` - Activate Insert Tile tool
-* `X` - Activate Insert Text tool
+* `E` - Activate Insert Text tool (since Tiled 1.0)
 
 ## When using the brush tool
 
