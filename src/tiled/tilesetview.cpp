@@ -409,6 +409,7 @@ TilesetView::TilesetView(QWidget *parent)
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
+    setTabKeyNavigation(false);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
