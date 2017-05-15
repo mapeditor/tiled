@@ -309,5 +309,19 @@ QSize TileStampView::sizeHint() const
     return Utils::dpiScaled(QSize(130, 200));
 }
 
+bool TileStampView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
+}
+
 } // namespace Internal
 } // namespace Tiled

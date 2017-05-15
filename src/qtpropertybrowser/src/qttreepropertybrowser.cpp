@@ -124,6 +124,7 @@ public:
     void slotCurrentTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *);
 
     QTreeWidgetItem *editedItem() const;
+    QtBrowserItem *editedBrowserItem() const;
 
 private:
     void updateItem(QTreeWidgetItem *item);
@@ -745,6 +746,11 @@ QTreeWidgetItem *QtTreePropertyBrowserPrivate::editedItem() const
     return m_delegate->editedItem();
 }
 
+QtBrowserItem *QtTreePropertyBrowserPrivate::editedBrowserItem() const
+{
+    return m_itemToIndex.value(editedItem());
+}
+
 void QtTreePropertyBrowserPrivate::editItem(QtBrowserItem *browserItem)
 {
     if (QTreeWidgetItem *treeItem = m_indexToItem.value(browserItem, 0)) {
@@ -1145,6 +1151,14 @@ void QtTreePropertyBrowser::itemChanged(QtBrowserItem *item)
 void QtTreePropertyBrowser::editItem(QtBrowserItem *item)
 {
     d_ptr->editItem(item);
+}
+
+/*!
+    Returns the current item being edited, if any.
+*/
+QtBrowserItem *QtTreePropertyBrowser::editedItem() const
+{
+    return d_ptr->editedBrowserItem();
 }
 
 /*!

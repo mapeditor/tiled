@@ -292,6 +292,20 @@ void LayerView::currentLayerChanged(Layer *layer)
     setCurrentIndex(mProxyModel->mapFromSource(layerModel->index(layer)));
 }
 
+bool LayerView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
+}
+
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
 {
     if (!mMapDocument)

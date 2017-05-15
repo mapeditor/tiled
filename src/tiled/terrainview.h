@@ -52,6 +52,7 @@ public:
     Terrain *terrainAt(const QModelIndex &index) const;
 
 protected:
+    bool event(QEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
