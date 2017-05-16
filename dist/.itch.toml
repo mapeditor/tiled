@@ -1,7 +1,0 @@
-[[actions]]
-name = "manual"
-path = "http://doc.mapeditor.org/"
-
-[[actions]]
-name = "forums"
-path = "http://discourse.mapeditor.org/"
