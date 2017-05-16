@@ -303,11 +303,14 @@ void ObjectsDock::filterObjects()
             mObjectsView->setExpanded(getGroupIndex(og), false);
 
         restoreExpandedGroups();
+        mObjectsView->setItemsExpandable(true);
     } else { // Expand the filtered Groups
         const auto &objectGroups = mMapDocument->map()->objectGroups();
 
         for (ObjectGroup *og : objectGroups)
             mObjectsView->setExpanded(getGroupIndex(og), true);
+
+        mObjectsView->setItemsExpandable(false);
     }
 }
 
