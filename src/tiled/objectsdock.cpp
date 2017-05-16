@@ -184,7 +184,9 @@ void ObjectsDock::retranslateUi()
     mActionObjectProperties->setToolTip(tr("Object Properties"));
     mActionMoveUp->setToolTip(tr("Move Objects Up"));
     mActionMoveDown->setToolTip(tr("Move Objects Down"));
-    mFilterEdit->setPlaceholderText(tr("Filter"));
+
+    // Avoiding adding new strings during the string freeze period
+    mFilterEdit->setPlaceholderText(QCoreApplication::translate("Tiled::Internal::TileStampsDock", "Filter"));
 
     updateActions();
 }
