@@ -14,6 +14,7 @@ Project {
     property bool linuxArchive: Environment.getEnv("TILED_LINUX_ARCHIVE")
     property bool installHeaders: false
     property bool useRPaths: true
+    property bool windowsInstaller: false
 
     references: [
         "dist/archive.qbs",
