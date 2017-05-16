@@ -113,12 +113,37 @@ Product {
         qbs.installDir: qbs.targetOS.contains("windows") ? "" : "lib"
     }
 
+    property var pluginFiles: {
+        if (qbs.targetOS.contains("windows")) {
+            if (qbs.debugInformation)
+                return ["*d.dll"];
+            else
+                return ["*.dll"];
+        } else if (qbs.targetOS.contains("linux")) {
+            return ["*.so"];
+        }
+        return ["*"];
+    }
+
+    property var pluginExcludeFiles: {
+        var files = ["*.pdb"];
+        if (!(qbs.targetOS.contains("windows") && qbs.debugInformation)) {
+            // Exclude debug DLLs.
+            //
+            // This also excludes the qdirect2d.dll platform plugin, but I'm
+            // not sure when it would be preferable over the qwindows.dll. In
+            // testing it, it seems to have severe issues with HiDpi screens
+            // (as of Qt 5.8.0).
+            files.push("*d.dll");
+        }
+        return files;
+    }
+
     Group {
         name: "Qt Platform Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforms/")
-        files: ["*"]
-        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
-        excludeFiles: ["*d.dll", "*.pdb"]
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
         qbs.install: true
         qbs.installDir: "plugins/platforms"
     }
@@ -127,7 +152,7 @@ Product {
         name: "Qt Platform Input Context Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforminputcontexts/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/platforminputcontexts"
     }
@@ -136,7 +161,7 @@ Product {
         name: "Qt Platform Theme Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platformthemes/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/platformthemes"
     }
@@ -144,9 +169,8 @@ Product {
     Group {
         name: "Qt Image Format Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
-        files: ["*"]
-        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
-        excludeFiles: ["*d.dll", "*.pdb"]
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
         qbs.install: true
         qbs.installDir: "plugins/imageformats"
     }
@@ -155,7 +179,7 @@ Product {
         name: "Qt XCB GL Integration Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/xcbglintegrations/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/xcbglintegrations"
     }
@@ -164,7 +188,7 @@ Product {
         name: "Qt Icon Engine Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/iconengines"
     }
