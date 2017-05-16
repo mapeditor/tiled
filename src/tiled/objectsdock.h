@@ -63,8 +63,8 @@ private slots:
 private:
     void retranslateUi();
 
-    void saveExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState);
-    void restoreExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState);
+    void saveExpandedGroups();
+    void restoreExpandedGroups();
 
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
@@ -78,9 +78,8 @@ private:
 
     // These maps store the state of the objects dock for each opened map document
     QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
-    QMap<MapDocument*, QList<ObjectGroup*> > mPrefilterExpandedGroups;
     QMap<MapDocument*, QString> mFilterStrings;
-    QMap<MapDocument*, bool> mFilterWasEmpty;
+    bool mFilterWasEmpty;
 
     QMenu *mMoveToMenu;
     QModelIndex getGroupIndex(ObjectGroup *og);

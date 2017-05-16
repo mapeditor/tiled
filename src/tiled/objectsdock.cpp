@@ -57,6 +57,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     , mFilterEdit(new QLineEdit(this))
     , mObjectsView(new ObjectsView)
     , mMapDocument(nullptr)
+    , mFilterWasEmpty(true)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
@@ -67,7 +68,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    mFilterWasEmpty[mMapDocument] = true;
     mFilterEdit->setClearButtonEnabled(true);
     connect(mFilterEdit, &QLineEdit::textChanged, this, &ObjectsDock::filterObjects);
     connect(mFilterEdit, &QLineEdit::returnPressed, [&] { mObjectsView->setFocus(); });
@@ -146,7 +146,11 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 {
     if (mMapDocument) {
         mFilterStrings[mMapDocument] = mFilterEdit->text();
-        saveExpandedGroups(mExpandedGroups);
+
+        // Save only if no filter was applied, otherwise the state is already saved
+        if (mFilterEdit->text().isEmpty())
+            saveExpandedGroups();
+
         mMapDocument->disconnect(this);
     }
 
@@ -155,8 +159,19 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     mObjectsView->setMapDocument(mapDoc);
 
     if (mMapDocument) {
-        mFilterEdit->setText(mFilterStrings.take(mMapDocument));
-        restoreExpandedGroups(mExpandedGroups);
+        QString filterString = mFilterStrings.take(mMapDocument);
+
+        // A hack to prevent saving the state if no filter was applied before switching
+        mFilterWasEmpty = false;
+
+        mFilterEdit->setText(filterString);
+
+        // Restore the expansion state if no filter is applied
+        if (filterString.isEmpty()) {
+            restoreExpandedGroups();
+            mFilterWasEmpty = true;
+        }
+
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateActions()));
     }
@@ -242,20 +257,20 @@ QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
     return proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
 }
 
-void ObjectsDock::saveExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState)
+void ObjectsDock::saveExpandedGroups()
 {
-    expansionState[mMapDocument].clear();
+    mExpandedGroups[mMapDocument].clear();
 
     const auto &objectGroups = mMapDocument->map()->objectGroups();
 
     for (ObjectGroup *og : objectGroups)
         if (mObjectsView->isExpanded(getGroupIndex(og)))
-            expansionState[mMapDocument].append(og);
+            mExpandedGroups[mMapDocument].append(og);
 }
 
-void ObjectsDock::restoreExpandedGroups(QMap<MapDocument*, QList<ObjectGroup*> > &expansionState)
+void ObjectsDock::restoreExpandedGroups()
 {
-    const auto objectGroups = expansionState.take(mMapDocument);
+    const auto objectGroups = mExpandedGroups.take(mMapDocument);
 
     for (ObjectGroup *og : objectGroups)
         mObjectsView->setExpanded(getGroupIndex(og), true);
@@ -272,22 +287,22 @@ void ObjectsDock::documentAboutToClose(Document *document)
 void ObjectsDock::filterObjects()
 {
     // Save the prefilter expansion state if this is the first applied filter
-    if(mFilterWasEmpty[mMapDocument]) {
-        mFilterWasEmpty[mMapDocument] = false;
-        saveExpandedGroups(mPrefilterExpandedGroups);
+    if (mFilterWasEmpty) {
+        mFilterWasEmpty = false;
+        saveExpandedGroups();
     }
 
     mObjectsView->objectsFilterModel()->setFilterFixedString(mFilterEdit->text());
 
-    if(mFilterEdit->text().isEmpty()) { // Resotre the prefilter expansion state
-        mFilterWasEmpty[mMapDocument] = true;
+    if (mFilterEdit->text().isEmpty()) { // Restore the prefilter expansion state
+        mFilterWasEmpty = true;
         const auto &objectGroups = mMapDocument->map()->objectGroups();
 
         // Collapse all groups so expansion is restored to the original state
         for (ObjectGroup *og : objectGroups)
             mObjectsView->setExpanded(getGroupIndex(og), false);
 
-        restoreExpandedGroups(mPrefilterExpandedGroups);
+        restoreExpandedGroups();
     } else { // Expand the filtered Groups
         const auto &objectGroups = mMapDocument->map()->objectGroups();
 
