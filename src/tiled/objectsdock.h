@@ -116,6 +116,7 @@ private slots:
 private:
     void restoreVisibleSections();
     void synchronizeSelectedItems();
+    QModelIndex mapFromViewModel(const QModelIndex &proxyIndex);
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;

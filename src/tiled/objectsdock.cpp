@@ -254,7 +254,7 @@ QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
 {
     const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-    return proxyModel->mapFromSource(mObjectsView->reversingProxyModel()->mapFromSource(sourceIndex));
+    return proxyModel->mapFromSource(mObjectsView->objectsFilterModel()->mapFromSource(sourceIndex));
 }
 
 void ObjectsDock::saveExpandedGroups()
@@ -334,8 +334,8 @@ ObjectsView::ObjectsView(QWidget *parent)
     setUniformRowHeights(true);
 
     mObjectsFilterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    mObjectsFilterModel->setSourceModel(mReversingProxyModel);
-    setModel(mObjectsFilterModel);
+    mReversingProxyModel->setSourceModel(mObjectsFilterModel);
+    setModel(mReversingProxyModel);
 
     setItemDelegate(new EyeVisibilityDelegate(this));
 
@@ -368,7 +368,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-        mReversingProxyModel->setSourceModel(mMapDocument->mapObjectModel());
+        mObjectsFilterModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
         const int firstSectionSize =
@@ -381,7 +381,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
-        mReversingProxyModel->setSourceModel(nullptr);
+        mObjectsFilterModel->setSourceModel(nullptr);
     }
 }
 
@@ -390,9 +390,13 @@ MapObjectModel *ObjectsView::mapObjectModel() const
     return mMapDocument ? mMapDocument->mapObjectModel() : nullptr;
 }
 
+QModelIndex ObjectsView::mapFromViewModel(const QModelIndex &proxyIndex) {
+    return mObjectsFilterModel->mapToSource(mReversingProxyModel->mapToSource(proxyIndex));
+}
+
 void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
-    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
+    const QModelIndex index = mapFromViewModel(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
@@ -402,7 +406,7 @@ void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
 {
-    const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
+    const QModelIndex index = mapFromViewModel(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
@@ -432,7 +436,7 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
-        const QModelIndex index = mObjectsFilterModel->mapToSource(proxyIndex);
+        const QModelIndex index = mapFromViewModel(proxyIndex);
 
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
@@ -460,7 +464,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(mObjectsFilterModel->mapFromSource(mReversingProxyModel->mapFromSource(mapObjectModel()->index(o))));
+        scrollTo(mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o))));
     }
 }
 
@@ -475,7 +479,7 @@ void ObjectsView::setColumnVisibility(bool visible)
 
     QSettings *settings = Preferences::instance()->settings();
     QVariantList visibleSections;
-    for (int i = 0; i < mObjectsFilterModel->columnCount(); i++) {
+    for (int i = 0; i < mReversingProxyModel->columnCount(); i++) {
         if (!header()->isSectionHidden(i))
             visibleSections.append(i);
     }
@@ -486,7 +490,7 @@ void ObjectsView::showCustomMenu(const QPoint &point)
 {
     Q_UNUSED(point)
     QMenu contextMenu(this);
-    QAbstractItemModel *model = mObjectsFilterModel->sourceModel();
+    QAbstractItemModel *model = mReversingProxyModel->sourceModel();
     for (int i = 0; i < model->columnCount(); i++) {
         if (i == MapObjectModel::Name)
             continue;
@@ -505,7 +509,7 @@ void ObjectsView::restoreVisibleSections()
     QSettings *settings = Preferences::instance()->settings();
     QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
                                                    QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
-    for (int i = 0; i < mObjectsFilterModel->columnCount(); i++) {
+    for (int i = 0; i < mReversingProxyModel->columnCount(); i++) {
         header()->setSectionHidden(i, !visibleSections.contains(i));
     }
 }
@@ -518,7 +522,7 @@ void ObjectsView::synchronizeSelectedItems()
     QItemSelection itemSelection;
 
     for (MapObject *o : mMapDocument->selectedObjects()) {
-        QModelIndex index = mObjectsFilterModel->mapFromSource(mReversingProxyModel->mapFromSource(mapObjectModel()->index(o)));
+        QModelIndex index = mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o)));
         itemSelection.select(index, index);
     }
 
