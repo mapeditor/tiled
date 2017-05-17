@@ -254,7 +254,7 @@ QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
 {
     const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
     const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-    return proxyModel->mapFromSource(mObjectsView->proxyModel()->mapFromSource(sourceIndex));
+    return proxyModel->mapFromSource(mObjectsView->reversingProxyModel()->mapFromSource(sourceIndex));
 }
 
 void ObjectsDock::saveExpandedGroups()
@@ -328,13 +328,13 @@ ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
     , mObjectsFilterModel(new ObjectsFilterModel(this))
-    , mProxyModel(new ReversingProxyModel(this))
+    , mReversingProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
     setUniformRowHeights(true);
 
     mObjectsFilterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    mObjectsFilterModel->setSourceModel(mProxyModel);
+    mObjectsFilterModel->setSourceModel(mReversingProxyModel);
     setModel(mObjectsFilterModel);
 
     setItemDelegate(new EyeVisibilityDelegate(this));
@@ -368,7 +368,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-        mProxyModel->setSourceModel(mMapDocument->mapObjectModel());
+        mReversingProxyModel->setSourceModel(mMapDocument->mapObjectModel());
 
         const QSettings *settings = Preferences::instance()->settings();
         const int firstSectionSize =
@@ -381,7 +381,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
-        mProxyModel->setSourceModel(nullptr);
+        mReversingProxyModel->setSourceModel(nullptr);
     }
 }
 
@@ -460,7 +460,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(mObjectsFilterModel->mapFromSource(mProxyModel->mapFromSource(mapObjectModel()->index(o))));
+        scrollTo(mObjectsFilterModel->mapFromSource(mReversingProxyModel->mapFromSource(mapObjectModel()->index(o))));
     }
 }
 
@@ -518,7 +518,7 @@ void ObjectsView::synchronizeSelectedItems()
     QItemSelection itemSelection;
 
     for (MapObject *o : mMapDocument->selectedObjects()) {
-        QModelIndex index = mObjectsFilterModel->mapFromSource(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
+        QModelIndex index = mObjectsFilterModel->mapFromSource(mReversingProxyModel->mapFromSource(mapObjectModel()->index(o)));
         itemSelection.select(index, index);
     }
 

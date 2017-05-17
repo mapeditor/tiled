@@ -98,7 +98,7 @@ public:
 
     MapObjectModel *mapObjectModel() const;
     QSortFilterProxyModel *objectsFilterModel() const;
-    QAbstractProxyModel *proxyModel() const;
+    QAbstractProxyModel *reversingProxyModel() const;
 
 protected:
     void selectionChanged(const QItemSelection &selected,
@@ -119,7 +119,7 @@ private:
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;
-    QAbstractProxyModel *mProxyModel;
+    QAbstractProxyModel *mReversingProxyModel;
     bool mSynching;
 };
 
@@ -128,9 +128,9 @@ inline QSortFilterProxyModel *ObjectsView::objectsFilterModel() const
     return mObjectsFilterModel;
 }
 
-inline QAbstractProxyModel *ObjectsView::proxyModel() const
+inline QAbstractProxyModel *ObjectsView::reversingProxyModel() const
 {
-    return mProxyModel;
+    return mReversingProxyModel;
 }
 
 class ObjectsFilterModel : public QSortFilterProxyModel
