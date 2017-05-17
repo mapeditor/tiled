@@ -395,6 +395,11 @@ QModelIndex ObjectsView::mapFromViewModel(const QModelIndex &viewIndex) const
     return mObjectsFilterModel->mapToSource(mReversingProxyModel->mapToSource(viewIndex));
 }
 
+QModelIndex ObjectsView::mapToViewModel(const QModelIndex &sourceIndex) const
+{
+    return mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(sourceIndex));
+}
+
 void ObjectsView::onPressed(const QModelIndex &viewIndex)
 {
     const QModelIndex index = mapFromViewModel(viewIndex);
@@ -465,7 +470,7 @@ void ObjectsView::selectedObjectsChanged()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
-        scrollTo(mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o))));
+        scrollTo(mapToViewModel(mapObjectModel()->index(o)));
     }
 }
 
@@ -523,7 +528,7 @@ void ObjectsView::synchronizeSelectedItems()
     QItemSelection itemSelection;
 
     for (MapObject *o : mMapDocument->selectedObjects()) {
-        QModelIndex index = mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(mapObjectModel()->index(o)));
+        QModelIndex index = mapToViewModel(mapObjectModel()->index(o));
         itemSelection.select(index, index);
     }
 

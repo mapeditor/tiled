@@ -117,6 +117,7 @@ private:
     void restoreVisibleSections();
     void synchronizeSelectedItems();
     QModelIndex mapFromViewModel(const QModelIndex &viewIndex) const;
+    QModelIndex mapToViewModel(const QModelIndex &sourceIndex) const;
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;
