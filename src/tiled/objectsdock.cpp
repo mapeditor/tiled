@@ -504,7 +504,7 @@ void ObjectsView::restoreVisibleSections()
 {
     QSettings *settings = Preferences::instance()->settings();
     QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
-                                                 QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
+                                                   QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
     for (int i = 0; i < mObjectsFilterModel->columnCount(); i++) {
         header()->setSectionHidden(i, !visibleSections.contains(i));
     }
@@ -538,13 +538,13 @@ ObjectsFilterModel::ObjectsFilterModel(QObject *parent)
 bool ObjectsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     // Show all if filter string is empty. Prevents hiding empty groups
-    if(filterRegExp().isEmpty())
+    if (filterRegExp().isEmpty())
         return true;
 
     QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
 
     // sourceParent of a group has no model
-    if(!sourceParent.model())
+    if (!sourceParent.model())
         return groupHasAnyMatchingObjects(index);
     else
         return objectContainsFilterString(index);
