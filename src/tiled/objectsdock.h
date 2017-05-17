@@ -105,8 +105,8 @@ protected:
                           const QItemSelection &deselected) override;
 
 private slots:
-    void onPressed(const QModelIndex &proxyIndex);
-    void onActivated(const QModelIndex &proxyIndex);
+    void onPressed(const QModelIndex &viewIndex);
+    void onActivated(const QModelIndex &viewIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
     void setColumnVisibility(bool visible);
@@ -116,7 +116,7 @@ private slots:
 private:
     void restoreVisibleSections();
     void synchronizeSelectedItems();
-    QModelIndex mapFromViewModel(const QModelIndex &proxyIndex);
+    QModelIndex mapFromViewModel(const QModelIndex &viewIndex) const;
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;

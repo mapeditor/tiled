@@ -390,13 +390,14 @@ MapObjectModel *ObjectsView::mapObjectModel() const
     return mMapDocument ? mMapDocument->mapObjectModel() : nullptr;
 }
 
-QModelIndex ObjectsView::mapFromViewModel(const QModelIndex &proxyIndex) {
-    return mObjectsFilterModel->mapToSource(mReversingProxyModel->mapToSource(proxyIndex));
+QModelIndex ObjectsView::mapFromViewModel(const QModelIndex &viewIndex) const
+{
+    return mObjectsFilterModel->mapToSource(mReversingProxyModel->mapToSource(viewIndex));
 }
 
-void ObjectsView::onPressed(const QModelIndex &proxyIndex)
+void ObjectsView::onPressed(const QModelIndex &viewIndex)
 {
-    const QModelIndex index = mapFromViewModel(proxyIndex);
+    const QModelIndex index = mapFromViewModel(viewIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
@@ -404,9 +405,9 @@ void ObjectsView::onPressed(const QModelIndex &proxyIndex)
         mMapDocument->setCurrentObject(layer);
 }
 
-void ObjectsView::onActivated(const QModelIndex &proxyIndex)
+void ObjectsView::onActivated(const QModelIndex &viewIndex)
 {
-    const QModelIndex index = mapFromViewModel(proxyIndex);
+    const QModelIndex index = mapFromViewModel(viewIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index)) {
         mMapDocument->setCurrentObject(mapObject);
