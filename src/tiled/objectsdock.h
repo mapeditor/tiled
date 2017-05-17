@@ -138,7 +138,7 @@ class ObjectsFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    ObjectsFilterModel(QObject *parent = 0);
+    ObjectsFilterModel(QObject *parent = nullptr);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
