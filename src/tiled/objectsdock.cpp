@@ -320,7 +320,7 @@ void ObjectsDock::keyPressEvent(QKeyEvent *event)
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
     , mMapDocument(nullptr)
-    , mObjectsFilterModel(new ObjectsFilterModel(this))
+    , mObjectsFilterModel(new ObjectsFilterModel(mapObjectModel() ,this))
     , mReversingProxyModel(new ReversingProxyModel(this))
     , mSynching(false)
 {
@@ -562,8 +562,9 @@ void ObjectsView::synchronizeSelectedItems()
     mSynching = false;
 }
 
-ObjectsFilterModel::ObjectsFilterModel(QObject *parent)
+ObjectsFilterModel::ObjectsFilterModel(MapObjectModel *mapObjectModel, QObject *parent)
     : QSortFilterProxyModel(parent)
+    , mMapObjectModel(mapObjectModel)
 {
 }
 
@@ -575,30 +576,24 @@ bool ObjectsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sour
 
     QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
 
-    // sourceParent of a group has no model
-    if (!sourceParent.model())
-        return groupHasAnyMatchingObjects(index);
-    else
-        return objectContainsFilterString(index);
+    if (ObjectGroup *objectGroup = mMapObjectModel->toObjectGroup(index))
+        return groupHasAnyMatchingObjects(objectGroup);
+    else if (MapObject *mapObject = mMapObjectModel->toMapObject(index))
+        return objectContainsFilterString(mapObject);
+    else return false;
 }
 
-bool ObjectsFilterModel::groupHasAnyMatchingObjects(const QModelIndex index) const
+bool ObjectsFilterModel::groupHasAnyMatchingObjects(const ObjectGroup *objectGroup) const
 {
-    for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
-        QModelIndex childIndex = sourceModel()->index(i, 0, index);
-        if (childIndex.isValid() && objectContainsFilterString(childIndex))
+    for (auto object:objectGroup->objects())
+         if (objectContainsFilterString(object))
             return true;
-    }
     return false;
 }
 
-bool ObjectsFilterModel::objectContainsFilterString(const QModelIndex index) const
+bool ObjectsFilterModel::objectContainsFilterString(const MapObject *mapObject) const
 {
-    for (int i = 0; i < sourceModel()->columnCount(index); ++i) {
-        QModelIndex objectIndex = sourceModel()->index(index.row(), i, index.parent());
-        QString type = sourceModel()->data(objectIndex, Qt::DisplayRole).toString();
-        if (type.contains(filterRegExp()))
-            return true;
-    }
-    return false;
+    return mapObject->name().contains(filterRegExp()) ||
+           mapObject->type().contains(filterRegExp()) ||
+           QString::number(mapObject->id()).contains(filterRegExp());
 }

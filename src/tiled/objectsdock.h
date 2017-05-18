@@ -28,6 +28,7 @@ class QAbstractProxyModel;
 
 namespace Tiled {
 
+class MapObject;
 class ObjectGroup;
 
 namespace Internal {
@@ -143,14 +144,15 @@ class ObjectsFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    ObjectsFilterModel(QObject *parent = nullptr);
+    ObjectsFilterModel(MapObjectModel *mapObjectModel, QObject *parent = nullptr);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 
 private :
-    bool groupHasAnyMatchingObjects(const QModelIndex index) const;
-    bool objectContainsFilterString(const QModelIndex index) const;
+    MapObjectModel *mMapObjectModel;
+    bool groupHasAnyMatchingObjects(const ObjectGroup *objectGroup) const;
+    bool objectContainsFilterString(const MapObject *mapObject) const;
 };
 
 } // namespace Internal
