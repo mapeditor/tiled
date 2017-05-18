@@ -59,6 +59,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QKeyEvent>
 #include <QMessageBox>
 
 namespace Tiled {
@@ -240,6 +241,15 @@ bool PropertyBrowser::event(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
         retranslateUi();
+
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (editedItem()) {
+                event->accept();
+                return true;
+            }
+        }
+    }
 
     return QtTreePropertyBrowser::event(event);
 }
@@ -666,7 +676,7 @@ void PropertyBrowser::addMapObjectProperties()
 
     if (mapObject->shape() == MapObject::Text) {
         addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
-//        addProperty(TextAlignmentProperty, VariantPropertyManager::flagTypeId(), tr("Alignment"), groupProperty);
+        addProperty(TextAlignmentProperty, VariantPropertyManager::alignmentTypeId(), tr("Alignment"), groupProperty);
         addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
         addProperty(WordWrapProperty, QVariant::Bool, tr("Word Wrap"), groupProperty);
         addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
@@ -1380,7 +1390,7 @@ void PropertyBrowser::updateProperties()
             const auto& textData = mapObject->textData();
             mIdToProperty[TextProperty]->setValue(textData.text);
             mIdToProperty[FontProperty]->setValue(textData.font);
-//            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
+            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
             mIdToProperty[WordWrapProperty]->setValue(textData.wordWrap);
             mIdToProperty[ColorProperty]->setValue(textData.color);
         }

@@ -138,6 +138,11 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     retranslateUi();
     resize(Utils::dpiScaled(QSize(300, 300)));
     Utils::restoreGeometry(this);
+
+    // Make sure these are visible. It was temporarily possible to hide these
+    // by pressing Tab, and this state could have been saved by Utils::saveGeometry.
+    mPropertiesDock->setVisible(true);
+    toolBar->setVisible(true);
 }
 
 TileCollisionEditor::~TileCollisionEditor()

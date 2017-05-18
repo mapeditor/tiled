@@ -371,7 +371,7 @@ void TilesetDock::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
     if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
-        e->accept();
+        e->acceptProposedAction();
 }
 
 void TilesetDock::dropEvent(QDropEvent *e)
@@ -383,8 +383,8 @@ void TilesetDock::dropEvent(QDropEvent *e)
             paths.append(localFile);
     }
     if (!paths.isEmpty()) {
-        emit tilesetsDropped(paths);
-        e->accept();
+        emit localFilesDropped(paths);
+        e->acceptProposedAction();
     }
 }
 

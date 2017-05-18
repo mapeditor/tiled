@@ -110,6 +110,7 @@ public:
     bool propertiesWithoutValueMarked() const;
 
     void editItem(QtBrowserItem *item);
+    QtBrowserItem *editedItem() const;
 
     QList<QtBrowserItem *> selectedItems() const;
 

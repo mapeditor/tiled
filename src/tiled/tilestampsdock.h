@@ -91,6 +91,9 @@ public:
     explicit TileStampView(QWidget *parent = nullptr);
 
     QSize sizeHint() const override;
+
+protected:
+    bool event(QEvent *event) override;
 };
 
 } // namespace Internal

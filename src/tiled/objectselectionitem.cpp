@@ -29,9 +29,12 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tile.h"
+#include "utils.h"
 
 #include <QGuiApplication>
 #include <QTimerEvent>
+
+#include <cmath>
 
 namespace Tiled {
 namespace Internal {
@@ -179,8 +182,8 @@ QRectF MapObjectOutline::boundingRect() const
 }
 
 void MapObjectOutline::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *,
-                          QWidget *)
+                             const QStyleOptionGraphicsItem *,
+                             QWidget *)
 {
     const QLineF lines[4] = {
         QLineF(mBoundingRect.topLeft(), mBoundingRect.topRight()),
@@ -196,10 +199,12 @@ void MapObjectOutline::paint(QPainter *painter,
     painter->setPen(pen);
     painter->drawLines(lines, 4);
 
+    const qreal dashLength = std::ceil(Utils::dpiScaled(3));
+
     // Draw a black dashed line above the white line
     pen.setColor(Qt::black);
     pen.setCapStyle(Qt::FlatCap);
-    pen.setDashPattern({5, 5});
+    pen.setDashPattern({dashLength, dashLength});
     pen.setDashOffset(mOffset);
     painter->setPen(pen);
     painter->drawLines(lines, 4);

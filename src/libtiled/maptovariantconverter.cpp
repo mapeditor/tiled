@@ -189,6 +189,12 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         if (!tile->imageSource().isEmpty()) {
             const QString rel = mMapDir.relativeFilePath(tile->imageSource());
             tileVariant[QLatin1String("image")] = rel;
+
+            const QSize tileSize = tile->size();
+            if (!tileSize.isNull()) {
+                tileVariant[QLatin1String("imagewidth")] = tileSize.width();
+                tileVariant[QLatin1String("imageheight")] = tileSize.height();
+            }
         }
         if (tile->objectGroup())
             tileVariant[QLatin1String("objectgroup")] = toVariant(*tile->objectGroup());

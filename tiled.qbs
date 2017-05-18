@@ -5,7 +5,7 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.5.2"
+    minimumQbsVersion: "1.6"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.0.0";
     property bool sparkleEnabled: Environment.getEnv("TILED_SPARKLE")
@@ -14,6 +14,7 @@ Project {
     property bool linuxArchive: Environment.getEnv("TILED_LINUX_ARCHIVE")
     property bool installHeaders: false
     property bool useRPaths: true
+    property bool windowsInstaller: false
 
     references: [
         "dist/archive.qbs",

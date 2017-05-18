@@ -130,7 +130,6 @@ private slots:
     void toggleClearView(bool clearView);
 
     bool newTileset(const QString &path = QString());
-    void newTilesets(const QStringList &paths);
     void reloadTilesetImages();
     void addExternalTileset();
     void resizeMap();
@@ -228,7 +227,7 @@ private:
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
-    QList<QWidget*> mHiddenWidgets;
+    QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
 
 } // namespace Internal

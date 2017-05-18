@@ -102,6 +102,7 @@ public:
     void setGroupExpanded(ObjectGroup *objectGroup, bool expand);
 
 protected:
+    bool event(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 

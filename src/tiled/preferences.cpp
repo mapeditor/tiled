@@ -149,12 +149,20 @@ Preferences::Preferences()
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
+    mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
     mCheckForUpdates = boolValue("CheckForUpdates");
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
+    }
+    if (!mSettings->contains(QLatin1String("PatreonDialogTime"))) {
+        mPatreonDialogTime = mFirstRun.addMonths(1);
+        const QDate today(QDate::currentDate());
+        if (mPatreonDialogTime.daysTo(today) >= 0)
+            mPatreonDialogTime = today.addDays(2);
+        mSettings->setValue(QLatin1String("PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
     }
     mSettings->setValue(QLatin1String("RunCount"), mRunCount);
     mSettings->endGroup();
@@ -520,6 +528,26 @@ void Preferences::setPatron(bool isPatron)
     mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
 
     emit isPatronChanged();
+}
+
+bool Preferences::shouldShowPatreonDialog() const
+{
+    if (mIsPatron)
+        return false;
+    if (mRunCount < 7)
+        return false;
+    if (!mPatreonDialogTime.isValid())
+        return false;
+
+    return mPatreonDialogTime.daysTo(QDate::currentDate()) >= 0;
+}
+
+void Preferences::setPatreonDialogReminder(const QDate &date)
+{
+    if (date.isValid())
+        setPatron(false);
+    mPatreonDialogTime = date;
+    mSettings->setValue(QLatin1String("Install/PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
 }
 
 void Preferences::setCheckForUpdates(bool on)

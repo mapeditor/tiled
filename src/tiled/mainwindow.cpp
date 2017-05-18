@@ -332,10 +332,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
 
-    // todo: figure out how to hook this up
-//    connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
-//            SLOT(newTilesets(QStringList)));
-
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
          action = new QAction(this);
@@ -455,6 +451,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(autoMappingWarning(bool)));
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
+
+    QTimer::singleShot(500, this, [this,preferences]() {
+        if (preferences->shouldShowPatreonDialog())
+            becomePatron();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -493,7 +494,7 @@ void MainWindow::commitData(QSessionManager &manager)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (confirmAllSave()) {
-        //Make sure user won't end up in view mode on next launch
+        // Make sure user won't end up in Clear View mode on next launch
         toggleClearView(false);
         writeSettings();
         event->accept();
@@ -584,7 +585,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     if (!fileFormat) {
-        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format"));
+        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format."));
         return false;
     }
 
@@ -1128,32 +1129,31 @@ void MainWindow::setFullScreen(bool fullScreen)
 void MainWindow::toggleClearView(bool clearView)
 {
     if (clearView) {
+        mMainWindowStates.insert(this, saveState());
+
         QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
         QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
 
         for (Editor *editor : mDocumentManager->editors()) {
+            if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+                mMainWindowStates.insert(editorWindow, editorWindow->saveState());
+
             docks += editor->dockWidgets();
             toolBars += editor->toolBars();
         }
 
-        auto hideWidget = [this](QWidget *widget) {
-            if (!widget->isHidden()) {
-                if (!mHiddenWidgets.contains(widget))
-                    mHiddenWidgets.append(widget);
-                widget->hide();
-            }
-        };
-
         for (auto dock : docks)
-            hideWidget(dock);
+            dock->hide();
         for (auto toolBar : toolBars)
-            hideWidget(toolBar);
+            toolBar->hide();
 
     } else {
-        for (auto dock : mHiddenWidgets)
-            dock->setVisible(true);
-
-        mHiddenWidgets.clear();
+        QMapIterator<QMainWindow*, QByteArray> it(mMainWindowStates);
+        while (it.hasNext()) {
+            it.next();
+            it.key()->restoreState(it.value());
+        }
+        mMainWindowStates.clear();
     }
 }
 
@@ -1187,13 +1187,6 @@ bool MainWindow::newTileset(const QString &path)
         mDocumentManager->addDocument(tilesetDocument.take());
     }
     return true;
-}
-
-void MainWindow::newTilesets(const QStringList &paths)
-{
-    for (const QString &path : paths)
-        if (!newTileset(path))
-            return;
 }
 
 void MainWindow::reloadTilesetImages()
@@ -1242,34 +1235,8 @@ void MainWindow::addExternalTileset()
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
-    QVector<SharedTileset> tilesets;
-
-    for (const QString &fileName : fileNames) {
-        QString error;
-        SharedTileset tileset = TilesetManager::instance()->loadTileset(fileName, &error);
-        if (tileset) {
-            tilesets.append(tileset);
-        } else if (fileNames.size() == 1) {
-            QMessageBox::critical(this, tr("Error Reading Tileset"), error);
-            return;
-        } else {
-            int result;
-
-            result = QMessageBox::warning(this, tr("Error Reading Tileset"),
-                                          tr("%1: %2").arg(fileName, error),
-                                          QMessageBox::Abort | QMessageBox::Ignore,
-                                          QMessageBox::Ignore);
-
-            if (result == QMessageBox::Abort)
-                return;
-        }
-    }
-
-    QUndoStack *undoStack = mapDocument->undoStack();
-    undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
-    for (const SharedTileset &tileset : tilesets)
-        undoStack->push(new AddTileset(mapDocument, tileset));
-    undoStack->endMacro();
+    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
+    mapEditor->addExternalTilesets(fileNames);
 }
 
 void MainWindow::resizeMap()

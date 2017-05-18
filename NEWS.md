@@ -21,6 +21,15 @@
 * Added an executable picker for custom commands (by Ketan Gupta, #942)
 * Added marching ants effect on selected objects (by Mohamed Thabet, #1489)
 * Added all open tilesets to the Tilesets view
+* Added auto-show/hide all views (Clear View) action (by erem2k, #563)
+* Added minimap in the resizing dialog (by Yuriy, #1516)
+* Added drag-n-drop support in Layers view (#178)
+* Added support for storing object type definitions in JSON format (#1313)
+* Added cut/copy/paste actions for custom properties (#515)
+* Allow changing the tile of tile objects (by Mohamed Thabet, #409)
+* Added support for dragging external tilesets into the Tilesets dock
+* Added support for dragging images into image collection tilesets
+* Write out Tiled version in TMX/JSON "version" attribute (#1416)
 * Remember last view on map also for closed files (#905)
 * Remember tileset zoom level in the tileset editor (by Artem Sharganov, #408)
 * Change current layer depending on selected objects (by Glavak, #1424)
@@ -29,6 +38,7 @@
 * Made Ctrl+D duplicate objects instead of deleting them
 * Use an eye icon instead of a checkbox for layer visibility (by Ketan Gupta, #1127)
 * Linux: Added MIME type for tileset files
+* Fixed hexagonal rotation of tile stamps (by Bdtrotte, #1476)
 * Fixed handling of broken tile references, which now render as a red marker
 * Fixed manual reloading of images for image collection tilesets
 * Fixed Offset Layers tool to wait until mouse is moved
@@ -36,6 +46,13 @@
 * Fixed handling of pinch gestures (#1305)
 * Fixed flipping a group of objects to work like expected (by Vitek1425, #1475)
 * Fixed stamp brush to work better on staggered maps (by Bdtrotte)
+* Fixed objects offsetting while resizing (by Acuion, #1518)
+* Fixed fill tool for hexagonal maps (#883)
+* AutoMapping: Fixed object groups always getting added
+* AutoMapping: Improved map boundary handling (by Stefan Beller, #1224)
+* AutoMapping: Apply custom properties set on output layers
+* terraingenerator: Made the amount of columns configurable
+* terraingenerator: Copy tile properties from the source tilesets
 * Added Ukrainian translation (by Olexandr Nesterenko)
 
 ### 0.18.2 (21 February 2017)

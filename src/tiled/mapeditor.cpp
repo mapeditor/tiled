@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "addremovetileset.h"
 #include "brokenlinks.h"
 #include "bucketfilltool.h"
 #include "createellipseobjecttool.h"
@@ -71,6 +72,7 @@
 #include <QIdentityProxyModel>
 #include <QLabel>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
@@ -227,6 +229,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mToolManager, &ToolManager::statusInfoChanged, this, &MapEditor::updateStatusInfoLabel);
     connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
+    connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::addExternalTilesets);
     connect(mStampBrush, &StampBrush::stampCaptured, this, &MapEditor::setStamp);
 
     connect(mRandomButton, &QToolButton::toggled, mStampBrush, &StampBrush::setRandom);
@@ -306,10 +309,8 @@ void MapEditor::addDocument(Document *document)
         if (scale > 0)
             view->zoomable()->setScale(scale);
 
-        const int hor = mapState.value(QLatin1String("scrollX")).toInt();
-        const int ver = mapState.value(QLatin1String("scrollY")).toInt();
-        view->horizontalScrollBar()->setSliderPosition(hor);
-        view->verticalScrollBar()->setSliderPosition(ver);
+        const QPointF viewCenter = mapState.value(QLatin1String("viewCenter")).toPointF();
+        view->forceCenterOn(viewCenter);
 
         int layerIndex = mapState.value(QLatin1String("selectedLayer")).toInt();
         if (Layer *layer = layerAtGlobalIndex(mapDocument->map(), layerIndex))
@@ -329,8 +330,7 @@ void MapEditor::removeDocument(Document *document)
     if (!mapDocument->fileName().isEmpty()) {
         QVariantMap mapState;
         mapState.insert(QLatin1String("scale"), mapView->zoomable()->scale());
-        mapState.insert(QLatin1String("scrollX"), mapView->horizontalScrollBar()->sliderPosition());
-        mapState.insert(QLatin1String("scrollY"), mapView->verticalScrollBar()->sliderPosition());
+        mapState.insert(QLatin1String("viewCenter"), mapView->mapToScene(mapView->viewport()->rect().center()));
         mapState.insert(QLatin1String("selectedLayer"), globalIndex(mapDocument->currentLayer()));
         mMapStates.insert(mapDocument->fileName(), mapState);
 
@@ -658,6 +658,39 @@ void MapEditor::updateLayerComboIndex()
     }
 
     mLayerComboBox->setCurrentModelIndex(index);
+}
+
+void MapEditor::addExternalTilesets(const QStringList &fileNames)
+{
+    QVector<SharedTileset> tilesets;
+
+    for (const QString &fileName : fileNames) {
+        QString error;
+        SharedTileset tileset = TilesetManager::instance()->loadTileset(fileName, &error);
+        if (tileset) {
+            if (!mCurrentMapDocument->map()->tilesets().contains(tileset))
+                tilesets.append(tileset);
+        } else if (fileNames.size() == 1) {
+            QMessageBox::critical(mMainWindow, tr("Error Reading Tileset"), error);
+            return;
+        } else {
+            int result;
+
+            result = QMessageBox::warning(mMainWindow, tr("Error Reading Tileset"),
+                                          tr("%1: %2").arg(fileName, error),
+                                          QMessageBox::Abort | QMessageBox::Ignore,
+                                          QMessageBox::Ignore);
+
+            if (result == QMessageBox::Abort)
+                return;
+        }
+    }
+
+    QUndoStack *undoStack = mCurrentMapDocument->undoStack();
+    undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
+    for (const SharedTileset &tileset : tilesets)
+        undoStack->push(new AddTileset(mCurrentMapDocument, tileset));
+    undoStack->endMacro();
 }
 
 void MapEditor::setupQuickStamps()
