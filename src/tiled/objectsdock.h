@@ -82,7 +82,6 @@ private:
     bool mFilterWasEmpty;
 
     QMenu *mMoveToMenu;
-    QModelIndex getGroupIndex(ObjectGroup *og);
 };
 
 class ObjectsView : public QTreeView
@@ -99,6 +98,8 @@ public:
     MapObjectModel *mapObjectModel() const;
     QSortFilterProxyModel *objectsFilterModel() const;
     QAbstractProxyModel *reversingProxyModel() const;
+    bool isGroupExpanded(ObjectGroup *objectGroup) const;
+    void setGroupExpanded(ObjectGroup *objectGroup, bool expand);
 
 protected:
     void selectionChanged(const QItemSelection &selected,
@@ -118,6 +119,7 @@ private:
     void synchronizeSelectedItems();
     QModelIndex mapFromViewModel(const QModelIndex &viewIndex) const;
     QModelIndex mapToViewModel(const QModelIndex &sourceIndex) const;
+    QModelIndex getGroupIndex(ObjectGroup *objectGroup) const;
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;

@@ -250,13 +250,6 @@ void ObjectsDock::objectProperties()
     emit mMapDocument->editCurrentObject();
 }
 
-QModelIndex ObjectsDock::getGroupIndex(ObjectGroup *og)
-{
-    const auto proxyModel = static_cast<QAbstractProxyModel*>(mObjectsView->model());
-    const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(og);
-    return proxyModel->mapFromSource(mObjectsView->objectsFilterModel()->mapFromSource(sourceIndex));
-}
-
 void ObjectsDock::saveExpandedGroups()
 {
     mExpandedGroups[mMapDocument].clear();
@@ -264,7 +257,7 @@ void ObjectsDock::saveExpandedGroups()
     const auto &objectGroups = mMapDocument->map()->objectGroups();
 
     for (ObjectGroup *og : objectGroups)
-        if (mObjectsView->isExpanded(getGroupIndex(og)))
+        if (mObjectsView->isGroupExpanded(og))
             mExpandedGroups[mMapDocument].append(og);
 }
 
@@ -273,7 +266,7 @@ void ObjectsDock::restoreExpandedGroups()
     const auto objectGroups = mExpandedGroups.take(mMapDocument);
 
     for (ObjectGroup *og : objectGroups)
-        mObjectsView->setExpanded(getGroupIndex(og), true);
+        mObjectsView->setGroupExpanded(og, true);
 }
 
 void ObjectsDock::documentAboutToClose(Document *document)
@@ -300,7 +293,7 @@ void ObjectsDock::filterObjects()
 
         // Collapse all groups so expansion is restored to the original state
         for (ObjectGroup *og : objectGroups)
-            mObjectsView->setExpanded(getGroupIndex(og), false);
+            mObjectsView->setGroupExpanded(og, false);
 
         restoreExpandedGroups();
         mObjectsView->setItemsExpandable(true);
@@ -308,7 +301,7 @@ void ObjectsDock::filterObjects()
         const auto &objectGroups = mMapDocument->map()->objectGroups();
 
         for (ObjectGroup *og : objectGroups)
-            mObjectsView->setExpanded(getGroupIndex(og), true);
+            mObjectsView->setGroupExpanded(og, true);
 
         mObjectsView->setItemsExpandable(false);
     }
@@ -398,6 +391,21 @@ QModelIndex ObjectsView::mapFromViewModel(const QModelIndex &viewIndex) const
 QModelIndex ObjectsView::mapToViewModel(const QModelIndex &sourceIndex) const
 {
     return mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(sourceIndex));
+}
+
+QModelIndex ObjectsView::getGroupIndex(ObjectGroup *objectGroup) const
+{
+    return mapToViewModel(mMapDocument->mapObjectModel()->index(objectGroup));
+}
+
+void ObjectsView::setGroupExpanded(ObjectGroup *objectGroup, bool expand)
+{
+    setExpanded(getGroupIndex(objectGroup), expand);
+}
+
+bool ObjectsView::isGroupExpanded(ObjectGroup *objectGroup) const
+{
+    return isExpanded(getGroupIndex(objectGroup));
 }
 
 void ObjectsView::onPressed(const QModelIndex &viewIndex)
