@@ -407,19 +407,19 @@ QModelIndex ObjectsView::mapToViewModel(const QModelIndex &sourceIndex) const
     return mReversingProxyModel->mapFromSource(mObjectsFilterModel->mapFromSource(sourceIndex));
 }
 
-QModelIndex ObjectsView::getGroupIndex(ObjectGroup *objectGroup) const
+QModelIndex ObjectsView::groupIndex(ObjectGroup *objectGroup) const
 {
     return mapToViewModel(mMapDocument->mapObjectModel()->index(objectGroup));
 }
 
 void ObjectsView::setGroupExpanded(ObjectGroup *objectGroup, bool expand)
 {
-    setExpanded(getGroupIndex(objectGroup), expand);
+    setExpanded(groupIndex(objectGroup), expand);
 }
 
 bool ObjectsView::isGroupExpanded(ObjectGroup *objectGroup) const
 {
-    return isExpanded(getGroupIndex(objectGroup));
+    return isExpanded(groupIndex(objectGroup));
 }
 
 void ObjectsView::onPressed(const QModelIndex &viewIndex)

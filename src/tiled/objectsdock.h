@@ -121,7 +121,7 @@ private:
     void synchronizeSelectedItems();
     QModelIndex mapFromViewModel(const QModelIndex &viewIndex) const;
     QModelIndex mapToViewModel(const QModelIndex &sourceIndex) const;
-    QModelIndex getGroupIndex(ObjectGroup *objectGroup) const;
+    QModelIndex groupIndex(ObjectGroup *objectGroup) const;
 
     MapDocument *mMapDocument;
     QSortFilterProxyModel *mObjectsFilterModel;
