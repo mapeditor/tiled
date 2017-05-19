@@ -120,37 +120,37 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-189"/>
         <source>Display the version</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start a new instance, even if an instance is already running</source>
-        <translation>Start a new instance, even if an instance is already running</translation>
+        <translation type="unfinished">Start a new instance, even if an instance is already running</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -158,33 +158,33 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Options:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -192,12 +192,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -205,22 +205,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+21"/>
         <source>All Files (*)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -228,12 +228,12 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+54"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+77"/>
         <source>CSV files (*.csv)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -241,12 +241,12 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+58"/>
         <source>Defold files (*.tilemap)</source>
-        <translation>Defold files (*.tilemap)</translation>
+        <translation type="unfinished">Defold files (*.tilemap)</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Could not open file for writing.</source>
-        <translation>Could not open file for writing.</translation>
+        <translation type="unfinished">Could not open file for writing.</translation>
     </message>
 </context>
 <context>
@@ -254,27 +254,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -282,47 +282,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation>&amp;Include background colour</translation>
+        <translation type="unfinished">&amp;Include background colour</translation>
     </message>
 </context>
 <context>
@@ -330,37 +330,37 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Error mapping tile id %1.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -368,12 +368,12 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation>Could not open file for writing.</translation>
+        <translation type="unfinished">Could not open file for writing.</translation>
     </message>
     <message>
         <location line="+294"/>
         <source>GameMaker room files (*.room.gmx)</source>
-        <translation>GameMaker room files (*.room.gmx)</translation>
+        <translation type="unfinished">GameMaker room files (*.room.gmx)</translation>
     </message>
 </context>
 <context>
@@ -381,33 +381,33 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+55"/>
         <source>Could not open file for reading.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Error while writing file:
 %1</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -415,28 +415,28 @@
     <message>
         <location line="+66"/>
         <source>Could not open file for reading.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Could not open file for writing.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
