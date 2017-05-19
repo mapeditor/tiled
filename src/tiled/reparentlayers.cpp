@@ -50,7 +50,7 @@ void ReparentLayers::undo()
         auto& undoInfo = mUndoInfo.at(i);
         auto layer = mLayers.at(i);
 
-        layerModel->takeLayerAt(mLayerParent, undoInfo.newIndex);
+        layerModel->takeLayerAt(mLayerParent, layer->siblingIndex());
         layerModel->insertLayer(undoInfo.parent, undoInfo.oldIndex, layer);
     }
 
@@ -73,10 +73,17 @@ void ReparentLayers::redo()
         UndoInfo undoInfo;
         undoInfo.parent = layer->parentLayer();
         undoInfo.oldIndex = layer->siblingIndex();
-        undoInfo.newIndex = index++;
+
+        bool sameParent = undoInfo.parent == mLayerParent;
+
+        // Adjust the insertion index when it is affected by the layer removal
+        if (sameParent && undoInfo.oldIndex < index)
+            --index;
 
         layerModel->takeLayerAt(undoInfo.parent, undoInfo.oldIndex);
-        layerModel->insertLayer(mLayerParent, undoInfo.newIndex, layer);
+        layerModel->insertLayer(mLayerParent, index, layer);
+
+        ++index;
 
         mUndoInfo.append(undoInfo);
     }

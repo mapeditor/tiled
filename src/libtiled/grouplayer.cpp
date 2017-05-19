@@ -108,7 +108,7 @@ Layer *GroupLayer::mergedWith(Layer *) const
     return nullptr;
 }
 
-Layer *GroupLayer::clone() const
+GroupLayer *GroupLayer::clone() const
 {
     return initializeClone(new GroupLayer(mName, mX, mY));
 }

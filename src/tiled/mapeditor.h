@@ -61,6 +61,7 @@ class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
 class UncheckableItemsModel;
+class UndoDock;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -107,6 +108,8 @@ public slots:
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
 
+    void addExternalTilesets(const QStringList &fileNames);
+
 private slots:
     void currentWidgetChanged();
 
@@ -132,6 +135,7 @@ private:
 
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
+    UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
@@ -158,7 +162,7 @@ private:
 
     TileStampManager *mTileStampManager;
 
-    QMap<QString, QVariant> mMapStates;
+    QVariantMap mMapStates;
 };
 
 

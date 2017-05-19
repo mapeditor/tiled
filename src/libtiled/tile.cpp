@@ -200,13 +200,14 @@ bool Tile::advanceAnimation(int ms)
 Tile *Tile::clone(Tileset *tileset) const
 {
     Tile *c = new Tile(mImage, mId, tileset);
+    c->setProperties(properties());
 
     c->mImageSource = mImageSource;
     c->mTerrain = mTerrain;
     c->mProbability = mProbability;
 
     if (mObjectGroup)
-        c->mObjectGroup = static_cast<ObjectGroup*>(mObjectGroup->clone());
+        c->mObjectGroup = mObjectGroup->clone();
 
     c->mFrames = mFrames;
     c->mCurrentFrameIndex = mCurrentFrameIndex;

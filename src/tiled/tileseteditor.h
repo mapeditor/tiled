@@ -40,10 +40,12 @@ namespace Internal {
 
 class PropertiesDock;
 class TerrainDock;
-class TilesetDocument;
-class TilesetView;
 class TileAnimationEditor;
 class TileCollisionEditor;
+class TilesetDocument;
+class TilesetEditorWindow;
+class TilesetView;
+class UndoDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -91,7 +93,8 @@ private slots:
     void tilesetChanged();
     void updateTilesetView(Tileset *tileset);
 
-    void addTiles();
+    void openAddTilesDialog();
+    void addTiles(const QStringList &files);
     void removeTiles();
 
     void setEditTerrain(bool editTerrain);
@@ -108,7 +111,7 @@ private:
 
     void retranslateUi();
 
-    QMainWindow *mMainWindow;
+    TilesetEditorWindow *mMainWindow;
     QToolBar *mMainToolBar;
     QStackedWidget *mWidgetStack;
     QToolBar *mTilesetToolBar;
@@ -118,8 +121,8 @@ private:
     QAction *mEditTerrain;
 
     PropertiesDock *mPropertiesDock;
+    UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;

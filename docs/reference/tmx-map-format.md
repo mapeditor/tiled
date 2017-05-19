@@ -140,51 +140,53 @@ When rendering a tile, the order of operation matters. The diagonal flip (x/y ax
 
 The following C++ pseudo-code should make it all clear:
 
-    // Bits on the far end of the 32-bit global tile ID are used for tile flags
-    const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
-    const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
-    const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
+```c++
+// Bits on the far end of the 32-bit global tile ID are used for tile flags
+const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
+const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
 
-    ...
+...
 
-    // Extract the contents of the <data> element
-    string tile_data = ...
+// Extract the contents of the <data> element
+string tile_data = ...
 
-    unsigned char *data = decompress(base64_decode(tile_data));
-    unsigned tile_index = 0;
+unsigned char *data = decompress(base64_decode(tile_data));
+unsigned tile_index = 0;
 
-    // Here you should check that the data has the right size
-    // (map_width * map_height * 4)
+// Here you should check that the data has the right size
+// (map_width * map_height * 4)
 
-    for (int y = 0; y < map_height; ++y) {
-      for (int x = 0; x < map_width; ++x) {
-        unsigned global_tile_id = data[tile_index] |
-                                  data[tile_index + 1] << 8 |
-                                  data[tile_index + 2] << 16 |
-                                  data[tile_index + 3] << 24;
-        tile_index += 4;
+for (int y = 0; y < map_height; ++y) {
+  for (int x = 0; x < map_width; ++x) {
+    unsigned global_tile_id = data[tile_index] |
+                              data[tile_index + 1] << 8 |
+                              data[tile_index + 2] << 16 |
+                              data[tile_index + 3] << 24;
+    tile_index += 4;
 
-        // Read out the flags
-        bool flipped_horizontally = (global_tile_id & FLIPPED_HORIZONTALLY_FLAG);
-        bool flipped_vertically = (global_tile_id & FLIPPED_VERTICALLY_FLAG);
-        bool flipped_diagonally = (global_tile_id & FLIPPED_DIAGONALLY_FLAG);
+    // Read out the flags
+    bool flipped_horizontally = (global_tile_id & FLIPPED_HORIZONTALLY_FLAG);
+    bool flipped_vertically = (global_tile_id & FLIPPED_VERTICALLY_FLAG);
+    bool flipped_diagonally = (global_tile_id & FLIPPED_DIAGONALLY_FLAG);
 
-        // Clear the flags
-        global_tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG |
-                            FLIPPED_VERTICALLY_FLAG |
-                            FLIPPED_DIAGONALLY_FLAG);
+    // Clear the flags
+    global_tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG |
+                        FLIPPED_VERTICALLY_FLAG |
+                        FLIPPED_DIAGONALLY_FLAG);
 
-        // Resolve the tile
-        for (int i = tileset_count - 1; i >= 0; --i) {
-          Tileset *tileset = tilesets[i];
+    // Resolve the tile
+    for (int i = tileset_count - 1; i >= 0; --i) {
+      Tileset *tileset = tilesets[i];
 
-          if (tileset->first_gid() <= global_tile_id) {
-            tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
-            break;
-          }
-        }
+      if (tileset->first_gid() <= global_tile_id) {
+        tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
+        break;
       }
     }
+  }
+}
+```
 
 (Since the above code was put together on this wiki page and can't be directly tested, please make sure to report any errors you encounter when basing your parsing code on it, thanks.)
 

@@ -68,6 +68,13 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    Qt::DropActions supportedDropActions() const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column,
+                      const QModelIndex &parent) override;
+
     QModelIndex index(Layer *layer) const;
     Layer *toLayer(const QModelIndex &index) const;
 

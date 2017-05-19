@@ -136,8 +136,13 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
 
     retranslateUi();
-    resize(300, 300);
+    resize(Utils::dpiScaled(QSize(300, 300)));
     Utils::restoreGeometry(this);
+
+    // Make sure these are visible. It was temporarily possible to hide these
+    // by pressing Tab, and this state could have been saved by Utils::saveGeometry.
+    mPropertiesDock->setVisible(true);
+    toolBar->setVisible(true);
 }
 
 TileCollisionEditor::~TileCollisionEditor()
@@ -193,7 +198,7 @@ void TileCollisionEditor::setTile(Tile *tile)
 
         ObjectGroup *objectGroup;
         if (tile->objectGroup())
-            objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+            objectGroup = tile->objectGroup()->clone();
         else
             objectGroup = new ObjectGroup;
 
@@ -253,8 +258,8 @@ void TileCollisionEditor::applyChanges()
         return;
 
     MapDocument *dummyDocument = mMapScene->mapDocument();
-    Layer *objectGroup = dummyDocument->map()->layerAt(1);
-    ObjectGroup *clonedGroup = static_cast<ObjectGroup*>(objectGroup->clone());
+    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(dummyDocument->map()->layerAt(1));
+    ObjectGroup *clonedGroup = objectGroup->clone();
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
     mApplyingChanges = true;
@@ -279,7 +284,7 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
     ObjectGroup *objectGroup;
     if (tile->objectGroup())
-        objectGroup = static_cast<ObjectGroup*>(tile->objectGroup()->clone());
+        objectGroup = tile->objectGroup()->clone();
     else
         objectGroup = new ObjectGroup;
 

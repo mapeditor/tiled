@@ -49,6 +49,7 @@
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
+#include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
@@ -58,6 +59,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QKeyEvent>
 #include <QMessageBox>
 
 namespace Tiled {
@@ -79,6 +81,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
+    setAllowMultiSelection(true);
 
     mStaggerAxisNames.append(tr("X"));
     mStaggerAxisNames.append(tr("Y"));
@@ -206,9 +209,21 @@ void PropertyBrowser::setDocument(Document *document)
     }
 }
 
-bool PropertyBrowser::isCustomPropertyItem(QtBrowserItem *item) const
+bool PropertyBrowser::isCustomPropertyItem(const QtBrowserItem *item) const
 {
     return item && mPropertyToId[item->property()] == CustomProperty;
+}
+
+/**
+ * Returns whether the given list of \a items are all custom properties.
+ */
+bool PropertyBrowser::allCustomPropertyItems(const QList<QtBrowserItem *> &items) const
+{
+    for (QtBrowserItem *item : items)
+        if (mPropertyToId[item->property()] != CustomProperty)
+            return false;
+
+    return true;
 }
 
 void PropertyBrowser::editCustomProperty(const QString &name)
@@ -226,6 +241,15 @@ bool PropertyBrowser::event(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
         retranslateUi();
+
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (editedItem()) {
+                event->accept();
+                return true;
+            }
+        }
+    }
 
     return QtTreePropertyBrowser::event(event);
 }
@@ -270,8 +294,10 @@ void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
 {
-    if (mObject == tileset)
+    if (mObject == tileset) {
         updateProperties();
+        updateCustomProperties();   // Tileset may have been swapped
+    }
 }
 
 void PropertyBrowser::tileChanged(Tile *tile)
@@ -650,7 +676,7 @@ void PropertyBrowser::addMapObjectProperties()
 
     if (mapObject->shape() == MapObject::Text) {
         addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
-//        addProperty(TextAlignmentProperty, VariantPropertyManager::flagTypeId(), tr("Alignment"), groupProperty);
+        addProperty(TextAlignmentProperty, VariantPropertyManager::alignmentTypeId(), tr("Alignment"), groupProperty);
         addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
         addProperty(WordWrapProperty, QVariant::Bool, tr("Word Wrap"), groupProperty);
         addProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
@@ -947,15 +973,16 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         const bool flippedVertically = flippingFlags & 2;
 
         // You can only change one checkbox at a time
-        if (mapObject->cell().flippedHorizontally() != flippedHorizontally) {
-            command = new FlipMapObjects(mMapDocument,
-                                         QList<MapObject*>() << mapObject,
-                                         FlipHorizontally);
-        } else if (mapObject->cell().flippedVertically() != flippedVertically) {
-            command = new FlipMapObjects(mMapDocument,
-                                         QList<MapObject*>() << mapObject,
-                                         FlipVertically);
-        }
+        Cell newCell = mapObject->cell();
+        newCell.setFlippedHorizontally(flippedHorizontally);
+        newCell.setFlippedVertically(flippedVertically);
+
+        MapObjectCell mapObjectCell;
+        mapObjectCell.object = mapObject;
+        mapObjectCell.cell = newCell;
+
+        command = new ChangeMapObjectCells(mMapDocument,
+                                           QVector<MapObjectCell> () << mapObjectCell);
         break;
     }
     }
@@ -1009,6 +1036,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
             offset.setY(val.toDouble());
 
         command = new SetLayerOffset(mMapDocument, layer, offset);
+        break;
     }
     default:
         switch (layer->layerType()) {
@@ -1104,7 +1132,7 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
     case FileNameProperty: {
         FilePath filePath = val.value<FilePath>();
         QString error;
-        SharedTileset newTileset = Tiled::readTileset(filePath.absolutePath, &error);
+        SharedTileset newTileset = TilesetManager::instance()->loadTileset(filePath.absolutePath, &error);
         if (!newTileset) {
             QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
             return;
@@ -1362,7 +1390,7 @@ void PropertyBrowser::updateProperties()
             const auto& textData = mapObject->textData();
             mIdToProperty[TextProperty]->setValue(textData.text);
             mIdToProperty[FontProperty]->setValue(textData.font);
-//            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
+            mIdToProperty[TextAlignmentProperty]->setValue(QVariant::fromValue(textData.alignment));
             mIdToProperty[WordWrapProperty]->setValue(textData.wordWrap);
             mIdToProperty[ColorProperty]->setValue(textData.color);
         }

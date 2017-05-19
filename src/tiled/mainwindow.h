@@ -127,9 +127,9 @@ private slots:
     void zoomOut();
     void zoomNormal();
     void setFullScreen(bool fullScreen);
+    void toggleClearView(bool clearView);
 
     bool newTileset(const QString &path = QString());
-    void newTilesets(const QStringList &paths);
     void reloadTilesetImages();
     void addExternalTileset();
     void resizeMap();
@@ -202,7 +202,6 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
-    QDockWidget *mUndoDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 
@@ -227,6 +226,8 @@ private:
     TsxTilesetFormat *mTsxTilesetFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
+
+    QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
 
 } // namespace Internal

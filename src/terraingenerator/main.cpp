@@ -43,12 +43,14 @@ struct CommandLineOptions {
         , showVersion(false)
         , overwrite(false)
         , embedImage(false)
+        , columns(16)
     {}
 
     bool showHelp;
     bool showVersion;
     bool overwrite;
     bool embedImage;
+    int columns;
     QString target;
     QStringList sources;
     QStringList terrainPriority;
@@ -66,6 +68,7 @@ static void showHelp()
             "  -h --help        : Display this help.\n"
             "  -v --version     : Display the version.\n"
             "     --overwrite   : Target is overwritten rather than extended.\n"
+            "     --columns N   : Amount of columns in the target tileset image (default: 16).\n"
             "  -e --embed-image : Tile images will be embedded in the TSX file instead\n"
             "                     of being saved as a separated PNG file.\n"
             "  -c --combine T1[ T2 [Tn ...]]\n"
@@ -185,6 +188,19 @@ static bool parseCommandLineArguments(CommandLineOptions &options)
             // What follows is a list of input tilesets.
             inSource = true;
             argCount = 0;
+        } else if (arg == QLatin1String("--columns")) {
+            i++;
+            if (i >= arguments.size()) {
+                qWarning() << "Missing argument to" << arg << "option";
+                return false;
+            }
+            const QString& arg2 = arguments.at(i);
+            bool ok = false;
+            options.columns = arg2.toInt(&ok);
+            if (!ok || options.columns <= 0) {
+                qWarning() << "Invalid or missing argument to" << arg << "option";
+                return false;
+            }
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
@@ -198,7 +214,7 @@ static bool parseCommandLineArguments(CommandLineOptions &options)
 
 static bool hasTerrain(const Tileset &tileset, const QString &name)
 {
-    foreach (Terrain *terrain, tileset.terrains())
+    for (Terrain *terrain : tileset.terrains())
         if (terrain->name() == name)
             return true;
 
@@ -207,7 +223,7 @@ static bool hasTerrain(const Tileset &tileset, const QString &name)
 
 static unsigned short terrainId(const QString &name, const Tileset &tileset)
 {
-    foreach (Terrain *terrain, tileset.terrains())
+    for (Terrain *terrain : tileset.terrains())
         if (terrain->name() == name)
             return terrain->id();
 
@@ -373,8 +389,8 @@ int main(int argc, char *argv[])
     if (!options.overwrite && QFile::exists(options.target)) {
         targetTileset = reader.readTileset(options.target);
         if (!targetTileset) {
-            qFatal("Error reading target tileset:\n%s",
-                   qUtf8Printable(reader.errorString()));
+            qCritical("Error reading target tileset:\n%s",
+                      qUtf8Printable(reader.errorString()));
         }
 
         // Remove empty tiles from the end of the tileset
@@ -397,12 +413,12 @@ int main(int argc, char *argv[])
     }
 
     // Read source tilesets.
-    foreach (const QString &sourceFileName, options.sources) {
+    for (const QString &sourceFileName : options.sources) {
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
-            qFatal("Error reading source tileset '%s':\n%s",
-                   qUtf8Printable(sourceFileName),
-                   qUtf8Printable(reader.errorString()));
+            qCritical("Error reading source tileset '%s':\n%s",
+                      qUtf8Printable(sourceFileName),
+                      qUtf8Printable(reader.errorString()));
         }
         sources.append(source);
     }
@@ -419,16 +435,16 @@ int main(int argc, char *argv[])
 
     // Set up a mapping from terrain to tile, for quick lookup
     QMap<TileTerrainNames, Tile*> terrainToTile;
-    foreach (const SharedTileset &tileset, sources)
-        foreach (Tile *tile, tileset->tiles())
+    for (const SharedTileset &tileset : sources)
+        for (Tile *tile : tileset->tiles())
             if (tile->terrain() != 0xFFFFFFFF)
                 if (!terrainToTile.contains(TileTerrainNames(tile))) // TODO: Optimize
                     terrainToTile.insert(TileTerrainNames(tile), tile);
 
     // Set up the list of all terrains, mapped by name.
     QMap<QString, Terrain*> terrains;
-    foreach (const SharedTileset &tileset, sources)
-        foreach (Terrain *terrain, tileset->terrains())
+    for (const SharedTileset &tileset : sources)
+        for (Terrain *terrain : tileset->terrains())
             if (!terrains.contains(terrain->name()))
                 terrains.insert(terrain->name(), terrain);
 
@@ -438,24 +454,24 @@ int main(int argc, char *argv[])
     } else {
         // Dump the combine lists.
         qWarning() << "Terrains to combine:";
-        foreach (const QStringList &combine, options.combineList) {
+        for (const QStringList &combine : options.combineList) {
             if (combine.isEmpty()) {
-                qFatal("Empty combine set");
+                qCritical("Empty combine set");
             }
             qWarning() << combine;
 
             // Make sure every terrain from this set was defined.
-            foreach (const QString &terrainName, combine)
+            for (const QString &terrainName : combine)
                 if (!terrains.contains(terrainName))
-                    qFatal("Terrain %s is in combine list, however it wasn't defined by any tileset.",
-                           qUtf8Printable(terrainName));
+                    qCritical("Terrain %s is in combine list, however it wasn't defined by any tileset.",
+                              qUtf8Printable(terrainName));
         }
     }
 
     // Setup terrain priorities.
     TerrainLessThan lessThan;
     int priority = 0;
-    foreach (const QString &terrainName, options.terrainPriority) {
+    for (const QString &terrainName : options.terrainPriority) {
         lessThan.terrainPriority.insert(terrainName, priority);
         ++priority;
     }
@@ -463,12 +479,12 @@ int main(int argc, char *argv[])
     qDebug() << "Terrains found:" << terrains.keys();
 
     // Check if all terrains from priority list were found and loaded.
-    foreach (const QString &terrainName, lessThan.terrainPriority.keys())
+    for (const QString &terrainName : lessThan.terrainPriority.keys())
         if (!terrains.contains(terrainName))
             qWarning() << "Terrain" << terrainName << "from priority list not found.";
 
     // Add terrain names not specified from command line.
-    foreach (const QString &terrainName, terrains.keys()) {
+    for (const QString &terrainName : terrains.keys()) {
         if (!lessThan.terrainPriority.contains(terrainName)) {
             qWarning() << "No priority set for" << terrainName;
             lessThan.terrainPriority.insert(terrainName, priority);
@@ -478,12 +494,13 @@ int main(int argc, char *argv[])
 
     // Add terrains that are not defined in the target tileset yet
     // TODO: This step should be more configurable
-    foreach (Terrain *terrain, terrains) {
+    for (Terrain *terrain : terrains) {
         if (!hasTerrain(*targetTileset, terrain->name())) {
             Tile *terrainTile = terrain->imageTile();
             QPixmap terrainImage = terrainTile->image();
 
             Tile *newTerrainTile = targetTileset->addTile(terrainImage);
+            newTerrainTile->setProperties(terrainTile->properties());
 
             Terrain *newTerrain =  targetTileset->addTerrain(terrain->name(),
                                                              newTerrainTile->id());
@@ -498,18 +515,17 @@ int main(int argc, char *argv[])
 
     // Prepare a list of terrain combinations.
     QVector<TileTerrainNames> process;
-    foreach (const QStringList& combine, options.combineList) {
+    for (const QStringList &combine : options.combineList) {
         QList<Terrain*> terrainList;
-        // get the terrains to combine
-        foreach (const QString& terrainName, combine) {
+        // Get the terrains to combine
+        for (const QString &terrainName : combine)
             terrainList.append(terrains[terrainName]);
-        }
 
         // Construct a vector with all terrain combinations to process
-        foreach (Terrain *topLeft, terrainList) {
-            foreach (Terrain *topRight, terrainList) {
-                foreach (Terrain *bottomLeft, terrainList) {
-                    foreach (Terrain *bottomRight, terrainList) {
+        for (Terrain *topLeft : terrainList) {
+            for (Terrain *topRight : terrainList) {
+                for (Terrain *bottomLeft : terrainList) {
+                    for (Terrain *bottomRight : terrainList) {
                         process.append(TileTerrainNames(topLeft->name(),
                                                         topRight->name(),
                                                         bottomLeft->name(),
@@ -522,13 +538,14 @@ int main(int argc, char *argv[])
 
     // Go through each combination of terrains and add the tile to the target
     // tileset if it's not in there yet.
-    foreach (TileTerrainNames terrainNames, process) {
+    for (const TileTerrainNames &terrainNames : process) {
         Tile *tile = terrainToTile.value(terrainNames);
 
         if (tile && tile->tileset() == targetTileset)
             continue;
 
         QPixmap image;
+        Properties properties;
 
         if (!tile) {
             qWarning() << "Generating" << terrainNames;
@@ -548,7 +565,7 @@ int main(int argc, char *argv[])
             QPixmap baseImage = terrains[baseTerrain]->imageTile()->image();
             painter.drawPixmap(0, 0, baseImage);
 
-            foreach (const QString &terrainName, terrainList) {
+            for (const QString &terrainName : terrainList) {
                 TileTerrainNames filtered = terrainNames.filter(terrainName);
                 Tile *tile = terrainToTile.value(filtered);
                 if (!tile) {
@@ -557,6 +574,7 @@ int main(int argc, char *argv[])
                 }
 
                 painter.drawPixmap(0, 0, tile->image());
+                properties.merge(tile->properties());
             }
 
             image = QPixmap::fromImage(tileImage);
@@ -565,24 +583,26 @@ int main(int argc, char *argv[])
                        << QFileInfo(tile->tileset()->fileName()).fileName();
 
             image = tile->image();
+            properties = tile->properties();
         }
 
         Tile *newTile = targetTileset->addTile(image);
         newTile->setTerrain(terrainNames.toTerrain(*targetTileset));
+        newTile->setProperties(properties);
         terrainToTile.insert(terrainNames, newTile);
     }
 
     if (targetTileset->tileCount() == 0)
-        qFatal("Target tileset is empty");
+        qCritical("Target tileset is empty");
 
     if (options.embedImage) {
         // Make sure there is no source name, this way the image will be saved in the TSX file.
         targetTileset->setImageSource(QString());
     } else {
         // Save the target tileset image as separate file.
-        int columns = qMin(16, targetTileset->tileCount());
-        int rows = targetTileset->tileCount() / 16;
-        if (targetTileset->tileCount() % 16 > 0)
+        int columns = qMin(options.columns, targetTileset->tileCount());
+        int rows = targetTileset->tileCount() / options.columns;
+        if (targetTileset->tileCount() % options.columns > 0)
             ++rows;
 
         qWarning() << "Writing external tileset image.";
@@ -594,9 +614,9 @@ int main(int argc, char *argv[])
         image.fill(Qt::transparent);
         QPainter painter(&image);
 
-        foreach (Tile *tile, targetTileset->tiles()) {
-            int x = (tile->id() % 16) * targetTileset->tileWidth();
-            int y = (tile->id() / 16) * targetTileset->tileHeight();
+        for (Tile *tile : targetTileset->tiles()) {
+            int x = (tile->id() % options.columns) * targetTileset->tileWidth();
+            int y = (tile->id() / options.columns) * targetTileset->tileHeight();
             painter.drawPixmap(x, y, tile->image());
         }
 
@@ -605,6 +625,7 @@ int main(int argc, char *argv[])
         image.save(imageFileName);
 
         targetTileset->setImageSource(imageFileName);
+        targetTileset->setColumnCount(options.columns);
     }
 
     // Save the target tileset

@@ -2,7 +2,7 @@
 
 ## About Tiled
 
-**Tiled is a 2D level editor that helps you develop the content of your game. Its primary feature is to edit tile maps of various forms, but it also supports free image placement as well as powerful ways to annotate your level with extra information used by the game. Tiled focuses on general flexiblity while trying to stay intuitive.**
+**Tiled is a 2D level editor that helps you develop the content of your game. Its primary feature is to edit tile maps of various forms, but it also supports free image placement as well as powerful ways to annotate your level with extra information used by the game. Tiled focuses on general flexibility while trying to stay intuitive.**
 
 In terms of tile maps, it supports straight rectangular tile layers, but also projected isometric, staggered isometric and staggered hexagonal layers. A tileset can be either a single image containing many tiles, or it can be a collection of individual images. In order to support certain depth faking techniques, tiles and layers can be offset by a custom distance and their rendering order can be configured.
 
@@ -36,6 +36,8 @@ After pressing _OK_, Tiled should look as follows:
 
   ![Tileset Added](images/introduction/tiled-new-map-tileset-added.png)
 
-We're ready to select some tiles and start painting!
+We're ready to select some tiles and [start painting](editing-tile-layers.md)!
+But first, let's have a quick look at the [various layer types](layers.md)
+supported by Tiled.
 
 *Most of the manual still needs to be written. Fortunately, there is a very nice [Tiled Map Editor Tutorial Series](http://www.gamefromscratch.com/post/2015/10/14/Tiled-Map-Editor-Tutorial-Series.aspx) on GamesFromScratch.com. In addition, the support for Tiled in various [engines and frameworks](../reference/support-for-tmx-maps.md) often comes with some usage information.*

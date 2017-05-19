@@ -284,12 +284,12 @@ void ObjectTypesEditor::applyObjectTypes()
     if (!objectTypesDir.exists())
         objectTypesDir.mkpath(QLatin1String("."));
 
-    ObjectTypesWriter writer;
-    if (!writer.writeObjectTypes(objectTypesFile, objectTypes)) {
+    ObjectTypesSerializer serializer;
+    if (!serializer.writeObjectTypes(objectTypesFile, objectTypes)) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
                               tr("Error writing to %1:\n%2")
                               .arg(prefs->objectTypesFile(),
-                                   writer.errorString()));
+                                   serializer.errorString()));
     }
 }
 
@@ -329,7 +329,7 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Choose Object Types File"),
                                          startPath,
-                                         tr("Object Types files (*.xml)"),
+                                         tr("Object Types files (*.xml *.json)"),
                                          nullptr,
                                          QFileDialog::DontConfirmOverwrite);
 
@@ -341,12 +341,11 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     ObjectTypes objectTypes;
 
     if (QFile::exists(fileName)) {
-        ObjectTypesReader reader;
-        objectTypes = reader.readObjectTypes(fileName);
+        ObjectTypesSerializer serializer;
 
-        if (!reader.errorString().isEmpty()) {
+        if (!serializer.readObjectTypes(fileName, objectTypes)) {
             QMessageBox::critical(this, tr("Error Reading Object Types"),
-                                  reader.errorString());
+                                  serializer.errorString());
             return;
         }
     }
@@ -363,16 +362,16 @@ void ObjectTypesEditor::importObjectTypes()
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml)"));
+                                         tr("Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
-    ObjectTypesReader reader;
-    const ObjectTypes objectTypes = reader.readObjectTypes(fileName);
+    ObjectTypesSerializer serializer;
+    ObjectTypes objectTypes;
 
-    if (reader.errorString().isEmpty()) {
+    if (serializer.readObjectTypes(fileName, objectTypes)) {
         ObjectTypes currentTypes = mObjectTypesModel->objectTypes();
         for (const ObjectType &type : objectTypes) {
             auto it = std::find_if(currentTypes.begin(), currentTypes.end(), [&type](ObjectType &existingType) {
@@ -390,7 +389,7 @@ void ObjectTypesEditor::importObjectTypes()
         mObjectTypesModel->setObjectTypes(currentTypes);
     } else {
         QMessageBox::critical(this, tr("Error Reading Object Types"),
-                              reader.errorString());
+                              serializer.errorString());
     }
 
     applyObjectTypes();
@@ -407,16 +406,16 @@ void ObjectTypesEditor::exportObjectTypes()
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml)"));
+                                         tr("Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
-    ObjectTypesWriter writer;
-    if (!writer.writeObjectTypes(fileName, prefs->objectTypes())) {
+    ObjectTypesSerializer serializer;
+    if (!serializer.writeObjectTypes(fileName, prefs->objectTypes())) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              writer.errorString());
+                              serializer.errorString());
     }
 }
 

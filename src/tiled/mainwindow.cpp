@@ -48,6 +48,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "minimaprenderer.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
@@ -110,6 +111,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
 
+    PluginManager::addObject(mTmxMapFormat);
+    PluginManager::addObject(mTsxTilesetFormat);
+
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
 
@@ -120,9 +124,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
 
     setCentralWidget(mDocumentManager->widget());
-
-    PluginManager::addObject(mTmxMapFormat);
-    PluginManager::addObject(mTsxTilesetFormat);
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -150,16 +151,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoAction->setIcon(undoIcon);
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
-    mUndoDock = new UndoDock(undoGroup, this);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
 
-//    tabifyDockWidget(undoDock, mMapsDock);
-//    tabifyDockWidget(tileStampsDock, undoDock);
-
-    // These dock widgets may not be immediately useful to many people, so
-    // they are hidden by default.
-    mUndoDock->setVisible(false);
     mConsoleDock->setVisible(false);
 
 //    mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -172,6 +165,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
     QList<QKeySequence> deleteKeys = QKeySequence::keyBindings(QKeySequence::Delete);
+    deleteKeys.removeAll(Qt::Key_D | Qt::ControlModifier);  // used as "duplicate" shortcut
 #ifdef Q_OS_OSX
     // Add the Backspace key as primary shortcut for Delete, which seems to be
     // the expected one for OS X.
@@ -317,6 +311,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
     connect(mUi->actionFullScreen, &QAction::toggled, this, &MainWindow::setFullScreen);
+    connect(mUi->actionClearView, &QAction::toggled, this, &MainWindow::toggleClearView);
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
@@ -338,10 +333,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-
-    // todo: figure out how to hook this up
-//    connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
-//            SLOT(newTilesets(QStringList)));
 
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
@@ -462,6 +453,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(autoMappingWarning(bool)));
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
+
+    QTimer::singleShot(500, this, [this,preferences]() {
+        if (preferences->shouldShowPatreonDialog())
+            becomePatron();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -499,12 +495,14 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    writeSettings();
-
-    if (confirmAllSave())
+    if (confirmAllSave()) {
+        // Make sure user won't end up in Clear View mode on next launch
+        toggleClearView(false);
+        writeSettings();
         event->accept();
-    else
+    } else {
         event->ignore();
+    }
 }
 
 void MainWindow::changeEvent(QEvent *event)
@@ -589,7 +587,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     }
 
     if (!fileFormat) {
-        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format"));
+        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format."));
         return false;
     }
 
@@ -818,7 +816,7 @@ bool MainWindow::saveDocumentAs(Document *document)
     return saveDocument(document, fileName);
 }
 
-bool isEmbeddedTilesetDocument(Document *document)
+static bool isEmbeddedTilesetDocument(Document *document)
 {
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document))
         return tilesetDocument->isEmbedded();
@@ -1130,6 +1128,37 @@ void MainWindow::setFullScreen(bool fullScreen)
         setWindowState(windowState() & ~Qt::WindowFullScreen);
 }
 
+void MainWindow::toggleClearView(bool clearView)
+{
+    if (clearView) {
+        mMainWindowStates.insert(this, saveState());
+
+        QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+        QList<QToolBar*> toolBars = findChildren<QToolBar*>(QString(), Qt::FindDirectChildrenOnly);
+
+        for (Editor *editor : mDocumentManager->editors()) {
+            if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+                mMainWindowStates.insert(editorWindow, editorWindow->saveState());
+
+            docks += editor->dockWidgets();
+            toolBars += editor->toolBars();
+        }
+
+        for (auto dock : docks)
+            dock->hide();
+        for (auto toolBar : toolBars)
+            toolBar->hide();
+
+    } else {
+        QMapIterator<QMainWindow*, QByteArray> it(mMainWindowStates);
+        while (it.hasNext()) {
+            it.next();
+            it.key()->restoreState(it.value());
+        }
+        mMainWindowStates.clear();
+    }
+}
+
 bool MainWindow::newTileset(const QString &path)
 {
     Preferences *prefs = Preferences::instance();
@@ -1160,13 +1189,6 @@ bool MainWindow::newTileset(const QString &path)
         mDocumentManager->addDocument(tilesetDocument.take());
     }
     return true;
-}
-
-void MainWindow::newTilesets(const QStringList &paths)
-{
-    for (const QString &path : paths)
-        if (!newTileset(path))
-            return;
 }
 
 void MainWindow::reloadTilesetImages()
@@ -1215,34 +1237,8 @@ void MainWindow::addExternalTileset()
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
-    QVector<SharedTileset> tilesets;
-
-    for (const QString &fileName : fileNames) {
-        QString error;
-        SharedTileset tileset = Tiled::readTileset(fileName, &error);
-        if (tileset) {
-            tilesets.append(tileset);
-        } else if (fileNames.size() == 1) {
-            QMessageBox::critical(this, tr("Error Reading Tileset"), error);
-            return;
-        } else {
-            int result;
-
-            result = QMessageBox::warning(this, tr("Error Reading Tileset"),
-                                          tr("%1: %2").arg(fileName, error),
-                                          QMessageBox::Abort | QMessageBox::Ignore,
-                                          QMessageBox::Ignore);
-
-            if (result == QMessageBox::Abort)
-                return;
-        }
-    }
-
-    QUndoStack *undoStack = mapDocument->undoStack();
-    undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
-    for (const SharedTileset &tileset : tilesets)
-        undoStack->push(new AddTileset(mapDocument, tileset));
-    undoStack->endMacro();
+    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->currentEditor());
+    mapEditor->addExternalTilesets(fileNames);
 }
 
 void MainWindow::resizeMap()
@@ -1255,6 +1251,19 @@ void MainWindow::resizeMap()
 
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(map->size());
+
+    // TODO: Look into fixing up the preview for maps that do not use square
+    // tiles, and possibly also staggered maps.
+    if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
+        resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
+            QImage image(size, QImage::Format_ARGB32_Premultiplied);
+            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
+                                                       | MiniMapRenderer::DrawImages
+                                                       | MiniMapRenderer::DrawTiles
+                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            return image;
+        });
+    }
 
     if (resizeDialog.exec()) {
         const QSize &newSize = resizeDialog.newSize();
@@ -1418,7 +1427,6 @@ void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
 
-    mViewsAndToolbarsMenu->addAction(mUndoDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
@@ -1465,7 +1473,7 @@ void MainWindow::updateActions()
     mUi->actionExportAsImage->setEnabled(mapDocument);
     mUi->actionExport->setEnabled(mapDocument);
     mUi->actionExportAs->setEnabled(mapDocument);
-    mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->readerFormat()));
+    mUi->actionReload->setEnabled(mapDocument || (tilesetDocument && tilesetDocument->canReload()));
     mUi->actionClose->setEnabled(document);
     mUi->actionCloseAll->setEnabled(document);
 

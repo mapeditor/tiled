@@ -42,6 +42,7 @@
 #include "tilesetmodel.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
+#include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -49,10 +50,12 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QSettings>
 #include <QStackedWidget>
 #include <QStatusBar>
@@ -103,18 +106,66 @@ private:
 } // anonymous namespace
 
 
+class TilesetEditorWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    TilesetEditorWindow(TilesetEditor *editor, QWidget *parent = nullptr)
+        : QMainWindow(parent)
+        , mEditor(editor)
+    {
+        setAcceptDrops(true);
+    }
+
+signals:
+    void localFilesDropped(const QStringList &files);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
+
+private:
+    TilesetEditor *mEditor;
+};
+
+void TilesetEditorWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    Tileset *tileset = mEditor->currentTileset();
+    if (!tileset || !tileset->isCollection())
+        return; // only collection tilesets can accept drops
+
+    const QList<QUrl> urls = e->mimeData()->urls();
+    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
+        e->acceptProposedAction();
+}
+
+void TilesetEditorWindow::dropEvent(QDropEvent *e)
+{
+    QStringList paths;
+    for (const QUrl &url : e->mimeData()->urls()) {
+        const QString localFile = url.toLocalFile();
+        if (!localFile.isEmpty())
+            paths.append(localFile);
+    }
+    if (!paths.isEmpty()) {
+        emit localFilesDropped(paths);
+        e->acceptProposedAction();
+    }
+}
+
 
 TilesetEditor::TilesetEditor(QObject *parent)
     : Editor(parent)
-    , mMainWindow(new QMainWindow)
+    , mMainWindow(new TilesetEditorWindow(this))
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
     , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
+    , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
-    , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
     , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
@@ -130,7 +181,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+
+    mUndoDock->setVisible(false);
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
@@ -150,9 +204,11 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
+    connect(mMainWindow, &TilesetEditorWindow::localFilesDropped, this, &TilesetEditor::addTiles);
+
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
-    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
+    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
     connect(mEditTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
@@ -197,7 +253,13 @@ void TilesetEditor::addDocument(Document *document)
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
-    view->setZoomable(new Zoomable(this));
+
+
+    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
+            tilesetDocument->tileset()->name();
+    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    view->zoomable()->setScale(scale);
+
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -236,6 +298,11 @@ void TilesetEditor::removeDocument(Document *document)
     tilesetDocument->disconnect(this);
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
+
+    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
+            tilesetDocument->tileset()->name();
+    Preferences::instance()->settings()->setValue(path, view->scale());
+
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
     delete view;
@@ -249,11 +316,6 @@ void TilesetEditor::setCurrentDocument(Document *document)
     if (mCurrentTilesetDocument == tilesetDocument)
         return;
 
-    if (mZoomable) {
-        mZoomable->setComboBox(nullptr);
-        mZoomable = nullptr;
-    }
-
     TilesetView *tilesetView = nullptr;
 
     if (document) {
@@ -262,12 +324,11 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditTerrain(mEditTerrain->isChecked());
-
-        mZoomable = tilesetView->zoomable();
-        mZoomable->setComboBox(mZoomComboBox);
+        tilesetView->zoomable()->setComboBox(mZoomComboBox);
     }
 
     mPropertiesDock->setDocument(document);
+    mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mTileAnimationEditor->setTilesetDocument(tilesetDocument);
     mTileCollisionEditor->setTilesetDocument(tilesetDocument);
     mTerrainDock->setDocument(document);
@@ -304,6 +365,7 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
 {
     return QList<QDockWidget*> {
         mPropertiesDock,
+        mUndoDock,
         mTerrainDock
     };
 }
@@ -427,12 +489,8 @@ static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
     return false;
 }
 
-void TilesetEditor::addTiles()
+void TilesetEditor::openAddTilesDialog()
 {
-    Tileset *tileset = currentTileset();
-    if (!tileset)
-        return;
-
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
@@ -440,6 +498,19 @@ void TilesetEditor::addTiles()
                                                             tr("Add Tiles"),
                                                             startLocation,
                                                             filter);
+
+    if (!files.isEmpty())
+        addTiles(files);
+}
+
+void TilesetEditor::addTiles(const QStringList &files)
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    Preferences *prefs = Preferences::instance();
+
     struct LoadedFile {
         QString imageSource;
         QPixmap image;
@@ -707,3 +778,5 @@ void TilesetEditor::updateAddRemoveActions()
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "tileseteditor.moc"

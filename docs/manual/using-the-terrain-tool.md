@@ -46,7 +46,7 @@ Let's switch back to the Terrains window and draw some cobblestones. Now you can
 
   ![Drawing Cobblestone](images/terraintool/07-drawing-cobblestone.png)
 
-Try holding `Control` (`command` on a Mac) while drawing. This reduces the modified area to just the closest corner to the mouse, allowing for precision work.
+Try holding `Control` (`Command` on a Mac) while drawing. This reduces the modified area to just the closest corner to the mouse, allowing for precision work.
 
 Finally, see what happens when you try drawing some dirt on the cobblestone. Because there are no transitions from dirt directly to cobblestone, the Terrain tool first inserts transitions to sand and from there to cobblestone. Neat!
 

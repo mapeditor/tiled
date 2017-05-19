@@ -74,7 +74,8 @@ public:
     /**
      * Returns whether the given \a item displays a custom property.
      */
-    bool isCustomPropertyItem(QtBrowserItem *item) const;
+    bool isCustomPropertyItem(const QtBrowserItem *item) const;
+    bool allCustomPropertyItems(const QList<QtBrowserItem*> &items) const;
 
     /**
      * Makes the custom property with the \a name the currently edited one,

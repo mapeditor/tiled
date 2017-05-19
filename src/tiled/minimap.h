@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "minimaprenderer.h"
+
 #include <QFrame>
 #include <QImage>
 #include <QTimer>
@@ -35,21 +37,12 @@ class MiniMap : public QFrame
     Q_OBJECT
 
 public:
-    enum MiniMapRenderFlag {
-        DrawObjects             = 0x0001,
-        DrawTiles               = 0x0002,
-        DrawImages              = 0x0004,
-        IgnoreInvisibleLayer    = 0x0008,
-        DrawGrid                = 0x0010
-    };
-    Q_DECLARE_FLAGS(MiniMapRenderFlags, MiniMapRenderFlag)
-
     MiniMap(QWidget *parent);
 
     void setMapDocument(MapDocument *);
 
-    MiniMapRenderFlags renderFlags() const { return mRenderFlags; }
-    void setRenderFlags(MiniMapRenderFlags flags) { mRenderFlags = flags; }
+    MiniMapRenderer::RenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(MiniMapRenderer::RenderFlags flags) { mRenderFlags = flags; }
 
     QSize sizeHint() const override;
 
@@ -77,7 +70,7 @@ private:
     QPoint mDragOffset;
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
-    MiniMapRenderFlags mRenderFlags;
+    MiniMapRenderer::RenderFlags mRenderFlags;
 
     QRect viewportRect() const;
     QPointF mapToScene(QPoint p) const;
@@ -88,5 +81,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMap::MiniMapRenderFlags)

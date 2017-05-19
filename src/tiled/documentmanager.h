@@ -73,6 +73,7 @@ public:
     void setEditor(Document::DocumentType documentType, Editor *editor);
     Editor *editor(Document::DocumentType documentType) const;
     void deleteEditor(Document::DocumentType documentType);
+    QList<Editor*> editors() const;
 
     Editor *currentEditor() const;
 

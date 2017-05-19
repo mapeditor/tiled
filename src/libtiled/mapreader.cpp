@@ -39,7 +39,7 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tilesetformat.h"
+#include "tilesetmanager.h"
 #include "terrain.h"
 
 #include <QCoreApplication>
@@ -1145,5 +1145,5 @@ QString MapReader::resolveReference(const QString &reference,
 SharedTileset MapReader::readExternalTileset(const QString &source,
                                              QString *error)
 {
-    return Tiled::readTileset(source, error);
+    return TilesetManager::instance()->loadTileset(source, error);
 }

@@ -30,6 +30,7 @@
 
 #include "tiled_global.h"
 
+#include <QJsonArray>
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -47,6 +48,9 @@ class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
 {
 public:
     void merge(const Properties &other);
+
+    QJsonArray toJson() const;
+    static Properties fromJson(const QJsonArray &json);
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

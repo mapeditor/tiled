@@ -202,6 +202,11 @@ void DocumentManager::deleteEditor(Document::DocumentType documentType)
     delete editor;
 }
 
+QList<Editor *> DocumentManager::editors() const
+{
+    return mEditorForType.values();
+}
+
 Editor *DocumentManager::currentEditor() const
 {
     if (Document *document = currentDocument())

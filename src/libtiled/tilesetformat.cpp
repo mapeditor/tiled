@@ -46,10 +46,12 @@ SharedTileset readTileset(const QString &fileName, QString *error)
                     *error = QString();
             }
 
+            if (tileset)
+                tileset->setFormat(format);
+
             return tileset;
         }
     }
-
 
     // Fall back to default reader (TSX format)
     MapReader reader;

@@ -30,7 +30,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "tilesetformat.h"
+#include "tilesetmanager.h"
 
 #include <QScopedPointer>
 
@@ -172,7 +172,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     if (!sourceVariant.isNull()) {
         QString source = resolvePath(mMapDir, sourceVariant);
         QString error;
-        SharedTileset tileset = Tiled::readTileset(source, &error);
+        SharedTileset tileset = TilesetManager::instance()->loadTileset(source, &error);
         if (!tileset) {
             // Insert a placeholder to allow the map to load
             tileset = Tileset::create(QFileInfo(source).completeBaseName(), 32, 32);

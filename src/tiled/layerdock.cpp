@@ -223,6 +223,7 @@ LayerView::LayerView(QWidget *parent)
     setUniformRowHeights(true);
     setModel(mProxyModel);
     setItemDelegate(new EyeVisibilityDelegate(this));
+    setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(this, SIGNAL(pressed(QModelIndex)),
             SLOT(indexPressed(QModelIndex)));
@@ -291,6 +292,20 @@ void LayerView::currentLayerChanged(Layer *layer)
     setCurrentIndex(mProxyModel->mapFromSource(layerModel->index(layer)));
 }
 
+bool LayerView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
+}
+
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
 {
     if (!mMapDocument)
@@ -303,9 +318,9 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
 
     menu.addMenu(handler->createNewLayerMenu(&menu));
-    menu.addMenu(handler->createGroupLayerMenu(&menu));
 
     if (proxyIndex.isValid()) {
+        menu.addMenu(handler->createGroupLayerMenu(&menu));
         menu.addAction(handler->actionDuplicateLayer());
         menu.addAction(handler->actionMergeLayerDown());
         menu.addAction(handler->actionRemoveLayer());

@@ -2,33 +2,45 @@ clone_depth: 200
 version: '0.18.{build}'
 
 environment:
-  global:
-    MINGW: C:\Qt\Tools\mingw530_32
+  my_secret:
+    secure: +3IhWT10lCSC4GE4gGfWt8WiZdIXuMUfaImgvQUullg=
   matrix:
-    - QTDIR: C:\Qt\5.7\mingw53_32
-    - QTDIR: C:\Qt\5.7\msvc2013_64
+    - QTDIR: C:\Qt\5.8\msvc2013_64
+      PUSH_RELEASE: true
+      TILED_ITCH_CHANNEL: windows-64bit
+    - QTDIR: C:\Qt\5.8\mingw53_32
+      MINGW: C:\Qt\Tools\mingw530_32
+      PUSH_RELEASE: true
+      TILED_ITCH_CHANNEL: windows-32bit
+    - QTDIR: C:\Qt\5.6\mingw49_32
+      MINGW: C:\Qt\Tools\mingw492_32
+      PUSH_RELEASE: false
+      TILED_ITCH_CHANNEL: winxp-32bit
 
 configuration: Release
 
 install:
   - choco install -y qbs
+  - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
   - set VERSION_DATE=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - set TILED_SPARKLE=true
-  - if defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
-  - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
-  - if defined APPVEYOR_REPO_TAG_NAME set TILED_RELEASE=true
-  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
-  - if not defined APPVEYOR_REPO_TAG_NAME set TILED_SNAPSHOT=true
-  - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %TILED_VERSION%... (from %COMMITNOW%)
+  - if defined APPVEYOR_REPO_TAG_NAME (set TILED_RELEASE=true) else (set TILED_SNAPSHOT=true)
+  - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
+  - if defined TILED_RELEASE echo Building Tiled %TILED_VERSION%... (from %COMMITNOW%)
+  - if defined TILED_SNAPSHOT set TILED_VERSION=%APPVEYOR_BUILD_VERSION%
+  - if defined TILED_SNAPSHOT echo Building Tiled snapshot %TILED_VERSION%... (from %COMMITNOW%)
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs setup-qt %QTDIR%\bin\qmake.exe qt
   - qbs config defaultProfile qt
-  - qbs install --all-products --install-root install-root release
+  - if defined TILED_RELEASE (set TILED_ITCH_VERSION=%TILED_VERSION%) else (set TILED_ITCH_VERSION=%VERSION_DATE%)
+  - if defined TILED_SNAPSHOT (set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot)
+  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
+  - qbs build --all-products release Tiled.windowsInstaller:true itch qbs.buildVariant:release Tiled.sparkleEnabled:false Tiled.version:%TILED_ITCH_VERSION%
 
 after_build:
   - cd release
@@ -38,6 +50,8 @@ after_build:
   - cd ..
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
+  - cd ..\..
+  - if defined PUSH_TO_ITCH dist\win\push-to-itch.bat
 
 artifacts:
   - name: Installer
@@ -56,6 +70,7 @@ deploy:
     draft: true
     on:
         appveyor_repo_tag: true
+        push_release: true
 
   - provider: FTP
     protocol: sftp
@@ -68,6 +83,7 @@ deploy:
     on:
         branch: snapshot
         appveyor_repo_tag: false
+        push_release: true
 
   - provider: FTP
     protocol: sftp
@@ -80,6 +96,7 @@ deploy:
     on:
         branch: snapshot
         appveyor_repo_tag: false
+        push_release: true
 
 notifications:
   - provider: Webhook

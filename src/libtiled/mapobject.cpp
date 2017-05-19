@@ -2,6 +2,7 @@
  * mapobject.cpp
  * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
  * This file is part of libtiled.
  *
@@ -34,6 +35,7 @@
 #include "tile.h"
 
 #include <QFontMetricsF>
+#include <qmath.h>
 
 namespace Tiled {
 
@@ -200,26 +202,31 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
  * Flip this object in the given \a direction. This doesn't change the size
  * of the object.
  */
-void MapObject::flip(FlipDirection direction)
+void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
-    if (!mCell.isEmpty()) {
-        if (direction == FlipHorizontally)
-            mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
-        else if (direction == FlipVertically)
-            mCell.setFlippedVertically(!mCell.flippedVertically());
+    //computing new rotation and flip transform
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    qreal newRotation = 0;
+    if (direction == FlipHorizontally) {
+        newRotation = 180.0 - rotation();
+        flipTransform.scale(-1, 1);
+    } else { //direction == FlipVertically
+        flipTransform.scale(1, -1);
+        newRotation = -rotation();
     }
+    flipTransform.translate(-origin.x(), -origin.y());
 
-    if (!mPolygon.isEmpty()) {
-        const QPointF center2 = mPolygon.boundingRect().center() * 2;
 
-        if (direction == FlipHorizontally) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setX(center2.x() - mPolygon[i].x());
-        } else if (direction == FlipVertically) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setY(center2.y() - mPolygon[i].y());
-        }
-    }
+    if (!mCell.isEmpty())
+        flipTileObject(flipTransform);
+    else if (!mPolygon.isEmpty())
+        flipPolygonObject(flipTransform);
+    else
+        flipRectObject(flipTransform);
+
+    //installing new rotation after computing new position
+    setRotation(newRotation);
 }
 
 /**
@@ -238,6 +245,46 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     o->setVisible(mVisible);
     return o;
+}
+
+void MapObject::flipRectObject(const QTransform &flipTransform)
+{
+    QPointF oldBottomLeftPoint = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),
+                                         sin(qDegreesToRadians(rotation() + 90)) * height() + y());
+    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+
+    setPosition(newPos);
+}
+
+void MapObject::flipPolygonObject(const QTransform &flipTransform)
+{
+    QTransform polygonToMapTransform;
+    polygonToMapTransform.translate(x(), y());
+    polygonToMapTransform.rotate(rotation());
+
+    QPointF localPolygonCenter = mPolygon.boundingRect().center();
+    QTransform polygonFlip;
+    polygonFlip.translate(localPolygonCenter.x(), localPolygonCenter.y());
+    polygonFlip.scale(1, -1);
+    polygonFlip.translate(-localPolygonCenter.x(), -localPolygonCenter.y());
+
+    QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
+    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+
+    mPolygon = polygonFlip.map(mPolygon);
+    setPosition(newPos);
+}
+
+void MapObject::flipTileObject(const QTransform &flipTransform)
+{
+    mCell.setFlippedVertically(!mCell.flippedVertically());
+
+    //old tile position is bottomLeftPoint
+    QPointF topLeftTilePoint = QPointF(cos(qDegreesToRadians(rotation() - 90)) * height() + x(),
+                                       sin(qDegreesToRadians(rotation() - 90)) * height() + y());
+    QPointF newPos = flipTransform.map(topLeftTilePoint);
+
+    setPosition(newPos);
 }
 
 } // namespace Tiled

@@ -29,7 +29,7 @@
 namespace Tiled {
 
 class GroupLayer;
-class TextData;
+struct TextData;
 
 /**
  * Converts Map instances to QVariant. Meant to be used together with

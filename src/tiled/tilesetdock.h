@@ -97,7 +97,7 @@ signals:
     /**
      * Emitted when files are dropped at the tileset dock.
      */
-    void tilesetsDropped(const QStringList &paths);
+    void localFilesDropped(const QStringList &paths);
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -115,6 +115,7 @@ private slots:
 
     void tilesetChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
+    void tilesetFileNameChanged(const QString &fileName);
 
     void tileImageSourceChanged(Tile *tile);
     void tileAnimationChanged(Tile *tile);
@@ -130,6 +131,7 @@ private slots:
     void refreshTilesetMenu();
 
     void swapTiles(Tile *tileA, Tile *tileB);
+    void changeSelectedMapObjectsTile(Tile *tile);
 
 private:
     void setCurrentTile(Tile *tile);
@@ -171,7 +173,6 @@ private:
     QActionGroup *mTilesetActionGroup;
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
-    Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
 
     bool mEmittingStampCaptured;

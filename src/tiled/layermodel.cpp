@@ -26,9 +26,11 @@
 #include "mapdocument.h"
 #include "layer.h"
 #include "renamelayer.h"
+#include "reparentlayers.h"
 #include "tilelayer.h"
 
 #include <QApplication>
+#include <QMimeData>
 #include <QStyle>
 
 using namespace Tiled;
@@ -181,8 +183,18 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
 Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
+
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+
+    Layer *layer = toLayer(index);
+
+    if (layer)                              // can drag any layer
+        rc |= Qt::ItemIsDragEnabled;
+
+    if (!layer || layer->isGroupLayer())    // can drop on map or group layer
+        rc |= Qt::ItemIsDropEnabled;
+
     return rc;
 }
 
@@ -198,6 +210,81 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
         }
     }
     return QVariant();
+}
+
+QStringList LayerModel::mimeTypes() const
+{
+    return QStringList {
+        QLatin1String(LAYERS_MIMETYPE)
+    };
+}
+
+QMimeData *LayerModel::mimeData(const QModelIndexList &indexes) const
+{
+    if (indexes.isEmpty())
+        return nullptr;
+
+    QMimeData *mimeData = new QMimeData;
+    QByteArray encodedData;
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    for (const QModelIndex &index : indexes)
+        if (Layer *layer = toLayer(index))
+            stream << globalIndex(layer);
+
+    mimeData->setData(QLatin1String(LAYERS_MIMETYPE), encodedData);
+    return mimeData;
+}
+
+Qt::DropActions LayerModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                              int row, int column, const QModelIndex &parent)
+{
+    if (!data || action != Qt::MoveAction)
+        return false;
+    if (!data->hasFormat(QLatin1String(LAYERS_MIMETYPE)))
+        return false;
+
+    Layer *parentLayer = toLayer(parent);
+    if (parentLayer && !parentLayer->isGroupLayer())
+        return false;
+
+    GroupLayer *groupLayer = static_cast<GroupLayer*>(parentLayer);
+
+    QByteArray encodedData = data->data(QLatin1String(LAYERS_MIMETYPE));
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+    QList<Layer*> layers;
+
+    while (!stream.atEnd()) {
+        int globalIndex;
+        stream >> globalIndex;
+        if (Layer *layer = layerAtGlobalIndex(mMap, globalIndex))
+            layers.append(layer);
+    }
+
+    if (layers.isEmpty())
+        return false;
+
+    if (row > rowCount(parent))
+        row = rowCount(parent);
+    if (row == -1)
+        row = groupLayer ? groupLayer->layerCount() : 0;
+    if (column == -1)
+        column = 0;
+
+    // NOTE: QAbstractItemView::dropEvent already makes sure that we're not
+    // dropping onto ourselves (like putting a group layer into itself).
+
+    auto command = new ReparentLayers(mMapDocument, layers, groupLayer, row);
+    command->setText(tr("Drag Layer(s)", nullptr, layers.size()));
+
+    mMapDocument->undoStack()->push(command);
+
+    return true;
 }
 
 QModelIndex LayerModel::index(Layer *layer) const

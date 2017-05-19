@@ -121,13 +121,20 @@ bool MapWriterPrivate::openFile(SaveFile *file)
     return true;
 }
 
-static QXmlStreamWriter *createWriter(QIODevice *device)
+namespace {
+
+class AutoFormattingWriter : public QXmlStreamWriter
 {
-    QXmlStreamWriter *writer = new QXmlStreamWriter(device);
-    writer->setAutoFormatting(true);
-    writer->setAutoFormattingIndent(1);
-    return writer;
-}
+public:
+    explicit AutoFormattingWriter(QIODevice *device)
+        : QXmlStreamWriter(device)
+    {
+        setAutoFormatting(true);
+        setAutoFormattingIndent(1);
+    }
+};
+
+} // anonymous namespace
 
 void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
                                 const QString &path)
@@ -136,18 +143,17 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
     mUseAbsolutePaths = path.isEmpty();
     mLayerDataFormat = map->layerDataFormat();
 
-    QXmlStreamWriter *writer = createWriter(device);
-    writer->writeStartDocument();
+    AutoFormattingWriter writer(device);
+    writer.writeStartDocument();
 
     if (mDtdEnabled) {
-        writer->writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
-                                       "http://mapeditor.org/dtd/1.0/"
-                                       "map.dtd\">"));
+        writer.writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
+                                      "http://mapeditor.org/dtd/1.0/"
+                                      "map.dtd\">"));
     }
 
-    writeMap(*writer, *map);
-    writer->writeEndDocument();
-    delete writer;
+    writeMap(writer, *map);
+    writer.writeEndDocument();
 }
 
 void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
@@ -156,18 +162,17 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     mMapDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
-    QXmlStreamWriter *writer = createWriter(device);
-    writer->writeStartDocument();
+    AutoFormattingWriter writer(device);
+    writer.writeStartDocument();
 
     if (mDtdEnabled) {
-        writer->writeDTD(QLatin1String("<!DOCTYPE tileset SYSTEM \""
-                                       "http://mapeditor.org/dtd/1.0/"
-                                       "map.dtd\">"));
+        writer.writeDTD(QLatin1String("<!DOCTYPE tileset SYSTEM \""
+                                      "http://mapeditor.org/dtd/1.0/"
+                                      "map.dtd\">"));
     }
 
-    writeTileset(*writer, tileset, 0);
-    writer->writeEndDocument();
-    delete writer;
+    writeTileset(writer, tileset, 0);
+    writer.writeEndDocument();
 }
 
 void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
@@ -177,7 +182,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     const QString orientation = orientationToString(map.orientation());
     const QString renderOrder = renderOrderToString(map.renderOrder());
 
-    w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
+    w.writeAttribute(QLatin1String("version"), QCoreApplication::applicationVersion());
     w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("renderorder"), renderOrder);
     w.writeAttribute(QLatin1String("width"), QString::number(map.width()));

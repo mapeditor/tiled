@@ -68,7 +68,7 @@ void CreateTextObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseE
 void CreateTextObjectTool::languageChanged()
 {
     setName(tr("Insert Text"));
-    setShortcut(QKeySequence(tr("X")));
+    setShortcut(QKeySequence(tr("E")));
 }
 
 MapObject *CreateTextObjectTool::createNewMapObject()
