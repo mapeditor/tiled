@@ -380,8 +380,8 @@ void ReversingProxyModel::sourceRowsAboutToBeInserted(const QModelIndex &parent,
     Q_ASSERT(parent.isValid() ? parent.model() == sourceModel() : true);
 
     const int rows = sourceModel()->rowCount(parent);
-    const int proxyStart = rows - end;
-    const int proxyEnd = rows - start;
+    const int proxyStart = rows - start;
+    const int proxyEnd = proxyStart + (end - start);
 
     beginInsertRows(mapFromSource(parent), proxyStart, proxyEnd);
 }
