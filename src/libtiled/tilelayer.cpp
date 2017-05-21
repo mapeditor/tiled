@@ -572,6 +572,30 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
     return ret;
 }
 
+QRegion TileLayer::computeAutocropRegion() const
+{
+    int minX = mWidth, minY = mHeight;
+    int maxX = 0, maxY = 0;
+
+    if (isEmpty()) {
+        return QRegion();
+    }
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+
+            if (!cellAt(x, y).isEmpty()) {
+                minX = qMin(x, minX);
+                maxX = qMax(x, maxX);
+                minY = qMin(y, minY);
+                maxY = qMax(y, maxY);
+            }
+        }
+    }
+
+    return QRegion(minX, minY, maxX-minX+1, maxY-minY+1);
+}
+
 bool TileLayer::isEmpty() const
 {
     for (const Cell &cell : mGrid)

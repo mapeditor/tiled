@@ -324,6 +324,8 @@ public:
      */
     QRegion computeDiffRegion(const TileLayer *other) const;
 
+    QRegion computeAutocropRegion() const;
+
     /**
      * Returns true if all tiles in the layer are empty.
      */

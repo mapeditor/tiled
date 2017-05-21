@@ -335,6 +335,19 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // TODO: Handle layers that don't match the map size correctly
 }
 
+
+void MapDocument::autocropMap()
+{
+    // Since autocrop option is allowed only for Tile Layer
+    TileLayer* tileLayer = static_cast<TileLayer*>(mCurrentLayer);
+
+    const QRect bounds = tileLayer->computeAutocropRegion().boundingRect();
+    if (bounds.isNull())
+        return;
+
+    resizeMap(bounds.size(), -bounds.topLeft(), true);
+}
+
 void MapDocument::offsetMap(const QList<Layer*> &layers,
                             const QPoint &offset,
                             const QRect &bounds,

@@ -62,6 +62,7 @@ public:
     QAction *actionSelectInverse() const { return mActionSelectInverse; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
+    QAction *actionAutocrop() const { return mActionAutocrop; }
 
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
@@ -104,6 +105,8 @@ public slots:
 
     void cropToSelection();
 
+    void autocrop();
+
     void addTileLayer();
     void addObjectGroup();
     void addImageLayer();
@@ -138,6 +141,7 @@ private:
     QAction *mActionSelectInverse;
     QAction *mActionSelectNone;
     QAction *mActionCropToSelection;
+    QAction *mActionAutocrop;
 
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;

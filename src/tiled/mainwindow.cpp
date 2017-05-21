@@ -246,7 +246,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
 
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
-                               mActionHandler->actionCropToSelection());
+                                mActionHandler->actionCropToSelection());
+
+    mUi->menuMap->insertAction(mUi->actionOffsetMap,
+                                mActionHandler->actionAutocrop());
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
