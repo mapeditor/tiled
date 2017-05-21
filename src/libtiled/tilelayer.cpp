@@ -583,7 +583,6 @@ QRegion TileLayer::computeAutocropRegion() const
 
     for (int y = 0; y < mHeight; ++y) {
         for (int x = 0; x < mWidth; ++x) {
-
             if (!cellAt(x, y).isEmpty()) {
                 minX = qMin(x, minX);
                 maxX = qMax(x, maxX);
