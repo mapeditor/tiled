@@ -338,10 +338,12 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
 
 void MapDocument::autocropMap()
 {
-    // Since autocrop option is allowed only for Tile Layer
+    if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
+        return;
+    
     TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
 
-    const QRect bounds = tileLayer->computeAutocropRegion().boundingRect();
+    const QRect bounds = tileLayer->region().boundingRect();
     if (bounds.isNull())
         return;
 

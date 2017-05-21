@@ -104,7 +104,6 @@ public slots:
     void copyPosition();
 
     void cropToSelection();
-
     void autocrop();
 
     void addTileLayer();

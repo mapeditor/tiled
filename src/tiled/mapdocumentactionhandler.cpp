@@ -430,10 +430,8 @@ void MapDocumentActionHandler::cropToSelection()
 
 void MapDocumentActionHandler::autocrop()
 {
-    if (!mMapDocument)
-        return;
-
-    mMapDocument->autocropMap();
+    if (mMapDocument)
+        mMapDocument->autocropMap();
 }
 
 void MapDocumentActionHandler::addTileLayer()
@@ -666,21 +664,18 @@ void MapDocumentActionHandler::updateActions()
     if (currentLayer) {
         if (currentLayer->asTileLayer()) {
             mActionSelectNone->setEnabled(!selection.isEmpty());
-            mActionAutocrop->setEnabled(true);
         } else if (currentLayer->asObjectGroup()) {
             mActionSelectNone->setEnabled(selectedObjectsCount  > 0);
-            mActionAutocrop->setEnabled(false);
         } else {
             mActionSelectNone->setEnabled(false);
-            mActionAutocrop->setEnabled(false);
         }
     } else {
         mActionSelectNone->setEnabled(false);
-        mActionAutocrop->setEnabled(false);
     }
 
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
+    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);
