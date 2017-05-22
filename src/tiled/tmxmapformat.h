@@ -26,6 +26,7 @@
 namespace Tiled {
 
 class Tileset;
+class MapObject;
 
 namespace Internal {
 
@@ -43,6 +44,7 @@ public:
     Map *read(const QString &fileName) override;
 
     bool write(const Map *map, const QString &fileName) override;
+    bool writeObject(const MapObject *mapObject, const QString &fileName);
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is

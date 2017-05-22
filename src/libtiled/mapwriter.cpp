@@ -74,6 +74,9 @@ public:
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
+    void writeMapObject(const MapObject *mapObject, QIODevice *device,
+                        const QString &path);
+
     bool openFile(SaveFile *file);
 
     QString mError;
@@ -172,6 +175,23 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     }
 
     writeTileset(writer, tileset, 0);
+    writer.writeEndDocument();
+}
+
+void MapWriterPrivate::writeMapObject(const MapObject *mapObject, QIODevice *device,
+                                      const QString &path)
+{
+    mMapDir = QDir(path);
+    mUseAbsolutePaths = path.isEmpty();
+
+    AutoFormattingWriter writer(device);
+    writer.writeStartDocument();
+    if (mDtdEnabled) {
+        writer.writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
+                                      "http://mapeditor.org/dtd/1.0/"
+                                      "map.dtd\">"));
+    }
+    writeObject(writer, *mapObject);
     writer.writeEndDocument();
 }
 
@@ -818,6 +838,33 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
         return false;
 
     writeTileset(tileset, file.device(), QFileInfo(fileName).absolutePath());
+
+    if (file.error() != QFileDevice::NoError) {
+        d->mError = file.errorString();
+        return false;
+    }
+
+    if (!file.commit()) {
+        d->mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+void MapWriter::writeMapObject(const MapObject *mapObject, QIODevice *device,
+                               const QString &path)
+{
+    d->writeMapObject(mapObject, device, path);
+}
+
+bool MapWriter::writeMapObject(const MapObject *mapObject, const QString &fileName)
+{
+    SaveFile file(fileName);
+    if (!d->openFile(&file))
+        return false;
+
+    writeMapObject(mapObject, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

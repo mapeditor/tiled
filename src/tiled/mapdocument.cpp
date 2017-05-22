@@ -125,6 +125,20 @@ MapDocument::~MapDocument()
     delete mMap;
 }
 
+/**
+ * Saves the selected object as a template
+ */
+bool MapDocument::saveSelectedObject()
+{
+    if (mSelectedObjects.size()!=1)
+        return false;
+
+    TmxMapFormat tmxMapFormat;
+    tmxMapFormat.writeObject(mSelectedObjects.first(), QString(tr("object.ttx")));
+
+    return true;
+}
+
 bool MapDocument::save(const QString &fileName, QString *error)
 {
     MapFormat *mapFormat = mWriterFormat;

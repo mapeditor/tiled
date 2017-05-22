@@ -40,6 +40,7 @@ namespace Tiled {
 
 class Map;
 class Tileset;
+class MapObject;
 
 namespace Internal {
 class MapWriterPrivate;
@@ -91,6 +92,11 @@ public:
      * \overload
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
+
+    void writeMapObject(const MapObject *mapObject, QIODevice *device,
+                        const QString &path = QString());
+
+    bool writeMapObject(const MapObject *mapObject, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.

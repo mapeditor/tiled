@@ -66,6 +66,22 @@ bool TmxMapFormat::write(const Map *map, const QString &fileName)
     return result;
 }
 
+bool TmxMapFormat::writeObject(const MapObject *mapObject, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result =  writer.writeMapObject(mapObject, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
+}
+
 QByteArray TmxMapFormat::toByteArray(const Map *map)
 {
     QBuffer buffer;

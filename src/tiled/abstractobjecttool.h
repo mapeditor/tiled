@@ -72,6 +72,7 @@ private slots:
     void duplicateObjects();
     void removeObjects();
     void resetTileSize();
+    void saveObject();
 
     void flipHorizontally();
     void flipVertically();
