@@ -29,7 +29,9 @@ using namespace Tiled::Internal;
 CreateRectangleObjectTool::CreateRectangleObjectTool(QObject *parent)
     : CreateScalableObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-rectangle.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-rectangle.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-rectangle.png"));
+    setIcon(icon);
     Utils::setThemeIcon(this, "insert-rectangle");
     languageChanged();
 }

@@ -214,7 +214,7 @@ SOURCES += aboutdialog.cpp \
     textpropertyedit.cpp \
     thumbnailrenderer.cpp \
     tileanimationeditor.cpp \
-    tilecollisioneditor.cpp \
+    tilecollisiondock.cpp \
     tiledapplication.cpp \
     tiledproxystyle.cpp \
     tilelayeritem.cpp \
@@ -387,7 +387,7 @@ HEADERS += aboutdialog.h \
     textpropertyedit.h \
     thumbnailrenderer.h \
     tileanimationeditor.h \
-    tilecollisioneditor.h \
+    tilecollisiondock.h \
     tiledapplication.h \
     tiledproxystyle.h \
     tilelayeritem.h \

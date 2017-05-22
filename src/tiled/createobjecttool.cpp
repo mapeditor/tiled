@@ -43,7 +43,7 @@ using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
-                         QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
+                         QIcon(),
                          QKeySequence(tr("O")),
                          parent)
     , mNewMapObjectGroup(new ObjectGroup)

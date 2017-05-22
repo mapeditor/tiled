@@ -86,6 +86,9 @@ public:
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
 
+    StandardActions enabledStandardActions() const override;
+    void performStandardAction(StandardAction action) override;
+
     MapView *viewForDocument(MapDocument *mapDocument) const;
     MapView *currentMapView() const;
     Zoomable *zoomable() const override;

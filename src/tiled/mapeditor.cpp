@@ -450,6 +450,48 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
     };
 }
 
+Editor::StandardActions MapEditor::enabledStandardActions() const
+{
+    StandardActions standardActions;
+
+    if (mCurrentMapDocument) {
+        Layer *currentLayer = mCurrentMapDocument->currentLayer();
+
+        bool tileLayerSelected = currentLayer && currentLayer->isTileLayer();
+        bool objectsSelected = !mCurrentMapDocument->selectedObjects().isEmpty();
+        QRegion selection = mCurrentMapDocument->selectedArea();
+
+        if ((tileLayerSelected && !selection.isEmpty()) || objectsSelected)
+            standardActions |= CutAction | CopyAction | DeleteAction;
+
+        if (ClipboardManager::instance()->hasMap())
+            standardActions |= PasteAction | PasteInPlaceAction;
+    }
+
+    return standardActions;
+}
+
+void MapEditor::performStandardAction(StandardAction action)
+{
+    switch (action) {
+    case CutAction:
+        MapDocumentActionHandler::instance()->cut();
+        break;
+    case CopyAction:
+        MapDocumentActionHandler::instance()->copy();
+        break;
+    case PasteAction:
+        paste(ClipboardManager::PasteDefault);
+        break;
+    case PasteInPlaceAction:
+        paste(ClipboardManager::PasteInPlace);
+        break;
+    case DeleteAction:
+        MapDocumentActionHandler::instance()->delete_();
+        break;
+    }
+}
+
 Zoomable *MapEditor::zoomable() const
 {
     if (auto view = currentMapView())

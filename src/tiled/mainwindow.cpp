@@ -60,7 +60,6 @@
 #include "resizedialog.h"
 #include "terrain.h"
 #include "tileanimationeditor.h"
-#include "tilecollisioneditor.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -119,6 +118,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     auto *mapEditor = new MapEditor;
     auto *tilesetEditor = new TilesetEditor;
+
+    connect(mapEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
+    connect(tilesetEditor, &Editor::enabledStandardActionsChanged, this, &MainWindow::updateActions);
 
     mDocumentManager->setEditor(Document::MapDocumentType, mapEditor);
     mDocumentManager->setEditor(Document::TilesetDocumentType, tilesetEditor);
@@ -283,11 +285,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
-    connect(mUi->actionCut, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::cut);
-    connect(mUi->actionCopy, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::copy);
-    connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
-    connect(mUi->actionPasteInPlace, SIGNAL(triggered()), SLOT(pasteInPlace()));
-    connect(mUi->actionDelete, &QAction::triggered, mActionHandler, &MapDocumentActionHandler::delete_);
+    connect(mUi->actionCut, &QAction::triggered, this, &MainWindow::cut);
+    connect(mUi->actionCopy, &QAction::triggered, this, &MainWindow::copy);
+    connect(mUi->actionPaste, &QAction::triggered, this, &MainWindow::paste);
+    connect(mUi->actionPasteInPlace, &QAction::triggered, this, &MainWindow::pasteInPlace);
+    connect(mUi->actionDelete, &QAction::triggered, this, &MainWindow::delete_);
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -302,7 +304,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionSnapToFineGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToFineGrid(bool)));
     connect(mUi->actionSnapToPixels, SIGNAL(toggled(bool)),
-                preferences, SLOT(setSnapToPixels(bool)));
+            preferences, SLOT(setSnapToPixels(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
             preferences, SLOT(setHighlightCurrentLayer(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
@@ -379,12 +381,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
     mShowTileAnimationEditor->setCheckable(true);
-    mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
-    mShowTileCollisionEditor->setCheckable(true);
-    mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
-    mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileAnimationEditor);
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileCollisionEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->addTilesAction());
@@ -402,11 +400,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::setVisible);
     connect(tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::closed,
             this, &MainWindow::onAnimationEditorClosed);
-
-    connect(mShowTileCollisionEditor, &QAction::toggled,
-            tilesetEditor->tileCollisionEditor(), &TileCollisionEditor::setVisible);
-    connect(tilesetEditor->tileCollisionEditor(), &TileCollisionEditor::closed,
-            this, &MainWindow::onCollisionEditorClosed);
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -1057,20 +1050,34 @@ void MainWindow::closeAllFiles()
         mDocumentManager->closeAllDocuments();
 }
 
+void MainWindow::cut()
+{
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->performStandardAction(Editor::CutAction);
+}
+
+void MainWindow::copy()
+{
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->performStandardAction(Editor::CopyAction);
+}
+
 void MainWindow::paste()
 {
-    paste(ClipboardManager::PasteDefault);
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->performStandardAction(Editor::PasteAction);
 }
 
 void MainWindow::pasteInPlace()
 {
-    paste(ClipboardManager::PasteInPlace);
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->performStandardAction(Editor::PasteInPlaceAction);
 }
 
-void MainWindow::paste(ClipboardManager::PasteFlags flags)
+void MainWindow::delete_()
 {
-    if (auto *mapEditor = qobject_cast<MapEditor*>(mDocumentManager->currentEditor()))
-        mapEditor->paste(flags);
+    if (auto editor = mDocumentManager->currentEditor())
+        editor->performStandardAction(Editor::DeleteAction);
 }
 
 void MainWindow::openPreferences()
@@ -1347,11 +1354,6 @@ void MainWindow::onAnimationEditorClosed()
     mShowTileAnimationEditor->setChecked(false);
 }
 
-void MainWindow::onCollisionEditorClosed()
-{
-    mShowTileCollisionEditor->setChecked(false);
-}
-
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -1444,25 +1446,14 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
 void MainWindow::updateActions()
 {
-    auto document = mDocumentManager->currentDocument();
-    auto mapDocument = qobject_cast<MapDocument*>(document);
-    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    const auto editor = mDocumentManager->currentEditor();
+    const auto document = mDocumentManager->currentDocument();
+    const auto mapDocument = qobject_cast<const MapDocument*>(document);
+    const auto tilesetDocument = qobject_cast<const TilesetDocument*>(document);
 
-    bool tileLayerSelected = false;
-    bool objectsSelected = false;
-    QRegion selection;
-
-    if (mapDocument) {
-        Layer *currentLayer = mapDocument->currentLayer();
-
-        tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
-        objectsSelected = !mapDocument->selectedObjects().isEmpty();
-        selection = mapDocument->selectedArea();
-    }
-
-    const bool canCopy = (tileLayerSelected && !selection.isEmpty())
-            || objectsSelected;
-    const bool clipboardHasMap = ClipboardManager::instance()->hasMap();
+    Editor::StandardActions standardActions;
+    if (editor)
+        standardActions = editor->enabledStandardActions();
 
     mUi->actionSave->setEnabled(document);
     mUi->actionSaveAs->setEnabled(document);
@@ -1475,11 +1466,11 @@ void MainWindow::updateActions()
     mUi->actionClose->setEnabled(document);
     mUi->actionCloseAll->setEnabled(document);
 
-    mUi->actionCut->setEnabled(canCopy);
-    mUi->actionCopy->setEnabled(canCopy);
-    mUi->actionPaste->setEnabled(clipboardHasMap);
-    mUi->actionPasteInPlace->setEnabled(clipboardHasMap);
-    mUi->actionDelete->setEnabled(canCopy);
+    mUi->actionCut->setEnabled(standardActions & Editor::CutAction);
+    mUi->actionCopy->setEnabled(standardActions & Editor::CopyAction);
+    mUi->actionPaste->setEnabled(standardActions & Editor::PasteAction);
+    mUi->actionPasteInPlace->setEnabled(standardActions & Editor::PasteInPlaceAction);
+    mUi->actionDelete->setEnabled(standardActions & Editor::DeleteAction);
 
     mUi->menuMap->menuAction()->setVisible(mapDocument);
     mUi->actionAddExternalTileset->setEnabled(mapDocument);
@@ -1610,7 +1601,6 @@ void MainWindow::retranslateUi()
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
-    mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
 }
 

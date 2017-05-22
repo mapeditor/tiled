@@ -1,6 +1,6 @@
 /*
- * tilecollisioneditor.cpp
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * tilecollisiondock.cpp
+ * Copyright 2013-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tilecollisioneditor.h"
+#include "tilecollisiondock.h"
 
 #include "addremovemapobject.h"
 #include "editpolygontool.h"
@@ -37,7 +37,6 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
-#include "propertiesdock.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -49,36 +48,27 @@
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QComboBox>
-#include <QShortcut>
 #include <QStatusBar>
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
-TileCollisionEditor::TileCollisionEditor(QWidget *parent)
-    : QMainWindow(parent)
+TileCollisionDock::TileCollisionDock(QWidget *parent)
+    : QDockWidget(parent)
     , mTile(nullptr)
     , mTilesetDocument(nullptr)
+    , mDummyMapDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
-    , mPropertiesDock(new PropertiesDock(this))
     , mApplyingChanges(false)
     , mSynchronizing(false)
+    , mCanCopy(false)
 {
-    setObjectName(QLatin1String("TileCollisionEditor"));
-
-    // We re-use the PropertiesDock class in order to manipulate properties on
-    // collision objects. This instance of the PropertiesDock is best left with
-    // the docking features disabled though as it only belongs to the collision
-    // editor.
-    QDockWidget::DockWidgetFeatures features = QDockWidget::NoDockWidgetFeatures;
-    mPropertiesDock->setFeatures(features);
-    mPropertiesDock->setContextMenuPolicy(Qt::PreventContextMenu);
-    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    setObjectName(QLatin1String("tileCollisionDock"));
 
     mMapView->setScene(mMapScene);
 
@@ -91,7 +81,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);;
 
     QToolBar *toolBar = new QToolBar(this);
-    toolBar->setObjectName(QLatin1String("TileCollisionEditorToolBar"));
+    toolBar->setObjectName(QLatin1String("TileCollisionDockToolBar"));
     toolBar->setMovable(false);
     toolBar->setFloatable(false);
     toolBar->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -104,54 +94,38 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
 
-    setCentralWidget(mMapView);
-    addToolBar(toolBar);
+    auto widget = new QWidget(this);
+    auto vertical = new QVBoxLayout(widget);
+    vertical->setSpacing(0);
+    vertical->setMargin(0);
+
+    auto horizontal = new QHBoxLayout();
+    horizontal->addWidget(toolBar, 1);
+
+    vertical->addLayout(horizontal);
+    vertical->addWidget(mMapView);
+
+    setWidget(widget);
 
     mMapScene->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
             SLOT(setSelectedTool(AbstractTool*)));
 
     QComboBox *zoomComboBox = new QComboBox;
-    statusBar()->addPermanentWidget(zoomComboBox);
+    horizontal->addWidget(zoomComboBox);
 
     Zoomable *zoomable = mMapView->zoomable();
     zoomable->setComboBox(zoomComboBox);
 
-    QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
-    QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
-    QShortcut *cutShortcut = new QShortcut(QKeySequence::Cut, this);
-    QShortcut *copyShortcut = new QShortcut(QKeySequence::Copy, this);
-    QShortcut *pasteShortcut = new QShortcut(QKeySequence::Paste, this);
-    QShortcut *pasteInPlaceShortcut = new QShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Shift+V"), this);
-    QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
-    QShortcut *deleteShortcut2 = new QShortcut(QKeySequence(Qt::Key_Backspace), this);
-
-    connect(undoShortcut, SIGNAL(activated()), SLOT(undo()));
-    connect(redoShortcut, SIGNAL(activated()), SLOT(redo()));
-    connect(cutShortcut, SIGNAL(activated()), SLOT(cut()));
-    connect(copyShortcut, SIGNAL(activated()), SLOT(copy()));
-    connect(pasteShortcut, SIGNAL(activated()), SLOT(paste()));
-    connect(pasteInPlaceShortcut, SIGNAL(activated()), SLOT(pasteInPlace()));
-    connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
-    connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
-
     retranslateUi();
-    resize(Utils::dpiScaled(QSize(300, 300)));
-    Utils::restoreGeometry(this);
-
-    // Make sure these are visible. It was temporarily possible to hide these
-    // by pressing Tab, and this state could have been saved by Utils::saveGeometry.
-    mPropertiesDock->setVisible(true);
-    toolBar->setVisible(true);
 }
 
-TileCollisionEditor::~TileCollisionEditor()
+TileCollisionDock::~TileCollisionDock()
 {
-    Utils::saveGeometry(this);
     setTile(nullptr);
 }
 
-void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
+void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
     if (mTilesetDocument)
         mTilesetDocument->disconnect(this);
@@ -159,15 +133,12 @@ void TileCollisionEditor::setTilesetDocument(TilesetDocument *tilesetDocument)
     mTilesetDocument = tilesetDocument;
 
     if (mTilesetDocument) {
-        connect(mTilesetDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
-                SLOT(tileObjectGroupChanged(Tile*)));
-
-        connect(mTilesetDocument, &MapDocument::currentObjectChanged,
-                this, &TileCollisionEditor::currentObjectChanged);
+        connect(mTilesetDocument, &TilesetDocument::tileObjectGroupChanged,
+                this, &TileCollisionDock::tileObjectGroupChanged);
     }
 }
 
-void TileCollisionEditor::setTile(Tile *tile)
+void TileCollisionDock::setTile(Tile *tile)
 {
     if (mTile == tile)
         return;
@@ -175,10 +146,9 @@ void TileCollisionEditor::setTile(Tile *tile)
     mTile = tile;
 
     mMapScene->disableSelectedTool();
-    MapDocument *previousDocument = mMapScene->mapDocument();
+    MapDocument *previousDocument = mDummyMapDocument;
 
     mMapView->setEnabled(tile);
-    mPropertiesDock->setEnabled(tile);
 
     if (tile) {
         Map::Orientation orientation = Map::Orthogonal;
@@ -206,59 +176,54 @@ void TileCollisionEditor::setTile(Tile *tile)
         map->setNextObjectId(objectGroup->highestObjectId() + 1);
         map->addLayer(objectGroup);
 
-        MapDocument *mapDocument = new MapDocument(map);
-        mMapScene->setMapDocument(mapDocument);
+        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument->setCurrentLayer(objectGroup);
+        mDummyMapDocument->setCurrentObject(objectGroup);
 
-        mToolManager->setMapDocument(mapDocument);
-        mPropertiesDock->setDocument(mapDocument);
-
-        mapDocument->setCurrentLayer(objectGroup);
+        mMapScene->setMapDocument(mDummyMapDocument);
+        mToolManager->setMapDocument(mDummyMapDocument);
 
         mMapScene->enableSelectedTool();
 
-        connect(mapDocument->undoStack(), &QUndoStack::indexChanged,
-                this, &TileCollisionEditor::applyChanges);
+        connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
+                this, &TileCollisionDock::applyChanges);
 
-        connect(mapDocument, &MapDocument::selectedObjectsChanged,
-                this, &TileCollisionEditor::selectedObjectsChanged);
+        connect(mDummyMapDocument, &MapDocument::selectedObjectsChanged,
+                this, &TileCollisionDock::selectedObjectsChanged);
 
     } else {
+        mDummyMapDocument = nullptr;
         mMapScene->setMapDocument(nullptr);
         mToolManager->setMapDocument(nullptr);
-        mPropertiesDock->setDocument(nullptr);
     }
+
+    emit dummyMapDocumentChanged(mDummyMapDocument);
+
+    setCanCopy(false);
 
     if (previousDocument) {
         // Explicitly disconnect early from this signal, since it can get fired
         // from the QUndoStack destructor.
         disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
-                   this, &TileCollisionEditor::applyChanges);
+                   this, &TileCollisionDock::applyChanges);
 
         delete previousDocument;
     }
 }
 
-void TileCollisionEditor::closeEvent(QCloseEvent *event)
-{
-    QMainWindow::closeEvent(event);
-    if (event->isAccepted())
-        emit closed();
-}
-
-void TileCollisionEditor::setSelectedTool(AbstractTool *tool)
+void TileCollisionDock::setSelectedTool(AbstractTool *tool)
 {
     mMapScene->disableSelectedTool();
     mMapScene->setSelectedTool(tool);
     mMapScene->enableSelectedTool();
 }
 
-void TileCollisionEditor::applyChanges()
+void TileCollisionDock::applyChanges()
 {
     if (mSynchronizing)
         return;
 
-    MapDocument *dummyDocument = mMapScene->mapDocument();
-    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(dummyDocument->map()->layerAt(1));
+    ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mDummyMapDocument->map()->layerAt(1));
     ObjectGroup *clonedGroup = objectGroup->clone();
 
     QUndoStack *undoStack = mTilesetDocument->undoStack();
@@ -267,7 +232,7 @@ void TileCollisionEditor::applyChanges()
     mApplyingChanges = false;
 }
 
-void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
+void TileCollisionDock::tileObjectGroupChanged(Tile *tile)
 {
     if (mTile != tile)
         return;
@@ -276,10 +241,10 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
     mSynchronizing = true;
 
-    MapDocument *dummyDocument = mMapScene->mapDocument();
-    LayerModel *layerModel = dummyDocument->layerModel();
-    dummyDocument->undoStack()->clear();
+    mDummyMapDocument->undoStack()->clear();
+    auto selectedTool = mToolManager->selectedTool();
 
+    LayerModel *layerModel = mDummyMapDocument->layerModel();
     delete layerModel->takeLayerAt(nullptr, 1);
 
     ObjectGroup *objectGroup;
@@ -291,34 +256,14 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
     objectGroup->setDrawOrder(ObjectGroup::IndexOrder);
 
     layerModel->insertLayer(nullptr, 1, objectGroup);
-    dummyDocument->setCurrentLayer(objectGroup);
+    mDummyMapDocument->setCurrentLayer(objectGroup);
+
+    mToolManager->selectTool(selectedTool);
 
     mSynchronizing = false;
 }
 
-void TileCollisionEditor::currentObjectChanged(Object *object)
-{
-    // If a tile object is selected, edit the collision shapes for that tile
-    if (object && object->typeId() == Object::MapObjectType) {
-        const Cell &cell = static_cast<MapObject*>(object)->cell();
-        if (Tile *tile = cell.tile())
-            setTile(tile);
-    }
-}
-
-void TileCollisionEditor::undo()
-{
-    if (mTilesetDocument)
-        mTilesetDocument->undoStack()->undo();
-}
-
-void TileCollisionEditor::redo()
-{
-    if (mTilesetDocument)
-        mTilesetDocument->undoStack()->redo();
-}
-
-void TileCollisionEditor::cut()
+void TileCollisionDock::cut()
 {
     if (!mTile)
         return;
@@ -327,26 +272,25 @@ void TileCollisionEditor::cut()
     delete_(Cut);
 }
 
-void TileCollisionEditor::copy()
+void TileCollisionDock::copy()
 {
-    if (!mTile)
+    if (!mDummyMapDocument)
         return;
 
-    MapDocument *dummyDocument = mMapScene->mapDocument();
-    ClipboardManager::instance()->copySelection(dummyDocument);
+    ClipboardManager::instance()->copySelection(mDummyMapDocument);
 }
 
-void TileCollisionEditor::paste()
+void TileCollisionDock::paste()
 {
     paste(ClipboardManager::PasteDefault);
 }
 
-void TileCollisionEditor::pasteInPlace()
+void TileCollisionDock::pasteInPlace()
 {
     paste(ClipboardManager::PasteInPlace);
 }
 
-void TileCollisionEditor::paste(ClipboardManager::PasteFlags flags)
+void TileCollisionDock::paste(ClipboardManager::PasteFlags flags)
 {
     if (!mTile)
         return;
@@ -370,35 +314,44 @@ void TileCollisionEditor::paste(ClipboardManager::PasteFlags flags)
     }
 }
 
-void TileCollisionEditor::delete_(Operation operation)
+void TileCollisionDock::delete_(Operation operation)
 {
-    if (!mTile)
+    if (!mDummyMapDocument)
         return;
 
-    MapDocument *dummyDocument = mMapScene->mapDocument();
-    const QList<MapObject*> &selectedObjects = dummyDocument->selectedObjects();
+    const QList<MapObject*> selectedObjects = mDummyMapDocument->selectedObjects();
     if (selectedObjects.isEmpty())
         return;
 
-    QUndoStack *undoStack = dummyDocument->undoStack();
+    QUndoStack *undoStack = mDummyMapDocument->undoStack();
     undoStack->beginMacro(operation == Delete ? tr("Delete") : tr("Cut"));
 
     for (MapObject *mapObject : selectedObjects)
-        undoStack->push(new RemoveMapObject(dummyDocument, mapObject));
+        undoStack->push(new RemoveMapObject(mDummyMapDocument, mapObject));
 
     undoStack->endMacro();
 }
 
-void TileCollisionEditor::selectedObjectsChanged()
+void TileCollisionDock::selectedObjectsChanged()
 {
-    MapDocument *dummyDocument = mMapScene->mapDocument();
-    if (dummyDocument->selectedObjects().isEmpty())
-        dummyDocument->setCurrentObject(dummyDocument->map()->layerAt(1));
+    bool hasSelectedObjects = !mDummyMapDocument->selectedObjects().isEmpty();
+    if (!hasSelectedObjects)
+        mDummyMapDocument->setCurrentObject(mDummyMapDocument->map()->layerAt(1));
+
+    setCanCopy(hasSelectedObjects);
 }
 
-void TileCollisionEditor::changeEvent(QEvent *e)
+void TileCollisionDock::setCanCopy(bool canCopy)
 {
-    QMainWindow::changeEvent(e);
+    if (mCanCopy != canCopy) {
+        mCanCopy = canCopy;
+        emit canCopyChanged();
+    }
+}
+
+void TileCollisionDock::changeEvent(QEvent *e)
+{
+    QDockWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
         retranslateUi();
@@ -408,7 +361,10 @@ void TileCollisionEditor::changeEvent(QEvent *e)
     }
 }
 
-void TileCollisionEditor::retranslateUi()
+void TileCollisionDock::retranslateUi()
 {
-    setWindowTitle(tr("Tile Collision Editor"));
+    setWindowTitle(QCoreApplication::translate("Tiled::Internal::MainWindow", "Tile Collision Editor"));
 }
+
+} // namespace Internal
+} // namespace Tiled
