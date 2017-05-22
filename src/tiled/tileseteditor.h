@@ -87,9 +87,6 @@ public:
 signals:
     void currentTileChanged(Tile *tile);
 
-public slots:
-    void paste(ClipboardManager::PasteFlags flags);
-
 private slots:
     void currentWidgetChanged();
 

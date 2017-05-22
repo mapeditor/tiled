@@ -452,12 +452,6 @@ QAction *TilesetEditor::editCollisionAction() const
     return mTileCollisionDock->toggleViewAction();
 }
 
-void TilesetEditor::paste(ClipboardManager::PasteFlags flags)
-{
-    if (mTileCollisionDock->isVisible())
-        mTileCollisionDock->paste(flags);
-}
-
 void TilesetEditor::currentWidgetChanged()
 {
     auto view = static_cast<TilesetView*>(mWidgetStack->currentWidget());
