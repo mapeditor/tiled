@@ -335,7 +335,6 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // TODO: Handle layers that don't match the map size correctly
 }
 
-
 void MapDocument::autocropMap()
 {
     if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
