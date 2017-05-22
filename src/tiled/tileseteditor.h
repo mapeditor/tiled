@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "clipboardmanager.h"
 #include "editor.h"
 
 #include <QHash>
@@ -41,7 +42,7 @@ namespace Internal {
 class PropertiesDock;
 class TerrainDock;
 class TileAnimationEditor;
-class TileCollisionEditor;
+class TileCollisionDock;
 class TilesetDocument;
 class TilesetEditorWindow;
 class TilesetView;
@@ -69,6 +70,9 @@ public:
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
 
+    StandardActions enabledStandardActions() const override;
+    void performStandardAction(StandardAction action) override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
@@ -76,12 +80,15 @@ public:
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
+    QAction *editCollisionAction() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
-    TileCollisionEditor *tileCollisionEditor() const;
 
 signals:
     void currentTileChanged(Tile *tile);
+
+public slots:
+    void paste(ClipboardManager::PasteFlags flags);
 
 private slots:
     void currentWidgetChanged();
@@ -99,6 +106,8 @@ private slots:
 
     void setEditTerrain(bool editTerrain);
     void currentTerrainChanged(const Terrain *terrain);
+
+    void setEditCollision(bool editCollision);
 
     void updateAddRemoveActions();
 
@@ -118,14 +127,13 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
-    QAction *mEditTerrain;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
+    TileCollisionDock *mTileCollisionDock;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument;
@@ -143,19 +151,9 @@ inline QAction *TilesetEditor::removeTilesAction() const
     return mRemoveTiles;
 }
 
-inline QAction *TilesetEditor::editTerrainAction() const
-{
-    return mEditTerrain;
-}
-
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
 {
     return mTileAnimationEditor;
-}
-
-inline TileCollisionEditor *TilesetEditor::tileCollisionEditor() const
-{
-    return mTileCollisionEditor;
 }
 
 } // namespace Internal

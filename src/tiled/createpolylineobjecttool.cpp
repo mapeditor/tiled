@@ -30,7 +30,9 @@ using namespace Tiled::Internal;
 CreatePolylineObjectTool::CreatePolylineObjectTool(QObject *parent)
     : CreateMultipointObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-polyline.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-polyline.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-polyline.png"));
+    setIcon(icon);
     languageChanged();
 }
 

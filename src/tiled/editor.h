@@ -36,6 +36,16 @@ class Editor : public QObject
     Q_OBJECT
 
 public:
+    enum StandardAction {
+        CutAction           = 0x01,
+        CopyAction          = 0x02,
+        PasteAction         = 0x04,
+        PasteInPlaceAction  = 0x08,
+        DeleteAction        = 0x10
+    };
+    Q_DECLARE_FLAGS(StandardActions, StandardAction)
+    Q_FLAGS(StandardActions)
+
     explicit Editor(QObject *parent = nullptr);
 
     virtual void saveState() = 0;
@@ -52,7 +62,15 @@ public:
 
     virtual QList<QToolBar*> toolBars() const = 0;
     virtual QList<QDockWidget*> dockWidgets() const = 0;
+
+    virtual StandardActions enabledStandardActions() const = 0;
+    virtual void performStandardAction(StandardAction action) = 0;
+
+signals:
+    void enabledStandardActionsChanged();
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Editor::StandardActions)
 
 } // namespace Internal
 } // namespace Tiled

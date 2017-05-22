@@ -117,9 +117,11 @@ private slots:
     void closeFile();
     void closeAllFiles();
 
+    void cut();
+    void copy();
     void paste();
     void pasteInPlace();
-    void paste(ClipboardManager::PasteFlags flags);
+    void delete_();
     void openPreferences();
 
     void labelVisibilityActionTriggered(QAction *action);
@@ -157,7 +159,6 @@ private slots:
 
     void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
-    void onCollisionEditorClosed();
 
 private:
     /**
@@ -215,7 +216,6 @@ private:
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
-    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 
