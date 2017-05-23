@@ -3608,7 +3608,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+21"/>
         <source>Choose the Maps Folder</source>
-        <translation>Haritalar Dizinini Seç</translation>
+        <translation>Haritalar Klasörünü Seç</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -4494,7 +4494,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation>Damga Klasörünü Seç</translation>
+        <translation>Damgalar Klasörünü Seç</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -4524,7 +4524,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation>Damga Klasörünü Ayarla</translation>
+        <translation>Damgalar Klasörünü Ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
