@@ -91,7 +91,7 @@
 #include <QUndoStack>
 #include <QUndoView>
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
@@ -449,7 +449,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
@@ -1374,7 +1374,7 @@ void MainWindow::onAnimationEditorClosed()
 
 void MainWindow::ensureHasBorderInFullScreen()
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
     // Workaround issue #1576
     static bool hasBorderInFullScreen = false;
 
