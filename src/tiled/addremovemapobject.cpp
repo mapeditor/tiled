@@ -76,6 +76,18 @@ AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
     setText(QCoreApplication::translate("Undo Commands", "Add Object"));
 }
 
+void AddMapObject::undo()
+{
+    removeObject();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void AddMapObject::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    addObject();
+}
+
 
 RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
