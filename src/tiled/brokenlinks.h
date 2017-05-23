@@ -132,10 +132,12 @@ signals:
 
 private slots:
     void clicked(QAbstractButton *button);
-    void selectionChanged(const QItemSelection &selected);
+    void selectionChanged();
 
 private:
+    void tryFixLinks(const QVector<BrokenLink> &links);
     void tryFixLink(const BrokenLink &link);
+    bool tryFixLink(const BrokenLink &link, const QString &newFilePath);
 
     BrokenLinksModel *mBrokenLinksModel;
     QSortFilterProxyModel *mProxyModel;
