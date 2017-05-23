@@ -162,11 +162,7 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int endY = qMin(qreal(map()->height()),
                           screenToTileCoords(r.bottomLeft()).y());
 
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setCosmetic(true);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    QPen gridPen = makeGridPen(painter->device(), gridColor);
     painter->setPen(gridPen);
 
     for (int y = startY; y <= endY; ++y) {
