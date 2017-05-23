@@ -305,6 +305,24 @@ static unsigned short rightEdge(const Tile *tile)
     return ((t >> 8) & 0xFF00) | (t & 0xFF);
 }
 
+namespace {
+
+struct ConsiderationPoint : public QPoint
+{
+    ConsiderationPoint()
+        : paintCorner(0)
+    {}
+
+    ConsiderationPoint(QPoint p, int paintCorner = 0)
+        : QPoint(p)
+        , paintCorner(paintCorner)
+    {}
+
+    int paintCorner;
+};
+
+} // anonymous namespace
+
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
     mPaintX = cursorPos.x();
@@ -355,14 +373,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     memset(checked, 0, numTiles);
 
     // create a consideration list, and push the start points
-    struct ConsiderationPoint : public QPoint {
-        ConsiderationPoint() {}
-        ConsiderationPoint(QPoint p, int paintCorner = 0)
-            : QPoint(p)
-            , paintCorner(paintCorner)
-        {}
-        int paintCorner = 0;
-    };
     QVector<ConsiderationPoint> transitionList;
 
     if (list) { // if we were supplied a list of start points
