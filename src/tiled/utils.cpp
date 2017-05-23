@@ -28,6 +28,7 @@
 #include <QGuiApplication>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
 #include <QRegExp>
@@ -191,6 +192,38 @@ QSize smallIconSize()
 {
     static QSize size = dpiScaled(QSize(16, 16));
     return size;
+}
+
+bool isZoomInShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomIn))
+        return true;
+    if (event->key() == Qt::Key_Plus)
+        return true;
+    if (event->key() == Qt::Key_Equal)
+        return true;
+
+    return false;
+}
+
+bool isZoomOutShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomOut))
+        return true;
+    if (event->key() == Qt::Key_Minus)
+        return true;
+    if (event->key() == Qt::Key_Underscore)
+        return true;
+
+    return false;
+}
+
+bool isResetZoomShortcut(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_0 && event->modifiers() & Qt::ControlModifier)
+        return true;
+
+    return false;
 }
 
 } // namespace Utils

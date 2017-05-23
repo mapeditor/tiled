@@ -24,6 +24,7 @@
 #include <QString>
 
 class QAction;
+class QKeyEvent;
 class QMenu;
 
 namespace Tiled {
@@ -66,6 +67,10 @@ QSize dpiScaled(QSize value);
 QPoint dpiScaled(QPoint value);
 QRectF dpiScaled(QRectF value);
 QSize smallIconSize();
+
+bool isZoomInShortcut(QKeyEvent *event);
+bool isZoomOutShortcut(QKeyEvent *event);
+bool isResetZoomShortcut(QKeyEvent *event);
 
 } // namespace Utils
 } // namespace Tiled
