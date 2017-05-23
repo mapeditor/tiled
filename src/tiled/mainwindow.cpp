@@ -91,6 +91,10 @@
 #include <QUndoStack>
 #include <QUndoView>
 
+#ifdef Q_OS_WIN
+#include <QtPlatformHeaders\QWindowsWindowFunctions>
+#endif
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 using namespace Tiled::Utils;
@@ -445,6 +449,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
 
+#ifdef Q_OS_WIN
+    connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
+#endif
+
     QTimer::singleShot(500, this, [this,preferences]() {
         if (preferences->shouldShowPatreonDialog())
             becomePatron();
@@ -482,6 +490,16 @@ void MainWindow::commitData(QSessionManager &manager)
     if (manager.allowsInteraction())
         if (!confirmAllSave())
             manager.cancel();
+}
+
+bool MainWindow::event(QEvent *event)
+{
+#ifdef Q_OS_WIN
+    if (event->type() == QEvent::WinIdChange)
+        ensureHasBorderInFullScreen();
+#endif
+
+    return QMainWindow::event(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -1352,6 +1370,31 @@ void MainWindow::onObjectTypesEditorClosed()
 void MainWindow::onAnimationEditorClosed()
 {
     mShowTileAnimationEditor->setChecked(false);
+}
+
+void MainWindow::ensureHasBorderInFullScreen()
+{
+#ifdef Q_OS_WIN
+    // Workaround issue #1576
+    static bool hasBorderInFullScreen = false;
+
+    if (hasBorderInFullScreen)
+        return;
+
+    if (!Preferences::instance()->useOpenGL())
+        return;
+
+    QWindow *window = windowHandle();
+    if (!window)
+        return;
+
+    bool wasFullScreen = isFullScreen();
+    setFullScreen(false);
+    QWindowsWindowFunctions::setHasBorderInFullScreen(window, true);
+    setFullScreen(wasFullScreen);
+
+    hasBorderInFullScreen = true;
+#endif
 }
 
 void MainWindow::openRecentFile()

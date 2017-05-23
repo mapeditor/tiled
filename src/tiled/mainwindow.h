@@ -95,6 +95,8 @@ public slots:
     bool openFile(const QString &fileName);
 
 protected:
+    bool event(QEvent *event) override;
+
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
 
@@ -159,6 +161,8 @@ private slots:
 
     void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
+
+    void ensureHasBorderInFullScreen();
 
 private:
     /**
