@@ -922,19 +922,19 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeMapObject(const MapObject *mapObject, QIODevice *device,
+void MapWriter::writeTemplate(const MapObject *mapObject, QIODevice *device,
                                const QString &path)
 {
     d->writeMapObject(mapObject, device, path);
 }
 
-bool MapWriter::writeMapObject(const MapObject *mapObject, const QString &fileName)
+bool MapWriter::writeTemplate(const MapObject *mapObject, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeMapObject(mapObject, file.device(), QFileInfo(fileName).absolutePath());
+    writeTemplate(mapObject, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

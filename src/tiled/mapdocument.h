@@ -77,7 +77,7 @@ public:
     ~MapDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;
-    bool saveSelectedObject();
+    bool saveSelectedObjectAsATemplate();
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null

@@ -128,7 +128,7 @@ MapDocument::~MapDocument()
 /**
  * Saves the selected object as a template
  */
-bool MapDocument::saveSelectedObject()
+bool MapDocument::saveSelectedObjectAsATemplate()
 {
     if (mSelectedObjects.size()!=1)
         return false;
