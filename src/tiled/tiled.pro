@@ -379,7 +379,6 @@ HEADERS += aboutdialog.h \
     standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
-    templateformat.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

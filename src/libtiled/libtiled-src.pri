@@ -56,6 +56,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/properties.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
+    $$PWD/templateformat.h \
     $$PWD/terrain.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \
