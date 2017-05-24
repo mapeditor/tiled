@@ -1200,7 +1200,9 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case TypeProperty:
-        undoStack->push(new ChangeTileType(mTilesetDocument, tile, val.toString()));
+        undoStack->push(new ChangeTileType(mTilesetDocument,
+                                           mTilesetDocument->selectedTiles(),
+                                           val.toString()));
         break;
     case TileProbabilityProperty:
         undoStack->push(new ChangeTileProbability(mTilesetDocument,
