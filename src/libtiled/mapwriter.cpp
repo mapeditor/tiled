@@ -92,6 +92,7 @@ private:
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer &layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
+    void writeObjectTemplate(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
@@ -191,7 +192,7 @@ void MapWriterPrivate::writeMapObject(const MapObject *mapObject, QIODevice *dev
                                       "http://mapeditor.org/dtd/1.0/"
                                       "map.dtd\">"));
     }
-    writeObject(writer, *mapObject);
+    writeObjectTemplate(writer, *mapObject);
     writer.writeEndDocument();
 }
 
@@ -627,6 +628,75 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (!mapObject.isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
+
+    writeProperties(w, mapObject.properties());
+
+    switch (mapObject.shape()) {
+    case MapObject::Rectangle:
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline: {
+        if (mapObject.shape() == MapObject::Polygon)
+            w.writeStartElement(QLatin1String("polygon"));
+        else
+            w.writeStartElement(QLatin1String("polyline"));
+
+        QString points;
+        for (const QPointF &point : mapObject.polygon()) {
+            points.append(QString::number(point.x()));
+            points.append(QLatin1Char(','));
+            points.append(QString::number(point.y()));
+            points.append(QLatin1Char(' '));
+        }
+        points.chop(1);
+        w.writeAttribute(QLatin1String("points"), points);
+        w.writeEndElement();
+        break;
+    }
+    case MapObject::Ellipse:
+        w.writeEmptyElement(QLatin1String("ellipse"));
+        break;
+    case MapObject::Text: {
+        writeObjectText(w, mapObject.textData());
+        break;
+    }
+    }
+
+    w.writeEndElement();
+}
+
+// TODO: Extract functions from writeObject to decrease code duplication
+void MapWriterPrivate::writeObjectTemplate(QXmlStreamWriter &w,
+                                           const MapObject &mapObject)
+{
+    w.writeStartElement(QLatin1String("object"));
+
+    const QString &type = mapObject.type();
+    if (!type.isEmpty())
+        w.writeAttribute(QLatin1String("type"), type);
+
+    mGidMapper.clear();
+    auto tileset = mapObject.cell().tileset();
+    if (!mapObject.cell().isEmpty()) {
+        mGidMapper.insert(1, tileset);
+        const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
+        w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+    }
+
+    const QSizeF size = mapObject.size();
+
+    if (size.width() != 0)
+        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
+    if (size.height() != 0)
+        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
+
+    const qreal rotation = mapObject.rotation();
+    if (rotation != 0.0)
+        w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
+
+    // TODO: Tilesets should be shared between all templates in the same file
+    if (tileset)
+        writeTileset(w, *tileset, 1);
 
     writeProperties(w, mapObject.properties());
 
