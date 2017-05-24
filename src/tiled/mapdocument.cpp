@@ -133,10 +133,15 @@ bool MapDocument::saveSelectedObject()
     if (mSelectedObjects.size()!=1)
         return false;
 
-    TmxMapFormat tmxMapFormat;
-    tmxMapFormat.writeObject(mSelectedObjects.first(), QString(tr("object.ttx")));
+    TemplateFormat *templateFormat = new TtxTemplateFormat();
 
-    return true;
+   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
+       // if (error)
+       // *error = mapFormat->errorString();
+       return false;
+   }
+
+   return true;
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)

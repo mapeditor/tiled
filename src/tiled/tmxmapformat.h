@@ -22,6 +22,7 @@
 
 #include "mapformat.h"
 #include "tilesetformat.h"
+#include "templateformat.h"
 
 namespace Tiled {
 
@@ -94,6 +95,31 @@ public:
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
 
     QString shortName() const override { return QLatin1String("tsx"); }
+
+    bool supportsFile(const QString &fileName) const override;
+
+    QString errorString() const override { return mError; }
+
+private:
+    QString mError;
+};
+
+/**
+ * A reader and writer for Tiled's .ttx template format.
+ */
+class TtxTemplateFormat : public TemplateFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TemplateFormat)
+
+public:
+    TtxTemplateFormat(QObject *parent = nullptr);
+
+    bool write(const MapObject *mapObject, const QString &fileName) override;
+
+    QString nameFilter() const override { return tr("Tiled template files (*.ttx)"); }
+
+    QString shortName() const override { return QLatin1String("ttx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

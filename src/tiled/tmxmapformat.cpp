@@ -182,3 +182,44 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
 
     return false;
 }
+
+TtxTemplateFormat::TtxTemplateFormat(QObject *parent)
+    : TemplateFormat(parent)
+{
+}
+
+bool TtxTemplateFormat::write(const MapObject *mapObject, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result =  writer.writeMapObject(mapObject, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
+}
+
+bool TtxTemplateFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".ttx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("templates"))
+                return true;
+        }
+    }
+
+    return false;
+}
