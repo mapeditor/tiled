@@ -130,12 +130,13 @@ MapDocument::~MapDocument()
  */
 bool MapDocument::saveSelectedObjectAsATemplate()
 {
-    if (mSelectedObjects.size()!=1)
-        return false;
+//    if (mSelectedObjects.size()!=1)
+//        return false;
 
     TemplateFormat *templateFormat = new TtxTemplateFormat();
 
-   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
+//   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
+   if (!templateFormat->write(mSelectedObjects, QString(tr("object.ttx")))) {
        // if (error)
        // *error = mapFormat->errorString();
        return false;

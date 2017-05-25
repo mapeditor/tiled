@@ -45,7 +45,7 @@ public:
     Map *read(const QString &fileName) override;
 
     bool write(const Map *map, const QString &fileName) override;
-    bool writeObject(const MapObject *mapObject, const QString &fileName);
+    bool writeObject(const QList<MapObject *> &mapObjects, const QString &fileName);
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -115,7 +115,7 @@ class TtxTemplateFormat : public TemplateFormat
 public:
     TtxTemplateFormat(QObject *parent = nullptr);
 
-    bool write(const MapObject *mapObject, const QString &fileName) override;
+    bool write(const QList<MapObject *> &mapObjects, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled template files (*.ttx)"); }
 

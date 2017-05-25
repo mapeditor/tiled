@@ -14,7 +14,7 @@ public:
         : FileFormat(parent)
     {}
 
-    virtual bool write(const MapObject *mapObject, const QString &fileName) = 0;
+    virtual bool write(const QList<MapObject *> &mapObjects, const QString &fileName) = 0;
 };
 
 } // namespace Tiled

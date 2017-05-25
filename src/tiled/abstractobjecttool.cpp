@@ -265,7 +265,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     }
 
     auto saveAsTemplateAction = menu.addAction(tr("Save As A Template"), this, SLOT(saveTemplate()));
-    saveAsTemplateAction->setEnabled(selectedObjects.size()==1);
+//    saveAsTemplateAction->setEnabled(selectedObjects.size() == 1);
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

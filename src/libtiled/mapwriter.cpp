@@ -74,7 +74,7 @@ public:
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
-    void writeMapObject(const MapObject *mapObject, QIODevice *device,
+    void writeMapObject(const QList<MapObject *> &mapObjects, QIODevice *device,
                         const QString &path);
 
     bool openFile(SaveFile *file);
@@ -179,7 +179,7 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     writer.writeEndDocument();
 }
 
-void MapWriterPrivate::writeMapObject(const MapObject *mapObject, QIODevice *device,
+void MapWriterPrivate::writeMapObject(const QList<MapObject *> &mapObjects, QIODevice *device,
                                       const QString &path)
 {
     mMapDir = QDir(path);
@@ -187,12 +187,18 @@ void MapWriterPrivate::writeMapObject(const MapObject *mapObject, QIODevice *dev
 
     AutoFormattingWriter writer(device);
     writer.writeStartDocument();
+    writer.writeStartElement(QLatin1String("templategroup"));
+
     if (mDtdEnabled) {
         writer.writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
                                       "http://mapeditor.org/dtd/1.0/"
                                       "map.dtd\">"));
     }
-    writeObjectTemplate(writer, *mapObject);
+
+    for (auto *o: mapObjects)
+        writeObjectTemplate(writer, *o);
+
+    writer.writeEndElement();
     writer.writeEndDocument();
 }
 
@@ -669,7 +675,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 void MapWriterPrivate::writeObjectTemplate(QXmlStreamWriter &w,
                                            const MapObject &mapObject)
 {
-    w.writeStartElement(QLatin1String("object"));
+    w.writeStartElement(QLatin1String("template"));
 
     const QString &type = mapObject.type();
     if (!type.isEmpty())
@@ -922,19 +928,19 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeTemplate(const MapObject *mapObject, QIODevice *device,
+void MapWriter::writeTemplate(const QList<MapObject *> &mapObjects, QIODevice *device,
                                const QString &path)
 {
-    d->writeMapObject(mapObject, device, path);
+    d->writeMapObject(mapObjects, device, path);
 }
 
-bool MapWriter::writeTemplate(const MapObject *mapObject, const QString &fileName)
+bool MapWriter::writeTemplate(const QList<MapObject *> &mapObjects, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeTemplate(mapObject, file.device(), QFileInfo(fileName).absolutePath());
+    writeTemplate(mapObjects, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

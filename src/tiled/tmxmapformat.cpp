@@ -66,14 +66,14 @@ bool TmxMapFormat::write(const Map *map, const QString &fileName)
     return result;
 }
 
-bool TmxMapFormat::writeObject(const MapObject *mapObject, const QString &fileName)
+bool TmxMapFormat::writeObject(const QList<MapObject *> &mapObjects, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplate(mapObject, fileName);
+    bool result =  writer.writeTemplate(mapObjects, fileName);
     if (!result)
         mError = writer.errorString();
     else
@@ -188,14 +188,14 @@ TtxTemplateFormat::TtxTemplateFormat(QObject *parent)
 {
 }
 
-bool TtxTemplateFormat::write(const MapObject *mapObject, const QString &fileName)
+bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplate(mapObject, fileName);
+    bool result =  writer.writeTemplate(mapObjects, fileName);
     if (!result)
         mError = writer.errorString();
     else
