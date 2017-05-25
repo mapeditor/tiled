@@ -136,6 +136,11 @@ public:
     bool shouldShowPatreonDialog() const;
     void setPatreonDialogReminder(const QDate &date);
 
+    enum { MaxRecentFiles = 8 };
+    QStringList recentFiles() const;
+    QString fileDialogStartLocation() const;
+    void addRecentFile(const QString &fileName);
+
     bool openLastFilesOnStartup() const;
 
     bool checkForUpdates() const;
@@ -162,6 +167,8 @@ public slots:
     void setAutomappingDrawing(bool enabled);
     void setOpenLastFilesOnStartup(bool load);
     void setPluginEnabled(const QString &fileName, bool enabled);
+
+    void clearRecentFiles();
 
 signals:
     void showGridChanged(bool showGrid);
@@ -191,6 +198,9 @@ signals:
     void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
+
+    void recentFilesChanged();
+
     void checkForUpdatesChanged();
 
 private:

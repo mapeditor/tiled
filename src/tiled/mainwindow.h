@@ -26,6 +26,7 @@
 #include "clipboardmanager.h"
 #include "consoledock.h"
 #include "document.h"
+#include "preferences.h"
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
@@ -150,7 +151,6 @@ private slots:
     void becomePatron();
     void aboutTiled();
     void openRecentFile();
-    void clearRecentFiles();
 
     void documentChanged(Document *document);
     void closeDocument(int index);
@@ -185,18 +185,10 @@ private:
       */
     bool confirmAllSave();
 
-    bool saveDocument(Document *document, const QString &fileName);
-    bool saveDocumentAs(Document *document);
-
     void writeSettings();
     void readSettings();
 
-    QStringList recentFiles() const;
-    QString fileDialogStartLocation() const;
-
-    void setRecentFile(const QString &fileName);
-    void updateRecentFiles();
-
+    void updateRecentFilesMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -210,8 +202,7 @@ private:
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 
-    enum { MaxRecentFiles = 8 };
-    QAction *mRecentFiles[MaxRecentFiles];
+    QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
     QMenu *mLayerMenu;
     QMenu *mNewLayerMenu;

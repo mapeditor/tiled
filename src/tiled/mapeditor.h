@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "editor.h"
 #include "tiled.h"
+#include "tileset.h"
 
 class QComboBox;
 class QLabel;
@@ -112,6 +113,7 @@ public slots:
     void selectTerrainBrush();
 
     void addExternalTilesets(const QStringList &fileNames);
+    void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
 private slots:
     void currentWidgetChanged();
@@ -126,6 +128,11 @@ private slots:
 private:
     void setupQuickStamps();
     void retranslateUi();
+
+    void handleExternalTilesetsAndImages(const QStringList &fileNames,
+                                         bool handleImages);
+
+    SharedTileset newTileset(const QString &fileName, const QImage &image);
 
     QMainWindow *mMainWindow;
 

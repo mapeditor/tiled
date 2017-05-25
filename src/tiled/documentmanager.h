@@ -125,6 +125,9 @@ public:
     bool isDocumentModified(Document *document) const;
     bool isDocumentChangedOnDisk(Document *document) const;
 
+    bool saveDocument(Document *document, const QString &fileName);
+    bool saveDocumentAs(Document *document);
+
     /**
      * Closes the current map document. Will not ask the user whether to save
      * any changes!

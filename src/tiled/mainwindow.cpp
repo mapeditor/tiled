@@ -56,7 +56,6 @@
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "pluginmanager.h"
-#include "preferences.h"
 #include "resizedialog.h"
 #include "terrain.h"
 #include "tileanimationeditor.h"
@@ -276,8 +275,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
-    connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
-            SLOT(clearRecentFiles()));
+    connect(mUi->actionClearRecentFiles, &QAction::triggered,
+            preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAll, SIGNAL(triggered()), SLOT(saveAll()));
@@ -453,6 +452,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
+    connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
+
     QTimer::singleShot(500, this, [this,preferences]() {
         if (preferences->shouldShowPatreonDialog())
             becomePatron();
@@ -566,7 +567,7 @@ void MainWindow::newMap()
     if (!mapDocument)
         return;
 
-    if (!saveDocumentAs(mapDocument.data()))
+    if (!mDocumentManager->saveDocumentAs(mapDocument.data()))
         return;
 
     mDocumentManager->addDocument(mapDocument.take());
@@ -624,7 +625,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mDocumentManager->checkTilesetColumns(mapDocument);
 
-    setRecentFile(fileName);
+    Preferences::instance()->addRecentFile(fileName);
     return true;
 }
 
@@ -674,8 +675,9 @@ void MainWindow::openFile()
     selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
                                      selectedFilter).toString();
 
+    auto preferences = Preferences::instance();
     const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
-                                                         fileDialogStartLocation(),
+                                                         preferences->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
     if (fileNames.isEmpty())
@@ -687,27 +689,6 @@ void MainWindow::openFile()
     mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
     for (const QString &fileName : fileNames)
         openFile(fileName, fileFormat);
-}
-
-/**
- * Save the given document with the given file name. When saved
- * successfully, the file is added to the list of recent files.
- *
- * @return <code>true</code> on success, <code>false</code> on failure
- */
-bool MainWindow::saveDocument(Document *document, const QString &fileName)
-{
-    if (fileName.isEmpty())
-        return false;
-
-    QString error;
-    if (!document->save(fileName, &error)) {
-        QMessageBox::critical(this, tr("Error Saving File"), error);
-        return false;
-    }
-
-    setRecentFile(fileName);
-    return true;
 }
 
 static Document *saveAsDocument(Document *document)
@@ -730,9 +711,9 @@ bool MainWindow::saveFile()
     const QString currentFileName = document->fileName();
 
     if (currentFileName.isEmpty())
-        return saveDocumentAs(document);
+        return mDocumentManager->saveDocumentAs(document);
     else
-        return saveDocument(document, currentFileName);
+        return mDocumentManager->saveDocument(document, currentFileName);
 }
 
 bool MainWindow::saveFileAs()
@@ -743,86 +724,7 @@ bool MainWindow::saveFileAs()
 
     document = saveAsDocument(document);
 
-    return saveDocumentAs(document);
-}
-
-/**
- * Save the given document with a file name chosen by the user. When saved
- * successfully, the file is added to the list of recent files.
- *
- * @return <code>true</code> on success, <code>false</code> on failure
- */
-bool MainWindow::saveDocumentAs(Document *document)
-{
-    QString filter;
-    QString selectedFilter;
-    QString fileName = document->fileName();
-
-    if (FileFormat *format = document->writerFormat())
-        selectedFilter = format->nameFilter();
-
-    auto getSaveFileName = [&,this](const QString &defaultFileName) {
-        if (fileName.isEmpty()) {
-            fileName = fileDialogStartLocation();
-            fileName += QLatin1Char('/');
-            fileName += defaultFileName;
-        }
-
-        fileName = QFileDialog::getSaveFileName(this, QString(),
-                                                fileName,
-                                                filter,
-                                                &selectedFilter);
-
-        if (!fileName.isEmpty() &&
-            !fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
-        {
-            QMessageBox messageBox(QMessageBox::Warning,
-                                   tr("Extension Mismatch"),
-                                   tr("The file extension does not match the chosen file type."),
-                                   QMessageBox::Yes | QMessageBox::No,
-                                   window());
-
-            messageBox.setInformativeText(tr("Tiled may not automatically recognize your file when loading. "
-                                             "Are you sure you want to save with this extension?"));
-
-            int answer = messageBox.exec();
-            if (answer != QMessageBox::Yes)
-                return QString();
-        }
-
-        return fileName;
-    };
-
-    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
-        if (selectedFilter.isEmpty())
-            selectedFilter = TmxMapFormat().nameFilter();
-
-        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
-        filter = helper.filter();
-
-        fileName = getSaveFileName(tr("untitled.tmx"));
-        if (fileName.isEmpty())
-            return false;
-
-        MapFormat *format = helper.formatByNameFilter(selectedFilter);
-        mapDocument->setWriterFormat(format);
-
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
-        if (selectedFilter.isEmpty())
-            selectedFilter = TsxTilesetFormat().nameFilter();
-
-        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
-        filter = helper.filter();
-
-        fileName = getSaveFileName(tr("untitled.tsx"));
-        if (fileName.isEmpty())
-            return false;
-
-        TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
-        tilesetDocument->setWriterFormat(format);
-    }
-
-    return saveDocument(document, fileName);
+    return mDocumentManager->saveDocumentAs(document);
 }
 
 static bool isEmbeddedTilesetDocument(Document *document)
@@ -847,7 +749,7 @@ void MainWindow::saveAll()
 
         if (fileName.isEmpty()) {
             mDocumentManager->switchToDocument(document);
-            if (!saveDocumentAs(document))
+            if (!mDocumentManager->saveDocumentAs(document))
                 return;
         } else if (!document->save(fileName, &error)) {
             mDocumentManager->switchToDocument(document);
@@ -855,7 +757,7 @@ void MainWindow::saveAll()
             return;
         }
 
-        setRecentFile(fileName);
+        Preferences::instance()->addRecentFile(fileName);
     }
 }
 
@@ -1207,7 +1109,7 @@ bool MainWindow::newTileset(const QString &path)
     } else {
         // Save new external tileset and open it
         QScopedPointer<TilesetDocument> tilesetDocument(new TilesetDocument(tileset));
-        if (!saveDocumentAs(tilesetDocument.data()))
+        if (!mDocumentManager->saveDocumentAs(tilesetDocument.data()))
             return false;
         mDocumentManager->addDocument(tilesetDocument.take());
     }
@@ -1404,63 +1306,20 @@ void MainWindow::openRecentFile()
         openFile(action->data().toString());
 }
 
-QStringList MainWindow::recentFiles() const
-{
-    QVariant v = mSettings.value(QLatin1String("recentFiles/fileNames"));
-    return v.toStringList();
-}
-
-QString MainWindow::fileDialogStartLocation() const
-{
-    QStringList files = recentFiles();
-    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
-}
-
-/**
- * Adds the given file to the recent files list.
- */
-void MainWindow::setRecentFile(const QString &fileName)
-{
-    // Remember the file by its canonical file path
-    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-
-    if (canonicalFilePath.isEmpty())
-        return;
-
-    QStringList files = recentFiles();
-    files.removeAll(canonicalFilePath);
-    files.prepend(canonicalFilePath);
-    while (files.size() > MaxRecentFiles)
-        files.removeLast();
-
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-    mSettings.setValue(QLatin1String("fileNames"), files);
-    mSettings.endGroup();
-    updateRecentFiles();
-}
-
-void MainWindow::clearRecentFiles()
-{
-    mSettings.beginGroup(QLatin1String("recentFiles"));
-    mSettings.setValue(QLatin1String("fileNames"), QStringList());
-    mSettings.endGroup();
-    updateRecentFiles();
-}
-
 /**
  * Updates the recent files menu.
  */
-void MainWindow::updateRecentFiles()
+void MainWindow::updateRecentFilesMenu()
 {
-    QStringList files = recentFiles();
-    const int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);
+    const QStringList files = Preferences::instance()->recentFiles();
+    const int numRecentFiles = qMin<int>(files.size(), Preferences::MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i) {
         mRecentFiles[i]->setText(QFileInfo(files[i]).fileName());
         mRecentFiles[i]->setData(files[i]);
         mRecentFiles[i]->setVisible(true);
     }
-    for (int j = numRecentFiles; j < MaxRecentFiles; ++j) {
+    for (int j = numRecentFiles; j < Preferences::MaxRecentFiles; ++j) {
         mRecentFiles[j]->setVisible(false);
     }
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
@@ -1605,7 +1464,7 @@ void MainWindow::readSettings()
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
-    updateRecentFiles();
+    updateRecentFilesMenu();
 
     mDocumentManager->restoreState();
 }
