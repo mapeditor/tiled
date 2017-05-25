@@ -195,6 +195,18 @@ void MapWriterPrivate::writeMapObject(const QList<MapObject *> &mapObjects, QIOD
                                       "map.dtd\">"));
     }
 
+    mGidMapper.clear();
+    unsigned firstGid = 1;
+    for (auto *o: mapObjects) {
+        auto tileset = o->cell().tileset();
+        auto cell = o->cell();
+        if (tileset && mGidMapper.cellToGid(cell) == 0) {
+            mGidMapper.insert(firstGid, tileset);
+            writeTileset(writer, *tileset, firstGid);
+            firstGid += tileset->nextTileId();
+        }
+    }
+
     for (auto *o: mapObjects)
         writeObjectTemplate(writer, *o);
 
@@ -681,10 +693,7 @@ void MapWriterPrivate::writeObjectTemplate(QXmlStreamWriter &w,
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
-    mGidMapper.clear();
-    auto tileset = mapObject.cell().tileset();
     if (!mapObject.cell().isEmpty()) {
-        mGidMapper.insert(1, tileset);
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
@@ -700,11 +709,6 @@ void MapWriterPrivate::writeObjectTemplate(QXmlStreamWriter &w,
     if (rotation != 0.0)
         w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
-    // TODO: Tilesets should be shared between all templates in the same file
-    if (tileset)
-        writeTileset(w, *tileset, 1);
-
-    writeProperties(w, mapObject.properties());
 
     switch (mapObject.shape()) {
     case MapObject::Rectangle:
