@@ -1,4 +1,4 @@
-### 1.0.0 (... 2017)
+### 1.0.0 (25 May 2017)
 
 * Added support for editing external tilesets (#242)
 * Added a text object with configurable font and wrapping (#1429)
@@ -27,6 +27,7 @@
 * Added support for storing object type definitions in JSON format (#1313)
 * Added cut/copy/paste actions for custom properties (#515)
 * Allow changing the tile of tile objects (by Mohamed Thabet, #409)
+* Allow selecting a folder to fix multiple broken links at once
 * Added support for dragging external tilesets into the Tilesets dock
 * Added support for dragging images into image collection tilesets
 * Write out Tiled version in TMX/JSON "version" attribute (#1416)
@@ -37,6 +38,7 @@
 * Improved the behavior of the tile selection tool
 * Made Ctrl+D duplicate objects instead of deleting them
 * Use an eye icon instead of a checkbox for layer visibility (by Ketan Gupta, #1127)
+* JSON tileset: Save width/height of individual tile images
 * Linux: Added MIME type for tileset files
 * Fixed hexagonal rotation of tile stamps (by Bdtrotte, #1476)
 * Fixed handling of broken tile references, which now render as a red marker
@@ -48,12 +50,18 @@
 * Fixed stamp brush to work better on staggered maps (by Bdtrotte)
 * Fixed objects offsetting while resizing (by Acuion, #1518)
 * Fixed fill tool for hexagonal maps (#883)
+* Fixed potential crash in Terrain Brush
+* Windows: Fixed menus when using OpenGL in full screen mode (#1576)
+* Windows: Added Sticker Knight and Python example scripts to installer (#819)
+* Windows: Fixed bringing existing Tiled window to foreground (#1256)
 * AutoMapping: Fixed object groups always getting added
 * AutoMapping: Improved map boundary handling (by Stefan Beller, #1224)
 * AutoMapping: Apply custom properties set on output layers
 * terraingenerator: Made the amount of columns configurable
 * terraingenerator: Copy tile properties from the source tilesets
 * Added Ukrainian translation (by Olexandr Nesterenko)
+* Added Hungarian translation (by Balázs Úr)
+* Updated Bulgarian, Dutch, French, German, Russian, Spanish and Turkish translations
 
 ### 0.18.2 (21 February 2017)
 
