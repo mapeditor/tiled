@@ -61,6 +61,7 @@
 * terraingenerator: Copy tile properties from the source tilesets
 * Added Ukrainian translation (by Olexandr Nesterenko)
 * Added Hungarian translation (by Balázs Úr)
+* Added Finnish translation (by ekeimaja)
 * Updated Bulgarian, Dutch, French, German, Russian, Spanish and Turkish translations
 
 ### 0.18.2 (21 February 2017)
