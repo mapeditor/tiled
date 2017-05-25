@@ -19,7 +19,7 @@ The 'Edit Commands' dialog contains a list of commands. Each command has several
     + `%mapfile` is replaced with the current maps full path.
     + `%objecttype` is replaced with the type of the currently selected object, if any. (since Tiled 0.12)
     + `%objectid` is replaced with the ID of the currently selected object, if any. (since Tiled 0.17)
-    * `%layername` is replaced with the name of the currently selected layer. (since Tiled 0.17)
+    + `%layername` is replaced with the name of the currently selected layer. (since Tiled 0.17)
 * **Enabled**: A quick way to disable commands and remove them from the drop down list.
     + The default command is the first enabled command.
 
