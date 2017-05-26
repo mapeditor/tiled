@@ -30,4 +30,4 @@ Thanks to everybody who contributed to this release with bug reports, suggestion
 
 ### Support Tiled Development
 
-These fixes and improvements were possible thanks to your support [through Patreon](https://www.patreon.com/bjorn) and on [itch.io](https://thorbjorn.itch.io/tiled)! If you are not supporting me yet, [please chip in](https://www.patreon.com/bePatron?u=90066) to ensure they can keep coming! Thanks! :heart:
+These fixes and improvements were possible thanks to your support [through Patreon](https://www.patreon.com/bjorn) and on [itch.io](https://thorbjorn.itch.io/tiled)! If you are not supporting me yet, [please chip in](https://www.patreon.com/bePatron?u=90066) to ensure they can keep coming! Thanks! <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">

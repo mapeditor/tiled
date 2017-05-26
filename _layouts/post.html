@@ -1,4 +1,8 @@
 {% include header_small.html %}
+
+<div class="my-box">
+  <div style="max-width: 800px; margin-left: auto; margin-right: auto;">
+
 <header class="post-header">
   <h1>{{ page.title }}</h1>
   <p class="meta"><i>{{ page.date | date_to_long_string }} • {{ page.author }}</i></p>
@@ -42,5 +46,8 @@
   })();
 </script>
 {% endif %}
+
+  </div>
+</div>
 
 {% include footer.html %}

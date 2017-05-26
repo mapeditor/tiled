@@ -75,7 +75,7 @@ Finally, it is now possible to drag the tileset view with the middle mouse butto
 
 Those following the releases of the past year know that actually I am trying hard to get to a Tiled 1.0 release that I would consider "feature complete" and that is well documented, and which would provide a basis upon which to continue building cool and useful features. Tiled 0.17 became packed with new features but isn't that release yet. So I will continue working towards making it happen!
 
-## Support Tiled Development :heart:
+## Support Tiled Development <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
 I am only able to keep developing Tiled at this pace thanks to the support from [almost 160 patrons](https://www.patreon.com/bjorn?ty=h) and many people choosing to [pay for Tiled on itch.io](https://thorbjorn.itch.io/tiled/purchase) when downloading it. I'm already spending _two full days per week_ on Tiled, but I did _not yet_ reach my funding goal for this so please join in if you're liking the recent developments and would like to see more!
 

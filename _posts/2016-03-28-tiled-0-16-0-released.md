@@ -68,6 +68,6 @@ When you try to open map files through the file manager, it will now try to reus
 
 When Tiled 0.15 was released, I was confident the next release could be Tiled 1.0. A lot of work has already been done on [editing of external tilesets](http://discourse.mapeditor.org/t/march-2016-development-updates/1164), but I feel like it may have been just the beginning. That's why I wanted to get the above features out first. Now, I will continue to work towards making Tiled ready for its 1.0 release!
 
-## Support Tiled Development :heart:
+## Support Tiled Development <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
 With your support I can spend more time developing Tiled, bringing you frequently requested features faster! Please consider joining the [almost 140 patrons](https://www.patreon.com/bjorn?ty=h) who are spending a small amount each month to make this possible. In return I will be keeping you up to date with Tiled developments! Even a [small $1/month donation](https://www.patreon.com/bePatron?u=90066) keeps you involved and helps a lot, thanks!

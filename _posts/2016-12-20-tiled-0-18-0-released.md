@@ -81,6 +81,6 @@ Many smaller changes have been made as well. Here's the full list:
 
 In the meantime, a major change has been made to Tiled on the `master` branch to allow external tileset files to be opened and edited alongside map files. This was the biggest task remaining for Tiled 1.0. You can already try out the new Tiled with rearranged interface by installing a development snapshot. I can use all the feedback you have to make sure Tiled 1.0 will be a great release!
 
-## Support Tiled Development :heart:
+## Support Tiled Development <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
 We can enjoy this new release and look forward to Tiled 1.0 thanks to [170 patrons supporting me on a monthly basis](https://www.patreon.com/bjorn) as well as many people choosing to [pay for Tiled on itch.io](https://thorbjorn.itch.io/tiled/purchase). I'm close to reaching my funding goal for spending _two full days_ per week on Tiled, but I still need your help to get there!

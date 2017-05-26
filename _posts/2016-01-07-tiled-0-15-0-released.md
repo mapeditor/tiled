@@ -73,6 +73,6 @@ Part of reaching 1.0 is also to finally get around to writing a manual, which is
 
 Finally, it means to reach a stable basis upon which more cool functionality can be implemented. I want to add support for projects, simplifying tileset management, defining custom object types, make it possible to extend/automate Tiled with scripts, and many other things.
 
-### Support Tiled Development :heart:
+### Support Tiled Development <img src="https://cdn-standard.discourse.org/images/emoji/apple/heart.png?v=3" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
 Thanks to the support from [over 120 patrons](https://www.patreon.com/bjorn?ty=h), [3 sponsors](http://www.mapeditor.org/) and the occasional donation, I can currently afford to spend little over a day/week on Tiled development. If you're enjoying Tiled, please consider to support me with [a small recurring donation](https://www.patreon.com/bePatron?u=90066) to help things go much faster!
