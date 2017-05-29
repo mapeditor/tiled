@@ -62,6 +62,8 @@ struct Command
      */
     QString finalCommand() const;
 
+    QString finalWorkingDirectory() const;
+
     /**
      * Executes the command in the operating system shell or terminal
      * application.
@@ -94,6 +96,7 @@ private:
 
     QString mName;
     QString mFinalCommand;
+    QString mFinalWorkingDirectory;
 
 #ifdef Q_OS_MAC
     QTemporaryFile mFile;

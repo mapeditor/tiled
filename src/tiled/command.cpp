@@ -30,6 +30,27 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+QString Command::finalWorkingDirectory() const
+{
+    QString finalWorkingDirectory = workingDirectory;
+
+    // Perform variable replacement
+    if (Document *document = DocumentManager::instance()->currentDocument()) {
+        const QString fileName = document->fileName();
+
+        QFileInfo fileInfo(fileName);
+        QString mapPath = fileInfo.absolutePath();
+        finalWorkingDirectory.replace(
+            QLatin1String("%mappath"),
+            QString(QLatin1String("%1")).arg(mapPath));
+        // QProcess::setWorkingDirectory doesn't work with quoted paths
+
+        // TODO: %executablepath
+    }
+
+    return finalWorkingDirectory;
+}
+
 QString Command::finalCommand() const
 {
     QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable).arg(arguments);
@@ -125,6 +146,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
+    , mFinalWorkingDirectory(command.finalWorkingDirectory())
 #ifdef Q_OS_MAC
     , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
@@ -182,6 +204,10 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
             SLOT(handleError(QProcess::ProcessError)));
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
+
+    if (!mFinalWorkingDirectory.trimmed().isEmpty()) {
+        setWorkingDirectory(mFinalWorkingDirectory);
+    }
 
     start(mFinalCommand);
 }

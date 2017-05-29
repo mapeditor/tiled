@@ -59,7 +59,9 @@ public slots:
 
     void updateWidgets(const QModelIndex &current, const QModelIndex&);
 
-    void openFileDialog();
+    void browseExecutable();
+
+    void browseWorkingDirectory();
 
 private:
     Ui::CommandDialog *mUi;

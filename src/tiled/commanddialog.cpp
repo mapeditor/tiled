@@ -65,7 +65,10 @@ CommandDialog::CommandDialog(QWidget *parent)
             this, &CommandDialog::updateWidgets);
 
     connect(mUi->exBrowseButton, &QPushButton::clicked,
-            this, &CommandDialog::openFileDialog);
+            this, &CommandDialog::browseExecutable);
+
+    connect(mUi->wdBrowseButton, &QPushButton::clicked,
+            this, &CommandDialog::browseWorkingDirectory);
 }
 
 CommandDialog::~CommandDialog()
@@ -146,7 +149,7 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     }
 }
 
-void CommandDialog::openFileDialog()
+void CommandDialog::browseExecutable()
 {
     QString caption = tr("Select Executable");
     QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
@@ -154,6 +157,17 @@ void CommandDialog::openFileDialog()
 
     if (!executableName.isEmpty())
         mUi->executableEdit->setText(executableName);
+}
+
+void CommandDialog::browseWorkingDirectory()
+{
+    QString caption = tr("Select Working Directory");
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
+                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (!workingDirectoryName.isEmpty())
+        mUi->workingDirectoryEdit->setText(workingDirectoryName);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
