@@ -52,13 +52,19 @@ CommandDialog::CommandDialog(QWidget *parent)
     connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
             this, &CommandDialog::setShortcut);
 
-    connect(mUi->commandEdit, &QLineEdit::textChanged,
-            this, &CommandDialog::setCommand);
+    connect(mUi->executableEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setExecutable);
+
+    connect(mUi->argumentsEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setArguments);
+
+    connect(mUi->workingDirectoryEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setWorkingDirectory);
 
     connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
             this, &CommandDialog::updateWidgets);
 
-    connect(mUi->browseButton, &QPushButton::clicked,
+    connect(mUi->exBrowseButton, &QPushButton::clicked,
             this, &CommandDialog::openFileDialog);
 }
 
@@ -91,11 +97,25 @@ void CommandDialog::setSaveBeforeExecute(int state)
         mUi->treeView->model()->setSaveBeforeExecute(current, state);
 }
 
-void CommandDialog::setCommand(const QString &text)
+void CommandDialog::setExecutable(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
     if (current.row() < mUi->treeView->model()->rowCount())
-        mUi->treeView->model()->setCommand(current, text);
+        mUi->treeView->model()->setExecutable(current, text);
+}
+
+void CommandDialog::setArguments(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setArguments(current, text);
+}
+
+void CommandDialog::setWorkingDirectory(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setWorkingDirectory(current, text);
 }
 
 void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
@@ -103,19 +123,25 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     bool enable = (current.row() < mUi->treeView->model()->rowCount() - 1);
 
     mUi->saveBox->setEnabled(enable);
-    mUi->commandEdit->setEnabled(enable);
-    mUi->browseButton->setEnabled(enable);
+    mUi->executableEdit->setEnabled(enable);
+    mUi->argumentsEdit->setEnabled(enable);
+    mUi->workingDirectoryEdit->setEnabled(enable);
+    mUi->exBrowseButton->setEnabled(enable);
     mUi->keySequenceEdit->setEnabled(enable);
     mUi->clearButton->setEnabled(enable);
     mUi->saveBox->setEnabled(enable);
 
     if (enable) {
         const Command command = mUi->treeView->model()->command(current);
-        mUi->commandEdit->setText(command.command);
+        mUi->executableEdit->setText(command.executable);
+        mUi->argumentsEdit->setText(command.arguments);
+        mUi->workingDirectoryEdit->setText(command.workingDirectory);
         mUi->keySequenceEdit->setKeySequence(command.shortcut);
         mUi->saveBox->setChecked(command.saveBeforeExecute);
     } else {
-        mUi->commandEdit->clear();
+        mUi->executableEdit->clear();
+        mUi->argumentsEdit->clear();
+        mUi->workingDirectoryEdit->clear();
         mUi->keySequenceEdit->clear();
     }
 }
@@ -127,7 +153,7 @@ void CommandDialog::openFileDialog()
     QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
 
     if (!executableName.isEmpty())
-        mUi->commandEdit->setText(executableName);
+        mUi->executableEdit->setText(executableName);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)

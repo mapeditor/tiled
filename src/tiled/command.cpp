@@ -32,7 +32,7 @@ using namespace Tiled::Internal;
 
 QString Command::finalCommand() const
 {
-    QString finalCommand = command;
+    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable).arg(arguments);
 
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
@@ -82,7 +82,9 @@ QVariant Command::toQVariant() const
     QHash<QString, QVariant> hash;
     hash[QLatin1String("Enabled")] = isEnabled;
     hash[QLatin1String("Name")] = name;
-    hash[QLatin1String("Command")] = command;
+    hash[QLatin1String("Executable")] = executable;
+    hash[QLatin1String("Arguments")] = arguments;
+    hash[QLatin1String("WorkingDirectory")] = workingDirectory;
     hash[QLatin1String("Shortcut")] = shortcut;
     hash[QLatin1String("SaveBeforeExecute")] = saveBeforeExecute;
     return hash;
@@ -93,7 +95,9 @@ Command Command::fromQVariant(const QVariant &variant)
     const QHash<QString, QVariant> hash = variant.toHash();
 
     const QString namePref = QLatin1String("Name");
-    const QString commandPref = QLatin1String("Command");
+    const QString executablePref = QLatin1String("Executable");
+    const QString argumentsPref = QLatin1String("Arguments");
+    const QString workingDirectoryPref = QLatin1String("WorkingDirectory");
     const QString enablePref = QLatin1String("Enabled");
     const QString shortcutPref = QLatin1String("Shortcut");
     const QString saveBeforeExecutePref = QLatin1String("SaveBeforeExecute");
@@ -103,8 +107,12 @@ Command Command::fromQVariant(const QVariant &variant)
         command.isEnabled = hash[enablePref].toBool();
     if (hash.contains(namePref))
         command.name = hash[namePref].toString();
-    if (hash.contains(commandPref))
-        command.command = hash[commandPref].toString();
+    if (hash.contains(executablePref))
+        command.executable = hash[executablePref].toString();
+    if (hash.contains(argumentsPref))
+        command.arguments = hash[argumentsPref].toString();
+    if (hash.contains(workingDirectoryPref))
+        command.workingDirectory = hash[workingDirectoryPref].toString();
     if (hash.contains(shortcutPref))
         command.shortcut = hash[shortcutPref].value<QKeySequence>();
     if (hash.contains(saveBeforeExecutePref))
