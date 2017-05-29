@@ -43,26 +43,28 @@ WangSet::WangSet(Tileset *tileset,
     mCornerColors(cornerColors),
     mName(std::move(name)),
     mImageTileId(imageTileId),
-    mWangIdToTile(QMultiMap<unsigned, Tile*>()),
-    mTileIdToWangId(QMap<int, unsigned>())
+    mWangIdToTile(QMultiMap<WangId, Tile*>()),
+    mTileIdToWangId(QMap<int, WangId>())
 {
 }
 
-void WangSet::addTile(Tile *tile, unsigned wangId)
+void WangSet::addTile(Tile *tile, WangId wangId)
 {
     Q_ASSERT(tile->tileset() == mTileSet);
 
-    for (int i = 0; i < 8; ++i) {
-        Q_ASSERT(((wangId >> (i * 4)) & 0xf) <= ((i % 2)? mCornerColors : mEdgeColors));
+    for (int i = 0; i < 4; ++i) {
+        Q_ASSERT(wangId.getColor(i,true) <= mEdgeColors);
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        Q_ASSERT(wangId.getColor(i,false) <= mCornerColors);
     }
 
     mWangIdToTile.insert(wangId, tile);
     mTileIdToWangId.insert(tile->id(), wangId);
 }
 
-
-
-Tile *WangSet::getMatchingTile(unsigned wangId) const
+Tile *WangSet::getMatchingTile(WangId wangId) const
 {
     auto potentials = getAllTiles(wangId);
 
@@ -72,7 +74,7 @@ Tile *WangSet::getMatchingTile(unsigned wangId) const
         return NULL;
 }
 
-QList<Tile*> WangSet::getAllTiles(unsigned wangId) const
+QList<Tile*> WangSet::getAllTiles(WangId wangId) const
 {
     QList<Tile*> list;
 
@@ -81,7 +83,7 @@ QList<Tile*> WangSet::getAllTiles(unsigned wangId) const
 
     if (mEdgeColors > 0) {
         for (int i = 0; i < 4; ++i) {
-            if (!(wangId & (0xf << (i * 8)))) {
+            if (!wangId.getColor(i,true)) {
                 wildCards.append(QPoint(i * 8, mEdgeColors));
             }
         }
@@ -89,7 +91,7 @@ QList<Tile*> WangSet::getAllTiles(unsigned wangId) const
 
     if (mCornerColors > 0) {
         for (int i = 0; i < 4; ++i) {
-            if (!(wangId & (0xf << (i * 8 + 4)))) {
+            if (!wangId.getColor(i,false)) {
                 wildCards.append(QPoint(i * 8 + 4, mCornerColors));
             }
         }
@@ -114,7 +116,7 @@ QList<Tile*> WangSet::getAllTiles(unsigned wangId) const
                     idVariation |= stack[i].y() << stack[i].x();
                 }
 
-                list.append(mWangIdToTile.values(idVariation));
+                list.append(mWangIdToTile.values(idVariation | wangId.id()));
 
                 QPoint top = stack.pop();
                 top.setY(top.y() - 1);
@@ -137,10 +139,10 @@ QList<Tile*> WangSet::getAllTiles(unsigned wangId) const
     return list;
 }
 
-unsigned WangSet::getWangIdOfTile(Tile *tile) const
+WangId WangSet::getWangIdOfTile(Tile *tile) const
 {
     if (tile->tileset() == mTileSet && mTileIdToWangId.contains(tile->id()))
         return mTileIdToWangId.value(tile->id());
     else
-        return 0;
+        return WangId(0);
 }

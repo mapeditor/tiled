@@ -37,6 +37,62 @@
 
 namespace Tiled {
 
+class WangId
+{
+public:
+    WangId(unsigned id){ mId = id; }
+    WangId() { mId = 0; }
+
+    inline unsigned id() const { return mId; }
+    inline void setId(unsigned id) { mId = id; }
+
+    /**
+     * @brief getColor returns the color of a desired edge/corner of a given wang id
+     * @param index index 0-3 with zero being the top right, and 3 left top
+     * @param edges requesting edge color (corners if false)
+     * @return
+     */
+    int getColor(int index, bool edges) const;
+
+    /**
+     * @brief rotateWangId rotates the wang id 90 * rotations degrees ccw
+     * @param rotations 1-3
+     * @return
+     */
+    void rotate(int rotations);
+
+    //used in maping
+    bool operator <(const WangId w) const
+    {
+        return mId < w.id();
+    }
+
+private:
+    unsigned mId;
+};
+
+inline int WangId::getColor(int index, bool edges) const
+{
+    int shift = (index * 8) + ((!edges) * 4);
+
+    int color = (mId >> shift) & 0xf;
+
+    return color;
+}
+
+void WangId::rotate(int rotations)
+{
+    if (rotations < 0)
+        rotations = 4 + (rotations % 4);
+    else
+        rotations %= 4;
+
+    unsigned rotated = mId << rotations*8;
+    rotated = rotated | (mId >> ((4 - rotations) * 8));
+
+    mId = rotated;
+}
+
 /**
  * Represents a wang set.
  */
@@ -67,7 +123,7 @@ public:
      * @param tile
      * @param wangId
      */
-    void addTile(Tile *tile, unsigned wangId);
+    void addTile(Tile *tile, WangId wangId);
 
     /**
      * @brief getMatchingTile Returns a tile matching the given wangId.
@@ -76,7 +132,7 @@ public:
      * @param wangId
      * @return
      */
-    Tile *getMatchingTile(unsigned wangId) const;
+    Tile *getMatchingTile(WangId wangId) const;
 
     /**
      * @brief getAllTiles Returns a list of all tiles which match a wangId
@@ -84,83 +140,23 @@ public:
      * @param wangId
      * @return
      */
-    QList<Tile*> getAllTiles(unsigned wangId) const;
+    QList<Tile*> getAllTiles(WangId wangId) const;
 
 
     /**
      * @brief wangIdOfTile returns the wangId of a given tileId
      * @param tileId
      */
-    unsigned getWangIdOfTile(Tile *tile) const;
+    WangId getWangIdOfTile(Tile *tile) const;
 
 private:
     Tileset *mTileSet;
     QString mName;
     int mImageTileId;
-    QMultiMap<unsigned, Tile*> mWangIdToTile;
-    QMap<int, unsigned> mTileIdToWangId; //This could be stored in the tile object.
+    QMultiMap<WangId, Tile*> mWangIdToTile;
+    QMap<int, WangId> mTileIdToWangId; //This could be stored in the tile object.
     int mEdgeColors;
     int mCornerColors;
 };
-
-/**
- * public functions for working with "wangIds"
- */
-
-/**
- * @brief makeWangId Constructs a wang id from given edges/corner colors
- * @param a Top edge, or top right corner
- * @param b Right edge, or bottom right corner
- * @param c Bottom edge, or bottom left corner
- * @param d Left edge, or top left corner
- * @param edges Defining edges (Corners if false)
- */
-unsigned makeWangId(int a, int b, int c, int d, bool edges)
-{
-    //Makes sure inputs aren't bigger than 15
-    a = a & 0xf;
-    b = b & 0xf;
-    c = c & 0xf;
-    d = d & 0xf;
-
-    int id = ((((((d << 8) | c) << 8) | b) << 8) | a) << ((!edges) * 4);
-
-    return id;
-}
-
-/**
- * @brief getColor returns the color of a desired edge/corner of a given wang id
- * @param wangId
- * @param index index 0-3 with zero being the top right, and 3 left top
- * @param edges requesting edge color (corners if false)
- * @return
- */
-int getColorOfWangId(unsigned wangId, int index, bool edges)
-{
-    int shift = (index * 8) + ((!edges) * 4);
-
-    int color = (wangId >> shift) & 0xf;
-
-    return color;
-}
-
-/**
- * @brief rotateWangId returns the given wang id rotated 90 * rotations degrees ccw
- * @param wangId
- * @param rotations 1-3
- * @return
- */
-unsigned rotateWangId(unsigned wangId, int rotations)
-{
-    if (rotations < 0)
-        rotations = 4 + (rotations % 4);
-    else
-        rotations %= 4;
-
-    unsigned rotated = wangId << rotations*8;
-    rotated = rotated | (wangId >> ((4 - rotations) * 8));
-
-    return rotated;
-}
 
 } // namespace Tiled
