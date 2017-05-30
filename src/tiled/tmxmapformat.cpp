@@ -73,7 +73,7 @@ bool TmxMapFormat::writeObject(const QList<MapObject *> &mapObjects, const QStri
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplate(mapObjects, fileName);
+    bool result =  writer.writeTemplateGroup(mapObjects, fileName);
     if (!result)
         mError = writer.errorString();
     else
@@ -195,7 +195,7 @@ bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QStrin
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplate(mapObjects, fileName);
+    bool result =  writer.writeTemplateGroup(mapObjects, fileName);
     if (!result)
         mError = writer.errorString();
     else

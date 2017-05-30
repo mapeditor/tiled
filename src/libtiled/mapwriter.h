@@ -93,10 +93,10 @@ public:
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
 
-    void writeTemplate(const QList<MapObject *> &mapObjects, QIODevice *device,
+    void writeTemplateGroup(const QList<MapObject *> &mapObjects, QIODevice *device,
                        const QString &path = QString());
 
-    bool writeTemplate(const QList<MapObject *> &mapObjects, const QString &fileName);
+    bool writeTemplateGroup(const QList<MapObject *> &mapObjects, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.
