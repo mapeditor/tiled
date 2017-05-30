@@ -128,6 +128,7 @@ MapDocument::~MapDocument()
 /**
  * Saves the selected object as a template
  */
+#include <QDebug>
 bool MapDocument::saveSelectedObjectAsATemplate()
 {
 //    if (mSelectedObjects.size()!=1)
@@ -135,12 +136,14 @@ bool MapDocument::saveSelectedObjectAsATemplate()
 
     TemplateFormat *templateFormat = new TtxTemplateFormat();
 
+    TemplateGroup *templateGroup =  templateFormat->read(tr("object.ttx"));
+    qDebug() << templateGroup->objects().first()->size();
 //   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
-   if (!templateFormat->write(mSelectedObjects, QString(tr("object.ttx")))) {
+//   if (!templateFormat->write(mSelectedObjects, QString(tr("object.ttx")))) {
        // if (error)
        // *error = mapFormat->errorString();
-       return false;
-   }
+//       return false;
+//   }
 
    return true;
 }
