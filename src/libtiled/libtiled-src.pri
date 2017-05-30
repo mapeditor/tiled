@@ -23,6 +23,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/properties.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
+    $$PWD/templategroup.cpp \
     $$PWD/tile.cpp \
     $$PWD/tileanimationdriver.cpp \
     $$PWD/tilelayer.cpp \
@@ -57,6 +58,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
     $$PWD/templateformat.h \
+    $$PWD/templategroup.h \
     $$PWD/terrain.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \
