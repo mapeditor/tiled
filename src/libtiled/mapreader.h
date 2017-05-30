@@ -30,6 +30,7 @@
 
 #include "tiled_global.h"
 #include "tileset.h"
+#include "templategroup.h"
 
 #include <QImage>
 
@@ -93,6 +94,9 @@ public:
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;
+
+    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path = QString());
+    TemplateGroup *readTemplateGroup(const QString &fileName);
 
 protected:
     /**

@@ -28,6 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <QDebug>
 #include "mapreader.h"
 
 #include "compression.h"
@@ -69,6 +70,7 @@ public:
 
     Map *readMap(QIODevice *device, const QString &path);
     SharedTileset readTileset(QIODevice *device, const QString &path);
+    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path);
 
     bool openFile(QFile *file);
 
@@ -87,6 +89,7 @@ private:
     ImageReference readImage();
 
     Layer *tryReadLayer();
+    TemplateGroup *readTemplateGroup();
 
     TileLayer *readTileLayer();
     void readTileLayerData(TileLayer &tileLayer);
@@ -110,6 +113,7 @@ private:
 
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
+    MapObject *readTemplate();
     QPolygonF readPolygon();
     TextData readObjectText();
 
@@ -168,6 +172,22 @@ SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &pa
 
     mReadingExternalTileset = false;
     return tileset;
+}
+
+TemplateGroup *MapReaderPrivate::readTemplateGroup(QIODevice *device, const QString &path)
+{
+    mError.clear();
+    mPath = path;
+    TemplateGroup * templateGroup;
+
+    xml.setDevice(device);
+
+    if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
+        templateGroup = readTemplateGroup();
+    else
+        xml.raiseError(tr("Not a template file."));
+
+    return templateGroup;
 }
 
 QString MapReaderPrivate::errorString() const
@@ -294,6 +314,23 @@ Map *MapReaderPrivate::readMap()
     }
 
     return mMap.take();
+}
+
+TemplateGroup *MapReaderPrivate::readTemplateGroup()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("templategroup"));
+    const QXmlStreamAttributes atts = xml.attributes();
+
+    TemplateGroup *templateGroup = new TemplateGroup();
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("template"))
+            templateGroup->addObject(readTemplate());
+//        else if (xml.name() == QLatin1String("tileset"))
+//            objectGroup->mergeProperties(readProperties());
+        else
+            readUnknownElement();
+    }
+    return templateGroup;
 }
 
 SharedTileset MapReaderPrivate::readTileset()
@@ -834,6 +871,16 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
     xml.skipCurrentElement();
 }
 
+MapObject *MapReaderPrivate::readTemplate()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
+    const QXmlStreamAttributes atts = xml.attributes();
+    const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
+    qDebug() << gid;
+    while (xml.readNextStartElement()) {}
+    return new MapObject(tr("name"), tr("type"), {0,0}, {0,0});
+}
+
 MapObject *MapReaderPrivate::readObject()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
@@ -1132,6 +1179,29 @@ SharedTileset MapReader::readTileset(const QString &fileName)
 QString MapReader::errorString() const
 {
     return d->errorString();
+}
+
+TemplateGroup *MapReader::readTemplateGroup(QIODevice *device, const QString &path)
+{
+    TemplateGroup *templateGroup = d->readTemplateGroup(device, path);
+//    if (templateGroup && !templateGroup->isCollection())
+//        templateGroup->loadImage();
+
+    return templateGroup;
+}
+
+TemplateGroup *MapReader::readTemplateGroup(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!d->openFile(&file)) {
+        return new TemplateGroup();
+    }
+
+    TemplateGroup *templateGroup = readTemplateGroup(&file, QFileInfo(fileName).absolutePath());
+//    if (templateGroup)
+//        templateGroup->setFileName(fileName);
+
+    return templateGroup;
 }
 
 QString MapReader::resolveReference(const QString &reference,
