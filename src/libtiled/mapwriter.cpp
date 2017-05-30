@@ -741,6 +741,8 @@ void MapWriterPrivate::writeObjectTemplate(QXmlStreamWriter &w,
     }
     }
 
+    writeProperties(w, mapObject.properties());
+
     w.writeEndElement();
 }
 
