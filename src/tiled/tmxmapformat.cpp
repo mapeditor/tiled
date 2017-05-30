@@ -204,6 +204,11 @@ bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QStrin
     return result;
 }
 
+TemplateGroup *TtxTemplateFormat::read(const QString &fileName) {
+    MapReader reader;
+    return reader.readTemplateGroup(fileName);
+}
+
 bool TtxTemplateFormat::supportsFile(const QString &fileName) const
 {
     if (fileName.endsWith(QLatin1String(".ttx"), Qt::CaseInsensitive))

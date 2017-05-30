@@ -117,6 +117,8 @@ public:
 
     bool write(const QList<MapObject *> &mapObjects, const QString &fileName) override;
 
+    TemplateGroup *read(const QString &fileName) override;
+
     QString nameFilter() const override { return tr("Tiled template files (*.ttx)"); }
 
     QString shortName() const override { return QLatin1String("ttx"); }

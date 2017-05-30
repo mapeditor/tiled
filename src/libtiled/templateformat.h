@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mapformat.h"
-#include "mapobject.h"
+#include "templategroup.h"
 
 namespace Tiled {
 
@@ -14,6 +14,7 @@ public:
         : FileFormat(parent)
     {}
 
+    virtual TemplateGroup *read(const QString &fileName) = 0;
     virtual bool write(const QList<MapObject *> &mapObjects, const QString &fileName) = 0;
 };
 
