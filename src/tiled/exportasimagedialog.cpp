@@ -41,6 +41,7 @@ static const char * const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
 static const char * const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
 static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
 static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
+static const char * const SPLIT_INTO_TILES_KEY = "SaveAsImage/SplitIntoTiles";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -85,6 +86,11 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
     mUi->fileNameEdit->setText(suggestion);
 
+    // Constrain tile width/height to map size
+    const QSize mapSize = mMapDocument->renderer()->mapSize();
+    mUi->tileWidthSpinBox->setMaximum(mapSize.width());
+    mUi->tileHeightSpinBox->setMaximum(mapSize.height());
+
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
     const bool visibleLayersOnly =
@@ -95,16 +101,24 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
             s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
     const bool includeBackgroundColor =
             s->value(QLatin1String(INCLUDE_BACKGROUND_COLOR), false).toBool();
+    const bool splitIntoTiles =
+            s->value(QLatin1String(SPLIT_INTO_TILES_KEY), false).toBool();
 
     mUi->visibleLayersOnly->setChecked(visibleLayersOnly);
     mUi->currentZoomLevel->setChecked(useCurrentScale);
     mUi->drawTileGrid->setChecked(drawTileGrid);
     mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
+    mUi->splitIntoTiles->setChecked(splitIntoTiles);
+    mUi->tileWidthSpinBox->setEnabled(splitIntoTiles);
+    mUi->tileHeightSpinBox->setEnabled(splitIntoTiles);
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
             this, SLOT(updateAcceptEnabled()));
-
+    connect(mUi->splitIntoTiles, SIGNAL(clicked(bool)),
+            mUi->tileWidthSpinBox, SLOT(setEnabled(bool)));
+    connect(mUi->splitIntoTiles, SIGNAL(clicked(bool)),
+            mUi->tileHeightSpinBox, SLOT(setEnabled(bool)));
 
     Utils::restoreGeometry(this);
 }
@@ -125,13 +139,33 @@ static bool smoothTransform(qreal scale)
     return scale != qreal(1) && scale < qreal(2);
 }
 
+/*!
+    Returns a rectangular portion of \a image specified by \a rect,
+    without copying. \a image must exist as long as the returned
+    image does.
+
+    http://stackoverflow.com/a/12682022/904422
+*/
+static QImage createSubImage(QImage* image, const QRect &rect) {
+    const size_t offset = rect.x() * image->depth() / 8
+            + rect.y() * image->bytesPerLine();
+    return QImage(image->bits() + offset, rect.width(), rect.height(),
+                  image->bytesPerLine(), image->format());
+}
+
 void ExportAsImageDialog::accept()
 {
     const QString fileName = mUi->fileNameEdit->text();
     if (fileName.isEmpty())
         return;
 
-    if (QFile::exists(fileName)) {
+    const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
+    const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
+    const bool drawTileGrid = mUi->drawTileGrid->isChecked();
+    const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
+    const bool splitIntoTiles = mUi->splitIntoTiles->isChecked();
+
+    if (QFile::exists(fileName) && !splitIntoTiles) {
         const QMessageBox::StandardButton button =
                 QMessageBox::warning(this,
                                      tr("Export as Image"),
@@ -144,11 +178,6 @@ void ExportAsImageDialog::accept()
         if (button != QMessageBox::Yes)
             return;
     }
-
-    const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
-    const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
-    const bool drawTileGrid = mUi->drawTileGrid->isChecked();
-    const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MapRenderer *renderer = mMapDocument->renderer();
 
@@ -283,8 +312,38 @@ void ExportAsImageDialog::accept()
     // Restore the previous render flags
     renderer->setFlags(renderFlags);
 
-    image.save(fileName);
-    mPath = QFileInfo(fileName).path();
+    if (splitIntoTiles) {
+        const int extensionIndex = fileName.lastIndexOf(QLatin1Char('.'));
+        if (extensionIndex == -1) {
+            QMessageBox::information(this,
+                                     tr("Export as Image"),
+                                     tr("Couldn't find filel extension for %1.\n"
+                                        "Unable to export tiled image.")
+                                     .arg(QFileInfo(fileName).fileName()),
+                                     QMessageBox::Ok);
+        } else {
+            const int tileWidth = mUi->tileWidthSpinBox->value();
+            const int tileHeight = mUi->tileHeightSpinBox->value();
+            const int rows = mapSize.height() / tileHeight;
+            const int columns = mapSize.width() / tileWidth;
+
+            for (int row = 0; row < rows; ++row) {
+                for (int column = 0; column < columns; ++column) {
+                    const int index = row * columns + column;
+                    const QString tileFileName = QString::fromLatin1("%1-%2%3")
+                            .arg(fileName.left(extensionIndex))
+                            .arg(index)
+                            .arg(fileName.right(fileName.size() - extensionIndex));
+                    const QRect rect = QRect(column * tileWidth, row * tileHeight, tileWidth, tileHeight);
+                    QImage tileImage = createSubImage(&image, rect);
+                    tileImage.save(tileFileName);
+                }
+            }
+        }
+    } else {
+        image.save(fileName);
+        mPath = QFileInfo(fileName).path();
+    }
 
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
@@ -292,6 +351,7 @@ void ExportAsImageDialog::accept()
     s->setValue(QLatin1String(CURRENT_SCALE_KEY), useCurrentScale);
     s->setValue(QLatin1String(DRAW_GRID_KEY), drawTileGrid);
     s->setValue(QLatin1String(INCLUDE_BACKGROUND_COLOR), includeBackgroundColor);
+    s->setValue(QLatin1String(SPLIT_INTO_TILES_KEY), splitIntoTiles);
 
     QDialog::accept();
 }
