@@ -92,6 +92,7 @@ private:
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer &layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
+    void writeObjectData(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeTemplate(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
@@ -649,43 +650,14 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     writeProperties(w, mapObject.properties());
 
-    switch (mapObject.shape()) {
-    case MapObject::Rectangle:
-        break;
-    case MapObject::Polygon:
-    case MapObject::Polyline: {
-        if (mapObject.shape() == MapObject::Polygon)
-            w.writeStartElement(QLatin1String("polygon"));
-        else
-            w.writeStartElement(QLatin1String("polyline"));
-
-        QString points;
-        for (const QPointF &point : mapObject.polygon()) {
-            points.append(QString::number(point.x()));
-            points.append(QLatin1Char(','));
-            points.append(QString::number(point.y()));
-            points.append(QLatin1Char(' '));
-        }
-        points.chop(1);
-        w.writeAttribute(QLatin1String("points"), points);
-        w.writeEndElement();
-        break;
-    }
-    case MapObject::Ellipse:
-        w.writeEmptyElement(QLatin1String("ellipse"));
-        break;
-    case MapObject::Text: {
-        writeObjectText(w, mapObject.textData());
-        break;
-    }
-    }
+    writeObjectData(w, mapObject);
 
     w.writeEndElement();
 }
 
 // TODO: Extract functions from writeObject to decrease code duplication
 void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
-                                           const MapObject &mapObject)
+                                     const MapObject &mapObject)
 {
     w.writeStartElement(QLatin1String("template"));
 
@@ -714,6 +686,13 @@ void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
 
     writeProperties(w, mapObject.properties());
 
+    writeObjectData(w, mapObject);
+
+    w.writeEndElement();
+}
+
+inline void MapWriterPrivate::writeObjectData(QXmlStreamWriter &w, const MapObject &mapObject)
+{
     switch (mapObject.shape()) {
     case MapObject::Rectangle:
         break;
@@ -744,8 +723,6 @@ void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
         break;
     }
     }
-
-    w.writeEndElement();
 }
 
 void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &textData)
