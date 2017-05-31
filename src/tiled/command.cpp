@@ -34,56 +34,58 @@ QString Command::finalWorkingDirectory() const
 {
     QString finalWorkingDirectory = workingDirectory;
 
-    // Perform variable replacement
-    if (Document *document = DocumentManager::instance()->currentDocument()) {
-        const QString fileName = document->fileName();
-
-        QFileInfo fileInfo(fileName);
-        QString mapPath = fileInfo.absolutePath();
-        finalWorkingDirectory.replace(
-            QLatin1String("%mappath"),
-            QString(QLatin1String("%1")).arg(mapPath));
-        // QProcess::setWorkingDirectory doesn't work with quoted paths
-
-        // TODO: %executablepath
-    }
-
-    return finalWorkingDirectory;
+    return replaceVariables(finalWorkingDirectory, true);
 }
 
 QString Command::finalCommand() const
 {
     QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable).arg(arguments);
 
+    return replaceVariables(finalCommand);
+}
+
+QString Command::replaceVariables(const QString &string, bool flag) const
+{
+    QString finalString = string;
+
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
         const QString fileName = document->fileName();
 
-        finalCommand.replace(QLatin1String("%mapfile"),
+        finalString.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
 
         QFileInfo fileInfo(fileName);
         QString mapPath = fileInfo.absolutePath();
-        finalCommand.replace(
-            QLatin1String("%mappath"),
-            QString(QLatin1String("\"%1\"")).arg(mapPath));
+
+        if (flag) {
+            finalString.replace(
+                QLatin1String("%mappath"),
+                QString(QLatin1String("%1")).arg(mapPath));
+        } else {
+            finalString.replace(
+                QLatin1String("%mappath"),
+                QString(QLatin1String("\"%1\"")).arg(mapPath));
+        }
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
             if (const Layer *layer = mapDocument->currentLayer()) {
-                finalCommand.replace(QLatin1String("%layername"),
+                finalString.replace(QLatin1String("%layername"),
                                      QString(QLatin1String("\"%1\"")).arg(layer->name()));
             }
         }
 
         if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
-            finalCommand.replace(QLatin1String("%objecttype"),
+            finalString.replace(QLatin1String("%objecttype"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
-            finalCommand.replace(QLatin1String("%objectid"),
+            finalString.replace(QLatin1String("%objectid"),
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
         }
+
+        // TODO: %executablename
     }
 
-    return finalCommand;
+    return finalString;
 }
 
 void Command::execute(bool inTerminal) const
