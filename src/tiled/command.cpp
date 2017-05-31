@@ -58,15 +58,9 @@ QString Command::replaceVariables(const QString &string, bool flag) const
         QFileInfo fileInfo(fileName);
         QString mapPath = fileInfo.absolutePath();
 
-        if (flag) {
-            finalString.replace(
-                QLatin1String("%mappath"),
-                QString(QLatin1String("%1")).arg(mapPath));
-        } else {
-            finalString.replace(
-                QLatin1String("%mappath"),
-                QString(QLatin1String("\"%1\"")).arg(mapPath));
-        }
+        finalString.replace(
+            QLatin1String("%mappath"),
+            QString(QLatin1String("\"%1\"")).arg(mapPath));
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
             if (const Layer *layer = mapDocument->currentLayer()) {
@@ -81,19 +75,21 @@ QString Command::replaceVariables(const QString &string, bool flag) const
             finalString.replace(QLatin1String("%objectid"),
                                 QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
         }
+    }
 
-        if (flag) {
-            QString finalExecutable = replaceVariables(executable);
-            QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
+    if (flag) {
+        QString finalExecutable = replaceVariables(executable);
+        QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
 
-            if (mFile.exists() && mFile.isFile()) {
-                finalString.replace(QLatin1String("%executablepath"),
-                                    QString(QLatin1String("%1")).arg(mFile.absolutePath()));
-            } else {
-                finalString.replace(QLatin1String("%executablepath"),
-                                    QString(QLatin1String("")));
-            }
+        if (mFile.exists() && mFile.isFile()) {
+            finalString.replace(QLatin1String("%executablepath"),
+                                QString(QLatin1String("%1")).arg(mFile.absolutePath()));
+        } else {
+            finalString.replace(QLatin1String("%executablepath"),
+                                QString(QLatin1String("")));
         }
+
+        finalString.replace(QLatin1String("\""), QString(QLatin1String("")));
     }
 
     return finalString;
