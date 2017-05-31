@@ -82,7 +82,18 @@ QString Command::replaceVariables(const QString &string, bool flag) const
                                  QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
         }
 
-        // TODO: %executablename
+        if (flag) {
+            QString finalExecutable = replaceVariables(executable);
+            QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
+
+            if (mFile.exists() && mFile.isFile()) {
+                finalString.replace(QLatin1String("%executablepath"),
+                                     QString(QLatin1String("%1")).arg(mFile.absolutePath()));
+            } else {
+                finalString.replace(QLatin1String("%executablepath"),
+                                     QString(QLatin1String("")));
+            }
+        }
     }
 
     return finalString;
