@@ -136,14 +136,16 @@ bool MapDocument::saveSelectedObjectAsATemplate()
 
     TemplateFormat *templateFormat = new TtxTemplateFormat();
 
-    TemplateGroup *templateGroup =  templateFormat->read(tr("object.ttx"));
-    qDebug() << templateGroup->objects().first()->size();
 //   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
-//   if (!templateFormat->write(mSelectedObjects, QString(tr("object.ttx")))) {
-       // if (error)
-       // *error = mapFormat->errorString();
+//        if (error)
+//        *error = mapFormat->errorString();
 //       return false;
-//   }
+//    }
+
+    templateFormat->write(mSelectedObjects, QString(tr("object.ttx")));
+
+    // Temporarily read the saved template group for testing
+    TemplateGroup *templateGroup =  templateFormat->read(tr("object.ttx"));
 
    return true;
 }
