@@ -34,7 +34,20 @@ QString Command::finalWorkingDirectory() const
 {
     QString finalWorkingDirectory = workingDirectory;
 
-    return replaceVariables(finalWorkingDirectory, true);
+    finalWorkingDirectory = replaceVariables(finalWorkingDirectory, false);
+
+    QString finalExecutable = replaceVariables(executable);
+    QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
+
+    if (mFile.exists() && mFile.isFile()) {
+        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                            QString(QLatin1String("%1")).arg(mFile.absolutePath()));
+    } else {
+        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                            QString(QLatin1String("")));
+    }
+
+    return finalWorkingDirectory;
 }
 
 QString Command::finalCommand() const
@@ -44,7 +57,7 @@ QString Command::finalCommand() const
     return replaceVariables(finalCommand);
 }
 
-QString Command::replaceVariables(const QString &string, bool flag) const
+QString Command::replaceVariables(const QString &string, bool quotePaths) const
 {
     QString finalString = string;
 
@@ -77,20 +90,8 @@ QString Command::replaceVariables(const QString &string, bool flag) const
         }
     }
 
-    if (flag) {
-        QString finalExecutable = replaceVariables(executable);
-        QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
-
-        if (mFile.exists() && mFile.isFile()) {
-            finalString.replace(QLatin1String("%executablepath"),
-                                QString(QLatin1String("%1")).arg(mFile.absolutePath()));
-        } else {
-            finalString.replace(QLatin1String("%executablepath"),
-                                QString(QLatin1String("")));
-        }
-
+    if (!quotePaths)
         finalString.replace(QLatin1String("\""), QString(QLatin1String("")));
-    }
 
     return finalString;
 }

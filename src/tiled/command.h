@@ -64,7 +64,7 @@ struct Command
 
     QString finalWorkingDirectory() const;
 
-    QString replaceVariables(const QString &string, bool flag = false) const;
+    QString replaceVariables(const QString &string, bool quotePaths = true) const;
 
     /**
      * Executes the command in the operating system shell or terminal
