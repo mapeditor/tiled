@@ -116,6 +116,7 @@ private:
     MapObject *readTemplate();
     QPolygonF readPolygon();
     TextData readObjectText();
+    void readObjectData(MapObject *object);
 
     GroupLayer *readGroupLayer();
 
@@ -871,14 +872,46 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
     xml.skipCurrentElement();
 }
 
+inline void MapReaderPrivate::readObjectData(MapObject *object)
+{
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("properties")) {
+            object->mergeProperties(readProperties());
+        } else if (xml.name() == QLatin1String("polygon")) {
+            object->setPolygon(readPolygon());
+            object->setShape(MapObject::Polygon);
+        } else if (xml.name() == QLatin1String("polyline")) {
+            object->setPolygon(readPolygon());
+            object->setShape(MapObject::Polyline);
+        } else if (xml.name() == QLatin1String("ellipse")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Ellipse);
+        } else if (xml.name() == QLatin1String("text")) {
+            object->setTextData(readObjectText());
+            object->setShape(MapObject::Text);
+        } else {
+            readUnknownElement();
+        }
+    }
+}
+
 MapObject *MapReaderPrivate::readTemplate()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
     const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-    qDebug() << gid;
-    while (xml.readNextStartElement()) {}
-    return new MapObject(tr("name"), tr("type"), {0,0}, {0,0});
+    const qreal width = atts.value(QLatin1String("width")).toDouble();
+    const qreal height = atts.value(QLatin1String("height")).toDouble();
+    const QString type = atts.value(QLatin1String("type")).toString();
+
+    const QSizeF size(width, height);
+
+    MapObject *object = new MapObject(name, type, {0, 0}, size);
+
+    readObjectData(object);
+
+    return object;
 }
 
 MapObject *MapReaderPrivate::readObject()
@@ -914,25 +947,7 @@ MapObject *MapReaderPrivate::readObject()
     if (ok)
         object->setVisible(visible);
 
-    while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("properties")) {
-            object->mergeProperties(readProperties());
-        } else if (xml.name() == QLatin1String("polygon")) {
-            object->setPolygon(readPolygon());
-            object->setShape(MapObject::Polygon);
-        } else if (xml.name() == QLatin1String("polyline")) {
-            object->setPolygon(readPolygon());
-            object->setShape(MapObject::Polyline);
-        } else if (xml.name() == QLatin1String("ellipse")) {
-            xml.skipCurrentElement();
-            object->setShape(MapObject::Ellipse);
-        } else if (xml.name() == QLatin1String("text")) {
-            object->setTextData(readObjectText());
-            object->setShape(MapObject::Text);
-        } else {
-            readUnknownElement();
-        }
-    }
+    readObjectData(object);
 
     return object;
 }

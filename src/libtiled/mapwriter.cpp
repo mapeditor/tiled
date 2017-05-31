@@ -689,7 +689,10 @@ void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
 {
     w.writeStartElement(QLatin1String("template"));
 
+    const QString &name = mapObject.name();
     const QString &type = mapObject.type();
+    if (!name.isEmpty())
+        w.writeAttribute(QLatin1String("name"), name);
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
@@ -709,6 +712,7 @@ void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
     if (rotation != 0.0)
         w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
+    writeProperties(w, mapObject.properties());
 
     switch (mapObject.shape()) {
     case MapObject::Rectangle:
@@ -740,8 +744,6 @@ void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
         break;
     }
     }
-
-    writeProperties(w, mapObject.properties());
 
     w.writeEndElement();
 }
