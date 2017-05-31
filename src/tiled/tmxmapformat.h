@@ -45,7 +45,6 @@ public:
     Map *read(const QString &fileName) override;
 
     bool write(const Map *map, const QString &fileName) override;
-    bool writeObject(const QList<MapObject *> &mapObjects, const QString &fileName);
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is

@@ -75,7 +75,7 @@ public:
                       const QString &path);
 
     void writeTemplateGroup(const QList<MapObject *> &mapObjects, QIODevice *device,
-                        const QString &path);
+                            const QString &path);
 
     bool openFile(SaveFile *file);
 
@@ -181,7 +181,7 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
 }
 
 void MapWriterPrivate::writeTemplateGroup(const QList<MapObject *> &mapObjects, QIODevice *device,
-                                      const QString &path)
+                                          const QString &path)
 {
     mMapDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
@@ -655,7 +655,6 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
-// TODO: Extract functions from writeObject to decrease code duplication
 void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
                                      const MapObject &mapObject)
 {
@@ -914,7 +913,7 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
 }
 
 void MapWriter::writeTemplateGroup(const QList<MapObject *> &mapObjects, QIODevice *device,
-                               const QString &path)
+                                   const QString &path)
 {
     d->writeTemplateGroup(mapObjects, device, path);
 }

@@ -126,28 +126,22 @@ MapDocument::~MapDocument()
 }
 
 /**
- * Saves the selected object as a template
+ * Currently, this is the entry point for testing templates,
+ * it saves the selected objects to a file then reads them.
  */
 #include <QDebug>
-bool MapDocument::saveSelectedObjectAsATemplate()
+bool MapDocument::saveSelectedObjectsAsATemplateGroup()
 {
-//    if (mSelectedObjects.size()!=1)
-//        return false;
-
     TemplateFormat *templateFormat = new TtxTemplateFormat();
 
-//   if (!templateFormat->write(mSelectedObjects.first(), QString(tr("object.ttx")))) {
-//        if (error)
-//        *error = mapFormat->errorString();
-//       return false;
-//    }
+    templateFormat->write(mSelectedObjects, QString(QLatin1String("templateGroup.ttx")));
 
-    templateFormat->write(mSelectedObjects, QString(tr("object.ttx")));
+    TemplateGroup *templateGroup =  templateFormat->read(QLatin1String("templateGroup.ttx"));
 
-    // Temporarily read the saved template group for testing
-    TemplateGroup *templateGroup =  templateFormat->read(tr("object.ttx"));
+    for (auto o : templateGroup->objects())
+        qDebug() << o->size();
 
-   return true;
+    return true;
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)

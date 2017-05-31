@@ -190,9 +190,9 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
-void AbstractObjectTool::saveTemplate()
+void AbstractObjectTool::saveSelectedObjectsAsATemplateGroup()
 {
-    mapDocument()->saveSelectedObjectAsATemplate();
+    mapDocument()->saveSelectedObjectsAsATemplateGroup();
 }
 
 void AbstractObjectTool::flipHorizontally()
@@ -264,8 +264,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                                     isResizedTileObject));
     }
 
-    auto saveAsTemplateAction = menu.addAction(tr("Save As A Template"), this, SLOT(saveTemplate()));
-//    saveAsTemplateAction->setEnabled(selectedObjects.size() == 1);
+    menu.addAction(tr("Save As A Template Group"), this, SLOT(saveSelectedObjectsAsATemplateGroup()));
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

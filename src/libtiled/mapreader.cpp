@@ -28,7 +28,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <QDebug>
 #include "mapreader.h"
 
 #include "compression.h"
@@ -179,7 +178,7 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup(QIODevice *device, const QStr
 {
     mError.clear();
     mPath = path;
-    TemplateGroup * templateGroup;
+    TemplateGroup *templateGroup = new TemplateGroup();
 
     xml.setDevice(device);
 
@@ -326,8 +325,9 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("template"))
             templateGroup->addObject(readTemplate());
-//        else if (xml.name() == QLatin1String("tileset"))
-//            objectGroup->mergeProperties(readProperties());
+        // TODO: Handle reading tilesets
+        // else if (xml.name() == QLatin1String("tileset"))
+        //     objectGroup->mergeProperties(readProperties());
         else
             readUnknownElement();
     }
@@ -900,7 +900,7 @@ MapObject *MapReaderPrivate::readTemplate()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
+//    const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
     const qreal width = atts.value(QLatin1String("width")).toDouble();
     const qreal height = atts.value(QLatin1String("height")).toDouble();
     const QString type = atts.value(QLatin1String("type")).toString();
@@ -1199,8 +1199,6 @@ QString MapReader::errorString() const
 TemplateGroup *MapReader::readTemplateGroup(QIODevice *device, const QString &path)
 {
     TemplateGroup *templateGroup = d->readTemplateGroup(device, path);
-//    if (templateGroup && !templateGroup->isCollection())
-//        templateGroup->loadImage();
 
     return templateGroup;
 }
@@ -1213,8 +1211,6 @@ TemplateGroup *MapReader::readTemplateGroup(const QString &fileName)
     }
 
     TemplateGroup *templateGroup = readTemplateGroup(&file, QFileInfo(fileName).absolutePath());
-//    if (templateGroup)
-//        templateGroup->setFileName(fileName);
 
     return templateGroup;
 }
