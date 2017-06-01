@@ -41,7 +41,7 @@ QString Command::finalWorkingDirectory() const
 
     if (mFile.exists() && mFile.isFile()) {
         finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                            QString(QLatin1String("%1")).arg(mFile.absolutePath()));
+                            mFile.absolutePath());
     } else {
         finalWorkingDirectory.replace(QLatin1String("%executablepath"),
                             QString(QLatin1String("")));
@@ -57,41 +57,41 @@ QString Command::finalCommand() const
     return replaceVariables(finalCommand);
 }
 
-QString Command::replaceVariables(const QString &string, bool quotePaths) const
+QString Command::replaceVariables(const QString &string, bool quoteValues) const
 {
     QString finalString = string;
+
+    QString replaceString = (quoteValues) ? QString(QLatin1String("\"%1\"")) :
+                                            QString(QLatin1String("%1"));
 
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
         const QString fileName = document->fileName();
 
         finalString.replace(QLatin1String("%mapfile"),
-                            QString(QLatin1String("\"%1\"")).arg(fileName));
+                            replaceString.arg(fileName));
 
         QFileInfo fileInfo(fileName);
         QString mapPath = fileInfo.absolutePath();
 
         finalString.replace(
             QLatin1String("%mappath"),
-            QString(QLatin1String("\"%1\"")).arg(mapPath));
+            replaceString.arg(mapPath));
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
             if (const Layer *layer = mapDocument->currentLayer()) {
                 finalString.replace(QLatin1String("%layername"),
-                                    QString(QLatin1String("\"%1\"")).arg(layer->name()));
+                                    replaceString.arg(layer->name()));
             }
         }
 
         if (MapObject *currentObject = dynamic_cast<MapObject *>(document->currentObject())) {
             finalString.replace(QLatin1String("%objecttype"),
-                                QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
+                                replaceString.arg(currentObject->type()));
             finalString.replace(QLatin1String("%objectid"),
-                                QString(QLatin1String("\"%1\"")).arg(currentObject->id()));
+                                replaceString.arg(currentObject->id()));
         }
     }
-
-    if (!quotePaths)
-        finalString.replace(QLatin1String("\""), QString(QLatin1String("")));
 
     return finalString;
 }
@@ -113,7 +113,7 @@ QVariant Command::toQVariant() const
     QHash<QString, QVariant> hash;
     hash[QLatin1String("Enabled")] = isEnabled;
     hash[QLatin1String("Name")] = name;
-    hash[QLatin1String("Executable")] = executable;
+    hash[QLatin1String("Command")] = executable;
     hash[QLatin1String("Arguments")] = arguments;
     hash[QLatin1String("WorkingDirectory")] = workingDirectory;
     hash[QLatin1String("Shortcut")] = shortcut;
@@ -126,7 +126,7 @@ Command Command::fromQVariant(const QVariant &variant)
     const QHash<QString, QVariant> hash = variant.toHash();
 
     const QString namePref = QLatin1String("Name");
-    const QString executablePref = QLatin1String("Executable");
+    const QString executablePref = QLatin1String("Command");
     const QString argumentsPref = QLatin1String("Arguments");
     const QString workingDirectoryPref = QLatin1String("WorkingDirectory");
     const QString enablePref = QLatin1String("Enabled");
@@ -215,9 +215,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
 
-    if (!mFinalWorkingDirectory.trimmed().isEmpty()) {
+    if (!mFinalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(mFinalWorkingDirectory);
-    }
 
     start(mFinalCommand);
 }
