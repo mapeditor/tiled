@@ -96,6 +96,8 @@ public:
 
     void showMessage(const QString &text, int timeout = 0);
 
+    void updateSpecificTools(AbstractTool *tool);
+
 public slots:
     void setSelectedTool(AbstractTool *tool);
 
@@ -141,8 +143,6 @@ private:
     QHash<MapDocument*, MapView*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
-    QToolButton *mRandomButton;
-
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
     UndoDock *mUndoDock;
@@ -166,6 +166,7 @@ private:
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
+    QToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
