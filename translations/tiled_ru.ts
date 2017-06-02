@@ -65,7 +65,7 @@
     <message>
         <location line="+7"/>
         <source>No exporter found for target file.</source>
-        <translation>Не найдер конвертер для целевого файла.</translation>
+        <translation>Не найден конвертер для целевого файла.</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -217,7 +217,7 @@
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation>Tiled map файлы (*.tmx)</translation>
+        <translation>Tiled map-файлы (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -256,7 +256,7 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation>Это неверный Droidcraft map файл!</translation>
+        <translation>Это неверный Droidcraft map-файл!</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -276,7 +276,7 @@
     <message>
         <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation>Droidcraft map файлы (*.dat)</translation>
+        <translation>Droidcraft map-файлы (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -347,7 +347,7 @@
     <message>
         <location line="+28"/>
         <source>Error mapping tile id %1.</source>
-        <translation>Ошибка при создании карты для тайла с id %1.</translation>
+        <translation>Ошибка при создании карты для тайла с ID %1.</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -357,7 +357,7 @@
     <message>
         <location line="+16"/>
         <source>Flare map files (*.txt)</source>
-        <translation>Flare map файлы (*.txt)</translation>
+        <translation>Flare map-файлы (*.txt)</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -405,12 +405,12 @@
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation>Json файлы (*.json)</translation>
+        <translation>Json map-файлы (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation>JavaScript файлы (*.js)</translation>
+        <translation>JavaScript map-файлы (*.js)</translation>
     </message>
 </context>
 <context>
@@ -702,7 +702,7 @@
     <message>
         <location line="+71"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Прилипание&apos; объектов</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -732,7 +732,7 @@
     <message>
         <location line="+13"/>
         <source>&amp;Snap to Grid</source>
-        <translation>&amp;Пристыковывать к сетке</translation>
+        <translation>&amp;Прилипать к сетке</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -792,17 +792,17 @@
     <message>
         <location line="+70"/>
         <source>Snap to &amp;Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилипать к пикселам</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tileset &amp;Properties...</source>
-        <translation>&amp;Свойства тайлсета...</translation>
+        <translation>&amp;Свойства набора тайлов...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>No Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Деактивировать</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -930,7 +930,7 @@ Line %1, column %2</source>
         <location line="+211"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Метод компрессии &apos;%1&apos; не поддерживается</translation>
+        <translation>Метод сжатия &apos;%1&apos; не поддерживается</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -961,7 +961,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-178"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation>Неверный (негативный) id тайла: %1</translation>
+        <translation>Неверный (отрицательный) id тайла: %1</translation>
     </message>
 </context>
 <context>
@@ -1396,7 +1396,7 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation type="unfinished">В случае если сохранение ваших файлов не проходит - отключите.</translation>
+        <translation>В случае если сохранение ваших файлов не проходит - отключите.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1978,7 +1978,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Не удается открыть Replica Insland файл!</translation>
+        <translation>Не удается открыть Replica Insland map-файл!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2008,7 +2008,7 @@ Line %1, column %2</source>
     <message>
         <location line="+64"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation>Replica Island файлы (*.bin)</translation>
+        <translation>Replica Island map-файлы (*.bin)</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -2102,7 +2102,7 @@ Line %1, column %2</source>
     <message>
         <location line="+244"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation>T-Engine4 map файлы (*.lua)</translation>
+        <translation>T-Engine4 map-файлы (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -2241,12 +2241,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+124"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Параметр &apos;%2&apos; = &apos;%3&apos; не выполняет ничего важного. Параметр игнорируется.</translation>
+        <translation>&apos;%1&apos;: Параметр &apos;%2&apos; = &apos;%3&apos; не имеет смысла. Данный параметр игнорируется.</translation>
     </message>
     <message>
         <location line="+59"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Вы забыли подчеркивание в слое &apos;%1&apos;?</translation>
+        <translation>Возможно вы забыли подчеркивание в слое &apos;%1&apos;?</translation>
     </message>
     <message>
         <location line="+67"/>
@@ -2380,7 +2380,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Open Tileset...</source>
-        <translation>Открыть тайлсет...</translation>
+        <translation>Открыть набор тайлов...</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -3424,7 +3424,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+3"/>
         <source>&amp;Group Layer</source>
-        <translation>&amp;Сгруппировать слой</translation>
+        <translation>&amp;Группа слоев</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3476,7 +3476,7 @@ Please select specific format.</source>
     <message>
         <location line="+18"/>
         <source>&amp;Group</source>
-        <translation>&amp;Группа</translation>
+        <translation>&amp;Группировка</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3766,7 +3766,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>New Tileset...</source>
-        <translation>Новый тайлсет...</translation>
+        <translation>Новый набор тайлов...</translation>
     </message>
 </context>
 <context>
@@ -4020,19 +4020,19 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Вставить свойство</numerusform>
+            <numerusform>Вставить свойство</numerusform>
+            <numerusform>Вставить свойства</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation">
+            <numerusform>Удалить свойство</numerusform>
+            <numerusform>Удалить свойство</numerusform>
+            <numerusform>Удалить свойства</numerusform>
         </translation>
     </message>
     <message>
@@ -4053,7 +4053,7 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Convert To</source>
-        <translation>Конвертировать в</translation>
+        <translation>Преобразовать в</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4068,10 +4068,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+69"/>
         <source>Convert Property/Properties</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Преобразовать свойство</numerusform>
+            <numerusform>Преобразовать свойство</numerusform>
+            <numerusform>Преобразовать свойства</numerusform>
         </translation>
     </message>
     <message>
@@ -4619,7 +4619,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Embed Tileset</source>
-        <translation>&amp;Встроенный тайлсет</translation>
+        <translation>&amp;Встроенный набор тайлов</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5100,10 +5100,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+48"/>
         <source>Change %n Object/s Tile</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Изменить %n тайл объекта</numerusform>
+            <numerusform>Изменить %n тайла объектов</numerusform>
+            <numerusform>Изменить %n тайлов объектов</numerusform>
         </translation>
     </message>
     <message>
@@ -5256,7 +5256,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="-145"/>
         <source>Reload Tileset</source>
-        <translation>Перезагрузить тайлсет</translation>
+        <translation>Перезагрузить набор тайлов</translation>
     </message>
 </context>
 <context>
