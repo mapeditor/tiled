@@ -4029,7 +4029,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
-        <translation">
+        <translation>
             <numerusform>Удалить свойство</numerusform>
             <numerusform>Удалить свойство</numerusform>
             <numerusform>Удалить свойства</numerusform>
