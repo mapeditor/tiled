@@ -73,20 +73,20 @@ void ToolSpecificToolBar::setSelectedTool(AbstractTool *tool)
     clear();
 
     if (!tool)
-    return;
+        return;
 
     StampBrush *stampBrush = qobject_cast<StampBrush*>(tool);
     if (stampBrush) {
-    addRandomTool(stampBrush->random());
-    addFlippingTools();
-    addRotatingTools();
+        addRandomTool(stampBrush->random());
+        addFlippingTools();
+        addRotatingTools();
     }
 
     BucketFillTool *bucketFillTool = qobject_cast<BucketFillTool*>(tool);
     if (bucketFillTool) {
-    addRandomTool(bucketFillTool->random());
-    addFlippingTools();
-    addRotatingTools();
+        addRandomTool(bucketFillTool->random());
+        addFlippingTools();
+        addRotatingTools();
     }
 }
 
