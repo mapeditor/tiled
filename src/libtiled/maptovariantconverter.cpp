@@ -45,7 +45,7 @@ static QString colorToString(const QColor &color)
 
 QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 {
-    mMapDir = mapDir;
+    mMapDir = mapDir.canonicalPath();
     mGidMapper.clear();
 
     QVariantMap mapVariant;
@@ -94,7 +94,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
                                           const QDir &directory)
 {
-    mMapDir = directory;
+    mMapDir = directory.canonicalPath();
     return toVariant(tileset, 0);
 }
 
