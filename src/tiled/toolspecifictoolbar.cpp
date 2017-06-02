@@ -45,10 +45,10 @@ ToolSpecificToolBar::ToolSpecificToolBar(QWidget *parent, MapEditor *mapEditor)
     setToolButtonStyle(Qt::ToolButtonFollowStyle);
 
     mDiceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-	mFlipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-	mFlipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-	mRotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-	mRotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+    mFlipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
+    mFlipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
+    mRotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
+    mRotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
 
     retranslateUi();
 }
@@ -67,27 +67,27 @@ void ToolSpecificToolBar::changeEvent(QEvent *event)
 
 void ToolSpecificToolBar::setSelectedTool(AbstractTool *tool)
 {
-	qDeleteAll(mButtons);
-	mButtons.clear();
+    qDeleteAll(mButtons);
+    mButtons.clear();
 
-	clear();
+    clear();
 
-	if (!tool)
-		return;
+    if (!tool)
+    return;
 
-	StampBrush *stampBrush = qobject_cast<StampBrush*>(tool);
-	if (stampBrush) {
-		addRandomTool(stampBrush->random());
-		addFlippingTools();
-		addRotatingTools();
-	}
+    StampBrush *stampBrush = qobject_cast<StampBrush*>(tool);
+    if (stampBrush) {
+    addRandomTool(stampBrush->random());
+    addFlippingTools();
+    addRotatingTools();
+    }
 
-	BucketFillTool *bucketFillTool = qobject_cast<BucketFillTool*>(tool);
-	if (bucketFillTool) {
-		addRandomTool(bucketFillTool->random());
-		addFlippingTools();
-		addRotatingTools();
-	}
+    BucketFillTool *bucketFillTool = qobject_cast<BucketFillTool*>(tool);
+    if (bucketFillTool) {
+    addRandomTool(bucketFillTool->random());
+    addFlippingTools();
+    addRotatingTools();
+    }
 }
 
 void ToolSpecificToolBar::onOrientationChanged(Qt::Orientation orientation)
@@ -98,7 +98,7 @@ void ToolSpecificToolBar::onOrientationChanged(Qt::Orientation orientation)
 
 void ToolSpecificToolBar::addRandomTool(bool checked)
 {
-	QToolButton *mRandomButton = new QToolButton(this);
+    QToolButton *mRandomButton = new QToolButton(this);
     mRandomButton->setIcon(mDiceIcon);
     mRandomButton->setCheckable(true);
     mRandomButton->setToolTip(tr("Random Mode"));
@@ -113,7 +113,7 @@ void ToolSpecificToolBar::addRandomTool(bool checked)
 
 void ToolSpecificToolBar::addFlippingTools()
 {
-	QToolButton *mFlipHorizontalButton = new QToolButton(this);
+    QToolButton *mFlipHorizontalButton = new QToolButton(this);
     mFlipHorizontalButton->setIcon(mFlipHorizontalIcon);
     mFlipHorizontalButton->setToolTip(tr("Flip Horizontally"));
     mFlipHorizontalButton->setShortcut(QKeySequence(tr("X")));
@@ -123,18 +123,18 @@ void ToolSpecificToolBar::addFlippingTools()
     mFlipHorizontalButton->setToolTip(tr("Flip Vertically"));
     mFlipVerticalButton->setShortcut(QKeySequence(tr("Y")));
 
-	addWidget(mFlipHorizontalButton);
+    addWidget(mFlipHorizontalButton);
     addWidget(mFlipVerticalButton);
     mButtons.append(mFlipHorizontalButton);
     mButtons.append(mFlipVerticalButton);
 
-	connect(mFlipHorizontalButton, &QToolButton::clicked, mMapEditor, &MapEditor::flipHorizontally);
+    connect(mFlipHorizontalButton, &QToolButton::clicked, mMapEditor, &MapEditor::flipHorizontally);
     connect(mFlipVerticalButton, &QToolButton::clicked, mMapEditor, &MapEditor::flipVertically);
 }
 
 void ToolSpecificToolBar::addRotatingTools()
 {
-	QToolButton *mRotateLeft = new QToolButton(this);
+    QToolButton *mRotateLeft = new QToolButton(this);
     mRotateLeft->setIcon(mRotateLeftIcon);
     mRotateLeft->setToolTip(tr("Rotate Left"));
     mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));

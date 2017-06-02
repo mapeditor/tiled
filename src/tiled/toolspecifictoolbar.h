@@ -40,17 +40,17 @@ protected:
     void changeEvent(QEvent *event) override;
 
 public slots:
-	void setSelectedTool(AbstractTool *tool);
+    void setSelectedTool(AbstractTool *tool);
 
 private slots:
     void onOrientationChanged(Qt::Orientation orientation);
 
 private:
-	void addRandomTool(bool checked = false);
+    void addRandomTool(bool checked = false);
 
-	void addFlippingTools();
+    void addFlippingTools();
 
-	void addRotatingTools();
+    void addRotatingTools();
 
     void retranslateUi();
 
@@ -58,11 +58,11 @@ private:
 
     QIcon mDiceIcon;
     QIcon mFlipHorizontalIcon;
-	QIcon mFlipVerticalIcon;
-	QIcon mRotateLeftIcon;
-	QIcon mRotateRightIcon;
+    QIcon mFlipVerticalIcon;
+    QIcon mRotateLeftIcon;
+    QIcon mRotateRightIcon;
 
-	QList<QToolButton*> mButtons;
+    QList<QToolButton*> mButtons;
 };
 
 } // namespace Internal
