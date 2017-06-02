@@ -66,6 +66,7 @@
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "toolmanager.h"
+#include "toolspecifictoolbar.h"
 #include "treeviewcombobox.h"
 #include "undodock.h"
 #include "zoomable.h"
@@ -140,6 +141,7 @@ MapEditor::MapEditor(QObject *parent)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mMainToolBar(new MainToolBar(mMainWindow))
+    , mToolSpecificToolBar(new ToolSpecificToolBar(mMainWindow, this))
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
@@ -182,9 +184,6 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
-
-    mToolSpecificToolBar = new QToolBar(mMainWindow);
-    mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
 
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addToolBar(mToolsToolBar);
@@ -245,6 +244,10 @@ MapEditor::MapEditor(QObject *parent)
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
+
+    mToolSpecificToolBar->setSelectedTool(mSelectedTool);
+    connect(mToolManager, &ToolManager::selectedToolChanged,
+            mToolSpecificToolBar, &ToolSpecificToolBar::setSelectedTool);
 
     setupQuickStamps();
     retranslateUi();
@@ -492,67 +495,6 @@ void MapEditor::showMessage(const QString &text, int timeout)
     mMainWindow->statusBar()->showMessage(text, timeout);
 }
 
-void MapEditor::updateSpecificTools(AbstractTool *tool)
-{
-    mToolSpecificToolBar->clear();
-
-    if (!tool)
-        return;
-
-    if (tool == mStampBrush || tool == mBucketFillTool) {
-        QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
-        diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-
-        QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
-        flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-
-        QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
-        flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-
-        QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
-        rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-
-        QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
-        rotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
-
-        QToolButton *mRandomButton = new QToolButton(mToolSpecificToolBar);
-        mRandomButton->setIcon(diceIcon);
-        mRandomButton->setCheckable(true);
-        mRandomButton->setToolTip(tr("Random Mode"));
-        mRandomButton->setShortcut(QKeySequence(tr("D")));
-        mRandomButton->setChecked(mStampBrush->random());
-
-        QToolButton *mFlipHorizontalButton = new QToolButton(mToolSpecificToolBar);
-        mFlipHorizontalButton->setIcon(flipHorizontalIcon);
-        mFlipHorizontalButton->setShortcut(QKeySequence(tr("X")));
-
-        QToolButton *mFlipVerticalButton = new QToolButton(mToolSpecificToolBar);
-        mFlipVerticalButton->setIcon(flipVerticalIcon);
-        mFlipVerticalButton->setShortcut(QKeySequence(tr("Y")));
-
-        QToolButton *mRotateLeft = new QToolButton(mToolSpecificToolBar);
-        mRotateLeft->setIcon(rotateLeftIcon);
-        mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
-
-        QToolButton *mRotateRight = new QToolButton(mToolSpecificToolBar);
-        mRotateRight->setIcon(rotateRightIcon);
-        mRotateRight->setShortcut(QKeySequence(tr("Z")));
-
-        mToolSpecificToolBar->addWidget(mRandomButton);
-        mToolSpecificToolBar->addWidget(mFlipHorizontalButton);
-        mToolSpecificToolBar->addWidget(mFlipVerticalButton);
-        mToolSpecificToolBar->addWidget(mRotateLeft);
-        mToolSpecificToolBar->addWidget(mRotateRight);
-
-        connect(mRandomButton, &QToolButton::toggled, mStampBrush, &StampBrush::setRandom);
-        connect(mRandomButton, &QToolButton::toggled, mBucketFillTool, &BucketFillTool::setRandom);
-        connect(mFlipHorizontalButton, &QToolButton::clicked, this, &MapEditor::flipHorizontally);
-        connect(mFlipVerticalButton, &QToolButton::clicked, this, &MapEditor::flipVertically);
-        connect(mRotateLeft, &QToolButton::clicked, this, &MapEditor::rotateRight);
-        connect(mRotateRight, &QToolButton::clicked, this, &MapEditor::rotateLeft);
-    }
-}
-
 void MapEditor::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
@@ -584,8 +526,6 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
     }
-
-    updateSpecificTools(tool);
 }
 
 void MapEditor::paste(ClipboardManager::PasteFlags flags)
@@ -667,6 +607,12 @@ void MapEditor::rotate(RotateDirection direction)
     } else if (mCurrentMapDocument) {
         mCurrentMapDocument->rotateSelectedObjects(direction);
     }
+}
+
+void MapEditor::random(bool value)
+{
+    mStampBrush->setRandom(value);
+    mBucketFillTool->setRandom(value);
 }
 
 /**

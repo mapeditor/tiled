@@ -60,6 +60,7 @@ class TilesetDock;
 class TileStamp;
 class TileStampManager;
 class ToolManager;
+class ToolSpecificToolBar;
 class TreeViewComboBox;
 class UncheckableItemsModel;
 class UndoDock;
@@ -96,8 +97,6 @@ public:
 
     void showMessage(const QString &text, int timeout = 0);
 
-    void updateSpecificTools(AbstractTool *tool);
-
 public slots:
     void setSelectedTool(AbstractTool *tool);
 
@@ -110,6 +109,7 @@ public slots:
 
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
+    void random(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
@@ -166,7 +166,7 @@ private:
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
-    QToolBar *mToolSpecificToolBar;
+    ToolSpecificToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;
