@@ -5,7 +5,7 @@
 
 namespace Tiled {
 
-class TemplateFormat;
+class TemplateGroupFormat;
 
 namespace Internal {
 
@@ -22,7 +22,7 @@ public:
     bool save(const QString &fileName, QString *error = nullptr) override;
 
     static TemplateGroupDocument *load(const QString &fileName,
-                                       TemplateFormat *format,
+                                       TemplateGroupFormat *format,
                                        QString *error = nullptr);
 
     FileFormat *writerFormat() const override;

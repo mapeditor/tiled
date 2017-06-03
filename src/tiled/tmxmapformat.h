@@ -22,7 +22,7 @@
 
 #include "mapformat.h"
 #include "tilesetformat.h"
-#include "templateformat.h"
+#include "templategroupformat.h"
 
 namespace Tiled {
 
@@ -106,10 +106,10 @@ private:
 /**
  * A reader and writer for Tiled's .ttx template format.
  */
-class TtxTemplateFormat : public TemplateFormat
+class TtxTemplateFormat : public TemplateGroupFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::TemplateFormat)
+    Q_INTERFACES(Tiled::TemplateGroupFormat)
 
 public:
     TtxTemplateFormat(QObject *parent = nullptr);

@@ -43,7 +43,7 @@ class Map;
 class MapObject;
 class MapRenderer;
 class MapFormat;
-class TemplateFormat;
+class TemplateGroupFormat;
 class Terrain;
 class Tile;
 

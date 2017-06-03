@@ -168,7 +168,7 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
 }
 
 TtxTemplateFormat::TtxTemplateFormat(QObject *parent)
-    : TemplateFormat(parent)
+    : TemplateGroupFormat(parent)
 {
 }
 

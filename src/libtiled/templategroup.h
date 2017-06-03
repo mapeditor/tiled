@@ -7,7 +7,7 @@
 namespace Tiled {
 
 class MapObject;
-class TemplateFormat;
+class TemplateGroupFormat;
 
 class TILEDSHARED_EXPORT TemplateGroup
 {
@@ -17,12 +17,12 @@ public:
     void addObject(MapObject *object);
     const QList<MapObject*> &objects() const { return mObjects; }
 
-    void setFormat(TemplateFormat *format);
-    TemplateFormat *format() const;
+    void setFormat(TemplateGroupFormat *format);
+    TemplateGroupFormat *format() const;
 
 private:
     QList<MapObject*> mObjects;
-    QPointer<TemplateFormat> mFormat;
+    QPointer<TemplateGroupFormat> mFormat;
 };
 
 } // namespace Tiled

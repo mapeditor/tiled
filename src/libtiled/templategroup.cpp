@@ -1,6 +1,6 @@
 #include "templategroup.h"
 
-#include "templateformat.h"
+#include "templategroupformat.h"
 
 using namespace Tiled;
 
@@ -18,12 +18,12 @@ void TemplateGroup::addObject(MapObject *object)
     mObjects.append(object);
 }
 
-void TemplateGroup::setFormat(TemplateFormat *format)
+void TemplateGroup::setFormat(TemplateGroupFormat *format)
 {
     mFormat = format;
 }
 
-TemplateFormat *TemplateGroup::format() const
+TemplateGroupFormat *TemplateGroup::format() const
 {
     return mFormat;
 }

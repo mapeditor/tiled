@@ -132,7 +132,7 @@ MapDocument::~MapDocument()
 #include <QDebug>
 bool MapDocument::saveSelectedObjectsAsATemplateGroup()
 {
-    TemplateFormat *templateFormat = new TtxTemplateFormat();
+    TemplateGroupFormat *templateFormat = new TtxTemplateFormat();
 
     templateFormat->write(mSelectedObjects, QString(QLatin1String("templateGroup.ttx")));
 

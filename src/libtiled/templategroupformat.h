@@ -5,12 +5,12 @@
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT TemplateFormat : public FileFormat
+class TILEDSHARED_EXPORT TemplateGroupFormat : public FileFormat
 {
     Q_OBJECT
 
 public:
-    explicit TemplateFormat(QObject *parent = nullptr)
+    explicit TemplateGroupFormat(QObject *parent = nullptr)
         : FileFormat(parent)
     {}
 
@@ -20,4 +20,4 @@ public:
 
 } // namespace Tiled
 
-Q_DECLARE_INTERFACE(Tiled::TemplateFormat, "org.mapeditor.TemplateFormat")
+Q_DECLARE_INTERFACE(Tiled::TemplateGroupFormat, "org.mapeditor.TemplateGroupFormat")

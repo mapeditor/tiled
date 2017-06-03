@@ -1,6 +1,6 @@
 #include "templategroupdocument.h"
 
-#include "templateformat.h"
+#include "templategroupformat.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -20,7 +20,7 @@ bool TemplateGroupDocument::save(const QString &fileName, QString *error)
 }
 
 TemplateGroupDocument *TemplateGroupDocument::load(const QString &fileName,
-                                                   TemplateFormat *format,
+                                                   TemplateGroupFormat *format,
                                                    QString *error)
 {
 }
