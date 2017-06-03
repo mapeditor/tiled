@@ -188,9 +188,16 @@ bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QStrin
     return result;
 }
 
-TemplateGroup *TtxTemplateFormat::read(const QString &fileName) {
+TemplateGroup *TtxTemplateFormat::read(const QString &fileName)
+{
+    mError.clear();
+
     MapReader reader;
-    return reader.readTemplateGroup(fileName);
+    TemplateGroup *templateGroup =  reader.readTemplateGroup(fileName);
+    if (!templateGroup)
+        mError = reader.errorString();
+
+    return templateGroup;
 }
 
 bool TtxTemplateFormat::supportsFile(const QString &fileName) const
