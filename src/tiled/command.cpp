@@ -39,20 +39,14 @@ QString Command::finalWorkingDirectory() const
     QString finalExecutable = replaceVariables(executable);
     QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
 
-    if (mFile.exists() && mFile.isFile()) {
-        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                            mFile.absolutePath());
-    } else {
-        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                            QString(QLatin1String("")));
-    }
+    finalWorkingDirectory.replace(QLatin1String("%executablepath"), mFile.absolutePath());
 
     return finalWorkingDirectory;
 }
 
 QString Command::finalCommand() const
 {
-    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable).arg(arguments);
+    QString finalCommand = QString(QLatin1String("%1 %2")).arg(executable, arguments);
 
     return replaceVariables(finalCommand);
 }
