@@ -962,6 +962,44 @@ void ObjectSelectionTool::updateHandleVisibility()
     for (ResizeHandle *handle : mResizeHandles)
         handle->setVisible(showHandles && mMode == Resize);
 
+    if (hasSelection) {
+        int selectedObjectsCount = mapDocument()->selectedObjects().count();
+        MapObject *firstSelectedObj =mapDocument()->selectedObjects().at(0);
+        qreal totalHeight = 0.0, totalWidth = 0.0;
+        foreach (MapObject *mapObj, mapDocument()->selectedObjects()) {
+            if (!mapObj->polygon().isEmpty()) {
+                totalHeight += mapObj->polygon().boundingRect().height();
+                totalWidth += mapObj->polygon().boundingRect().width();
+            } else {
+                totalHeight += mapObj->bounds().height();
+                totalWidth += mapObj->bounds().width();
+            }
+        }
+
+
+        /*
+         * Check whether we haven't selected single rectangle, ellipse or tile or we have selected
+         * multiply objects.
+         */
+        if ((selectedObjectsCount == 1 &&
+                firstSelectedObj->shape() == MapObject::Polyline &&
+                firstSelectedObj->polygon().first().y() == firstSelectedObj->polygon().last().y()) ||
+                (selectedObjectsCount > 1 && totalWidth == 0.0)) {
+            for (int i = 0; i < AnchorCount; ++i) {
+                if (i != LeftAnchor && i != RightAnchor)
+                    mResizeHandles[i]->setVisible(false);
+            }
+        }
+        if ((selectedObjectsCount == 1 &&
+                firstSelectedObj->shape() == MapObject::Polyline &&
+                firstSelectedObj->polygon().first().x() == firstSelectedObj->polygon().last().x()) ||
+                (selectedObjectsCount > 1 && totalHeight == 0.0)) {
+            for (int i = 0; i < AnchorCount; ++i) {
+                if (i != TopAnchor && i != BottomAnchor)
+                    mResizeHandles[i]->setVisible(false);
+            }
+        }
+    }
     mOriginIndicator->setVisible(showOrigin);
 }
 
