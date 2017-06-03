@@ -127,7 +127,9 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
 
-    void setCommand(const QModelIndex &index, const QString &value);
+    void setExecutable(const QModelIndex &index, const QString &value);
+    void setArguments(const QModelIndex &index, const QString &value);
+    void setWorkingDirectory(const QModelIndex &index, const QString &value);
     void setShortcut(const QModelIndex &index, const QKeySequence &value);
     void setSaveBeforeExecute(const QModelIndex &index, bool value);
 

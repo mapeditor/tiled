@@ -51,11 +51,17 @@ public slots:
 
     void setSaveBeforeExecute(int state);
 
-    void setCommand(const QString &text);
+    void setExecutable(const QString &text);
+
+    void setArguments(const QString &text);
+
+    void setWorkingDirectory(const QString &text);
 
     void updateWidgets(const QModelIndex &current, const QModelIndex&);
 
-    void openFileDialog();
+    void browseExecutable();
+
+    void browseWorkingDirectory();
 
 private:
     Ui::CommandDialog *mUi;

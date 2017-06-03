@@ -36,18 +36,24 @@ struct Command
 {
     Command(bool isEnabled = true,
             QString name = QString(),
-            QString command = QString(),
+            QString executable = QString(),
+            QString arguments = QString(),
+            QString workingDirectory = QString(),
             QKeySequence shortcut = QKeySequence(),
             bool saveBeforeExecute = true)
         : isEnabled(isEnabled)
         , name(std::move(name))
-        , command(std::move(command))
+        , executable(std::move(executable))
+        , arguments(std::move(arguments))
+        , workingDirectory(std::move(workingDirectory))
         , shortcut(shortcut)
         , saveBeforeExecute(saveBeforeExecute) {}
 
     bool isEnabled;
     QString name;
-    QString command;
+    QString executable;
+    QString arguments;
+    QString workingDirectory;
     QKeySequence shortcut;
     bool saveBeforeExecute;
 
@@ -55,6 +61,10 @@ struct Command
      * Returns the final command with replaced tokens.
      */
     QString finalCommand() const;
+
+    QString finalWorkingDirectory() const;
+
+    QString replaceVariables(const QString &string, bool quoteValues = true) const;
 
     /**
      * Executes the command in the operating system shell or terminal
@@ -88,6 +98,7 @@ private:
 
     QString mName;
     QString mFinalCommand;
+    QString mFinalWorkingDirectory;
 
 #ifdef Q_OS_MAC
     QTemporaryFile mFile;
