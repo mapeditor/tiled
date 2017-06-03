@@ -37,7 +37,7 @@ QString Command::finalWorkingDirectory() const
     finalWorkingDirectory = replaceVariables(finalWorkingDirectory, false);
 
     QString finalExecutable = replaceVariables(executable);
-    QFileInfo mFile(finalExecutable);   //Check if executable is a path or not
+    QFileInfo mFile(finalExecutable);
 
     finalWorkingDirectory.replace(QLatin1String("%executablepath"), mFile.absolutePath());
 
