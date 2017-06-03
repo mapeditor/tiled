@@ -16,7 +16,7 @@ class TemplateGroupDocument : public Document
     Q_OBJECT
 
 public:
-    TemplateGroupDocument(TemplateGroup templateGroup, const QString &fileName = QString());
+    TemplateGroupDocument(TemplateGroup *templateGroup, const QString &fileName = QString());
     ~TemplateGroupDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;
@@ -29,7 +29,7 @@ public:
     QString displayName() const override;
 
 private:
-    TemplateGroup mTemplateGroup;
+    TemplateGroup *mTemplateGroup;
 };
 
 } // namespace Internal

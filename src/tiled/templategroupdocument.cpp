@@ -5,7 +5,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TemplateGroupDocument::TemplateGroupDocument(TemplateGroup templateGroup, const QString &fileName)
+TemplateGroupDocument::TemplateGroupDocument(TemplateGroup *templateGroup, const QString &fileName)
     : Document(TemplateGroupDocumentType, fileName)
     , mTemplateGroup(templateGroup)
 {

@@ -106,19 +106,19 @@ private:
 /**
  * A reader and writer for Tiled's .ttx template format.
  */
-class TtxTemplateFormat : public TemplateGroupFormat
+class TtxTemplateGroupFormat : public TemplateGroupFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::TemplateGroupFormat)
 
 public:
-    TtxTemplateFormat(QObject *parent = nullptr);
-
-    bool write(const QList<MapObject *> &mapObjects, const QString &fileName) override;
+    TtxTemplateGroupFormat(QObject *parent = nullptr);
 
     TemplateGroup *read(const QString &fileName) override;
 
-    QString nameFilter() const override { return tr("Tiled template files (*.ttx)"); }
+    bool write(const QList<MapObject *> &mapObjects, const QString &fileName) override;
+
+    QString nameFilter() const override { return tr("Tiled template group files (*.ttx)"); }
 
     QString shortName() const override { return QLatin1String("ttx"); }
 

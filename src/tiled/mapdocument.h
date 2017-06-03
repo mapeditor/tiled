@@ -43,7 +43,6 @@ class Map;
 class MapObject;
 class MapRenderer;
 class MapFormat;
-class TemplateGroupFormat;
 class Terrain;
 class Tile;
 
@@ -77,7 +76,7 @@ public:
     ~MapDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;
-    bool saveSelectedObjectsAsATemplateGroup();
+    bool saveSelectedObjectsAsTemplateGroup();
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null

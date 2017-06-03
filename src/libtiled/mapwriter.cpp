@@ -190,12 +190,6 @@ void MapWriterPrivate::writeTemplateGroup(const QList<MapObject *> &mapObjects, 
     writer.writeStartDocument();
     writer.writeStartElement(QLatin1String("templategroup"));
 
-    if (mDtdEnabled) {
-        writer.writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
-                                      "http://mapeditor.org/dtd/1.0/"
-                                      "map.dtd\">"));
-    }
-
     mGidMapper.clear();
     unsigned firstGid = 1;
     for (auto *o: mapObjects) {

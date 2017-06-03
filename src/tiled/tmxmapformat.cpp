@@ -167,12 +167,24 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-TtxTemplateFormat::TtxTemplateFormat(QObject *parent)
+TtxTemplateGroupFormat::TtxTemplateGroupFormat(QObject *parent)
     : TemplateGroupFormat(parent)
 {
 }
 
-bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QString &fileName)
+TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
+{
+    mError.clear();
+
+    MapReader reader;
+    TemplateGroup *templateGroup =  reader.readTemplateGroup(fileName);
+    if (!templateGroup)
+        mError = reader.errorString();
+
+    return templateGroup;
+}
+
+bool TtxTemplateGroupFormat::write(const QList<MapObject *> &mapObjects, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
@@ -188,19 +200,7 @@ bool TtxTemplateFormat::write(const QList<MapObject *> &mapObjects, const QStrin
     return result;
 }
 
-TemplateGroup *TtxTemplateFormat::read(const QString &fileName)
-{
-    mError.clear();
-
-    MapReader reader;
-    TemplateGroup *templateGroup =  reader.readTemplateGroup(fileName);
-    if (!templateGroup)
-        mError = reader.errorString();
-
-    return templateGroup;
-}
-
-bool TtxTemplateFormat::supportsFile(const QString &fileName) const
+bool TtxTemplateGroupFormat::supportsFile(const QString &fileName) const
 {
     if (fileName.endsWith(QLatin1String(".ttx"), Qt::CaseInsensitive))
         return true;
@@ -212,7 +212,7 @@ bool TtxTemplateFormat::supportsFile(const QString &fileName) const
             QXmlStreamReader xml;
             xml.setDevice(&file);
 
-            if (xml.readNextStartElement() && xml.name() == QLatin1String("templates"))
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
                 return true;
         }
     }
