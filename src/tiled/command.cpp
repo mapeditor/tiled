@@ -217,8 +217,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 
     if (showOutput) {
         CommandManager::instance()->logger()->log(LoggingInterface::INFO,
-                                                  QString(QLatin1String("Executing: "))
-                                                  + mFinalCommand);
+                                                  tr("Executing: %1").arg(mFinalCommand));
 
         connect(this, &QProcess::readyReadStandardError, this, &CommandProcess::consoleError);
         connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);

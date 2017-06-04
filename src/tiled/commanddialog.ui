@@ -154,7 +154,7 @@
      <item row="4" column="0" colspan="3">
       <widget class="QCheckBox" name="outputBox">
        <property name="text">
-        <string>Show Output in Debug Console</string>
+        <string>Show output in Debug Console</string>
        </property>
       </widget>
      </item>
