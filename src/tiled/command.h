@@ -30,9 +30,6 @@
 #endif
 
 namespace Tiled {
-
-class LoggingInterface;
-
 namespace Internal {
 
 struct Command
@@ -101,14 +98,14 @@ private slots:
 
     void consoleOutput();
 
+    void consoleError();
+
 private:
     void handleError(const QString &);
 
     QString mName;
     QString mFinalCommand;
     QString mFinalWorkingDirectory;
-
-    LoggingInterface *mLogger;
 
 #ifdef Q_OS_MAC
     QTemporaryFile mFile;

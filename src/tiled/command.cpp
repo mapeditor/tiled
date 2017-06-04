@@ -157,7 +157,6 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
     , mFinalWorkingDirectory(command.finalWorkingDirectory())
-    , mLogger(CommandManager::instance()->logger())
 #ifdef Q_OS_MAC
     , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
@@ -216,8 +215,14 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
 
-    if (showOutput)
+    if (showOutput) {
+        CommandManager::instance()->logger()->log(LoggingInterface::INFO,
+                                                  QString(QLatin1String("Executing: "))
+                                                  + mFinalCommand);
+
+        connect(this, &QProcess::readyReadStandardError, this, &CommandProcess::consoleError);
         connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);
+    }
 
     if (!mFinalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(mFinalWorkingDirectory);
@@ -227,7 +232,14 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 
 void CommandProcess::consoleOutput()
 {
-    mLogger->log(LoggingInterface::INFO, QLatin1String(readAllStandardOutput()));
+    CommandManager::instance()->logger()->log(LoggingInterface::INFO,
+                                              QString::fromLocal8Bit(readAllStandardOutput()));
+}
+
+void CommandProcess::consoleError()
+{
+    CommandManager::instance()->logger()->log(LoggingInterface::ERROR,
+                                              QString::fromLocal8Bit(readAllStandardError()));
 }
 
 void CommandProcess::handleError(QProcess::ProcessError error)
