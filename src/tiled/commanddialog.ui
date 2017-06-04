@@ -195,6 +195,18 @@
    <header>commanddialog.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>treeView</tabstop>
+  <tabstop>executableEdit</tabstop>
+  <tabstop>exBrowseButton</tabstop>
+  <tabstop>argumentsEdit</tabstop>
+  <tabstop>workingDirectoryEdit</tabstop>
+  <tabstop>wdBrowseButton</tabstop>
+  <tabstop>keySequenceEdit</tabstop>
+  <tabstop>clearButton</tabstop>
+  <tabstop>saveBox</tabstop>
+  <tabstop>pushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
