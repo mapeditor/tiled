@@ -18,6 +18,15 @@ void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
     mTemplates.append(objectTemplate);
 }
 
+bool TemplateGroup::addTileset(const SharedTileset &tileset)
+{
+    if (mTilesets.contains(tileset))
+        return false;
+
+    mTilesets.append(tileset);
+    return true;
+}
+
 void TemplateGroup::setFormat(TemplateGroupFormat *format)
 {
     mFormat = format;

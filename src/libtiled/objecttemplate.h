@@ -4,7 +4,7 @@
 
 using namespace Tiled;
 
-class ObjectTemplate
+class TILEDSHARED_EXPORT ObjectTemplate
 {
 public:
     ObjectTemplate();

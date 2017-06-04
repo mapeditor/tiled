@@ -557,8 +557,7 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
             templateGroup->addTemplate(readTemplate());
         }
         else if (xml.name() == QLatin1String("tileset")) {
-            // TODO: Use the read tileset
-            readTileset();
+            templateGroup->addTileset(readTileset());
         }
         else {
             readUnknownElement();

@@ -15,6 +15,7 @@ public:
     TemplateGroup();
     ~TemplateGroup();
     void addTemplate(ObjectTemplate *objectTemplate);
+    bool addTileset(const SharedTileset &tileset);
     const QList<ObjectTemplate*> &templates() const { return mTemplates; }
 
     void setFormat(TemplateGroupFormat *format);
@@ -22,6 +23,7 @@ public:
 
 private:
     QList<ObjectTemplate*> mTemplates;
+    QVector<SharedTileset> mTilesets;
     QPointer<TemplateGroupFormat> mFormat;
 };
 
