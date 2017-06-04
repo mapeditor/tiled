@@ -41,6 +41,7 @@ namespace Tiled {
 class Map;
 class Tileset;
 class MapObject;
+class TemplateGroup;
 
 namespace Internal {
 class MapWriterPrivate;
@@ -93,10 +94,10 @@ public:
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
 
-    void writeTemplateGroup(const QList<MapObject *> &mapObjects, QIODevice *device,
-                       const QString &path = QString());
+    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
+                            const QString &path = QString());
 
-    bool writeTemplateGroup(const QList<MapObject *> &mapObjects, const QString &fileName);
+    bool writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.

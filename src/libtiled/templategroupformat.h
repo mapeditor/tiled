@@ -15,7 +15,7 @@ public:
     {}
 
     virtual TemplateGroup *read(const QString &fileName) = 0;
-    virtual bool write(const QList<MapObject *> &mapObjects, const QString &fileName) = 0;
+    virtual bool write(const TemplateGroup *templateGroup, const QString &fileName) = 0;
 };
 
 } // namespace Tiled

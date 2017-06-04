@@ -127,19 +127,36 @@ MapDocument::~MapDocument()
 
 /**
  * Currently, this is the entry point for testing templates,
- * it saves the selected objects to a file then reads them.
+ * it creates a templateGroup from the selected objects, saves it, then reads it
  */
 #include <QDebug>
 bool MapDocument::saveSelectedObjectsAsTemplateGroup()
 {
-    TemplateGroupFormat *templateFormat = new TtxTemplateGroupFormat();
+    TemplateGroupFormat *templateGroupFormat = new TtxTemplateGroupFormat();
 
-    templateFormat->write(mSelectedObjects, QString(QLatin1String("templateGroup.ttx")));
+    TemplateGroup *templateGroup = new TemplateGroup(QLatin1String("test group"));
 
-    TemplateGroup *templateGroup =  templateFormat->read(QLatin1String("templateGroup.ttx"));
+    for (MapObject *o : mSelectedObjects) {
+        auto tileset = o->cell().tileset();
+        if (tileset)
+            templateGroup->addTileset(tileset->sharedPointer());
+    }
 
-    for (auto objecTemplate : templateGroup->templates())
-        qDebug() << objecTemplate->object()->size();
+    for (int i = 0; i < mSelectedObjects.size(); ++i) {
+        ObjectTemplate *objectTemplate = new ObjectTemplate(i+1, QLatin1String("template ") + QString::number(i+1));
+        objectTemplate->setObject(mSelectedObjects[i]);
+        templateGroup->addTemplate(objectTemplate);
+    }
+
+    templateGroupFormat->write(templateGroup, QString(QLatin1String("templateGroup.ttx")));
+
+    templateGroup = templateGroupFormat->read(QLatin1String("templateGroup.ttx"));
+
+    qDebug() << templateGroup->name();
+    for (auto objectTemplate : templateGroup->templates()) {
+        qDebug() << objectTemplate->id() << objectTemplate->name();
+        qDebug() << objectTemplate->object()->size();
+    }
     qDebug() << "";
 
     return true;

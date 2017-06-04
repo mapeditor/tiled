@@ -116,7 +116,7 @@ public:
 
     TemplateGroup *read(const QString &fileName) override;
 
-    bool write(const QList<MapObject *> &mapObjects, const QString &fileName) override;
+    bool write(const TemplateGroup *templateGroup, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled template group files (*.ttx)"); }
 

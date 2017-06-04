@@ -184,14 +184,14 @@ TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
     return templateGroup;
 }
 
-bool TtxTemplateGroupFormat::write(const QList<MapObject *> &mapObjects, const QString &fileName)
+bool TtxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplateGroup(mapObjects, fileName);
+    bool result =  writer.writeTemplateGroup(templateGroup, fileName);
     if (!result)
         mError = writer.errorString();
     else

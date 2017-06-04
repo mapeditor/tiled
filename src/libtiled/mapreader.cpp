@@ -550,7 +550,11 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("templategroup"));
 
     const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+
     TemplateGroup *templateGroup = new TemplateGroup();
+
+    templateGroup->setName(name);
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("template")) {
@@ -570,17 +574,22 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
 ObjectTemplate *MapReaderPrivate::readTemplate()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
-
     const QXmlStreamAttributes atts = xml.attributes();
-    ObjectTemplate *xtemplate = new ObjectTemplate;
+
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int id = atts.value(QLatin1String("id")).toInt();
+
+    ObjectTemplate *objectTemplate = new ObjectTemplate(id, name);
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("object")) {
-            xtemplate->setObject(readObject());
+            objectTemplate->setObject(readObject());
+        } else {
+            readUnknownElement();
         }
     }
 
-    return xtemplate;
+    return objectTemplate;
 }
 
 

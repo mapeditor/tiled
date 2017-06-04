@@ -8,6 +8,11 @@ TemplateGroup::TemplateGroup()
 {
 }
 
+TemplateGroup::TemplateGroup(QString name):
+    mName(name)
+{
+}
+
 TemplateGroup::~TemplateGroup()
 {
     qDeleteAll(mTemplates);
@@ -25,14 +30,4 @@ bool TemplateGroup::addTileset(const SharedTileset &tileset)
 
     mTilesets.append(tileset);
     return true;
-}
-
-void TemplateGroup::setFormat(TemplateGroupFormat *format)
-{
-    mFormat = format;
-}
-
-TemplateGroupFormat *TemplateGroup::format() const
-{
-    return mFormat;
 }
