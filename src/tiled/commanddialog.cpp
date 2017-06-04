@@ -49,6 +49,9 @@ CommandDialog::CommandDialog(QWidget *parent)
     connect(mUi->saveBox, &QCheckBox::stateChanged,
             this, &CommandDialog::setSaveBeforeExecute);
 
+    connect(mUi->outputBox, &QCheckBox::stateChanged,
+            this, &CommandDialog::setShowOutput);
+
     connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
             this, &CommandDialog::setShortcut);
 
@@ -100,6 +103,14 @@ void CommandDialog::setSaveBeforeExecute(int state)
         mUi->treeView->model()->setSaveBeforeExecute(current, state);
 }
 
+void CommandDialog::setShowOutput(int state)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setShowOutput(current, state);
+}
+
+
 void CommandDialog::setExecutable(const QString &text)
 {
     const QModelIndex &current = mUi->treeView->currentIndex();
@@ -132,7 +143,7 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     mUi->exBrowseButton->setEnabled(enable);
     mUi->keySequenceEdit->setEnabled(enable);
     mUi->clearButton->setEnabled(enable);
-    mUi->saveBox->setEnabled(enable);
+    mUi->outputBox->setEnabled(enable);
 
     if (enable) {
         const Command command = mUi->treeView->model()->command(current);
@@ -141,6 +152,7 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
         mUi->workingDirectoryEdit->setText(command.workingDirectory);
         mUi->keySequenceEdit->setKeySequence(command.shortcut);
         mUi->saveBox->setChecked(command.saveBeforeExecute);
+        mUi->outputBox->setChecked(command.showOutput);
     } else {
         mUi->executableEdit->clear();
         mUi->argumentsEdit->clear();

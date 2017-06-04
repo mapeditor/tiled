@@ -151,6 +151,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="outputBox">
+       <property name="text">
+        <string>Show Output on Console</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0" colspan="2">
@@ -204,6 +211,7 @@
   <tabstop>wdBrowseButton</tabstop>
   <tabstop>keySequenceEdit</tabstop>
   <tabstop>clearButton</tabstop>
+  <tabstop>outputBox</tabstop>
   <tabstop>saveBox</tabstop>
   <tabstop>pushButton</tabstop>
  </tabstops>

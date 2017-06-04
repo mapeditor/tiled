@@ -20,7 +20,9 @@
 
 #include "command.h"
 
+#include "commandmanager.h"
 #include "documentmanager.h"
+#include "logginginterface.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 
@@ -99,7 +101,7 @@ void Command::execute(bool inTerminal) const
     }
 
     // Start the process
-    new CommandProcess(*this, inTerminal);
+    new CommandProcess(*this, inTerminal, showOutput);
 }
 
 QVariant Command::toQVariant() const
@@ -111,6 +113,7 @@ QVariant Command::toQVariant() const
     hash[QLatin1String("Arguments")] = arguments;
     hash[QLatin1String("WorkingDirectory")] = workingDirectory;
     hash[QLatin1String("Shortcut")] = shortcut;
+    hash[QLatin1String("ShowOutput")] = showOutput;
     hash[QLatin1String("SaveBeforeExecute")] = saveBeforeExecute;
     return hash;
 }
@@ -125,6 +128,7 @@ Command Command::fromQVariant(const QVariant &variant)
     const QString workingDirectoryPref = QLatin1String("WorkingDirectory");
     const QString enablePref = QLatin1String("Enabled");
     const QString shortcutPref = QLatin1String("Shortcut");
+    const QString showOutputPref = QLatin1String("ShowOutput");
     const QString saveBeforeExecutePref = QLatin1String("SaveBeforeExecute");
 
     Command command;
@@ -140,17 +144,20 @@ Command Command::fromQVariant(const QVariant &variant)
         command.workingDirectory = hash[workingDirectoryPref].toString();
     if (hash.contains(shortcutPref))
         command.shortcut = hash[shortcutPref].value<QKeySequence>();
+    if (hash.contains(showOutputPref))
+        command.showOutput = hash[showOutputPref].toBool();
     if (hash.contains(saveBeforeExecutePref))
         command.saveBeforeExecute = hash[saveBeforeExecutePref].toBool();
 
     return command;
 }
 
-CommandProcess::CommandProcess(const Command &command, bool inTerminal)
+CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool showOutput)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
     , mFinalWorkingDirectory(command.finalWorkingDirectory())
+    , mLogger(CommandManager::instance()->logger())
 #ifdef Q_OS_MAC
     , mFile(QDir::tempPath() + QLatin1String("/tiledXXXXXX.command"))
 #endif
@@ -209,10 +216,18 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
 
+    if (showOutput)
+        connect(this, &QProcess::readyReadStandardOutput, this, &CommandProcess::consoleOutput);
+
     if (!mFinalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(mFinalWorkingDirectory);
 
     start(mFinalCommand);
+}
+
+void CommandProcess::consoleOutput()
+{
+    mLogger->log(LoggingInterface::INFO, QLatin1String(readAllStandardOutput()));
 }
 
 void CommandProcess::handleError(QProcess::ProcessError error)
