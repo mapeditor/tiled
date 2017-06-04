@@ -10,12 +10,12 @@ TemplateGroup::TemplateGroup()
 
 TemplateGroup::~TemplateGroup()
 {
-    qDeleteAll(mObjects);
+    qDeleteAll(mTemplates);
 }
 
-void TemplateGroup::addObject(MapObject *object)
+void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
 {
-    mObjects.append(object);
+    mTemplates.append(objectTemplate);
 }
 
 void TemplateGroup::setFormat(TemplateGroupFormat *format)

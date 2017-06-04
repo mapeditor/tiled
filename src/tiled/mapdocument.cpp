@@ -138,8 +138,9 @@ bool MapDocument::saveSelectedObjectsAsTemplateGroup()
 
     TemplateGroup *templateGroup =  templateFormat->read(QLatin1String("templateGroup.ttx"));
 
-    for (auto o : templateGroup->objects())
-        qDebug() << o->size();
+    for (auto objecTemplate : templateGroup->templates())
+        qDebug() << objecTemplate->object()->size();
+    qDebug() << "";
 
     return true;
 }

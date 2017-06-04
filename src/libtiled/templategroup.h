@@ -2,7 +2,7 @@
 
 #include "tiled_global.h"
 
-#include "mapobject.h"
+#include "objecttemplate.h"
 
 namespace Tiled {
 
@@ -14,14 +14,14 @@ class TILEDSHARED_EXPORT TemplateGroup
 public:
     TemplateGroup();
     ~TemplateGroup();
-    void addObject(MapObject *object);
-    const QList<MapObject*> &objects() const { return mObjects; }
+    void addTemplate(ObjectTemplate *objectTemplate);
+    const QList<ObjectTemplate*> &templates() const { return mTemplates; }
 
     void setFormat(TemplateGroupFormat *format);
     TemplateGroupFormat *format() const;
 
 private:
-    QList<MapObject*> mObjects;
+    QList<ObjectTemplate*> mTemplates;
     QPointer<TemplateGroupFormat> mFormat;
 };
 

@@ -41,6 +41,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "terrain.h"
+#include "objecttemplate.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -88,6 +89,7 @@ private:
     ImageReference readImage();
 
     TemplateGroup *readTemplateGroup();
+    ObjectTemplate *readTemplate();
 
     Layer *tryReadLayer();
 
@@ -113,10 +115,8 @@ private:
 
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
-    MapObject *readTemplate();
     QPolygonF readPolygon();
     TextData readObjectText();
-    void readObjectData(MapObject *object);
 
     GroupLayer *readGroupLayer();
 
@@ -548,20 +548,42 @@ ImageReference MapReaderPrivate::readImage()
 TemplateGroup *MapReaderPrivate::readTemplateGroup()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("templategroup"));
-    const QXmlStreamAttributes atts = xml.attributes();
 
+    const QXmlStreamAttributes atts = xml.attributes();
     TemplateGroup *templateGroup = new TemplateGroup();
+
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("template"))
-            templateGroup->addObject(readTemplate());
-        // TODO: Handle reading tilesets
-        // else if (xml.name() == QLatin1String("tileset"))
-        //     objectGroup->mergeProperties(readProperties());
-        else
+        if (xml.name() == QLatin1String("template")) {
+            templateGroup->addTemplate(readTemplate());
+        }
+        else if (xml.name() == QLatin1String("tileset")) {
+            // TODO: Use the read tileset
+            readTileset();
+        }
+        else {
             readUnknownElement();
+        }
     }
+
     return templateGroup;
 }
+
+ObjectTemplate *MapReaderPrivate::readTemplate()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    ObjectTemplate *xtemplate = new ObjectTemplate;
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("object")) {
+            xtemplate->setObject(readObject());
+        }
+    }
+
+    return xtemplate;
+}
+
 
 Layer *MapReaderPrivate::tryReadLayer()
 {
@@ -873,48 +895,6 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
     xml.skipCurrentElement();
 }
 
-inline void MapReaderPrivate::readObjectData(MapObject *object)
-{
-    while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("properties")) {
-            object->mergeProperties(readProperties());
-        } else if (xml.name() == QLatin1String("polygon")) {
-            object->setPolygon(readPolygon());
-            object->setShape(MapObject::Polygon);
-        } else if (xml.name() == QLatin1String("polyline")) {
-            object->setPolygon(readPolygon());
-            object->setShape(MapObject::Polyline);
-        } else if (xml.name() == QLatin1String("ellipse")) {
-            xml.skipCurrentElement();
-            object->setShape(MapObject::Ellipse);
-        } else if (xml.name() == QLatin1String("text")) {
-            object->setTextData(readObjectText());
-            object->setShape(MapObject::Text);
-        } else {
-            readUnknownElement();
-        }
-    }
-}
-
-MapObject *MapReaderPrivate::readTemplate()
-{
-    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("template"));
-    const QXmlStreamAttributes atts = xml.attributes();
-    const QString name = atts.value(QLatin1String("name")).toString();
-//    const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-    const qreal width = atts.value(QLatin1String("width")).toDouble();
-    const qreal height = atts.value(QLatin1String("height")).toDouble();
-    const QString type = atts.value(QLatin1String("type")).toString();
-
-    const QSizeF size(width, height);
-
-    MapObject *object = new MapObject(name, type, {0, 0}, size);
-
-    readObjectData(object);
-
-    return object;
-}
-
 MapObject *MapReaderPrivate::readObject()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
@@ -948,7 +928,25 @@ MapObject *MapReaderPrivate::readObject()
     if (ok)
         object->setVisible(visible);
 
-    readObjectData(object);
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("properties")) {
+            object->mergeProperties(readProperties());
+        } else if (xml.name() == QLatin1String("polygon")) {
+            object->setPolygon(readPolygon());
+            object->setShape(MapObject::Polygon);
+        } else if (xml.name() == QLatin1String("polyline")) {
+            object->setPolygon(readPolygon());
+            object->setShape(MapObject::Polyline);
+        } else if (xml.name() == QLatin1String("ellipse")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Ellipse);
+        } else if (xml.name() == QLatin1String("text")) {
+            object->setTextData(readObjectText());
+            object->setShape(MapObject::Text);
+        } else {
+            readUnknownElement();
+        }
+    }
 
     return object;
 }

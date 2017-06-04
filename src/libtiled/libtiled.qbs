@@ -70,6 +70,8 @@ DynamicLibrary {
         "mapwriter.h",
         "objectgroup.cpp",
         "objectgroup.h",
+        "objecttemplate.cpp",
+        "objecttemplate.h",
         "object.h",
         "orthogonalrenderer.cpp",
         "orthogonalrenderer.h",

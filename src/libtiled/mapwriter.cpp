@@ -202,8 +202,12 @@ void MapWriterPrivate::writeTemplateGroup(const QList<MapObject *> &mapObjects, 
         }
     }
 
-    for (auto *o: mapObjects)
-        writeTemplate(writer, *o);
+    for (auto *o: mapObjects) {
+        // TODO: Extract writeTemplate function and add template data
+        writer.writeStartElement(QLatin1String("template"));
+        writeObject(writer, *o);
+        writer.writeEndElement();
+    }
 
     writer.writeEndElement();
     writer.writeEndDocument();
@@ -644,48 +648,6 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     writeProperties(w, mapObject.properties());
 
-    writeObjectData(w, mapObject);
-
-    w.writeEndElement();
-}
-
-void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w,
-                                     const MapObject &mapObject)
-{
-    w.writeStartElement(QLatin1String("template"));
-
-    const QString &name = mapObject.name();
-    const QString &type = mapObject.type();
-    if (!name.isEmpty())
-        w.writeAttribute(QLatin1String("name"), name);
-    if (!type.isEmpty())
-        w.writeAttribute(QLatin1String("type"), type);
-
-    if (!mapObject.cell().isEmpty()) {
-        const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
-        w.writeAttribute(QLatin1String("gid"), QString::number(gid));
-    }
-
-    const QSizeF size = mapObject.size();
-
-    if (size.width() != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
-    if (size.height() != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
-
-    const qreal rotation = mapObject.rotation();
-    if (rotation != 0.0)
-        w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
-
-    writeProperties(w, mapObject.properties());
-
-    writeObjectData(w, mapObject);
-
-    w.writeEndElement();
-}
-
-inline void MapWriterPrivate::writeObjectData(QXmlStreamWriter &w, const MapObject &mapObject)
-{
     switch (mapObject.shape()) {
     case MapObject::Rectangle:
         break;
@@ -716,6 +678,8 @@ inline void MapWriterPrivate::writeObjectData(QXmlStreamWriter &w, const MapObje
         break;
     }
     }
+
+    w.writeEndElement();
 }
 
 void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &textData)

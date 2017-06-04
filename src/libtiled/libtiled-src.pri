@@ -17,6 +17,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/maptovariantconverter.cpp \
     $$PWD/mapwriter.cpp \
     $$PWD/objectgroup.cpp \
+    $$PWD/objecttemplate.cpp \
     $$PWD/orthogonalrenderer.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanager.cpp \
@@ -51,6 +52,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/mapwriter.h \
     $$PWD/object.h \
     $$PWD/objectgroup.h \
+    $$PWD/objecttemplate.h \
     $$PWD/orthogonalrenderer.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanager.h \
