@@ -37,6 +37,7 @@
 #include <QVector>
 
 #include <climits>
+#include <staggeredrenderer.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
