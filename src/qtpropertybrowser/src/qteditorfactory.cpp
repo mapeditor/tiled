@@ -2552,14 +2552,31 @@ void QtFontEditWidget::setValue(const QFont &f)
 void QtFontEditWidget::buttonClicked()
 {
     bool ok = false;
-    QFont newFont = QFontDialog::getFont(&ok, m_font, this, tr("Select Font"));
-    if (ok && newFont != m_font) {
+
+    QFont oldFont = m_font;
+
+    // Font dialogs generally deal with point sizes. When the font size is set
+    // in pixels, convert to points.
+    if (m_font.pixelSize() != -1)
+        oldFont.setPointSizeF(oldFont.pixelSize() / logicalDpiX() * 72.0);
+
+    QFont newFont = QFontDialog::getFont(&ok, oldFont, this, tr("Select Font"));
+    if (ok && newFont != oldFont) {
         QFont f = m_font;
+
+        // Convert back to pixels when the current font size is set in pixels
+        if (m_font.pixelSize() != -1 && newFont.pointSize() != -1) {
+            int pixelSize = qRound(newFont.pointSizeF() / 72.0 * logicalDpiX());
+            newFont.setPixelSize(pixelSize);
+        }
+
         // prevent mask for unchanged attributes, don't change other attributes (like kerning, etc...)
         if (m_font.family() != newFont.family())
             f.setFamily(newFont.family());
-        if (m_font.pointSize() != newFont.pointSize())
-            f.setPointSize(newFont.pointSize());
+        if (m_font.pixelSize() != newFont.pixelSize() && newFont.pixelSize() != -1)
+            f.setPixelSize(newFont.pixelSize());
+        if (m_font.pointSize() != newFont.pointSize() && newFont.pointSize() != -1)
+            f.setPointSizeF(newFont.pointSizeF());
         if (m_font.bold() != newFont.bold())
             f.setBold(newFont.bold());
         if (m_font.italic() != newFont.italic())
