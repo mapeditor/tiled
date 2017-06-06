@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ko_KR">
+<TS version="2.0" language="ko_KR">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -163,12 +163,12 @@
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation>알 수없는 긴 인수 %1: %2</translation>
+        <translation>알 수 없는 긴 인수 %1: %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation>알 수없는 짧은 인수 %1.%2: %3</translation>
+        <translation>알 수 없는 짧은 인수 %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -540,7 +540,7 @@
     <message>
         <location line="+3"/>
         <source>A</source>
-        <translation></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -585,7 +585,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+0</source>
-        <translation></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
         <location line="+142"/>
@@ -671,7 +671,7 @@
     <message>
         <location line="+87"/>
         <source>Ctrl+R</source>
-        <translation></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -681,7 +681,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location line="-82"/>
@@ -726,7 +726,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -741,7 +741,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -4785,7 +4785,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Justify</source>
-        <translation type="unfinished">가지런히</translation>
+        <translation>가지런히</translation>
     </message>
     <message>
         <location line="+9"/>
