@@ -25,10 +25,13 @@ public:
     const QString &name() const;
     void setName(const QString &name);
 
+    void setFormat(TemplateGroupFormat *format);
+    TemplateGroupFormat *format() const;
+
 private:
     QList<ObjectTemplate*> mTemplates;
     QVector<SharedTileset> mTilesets;
-    QPointer<TemplateGroupFormat> mFormat;
+    TemplateGroupFormat *mFormat;
     QString mName;
 };
 
@@ -38,10 +41,16 @@ inline const QList<ObjectTemplate*> &TemplateGroup::templates() const
 inline const QVector<SharedTileset> &TemplateGroup::tilesets() const
 { return mTilesets; }
 
+inline void TemplateGroup::setName(const QString &name)
+{ mName = name; }
+
 inline const QString &TemplateGroup::name() const
 { return mName; }
 
-inline void TemplateGroup::setName(const QString &name)
-{ mName = name; }
+inline void TemplateGroup::setFormat(TemplateGroupFormat *format)
+{ mFormat = format; }
+
+inline TemplateGroupFormat *TemplateGroup::format() const
+{ return mFormat; }
 
 } // namespace Tiled

@@ -27,10 +27,16 @@ public:
 
     FileFormat *writerFormat() const override;
     QString displayName() const override;
+    void addTemplate(ObjectTemplate *objectTemplate);
+
+    const TemplateGroup *templateGroup() const;
 
 private:
     TemplateGroup *mTemplateGroup;
 };
+
+inline const TemplateGroup *TemplateGroupDocument::templateGroup() const
+{ return mTemplateGroup; }
 
 } // namespace Internal
 } // namespace Tiled
