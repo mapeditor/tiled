@@ -177,7 +177,7 @@ TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
     mError.clear();
 
     MapReader reader;
-    TemplateGroup *templateGroup =  reader.readTemplateGroup(fileName);
+    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
     if (!templateGroup)
         mError = reader.errorString();
 

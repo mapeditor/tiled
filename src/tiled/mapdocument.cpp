@@ -129,9 +129,9 @@ MapDocument::~MapDocument()
 
 /**
  * Currently, this is the entry point for testing templates,
- * it creates a templateGroup from the selected objects except the last object,
- * then creates a templatGroupDocument from the templateGroup,
- * then adds the last object to it, saves, loads then prints the object data
+ * it creates a TemplateGroup from the selected objects except the last object,
+ * then creates a TemplateGroupDocument from the TemplateGroup,
+ * then adds the last object to the document, saves, loads then prints the object data
  */
 bool MapDocument::saveSelectedObjectsAsTemplateGroup()
 {

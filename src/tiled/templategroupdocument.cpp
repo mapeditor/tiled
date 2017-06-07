@@ -84,7 +84,7 @@ QString TemplateGroupDocument::displayName() const
 {
     QString displayName = mTemplateGroup->name();
 
-    if(displayName.isEmpty())
+    if (displayName.isEmpty())
         displayName = mFileName;
 
     return displayName;
