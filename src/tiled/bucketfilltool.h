@@ -64,7 +64,7 @@ public:
      */
     const TileStamp &stamp() const { return mStamp; }
 
-    bool random() { return mIsRandom; }
+    bool isRandom() { return mIsRandom; }
 
 public slots:
     void setRandom(bool value);

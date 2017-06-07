@@ -60,7 +60,6 @@ class TilesetDock;
 class TileStamp;
 class TileStampManager;
 class ToolManager;
-class ToolSpecificToolBar;
 class TreeViewComboBox;
 class UncheckableItemsModel;
 class UndoDock;
@@ -109,7 +108,7 @@ public slots:
 
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
-    void random(bool value);
+    void setRandom(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
@@ -166,7 +165,6 @@ private:
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
-    ToolSpecificToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;

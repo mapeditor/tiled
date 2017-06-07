@@ -235,7 +235,6 @@ SOURCES += aboutdialog.cpp \
     tilestampsdock.cpp \
     tmxmapformat.cpp \
     toolmanager.cpp \
-    toolspecifictoolbar.cpp \
     treeviewcombobox.cpp \
     undodock.cpp \
     utils.cpp \
@@ -409,7 +408,6 @@ HEADERS += aboutdialog.h \
     tilestampsdock.h \
     tmxmapformat.h \
     toolmanager.h \
-    toolspecifictoolbar.cpp \
     treeviewcombobox.h \
     undocommands.h \
     undodock.h \

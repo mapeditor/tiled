@@ -66,7 +66,6 @@
 #include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "toolmanager.h"
-#include "toolspecifictoolbar.h"
 #include "treeviewcombobox.h"
 #include "undodock.h"
 #include "zoomable.h"
@@ -141,7 +140,6 @@ MapEditor::MapEditor(QObject *parent)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mMainToolBar(new MainToolBar(mMainWindow))
-    , mToolSpecificToolBar(new ToolSpecificToolBar(mMainWindow, this))
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
     , mViewWithTool(nullptr)
@@ -187,7 +185,6 @@ MapEditor::MapEditor(QObject *parent)
 
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addToolBar(mToolsToolBar);
-    mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
@@ -244,10 +241,6 @@ MapEditor::MapEditor(QObject *parent)
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
-
-    mToolSpecificToolBar->setSelectedTool(mSelectedTool);
-    connect(mToolManager, &ToolManager::selectedToolChanged,
-            mToolSpecificToolBar, &ToolSpecificToolBar::setSelectedTool);
 
     setupQuickStamps();
     retranslateUi();
@@ -422,7 +415,6 @@ QList<QToolBar *> MapEditor::toolBars() const
     return QList<QToolBar*> {
         mMainToolBar,
         mToolsToolBar,
-        mToolSpecificToolBar
     };
 }
 
@@ -609,7 +601,7 @@ void MapEditor::rotate(RotateDirection direction)
     }
 }
 
-void MapEditor::random(bool value)
+void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
     mBucketFillTool->setRandom(value);
