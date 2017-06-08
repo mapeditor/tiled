@@ -338,6 +338,8 @@ QtGuiApplication {
         "stylehelper.h",
         "swaptiles.cpp",
         "swaptiles.h",
+        "templategroupdocument.cpp",
+        "templategroupdocument.h",
         "terrainbrush.cpp",
         "terrainbrush.h",
         "terraindock.cpp",

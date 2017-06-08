@@ -166,3 +166,56 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
 
     return false;
 }
+
+TtxTemplateGroupFormat::TtxTemplateGroupFormat(QObject *parent)
+    : TemplateGroupFormat(parent)
+{
+}
+
+TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
+{
+    mError.clear();
+
+    MapReader reader;
+    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
+    if (!templateGroup)
+        mError = reader.errorString();
+
+    return templateGroup;
+}
+
+bool TtxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result =  writer.writeTemplateGroup(templateGroup, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
+}
+
+bool TtxTemplateGroupFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".ttx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
+                return true;
+        }
+    }
+
+    return false;
+}

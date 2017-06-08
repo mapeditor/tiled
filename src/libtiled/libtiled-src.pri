@@ -17,12 +17,14 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/maptovariantconverter.cpp \
     $$PWD/mapwriter.cpp \
     $$PWD/objectgroup.cpp \
+    $$PWD/objecttemplate.cpp \
     $$PWD/orthogonalrenderer.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanager.cpp \
     $$PWD/properties.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
+    $$PWD/templategroup.cpp \
     $$PWD/tile.cpp \
     $$PWD/tileanimationdriver.cpp \
     $$PWD/tilelayer.cpp \
@@ -50,12 +52,15 @@ HEADERS += $$PWD/compression.h \
     $$PWD/mapwriter.h \
     $$PWD/object.h \
     $$PWD/objectgroup.h \
+    $$PWD/objecttemplate.h \
     $$PWD/orthogonalrenderer.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanager.h \
     $$PWD/properties.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
+    $$PWD/templategroup.h \
+    $$PWD/templategroupformat.h \
     $$PWD/terrain.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \

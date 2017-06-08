@@ -22,10 +22,12 @@
 
 #include "mapformat.h"
 #include "tilesetformat.h"
+#include "templategroupformat.h"
 
 namespace Tiled {
 
 class Tileset;
+class MapObject;
 
 namespace Internal {
 
@@ -92,6 +94,33 @@ public:
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
 
     QString shortName() const override { return QLatin1String("tsx"); }
+
+    bool supportsFile(const QString &fileName) const override;
+
+    QString errorString() const override { return mError; }
+
+private:
+    QString mError;
+};
+
+/**
+ * A reader and writer for Tiled's .ttx template format.
+ */
+class TtxTemplateGroupFormat : public TemplateGroupFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TemplateGroupFormat)
+
+public:
+    TtxTemplateGroupFormat(QObject *parent = nullptr);
+
+    TemplateGroup *read(const QString &fileName) override;
+
+    bool write(const TemplateGroup *templateGroup, const QString &fileName) override;
+
+    QString nameFilter() const override { return tr("Tiled template group files (*.ttx)"); }
+
+    QString shortName() const override { return QLatin1String("ttx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

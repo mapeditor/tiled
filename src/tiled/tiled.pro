@@ -206,6 +206,7 @@ SOURCES += aboutdialog.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
+    templategroupdocument.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -379,6 +380,7 @@ HEADERS += aboutdialog.h \
     standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
+    templategroupdocument.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
