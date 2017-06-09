@@ -44,6 +44,7 @@
 #include "mapsdock.h"
 #include "mapview.h"
 #include "minimapdock.h"
+#include "moveselectiontool.h"
 #include "newtilesetdialog.h"
 #include "objectsdock.h"
 #include "objectselectiontool.h"
@@ -179,6 +180,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new MoveSelectionTool(this)));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));

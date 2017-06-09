@@ -252,6 +252,8 @@ QtGuiApplication {
         "movemapobject.h",
         "movemapobjecttogroup.cpp",
         "movemapobjecttogroup.h",
+        "moveselectiontool.cpp",
+        "moveselectiontool.h",
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",
