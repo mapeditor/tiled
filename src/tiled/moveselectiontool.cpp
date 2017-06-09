@@ -21,6 +21,7 @@
 #include "moveselectiontool.h"
 
 #include "brushitem.h"
+#include "changeselectedarea.h"
 #include "clipboardmanager.h"
 #include "erasetiles.h"
 #include "mapdocument.h"
@@ -29,8 +30,6 @@
 
 #include <QApplication>
 #include <QUndoStack>
-
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -51,7 +50,7 @@ MoveSelectionTool::~MoveSelectionTool()
 {
 }
 
-void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
+void MoveSelectionTool::tilePositionChanged(const QPoint &)
 {
     if (mDragging)
         brushItem()->setTileRegion(mapDocument()->selectedArea());
@@ -88,7 +87,7 @@ void MoveSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
     if (mDragging) {
         mDragging = false;
@@ -137,6 +136,9 @@ void MoveSelectionTool::cut()
         stack->push(new EraseTiles(mapDocument(), tileLayer, selectedArea));
     }
 
+    QUndoCommand *command = new ChangeSelectedArea(mapDocument(), QRegion());
+    stack->push(command);
+
     stack->endMacro();
 }
 
@@ -157,13 +159,12 @@ void MoveSelectionTool::paste()
     TileLayer *target = currentLayer->asTileLayer();
 
     QPoint offset = tilePosition() - mDragStart;
-    qDebug() << offset;
 
     auto undoStack = mapDocument()->undoStack();
     undoStack->push(new PaintTileLayer(mapDocument(),
                                        target,
-                                       source->x() + offset.x(),
-                                       source->y() + offset.y(),
+                                       source->x()+offset.x(),
+                                       source->y()+offset.y(),
                                        source));
 
     if (map)

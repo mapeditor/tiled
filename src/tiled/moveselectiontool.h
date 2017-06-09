@@ -40,7 +40,7 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(const QPoint &) override;
 
 private:
     void refreshCursor();
