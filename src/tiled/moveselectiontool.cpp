@@ -60,7 +60,13 @@ void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
 
         mapDocument()->undoStack()->push(new ChangeSelectedArea(mapDocument(), selectedArea));
 
+        if (mPreviewLayer) {
+            mPreviewLayer->offsetTiles(offset, mPreviewLayer->bounds(), false, false);
+            brushItem()->setTileLayer(mPreviewLayer);
+        }
+
         mLastUpdate = pos;
+
         brushItem()->setTileRegion(mapDocument()->selectedArea());
     }
 }
@@ -138,6 +144,11 @@ void MoveSelectionTool::cut()
 
     ClipboardManager::instance()->copySelection(mapDocument());
 
+    TileLayer *brushLayer = tileLayer->copy(tileLayer->bounds());
+    mPreviewLayer = SharedTileLayer(brushLayer);
+
+    brushItem()->setTileLayer(mPreviewLayer);
+
     QUndoStack *stack = mapDocument()->undoStack();
     stack->beginMacro(tr("Move Selection"));
 
@@ -181,4 +192,6 @@ void MoveSelectionTool::paste()
 
     if (map)
         tilesetManager->removeReferences(map->tilesets());
+
+    brushItem()->clear();
 }

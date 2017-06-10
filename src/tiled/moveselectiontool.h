@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "tilelayer.h"
 
 namespace Tiled {
 namespace Internal {
@@ -52,6 +53,7 @@ private:
     QPoint mMouseScreenStart;
     QPoint mDragStart;
     QPoint mLastUpdate;
+    SharedTileLayer mPreviewLayer;
     bool mDragging;
     bool mMouseDown;
     bool mCut;
