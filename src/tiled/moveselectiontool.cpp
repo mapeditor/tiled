@@ -50,10 +50,19 @@ MoveSelectionTool::~MoveSelectionTool()
 {
 }
 
-void MoveSelectionTool::tilePositionChanged(const QPoint &)
+void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
 {
-    if (mDragging)
+    if (mDragging) {
+
+        QPoint offset = pos - mLastUpdate;
+        QRegion selectedArea = mapDocument()->selectedArea();
+        selectedArea.translate(offset);
+
+        mapDocument()->undoStack()->push(new ChangeSelectedArea(mapDocument(), selectedArea));
+
+        mLastUpdate = pos;
         brushItem()->setTileRegion(mapDocument()->selectedArea());
+    }
 }
 
 void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -65,11 +74,10 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
         if (dragDistance >= QApplication::startDragDistance() / 2) {
             mDragging = true;
             tilePositionChanged(tilePosition());
-        }
-
-        if (!mCut) {
-            mCut = true;
-            cut();
+            if (!mCut) {
+                mCut = true;
+                cut();
+            }
         }
     }
 
@@ -84,6 +92,7 @@ void MoveSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mMouseScreenStart = event->screenPos();
         mDragStart = tilePosition();
         mMouseDown = true;
+        mLastUpdate = tilePosition();
     }
 }
 
@@ -136,9 +145,6 @@ void MoveSelectionTool::cut()
         stack->push(new EraseTiles(mapDocument(), tileLayer, selectedArea));
     }
 
-    QUndoCommand *command = new ChangeSelectedArea(mapDocument(), QRegion());
-    stack->push(command);
-
     stack->endMacro();
 }
 
@@ -161,11 +167,17 @@ void MoveSelectionTool::paste()
     QPoint offset = tilePosition() - mDragStart;
 
     auto undoStack = mapDocument()->undoStack();
+
+    QRegion selectedArea = mapDocument()->selectedArea();
+    undoStack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
+
     undoStack->push(new PaintTileLayer(mapDocument(),
                                        target,
                                        source->x()+offset.x(),
                                        source->y()+offset.y(),
                                        source));
+
+    undoStack->push(new ChangeSelectedArea(mapDocument(), selectedArea));
 
     if (map)
         tilesetManager->removeReferences(map->tilesets());

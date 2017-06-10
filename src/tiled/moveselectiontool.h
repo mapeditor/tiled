@@ -51,6 +51,7 @@ private:
 
     QPoint mMouseScreenStart;
     QPoint mDragStart;
+    QPoint mLastUpdate;
     bool mDragging;
     bool mMouseDown;
     bool mCut;
