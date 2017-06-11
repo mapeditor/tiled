@@ -22,6 +22,7 @@
 
 #include "commanddatamodel.h"
 #include "commanddialog.h"
+#include "logginginterface.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -36,6 +37,7 @@ CommandManager *CommandManager::mInstance;
 
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
+    , mLogger(new LoggingInterface())
 {
     updateActions();
 }

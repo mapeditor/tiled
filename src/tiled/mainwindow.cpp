@@ -253,6 +253,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
 
+    mUi->menuMap->insertAction(mUi->actionOffsetMap,
+                               mActionHandler->actionAutocrop());
+
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mNewLayerMenu = mActionHandler->createNewLayerMenu(mLayerMenu);
     mGroupLayerMenu = mActionHandler->createGroupLayerMenu(mLayerMenu);
