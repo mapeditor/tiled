@@ -57,6 +57,8 @@ public:
     void setFormat(TemplateGroupFormat *format);
     TemplateGroupFormat *format() const;
 
+    int templateCount() const { return mTemplates.size(); }
+
 private:
     QList<ObjectTemplate*> mTemplates;
     QVector<SharedTileset> mTilesets;

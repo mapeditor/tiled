@@ -51,6 +51,7 @@ class MapsDock;
 class MapView;
 class MiniMapDock;
 class ObjectsDock;
+class TemplatesDock;
 class PropertiesDock;
 class ReversingProxyModel;
 class StampBrush;
@@ -147,6 +148,7 @@ private:
     MapsDock *mMapsDock;
     UndoDock *mUndoDock;
     ObjectsDock *mObjectsDock;
+    TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;

@@ -175,6 +175,7 @@ SOURCES += aboutdialog.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
+    objecttemplatemodel.cpp \
     objecttypes.cpp \
     objecttypeseditor.cpp \
     objecttypesmodel.cpp \
@@ -207,6 +208,7 @@ SOURCES += aboutdialog.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
     templategroupdocument.cpp \
+    templatesdock.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -345,6 +347,7 @@ HEADERS += aboutdialog.h \
     objectgroupitem.h \
     objectsdock.h \
     objectselectionitem.h \
+    objecttemplatemodel.h \
     objectselectiontool.h \
     objecttypeseditor.h \
     objecttypes.h \
@@ -381,6 +384,7 @@ HEADERS += aboutdialog.h \
     stylehelper.h \
     swaptiles.h \
     templategroupdocument.h \
+    templatesdock.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

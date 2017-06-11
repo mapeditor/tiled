@@ -46,6 +46,7 @@
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectsdock.h"
+#include "templatesdock.h"
 #include "objectselectiontool.h"
 #include "painttilelayer.h"
 #include "preferences.h"
@@ -130,6 +131,7 @@ MapEditor::MapEditor(QObject *parent)
     , mMapsDock(new MapsDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mObjectsDock(new ObjectsDock(mMainWindow))
+    , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
@@ -202,6 +204,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTemplatesDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
@@ -447,6 +450,7 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mMapsDock,
         mUndoDock,
         mObjectsDock,
+        mTemplatesDock,
         mTilesetDock,
         mTerrainDock,
         mMiniMapDock,
