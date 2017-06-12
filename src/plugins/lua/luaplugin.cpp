@@ -472,7 +472,7 @@ void LuaPlugin::writeGroupLayer(LuaTableWriter &writer,
 {
     writer.writeStartTable();
 
-    writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("type", "group");
     writer.writeKeyAndValue("name", groupLayer->name());
     writer.writeKeyAndValue("visible", groupLayer->isVisible());
     writer.writeKeyAndValue("opacity", groupLayer->opacity());

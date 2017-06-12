@@ -382,7 +382,8 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         if (selectedObjects.count() == 1) {
             const MapObject *o = selectedObjects.first();
             const QPointF center = o->bounds().center();
-            DocumentManager::instance()->centerMapViewOn(center);
+            const QPointF offset = o->objectGroup()->totalOffset();
+            DocumentManager::instance()->centerMapViewOn(center + offset);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;
