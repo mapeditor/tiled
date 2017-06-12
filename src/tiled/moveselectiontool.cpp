@@ -79,11 +79,11 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 
         if (dragDistance >= QApplication::startDragDistance() / 2) {
             mDragging = true;
-            tilePositionChanged(tilePosition());
             if (!mCut) {
                 mCut = true;
                 cut();
             }
+            tilePositionChanged(tilePosition());
         }
     }
 
@@ -153,8 +153,6 @@ void MoveSelectionTool::cut()
     if (tileLayer && !selectedArea.isEmpty()) {
         stack->push(new EraseTiles(mapDocument(), tileLayer, selectedArea));
     }
-
-    stack->endMacro();
 }
 
 void MoveSelectionTool::paste()
@@ -178,6 +176,7 @@ void MoveSelectionTool::paste()
                                        selectedArea));
 
     undoStack->push(new ChangeSelectedArea(mapDocument(), selectedArea));
+    undoStack->endMacro();
 
     brushItem()->clear();
     mPreviewLayer.clear();
