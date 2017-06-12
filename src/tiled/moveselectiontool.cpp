@@ -52,7 +52,6 @@ MoveSelectionTool::~MoveSelectionTool()
 void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
 {
     if (mDragging) {
-
         QPoint offset = pos - mLastUpdate;
         QRegion selectedArea = mapDocument()->selectedArea();
         selectedArea.translate(offset);
@@ -63,11 +62,10 @@ void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
             mPreviewLayer->setX(mPreviewLayer->x()+offset.x());
             mPreviewLayer->setY(mPreviewLayer->y()+offset.y());
             brushItem()->setTileLayer(mPreviewLayer);
+            brushItem()->setTileRegion(mapDocument()->selectedArea());
         }
 
         mLastUpdate = pos;
-
-        brushItem()->setTileRegion(mapDocument()->selectedArea());
     }
 }
 
