@@ -346,7 +346,7 @@ void PropertiesDock::renameProperty(const QString &name)
 }
 
 void PropertiesDock::showContextMenu(const QPoint& pos)
-{   
+{
     const Object *object = mDocument->currentObject();
     if (!object)
         return;

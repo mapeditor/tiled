@@ -187,6 +187,10 @@ private:
                                    const QString &name,
                                    QtProperty *parent);
 
+    QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
+    void deleteCustomProperty(QtVariantProperty *property);
+    void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
+
     void addProperties();
     void removeProperties();
     void updateProperties();
@@ -194,7 +198,7 @@ private:
     void retranslateUi();
     bool mUpdating;
 
-    void updatePropertyColor(const QString &name);
+    void updateCustomPropertyColor(const QString &name);
 
     Object *mObject;
     Document *mDocument;
