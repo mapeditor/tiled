@@ -29,12 +29,22 @@
 
 #include "objecttemplate.h"
 
-ObjectTemplate::ObjectTemplate()
+#include "templategroup.h"
+
+namespace Tiled {
+
+ObjectTemplate::ObjectTemplate():
+    Object(ObjectTemplateType),
+    mTemplateGroup(nullptr)
 {
 }
 
 ObjectTemplate::ObjectTemplate(int id, QString name):
+    Object(ObjectTemplateType),
     mId(id),
-    mName(name)
+    mName(name),
+    mTemplateGroup(nullptr)
 {
 }
+
+} // namespace Tiled

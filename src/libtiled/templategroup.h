@@ -30,15 +30,15 @@
 #pragma once
 
 #include "tiled_global.h"
-
 #include "objecttemplate.h"
+#include "object.h"
 
 namespace Tiled {
 
 class MapObject;
 class TemplateGroupFormat;
 
-class TILEDSHARED_EXPORT TemplateGroup
+class TILEDSHARED_EXPORT TemplateGroup : public Object
 {
 public:
     TemplateGroup();
@@ -59,12 +59,16 @@ public:
 
     int templateCount() const { return mTemplates.size(); }
 
+    ObjectTemplate *templateAt(int index) const { return mTemplates.at(index); }
+
 private:
     QList<ObjectTemplate*> mTemplates;
     QVector<SharedTileset> mTilesets;
     TemplateGroupFormat *mFormat;
     QString mName;
 };
+
+typedef QList<TemplateGroup*> TemplateGroups;
 
 inline const QList<ObjectTemplate*> &TemplateGroup::templates() const
 { return mTemplates; }

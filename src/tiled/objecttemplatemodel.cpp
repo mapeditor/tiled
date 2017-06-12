@@ -23,15 +23,56 @@
 
 #include "templategroup.h"
 
-ObjectTemplateModel::ObjectTemplateModel(const TemplateGroup *templateGroup, QObject *parent):
-    QAbstractListModel(parent),
-    mTemplateGroup(templateGroup)
+namespace Tiled {
+
+ObjectTemplateModel::ObjectTemplateModel(const TemplateGroups &templateGroups, QObject *parent):
+    QAbstractItemModel(parent),
+    mTemplateGroups(templateGroups)
 {
+}
+
+QModelIndex ObjectTemplateModel::index(int row, int column,
+                                       const QModelIndex &parent) const
+{
+    if (!parent.isValid())
+        return createIndex(row, column, mTemplateGroups.at(row));
+
+    if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
+        if (row < templateGroup->templateCount())
+            return createIndex(row, column, templateGroup->templateAt(row));
+    }
+
+    return QModelIndex();
+}
+
+QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QModelIndex();
+
+    if (ObjectTemplate *objectTemplate = toObjectTemplate(index)) {
+        auto templateGroup = objectTemplate->templateGroup();
+        return createIndex(mTemplateGroups.indexOf(templateGroup), 0, templateGroup);
+    }
+
+    return QModelIndex();
 }
 
 int ObjectTemplateModel::rowCount(const QModelIndex &parent) const
 {
-    return mTemplateGroup->templateCount();
+    if (!parent.isValid())
+        return mTemplateGroups.size();
+
+    if (TemplateGroup *templateGroup = toTemplateGroup(parent))
+        return templateGroup->templateCount();
+
+    return 0;
+}
+
+int ObjectTemplateModel::columnCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+    return 1;
 }
 
 QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
@@ -39,12 +80,38 @@ QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (index.row() >= mTemplateGroup->templateCount())
-        return QVariant();
+    if (role == Qt::DisplayRole) {
+        if (TemplateGroup *templateGroup = toTemplateGroup(index))
+            return templateGroup->name();
+        else if (ObjectTemplate *objectTemplate = toObjectTemplate(index))
+            return objectTemplate->name();
+    }
 
-    if (role == Qt::DisplayRole)
-        return mTemplateGroup->templates().at(index.row())->name();
-    else
-        return QVariant();
+    return QVariant();
 }
 
+ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return nullptr;
+
+    Object *object = static_cast<Object*>(index.internalPointer());
+    if (object->typeId() == Object::ObjectTemplateType)
+        return static_cast<ObjectTemplate*>(object);
+
+    return nullptr;
+}
+
+TemplateGroup *ObjectTemplateModel::toTemplateGroup(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return nullptr;
+
+    Object *object = static_cast<Object*>(index.internalPointer());
+    if (object->typeId() == Object::TemplateGroupType)
+        return static_cast<TemplateGroup*>(object);
+
+    return nullptr;
+}
+
+} // namespace Tiled

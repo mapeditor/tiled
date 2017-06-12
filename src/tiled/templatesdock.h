@@ -22,14 +22,12 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QListView>
+#include <QTreeView>
 #include <QAction>
 
 class QAbstractProxyModel;
 
 namespace Tiled {
-
-class TemplateGroup;
 
 namespace Internal {
 
@@ -49,7 +47,7 @@ private:
     TemplatesView *mTemplatesView;
 };
 
-class TemplatesView : public QListView
+class TemplatesView : public QTreeView
 {
     Q_OBJECT
 

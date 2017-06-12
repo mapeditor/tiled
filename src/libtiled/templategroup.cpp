@@ -33,11 +33,13 @@
 
 using namespace Tiled;
 
-TemplateGroup::TemplateGroup()
+TemplateGroup::TemplateGroup():
+    Object(TemplateGroupType)
 {
 }
 
 TemplateGroup::TemplateGroup(QString name):
+    Object(TemplateGroupType),
     mName(name)
 {
 }
@@ -50,6 +52,7 @@ TemplateGroup::~TemplateGroup()
 void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
 {
     mTemplates.append(objectTemplate);
+    objectTemplate->setTemplateGroup(this);
 }
 
 bool TemplateGroup::addTileset(const SharedTileset &tileset)

@@ -21,19 +21,32 @@
 
 #pragma once
 
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 #include <templategroup.h>
 
-class ObjectTemplateModel : public QAbstractListModel
+namespace Tiled {
+
+class ObjectTemplateModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    ObjectTemplateModel(const TemplateGroup *templateGroup, QObject *parent = 0);
+    ObjectTemplateModel(const TemplateGroups &templateGroups, QObject *parent = nullptr);
+
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 private:
-    const TemplateGroup *mTemplateGroup;
+
+    const TemplateGroups mTemplateGroups;
+    ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
+    TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
+
+
+} // namespace Tiled

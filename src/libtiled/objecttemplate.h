@@ -30,10 +30,13 @@
 #pragma once
 
 #include "mapobject.h"
+#include "object.h"
 
-using namespace Tiled;
+namespace Tiled {
 
-class TILEDSHARED_EXPORT ObjectTemplate
+class TemplateGroup;
+
+class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
 public:
     ObjectTemplate();
@@ -48,10 +51,14 @@ public:
     const QString &name() const;
     void setName(const QString &name);
 
+    TemplateGroup *templateGroup() const;
+    void setTemplateGroup(TemplateGroup *templateGroup);
+
 private:
     MapObject *mObject;
     int mId;
     QString mName;
+    TemplateGroup *mTemplateGroup;
 };
 
 inline const MapObject *ObjectTemplate::object() const
@@ -74,3 +81,11 @@ inline const QString &ObjectTemplate::name() const
 
 inline void ObjectTemplate::setName(const QString &name)
 { mName = name; }
+
+inline TemplateGroup *ObjectTemplate::templateGroup() const
+{ return mTemplateGroup; }
+
+inline void ObjectTemplate::setTemplateGroup(TemplateGroup *templateGroup)
+{ mTemplateGroup = templateGroup; }
+
+} // namespace Tiled

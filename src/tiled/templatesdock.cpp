@@ -30,9 +30,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TemplatesDock::TemplatesDock(QWidget *parent)
-    : QDockWidget(parent)
-    , mTemplatesView(new TemplatesView)
+TemplatesDock::TemplatesDock(QWidget *parent):
+    QDockWidget(parent),
+    mTemplatesView(new TemplatesView)
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
@@ -64,20 +64,32 @@ void TemplatesDock::retranslateUi()
 }
 
 TemplatesView::TemplatesView(QWidget *parent)
-    : QListView(parent)
+    : QTreeView(parent)
 {
-    auto *templateGroup = new TemplateGroup(QLatin1String("Test Group"));
+    setUniformRowHeights(true);
+    setHeaderHidden(true);
+
+    auto *templateGroup1 = new TemplateGroup(QLatin1String("Test Group 1"));
     auto *objectTemplate1 = new ObjectTemplate(1, QLatin1String("Template 1"));
     auto *objectTemplate2 = new ObjectTemplate(2, QLatin1String("Template 2"));
-    templateGroup->addTemplate(objectTemplate1);
-    templateGroup->addTemplate(objectTemplate2);
+    templateGroup1->addTemplate(objectTemplate1);
+    templateGroup1->addTemplate(objectTemplate2);
 
-    ObjectTemplateModel *objectTemplateModel = new ObjectTemplateModel(templateGroup);
+    auto *templateGroup2 = new TemplateGroup(QLatin1String("Test Group 2"));
+    auto *objectTemplate3 = new ObjectTemplate(1, QLatin1String("Template 3"));
+    auto *objectTemplate4 = new ObjectTemplate(2, QLatin1String("Template 4"));
+    templateGroup2->addTemplate(objectTemplate3);
+    templateGroup2->addTemplate(objectTemplate4);
+
+    QList<TemplateGroup*> templateGroups;
+    templateGroups.append(templateGroup1);
+    templateGroups.append(templateGroup2);
+
+    ObjectTemplateModel *objectTemplateModel = new ObjectTemplateModel(templateGroups);
 
     setModel(objectTemplateModel);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 QSize TemplatesView::sizeHint() const
