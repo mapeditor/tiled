@@ -60,7 +60,8 @@ void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
         mapDocument()->undoStack()->push(new ChangeSelectedArea(mapDocument(), selectedArea));
 
         if (mPreviewLayer) {
-            mPreviewLayer->offsetTiles(offset, mPreviewLayer->bounds(), false, false);
+            mPreviewLayer->setX(mPreviewLayer->x()+offset.x());
+            mPreviewLayer->setY(mPreviewLayer->y()+offset.y());
             brushItem()->setTileLayer(mPreviewLayer);
         }
 
