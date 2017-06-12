@@ -22,7 +22,6 @@
 
 #include "brushitem.h"
 #include "changeselectedarea.h"
-#include "clipboardmanager.h"
 #include "erasetiles.h"
 #include "mapdocument.h"
 #include "painttilelayer.h"
@@ -142,8 +141,6 @@ void MoveSelectionTool::cut()
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mapDocument()->selectedArea();
 
-    ClipboardManager::instance()->copySelection(mapDocument());
-
     TileLayer *brushLayer = tileLayer->copy(tileLayer->bounds());
     mPreviewLayer = SharedTileLayer(brushLayer);
 
@@ -161,21 +158,11 @@ void MoveSelectionTool::cut()
 
 void MoveSelectionTool::paste()
 {
-    Layer *currentLayer = mapDocument()->currentLayer();
+    const TileLayer *preview = mPreviewLayer.data();
+    if (!preview)
+        return;
 
-    ClipboardManager *clipboardManager = ClipboardManager::instance();
-    QScopedPointer<Map> map(clipboardManager->map());
-
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    tilesetManager->addReferences(map->tilesets());
-
-    mapDocument()->unifyTilesets(map.data());
-    Layer *layer = map->layerAt(0);
-
-    TileLayer *source = static_cast<TileLayer*>(layer);
-    TileLayer *target = currentLayer->asTileLayer();
-
-    QPoint offset = tilePosition() - mDragStart;
+    TileLayer *target = mapDocument()->currentLayer()->asTileLayer();
 
     auto undoStack = mapDocument()->undoStack();
 
@@ -184,14 +171,13 @@ void MoveSelectionTool::paste()
 
     undoStack->push(new PaintTileLayer(mapDocument(),
                                        target,
-                                       source->x()+offset.x(),
-                                       source->y()+offset.y(),
-                                       source));
+                                       preview->x(),
+                                       preview->y(),
+                                       preview,
+                                       selectedArea));
 
     undoStack->push(new ChangeSelectedArea(mapDocument(), selectedArea));
 
-    if (map)
-        tilesetManager->removeReferences(map->tilesets());
-
     brushItem()->clear();
+    mPreviewLayer.clear();
 }
