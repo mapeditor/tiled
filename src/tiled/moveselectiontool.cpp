@@ -41,12 +41,23 @@ MoveSelectionTool::MoveSelectionTool(QObject *parent)
                        parent)
     , mDragging(false)
     , mMouseDown(false)
-    , mCut(false)
 {
 }
 
 MoveSelectionTool::~MoveSelectionTool()
 {
+}
+
+void MoveSelectionTool::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    cut();
+}
+
+void MoveSelectionTool::deactivate(MapScene *scene)
+{
+    AbstractTileTool::deactivate(scene);
+    paste();
 }
 
 void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
@@ -77,10 +88,6 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 
         if (dragDistance >= QApplication::startDragDistance() / 2) {
             mDragging = true;
-            if (!mCut) {
-                mCut = true;
-                cut();
-            }
             tilePositionChanged(tilePosition());
         }
     }
@@ -105,11 +112,6 @@ void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
     if (mDragging) {
         mDragging = false;
         brushItem()->setTileRegion(QRegion());
-    }
-
-    if (mCut) {
-        paste();
-        mCut = false;
     }
 
     mMouseDown = false;
@@ -144,6 +146,7 @@ void MoveSelectionTool::cut()
     mPreviewLayer = SharedTileLayer(brushLayer);
 
     brushItem()->setTileLayer(mPreviewLayer);
+    brushItem()->setTileRegion(mapDocument()->selectedArea());
 
     QUndoStack *stack = mapDocument()->undoStack();
     stack->beginMacro(tr("Move Selection"));

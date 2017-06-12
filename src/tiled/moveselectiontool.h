@@ -34,6 +34,9 @@ public:
     MoveSelectionTool(QObject *parent = nullptr);
     ~MoveSelectionTool();
 
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
     void mouseMoved(const QPointF &pos,Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -56,7 +59,6 @@ private:
     SharedTileLayer mPreviewLayer;
     bool mDragging;
     bool mMouseDown;
-    bool mCut;
 };
 
 } // namespace Internal
