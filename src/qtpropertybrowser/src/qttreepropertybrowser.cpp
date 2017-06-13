@@ -122,6 +122,7 @@ public:
 
     void slotCurrentBrowserItemChanged(QtBrowserItem *item);
     void slotCurrentTreeItemChanged(QTreeWidgetItem *newItem, QTreeWidgetItem *);
+    void slotItemSelectionChanged();
 
     QTreeWidgetItem *editedItem() const;
     QtBrowserItem *editedBrowserItem() const;
@@ -527,6 +528,7 @@ void QtTreePropertyBrowserPrivate::init(QWidget *parent)
     QObject::connect(m_treeWidget, SIGNAL(collapsed(const QModelIndex &)), q_ptr, SLOT(slotCollapsed(const QModelIndex &)));
     QObject::connect(m_treeWidget, SIGNAL(expanded(const QModelIndex &)), q_ptr, SLOT(slotExpanded(const QModelIndex &)));
     QObject::connect(m_treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), q_ptr, SLOT(slotCurrentTreeItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(m_treeWidget, SIGNAL(itemSelectionChanged()), q_ptr, SLOT(slotItemSelectionChanged()));
 }
 
 QtBrowserItem *QtTreePropertyBrowserPrivate::currentItem() const
@@ -739,6 +741,11 @@ void QtTreePropertyBrowserPrivate::slotCurrentTreeItemChanged(QTreeWidgetItem *n
     m_browserChangedBlocked = true;
     q_ptr->setCurrentItem(browserItem);
     m_browserChangedBlocked = false;
+}
+
+void QtTreePropertyBrowserPrivate::slotItemSelectionChanged()
+{
+    emit q_ptr->selectedItemsChanged();
 }
 
 QTreeWidgetItem *QtTreePropertyBrowserPrivate::editedItem() const

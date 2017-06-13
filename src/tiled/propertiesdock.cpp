@@ -96,7 +96,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
             this, &PropertiesDock::showContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::currentItemChanged,
+    connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
             this, &PropertiesDock::updateActions);
 
     retranslateUi();
@@ -346,7 +346,7 @@ void PropertiesDock::renameProperty(const QString &name)
 }
 
 void PropertiesDock::showContextMenu(const QPoint& pos)
-{   
+{
     const Object *object = mDocument->currentObject();
     if (!object)
         return;

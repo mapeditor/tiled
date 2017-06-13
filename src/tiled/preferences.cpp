@@ -29,6 +29,7 @@
 #include "tilesetmanager.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
@@ -567,15 +568,16 @@ QString Preferences::fileDialogStartLocation() const
  */
 void Preferences::addRecentFile(const QString &fileName)
 {
-    // Remember the file by its canonical file path
-    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    // Remember the file by its absolute file path (not the canonical one,
+    // which avoids unexpected paths when symlinks are involved).
+    const QString absoluteFilePath = QDir::cleanPath(QFileInfo(fileName).absoluteFilePath());
 
-    if (canonicalFilePath.isEmpty())
+    if (absoluteFilePath.isEmpty())
         return;
 
     QStringList files = recentFiles();
-    files.removeAll(canonicalFilePath);
-    files.prepend(canonicalFilePath);
+    files.removeAll(absoluteFilePath);
+    files.prepend(absoluteFilePath);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 

@@ -461,6 +461,14 @@ void CommandDataModel::setShortcut(const QModelIndex &index, const QKeySequence 
     }
 }
 
+void CommandDataModel::setShowOutput(const QModelIndex &index, bool value)
+{
+    const bool isNormalRow = index.row() < mCommands.size();
+
+    if (isNormalRow)
+        mCommands[index.row()].showOutput = value;
+}
+
 void CommandDataModel::setSaveBeforeExecute(const QModelIndex &index, bool value)
 {
     const bool isNormalRow = index.row() < mCommands.size();

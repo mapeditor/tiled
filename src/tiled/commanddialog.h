@@ -51,6 +51,8 @@ public slots:
 
     void setSaveBeforeExecute(int state);
 
+    void setShowOutput(int state);
+
     void setExecutable(const QString &text);
 
     void setArguments(const QString &text);

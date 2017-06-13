@@ -40,6 +40,7 @@ struct Command
             QString arguments = QString(),
             QString workingDirectory = QString(),
             QKeySequence shortcut = QKeySequence(),
+            bool showOutput = true,
             bool saveBeforeExecute = true)
         : isEnabled(isEnabled)
         , name(std::move(name))
@@ -47,6 +48,7 @@ struct Command
         , arguments(std::move(arguments))
         , workingDirectory(std::move(workingDirectory))
         , shortcut(shortcut)
+        , showOutput(showOutput)
         , saveBeforeExecute(saveBeforeExecute) {}
 
     bool isEnabled;
@@ -55,6 +57,7 @@ struct Command
     QString arguments;
     QString workingDirectory;
     QKeySequence shortcut;
+    bool showOutput;
     bool saveBeforeExecute;
 
     /**
@@ -88,10 +91,14 @@ class CommandProcess : public QProcess
     Q_OBJECT
 
 public:
-    CommandProcess(const Command &command, bool inTerminal = false);
+    CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
 
 private slots:
     void handleError(QProcess::ProcessError);
+
+    void consoleOutput();
+
+    void consoleError();
 
 private:
     void handleError(const QString &);

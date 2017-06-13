@@ -131,6 +131,7 @@ public:
     void setArguments(const QModelIndex &index, const QString &value);
     void setWorkingDirectory(const QModelIndex &index, const QString &value);
     void setShortcut(const QModelIndex &index, const QKeySequence &value);
+    void setShowOutput(const QModelIndex &index, bool value);
     void setSaveBeforeExecute(const QModelIndex &index, bool value);
 
     Command command(const QModelIndex &index) const;
