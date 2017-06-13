@@ -49,7 +49,12 @@ public:
 protected:
     void tilePositionChanged(const QPoint &) override;
 
+private slots:
+    void layerRemoved(Layer *layer);
+
 private:
+    void makeConnections();
+
     void refreshCursor();
 
     void cut();
@@ -59,7 +64,10 @@ private:
     QPoint mMouseScreenStart;
     QPoint mDragStart;
     QPoint mLastUpdate;
+
     SharedTileLayer mPreviewLayer;
+    TileLayer *mTargetLayer;
+
     bool mDragging;
     bool mMouseDown;
     bool mCut;

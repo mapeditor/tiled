@@ -52,8 +52,12 @@ MoveSelectionTool::~MoveSelectionTool()
 void MoveSelectionTool::activate(MapScene *scene)
 {
     AbstractTileTool::activate(scene);
+
     brushItem()->setTileRegion(mapDocument()->selectedArea());
     brushItem()->setVisible(true);
+    mTargetLayer = mapDocument()->currentLayer()->asTileLayer();
+
+    makeConnections();
 }
 
 void MoveSelectionTool::deactivate(MapScene *scene)
@@ -147,14 +151,25 @@ void MoveSelectionTool::refreshCursor()
         setCursor(cursorShape);
 }
 
+void MoveSelectionTool::makeConnections()
+{
+    if (!mapDocument())
+        return;
+
+    connect(mapDocument(), &MapDocument::layerRemoved, this, &MoveSelectionTool::layerRemoved);
+}
+
+void MoveSelectionTool::layerRemoved(Layer *layer)
+{
+    if (layer == mTargetLayer)
+        mTargetLayer = nullptr;
+}
+
 void MoveSelectionTool::cut()
 {
-    Layer *currentLayer = mapDocument()->currentLayer();
-
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mapDocument()->selectedArea();
 
-    mPreviewLayer = SharedTileLayer(tileLayer->copy(selectedArea.translated(-tileLayer->position())));
+    mPreviewLayer = SharedTileLayer(mTargetLayer->copy(selectedArea.translated(-mTargetLayer->position())));
     mPreviewLayer->setPosition(selectedArea.boundingRect().topLeft());
 
     brushItem()->setTileLayer(mPreviewLayer, selectedArea);
@@ -163,7 +178,7 @@ void MoveSelectionTool::cut()
     stack->beginMacro(tr("Move Selection"));
 
     if (!selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mapDocument(), tileLayer, selectedArea));
+        stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
     }
 
     stack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
@@ -174,15 +189,13 @@ void MoveSelectionTool::cut()
 void MoveSelectionTool::paste()
 {
     const TileLayer *preview = mPreviewLayer.data();
-    if (!preview)
+    if (!preview || !mTargetLayer)
         return;
-
-    TileLayer *target = mapDocument()->currentLayer()->asTileLayer();
 
     auto undoStack = mapDocument()->undoStack();
 
     undoStack->push(new PaintTileLayer(mapDocument(),
-                                       target,
+                                       mTargetLayer,
                                        preview->x(),
                                        preview->y(),
                                        preview,
