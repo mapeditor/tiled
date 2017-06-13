@@ -1,3 +1,17 @@
+### 1.0.1 (13 June 2017)
+
+* Made the zoom level used in Tilesets view persistent
+* Fixed mixed up polygon and polyline icons (by Ketan Gupta, #1588)
+* Fixed reset of font size when using font dialog (#1596)
+* Fixed several issues with the Properties dock (#1583, #1611)
+* Fixed centering on object on layer with offset (#1600)
+* Fixed handling of symbolic links in Recent Files menu and Maps view (#1589)
+* Fixed labels for objects in grouped object layers
+* Reverted the file format version back to "1.0" and added "tiledversion" attribute
+* Lua plugin: Fixed group layers being exported with "imagelayer" type (#1595)
+* Added Korean translation (by miru2533 and SshipSunBee, #1604)
+* Updated Russian and Chinese translations
+
 ### 1.0.0 (25 May 2017)
 
 * Added support for editing external tilesets (#242)
