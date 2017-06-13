@@ -140,7 +140,7 @@ void MoveSelectionTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
 
-    if (mDragging)
+    if (brushItem()->tileRegion().contains(tilePosition()) || mDragging)
         cursorShape = Qt::SizeAllCursor;
 
     if (cursor().shape() != cursorShape)
