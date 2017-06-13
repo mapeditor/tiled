@@ -41,6 +41,7 @@ MoveSelectionTool::MoveSelectionTool(QObject *parent)
                        parent)
     , mDragging(false)
     , mMouseDown(false)
+    , mCut(false)
 {
 }
 
@@ -51,7 +52,8 @@ MoveSelectionTool::~MoveSelectionTool()
 void MoveSelectionTool::activate(MapScene *scene)
 {
     AbstractTileTool::activate(scene);
-    cut();
+    brushItem()->setTileRegion(mapDocument()->selectedArea());
+    brushItem()->setVisible(true);
 }
 
 void MoveSelectionTool::deactivate(MapScene *scene)
@@ -60,20 +62,24 @@ void MoveSelectionTool::deactivate(MapScene *scene)
     paste();
 }
 
+void MoveSelectionTool::mouseEntered()
+{
+}
+
+void MoveSelectionTool::mouseLeft()
+{
+}
+
 void MoveSelectionTool::tilePositionChanged(const QPoint &pos)
 {
     if (mDragging) {
         QPoint offset = pos - mLastUpdate;
-        QRegion selectedArea = mapDocument()->selectedArea();
-        selectedArea.translate(offset);
-
-        mapDocument()->undoStack()->push(new ChangeSelectedArea(mapDocument(), selectedArea));
 
         if (mPreviewLayer) {
-            mPreviewLayer->setX(mPreviewLayer->x()+offset.x());
-            mPreviewLayer->setY(mPreviewLayer->y()+offset.y());
-            brushItem()->setTileLayer(mPreviewLayer);
-            brushItem()->setTileRegion(mapDocument()->selectedArea());
+            mPreviewLayer->setX(mPreviewLayer->x() + offset.x());
+            mPreviewLayer->setY(mPreviewLayer->y() + offset.y());
+            brushItem()->setTileLayer(mPreviewLayer,
+                                      brushItem()->tileRegion().translated(offset));
         }
 
         mLastUpdate = pos;
@@ -87,6 +93,10 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
         const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
 
         if (dragDistance >= QApplication::startDragDistance() / 2) {
+            if (!mCut) {
+                mCut = true;
+                cut();
+            }
             mDragging = true;
             tilePositionChanged(tilePosition());
         }
@@ -99,7 +109,7 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 
 void MoveSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && mapDocument()->selectedArea().contains(tilePosition())) {
+    if (event->button() == Qt::LeftButton && brushItem()->tileRegion().contains(tilePosition())) {
         mMouseScreenStart = event->screenPos();
         mDragStart = tilePosition();
         mMouseDown = true;
@@ -111,7 +121,6 @@ void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
     if (mDragging) {
         mDragging = false;
-        brushItem()->setTileRegion(QRegion());
     }
 
     mMouseDown = false;
@@ -145,15 +154,18 @@ void MoveSelectionTool::cut()
     TileLayer *brushLayer = tileLayer->copy(tileLayer->bounds());
     mPreviewLayer = SharedTileLayer(brushLayer);
 
-    brushItem()->setTileLayer(mPreviewLayer);
-    brushItem()->setTileRegion(mapDocument()->selectedArea());
+    brushItem()->setTileLayer(mPreviewLayer, selectedArea);
 
     QUndoStack *stack = mapDocument()->undoStack();
     stack->beginMacro(tr("Move Selection"));
 
-    if (tileLayer && !selectedArea.isEmpty()) {
+    if (!selectedArea.isEmpty()) {
         stack->push(new EraseTiles(mapDocument(), tileLayer, selectedArea));
     }
+
+    stack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
+
+    stack->endMacro();
 }
 
 void MoveSelectionTool::paste()
@@ -166,18 +178,12 @@ void MoveSelectionTool::paste()
 
     auto undoStack = mapDocument()->undoStack();
 
-    QRegion selectedArea = mapDocument()->selectedArea();
-    undoStack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
-
     undoStack->push(new PaintTileLayer(mapDocument(),
                                        target,
                                        preview->x(),
                                        preview->y(),
                                        preview,
-                                       selectedArea));
-
-    undoStack->push(new ChangeSelectedArea(mapDocument(), selectedArea));
-    undoStack->endMacro();
+                                       brushItem()->tileRegion()));
 
     brushItem()->clear();
     mPreviewLayer.clear();
