@@ -117,10 +117,17 @@ void MoveSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
+void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton)
+        return;
+
     if (mDragging) {
         mDragging = false;
+    }
+
+    if (mCut) {
+        mCut = false;
     }
 
     mMouseDown = false;
