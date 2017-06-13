@@ -126,10 +126,6 @@ void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mDragging = false;
     }
 
-    if (mCut) {
-        mCut = false;
-    }
-
     mMouseDown = false;
     refreshCursor();
 }
@@ -158,8 +154,8 @@ void MoveSelectionTool::cut()
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &selectedArea = mapDocument()->selectedArea();
 
-    TileLayer *brushLayer = tileLayer->copy(tileLayer->bounds());
-    mPreviewLayer = SharedTileLayer(brushLayer);
+    mPreviewLayer = SharedTileLayer(tileLayer->copy(selectedArea.translated(-tileLayer->position())));
+    mPreviewLayer->setPosition(selectedArea.boundingRect().topLeft());
 
     brushItem()->setTileLayer(mPreviewLayer, selectedArea);
 
@@ -194,4 +190,6 @@ void MoveSelectionTool::paste()
 
     brushItem()->clear();
     mPreviewLayer.clear();
+
+    mCut = false;
 }
