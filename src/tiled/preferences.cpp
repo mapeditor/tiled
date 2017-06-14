@@ -66,6 +66,7 @@ Preferences::Preferences()
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
+    mTemplateDocumentsFile = stringValue("TemplateDocumentsFile");
     mSettings->endGroup();
 
     SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
@@ -124,6 +125,12 @@ Preferences::Preferences()
         mSettings->remove(QLatin1String("ObjectTypes"));
     }
 
+    // Retrieve saved template groups
+    TemplateDocumentsSerializer templateDocumentsSerializer;
+    bool templatesLoaded = templateDocumentsSerializer.readTemplateDocuments(templateDocumentsFile(), mTemplateDocuments);
+
+    if (!templatesLoaded)
+        qDebug() << templateDocumentsSerializer.errorString();
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -436,6 +443,11 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     emit objectTypesChanged();
 }
 
+void Preferences::setTemplateDocuments(const TemplateDocuments &templateDocuments)
+{
+    mTemplateDocuments = templateDocuments;
+}
+
 static QString lastPathKey(Preferences::FileType fileType)
 {
     QString key = QLatin1String("LastPaths/");
@@ -443,6 +455,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     switch (fileType) {
     case Preferences::ObjectTypesFile:
         key.append(QLatin1String("ObjectTypes"));
+        break;
+    case Preferences::TemplateDocumentsFile:
+        key.append(QLatin1String("TemplateDocuments"));
         break;
     case Preferences::ImageFile:
         key.append(QLatin1String("Images"));
@@ -715,4 +730,21 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
 
     emit stampsDirectoryChanged(fileName);
+}
+
+QString Preferences::templateDocumentsFile() const
+{
+    if (mTemplateDocumentsFile.isEmpty())
+        return dataLocation() + QLatin1String("/templatedocuments.xml");
+
+    return mTemplateDocumentsFile;
+}
+
+void Preferences::setTemplateDocumentsFile(const QString &fileName)
+{
+    if (mTemplateDocumentsFile == fileName)
+        return;
+
+    mTemplateDocumentsFile = fileName;
+    mSettings->setValue(QLatin1String("Storage/TemplateDocumentsFile"), fileName);
 }

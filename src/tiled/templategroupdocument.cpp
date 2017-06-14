@@ -30,6 +30,14 @@
 #include "templategroupdocument.h"
 
 #include "templategroupformat.h"
+#include "tmxmapformat.h"
+#include "savefile.h"
+
+#include <QCoreApplication>
+#include <QDebug>
+#include <QDir>
+#include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -93,4 +101,126 @@ QString TemplateGroupDocument::displayName() const
 void TemplateGroupDocument::addTemplate(ObjectTemplate *objectTemplate)
 {
     mTemplateGroup->addTemplate(objectTemplate);
+}
+
+
+static void writeTemplateDocumentsXml(QFileDevice *device,
+                                      const TemplateDocuments &templateDocuments)
+{
+    QXmlStreamWriter writer(device);
+
+    writer.setAutoFormatting(true);
+    writer.setAutoFormattingIndent(1);
+
+    writer.writeStartDocument();
+    writer.writeStartElement(QLatin1String("templateDocuments"));
+
+    for (const TemplateGroupDocument *templateDocument : templateDocuments) {
+        writer.writeStartElement(QLatin1String("templatedocument"));
+
+        writer.writeAttribute(QLatin1String("path"), templateDocument->fileName());
+
+        writer.writeEndElement();
+    }
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+}
+
+static void readTemplateDocumentsXml(QFileDevice *device,
+                                     TemplateDocuments &templateDocuments,
+                                     QString &error)
+{
+    QXmlStreamReader reader(device);
+
+    if (!reader.readNextStartElement() || reader.name() != QLatin1String("templatedocuments")) {
+        error = QCoreApplication::translate(
+                    "TemplateDocuments", "File doesn't contain template documents.");
+        return;
+    }
+
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("templatedocument")) {
+            const QXmlStreamAttributes atts = reader.attributes();
+            const QString path(atts.value(QLatin1String("path")).toString());
+
+            auto templateGroupFormat = new TtxTemplateGroupFormat();
+
+            // TODO: handle errors that might happen while loading
+            auto templateGroupDocument = TemplateGroupDocument::load(path, templateGroupFormat);
+            templateDocuments.append(templateGroupDocument);
+
+            reader.skipCurrentElement();
+        }
+    }
+
+    if (reader.hasError()) {
+        error = QCoreApplication::translate("TemplateDocuments",
+                                             "%3\n\nLine %1, column %2")
+                .arg(reader.lineNumber())
+                .arg(reader.columnNumber())
+                .arg(reader.errorString());
+    }
+}
+
+static TemplateDocumentsSerializer::Format detectFormat(const QString &fileName)
+{
+    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive))
+        return TemplateDocumentsSerializer::Json;
+    else
+        return TemplateDocumentsSerializer::Xml;
+}
+
+TemplateDocumentsSerializer::TemplateDocumentsSerializer(Format format)
+    :mFormat(format)
+{
+}
+
+bool TemplateDocumentsSerializer::writeTemplateDocuments(const QString &fileName,
+                                                         const TemplateDocuments &templateDocuments)
+{
+    mError.clear();
+
+    SaveFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = QCoreApplication::translate(
+                    "TemplateDocuments", "Could not open file for writing.");
+        return false;
+    }
+
+    Format format = mFormat;
+    if (format == Autodetect)
+        format = detectFormat(fileName);
+
+    if (format == Xml)
+        writeTemplateDocumentsXml(file.device(), templateDocuments);
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+bool TemplateDocumentsSerializer::readTemplateDocuments(const QString &fileName,
+                                                        TemplateDocuments &templateDocuments)
+{
+    mError.clear();
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = QCoreApplication::translate(
+                    "TemplateDocuments", "Could not open file.");
+        return false;
+    }
+
+    Format format = mFormat;
+    if (format == Autodetect)
+        format = detectFormat(fileName);
+
+    if (format == Xml)
+        readTemplateDocumentsXml(&file, templateDocuments, mError);
+
+    return mError.isEmpty();
 }

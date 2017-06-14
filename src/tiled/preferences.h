@@ -27,6 +27,7 @@
 
 #include "map.h"
 #include "objecttypes.h"
+#include "templategroupdocument.h"
 
 class QSettings;
 
@@ -106,8 +107,12 @@ public:
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
+    const TemplateDocuments &templateDocuments() const { return mTemplateDocuments; }
+    void setTemplateDocuments(const TemplateDocuments &templateDocuments);
+
     enum FileType {
         ObjectTypesFile,
+        TemplateDocumentsFile,
         ImageFile,
         ExportedFile,
         ExternalTileset
@@ -126,6 +131,9 @@ public:
 
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
+
+    QString templateDocumentsFile() const;
+    void setTemplateDocumentsFile(const QString &filePath);
 
     QDate firstRun() const;
     int runCount() const;
@@ -240,12 +248,14 @@ private:
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
     ObjectTypes mObjectTypes;
+    TemplateDocuments mTemplateDocuments;
 
     bool mAutoMapDrawing;
 
     QString mMapsDirectory;
     QString mStampsDirectory;
     QString mObjectTypesFile;
+    QString mTemplateDocumentsFile;
 
     QDate mFirstRun;
     QDate mPatreonDialogTime;

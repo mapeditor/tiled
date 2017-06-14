@@ -24,18 +24,24 @@
 #include "templategroup.h"
 
 namespace Tiled {
+namespace Internal {
 
-ObjectTemplateModel::ObjectTemplateModel(const TemplateGroups &templateGroups, QObject *parent):
+ObjectTemplateModel::ObjectTemplateModel(const TemplateDocuments &templateDocuments, QObject *parent):
     QAbstractItemModel(parent),
-    mTemplateGroups(templateGroups)
+    mTemplateDocuments(templateDocuments)
 {
 }
 
 QModelIndex ObjectTemplateModel::index(int row, int column,
                                        const QModelIndex &parent) const
 {
-    if (!parent.isValid())
-        return createIndex(row, column, mTemplateGroups.at(row));
+    if (!parent.isValid()) {
+        if (row < mTemplateDocuments.size()) {
+            return  createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
+        } else {
+            return QModelIndex();
+        }
+    }
 
     if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
         if (row < templateGroup->templateCount())
@@ -52,7 +58,11 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 
     if (ObjectTemplate *objectTemplate = toObjectTemplate(index)) {
         auto templateGroup = objectTemplate->templateGroup();
-        return createIndex(mTemplateGroups.indexOf(templateGroup), 0, templateGroup);
+        // TODO: this doesn't work properly when multiple documents have the same group
+        for (int i = 0; i < mTemplateDocuments.size(); ++i) {
+            if (mTemplateDocuments.at(i)->templateGroup() == templateGroup)
+                return createIndex(i, 0, templateGroup);
+        }
     }
 
     return QModelIndex();
@@ -61,7 +71,7 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 int ObjectTemplateModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mTemplateGroups.size();
+        return mTemplateDocuments.size();
 
     if (TemplateGroup *templateGroup = toTemplateGroup(parent))
         return templateGroup->templateCount();
@@ -114,4 +124,5 @@ TemplateGroup *ObjectTemplateModel::toTemplateGroup(const QModelIndex &index) co
     return nullptr;
 }
 
+} // namespace Internal
 } // namespace Tiled

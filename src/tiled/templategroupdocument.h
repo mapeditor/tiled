@@ -58,14 +58,40 @@ public:
     QString displayName() const override;
     void addTemplate(ObjectTemplate *objectTemplate);
 
-    const TemplateGroup *templateGroup() const;
+    TemplateGroup *templateGroup();
 
 private:
     TemplateGroup *mTemplateGroup;
 };
 
-inline const TemplateGroup *TemplateGroupDocument::templateGroup() const
+typedef QList<TemplateGroupDocument*> TemplateDocuments;
+
+inline TemplateGroup *TemplateGroupDocument::templateGroup()
 { return mTemplateGroup; }
+
+class TemplateDocumentsSerializer
+{
+public:
+    enum Format {
+        Autodetect,
+        Xml,
+        Json
+    };
+
+    TemplateDocumentsSerializer(Format format = Autodetect);
+
+    bool writeTemplateDocuments(const QString &fileName,
+                                const TemplateDocuments &templateDocuments);
+
+    bool readTemplateDocuments(const QString &fileName,
+                               TemplateDocuments &templateDocuments);
+
+    QString errorString() const { return mError; }
+
+private:
+    Format mFormat;
+    QString mError;
+};
 
 } // namespace Internal
 } // namespace Tiled

@@ -21,17 +21,19 @@
 
 #pragma once
 
+#include "templategroupdocument.h"
+
 #include <QAbstractItemModel>
-#include <templategroup.h>
 
 namespace Tiled {
+namespace Internal {
 
 class ObjectTemplateModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    ObjectTemplateModel(const TemplateGroups &templateGroups, QObject *parent = nullptr);
+    ObjectTemplateModel(const TemplateDocuments &templateDocuments, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -43,10 +45,10 @@ public:
 
 private:
 
-    const TemplateGroups mTemplateGroups;
+    const TemplateDocuments mTemplateDocuments;
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
 
-
+} // namespace Internal
 } // namespace Tiled

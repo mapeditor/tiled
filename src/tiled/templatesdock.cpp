@@ -23,6 +23,7 @@
 
 #include "objecttemplatemodel.h"
 #include "utils.h"
+#include "preferences.h"
 
 #include <QBoxLayout>
 #include <QToolBar>
@@ -69,23 +70,8 @@ TemplatesView::TemplatesView(QWidget *parent)
     setUniformRowHeights(true);
     setHeaderHidden(true);
 
-    auto *templateGroup1 = new TemplateGroup(QLatin1String("Test Group 1"));
-    auto *objectTemplate1 = new ObjectTemplate(1, QLatin1String("Template 1"));
-    auto *objectTemplate2 = new ObjectTemplate(2, QLatin1String("Template 2"));
-    templateGroup1->addTemplate(objectTemplate1);
-    templateGroup1->addTemplate(objectTemplate2);
-
-    auto *templateGroup2 = new TemplateGroup(QLatin1String("Test Group 2"));
-    auto *objectTemplate3 = new ObjectTemplate(1, QLatin1String("Template 3"));
-    auto *objectTemplate4 = new ObjectTemplate(2, QLatin1String("Template 4"));
-    templateGroup2->addTemplate(objectTemplate3);
-    templateGroup2->addTemplate(objectTemplate4);
-
-    QList<TemplateGroup*> templateGroups;
-    templateGroups.append(templateGroup1);
-    templateGroups.append(templateGroup2);
-
-    ObjectTemplateModel *objectTemplateModel = new ObjectTemplateModel(templateGroups);
+    Preferences *prefs = Preferences::instance();
+    ObjectTemplateModel *objectTemplateModel = new ObjectTemplateModel(prefs->templateDocuments());
 
     setModel(objectTemplateModel);
 
