@@ -217,6 +217,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
+
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
