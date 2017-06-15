@@ -4,6 +4,16 @@ source: reference/tmx-changelog.md
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 1.0 ##
+
+* A new [`group`](tmx-map-format.md#group) element was added which is a group layer that can have other layers as child elements. This means layers now form a hierarchy.
+* Added Text objects, identified by a new [`text`](tmx-map-format.md#text) element which is used as a child of the [`object`](tmx-map-format.md#object) element.
+* Added a [`tile.type`](tmx-map-format.md#tile) attribute for supporting [typed tiles](custom-properties.md#typed-tiles).
+
+## Tiled 0.18 ##
+
+*No file format changes.*
+
 ## Tiled 0.17 ##
 
 * Added `color` and `file` as possible values for the [`property.type`](tmx-map-format.md#property) attribute.
