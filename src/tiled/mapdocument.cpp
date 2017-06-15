@@ -135,7 +135,7 @@ MapDocument::~MapDocument()
  */
 bool MapDocument::saveSelectedObjectsAsTemplateGroup()
 {
-    TemplateGroupFormat *templateGroupFormat = new TtxTemplateGroupFormat();
+    TemplateGroupFormat *templateGroupFormat = TtxTemplateGroupFormat::instance();
 
     TemplateGroup *templateGroup = new TemplateGroup(QLatin1String("test group"));
     templateGroup->setFormat(templateGroupFormat);

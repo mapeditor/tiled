@@ -179,7 +179,7 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup(QIODevice *device, const QStr
 {
     mError.clear();
     mPath = path;
-    TemplateGroup *templateGroup;
+    TemplateGroup *templateGroup = nullptr;
 
     xml.setDevice(device);
 

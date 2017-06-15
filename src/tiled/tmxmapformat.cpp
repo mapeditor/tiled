@@ -172,6 +172,12 @@ TtxTemplateGroupFormat::TtxTemplateGroupFormat(QObject *parent)
 {
 }
 
+TtxTemplateGroupFormat *TtxTemplateGroupFormat::instance()
+{
+    static TtxTemplateGroupFormat format;
+    return &format;
+}
+
 TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
 {
     mError.clear();
@@ -191,7 +197,7 @@ bool TtxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QSt
     MapWriter writer;
     writer.setDtdEnabled(prefs->dtdEnabled());
 
-    bool result =  writer.writeTemplateGroup(templateGroup, fileName);
+    bool result = writer.writeTemplateGroup(templateGroup, fileName);
     if (!result)
         mError = writer.errorString();
     else

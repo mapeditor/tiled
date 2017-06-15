@@ -113,7 +113,7 @@ static void writeTemplateDocumentsXml(QFileDevice *device,
     writer.setAutoFormattingIndent(1);
 
     writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("templateDocuments"));
+    writer.writeStartElement(QLatin1String("templatedocuments"));
 
     for (const TemplateGroupDocument *templateDocument : templateDocuments) {
         writer.writeStartElement(QLatin1String("templatedocument"));
@@ -144,14 +144,14 @@ static void readTemplateDocumentsXml(QFileDevice *device,
             const QXmlStreamAttributes atts = reader.attributes();
             const QString path(atts.value(QLatin1String("path")).toString());
 
-            auto templateGroupFormat = new TtxTemplateGroupFormat();
+            auto templateGroupFormat = TtxTemplateGroupFormat::instance();
 
             // TODO: handle errors that might happen while loading
             auto templateGroupDocument = TemplateGroupDocument::load(path, templateGroupFormat);
-            templateDocuments.append(templateGroupDocument);
-
-            reader.skipCurrentElement();
+            if (templateGroupDocument)
+                templateDocuments.append(templateGroupDocument);
         }
+        reader.skipCurrentElement();
     }
 
     if (reader.hasError()) {
@@ -172,7 +172,7 @@ static TemplateDocumentsSerializer::Format detectFormat(const QString &fileName)
 }
 
 TemplateDocumentsSerializer::TemplateDocumentsSerializer(Format format)
-    :mFormat(format)
+    : mFormat(format)
 {
 }
 

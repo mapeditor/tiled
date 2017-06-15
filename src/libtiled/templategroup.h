@@ -54,8 +54,8 @@ public:
     const QString &name() const;
     void setName(const QString &name);
 
-    void setFormat(TemplateGroupFormat *format);
     TemplateGroupFormat *format() const;
+    void setFormat(TemplateGroupFormat *format);
 
     int templateCount() const { return mTemplates.size(); }
 
@@ -67,8 +67,6 @@ private:
     TemplateGroupFormat *mFormat;
     QString mName;
 };
-
-typedef QList<TemplateGroup*> TemplateGroups;
 
 inline const QList<ObjectTemplate*> &TemplateGroup::templates() const
 { return mTemplates; }

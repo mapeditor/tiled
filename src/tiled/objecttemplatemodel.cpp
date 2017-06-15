@@ -36,14 +36,9 @@ QModelIndex ObjectTemplateModel::index(int row, int column,
                                        const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        if (row < mTemplateDocuments.size()) {
-            return  createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
-        } else {
-            return QModelIndex();
-        }
-    }
-
-    if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
+        if (row < mTemplateDocuments.size())
+            return createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
+    } else if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
         if (row < templateGroup->templateCount())
             return createIndex(row, column, templateGroup->templateAt(row));
     }
@@ -87,9 +82,6 @@ int ObjectTemplateModel::columnCount(const QModelIndex &parent) const
 
 QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
-
     if (role == Qt::DisplayRole) {
         if (TemplateGroup *templateGroup = toTemplateGroup(index))
             return templateGroup->name();

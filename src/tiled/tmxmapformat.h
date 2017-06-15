@@ -112,6 +112,8 @@ class TtxTemplateGroupFormat : public TemplateGroupFormat
     Q_INTERFACES(Tiled::TemplateGroupFormat)
 
 public:
+    static TtxTemplateGroupFormat *instance();
+
     TtxTemplateGroupFormat(QObject *parent = nullptr);
 
     TemplateGroup *read(const QString &fileName) override;
