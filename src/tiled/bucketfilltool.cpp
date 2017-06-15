@@ -283,6 +283,18 @@ void BucketFillTool::languageChanged()
 {
     setName(tr("Bucket Fill Tool"));
     setShortcut(QKeySequence(tr("F")));
+
+    mRandom->setToolTip(tr("Random Mode"));
+    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
+    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
+    mRotateLeft->setToolTip(tr("Rotate Left"));
+    mRotateLeft->setToolTip(tr("Rotate Right"));
+
+    mRandom->setShortcut(QKeySequence(tr("D")));
+    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
+    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
+    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
+    mRotateRight->setShortcut(QKeySequence(tr("Z")));
 }
 
 void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
