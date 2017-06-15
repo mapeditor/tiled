@@ -63,12 +63,20 @@ static void writeProperty(QXmlStreamWriter &writer,
     writer.writeTextElement(name, toString(value));
 }
 
-static QString sanitizeName(const QString &name)
+static QString sanitizeName(QString name)
 {
-    QString sanitized = name;
-    sanitized.replace(QRegularExpression(QLatin1String("[^a-zA-Z0-9]")),
-                      QLatin1String("_"));
-    return sanitized;
+    static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
+    return name.replace(regexp, QLatin1String("_"));
+}
+
+static QString effectiveObjectType(const MapObject *object)
+{
+    if (!object->type().isEmpty())
+        return object->type();
+    if (Tile *tile = object->cell().tile())
+        return tile->type();
+
+    return QString();
 }
 
 GmxPlugin::GmxPlugin()
@@ -121,13 +129,14 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            if (object->type().isEmpty())
+            const QString type = effectiveObjectType(object);
+            if (type.isEmpty())
                 continue;
 
             stream.writeStartElement("instance");
 
             // The type is used to refer to the name of the object
-            stream.writeAttribute("objName", sanitizeName(object->type()));
+            stream.writeAttribute("objName", sanitizeName(type));
 
             QPointF pos = object->position();
             qreal scaleX = 1;
@@ -271,7 +280,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             foreach (const MapObject *object, objects) {
                 // Objects with types are already exported as instances
-                if (!object->type().isEmpty())
+                if (!effectiveObjectType(object).isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is
