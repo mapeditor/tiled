@@ -867,7 +867,7 @@ static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
 {
     if (tileset.isCollection())
         return false;
-    if (!tileset.imageLoaded())
+    if (tileset.imageStatus() != LoadingReady)
         return false;
     if (tileset.columnCount() == tileset.expectedColumnCount())
         return false;

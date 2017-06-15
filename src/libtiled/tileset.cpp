@@ -52,7 +52,7 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mExpectedRowCount(0),
     mNextTileId(0),
     mTerrainDistancesDirty(false),
-    mLoaded(true)
+    mStatus(LoadingReady)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
@@ -173,7 +173,7 @@ bool Tileset::loadFromImage(const QImage &image,
     mImageReference.source = fileName;
 
     if (image.isNull()) {
-        mImageReference.loaded = false;
+        mImageReference.status = LoadingError;
         return false;
     }
 
@@ -222,7 +222,7 @@ bool Tileset::loadFromImage(const QImage &image,
 
     mImageReference.size = image.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
-    mImageReference.loaded = true;
+    mImageReference.status = LoadingReady;
 
     return true;
 }
@@ -618,7 +618,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mNextTileId, other.mNextTileId);
     std::swap(mTerrainTypes, other.mTerrainTypes);
     std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
-    std::swap(mLoaded, other.mLoaded);
+    std::swap(mStatus, other.mStatus);
     std::swap(mBackgroundColor, other.mBackgroundColor);
     std::swap(mFormat, other.mFormat);
 
@@ -651,7 +651,7 @@ SharedTileset Tileset::clone() const
     c->mExpectedRowCount = mExpectedRowCount;
     c->mNextTileId = mNextTileId;
     c->mTerrainDistancesDirty = mTerrainDistancesDirty;
-    c->mLoaded = mLoaded;
+    c->mStatus = mStatus;
     c->mBackgroundColor = mBackgroundColor;
     c->mFormat = mFormat;
 

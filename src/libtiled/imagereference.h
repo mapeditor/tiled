@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "tiled.h"
+
 #include <QColor>
 #include <QImage>
 #include <QString>
@@ -29,14 +31,14 @@ namespace Tiled {
 class ImageReference
 {
 public:
-    ImageReference() : loaded(false) {}
+    ImageReference() : status(LoadingPending) {}
 
     QString source;
     QColor transparentColor;
     QSize size;
     QByteArray format;
     QByteArray data;
-    bool loaded;
+    LoadingStatus status;
 
     bool hasImage() const;
     QImage create() const;

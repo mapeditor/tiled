@@ -269,14 +269,14 @@ Map *MapReaderPrivate::readMap()
     if (xml.hasError()) {
         mMap.reset();
     } else {
-        // Try to load the tileset images
+        // Try to load the tileset images for embedded tilesets
         auto tilesets = mMap->tilesets();
         for (SharedTileset &tileset : tilesets) {
             if (!tileset->isCollection() && tileset->fileName().isEmpty())
                 tileset->loadImage();
         }
 
-        // Fix up sizes of tile objects
+        // Fix up sizes of tile objects. This is for backwards compatibility.
         LayerIterator iterator(mMap.data());
         while (Layer *layer = iterator.next()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
@@ -367,7 +367,7 @@ SharedTileset MapReaderPrivate::readTileset()
             // Insert a placeholder to allow the map to load
             tileset = Tileset::create(QFileInfo(absoluteSource).completeBaseName(), 32, 32);
             tileset->setFileName(absoluteSource);
-            tileset->setLoaded(false);
+            tileset->setStatus(LoadingError);
         }
 
         xml.skipCurrentElement();

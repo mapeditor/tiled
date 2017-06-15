@@ -52,6 +52,13 @@ enum Alignment {
     BottomRight
 };
 
+enum LoadingStatus {
+    LoadingPending,
+    LoadingReady,
+    LoadingInProgress,
+    LoadingError
+};
+
 const int CHUNK_SIZE = 16;
 const int CHUNK_MASK = CHUNK_SIZE - 1;
 
