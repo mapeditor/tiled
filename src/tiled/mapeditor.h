@@ -165,6 +165,7 @@ private:
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
+    QToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;

@@ -26,6 +26,8 @@
 #include "tilelayer.h"
 #include "tilestamp.h"
 
+class QAction;
+
 namespace Tiled {
 
 class Tile;
@@ -66,6 +68,8 @@ public:
 
     bool isRandom() { return mIsRandom; }
 
+    void populateToolBar(QToolBar *toolBar) override;
+
 public slots:
     void setRandom(bool value);
 
@@ -75,7 +79,9 @@ signals:
      * this signal instead of setting its stamp directly so that the fill tool
      * also gets the new stamp.
      */
-    void stampCaptured(const TileStamp &stamp);
+    void stampChanged(const TileStamp &stamp);
+
+    void randomChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -105,6 +111,12 @@ private:
 
     QPoint mCaptureStart;
     QPoint mPrevTilePosition;
+
+    QAction *mRandom;
+    QAction *mFlipHorizontal;
+    QAction *mFlipVertical;
+    QAction *mRotateLeft;
+    QAction *mRotateRight;
 
     void drawPreviewLayer(const QVector<QPoint> &list);
 

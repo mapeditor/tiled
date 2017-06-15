@@ -27,6 +27,8 @@
 #include "tilelayer.h"
 #include "tilestamp.h"
 
+class QAction;
+
 namespace Tiled {
 namespace Internal {
 
@@ -66,8 +68,15 @@ public:
 
     bool isRandom() { return mIsRandom; }
 
+    void populateToolBar(QToolBar *toolBar) override;
+
 public slots:
     void setRandom(bool value);
+
+signals:
+    void stampChanged(const TileStamp &stamp);
+
+    void randomChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -86,6 +95,12 @@ private:
     SharedTileLayer mFillOverlay;
     QRegion mFillRegion;
     QVector<SharedTileset> mMissingTilesets;
+
+    QAction *mRandom;
+    QAction *mFlipHorizontal;
+    QAction *mFlipVertical;
+    QAction *mRotateLeft;
+    QAction *mRotateRight;
 
     bool mIsActive;
     bool mLastShiftStatus;

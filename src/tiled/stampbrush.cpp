@@ -32,6 +32,8 @@
 #include "tilestamp.h"
 
 #include <math.h>
+#include <QAction>
+#include <QToolBar>
 #include <QVector>
 
 using namespace Tiled;
@@ -46,6 +48,54 @@ StampBrush::StampBrush(QObject *parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
 {
+    QIcon mDiceIcon(QLatin1String(":images/24x24/dice.png"));
+    QIcon mFlipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
+    QIcon mFlipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
+    QIcon mRotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
+    QIcon mRotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+
+    mDiceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
+    mFlipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
+    mFlipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
+    mRotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
+    mRotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
+
+    mRandom = new QAction(this);
+    mRandom->setIcon(mDiceIcon);
+    mRandom->setCheckable(true);
+    mRandom->setToolTip(tr("Random Mode"));
+    mRandom->setShortcut(QKeySequence(tr("D")));
+
+    mFlipHorizontal = new QAction(this);
+    mFlipHorizontal->setIcon(mFlipHorizontalIcon);
+    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
+    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
+
+    mFlipVertical = new QAction(this);
+    mFlipVertical->setIcon(mFlipVerticalIcon);
+    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
+    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
+
+    mRotateLeft = new QAction(this);
+    mRotateLeft->setIcon(mRotateLeftIcon);
+    mRotateLeft->setToolTip(tr("Rotate Left"));
+    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
+
+    mRotateRight = new QAction(this);
+    mRotateRight->setIcon(mRotateRightIcon);
+    mRotateLeft->setToolTip(tr("Rotate Right"));
+    mRotateRight->setShortcut(QKeySequence(tr("Z")));
+
+    connect(mRandom, &QAction::toggled, this, &StampBrush::randomChanged);
+
+    connect(mFlipHorizontal, &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
+    connect(mFlipVertical, &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
+    connect(mRotateLeft, &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
+    connect(mRotateRight, &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
 StampBrush::~StampBrush()
@@ -217,6 +267,16 @@ void StampBrush::setStamp(const TileStamp &stamp)
     updatePreview();
 }
 
+void StampBrush::populateToolBar(QToolBar *toolBar)
+{
+    mRandom->setChecked(mIsRandom);
+    toolBar->addAction(mRandom);
+    toolBar->addAction(mFlipHorizontal);
+    toolBar->addAction(mFlipVertical);
+    toolBar->addAction(mRotateLeft);
+    toolBar->addAction(mRotateRight);
+}
+
 void StampBrush::beginPaint()
 {
     if (mBrushBehavior != Free)
@@ -279,7 +339,7 @@ void StampBrush::endCapture()
 
         stamp->addLayer(capture);
 
-        emit stampCaptured(TileStamp(stamp));
+        emit stampChanged(TileStamp(stamp));
     } else {
         updatePreview();
     }

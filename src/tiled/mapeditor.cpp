@@ -154,6 +154,9 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar = new QToolBar(mMainWindow);
     mToolsToolBar->setObjectName(QLatin1String("toolsToolBar"));
 
+    mToolSpecificToolBar = new QToolBar(mMainWindow);
+    mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
+
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
@@ -185,6 +188,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addToolBar(mToolsToolBar);
+    mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
@@ -226,7 +230,11 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
-    connect(mStampBrush, &StampBrush::stampCaptured, this, &MapEditor::setStamp);
+
+    connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
+    connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
+    connect(mStampBrush, &StampBrush::randomChanged, this, &MapEditor::setRandom);
+    connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -415,6 +423,7 @@ QList<QToolBar *> MapEditor::toolBars() const
     return QList<QToolBar*> {
         mMainToolBar,
         mToolsToolBar,
+        mToolSpecificToolBar
     };
 }
 
@@ -498,6 +507,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     }
 
     mSelectedTool = tool;
+    mToolSpecificToolBar->clear();
 
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
@@ -517,6 +527,8 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     if (tool) {
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
+
+        tool->populateToolBar(mToolSpecificToolBar);
     }
 }
 
