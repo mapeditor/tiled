@@ -22,10 +22,13 @@
 #include "templatesdock.h"
 
 #include "objecttemplatemodel.h"
-#include "utils.h"
 #include "preferences.h"
+#include "tmxmapformat.h"
+#include "utils.h"
 
 #include <QBoxLayout>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -33,7 +36,8 @@ using namespace Tiled::Internal;
 
 TemplatesDock::TemplatesDock(QWidget *parent):
     QDockWidget(parent),
-    mTemplatesView(new TemplatesView)
+    mTemplatesView(new TemplatesView),
+    mNewTemplateGroup(new QAction(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
@@ -44,38 +48,92 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     layout->setSpacing(0);
     layout->addWidget(mTemplatesView);
 
-    mActionNewTemplateGroup = new QAction(this);
-    mActionNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    Utils::setThemeIcon(mNewTemplateGroup, "document-new");
+    connect(mNewTemplateGroup, SIGNAL(triggered()), SLOT(newTemplateGroup()));
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
 
-    toolBar->addAction(mActionNewTemplateGroup);
+    toolBar->addAction(mNewTemplateGroup);
 
     layout->addWidget(toolBar);
     setWidget(widget);
     retranslateUi();
 }
 
+void TemplatesDock::newTemplateGroup()
+{
+    QString filter = TtxTemplateGroupFormat().nameFilter();
+
+    Preferences *prefs = Preferences::instance();
+    QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
+    suggestedFileName += QLatin1String("/untitled.ttx");
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    suggestedFileName,
+                                                    filter);
+
+    if (fileName.isEmpty())
+        return;
+
+    QString error;
+    if (!mTemplatesView->objectTemplateModel()->addNewDocument(fileName, &error)) {
+        QMessageBox::critical(this, tr("Error Creating Template Group"), error);
+        return;
+    }
+
+    prefs->setLastPath(Preferences::TemplateDocumentsFile,
+                       QFileInfo(fileName).path());
+}
+
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Templates"));
+    mNewTemplateGroup->setText(tr("New Template Group"));
 }
 
 TemplatesView::TemplatesView(QWidget *parent)
-    : QTreeView(parent)
+    : QTreeView(parent),
+      mObjectTemplateModel(new ObjectTemplateModel)
 {
     setUniformRowHeights(true);
     setHeaderHidden(true);
 
     Preferences *prefs = Preferences::instance();
-    ObjectTemplateModel *objectTemplateModel = new ObjectTemplateModel(prefs->templateDocuments());
+    mObjectTemplateModel->setTemplateDocuments(prefs->templateDocuments());
 
-    setModel(objectTemplateModel);
+    setModel(mObjectTemplateModel);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    connect(mObjectTemplateModel, &ObjectTemplateModel::dataChanged,
+            this, &TemplatesView::applyTemplateGroups);
+    connect(mObjectTemplateModel, &ObjectTemplateModel::rowsInserted,
+            this, &TemplatesView::applyTemplateGroups);
+}
+
+void TemplatesView::applyTemplateGroups()
+{
+    auto templateGroups = mObjectTemplateModel->templateDocuments();
+    Preferences *prefs = Preferences::instance();
+    prefs->setTemplateDocuments(templateGroups);
+
+    QString templateDocumentsFile = prefs->templateDocumentsFile();
+    QDir templateDocumentsDir = QFileInfo(templateDocumentsFile).dir();
+
+    if (!templateDocumentsDir.exists())
+        templateDocumentsDir.mkpath(QLatin1String("."));
+
+    TemplateDocumentsSerializer serializer;
+    if (!serializer.writeTemplateDocuments(templateDocumentsFile, templateGroups)) {
+        QMessageBox::critical(this, tr("Error Writing Template Groups"),
+                              tr("Error writing to %1:\n%2")
+                              .arg(prefs->templateDocumentsFile(),
+                                   serializer.errorString()));
+    }
 }
 
 QSize TemplatesView::sizeHint() const

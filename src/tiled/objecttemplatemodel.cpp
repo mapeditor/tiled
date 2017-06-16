@@ -22,13 +22,15 @@
 #include "objecttemplatemodel.h"
 
 #include "templategroup.h"
+#include "tmxmapformat.h"
+
+#include <QFileInfo>
 
 namespace Tiled {
 namespace Internal {
 
-ObjectTemplateModel::ObjectTemplateModel(const TemplateDocuments &templateDocuments, QObject *parent):
-    QAbstractItemModel(parent),
-    mTemplateDocuments(templateDocuments)
+ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
+    QAbstractItemModel(parent)
 {
 }
 
@@ -90,6 +92,22 @@ QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
+{
+    // TODO: remove the old file if it was already loaded
+    auto templateGroup = new TemplateGroup(QFileInfo(fileName).baseName());
+    auto templateGroupDocument = new TemplateGroupDocument(templateGroup, fileName);
+
+    if (!templateGroupDocument->save(fileName, error))
+        return false;
+
+    beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
+    mTemplateDocuments.append(templateGroupDocument);
+    endInsertRows();
+
+    return true;
 }
 
 ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) const

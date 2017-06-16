@@ -31,6 +31,8 @@ namespace Tiled {
 
 namespace Internal {
 
+class ObjectTemplateModel;
+
 class TemplatesView;
 
 class TemplatesDock : public QDockWidget
@@ -40,11 +42,16 @@ class TemplatesDock : public QDockWidget
 public:
     TemplatesDock(QWidget *parent = nullptr);
 
+
+private slots:
+    void newTemplateGroup();
+
 private:
     void retranslateUi();
 
-    QAction *mActionNewTemplateGroup;
     TemplatesView *mTemplatesView;
+
+    QAction *mNewTemplateGroup;
 };
 
 class TemplatesView : public QTreeView
@@ -55,9 +62,15 @@ public:
     QSize sizeHint() const override;
     TemplatesView(QWidget *parent = nullptr);
 
+    void applyTemplateGroups();
+    ObjectTemplateModel *objectTemplateModel();
+
 private:
-    QAbstractProxyModel *mProxyModel;
+    ObjectTemplateModel *mObjectTemplateModel;
 };
+
+inline ObjectTemplateModel *TemplatesView::objectTemplateModel()
+{ return mObjectTemplateModel; }
 
 } // namespace Internal
 } // namespace Tiled

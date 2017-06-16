@@ -34,8 +34,7 @@
 #include "savefile.h"
 
 #include <QCoreApplication>
-#include <QDebug>
-#include <QDir>
+#include <QFile>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -55,11 +54,11 @@ TemplateGroupDocument::~TemplateGroupDocument()
 
 bool TemplateGroupDocument::save(const QString &fileName, QString *error)
 {
-    TemplateGroupFormat *templateGroupFormat = mTemplateGroup->format();
+    auto format = TtxTemplateGroupFormat::instance();
 
-    if (!templateGroupFormat->write(mTemplateGroup, fileName)) {
+    if (!format->write(mTemplateGroup, fileName)) {
         if (error)
-            *error = templateGroupFormat->errorString();
+            *error = format->errorString();
         return false;
     }
 
