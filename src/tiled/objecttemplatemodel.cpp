@@ -25,9 +25,16 @@
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
+#include <QtCore>
 
 namespace Tiled {
 namespace Internal {
+
+ObjectTemplateModel *ObjectTemplateModel::instance()
+{
+    static ObjectTemplateModel model;
+    return &model;
+}
 
 ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
     QAbstractItemModel(parent)
@@ -55,7 +62,6 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 
     if (ObjectTemplate *objectTemplate = toObjectTemplate(index)) {
         auto templateGroup = objectTemplate->templateGroup();
-        // TODO: this doesn't work properly when multiple documents have the same group
         for (int i = 0; i < mTemplateDocuments.size(); ++i) {
             if (mTemplateDocuments.at(i)->templateGroup() == templateGroup)
                 return createIndex(i, 0, templateGroup);
@@ -96,16 +102,50 @@ QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
 
 bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
 {
-    // TODO: remove the old file if it was already loaded
+    // Remove old document if the new document overwrites it
+    for (int i = mTemplateDocuments.size() - 1; i >= 0; --i) {
+        if (mTemplateDocuments.at(i)->fileName() == fileName) {
+            beginRemoveRows(QModelIndex(), i, i);
+            delete mTemplateDocuments.at(i);
+            mTemplateDocuments.removeAt(i);
+            endRemoveRows();
+        }
+    }
+
     auto templateGroup = new TemplateGroup(QFileInfo(fileName).baseName());
-    auto templateGroupDocument = new TemplateGroupDocument(templateGroup, fileName);
+    QScopedPointer<TemplateGroupDocument> templateGroupDocument(new TemplateGroupDocument(templateGroup, fileName));
 
     if (!templateGroupDocument->save(fileName, error))
         return false;
 
     beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
-    mTemplateDocuments.append(templateGroupDocument);
+    mTemplateDocuments.append(templateGroupDocument.take());
     endInsertRows();
+
+    return true;
+}
+
+bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, int documentIndex)
+{
+    auto document = mTemplateDocuments.at(documentIndex);
+    auto templateGroup = document->templateGroup();
+    auto templates = document->templateGroup()->templates();
+    int count = templates.count();
+
+    // TODO: Create nextTemplateId member in the templateGroup
+    int id = (count == 0) ? 1 : templates.last()->id() + 1;
+
+    auto objectTemplate = new ObjectTemplate(id, name);
+    objectTemplate->setObject(object);
+
+    auto groupIndex = createIndex(documentIndex, 0, templateGroup);
+
+    beginInsertRows(groupIndex, count, count);
+    document->addTemplate(objectTemplate);
+    endInsertRows();
+
+    if (!document->save(document->fileName()))
+        return false;
 
     return true;
 }

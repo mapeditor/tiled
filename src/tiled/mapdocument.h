@@ -76,7 +76,7 @@ public:
     ~MapDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;
-    bool saveSelectedObjectsAsTemplateGroup();
+    void saveSelectedObject(QString name, int groupIndex);
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null

@@ -169,6 +169,7 @@ SOURCES += aboutdialog.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
     newmapdialog.cpp \
+    newtemplatedialog.cpp \
     newtilesetdialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
@@ -342,6 +343,7 @@ HEADERS += aboutdialog.h \
     movemapobject.h \
     movemapobjecttogroup.h \
     newmapdialog.h \
+    newtemplatedialog.h \
     newtilesetdialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
@@ -429,6 +431,7 @@ FORMS += aboutdialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \
     newmapdialog.ui \
+    newtemplatedialog.ui \
     newtilesetdialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \

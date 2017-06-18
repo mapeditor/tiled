@@ -43,9 +43,11 @@
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
+#include "objecttemplatemodel.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
+#include "preferences.h"
 #include "rangeset.h"
 #include "reparentlayers.h"
 #include "resizemap.h"
@@ -64,7 +66,6 @@
 #include <QFileInfo>
 #include <QRect>
 #include <QUndoStack>
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -127,56 +128,13 @@ MapDocument::~MapDocument()
     delete mMap;
 }
 
-/**
- * Currently, this is the entry point for testing templates,
- * it creates a TemplateGroup from the selected objects except the last object,
- * then creates a TemplateGroupDocument from the TemplateGroup,
- * then adds the last object to the document, saves, loads then prints the object data
- */
-bool MapDocument::saveSelectedObjectsAsTemplateGroup()
+void MapDocument::saveSelectedObject(QString name, int groupIndex)
 {
-    TemplateGroupFormat *templateGroupFormat = TtxTemplateGroupFormat::instance();
+    if (mSelectedObjects.size() != 1)
+        return;
 
-    TemplateGroup *templateGroup = new TemplateGroup(QLatin1String("test group"));
-    templateGroup->setFormat(templateGroupFormat);
-
-    for (MapObject *o : mSelectedObjects) {
-        auto tileset = o->cell().tileset();
-        if (tileset)
-            templateGroup->addTileset(tileset->sharedPointer());
-    }
-
-    for (int i = 0; i < mSelectedObjects.size() - 1; ++i) {
-        ObjectTemplate *objectTemplate = new ObjectTemplate(i+1, QLatin1String("template ") + QString::number(i+1));
-        objectTemplate->setObject(mSelectedObjects[i]);
-        templateGroup->addTemplate(objectTemplate);
-    }
-
-    QString fileName = QLatin1String("templateGroup.ttx");
-
-    TemplateGroupDocument *templateGroupDocument = new TemplateGroupDocument(templateGroup, fileName);
-
-    const TemplateGroup *constTemplateGroup = templateGroupDocument->templateGroup();
-
-    ObjectTemplate *objectTemplate = new ObjectTemplate(99, QLatin1String("last template"));
-    objectTemplate->setObject(mSelectedObjects.back());
-    templateGroupDocument->addTemplate(objectTemplate);
-
-    templateGroupDocument->save(fileName);
-
-    templateGroupDocument = templateGroupDocument->load(fileName, templateGroupFormat);
-
-    constTemplateGroup = templateGroupDocument->templateGroup();
-
-    qDebug() << templateGroupDocument->fileName();
-    qDebug() << constTemplateGroup->name();
-    for (auto objectTemplate : constTemplateGroup->templates()) {
-        qDebug() << objectTemplate->id() << objectTemplate->name();
-        qDebug() << objectTemplate->object()->size();
-    }
-    qDebug() << "";
-
-    return true;
+    auto model = ObjectTemplateModel::instance();
+    model->saveObjectToDocument(mSelectedObjects.first(), name, groupIndex);
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)

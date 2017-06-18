@@ -34,7 +34,7 @@
 #include "savefile.h"
 
 #include <QCoreApplication>
-#include <QFile>
+#include <QDir>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
@@ -50,6 +50,7 @@ TemplateGroupDocument::TemplateGroupDocument(TemplateGroup *templateGroup, const
 
 TemplateGroupDocument::~TemplateGroupDocument()
 {
+    delete mTemplateGroup;
 }
 
 bool TemplateGroupDocument::save(const QString &fileName, QString *error)
@@ -102,8 +103,8 @@ void TemplateGroupDocument::addTemplate(ObjectTemplate *objectTemplate)
     mTemplateGroup->addTemplate(objectTemplate);
 }
 
-
 static void writeTemplateDocumentsXml(QFileDevice *device,
+                                      const QDir &fileDir,
                                       const TemplateDocuments &templateDocuments)
 {
     QXmlStreamWriter writer(device);
@@ -117,7 +118,8 @@ static void writeTemplateDocumentsXml(QFileDevice *device,
     for (const TemplateGroupDocument *templateDocument : templateDocuments) {
         writer.writeStartElement(QLatin1String("templatedocument"));
 
-        writer.writeAttribute(QLatin1String("path"), templateDocument->fileName());
+        QString path = fileDir.relativeFilePath(templateDocument->fileName());
+        writer.writeAttribute(QLatin1String("path"), path);
 
         writer.writeEndElement();
     }
@@ -126,7 +128,15 @@ static void writeTemplateDocumentsXml(QFileDevice *device,
     writer.writeEndDocument();
 }
 
+static QString resolveReference(const QString &reference, const QString &filePath)
+{
+    if (!reference.isEmpty() && QDir::isRelativePath(reference))
+        return QDir::cleanPath(filePath + QLatin1Char('/') + reference);
+    return reference;
+}
+
 static void readTemplateDocumentsXml(QFileDevice *device,
+                                     const QString &filePath,
                                      TemplateDocuments &templateDocuments,
                                      QString &error)
 {
@@ -138,17 +148,26 @@ static void readTemplateDocumentsXml(QFileDevice *device,
         return;
     }
 
+    // Saves the paths of loaded template groups to prevent loading duplicates
+    QSet<QString> loadedPaths;
+
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("templatedocument")) {
             const QXmlStreamAttributes atts = reader.attributes();
-            const QString path(atts.value(QLatin1String("path")).toString());
+
+            QString path(atts.value(QLatin1String("path")).toString());
+            path = resolveReference(path, filePath);
 
             auto templateGroupFormat = TtxTemplateGroupFormat::instance();
 
-            // TODO: handle errors that might happen while loading
-            auto templateGroupDocument = TemplateGroupDocument::load(path, templateGroupFormat);
-            if (templateGroupDocument)
-                templateDocuments.append(templateGroupDocument);
+            if (!loadedPaths.contains(path)) {
+                loadedPaths.insert(path);
+
+                // TODO: handle errors that might happen while loading
+                QScopedPointer<TemplateGroupDocument> templateGroupDocument(TemplateGroupDocument::load(path, templateGroupFormat));
+                if (templateGroupDocument)
+                    templateDocuments.append(templateGroupDocument.take());
+            }
         }
         reader.skipCurrentElement();
     }
@@ -191,8 +210,10 @@ bool TemplateDocumentsSerializer::writeTemplateDocuments(const QString &fileName
     if (format == Autodetect)
         format = detectFormat(fileName);
 
+    const QDir fileDir(QFileInfo(fileName).path());
+
     if (format == Xml)
-        writeTemplateDocumentsXml(file.device(), templateDocuments);
+        writeTemplateDocumentsXml(file.device(), fileDir, templateDocuments);
 
     if (!file.commit()) {
         mError = file.errorString();
@@ -218,8 +239,10 @@ bool TemplateDocumentsSerializer::readTemplateDocuments(const QString &fileName,
     if (format == Autodetect)
         format = detectFormat(fileName);
 
+    const QString filePath(QFileInfo(fileName).path());
+
     if (format == Xml)
-        readTemplateDocumentsXml(&file, templateDocuments, mError);
+        readTemplateDocumentsXml(&file, filePath, templateDocuments, mError);
 
     return mError.isEmpty();
 }

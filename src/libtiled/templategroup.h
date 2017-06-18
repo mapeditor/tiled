@@ -49,7 +49,7 @@ public:
     void addTemplate(ObjectTemplate *objectTemplate);
 
     const QVector<SharedTileset> &tilesets() const;
-    bool addTileset(const SharedTileset &tileset);
+    void addTileset(const SharedTileset &tileset);
 
     const QString &name() const;
     void setName(const QString &name);

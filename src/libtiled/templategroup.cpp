@@ -53,13 +53,16 @@ void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
 {
     mTemplates.append(objectTemplate);
     objectTemplate->setTemplateGroup(this);
+    auto tileset = objectTemplate->object()->cell().tileset();
+    if (tileset)
+        addTileset(tileset->sharedPointer());
 }
 
-bool TemplateGroup::addTileset(const SharedTileset &tileset)
+void TemplateGroup::addTileset(const SharedTileset &tileset)
 {
+    // TODO: this check doesn't work between runs
     if (mTilesets.contains(tileset))
-        return false;
+        return;
 
     mTilesets.append(tileset);
-    return true;
 }

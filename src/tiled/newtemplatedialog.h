@@ -1,5 +1,5 @@
 /*
- * templatesdock.h
+ * newtemplatedialog.h
  * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
  *
@@ -21,47 +21,33 @@
 
 #pragma once
 
-#include <QDockWidget>
-#include <QTreeView>
-#include <QAction>
+#include <QDialog>
+#include "objecttemplate.h"
 
-class QAbstractProxyModel;
+namespace Ui {
+class NewTemplateDialog;
+}
 
 namespace Tiled {
 
 namespace Internal {
 
-class ObjectTemplateModel;
-
-class TemplatesView;
-
-class TemplatesDock : public QDockWidget
+class NewTemplateDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    TemplatesDock(QWidget *parent = nullptr);
+    explicit NewTemplateDialog(QList<QString> groupNames, QWidget *parent = 0);
+    ~NewTemplateDialog();
+
+    void createTemplate(QString &name, int &index);
 
 private slots:
-    void newTemplateGroup();
+    void updateOkButton();
 
 private:
-    void retranslateUi();
-
-    TemplatesView *mTemplatesView;
-
-    QAction *mNewTemplateGroup;
-};
-
-class TemplatesView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    QSize sizeHint() const override;
-    TemplatesView(QWidget *parent = nullptr);
-
-    void applyTemplateGroups();
+    Ui::NewTemplateDialog *mUi;
+    ObjectTemplate mNewObjectTemplate;
 };
 
 } // namespace Internal

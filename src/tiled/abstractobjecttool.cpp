@@ -26,7 +26,9 @@
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "newtemplatedialog.h"
 #include "objectgroup.h"
+#include "objecttemplatemodel.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
 #include "tile.h"
@@ -40,7 +42,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
 
 static bool isTileObject(MapObject *mapObject)
 {
@@ -190,9 +191,22 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
-void AbstractObjectTool::saveSelectedObjectsAsTemplateGroup()
+void AbstractObjectTool::saveSelectedObject()
 {
-    mapDocument()->saveSelectedObjectsAsTemplateGroup();
+    QList<QString> names;
+    auto model = ObjectTemplateModel::instance();
+
+    for (auto *doc : model->templateDocuments())
+        names.append(doc->templateGroup()->name());
+
+    QString name;
+    int groupIndex;
+
+    NewTemplateDialog newTemplateDialog(names);
+    newTemplateDialog.createTemplate(name, groupIndex);
+
+    if (!name.isEmpty())
+        mapDocument()->saveSelectedObject(name, groupIndex);
 }
 
 void AbstractObjectTool::flipHorizontally()
@@ -264,7 +278,8 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                                     isResizedTileObject));
     }
 
-    menu.addAction(tr("Save As Template Group"), this, SLOT(saveSelectedObjectsAsTemplateGroup()));
+    if (selectedObjects.size() == 1)
+        menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

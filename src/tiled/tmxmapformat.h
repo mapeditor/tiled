@@ -114,8 +114,6 @@ class TtxTemplateGroupFormat : public TemplateGroupFormat
 public:
     static TtxTemplateGroupFormat *instance();
 
-    TtxTemplateGroupFormat(QObject *parent = nullptr);
-
     TemplateGroup *read(const QString &fileName) override;
 
     bool write(const TemplateGroup *templateGroup, const QString &fileName) override;
@@ -129,6 +127,8 @@ public:
     QString errorString() const override { return mError; }
 
 private:
+    TtxTemplateGroupFormat(QObject *parent = nullptr);
+
     QString mError;
 };
 

@@ -66,7 +66,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
 void TemplatesDock::newTemplateGroup()
 {
-    QString filter = TtxTemplateGroupFormat().nameFilter();
+    QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
@@ -80,7 +80,8 @@ void TemplatesDock::newTemplateGroup()
         return;
 
     QString error;
-    if (!mTemplatesView->objectTemplateModel()->addNewDocument(fileName, &error)) {
+    auto model = ObjectTemplateModel::instance();
+    if (!model->addNewDocument(fileName, &error)) {
         QMessageBox::critical(this, tr("Error Creating Template Group"), error);
         return;
     }
@@ -96,28 +97,29 @@ void TemplatesDock::retranslateUi()
 }
 
 TemplatesView::TemplatesView(QWidget *parent)
-    : QTreeView(parent),
-      mObjectTemplateModel(new ObjectTemplateModel)
+    : QTreeView(parent)
 {
     setUniformRowHeights(true);
     setHeaderHidden(true);
 
     Preferences *prefs = Preferences::instance();
-    mObjectTemplateModel->setTemplateDocuments(prefs->templateDocuments());
+    auto model = ObjectTemplateModel::instance();
+    model->setTemplateDocuments(prefs->templateDocuments());
 
-    setModel(mObjectTemplateModel);
+    setModel(model);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    connect(mObjectTemplateModel, &ObjectTemplateModel::dataChanged,
+    connect(model, &ObjectTemplateModel::dataChanged,
             this, &TemplatesView::applyTemplateGroups);
-    connect(mObjectTemplateModel, &ObjectTemplateModel::rowsInserted,
+    connect(model, &ObjectTemplateModel::rowsInserted,
             this, &TemplatesView::applyTemplateGroups);
 }
 
 void TemplatesView::applyTemplateGroups()
 {
-    auto templateGroups = mObjectTemplateModel->templateDocuments();
+    auto model = ObjectTemplateModel::instance();
+    auto templateGroups = model->templateDocuments();
     Preferences *prefs = Preferences::instance();
     prefs->setTemplateDocuments(templateGroups);
 

@@ -26,6 +26,9 @@
 #include <QAbstractItemModel>
 
 namespace Tiled {
+
+class MapObject;
+
 namespace Internal {
 
 class ObjectTemplateModel : public QAbstractItemModel
@@ -33,7 +36,7 @@ class ObjectTemplateModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    ObjectTemplateModel(QObject *parent = nullptr);
+    static ObjectTemplateModel *instance();
 
     const TemplateDocuments templateDocuments() const;
     void setTemplateDocuments(const TemplateDocuments &templateDocuments);
@@ -47,8 +50,10 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     bool addNewDocument(QString fileName, QString *error);
+    bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
 
 private:
+    ObjectTemplateModel(QObject *parent = nullptr);
     TemplateDocuments mTemplateDocuments;
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
