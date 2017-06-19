@@ -65,8 +65,6 @@ public:
      */
     const TileStamp &stamp() const { return mStamp; }
 
-    bool isRandom() { return mIsRandom; }
-
     void populateToolBar(QToolBar *toolBar) override;
 
 public slots:
