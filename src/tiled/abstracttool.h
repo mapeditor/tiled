@@ -31,6 +31,7 @@
 
 class QEvent;
 class QKeyEvent;
+class QToolBar;
 
 namespace Tiled {
 
@@ -142,6 +143,8 @@ public:
      * Called when the application language changed.
      */
     virtual void languageChanged() = 0;
+
+    virtual void populateToolBar(QToolBar*) {}
 
 public slots:
     void setMapDocument(MapDocument *mapDocument);
