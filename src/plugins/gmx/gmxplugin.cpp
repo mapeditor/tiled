@@ -111,7 +111,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     stream.writeStartElement("views");
     for (int c=0; c < 8; c++) {
         QString visible = QString::number(optionalProperty(map, QString("view_%1_visible").arg(c), 0));
-        QString objName = QString::number(optionalProperty(map, QString("view_%1_objName").arg(c), ""));
+        QString objName = QString(optionalProperty(map, QString("view_%1_objName").arg(c), ""));
         QString xview = QString::number(optionalProperty(map, QString("view_%1_xview").arg(c), 0));
         QString yview = QString::number(optionalProperty(map, QString("view_%1_yview").arg(c), 0));
         QString wview = QString::number(optionalProperty(map, QString("view_%1_wview").arg(c), 1024));
