@@ -40,11 +40,11 @@ public:
 
     void populateToolBar(QToolBar *toolBar, bool isRandom);
 
-    QAction *random() { return mRandom; }
-    QAction *flipHorizontal() { return mFlipHorizontal; }
-    QAction *flipVertical() { return mFlipVertical; }
-    QAction *rotateLeft() { return mRotateLeft; }
-    QAction *rotateRight() { return mRotateRight; }
+    QAction *random() const { return mRandom; }
+    QAction *flipHorizontal() const { return mFlipHorizontal; }
+    QAction *flipVertical() const { return mFlipVertical; }
+    QAction *rotateLeft() const { return mRotateLeft; }
+    QAction *rotateRight() const { return mRotateRight; }
 
 private:
     QAction *mRandom;
