@@ -30,6 +30,7 @@
 #include "templategroup.h"
 
 #include "templategroupformat.h"
+#include "tilesetmanager.h"
 
 using namespace Tiled;
 
@@ -47,6 +48,8 @@ TemplateGroup::TemplateGroup(QString name):
 TemplateGroup::~TemplateGroup()
 {
     qDeleteAll(mTemplates);
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->removeReferences(mTilesets);
 }
 
 void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
@@ -60,9 +63,12 @@ void TemplateGroup::addTemplate(ObjectTemplate *objectTemplate)
 
 void TemplateGroup::addTileset(const SharedTileset &tileset)
 {
-    // TODO: this check doesn't work between runs
     if (mTilesets.contains(tileset))
         return;
+
+    // TODO: If a tileset was  not used by any  template it will be added again
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReference(tileset);
 
     mTilesets.append(tileset);
 }

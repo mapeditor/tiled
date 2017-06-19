@@ -477,8 +477,8 @@ MainWindow::~MainWindow()
     PluginManager::removeObject(mTsxTilesetFormat);
 
     DocumentManager::deleteInstance();
-    TilesetManager::deleteInstance();
     Preferences::deleteInstance();
+    TilesetManager::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
     ClipboardManager::deleteInstance();

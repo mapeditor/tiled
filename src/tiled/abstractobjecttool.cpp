@@ -278,8 +278,12 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                                     isResizedTileObject));
     }
 
-    if (selectedObjects.size() == 1)
-        menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+    if (selectedObjects.size() == 1) {
+        // Saving objects with embedded tilesets is disabled
+        auto cell = selectedObjects.first()->cell();
+        if (cell.isEmpty() || cell.tileset()->isExternal())
+            menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+    }
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

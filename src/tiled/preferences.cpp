@@ -183,6 +183,7 @@ Preferences::Preferences()
 
 Preferences::~Preferences()
 {
+    qDeleteAll(mTemplateDocuments);
 }
 
 void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
