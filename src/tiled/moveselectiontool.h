@@ -44,6 +44,8 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
+
     void languageChanged() override;
 
 protected:
@@ -70,6 +72,7 @@ private:
 
     bool mDragging;
     bool mMouseDown;
+    bool mDuplicate;
 };
 
 } // namespace Internal

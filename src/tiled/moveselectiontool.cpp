@@ -41,6 +41,7 @@ MoveSelectionTool::MoveSelectionTool(QObject *parent)
                        parent)
     , mDragging(false)
     , mMouseDown(false)
+    , mDuplicate(false)
 {
 }
 
@@ -133,6 +134,11 @@ void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     refreshCursor();
 }
 
+void MoveSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    mDuplicate = modifiers & Qt::ControlModifier;
+}
+
 void MoveSelectionTool::languageChanged()
 {
     setName(tr("Move Selection"));
@@ -176,7 +182,10 @@ void MoveSelectionTool::cut()
     QUndoStack *stack = mapDocument()->undoStack();
 
     stack->beginMacro(tr("Move Selection"));
-    stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
+
+    if (!mDuplicate)
+        stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
+
     stack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
 
     stack->endMacro();
