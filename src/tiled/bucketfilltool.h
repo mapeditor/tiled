@@ -27,8 +27,6 @@
 #include "tilelayer.h"
 #include "tilestamp.h"
 
-class QAction;
-
 namespace Tiled {
 namespace Internal {
 
