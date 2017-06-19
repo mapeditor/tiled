@@ -35,6 +35,7 @@ class Tile;
 namespace Internal {
 
 class MapDocument;
+class StampActions;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -112,12 +113,6 @@ private:
     QPoint mCaptureStart;
     QPoint mPrevTilePosition;
 
-    QAction *mRandom;
-    QAction *mFlipHorizontal;
-    QAction *mFlipVertical;
-    QAction *mRotateLeft;
-    QAction *mRotateRight;
-
     void drawPreviewLayer(const QVector<QPoint> &list);
 
     /**
@@ -152,6 +147,8 @@ private:
     RandomPicker<Cell> mRandomCellPicker;
 
     void updateRandomList();
+
+    StampActions *mStampActions;
 };
 
 } // namespace Internal

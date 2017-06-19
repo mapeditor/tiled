@@ -33,6 +33,7 @@ namespace Tiled {
 namespace Internal {
 
 class MapDocument;
+class StampActions;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
@@ -96,12 +97,6 @@ private:
     QRegion mFillRegion;
     QVector<SharedTileset> mMissingTilesets;
 
-    QAction *mRandom;
-    QAction *mFlipHorizontal;
-    QAction *mFlipVertical;
-    QAction *mRotateLeft;
-    QAction *mRotateRight;
-
     bool mIsActive;
     bool mLastShiftStatus;
 
@@ -130,6 +125,8 @@ private:
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
     void randomFill(TileLayer &tileLayer, const QRegion &region) const;
+
+    StampActions *mStampActions;
 };
 
 } // namespace Internal

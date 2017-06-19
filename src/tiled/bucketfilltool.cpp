@@ -30,6 +30,7 @@
 #include "mapscene.h"
 #include "mapdocument.h"
 #include "painttilelayer.h"
+#include "stampactions.h"
 
 #include <QAction>
 #include <QApplication>
@@ -48,54 +49,17 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mLastShiftStatus(false)
     , mIsRandom(false)
     , mLastRandomStatus(false)
+    , mStampActions(new StampActions(this))
 {
-    QIcon mDiceIcon(QLatin1String(":images/24x24/dice.png"));
-    QIcon mFlipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
-    QIcon mFlipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
-    QIcon mRotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
-    QIcon mRotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
+    connect(mStampActions->random(), &QAction::toggled, this, &BucketFillTool::randomChanged);
 
-    mDiceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-    mFlipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
-    mFlipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
-    mRotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
-    mRotateRightIcon.addFile(QLatin1String(":images/32x32/rotate-right.png"));
-
-    mRandom = new QAction(this);
-    mRandom->setIcon(mDiceIcon);
-    mRandom->setCheckable(true);
-    mRandom->setToolTip(tr("Random Mode"));
-    mRandom->setShortcut(QKeySequence(tr("D")));
-
-    mFlipHorizontal = new QAction(this);
-    mFlipHorizontal->setIcon(mFlipHorizontalIcon);
-    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
-
-    mFlipVertical = new QAction(this);
-    mFlipVertical->setIcon(mFlipVerticalIcon);
-    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
-    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
-
-    mRotateLeft = new QAction(this);
-    mRotateLeft->setIcon(mRotateLeftIcon);
-    mRotateLeft->setToolTip(tr("Rotate Left"));
-    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
-
-    mRotateRight = new QAction(this);
-    mRotateRight->setIcon(mRotateRightIcon);
-    mRotateLeft->setToolTip(tr("Rotate Right"));
-    mRotateRight->setShortcut(QKeySequence(tr("Z")));
-
-    connect(mRandom, &QAction::toggled, this, &BucketFillTool::randomChanged);
-
-    connect(mFlipHorizontal, &QAction::triggered,
+    connect(mStampActions->flipHorizontal(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
-    connect(mFlipVertical, &QAction::triggered,
+    connect(mStampActions->flipVertical(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
-    connect(mRotateLeft, &QAction::triggered,
+    connect(mStampActions->rotateLeft(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
-    connect(mRotateRight, &QAction::triggered,
+    connect(mStampActions->rotateRight(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
@@ -284,17 +248,7 @@ void BucketFillTool::languageChanged()
     setName(tr("Bucket Fill Tool"));
     setShortcut(QKeySequence(tr("F")));
 
-    mRandom->setToolTip(tr("Random Mode"));
-    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
-    mRotateLeft->setToolTip(tr("Rotate Left"));
-    mRotateLeft->setToolTip(tr("Rotate Right"));
-
-    mRandom->setShortcut(QKeySequence(tr("D")));
-    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
-    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
-    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
-    mRotateRight->setShortcut(QKeySequence(tr("Z")));
+    mStampActions->languageChanged();
 }
 
 void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
@@ -325,12 +279,7 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
 void BucketFillTool::populateToolBar(QToolBar *toolBar)
 {
-    mRandom->setChecked(mIsRandom);
-    toolBar->addAction(mRandom);
-    toolBar->addAction(mFlipHorizontal);
-    toolBar->addAction(mFlipVertical);
-    toolBar->addAction(mRotateLeft);
-    toolBar->addAction(mRotateRight);
+    mStampActions->populateToolBar(toolBar, mIsRandom);
 }
 
 void BucketFillTool::clearOverlay()
