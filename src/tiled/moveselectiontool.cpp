@@ -41,7 +41,6 @@ MoveSelectionTool::MoveSelectionTool(QObject *parent)
                        parent)
     , mDragging(false)
     , mMouseDown(false)
-    , mCut(false)
 {
 }
 
@@ -97,8 +96,7 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
         const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
 
         if (dragDistance >= QApplication::startDragDistance() / 2) {
-            if (!mCut) {
-                mCut = true;
+            if (!mPreviewLayer) {
                 cut();
             }
             mDragging = true;
@@ -113,11 +111,15 @@ void MoveSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 
 void MoveSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && brushItem()->tileRegion().contains(tilePosition())) {
-        mMouseScreenStart = event->screenPos();
-        mDragStart = tilePosition();
-        mMouseDown = true;
-        mLastUpdate = tilePosition();
+    if (event->button() == Qt::LeftButton) {
+        if (brushItem()->tileRegion().contains(tilePosition())) {
+            mMouseScreenStart = event->screenPos();
+            mDragStart = tilePosition();
+            mMouseDown = true;
+            mLastUpdate = tilePosition();
+        } else {
+            paste();
+        }
     }
 }
 
@@ -126,10 +128,7 @@ void MoveSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
-    if (mDragging) {
-        mDragging = false;
-    }
-
+    mDragging = false;
     mMouseDown = false;
     refreshCursor();
 }
@@ -175,12 +174,9 @@ void MoveSelectionTool::cut()
     brushItem()->setTileLayer(mPreviewLayer, selectedArea);
 
     QUndoStack *stack = mapDocument()->undoStack();
+
     stack->beginMacro(tr("Move Selection"));
-
-    if (!selectedArea.isEmpty()) {
-        stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
-    }
-
+    stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
     stack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
 
     stack->endMacro();
@@ -203,6 +199,4 @@ void MoveSelectionTool::paste()
 
     brushItem()->clear();
     mPreviewLayer.clear();
-
-    mCut = false;
 }

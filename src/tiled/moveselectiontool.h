@@ -70,7 +70,6 @@ private:
 
     bool mDragging;
     bool mMouseDown;
-    bool mCut;
 };
 
 } // namespace Internal
