@@ -102,9 +102,48 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "speed", 30);
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
+    writeProperty(stream, map, "clearViewBackground", false);
+    writeProperty(stream, map, "enableViews", false);
 
     stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
 
+    
+    stream.writeStartElement("views");
+    for (int c=0; c < 8; c++) {
+        QString visible = QString::number(optionalProperty(map, QString("view_%1_visible").arg(c), 0));
+        QString objName = QString::number(optionalProperty(map, QString("view_%1_objName").arg(c), ""));
+        QString xview = QString::number(optionalProperty(map, QString("view_%1_xview").arg(c), 0));
+        QString yview = QString::number(optionalProperty(map, QString("view_%1_yview").arg(c), 0));
+        QString wview = QString::number(optionalProperty(map, QString("view_%1_wview").arg(c), 1024));
+        QString hview = QString::number(optionalProperty(map, QString("view_%1_hview").arg(c), 768));
+        QString xport = QString::number(optionalProperty(map, QString("view_%1_xport").arg(c), 0));
+        QString yport = QString::number(optionalProperty(map, QString("view_%1_yport").arg(c), 0));        
+        QString wport = QString::number(optionalProperty(map, QString("view_%1_wport").arg(c), 1024));
+        QString hport = QString::number(optionalProperty(map, QString("view_%1_hport").arg(c), 768));
+        QString hboder = QString::number(optionalProperty(map, QString("view_%1_hborder").arg(c), 32));
+        QString vborder = QString::number(optionalProperty(map, QString("view_%1_vborder").arg(c), 32));
+        QString hspeed = QString::number(optionalProperty(map, QString("view_%1_hspeed").arg(c), -1));
+        QString vspeed = QString::number(optionalProperty(map, QString("view_%1_vspeed").arg(c), -1));
+        stream.writeStartElement("view");
+        stream.writeAttribute("visible", visible);
+        stream.writeAttribute("objName", objName);
+        stream.writeAttribute("xview", xview);
+        stream.writeAttribute("yview", yview);
+        stream.writeAttribute("wview", wview);
+        stream.writeAttribute("hview", hview);
+        stream.writeAttribute("xport", xport);
+        stream.writeAttribute("yport", yport);
+        stream.writeAttribute("wport", wport);
+        stream.writeAttribute("hport", hport);
+        stream.writeAttribute("hboder", hborder);
+        stream.writeAttribute("vborder", vborder);
+        stream.writeAttribute("hspeed", hspeed);
+        stream.writeAttribute("vspeed", vspeed);    
+        stream.writeEndElement();
+    }
+    stream.writeEndElement();
+    
+    
     stream.writeStartElement("instances");
 
     QSet<QString> usedNames;
