@@ -120,7 +120,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         QString yport = QString::number(optionalProperty(map, QString("view_%1_yport").arg(c), 0));        
         QString wport = QString::number(optionalProperty(map, QString("view_%1_wport").arg(c), 1024));
         QString hport = QString::number(optionalProperty(map, QString("view_%1_hport").arg(c), 768));
-        QString hboder = QString::number(optionalProperty(map, QString("view_%1_hborder").arg(c), 32));
+        QString hborder = QString::number(optionalProperty(map, QString("view_%1_hborder").arg(c), 32));
         QString vborder = QString::number(optionalProperty(map, QString("view_%1_vborder").arg(c), 32));
         QString hspeed = QString::number(optionalProperty(map, QString("view_%1_hspeed").arg(c), -1));
         QString vspeed = QString::number(optionalProperty(map, QString("view_%1_vspeed").arg(c), -1));
@@ -135,7 +135,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         stream.writeAttribute("yport", yport);
         stream.writeAttribute("wport", wport);
         stream.writeAttribute("hport", hport);
-        stream.writeAttribute("hboder", hborder);
+        stream.writeAttribute("hborder", hborder);
         stream.writeAttribute("vborder", vborder);
         stream.writeAttribute("hspeed", hspeed);
         stream.writeAttribute("vspeed", vspeed);    
