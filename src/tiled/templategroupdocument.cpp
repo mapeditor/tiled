@@ -113,10 +113,10 @@ static void writeTemplateDocumentsXml(QFileDevice *device,
     writer.setAutoFormattingIndent(1);
 
     writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("templatedocuments"));
+    writer.writeStartElement(QLatin1String("templategroups"));
 
     for (const TemplateGroupDocument *templateDocument : templateDocuments) {
-        writer.writeStartElement(QLatin1String("templatedocument"));
+        writer.writeStartElement(QLatin1String("templategroup"));
 
         QString path = fileDir.relativeFilePath(templateDocument->fileName());
         writer.writeAttribute(QLatin1String("path"), path);
@@ -142,9 +142,9 @@ static void readTemplateDocumentsXml(QFileDevice *device,
 {
     QXmlStreamReader reader(device);
 
-    if (!reader.readNextStartElement() || reader.name() != QLatin1String("templatedocuments")) {
+    if (!reader.readNextStartElement() || reader.name() != QLatin1String("templategroups")) {
         error = QCoreApplication::translate(
-                    "TemplateDocuments", "File doesn't contain template documents.");
+                    "TemplateGroups", "File doesn't contain template groups.");
         return;
     }
 
@@ -152,7 +152,7 @@ static void readTemplateDocumentsXml(QFileDevice *device,
     QSet<QString> loadedPaths;
 
     while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("templatedocument")) {
+        if (reader.name() == QLatin1String("templategroup")) {
             const QXmlStreamAttributes atts = reader.attributes();
 
             QString path(atts.value(QLatin1String("path")).toString());
@@ -173,7 +173,7 @@ static void readTemplateDocumentsXml(QFileDevice *device,
     }
 
     if (reader.hasError()) {
-        error = QCoreApplication::translate("TemplateDocuments",
+        error = QCoreApplication::translate("TemplateGroups",
                                              "%3\n\nLine %1, column %2")
                 .arg(reader.lineNumber())
                 .arg(reader.columnNumber())
@@ -202,7 +202,7 @@ bool TemplateDocumentsSerializer::writeTemplateDocuments(const QString &fileName
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
-                    "TemplateDocuments", "Could not open file for writing.");
+                    "TemplateGroups", "Could not open file for writing.");
         return false;
     }
 
@@ -231,7 +231,7 @@ bool TemplateDocumentsSerializer::readTemplateDocuments(const QString &fileName,
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate(
-                    "TemplateDocuments", "Could not open file.");
+                    "TemplateGroups", "Could not open file.");
         return false;
     }
 

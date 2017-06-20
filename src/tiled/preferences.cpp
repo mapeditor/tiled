@@ -736,7 +736,7 @@ void Preferences::setObjectTypesFile(const QString &fileName)
 QString Preferences::templateDocumentsFile() const
 {
     if (mTemplateDocumentsFile.isEmpty())
-        return dataLocation() + QLatin1String("/templatedocuments.xml");
+        return dataLocation() + QLatin1String("/templategroups.xml");
 
     return mTemplateDocumentsFile;
 }
