@@ -163,11 +163,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     QVector<QLine> lines;
     lines.reserve(8);
 
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setCosmetic(true);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    QPen gridPen = makeGridPen(painter->device(), gridColor);
     painter->setPen(gridPen);
 
     if (p.staggerX) {

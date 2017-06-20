@@ -203,6 +203,7 @@ SOURCES += aboutdialog.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
     snaphelper.cpp \
+    stampactions.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
@@ -215,7 +216,7 @@ SOURCES += aboutdialog.cpp \
     textpropertyedit.cpp \
     thumbnailrenderer.cpp \
     tileanimationeditor.cpp \
-    tilecollisioneditor.cpp \
+    tilecollisiondock.cpp \
     tiledapplication.cpp \
     tiledproxystyle.cpp \
     tilelayeritem.cpp \
@@ -377,6 +378,7 @@ HEADERS += aboutdialog.h \
     selectsametiletool.h \
     snaphelper.h \
     sparkleautoupdater.h \
+    stampactions.h \
     stampbrush.h \
     standardautoupdater.h \
     stylehelper.h \
@@ -389,7 +391,7 @@ HEADERS += aboutdialog.h \
     textpropertyedit.h \
     thumbnailrenderer.h \
     tileanimationeditor.h \
-    tilecollisioneditor.h \
+    tilecollisiondock.h \
     tiledapplication.h \
     tiledproxystyle.h \
     tilelayeritem.h \

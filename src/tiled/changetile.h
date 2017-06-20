@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 
@@ -37,7 +38,7 @@ public:
      * Creates an undo command that sets the given \a tile's \a type.
      */
     ChangeTileType(TilesetDocument *tilesetDocument,
-                   Tile *tile,
+                   const QList<Tile*> &tiles,
                    const QString &type);
 
     void undo() override { swap(); }
@@ -47,8 +48,8 @@ private:
     void swap();
 
     TilesetDocument *mTilesetDocument;
-    Tile *mTile;
-    QString mType;
+    const QList<Tile*> mTiles;
+    QVector<QString> mTypes;
 };
 
 } // namespace Internal

@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+46"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vea en el fichero AUTHORS una lista completa de los colaboradores)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Usted puede modificar y redistribuir este programa bajo los terminos de la GPL (versión 2 ó superior). Una copia de la GPL se encuentra en el fichero &apos;COPYING&apos; que acompaña a Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vea en el fichero AUTHORS una lista completa de los colaboradores)&lt;/p&gt;
+&lt;p align="center"&gt;Usted puede modificar y redistribuir este programa bajo los terminos de la GPL (versión 2 ó superior). Una copia de la GPL se encuentra en el fichero 'COPYING' que acompaña a Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+11"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Extensión de archivo no única. No se puede determinar el formato correcto al que exportar.</translation>
     </message>
     <message>
@@ -309,7 +309,7 @@
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation>Solo incluir las &amp;capas visibles</translation>
+        <translation>Solo incluir las capas &amp;visibles</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -787,7 +787,7 @@
     <message>
         <location line="+26"/>
         <source>User Manual</source>
-        <translation>Manual del Usuario</translation>
+        <translation>Manual de Usuario</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -877,15 +877,15 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Orientación del Mapa no soportada: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Orientación del Mapa no soportada: "%1"</translation>
     </message>
     <message>
         <location line="+98"/>
         <location line="+26"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+142"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parámetros del conjunto de patrones no válidos para el conjunto de patrones &apos;%1&apos;</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Parámetros del conjunto de patrones no válidos para el conjunto de patrones '%1'</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -895,7 +895,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+265"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation>Demasiados elementos &lt;Patrón&gt;</translation>
+        <translation>Demasiados elementos &lt;tile&gt;</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -929,22 +929,22 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+211"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Método de compresión &apos;%1&apos; no soportado</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Método de compresión '%1' no soportado</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Datos corruptos para la Capa &apos;%1&apos;</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Datos corruptos para la Capa '%1'</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -1150,7 +1150,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="-89"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>El archivo no contiene tipos.</translation>
     </message>
     <message>
@@ -1280,7 +1280,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a supporter!</source>
+        <source>I'm already a supporter!</source>
         <translation>¡Ya soy un patrocinador!</translation>
     </message>
     <message>
@@ -1395,7 +1395,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+14"/>
-        <source>Turn this off if you&apos;re having trouble saving your files.</source>
+        <source>Turn this off if you're having trouble saving your files.</source>
         <translation>Desactiva esto si estás teniendo problemas guardando tus archivos.</translation>
     </message>
     <message>
@@ -1670,7 +1670,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation>Ruptura Horizontal</translation>
+        <translation>División Horizontal</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1694,7 +1694,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Qué es Esto</translation>
     </message>
     <message>
@@ -1982,12 +1982,12 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>¡No se pudo analizar la cabezera del archivo!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>¡No se pudo analizar la cabezera de la capa!</translation>
     </message>
     <message>
@@ -2022,7 +2022,7 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>¡No se puede grabar una capa sin patrones!</translation>
     </message>
     <message>
@@ -2138,11 +2138,9 @@ Línea %1, columna %2</translation>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Duplicar Objeto</numerusform>
-            <numerusform>Duplicar %n Objetos</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Duplicar %n objeto/s</numerusform>
+        <numerusform>Duplicar %n Objetos</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
@@ -2237,49 +2235,49 @@ Línea %1, columna %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+124"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Atributo &apos;%2&apos; = &apos;%3&apos; no tiene sentido. Ignorando este atributo.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Atributo '%2' = '%3' no tiene sentido. Ignorando este atributo.</translation>
     </message>
     <message>
         <location line="+59"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>¿Usted olvidó un guión bajo en la capa &apos;%1&apos;?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>¿Usted olvidó un guión bajo en la capa '%1'?</translation>
     </message>
     <message>
         <location line="+67"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>La capa &apos;%1&apos; no se reconoció como una válida para Automapeado.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>La capa '%1' no se reconoció como una válida para Automapeado.</translation>
     </message>
     <message>
         <location line="-99"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>La capa &apos;regions_input&apos; no debe aparecer más de una vez.</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>La capa 'regions_input' no debe aparecer más de una vez.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>Las capas &apos;regions_*&apos; deben ser capas de patrones.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>Las capas 'regions_*' deben ser capas de patrones.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>La capa &apos;regions_output&apos; no debe aparecer más de una vez.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>La capa 'regions_output' no debe aparecer más de una vez.</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>Las capas &apos;input_*&apos; y &apos;inputnot_*&apos; deben ser capas de patrones.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>Las capas 'input_*' y 'inputnot_*' deben ser capas de patrones.</translation>
     </message>
     <message>
         <location line="+51"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>No se encontró la capa &apos;regions&apos; ó &apos;regions_input&apos;.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>No se encontró la capa 'regions' ó 'regions_input'.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>No se encontró la capa &apos;regions&apos; ó &apos;regions_output&apos;.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>No se encontró la capa 'regions' ó 'regions_output'.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2723,8 +2721,8 @@ Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>El número de columnas de patrones en el conjunto &apos;%1&apos; parece haber sido cambiado de %2 a %3. ¿Deseas ajustar las referencias de los patrones?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>El número de columnas de patrones en el conjunto '%1' parece haber sido cambiado de %2 a %3. ¿Deseas ajustar las referencias de los patrones?</translation>
     </message>
 </context>
 <context>
@@ -2885,11 +2883,9 @@ Do you want to replace it?</source>
     <message numerus="yes">
         <location line="+74"/>
         <source>Drag Layer(s)</source>
-        <translation>
-            <numerusform>Arrastrar Capa</numerusform>
-            <numerusform>Arrastrar %n Capas</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Arrastrar Capa/s</numerusform>
+        <numerusform>Arrastrar Capas</numerusform>
+        </translation></message>
     <message>
         <location line="+203"/>
         <source>Show Other Layers</source>
@@ -3570,11 +3566,9 @@ Por favor seleccione un formato específico.</translation>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
-        <translation>
-            <numerusform>Añadir Conjunto de Patrones</numerusform>
-            <numerusform>Añadir %n Conjuntos de Patrones</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Añadir %n Conjuntos de Patrones</numerusform>
+        <numerusform>Añadir %n Conjuntos de Patrones</numerusform>
+        </translation></message>
     <message>
         <location line="+46"/>
         <source>Random Mode</source>
@@ -3712,8 +3706,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Falló al cargar la imagen de conjunto de patrones &apos;%1&apos;.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Falló al cargar la imagen de conjunto de patrones '%1'.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3741,8 +3735,8 @@ Por favor seleccione un formato específico.</translation>
     <name>Tiled::Internal::NoEditorWidget</name>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+45"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Sin Archivos Abiertos&lt;/font&gt;</translation>
+        <source>&lt;font size="+2"&gt;No Open Files&lt;/font&gt;</source>
+        <translation>&lt;font size="+2"&gt;Sin Archivos Abiertos&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -3953,7 +3947,7 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Don&apos;t remind me</source>
+        <source>Don't remind me</source>
         <translation>No me lo recuerdes</translation>
     </message>
     <message>
@@ -4002,11 +3996,9 @@ Por favor seleccione un formato específico.</translation>
     <message numerus="yes">
         <location line="-252"/>
         <source>Paste Property/Properties</source>
-        <translation>
-            <numerusform>Pegar Atributo</numerusform>
-            <numerusform>Pegar %n Atributos</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Pegar propiedad</numerusform>
+        <numerusform>Pegar propiedades</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+50"/>
         <source>Remove Property/Properties</source>
@@ -4577,8 +4569,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>¡El conjunto de patrones &quot;%1&quot; está siendo todavía utilizado por el mapa!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>¡El conjunto de patrones "%1" está siendo todavía utilizado por el mapa!</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4669,8 +4661,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tile &quot;%1&quot; already exists in the tileset!</source>
-        <translation>¡Patrón &quot;%1&quot; ya existe en este conjunto de patrones!</translation>
+        <source>Tile "%1" already exists in the tileset!</source>
+        <translation>¡Patrón "%1" ya existe en este conjunto de patrones!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4679,8 +4671,8 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+14"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>No se pudo cargar &quot;%1&quot;!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>No se pudo cargar "%1"!</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -5079,11 +5071,9 @@ Por favor seleccione un formato específico.</translation>
     <message numerus="yes">
         <location line="+48"/>
         <source>Change %n Object/s Tile</source>
-        <translation>
-            <numerusform>Cambiar %n Objeto Patrón</numerusform>
-            <numerusform>Cambiar %n Objetos Patrón</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Cambiar el patrón de %n objeto/s</numerusform>
+        <numerusform>Cambiar el patrón de %n objeto/s</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>

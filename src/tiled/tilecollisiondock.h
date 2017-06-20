@@ -1,6 +1,6 @@
 /*
- * tilecollisioneditor.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * tilecollisiondock.h
+ * Copyright 2013-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,28 +18,27 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#ifndef TILECOLLISIONDOCK_H
+#define TILECOLLISIONDOCK_H
 
 #include "clipboardmanager.h"
 
-#include <QMainWindow>
+#include <QDockWidget>
 
 namespace Tiled {
 
 class Object;
 class Tile;
-class Tileset;
 
 namespace Internal {
 
 class AbstractTool;
-class TilesetDocument;
 class MapScene;
 class MapView;
-class PropertiesDock;
+class TilesetDocument;
 class ToolManager;
 
-class TileCollisionEditor : public QMainWindow
+class TileCollisionDock : public QDockWidget
 {
     Q_OBJECT
 
@@ -49,29 +48,22 @@ class TileCollisionEditor : public QMainWindow
     };
 
 public:
-    explicit TileCollisionEditor(QWidget *parent = nullptr);
-    ~TileCollisionEditor();
+    explicit TileCollisionDock(QWidget *parent = nullptr);
+    ~TileCollisionDock();
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
+    MapDocument *dummyMapDocument() const;
+
+    bool canCopy() const;
+
 signals:
-    void closed();
+    void dummyMapDocumentChanged(MapDocument *mapDocument);
+    void canCopyChanged();
 
 public slots:
     void setTile(Tile *tile);
 
-protected:
-    void closeEvent(QCloseEvent *) override;
-    void changeEvent(QEvent *e) override;
-
-private slots:
-    void setSelectedTool(AbstractTool*);
-    void applyChanges();
-    void tileObjectGroupChanged(Tile*);
-    void currentObjectChanged(Object *object);
-
-    void undo();
-    void redo();
     void cut();
     void copy();
     void paste();
@@ -79,20 +71,42 @@ private slots:
     void paste(ClipboardManager::PasteFlags flags);
     void delete_(Operation operation = Delete);
 
+protected:
+    void changeEvent(QEvent *e) override;
+
+private slots:
+    void setSelectedTool(AbstractTool*);
+    void applyChanges();
+    void tileObjectGroupChanged(Tile*);
+
     void selectedObjectsChanged();
+    void setCanCopy(bool canCopy);
 
 private:
     void retranslateUi();
 
     Tile *mTile;
     TilesetDocument *mTilesetDocument;
+    MapDocument *mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;
-    PropertiesDock *mPropertiesDock;
     bool mApplyingChanges;
     bool mSynchronizing;
+    bool mCanCopy;
 };
+
+inline MapDocument *TileCollisionDock::dummyMapDocument() const
+{
+    return mDummyMapDocument;
+}
+
+inline bool TileCollisionDock::canCopy() const
+{
+    return mCanCopy;
+}
 
 } // namespace Internal
 } // namespace Tiled
+
+#endif // TILECOLLISIONDOCK_H

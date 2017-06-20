@@ -65,7 +65,7 @@ class TILEDSHARED_EXPORT Tileset : public Object
 public:
     /**
      * The orientation of the tileset determines the projection used in the
-     * TileCollisionEditor and for the terrain information overlay of the
+     * TileCollisionDock and for the terrain information overlay of the
      * TilesetView.
      */
     enum Orientation {

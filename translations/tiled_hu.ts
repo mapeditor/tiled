@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+46"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled térképszerkesztő&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verzió: %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(a hozzájárulók teljes listájához nézze meg az AUTHORS fájlt)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Ez a program a GPL (2-es verzió vagy újabb) feltételei szerint módosítható, illetve terjeszthető. A GPL egy másolatát a Tiled programhoz melléklet „COPYING” fájl tartalmazza.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled térképszerkesztő&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verzió: %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(a hozzájárulók teljes listájához nézze meg az AUTHORS fájlt)&lt;/p&gt;
+&lt;p align="center"&gt;Ez a program a GPL (2-es verzió vagy újabb) feltételei szerint módosítható, illetve terjeszthető. A GPL egy másolatát a Tiled programhoz melléklet „COPYING” fájl tartalmazza.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+11"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Nem egyedi fájlkiterjesztés. Nem lehet meghatározni a helyes exportálási formátumot.</translation>
     </message>
     <message>
@@ -877,14 +877,14 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
+        <source>Unsupported map orientation: "%1"</source>
         <translation>Nem támogatott térképtájolás: „%1”</translation>
     </message>
     <message>
         <location line="+98"/>
         <location line="+26"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+142"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
+        <source>Invalid tileset parameters for tileset '%1'</source>
         <translation>Érvénytelen csempekészlet-paraméterek a(z) „%1” csempekészletnél</translation>
     </message>
     <message>
@@ -929,7 +929,7 @@ Line %1, column %2</source>
     <message>
         <location line="+211"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
+        <source>Compression method '%1' not supported</source>
         <translation>A(z) „%1” tömörítési módszer nem támogatott</translation>
     </message>
     <message>
@@ -937,13 +937,13 @@ Line %1, column %2</source>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
+        <source>Corrupt layer data for layer '%1'</source>
         <translation>Sérült rétegadatok a(z) „%1” rétegnél</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
         <translation>Nem lehet feldolgozni a csempét (%1,%2) ezen a rétegen: „%3”</translation>
     </message>
     <message>
@@ -1150,7 +1150,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="-89"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>A fájl nem tartalmaz objektumtípusokat.</translation>
     </message>
     <message>
@@ -1280,7 +1280,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a supporter!</source>
+        <source>I'm already a supporter!</source>
         <translation>Már támogató vagyok!</translation>
     </message>
     <message>
@@ -1395,7 +1395,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+14"/>
-        <source>Turn this off if you&apos;re having trouble saving your files.</source>
+        <source>Turn this off if you're having trouble saving your files.</source>
         <translation>Ezt kapcsolja ki, ha problémái vannak a fájlok mentésével.</translation>
     </message>
     <message>
@@ -1694,7 +1694,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Mi ez?</translation>
     </message>
     <message>
@@ -1982,12 +1982,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Nem lehet feldolgozni a fájl fejlécét!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Nem lehet feldolgozni a réteg fejlécét!</translation>
     </message>
     <message>
@@ -2022,7 +2022,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
+        <source>Can't save non-tile layer!</source>
         <translation>Nem lehet menteni nem csempe réteget!</translation>
     </message>
     <message>
@@ -2234,48 +2234,48 @@ Line %1, column %2</source>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+124"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
         <translation>„%1”: „%2” tulajdonság = „%3” megadásának nincs értelme. A tulajdonság mellőzése.</translation>
     </message>
     <message>
         <location line="+59"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
+        <source>Did you forget an underscore in layer '%1'?</source>
         <translation>Elfelejtett egy aláhúzást a(z) „%1” rétegen?</translation>
     </message>
     <message>
         <location line="+67"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
         <translation>A(z) „%1” réteg nem ismerhető fel érvényes rétegként az automatikus leképezéshez.</translation>
     </message>
     <message>
         <location line="-99"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
+        <source>'regions_input' layer must not occur more than once.</source>
         <translation>A „regions_input” réteg nem fordulhat elő egynél többször.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
+        <source>'regions_*' layers must be tile layers.</source>
         <translation>A „regions_*” rétegeknek csemperétegeknek kell lenniük.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
+        <source>'regions_output' layer must not occur more than once.</source>
         <translation>A „regions_output” réteg nem fordulhat elő egynél többször.</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
         <translation>Az „input_*” és az „inputnot_*” rétegeknek csemperétegeknek kell lenniük.</translation>
     </message>
     <message>
         <location line="+51"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
+        <source>No 'regions' or 'regions_input' layer found.</source>
         <translation>Nem található „regions” vagy „regions_input” réteg.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
+        <source>No 'regions' or 'regions_output' layer found.</source>
         <translation>Nem található „regions” vagy „regions_output” réteg.</translation>
     </message>
     <message>
@@ -2720,7 +2720,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
         <translation>Úgy tűnik, hogy a(z) „%1” csempekészletben lévő csempeoszlopok száma megváltozott: %2 → %3. Szeretné hozzáigazítani a csempehivatkozásokat?</translation>
     </message>
 </context>
@@ -3697,7 +3697,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
+        <source>Failed to load tileset image '%1'.</source>
         <translation>Nem sikerült betölteni a(z) „%1” csempekészlet képet.</translation>
     </message>
     <message>
@@ -3726,8 +3726,8 @@ Válasszon egy adott formátumot.</translation>
     <name>Tiled::Internal::NoEditorWidget</name>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+45"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Nincsenek nyitott fájlok&lt;/font&gt;</translation>
+        <source>&lt;font size="+2"&gt;No Open Files&lt;/font&gt;</source>
+        <translation>&lt;font size="+2"&gt;Nincsenek nyitott fájlok&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -3934,7 +3934,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Don&apos;t remind me</source>
+        <source>Don't remind me</source>
         <translation>Ne emlékeztessen</translation>
     </message>
     <message>
@@ -4555,7 +4555,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
+        <source>The tileset "%1" is still in use by the map!</source>
         <translation>A(z) „%1” csempekészletet még mindig használja a térkép!</translation>
     </message>
     <message>
@@ -4647,7 +4647,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tile &quot;%1&quot; already exists in the tileset!</source>
+        <source>Tile "%1" already exists in the tileset!</source>
         <translation>A(z) „%1” csempe már létezik a csempekészletben!</translation>
     </message>
     <message>
@@ -4657,7 +4657,7 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+14"/>
-        <source>Could not load &quot;%1&quot;!</source>
+        <source>Could not load "%1"!</source>
         <translation>Nem sikerült betölteni: „%1”!</translation>
     </message>
     <message>

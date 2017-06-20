@@ -415,35 +415,18 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
     if (!objectPropertiesRelevant(mDocument, object))
         return;
     if (mNameToProperty.contains(name)) {
-        if (propertyValueAffected(mObject, object, name)) {
-            mUpdating = true;
-            mNameToProperty[name]->setValue(object->property(name));
-            mUpdating = false;
-        }
+        if (propertyValueAffected(mObject, object, name))
+            setCustomPropertyValue(mNameToProperty[name], object->property(name));
     } else {
-        // Determine the property preceding the new property, if any
-        const int index = mObject->properties().keys().indexOf(name);
-        const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
-        QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
-
         QVariant value;
         if (mObject->hasProperty(name))
             value = mObject->property(name);
         else
             value = predefinedPropertyValue(mObject, name);
 
-        mUpdating = true;
-        QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
-        property->setValue(value);
-        mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
-
-        // Collapse custom color properties, to save space
-        if (value.type() == QVariant::Color)
-            setExpanded(items(property).first(), false);
-
-        mUpdating = false;
+        createCustomProperty(name, value);
     }
-    updatePropertyColor(name);
+    updateCustomPropertyColor(name);
 }
 
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
@@ -460,7 +443,6 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
             !anyObjectHasProperty(mDocument->currentObjects(), name)) {
         // It's not a predefined property and no selected object has this
         // property, so delete it.
-        mNameToProperty.remove(name);
 
         // First move up or down the currently selected item
         QtBrowserItem *item = currentItem();
@@ -476,18 +458,16 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
             }
         }
 
-        delete property;
+        deleteCustomProperty(property);
         return;
     }
 
     if (propertyValueAffected(mObject, object, name)) {
         // Property deleted from the current object, so reset the value.
-        mUpdating = true;
-        property->setValue(predefinedValue);
-        mUpdating = false;
+        setCustomPropertyValue(property, predefinedValue);
     }
 
-    updatePropertyColor(name);
+    updateCustomPropertyColor(name);
 }
 
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
@@ -496,20 +476,11 @@ void PropertyBrowser::propertyChanged(Object *object, const QString &name)
     if (!property)
         return;
 
-    if (propertyValueAffected(mObject, object, name)) {
-        QVariant previousValue = property->value();
-        QVariant newValue = object->property(name);
-        if (newValue.userType() != previousValue.userType()) {
-            updateCustomProperties();
-        } else {
-            mUpdating = true;
-            property->setValue(newValue);
-            mUpdating = false;
-        }
-    }
+    if (propertyValueAffected(mObject, object, name))
+        setCustomPropertyValue(property, object->property(name));
 
     if (mDocument->currentObjects().contains(object))
-        updatePropertyColor(name);
+        updateCustomPropertyColor(name);
 }
 
 void PropertyBrowser::propertiesChanged(Object *object)
@@ -1200,7 +1171,9 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case TypeProperty:
-        undoStack->push(new ChangeTileType(mTilesetDocument, tile, val.toString()));
+        undoStack->push(new ChangeTileType(mTilesetDocument,
+                                           mTilesetDocument->selectedTiles(),
+                                           val.toString()));
         break;
     case TileProbabilityProperty:
         undoStack->push(new ChangeTileProbability(mTilesetDocument,
@@ -1279,6 +1252,59 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
     }
 
     return property;
+}
+
+QtVariantProperty *PropertyBrowser::createCustomProperty(const QString &name, const QVariant &value)
+{
+    // Determine the property preceding the new property, if any
+    const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
+    QtProperty *precedingProperty = nullptr;
+    for (int i = 0; i < properties.size(); ++i) {
+        if (properties.at(i)->propertyName() < name)
+            precedingProperty = properties.at(i);
+        else
+            break;
+    }
+
+    mUpdating = true;
+    QtVariantProperty *property = createProperty(CustomProperty, value.userType(), name);
+    property->setValue(value);
+    mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
+
+    // Collapse custom color properties, to save space
+    if (value.type() == QVariant::Color)
+        setExpanded(items(property).first(), false);
+
+    mUpdating = false;
+    return property;
+}
+
+void PropertyBrowser::deleteCustomProperty(QtVariantProperty *property)
+{
+    Q_ASSERT(mNameToProperty.contains(property->propertyName()));
+    mNameToProperty.remove(property->propertyName());
+    delete property;
+}
+
+void PropertyBrowser::setCustomPropertyValue(QtVariantProperty *property,
+                                             const QVariant &value)
+{
+    if (value.userType() != property->valueType()) {
+        // Re-creating the property is necessary to change its type
+        const QString name = property->propertyName();
+        const bool wasCurrent = currentItem() && currentItem()->property() == property;
+
+        deleteCustomProperty(property);
+        property = createCustomProperty(name, value);
+        updateCustomPropertyColor(name);
+
+        if (wasCurrent)
+            setCurrentItem(items(property).first());
+    } else {
+        mUpdating = true;
+        property->setValue(value);
+        mUpdating = false;
+    }
 }
 
 void PropertyBrowser::addProperties()
@@ -1557,14 +1583,14 @@ void PropertyBrowser::updateCustomProperties()
                                                   mCustomPropertiesGroup);
 
         property->setValue(it.value());
-        updatePropertyColor(it.key());
+        updateCustomPropertyColor(it.key());
     }
 
     mUpdating = wasUpdating;
 }
 
 // If there are other objects selected check if their properties are equal. If not give them a gray color.
-void PropertyBrowser::updatePropertyColor(const QString &name)
+void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
     QtVariantProperty *property = mNameToProperty.value(name);
     if (!property)

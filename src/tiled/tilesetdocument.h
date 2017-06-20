@@ -117,7 +117,7 @@ signals:
     void tileProbabilityChanged(Tile *tile);
 
     /**
-     * Notifies the TileCollisionEditor about the object group of a tile changing.
+     * Notifies the TileCollisionDock about the object group of a tile changing.
      */
     void tileObjectGroupChanged(Tile *tile);
 

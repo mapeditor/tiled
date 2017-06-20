@@ -193,13 +193,18 @@ void MapObjectOutline::paint(QPainter *painter,
     };
 
     // Draw a solid white line
-    QPen pen(Qt::SolidLine);
+    QPen pen(Qt::white, 1.0, Qt::SolidLine);
     pen.setCosmetic(true);
-    pen.setColor(Qt::white);
     painter->setPen(pen);
     painter->drawLines(lines, 4);
 
-    const qreal dashLength = std::ceil(Utils::dpiScaled(3));
+#if QT_VERSION >= 0x050600
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+#else
+    const int devicePixelRatio = painter->device()->devicePixelRatio();
+#endif
+
+    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
 
     // Draw a black dashed line above the white line
     pen.setColor(Qt::black);
@@ -501,15 +506,19 @@ void ObjectSelectionItem::addRemoveObjectLabels()
     };
 
     switch (objectLabelVisibility()) {
-    case Preferences::AllObjectLabels:
-        for (Layer *layer : mMapDocument->map()->layers()) {
+    case Preferences::AllObjectLabels: {
+        LayerIterator iterator(mMapDocument->map());
+        while (Layer *layer = iterator.next()) {
             if (!layer->isVisible())
                 continue;
 
             if (ObjectGroup *objectGroup = layer->asObjectGroup())
                 for (MapObject *object : objectGroup->objects())
                     ensureLabel(object);
+        }
     }
+        // We want labels on selected objects regardless layer visibility
+        /*FALLTHROUGH*/
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())

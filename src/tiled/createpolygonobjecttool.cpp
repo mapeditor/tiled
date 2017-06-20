@@ -30,7 +30,9 @@ using namespace Tiled::Internal;
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     : CreateMultipointObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-polygon.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-polygon.png"));
+    setIcon(icon);
     languageChanged();
 }
 

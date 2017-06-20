@@ -26,6 +26,7 @@
 #include "clipboardmanager.h"
 #include "consoledock.h"
 #include "document.h"
+#include "preferences.h"
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
@@ -96,6 +97,8 @@ public slots:
     bool openFile(const QString &fileName);
 
 protected:
+    bool event(QEvent *event) override;
+
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
 
@@ -118,9 +121,11 @@ private slots:
     void closeFile();
     void closeAllFiles();
 
+    void cut();
+    void copy();
     void paste();
     void pasteInPlace();
-    void paste(ClipboardManager::PasteFlags flags);
+    void delete_();
     void openPreferences();
 
     void labelVisibilityActionTriggered(QAction *action);
@@ -147,7 +152,6 @@ private slots:
     void becomePatron();
     void aboutTiled();
     void openRecentFile();
-    void clearRecentFiles();
 
     void documentChanged(Document *document);
     void closeDocument(int index);
@@ -158,7 +162,8 @@ private slots:
 
     void onObjectTypesEditorClosed();
     void onAnimationEditorClosed();
-    void onCollisionEditorClosed();
+
+    void ensureHasBorderInFullScreen();
 
 private:
     /**
@@ -181,18 +186,10 @@ private:
       */
     bool confirmAllSave();
 
-    bool saveDocument(Document *document, const QString &fileName);
-    bool saveDocumentAs(Document *document);
-
     void writeSettings();
     void readSettings();
 
-    QStringList recentFiles() const;
-    QString fileDialogStartLocation() const;
-
-    void setRecentFile(const QString &fileName);
-    void updateRecentFiles();
-
+    void updateRecentFilesMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -206,8 +203,7 @@ private:
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 
-    enum { MaxRecentFiles = 8 };
-    QAction *mRecentFiles[MaxRecentFiles];
+    QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
     QMenu *mLayerMenu;
     QMenu *mNewLayerMenu;
@@ -216,7 +212,6 @@ private:
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
     QAction *mShowTileAnimationEditor;
-    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 

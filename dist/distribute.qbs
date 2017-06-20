@@ -18,26 +18,21 @@ Product {
     Group {
         name: "Examples"
         prefix: "../examples/"
-        files: ["*.*"]
+        files: ["**"]
 
         qbs.install: true
         qbs.installDir: "examples"
+        qbs.installSourceBase: prefix
     }
 
     Group {
-        name: "Examples (automapping)"
-        prefix: "../examples/sewer_automap/"
-        files: ["*.*"]
-        qbs.install: true
-        qbs.installDir: "examples/sewer_automap"
-    }
+        name: "Python Scripts"
+        prefix: "../src/plugins/python/scripts/"
+        files: ["**"]
 
-    Group {
-        name: "Examples (Sticker Knight)"
-        prefix: "../examples/sticker-knight/"
-        files: ["*.*"]
         qbs.install: true
-        qbs.installDir: "examples/sticker-knight"
+        qbs.installDir: "examples/python"
+        qbs.installSourceBase: prefix
     }
 
     Group {

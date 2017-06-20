@@ -49,14 +49,15 @@
 #include "utils.h"
 #include "zoomable.h"
 
-#include <QMimeData>
 #include <QAction>
-#include <QDropEvent>
 #include <QComboBox>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMimeData>
+#include <QSettings>
 #include <QSignalMapper>
 #include <QStackedWidget>
 #include <QStylePainter>
@@ -501,6 +502,10 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     mTabBar->insertTab(index, tileset->name());
     mTabBar->setTabToolTip(index, tileset->fileName());
 
+    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    view->zoomable()->setScale(scale);
+
     connect(tilesetDocument, &TilesetDocument::tilesetNameChanged,
             this, &TilesetDock::tilesetNameChanged);
     connect(tilesetDocument, &TilesetDocument::fileNameChanged,
@@ -525,12 +530,20 @@ void TilesetDock::deleteTilesetView(int index)
     TilesetDocument *tilesetDocument = mTilesetDocuments.at(index);
     tilesetDocument->disconnect(this);
 
+    Tileset *tileset = tilesetDocument->tileset().data();
+    TilesetView *view = tilesetViewAt(index);
+
+    QString path = QLatin1String("TilesetDock/TilesetScale/") + tileset->name();
+    QSettings *settings = Preferences::instance()->settings();
+    if (view->scale() != 1.0)
+        settings->setValue(path, view->scale());
+    else
+        settings->remove(path);
+
     mTilesets.remove(index);
     mTilesetDocuments.removeAt(index);
-    delete tilesetViewAt(index);    // view needs to go before the tab
+    delete view;                    // view needs to go before the tab
     mTabBar->removeTab(index);
-
-    Tileset *tileset = tilesetDocument->tileset().data();
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {

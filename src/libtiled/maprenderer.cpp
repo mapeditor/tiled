@@ -36,6 +36,8 @@
 #include <QPainter>
 #include <QVector2D>
 
+#include <cmath>
+
 using namespace Tiled;
 
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
@@ -79,6 +81,30 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     polygon[2] = end - perpendicular + direction;
     polygon[3] = end + perpendicular + direction;
     return polygon;
+}
+
+QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color) const
+{
+#if QT_VERSION >= 0x050600
+    const qreal devicePixelRatio = device->devicePixelRatioF();
+#else
+    const int devicePixelRatio = device->devicePixelRatio();
+#endif
+
+#ifdef Q_OS_MAC
+    const qreal dpiScale = 1.0f;
+#else
+    const qreal dpiScale = device->logicalDpiX() / 96.0;
+#endif
+
+    const qreal dashLength = std::ceil(2.0 * dpiScale * devicePixelRatio);
+
+    color.setAlpha(128);
+
+    QPen pen(color);
+    pen.setCosmetic(true);
+    pen.setDashPattern({dashLength, dashLength});
+    return pen;
 }
 
 

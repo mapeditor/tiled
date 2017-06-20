@@ -476,7 +476,7 @@ int TilesetView::sizeHintForRow(int row) const
 
 qreal TilesetView::scale() const
 {
-    return mZoomable ? mZoomable->scale() : 1;
+    return mZoomable->scale();
 }
 
 void TilesetView::setModel(QAbstractItemModel *model)
@@ -496,13 +496,38 @@ void TilesetView::setMarkAnimatedTiles(bool enabled)
 
 bool TilesetView::event(QEvent *event)
 {
-    if (event->type() == QEvent::Gesture && mZoomable) {
+    if (event->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
+    } else if (event->type() == QEvent::ShortcutOverride) {
+        auto keyEvent = static_cast<QKeyEvent*>(event);
+        if (Utils::isZoomInShortcut(keyEvent) ||
+                Utils::isZoomOutShortcut(keyEvent) ||
+                Utils::isResetZoomShortcut(keyEvent)) {
+            event->accept();
+            return true;
+        }
     }
 
     return QTableView::event(event);
+}
+
+void TilesetView::keyPressEvent(QKeyEvent *event)
+{
+    if (Utils::isZoomInShortcut(event)) {
+        mZoomable->zoomIn();
+        return;
+    }
+    if (Utils::isZoomOutShortcut(event)) {
+        mZoomable->zoomOut();
+        return;
+    }
+    if (Utils::isResetZoomShortcut(event)) {
+        mZoomable->resetZoom();
+        return;
+    }
+    return QTableView::keyPressEvent(event);
 }
 
 void TilesetView::setEditTerrain(bool enabled)
@@ -641,8 +666,7 @@ void TilesetView::leaveEvent(QEvent *event)
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
-    if (mZoomable &&
-            event->modifiers() & Qt::ControlModifier &&
+    if (event->modifiers() & Qt::ControlModifier &&
             event->orientation() == Qt::Vertical)
     {
         mZoomable->handleWheelDelta(event->delta());

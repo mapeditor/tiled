@@ -20,15 +20,15 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+46"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <source>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align="center"&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Harita Düzenleyici&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Sürüm %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(diğer katkı sağlayanları görmek için AUTHORS dosyasına bakın)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Bu programı GPL (sürüm 2 ve sonrası) çerçevesinde düzenleyebilir ve yeniden dağıtabilirsiniz. GPL kopyası Tile ile birlikte dağıtılan &apos;COPYING&apos; dosyası içinde mevcuttur.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+        <translation>&lt;p align="center"&gt;&lt;font size="+2"&gt;&lt;b&gt;Tiled Harita Düzenleyici&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Sürüm %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align="center"&gt;Copyright 2008-2017 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(diğer katkı sağlayanları görmek için AUTHORS dosyasına bakın)&lt;/p&gt;
+&lt;p align="center"&gt;Bu programı GPL (sürüm 2 ve sonrası) çerçevesinde düzenleyebilir ve yeniden dağıtabilirsiniz. GPL kopyası Tile ile birlikte dağıtılan 'COPYING' dosyası içinde mevcuttur.&lt;/p&gt;
+&lt;p align="center"&gt;&lt;a href="http://www.mapeditor.org/"&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
 </context>
@@ -42,7 +42,7 @@
     <message>
         <location line="+12"/>
         <source>Property name</source>
-        <translation>Özellik ismi</translation>
+        <translation>Özellik adı</translation>
     </message>
 </context>
 <context>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <location line="+11"/>
-        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <source>Non-unique file extension. Can't determine correct export format.</source>
         <translation>Doğru dosya biçimine karar verilemedi.</translation>
     </message>
     <message>
@@ -261,12 +261,12 @@
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation>Haritanın en az bir tile katmanı olmalı!</translation>
+        <translation>Haritanın en az bir desen katmanı olmalı!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation>Katman en az 48 x 48 tile boyutunda olmalı!</translation>
+        <translation>Katman en az 48 x 48 desen boyutunda olmalı!</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -294,7 +294,7 @@
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -319,7 +319,7 @@
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation>Tile ızgarası &amp;çiz</translation>
+        <translation>Desen ızgarası &amp;çiz</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -337,22 +337,22 @@
     <message>
         <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation>Tileset %1 yüklenirken (%2 ye genişleyen) hata oluştu. Dosya yolu bulunamadı!</translation>
+        <translation>Desen seti %1 yüklenirken (%2 ye genişleyen) hata oluştu. Dosya yolu bulunamadı!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation>Katman bölümünden önce tileset bölümü bulunamadı.</translation>
+        <translation>Katman bölümünden önce desen seti bölümü bulunamadı.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Error mapping tile id %1.</source>
-        <translation>Tile %1 haritalanamadı.</translation>
+        <translation>Desen %1 haritalanamadı.</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Bu geçerli bir flare haritası değil. Flare haritası en az bir başlık bölümü, tileset bölümü ve bir tile katmanından oluşur.</translation>
+        <translation>Bu geçerli bir flare haritası değil. Flare haritası en az bir başlık bölümü, desen seti bölümü ve bir desen katmanından oluşur.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -440,7 +440,7 @@
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation>Json tileset dosyaları (*.json)</translation>
+        <translation>Json desen seti dosyaları (*.json)</translation>
     </message>
 </context>
 <context>
@@ -491,7 +491,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation>Nesne &amp;İsimlerini Göster</translation>
+        <translation>Nesne &amp;Adlarını Göster</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -561,7 +561,7 @@
     <message>
         <location line="+5"/>
         <source>New &amp;Tileset...</source>
-        <translation>Yeni &amp;Tileset...</translation>
+        <translation>Yeni &amp;Desen Seti...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -688,7 +688,7 @@
     <message>
         <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>Dış Tileset &amp;Ekle...</translation>
+        <translation>Harici Desen Seti &amp;Ekle...</translation>
     </message>
     <message>
         <location line="-332"/>
@@ -708,7 +708,7 @@
     <message>
         <location line="+24"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+100"/>
@@ -768,7 +768,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation>Tile Nesnesinin &amp;Anahatlarını Göster</translation>
+        <translation>Desen Nesne &amp;Ana Hatlarını Göster</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -778,7 +778,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation>Tile Animasyonlarını Göster</translation>
+        <translation>Desen Animasyonlarını Göster</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -798,7 +798,7 @@
     <message>
         <location line="+9"/>
         <source>Tileset &amp;Properties...</source>
-        <translation>Tileset &amp;Özellikleri...</translation>
+        <translation>Desen Seti &amp;Özellikleri...</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -823,12 +823,12 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation>Tiled Automapping Kural Dosyaları Dönüştürücüsü</translation>
+        <translation>Tiled Automap'leme Kural Dosyaları Dönüştürücü</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation>Yeni Automapping kulları ekle</translation>
+        <translation>Yeni Automap'leme kuralları ekle</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+751"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="+178"/>
         <source>Tile</source>
-        <translation>Tile</translation>
+        <translation>Desen</translation>
     </message>
 </context>
 <context>
@@ -854,7 +854,7 @@
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Tileset dosyası değil.</translation>
+        <translation>Desen seti dosyası değil.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -878,20 +878,20 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Desteklenmeyen harita yönlendirmesi: &quot;%1&quot;</translation>
+        <source>Unsupported map orientation: "%1"</source>
+        <translation>Desteklenmeyen harita yönlendirmesi: "%1"</translation>
     </message>
     <message>
         <location line="+98"/>
         <location line="+26"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+142"/>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Tileset &apos;%1&apos; için geçersiz tileset parametleri</translation>
+        <source>Invalid tileset parameters for tileset '%1'</source>
+        <translation>Desen seti '%1' için geçersiz desen seti parametleri</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Invalid tile ID: %1</source>
-        <translation>Geçersiz tile ID: %1</translation>
+        <translation>Geçersiz desen ID: %1</translation>
     </message>
     <message>
         <location line="+265"/>
@@ -903,7 +903,7 @@ Satır %1, sütun %2</translation>
         <location line="+43"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+240"/>
         <source>Invalid tile: %1</source>
-        <translation>Geçersiz tile: %1</translation>
+        <translation>Geçersiz desen: %1</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -925,34 +925,34 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-216"/>
         <source>Error reading embedded image for tile %1</source>
-        <translation>Tile %1 için gömülü resim okuma hatası</translation>
+        <translation>Desen %1 için içe gömülü resim okuma hatası</translation>
     </message>
     <message>
         <location line="+211"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Sıkıştırma metodu &apos;%1&apos; desteklenmiyor</translation>
+        <source>Compression method '%1' not supported</source>
+        <translation>Sıkıştırma metodu '%1' desteklenmiyor</translation>
     </message>
     <message>
         <location line="+58"/>
         <location line="+19"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
         <location line="+39"/>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Katman &apos;%1&apos; için bozuk katman verisi</translation>
+        <source>Corrupt layer data for layer '%1'</source>
+        <translation>Katman '%1' için bozuk katman verisi</translation>
     </message>
     <message>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Katman &apos;%3&apos; deki tile (%1,%2) ayrıştırılamadı</translation>
+        <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
+        <translation>'%3' katmanındaki desen (%1,%2) ayrıştırılamadı</translation>
     </message>
     <message>
         <location line="-28"/>
         <location line="+44"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Tile kullanılmış fakat tileset belirtilmemiş</translation>
+        <translation>Desen kullanılıyor ancak belirtilmiş desen seti yok</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+117"/>
@@ -962,7 +962,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-178"/>
         <source>Invalid (negative) tile id: %1</source>
-        <translation>Geçersiz (negatif) tile id %1</translation>
+        <translation>Geçersiz (negatif) desen id %1</translation>
     </message>
 </context>
 <context>
@@ -981,25 +981,25 @@ Satır %1, sütun %2</translation>
         <location line="+6"/>
         <location line="+68"/>
         <source>Width:</source>
-        <translation>Genişlik:</translation>
+        <translation>En:</translation>
     </message>
     <message>
         <location line="-58"/>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation> tile&apos;lar</translation>
+        <translation> desenler</translation>
     </message>
     <message>
         <location line="-10"/>
         <location line="+68"/>
         <source>Height:</source>
-        <translation>Yükseklik:</translation>
+        <translation>Boy:</translation>
     </message>
     <message>
         <location line="-32"/>
         <source>Tile size</source>
-        <translation>Tile Boyutu</translation>
+        <translation>Desen Boyutu</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1021,12 +1021,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation>Tile katman biçimi:</translation>
+        <translation>Desen katman biçimi:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation>Tile render sırası:</translation>
+        <translation>Desen render sırası:</translation>
     </message>
 </context>
 <context>
@@ -1035,17 +1035,17 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+260"/>
         <source>New Tileset</source>
-        <translation>Yeni Tileset</translation>
+        <translation>Yeni Desen Seti</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Based on Tileset Image</source>
-        <translation>Tileset Resmi Tabanlı</translation>
+        <translation>Desen Seti Resmi Tabanlı</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1060,7 +1060,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-20"/>
         <source>&amp;Name:</source>
-        <translation>&amp;İsim:</translation>
+        <translation>&amp;Ad:</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -1080,7 +1080,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation>Tile genişliği:</translation>
+        <translation>Desen eni:</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -1109,7 +1109,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
-        <translation>Tileset kenarlarındaki boşluk.</translation>
+        <translation>Desen setinin kenarlarındaki boşluk.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1119,12 +1119,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation>Tile yüksekliği:</translation>
+        <translation>Desen boyu:</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>The space between the tiles.</source>
-        <translation>Tile&apos;lar arasındaki boşluk.</translation>
+        <translation>Desenler arasındaki boşluk.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1134,7 +1134,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation>Tileset&apos;i Düzenle</translation>
+        <translation>Deseni Düzenle</translation>
     </message>
 </context>
 <context>
@@ -1151,7 +1151,7 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="-89"/>
-        <source>File doesn&apos;t contain object types.</source>
+        <source>File doesn't contain object types.</source>
         <translation>Dosya nesne türleri içermiyor.</translation>
     </message>
     <message>
@@ -1214,7 +1214,7 @@ Satır %1, sütun %2</translation>
         <location line="+10"/>
         <location line="+46"/>
         <source> tiles</source>
-        <translation> tile&apos;lar</translation>
+        <translation> desenler</translation>
     </message>
     <message>
         <location line="-30"/>
@@ -1283,7 +1283,7 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+7"/>
-        <source>I&apos;m already a supporter!</source>
+        <source>I'm already a supporter!</source>
         <translation>Zaten bir destekçiyim!</translation>
     </message>
     <message>
@@ -1364,12 +1364,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+23"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>Tileset resimleri değiştiriğinde &amp;yeniden yükle</translation>
+        <translation>Desen seti resimlerini değiştiklerinde &amp;yeniden yükle</translation>
     </message>
     <message>
         <location line="-17"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation>Harici bir DTD&apos;ye olan başvuruların bazı XML ayrıştırıcılarla problemlere yol açtığı bilindiğinden varsayılan olarak etkinleştirilmedi.</translation>
+        <translation>Harici bir DTD'ye olan başvuruların bazı XML ayrıştırıcılarla problemlere yol açtığı bilindiğinden varsayılan olarak etkinleştirilmedi.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1398,7 +1398,7 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+14"/>
-        <source>Turn this off if you&apos;re having trouble saving your files.</source>
+        <source>Turn this off if you're having trouble saving your files.</source>
         <translation>Dosyaları kaydetmekte zorluk yaşıyorsanız bunu kapatın.</translation>
     </message>
     <message>
@@ -1424,7 +1424,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation>Nesne kenar uzunluğu:</translation>
+        <translation>Nesne kenar eni:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1483,7 +1483,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+6"/>
         <source>Enabled Plugins</source>
-        <translation>Aktif Eklentiler</translation>
+        <translation>Etkin Eklentiler</translation>
     </message>
 </context>
 <context>
@@ -1697,7 +1697,7 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>What&apos;s This</source>
+        <source>What's This</source>
         <translation>Bu Nedir</translation>
     </message>
     <message>
@@ -1829,7 +1829,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+3"/>
         <source>Not set</source>
-        <translation>Belirtilmemiş</translation>
+        <translation>Ayarlı değil</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -1857,12 +1857,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation>Genişlik</translation>
+        <translation>En</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation>Yükseklik</translation>
+        <translation>Boy</translation>
     </message>
 </context>
 <context>
@@ -1885,12 +1885,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation>Genişlik</translation>
+        <translation>En</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation>Yükseklik</translation>
+        <translation>Boy</translation>
     </message>
 </context>
 <context>
@@ -1903,12 +1903,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation>Genişlik</translation>
+        <translation>En</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation>Yükseklik</translation>
+        <translation>Boy</translation>
     </message>
 </context>
 <context>
@@ -1955,12 +1955,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation>Genişlik</translation>
+        <translation>En</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation>Yükseklik</translation>
+        <translation>Boy</translation>
     </message>
 </context>
 <context>
@@ -1985,12 +1985,12 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+11"/>
-        <source>Can&apos;t parse file header!</source>
+        <source>Can't parse file header!</source>
         <translation>Dosya başlığı ayrıştırılamadı!</translation>
     </message>
     <message>
         <location line="+22"/>
-        <source>Can&apos;t parse layer header!</source>
+        <source>Can't parse layer header!</source>
         <translation>Katman başlığı ayrıştırılamadı!</translation>
     </message>
     <message>
@@ -2025,8 +2025,8 @@ Satır %1, sütun %2</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Can&apos;t save non-tile layer!</source>
-        <translation>Tile olmayan katman kaydedilemedi!</translation>
+        <source>Can't save non-tile layer!</source>
+        <translation>Desen olmayan katman kaydedilemedi!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2062,17 +2062,17 @@ Satır %1, sütun %2</translation>
         <location line="+32"/>
         <location line="+23"/>
         <source> tiles</source>
-        <translation> tile&apos;lar</translation>
+        <translation> desenler</translation>
     </message>
     <message>
         <location line="-75"/>
         <source>Width:</source>
-        <translation>Genişlik:</translation>
+        <translation>En:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Height:</source>
-        <translation>Yükseklik:</translation>
+        <translation>Boy:</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -2121,7 +2121,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.ui" line="+14"/>
         <source>Tile Animation Editor</source>
-        <translation>Tile Animasyon Düzenleyici</translation>
+        <translation>Desen Animasyon Düzenleyici</translation>
     </message>
     <message>
         <location line="+102"/>
@@ -2136,22 +2136,20 @@ Satır %1, sütun %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+186"/>
         <location line="+70"/>
         <source>Reset Tile Size</source>
-        <translation>Tile Boyutunu Sıfırla</translation>
+        <translation>Desen Boyutunu Sıfırla</translation>
     </message>
     <message numerus="yes">
         <location line="-13"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message>
         <location line="+18"/>
         <source>Flip Horizontally</source>
@@ -2215,10 +2213,9 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
     <message>
         <location line="+11"/>
         <source>Object &amp;Properties...</source>
@@ -2237,49 +2234,49 @@ Satır %1, sütun %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+124"/>
-        <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation>&apos;%1&apos;: Özellik &apos;%2&apos; = &apos;%3&apos; mantıklı gözükmüyor. Bu özellik görmezden gelinecek.</translation>
+        <source>'%1': Property '%2' = '%3' does not make sense. Ignoring this property.</source>
+        <translation>'%1': Özellik '%2' = '%3' mantıklı gözükmüyor. Bu özellik görmezden gelinecek.</translation>
     </message>
     <message>
         <location line="+59"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation>Katman &apos;%1&apos; deki alt çizgiyi unuttunuz mu?</translation>
+        <source>Did you forget an underscore in layer '%1'?</source>
+        <translation>Katman '%1' deki alt çizgiyi unuttunuz mu?</translation>
     </message>
     <message>
         <location line="+67"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation>Automap için katman &apos;%1&apos; geçerli değil.</translation>
+        <source>Layer '%1' is not recognized as a valid layer for Automapping.</source>
+        <translation>Automap için katman '%1' geçerli değil.</translation>
     </message>
     <message>
         <location line="-99"/>
-        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_input&apos; katmanı birden fazla olmamalı..</translation>
+        <source>'regions_input' layer must not occur more than once.</source>
+        <translation>'regions_input' katmanı birden fazla olmamalı..</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation>&apos;regions_*&apos; katmanları tile katmanları olmalı.</translation>
+        <source>'regions_*' layers must be tile layers.</source>
+        <translation>'regions_*' katmanları desen katmanları olmalı.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation>&apos;regions_output&apos; katmanı birden fazla olmamalı.</translation>
+        <source>'regions_output' layer must not occur more than once.</source>
+        <translation>'regions_output' katmanı birden fazla olmamalı.</translation>
     </message>
     <message>
         <location line="+40"/>
-        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation>&apos;input_*&apos; ve &apos;inputnot_*&apos; katmanları tile katmanı olmalı.</translation>
+        <source>'input_*' and 'inputnot_*' layers must be tile layers.</source>
+        <translation>'input_*' ve 'inputnot_*' katmanları desen katmanları olmalı.</translation>
     </message>
     <message>
         <location line="+51"/>
-        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation>&apos;regions&apos; veya &apos;regions_input&apos; katmanı bulunamadı.</translation>
+        <source>No 'regions' or 'regions_input' layer found.</source>
+        <translation>'regions' veya 'regions_input' katmanı bulunamadı.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation>&apos;regions&apos; veya &apos;regions_output&apos; katmanı bulunamadı.</translation>
+        <source>No 'regions' or 'regions_output' layer found.</source>
+        <translation>'regions' veya 'regions_output' katmanı bulunamadı.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2328,17 +2325,17 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+202"/>
         <source>Tileset image</source>
-        <translation>Tileset resmi</translation>
+        <translation>Desen seti resmi</translation>
     </message>
     <message>
         <location line="-2"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation>Desen seti</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tile image</source>
-        <translation>Tile resmi</translation>
+        <translation>Desen resmi</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2378,7 +2375,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+2"/>
         <source>Open Tileset...</source>
-        <translation>Tileset Aç...</translation>
+        <translation>Desen Seti Aç...</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -2398,12 +2395,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+8"/>
         <source>Locate External Tileset</source>
-        <translation>Dış Tileset Bul</translation>
+        <translation>Harici Desen Seti Bul</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Error Reading Tileset</source>
-        <translation>Tileset Okuma Hatası</translation>
+        <translation>Desen Seti Okuma Hatası</translation>
     </message>
 </context>
 <context>
@@ -2468,7 +2465,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="-58"/>
         <source>Set a name for this command</source>
-        <translation>Bu komut için bir isim belirleyin</translation>
+        <translation>Bu komut için bir ad ayarlayın</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2483,7 +2480,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+104"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="-109"/>
@@ -2518,7 +2515,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation>Terminal&apos;de Çalıştır</translation>
+        <translation>Terminal'de Çalıştır</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2686,7 +2683,7 @@ Satır %1, sütun %2</translation>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+81"/>
         <source>Insert Tile</source>
-        <translation>Tile Ekle</translation>
+        <translation>Desen Ekle</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2719,12 +2716,12 @@ Satır %1, sütun %2</translation>
     <message>
         <location line="+253"/>
         <source>Tileset Columns Changed</source>
-        <translation>Tileset Sütunları Değişti</translation>
+        <translation>Desen Seti Sütunları Değişti</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>Tileset &apos;%1&apos; içindeki tile sütun satısı %2 den %3 e değişmiş gözüküyor. Tile başvurularını ayarlamak ister misiniz?</translation>
+        <source>The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
+        <translation>Desen seti '%1' içindeki desen sütun sayısı %2 den %3 e değişmiş gözüküyor. Desen başvurularını ayarlamak ister misiniz?</translation>
     </message>
 </context>
 <context>
@@ -2744,18 +2741,16 @@ Satır %1, sütun %2</translation>
     <message numerus="yes">
         <location line="+230"/>
         <source>Move %n Point(s)</source>
-        <translation>
-            <numerusform>%n Nokta Ötele</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Noktayı Taşı</numerusform>
+        <numerusform>%n Noktayı Taşı</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation>
-            <numerusform>%n Boğumu Sil</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Boğumu Sil</numerusform>
+        <numerusform>%n Boğumu Sil</numerusform>
+        </translation></message>
     <message>
         <location line="-40"/>
         <location line="+215"/>
@@ -2811,7 +2806,7 @@ Onu değiştirmek istiyor musunuz?</translation>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation>Görüntü için yeterli bellek ayrılamadı. Yakınlaştırma düzeyini azaltın veya Tiled&apos;ın 64-bit sürümünü kullanmayı deneyin.</translation>
+        <translation>Görüntü için yeterli bellek ayrılamadı. Yakınlaştırma düzeyini azaltın veya Tiled'ın 64-bit sürümünü kullanmayı deneyin.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3131,7 +3126,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation>Belirtilen dosya adının bilinen bir dosya uzantısı yok.</translation>
+        <translation>Verilen dosya adının bilinen bir dosya uzantısı yok.</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3183,13 +3178,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="-1232"/>
         <location line="+1233"/>
         <source>Tile Animation Editor</source>
-        <translation>Tile Animasyon Düzenleyicisi</translation>
+        <translation>Desen Animasyon Düzenleyicisi</translation>
     </message>
     <message>
         <location line="-1231"/>
         <location line="+1232"/>
         <source>Tile Collision Editor</source>
-        <translation>Tile Çarpışma Düzenleyicisi</translation>
+        <translation>Desen Çarpışma Düzenleyicisi</translation>
     </message>
     <message>
         <location line="-1188"/>
@@ -3204,7 +3199,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+793"/>
         <source>Add External Tileset(s)</source>
-        <translation>Dışarıdan Tileset(ler) Ekle</translation>
+        <translation>Harici Desen Seti Ekle</translation>
     </message>
 </context>
 <context>
@@ -3227,14 +3222,13 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Döndür</numerusform>
+        <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation></message>
     <message>
         <location line="+36"/>
         <source>Tile Layer %1</source>
-        <translation>Tile Katmanı %1</translation>
+        <translation>Desen Katmanı %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3255,7 +3249,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Group Layer</source>
-        <translation>Katmanı Gruba Koy</translation>
+        <translation>Katmanı Gruba Kat</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -3270,7 +3264,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+8"/>
         <source>Duplicate Layer</source>
-        <translation>Katmanı Tekrarla</translation>
+        <translation>Katmanı Kopyala</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -3280,48 +3274,43 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+191"/>
         <source>Tile</source>
-        <translation>Tile</translation>
+        <translation>Desen</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Tileset Changes</source>
-        <translation>Tileset Değişiklikleri</translation>
+        <translation>Desen Seti Değişiklikleri</translation>
     </message>
     <message numerus="yes">
         <location line="+165"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+21"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+38"/>
         <source>Move %n Object(s) Up</source>
-        <translation>
-            <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Yukarı Taşı</numerusform>
+        <numerusform>%n Nesneyi Yukarı Taşı</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
-        <translation>
-            <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Aşağı Taşı</numerusform>
+        <numerusform>%n Nesneyi Aşağı Taşı</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
@@ -3388,7 +3377,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Tile Layer</source>
-        <translation>&amp;Tile Katmanı</translation>
+        <translation>&amp;Desen Katmanı</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3404,7 +3393,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+1"/>
         <location line="+3"/>
         <source>&amp;Group Layer</source>
-        <translation>Katmanı &amp;Gruba Koy</translation>
+        <translation>Katmanı &amp;Gruba Kat</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3471,17 +3460,15 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+391"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kopyala</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kopyala</numerusform>
+        <numerusform>%n Nesneyi Kopyala</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Kaldır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Kaldır</numerusform>
+        <numerusform>%n Nesneyi Kaldır</numerusform>
+        </translation></message>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
@@ -3495,7 +3482,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-514"/>
         <source>&amp;Duplicate Layer</source>
-        <translation>Katmanı Çoğal&amp;t</translation>
+        <translation>Katmanı &amp;Kopyala</translation>
     </message>
     <message>
         <location line="-84"/>
@@ -3549,7 +3536,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+419"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
-        <translation>Tileset Okuma Hatası</translation>
+        <translation>Desen Seti Okuma Hatası</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3559,10 +3546,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
-        <translation>
-            <numerusform>%n Tileset&apos;i Ekle</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Desen Seti Ekle</numerusform>
+        <numerusform>%n Desen Seti Ekle</numerusform>
+        </translation></message>
     <message>
         <location line="+46"/>
         <source>Random Mode</source>
@@ -3594,7 +3580,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+49"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3622,7 +3608,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+21"/>
         <source>Choose the Maps Folder</source>
-        <translation>Haritalar Dizinini Seç</translation>
+        <translation>Haritalar Klasörünü Seç</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -3672,7 +3658,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+60"/>
         <source>Tile Layer 1</source>
-        <translation>Tile Katmanı 1</translation>
+        <translation>Desen Katmanı 1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -3682,7 +3668,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation>Bu harita için tile katmanlarının her biri %L1 GB bellek kullanıyor. Varsayılan olarak oluşturulmuyor.</translation>
+        <translation>Bu harita için desen katmanlarının her biri %L1 GB bellek kullanıyor. Varsayılan olarak oluşturulmuyor.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -3700,18 +3686,18 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Tileset resmi &apos;%1&apos; yüklenemedi.</translation>
+        <source>Failed to load tileset image '%1'.</source>
+        <translation>Desen seti resmi '%1' yüklenemedi.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Bu tileset resminde belirtilen tile ayarları ile uyumlu herhangi bir tile bulunamadı!</translation>
+        <translation>Bu desen seti resminde belirtilen desen ayarları ile uyumlu herhangi bir desen bulunamadı!</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Tileset Image</source>
-        <translation>Tileset Resmi</translation>
+        <translation>Desen Seti Resmi</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -3729,8 +3715,8 @@ Lütfen belirli bir biçim seçin.</translation>
     <name>Tiled::Internal::NoEditorWidget</name>
     <message>
         <location filename="../src/tiled/noeditorwidget.ui" line="+45"/>
-        <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
-        <translation>&lt;font size=&quot;+2&quot;&gt;Açık Dosya Yok&lt;/font&gt;</translation>
+        <source>&lt;font size="+2"&gt;No Open Files&lt;/font&gt;</source>
+        <translation>&lt;font size="+2"&gt;Açık Dosya Yok&lt;/font&gt;</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -3740,7 +3726,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+7"/>
         <source>New Tileset...</source>
-        <translation>Yeni Tileset...</translation>
+        <translation>Yeni Desen Seti...</translation>
     </message>
 </context>
 <context>
@@ -3761,14 +3747,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="-262"/>
         <location line="+686"/>
         <source>Move %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Taşı</numerusform>
+        <numerusform>%n Nesneyi Taşı</numerusform>
+        </translation></message>
     <message>
         <location line="-566"/>
         <source>Unnamed object</source>
-        <translation>İsimsiz nesne</translation>
+        <translation>Adsız nesne</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3788,17 +3773,15 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+645"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Döndür</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Döndür</numerusform>
+        <numerusform>%n Nesneyi Döndür</numerusform>
+        </translation></message>
     <message numerus="yes">
         <location line="+265"/>
         <source>Resize %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Yeniden Boyutlandır</numerusform>
+        <numerusform>%n Nesneyi Yeniden Boyutlandır</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::ObjectTypesEditor</name>
@@ -3871,7 +3854,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+144"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
 </context>
 <context>
@@ -3917,10 +3900,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>%n Nesneyi Katmana Taşı</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Katmana Taşı</numerusform>
+        <numerusform>%n Nesneyi Katmana Taşı</numerusform>
+        </translation></message>
 </context>
 <context>
     <name>Tiled::Internal::PatreonDialog</name>
@@ -3936,7 +3918,7 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Don&apos;t remind me</source>
+        <source>Don't remind me</source>
         <translation>Beni anımsatma</translation>
     </message>
     <message>
@@ -3969,7 +3951,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+325"/>
         <source>Name:</source>
-        <translation>İsim:</translation>
+        <translation>Ad:</translation>
     </message>
     <message>
         <location line="+178"/>
@@ -4019,7 +4001,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Rename...</source>
-        <translation>İsim Değiştir...</translation>
+        <translation>Adı Değiştir...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4079,12 +4061,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+36"/>
         <source>Relative chance this tile will be picked</source>
-        <translation>Bu tile&apos;ın görece seçilme şansı</translation>
+        <translation>Bu desenin görece seçilme şansı</translation>
     </message>
     <message>
         <location line="+300"/>
         <source>Error Reading Tileset</source>
-        <translation>Tileset Okuma Hatası</translation>
+        <translation>Desen Seti Okuma Hatası</translation>
     </message>
     <message>
         <location line="+180"/>
@@ -4099,12 +4081,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+36"/>
         <source>Tile Layer Format</source>
-        <translation>Tile Katman Biçimi</translation>
+        <translation>Desen Katman Biçimi</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation>Tile Render Sırası</translation>
+        <translation>Desen Render Sırası</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4123,7 +4105,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+77"/>
         <location line="+90"/>
         <source>Name</source>
-        <translation>İsim</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <location line="-205"/>
@@ -4170,31 +4152,31 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+70"/>
         <location line="+167"/>
         <source>Width</source>
-        <translation>Genişlik</translation>
+        <translation>En</translation>
     </message>
     <message>
         <location line="-236"/>
         <location line="+70"/>
         <location line="+167"/>
         <source>Height</source>
-        <translation>Yükseklik</translation>
+        <translation>Boy</translation>
     </message>
     <message>
         <location line="-236"/>
         <location line="+208"/>
         <source>Tile Width</source>
-        <translation>Tile Genişliği</translation>
+        <translation>Desen Eni</translation>
     </message>
     <message>
         <location line="-207"/>
         <location line="+208"/>
         <source>Tile Height</source>
-        <translation>Tile Yüksekliği</translation>
+        <translation>Desen Boyu</translation>
     </message>
     <message>
         <location line="-206"/>
         <source>Tile Side Length (Hex)</source>
-        <translation>Tile Yan Uzunluğu (Hex)</translation>
+        <translation>Desen Yan Uzunluğu (Hex)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4256,7 +4238,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+5"/>
         <source>Tile Layer</source>
-        <translation>Tile Katmanı</translation>
+        <translation>Desen Katmanı</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4295,12 +4277,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="-59"/>
         <source>Group Layer</source>
-        <translation>Katmanı Gruba Koy</translation>
+        <translation>Katmanı Gruba Kat</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4315,12 +4297,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+14"/>
         <source>Grid Width</source>
-        <translation>Izgara Genişliği</translation>
+        <translation>Izgara Eni</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Grid Height</source>
-        <translation>Izgara Yüksekliği</translation>
+        <translation>Izgara Boyu</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -4335,7 +4317,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+17"/>
         <source>Tile</source>
-        <translation>Tile</translation>
+        <translation>Desen</translation>
     </message>
     <message>
         <location line="-174"/>
@@ -4360,7 +4342,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+33"/>
         <location line="+62"/>
         <source>Select Same Tile</source>
-        <translation>Aynı Tile&apos;ı Seç</translation>
+        <translation>Aynı Deseni Seç</translation>
     </message>
     <message>
         <location line="-59"/>
@@ -4461,7 +4443,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+29"/>
         <source>Tile Collision Editor</source>
-        <translation>Tile Çarpışma Düzenleyicisi</translation>
+        <translation>Desen Çarpışma Düzenleyicisi</translation>
     </message>
 </context>
 <context>
@@ -4512,12 +4494,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation>Damga Klasörünü Seç</translation>
+        <translation>Damgalar Klasörünü Seç</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation>Tile Damgaları</translation>
+        <translation>Desen Damgaları</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4532,7 +4514,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation>Damgayı Tekrarla</translation>
+        <translation>Damgayı Kopyala</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4542,7 +4524,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation>Damga Klasörünü Ayarla</translation>
+        <translation>Damgalar Klasörünü Ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4555,58 +4537,58 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+613"/>
         <source>Remove Tileset</source>
-        <translation>Tileset&apos;i Kaldır</translation>
+        <translation>Desen Setini Kaldır</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>Tileset &quot;%1&quot; harita tarafından hala kullanılmakta!</translation>
+        <source>The tileset "%1" is still in use by the map!</source>
+        <translation>Desen seti "%1" harita tarafından hala kullanılmakta!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation>Bu tileset ve tileset&apos;teki tile&apos;lara olan tüm başvurular kaldırılsın mı?</translation>
+        <translation>Bu desen seti ve desen setindeki desenlere olan tüm başvurular kaldırılsın mı?</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Tilesets</source>
-        <translation>Tileset&apos;ler</translation>
+        <translation>Desen Setleri</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation>Yeni Tileset</translation>
+        <translation>Yeni Desen Seti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Embed Tileset</source>
-        <translation>Tileset&apos;i &amp;Göm</translation>
+        <translation>Desen Setini İçe &amp;Göm</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit Tile&amp;set</source>
-        <translation>Tile&amp;set&apos;i Düzenle</translation>
+        <translation>Desen &amp;Setini Düzenle</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>Tileset&apos;i Farklı &amp;Dışa Aktar...</translation>
+        <translation>Desen Setini Farklı &amp;Dışa Aktar...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Remove Tileset</source>
-        <translation>Tileset&apos;i &amp;Kaldır</translation>
+        <translation>Desen Setini &amp;Kaldır</translation>
     </message>
     <message>
         <location line="+144"/>
         <source>Error saving tileset: %1</source>
-        <translation>Tileset kaydedilirken hata oluştu: %1</translation>
+        <translation>Desen seti kaydedilirken hata oluştu: %1</translation>
     </message>
     <message>
         <location line="-18"/>
         <location line="+17"/>
         <source>Export Tileset</source>
-        <translation>Tileset&apos;i Dışa Aktar</translation>
+        <translation>Desen Setini Dışa Aktar</translation>
     </message>
 </context>
 <context>
@@ -4623,7 +4605,7 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/tileseteditor.cpp" line="+198"/>
         <location line="+277"/>
         <source>Tileset</source>
-        <translation>Tileset</translation>
+        <translation>Desen Seti</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4631,13 +4613,13 @@ Lütfen belirli bir biçim seçin.</translation>
         <location line="+31"/>
         <location line="+18"/>
         <source>Add Tiles</source>
-        <translation>Tile&apos;ları Ekle</translation>
+        <translation>Desenleri Ekle</translation>
     </message>
     <message>
         <location line="-69"/>
         <location line="+170"/>
         <source>Remove Tiles</source>
-        <translation>Tile&apos;ları Kaldır</translation>
+        <translation>Desenleri Kaldır</translation>
     </message>
     <message>
         <location line="-168"/>
@@ -4647,12 +4629,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+47"/>
         <source>Apply this action to all tiles</source>
-        <translation>Bu etkiyi tüm tile&apos;lara uygula</translation>
+        <translation>Bu etkiyi tüm desenlere uygula</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tile &quot;%1&quot; already exists in the tileset!</source>
-        <translation>Tile &quot;%1&quot; tileset&apos;te zaten var!</translation>
+        <source>Tile "%1" already exists in the tileset!</source>
+        <translation>Desen "%1" desen setinde zaten var!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4661,18 +4643,18 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+14"/>
-        <source>Could not load &quot;%1&quot;!</source>
-        <translation>&quot;%1&quot; yüklenemedi!</translation>
+        <source>Could not load "%1"!</source>
+        <translation>"%1" yüklenemedi!</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Tiles to be removed are in use by open maps!</source>
-        <translation>Kaldırılacak tile&apos;lar açık haritalar tarafından kullanımda!</translation>
+        <translation>Kaldırılacak desenler açık haritalar tarafından kullanımda!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Remove all references to these tiles?</source>
-        <translation>Bu tile&apos;lara olan tüm başvurular kaldırılsın mı?</translation>
+        <translation>Bu desenlere olan tüm başvurular kaldırılsın mı?</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -4698,22 +4680,22 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+4"/>
         <source>Set Terrain Image</source>
-        <translation>Zemin Resmini Belirle</translation>
+        <translation>Zemin Resmini Ayarla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile &amp;Properties...</source>
-        <translation>Tile &amp;Özellikleri...</translation>
+        <translation>Desen &amp;Özellikleri...</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&amp;Swap Tiles</source>
-        <translation>Tile&apos;ları Taka&amp;s Et</translation>
+        <translation>Desenleri Taka&amp;s Et</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&amp;Replace Tile of Selected Objects</source>
-        <translation>Seçili Nesnelerin Tile&apos;larını Yer Değiştir</translation>
+        <translation>Seçili Nesnelerin Desenlerini Yer Değiştir</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -4734,7 +4716,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+28"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation>Tiled tileset dosyaları (*.tsx)</translation>
+        <translation>Tiled desen seti dosyaları (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4857,12 +4839,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+66"/>
         <source>Add Tileset</source>
-        <translation>Tileset&apos;i Ekle</translation>
+        <translation>Desen Seti Ekle</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Remove Tileset</source>
-        <translation>Tileset&apos;i Kaldır</translation>
+        <translation>Desen Setini Kaldır</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+35"/>
@@ -4887,7 +4869,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+42"/>
         <source>Set Property</source>
-        <translation>Özelliği Belirle</translation>
+        <translation>Özelliği Ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4965,7 +4947,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/tilesetchanges.cpp" line="+34"/>
         <source>Change Tileset Name</source>
-        <translation>Tileset Adını Değiştir</translation>
+        <translation>Desen Seti Adını Değiştir</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -4975,7 +4957,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location line="+48"/>
         <source>Edit Tileset</source>
-        <translation>Tileset&apos;i Düzenle</translation>
+        <translation>Desen Setini Düzenle</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -5021,7 +5003,7 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+139"/>
         <source>Change Tile Terrain</source>
-        <translation>Tile Zeminini Değiştir</translation>
+        <translation>Desen Zeminini Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/tileseteditor.cpp" line="-621"/>
@@ -5061,10 +5043,9 @@ Lütfen belirli bir biçim seçin.</translation>
     <message numerus="yes">
         <location line="+48"/>
         <source>Change %n Object/s Tile</source>
-        <translation>
-            <numerusform>%n Nesnenin Tile&apos;ını Değiştir</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesne Desenini Değiştir</numerusform>
+        <numerusform>%n Nesne Desenini Değiştir</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/renameterrain.cpp" line="+36"/>
         <source>Change Terrain Name</source>
@@ -5073,13 +5054,13 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+63"/>
         <source>Add Tiles</source>
-        <translation>Tile&apos;ları Ekle</translation>
+        <translation>Desenleri Ekle</translation>
     </message>
     <message>
         <location line="+8"/>
         <location filename="../src/tiled/tileseteditor.cpp" line="+518"/>
         <source>Remove Tiles</source>
-        <translation>Tile&apos;ları Kaldır</translation>
+        <translation>Desenleri Kaldır</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
@@ -5101,12 +5082,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+35"/>
         <source>Change Tile Animation</source>
-        <translation>Tile Animasyonunu Değiştir</translation>
+        <translation>Desen Animasyonunu Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+36"/>
         <source>Change Tile Collision</source>
-        <translation>Tile Çarpışmasını Değiştir</translation>
+        <translation>Desen Çarpışmasını Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
@@ -5127,12 +5108,12 @@ Lütfen belirli bir biçim seçin.</translation>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation>Tile Genişliğini Değiştir</translation>
+        <translation>Desen Enini Değiştir</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation>Tile Yüksekliğini Değiştir</translation>
+        <translation>Desen Boyunu Değiştir</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -5175,45 +5156,44 @@ Lütfen belirli bir biçim seçin.</translation>
         <location filename="../src/tiled/changetileprobability.cpp" line="+41"/>
         <location line="+14"/>
         <source>Change Tile Probability</source>
-        <translation>Tile Olasılığını Değiştir</translation>
+        <translation>Desen Olasılığını Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/adjusttileindexes.cpp" line="-133"/>
         <location line="+86"/>
         <source>Adjust Tile Indexes</source>
-        <translation>Tile İndekslerini Ayarla</translation>
+        <translation>Desen İndekslerini Ayarla</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileimagesource.cpp" line="+39"/>
         <source>Change Tile Image</source>
-        <translation>Tile Resmini Değiştir</translation>
+        <translation>Desen Resmini Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+34"/>
         <source>Replace Tileset</source>
-        <translation>Tileset&apos;i Değiştir</translation>
+        <translation>Deseni Yer Değiştir</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <source>Flip %n Object(s)</source>
-        <translation>
-            <numerusform>%n Nesneyi Çevir</numerusform>
-        </translation>
-    </message>
+        <translation><numerusform>Nesneyi Çevir</numerusform>
+        <numerusform>%n Nesneyi Çevir</numerusform>
+        </translation></message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+34"/>
         <source>Change Tile Type</source>
-        <translation>Tile Türünü Değiştir</translation>
+        <translation>Desen Türünü Değiştir</translation>
     </message>
     <message>
         <location filename="../src/tiled/swaptiles.cpp" line="+37"/>
         <source>Swap Tiles</source>
-        <translation>Tile&apos;ları Takas Et</translation>
+        <translation>Desenleri Takas Et</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="-145"/>
         <source>Reload Tileset</source>
-        <translation>Tileset&apos;i Yeniden Yükle</translation>
+        <translation>Desen Setini Yeniden Yükle</translation>
     </message>
 </context>
 <context>

@@ -38,6 +38,7 @@
 #include <QOpenGLWidget>
 #endif
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent, Mode mode)
@@ -194,6 +195,14 @@ bool MapView::event(QEvent *e)
             if (pinch->changeFlags() & QPinchGesture::ScaleFactorChanged)
                 handlePinchGesture(pinch);
         }
+    } else if (e->type() == QEvent::ShortcutOverride) {
+        auto keyEvent = static_cast<QKeyEvent*>(e);
+        if (Utils::isZoomInShortcut(keyEvent) ||
+                Utils::isZoomOutShortcut(keyEvent) ||
+                Utils::isResetZoomShortcut(keyEvent)) {
+            e->accept();
+            return true;
+        }
     }
 
     return QGraphicsView::event(e);
@@ -204,6 +213,23 @@ void MapView::hideEvent(QHideEvent *event)
     // Disable hand scrolling when the view gets hidden in any way
     setHandScrolling(false);
     QGraphicsView::hideEvent(event);
+}
+
+void MapView::keyPressEvent(QKeyEvent *event)
+{
+    if (Utils::isZoomInShortcut(event)) {
+        mZoomable->zoomIn();
+        return;
+    }
+    if (Utils::isZoomOutShortcut(event)) {
+        mZoomable->zoomOut();
+        return;
+    }
+    if (Utils::isResetZoomShortcut(event)) {
+        mZoomable->resetZoom();
+        return;
+    }
+    return QGraphicsView::keyPressEvent(event);
 }
 
 /**

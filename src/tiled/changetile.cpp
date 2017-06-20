@@ -29,20 +29,24 @@ namespace Tiled {
 namespace Internal {
 
 ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
-                               Tile *tile,
+                               const QList<Tile *> &tiles,
                                const QString &type)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"))
     , mTilesetDocument(tilesetDocument)
-    , mTile(tile)
-    , mType(type)
+    , mTiles(tiles)
 {
+    mTypes.fill(type, tiles.size());
 }
 
 void ChangeTileType::swap()
 {
-    QString oldType = mTile->type();
-    mTilesetDocument->setTileType(mTile, mType);
-    mType = oldType;
+    for (int i = 0, size = mTiles.size(); i < size; ++i) {
+        Tile *tile = mTiles.at(i);
+
+        QString oldType = tile->type();
+        mTilesetDocument->setTileType(tile, mTypes.at(i));
+        mTypes[i] = oldType;
+    }
 }
 
 } // namespace Internal

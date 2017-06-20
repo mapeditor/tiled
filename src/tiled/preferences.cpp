@@ -29,6 +29,7 @@
 #include "tilesetmanager.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
@@ -548,6 +549,49 @@ void Preferences::setPatreonDialogReminder(const QDate &date)
         setPatron(false);
     mPatreonDialogTime = date;
     mSettings->setValue(QLatin1String("Install/PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
+}
+
+QStringList Preferences::recentFiles() const
+{
+    QVariant v = mSettings->value(QLatin1String("recentFiles/fileNames"));
+    return v.toStringList();
+}
+
+QString Preferences::fileDialogStartLocation() const
+{
+    QStringList files = recentFiles();
+    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
+}
+
+/**
+ * Adds the given file to the recent files list.
+ */
+void Preferences::addRecentFile(const QString &fileName)
+{
+    // Remember the file by its absolute file path (not the canonical one,
+    // which avoids unexpected paths when symlinks are involved).
+    const QString absoluteFilePath = QDir::cleanPath(QFileInfo(fileName).absoluteFilePath());
+
+    if (absoluteFilePath.isEmpty())
+        return;
+
+    QStringList files = recentFiles();
+    files.removeAll(absoluteFilePath);
+    files.prepend(absoluteFilePath);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    mSettings->beginGroup(QLatin1String("recentFiles"));
+    mSettings->setValue(QLatin1String("fileNames"), files);
+    mSettings->endGroup();
+
+    emit recentFilesChanged();
+}
+
+void Preferences::clearRecentFiles()
+{
+    mSettings->remove(QLatin1String("recentFiles/fileNames"));
+    emit recentFilesChanged();
 }
 
 void Preferences::setCheckForUpdates(bool on)

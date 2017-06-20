@@ -17,9 +17,10 @@ The 'Edit Commands' dialog contains a list of commands. Each command has several
 * **Name**: The name of the command as it will be shown in the drop down list, so you can easily identify it.
 * **Command**: The actual shell command to execute. This usually starts with an executable program followed by arguments. You can use the following variables:
     + `%mapfile` is replaced with the current maps full path.
+    + `%mappath` is replaced with the full folder path in which the map is located. (since Tiled 0.18)
     + `%objecttype` is replaced with the type of the currently selected object, if any. (since Tiled 0.12)
     + `%objectid` is replaced with the ID of the currently selected object, if any. (since Tiled 0.17)
-    * `%layername` is replaced with the name of the currently selected layer. (since Tiled 0.17)
+    + `%layername` is replaced with the name of the currently selected layer. (since Tiled 0.17)
 * **Enabled**: A quick way to disable commands and remove them from the drop down list.
     + The default command is the first enabled command.
 
