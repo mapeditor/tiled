@@ -35,9 +35,9 @@ FindDialog *FindDialog::mInstance;
 FindDialog::FindDialog(QWidget *parent, Qt::WindowFlags f )
     : QDialog(parent, f), mHighlightTile(new HighlightTile())
 {
-    setWindowTitle(tr("Go to"));
+    setWindowTitle(tr("Find"));
 
-    QGroupBox *horizontalGroupBox = new QGroupBox(tr("Find"));
+    QGroupBox *horizontalGroupBox = new QGroupBox(tr("Find Tile"));
     QHBoxLayout *layout = new QHBoxLayout;
     horizontalGroupBox->setLayout(layout);
     QLabel *labelX = new QLabel(tr("X:"));
