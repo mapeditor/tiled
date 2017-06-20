@@ -30,6 +30,7 @@
 #include "tilesetmanager.h"
 
 #include "filesystemwatcher.h"
+#include "networkaccessmanager.h"
 #include "tileanimationdriver.h"
 #include "tile.h"
 #include "tilesetformat.h"
@@ -182,13 +183,20 @@ void TilesetManager::reloadImages(const SharedTileset &tileset)
         return;
 
     if (tileset->isCollection()) {
+        bool reloaded = false;
         for (Tile *tile : tileset->tiles()) {
-            // todo: trigger reload of remote files
-            if (tile->imageSource().isLocalFile())
+            if (tile->imageSource().isLocalFile()) {
                 tile->setImage(QPixmap(tile->imageSource().toLocalFile()));
+                reloaded = true;
+            } else {
+                // todo: make sure not to use cached data
+                NetworkAccessManager::instance()->requestImage(tile);
+            }
         }
-        emit tilesetImagesChanged(tileset.data());
+        if (reloaded)
+            emit tilesetImagesChanged(tileset.data());
     } else {
+        // todo: make sure not to use cached data
         if (tileset->loadImage())
             emit tilesetImagesChanged(tileset.data());
     }

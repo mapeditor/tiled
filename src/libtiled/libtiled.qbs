@@ -4,7 +4,7 @@ DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.4" }
+    Depends { name: "Qt"; submodules: ["gui", "network"]; versionAtLeast: "5.4" }
 
     Properties {
         condition: !(qbs.toolchain.contains("msvc") ||
@@ -69,6 +69,8 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "networkaccessmanager.cpp",
+        "networkaccessmanager.h",
         "objectgroup.cpp",
         "objectgroup.h",
         "object.h",
