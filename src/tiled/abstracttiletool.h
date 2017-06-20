@@ -28,7 +28,7 @@ class TileLayer;
 
 namespace Internal {
 
-class BrushItem;
+class HighlightTile;
 class MapDocument;
 
 /**
@@ -82,7 +82,7 @@ protected:
      */
     virtual void updateStatusInfo();
 
-    bool isBrushVisible() const { return mBrushVisible; }
+    bool isTileHighlightVisible() const { return mHighlightVisible; }
 
     /**
      * Determines what the tile position means.
@@ -106,7 +106,7 @@ protected:
      * hidden based on whether the mouse is in the scene and whether the
      * currently selected layer is a tile layer.
      */
-    BrushItem *brushItem() const { return mBrushItem; }
+    HighlightTile *highlightTile() const { return mHighlightTile; }
 
     /**
      * Returns the current tile layer, or null if no tile layer is currently
@@ -115,13 +115,13 @@ protected:
     TileLayer *currentTileLayer() const;
 
 private:
-    void setBrushVisible(bool visible);
-    void updateBrushVisibility();
+    void setHighlightVisible(bool visible);
+    void updateHighlightVisibility();
 
     TilePositionMethod mTilePositionMethod;
-    BrushItem *mBrushItem;
+    HighlightTile *mHighlightTile;
     QPoint mTilePosition;
-    bool mBrushVisible;
+    bool mHighlightVisible;
 };
 
 } // namespace Internal

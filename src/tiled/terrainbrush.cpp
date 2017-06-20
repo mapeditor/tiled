@@ -22,7 +22,7 @@
 
 #include "terrainbrush.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "geometry.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -101,7 +101,7 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
 
 void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
+    if (!highlightTile()->isVisible())
         return;
 
     if (event->button() == Qt::LeftButton) {
@@ -169,7 +169,7 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
-    brushItem()->clear();
+    highlightTile()->clear();
 }
 
 void TerrainBrush::setTerrain(const Terrain *terrain)
@@ -179,7 +179,7 @@ void TerrainBrush::setTerrain(const Terrain *terrain)
 
     mTerrain = terrain;
 
-    if (mIsActive && brushItem()->isVisible())
+    if (mIsActive && highlightTile()->isVisible())
         updateBrush(tilePosition());
 }
 
@@ -216,7 +216,7 @@ void TerrainBrush::capture()
 
 void TerrainBrush::doPaint(bool mergeable)
 {
-    TileLayer *stamp = brushItem()->tileLayer().data();
+    TileLayer *stamp = highlightTile()->tileLayer().data();
 
     if (!stamp)
         return;
@@ -230,10 +230,10 @@ void TerrainBrush::doPaint(bool mergeable)
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
                                                stamp->x(), stamp->y(),
-                                               stamp, brushItem()->tileRegion());
+                                               stamp, highlightTile()->tileRegion());
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
-    emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
+    emit mapDocument()->regionEdited(highlightTile()->tileRegion(), tileLayer);
 }
 
 static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned considerationMask)
@@ -333,7 +333,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     // if the cursor is outside of the map, bail out
     if (!currentLayer->bounds().contains(cursorPos)) {
-        brushItem()->clear();
+        highlightTile()->clear();
         return;
     }
 
@@ -552,7 +552,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // set the new tile layer as the brush
-    brushItem()->setTileLayer(stamp, brushRegion);
+    highlightTile()->setTileLayer(stamp, brushRegion);
 
     delete[] checked;
     delete[] newTerrain;

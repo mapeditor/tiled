@@ -20,7 +20,7 @@
 
 #include "eraser.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "erasetiles.h"
 #include "geometry.h"
 #include "map.h"
@@ -45,7 +45,7 @@ void Eraser::tilePositionChanged(const QPoint &tilePos)
 {
     Q_UNUSED(tilePos);
 
-    brushItem()->setTileRegion(eraseArea());
+    highlightTile()->setTileRegion(eraseArea());
 
     if (mMode == Erase)
         doErase(true);
@@ -53,7 +53,7 @@ void Eraser::tilePositionChanged(const QPoint &tilePos)
 
 void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
+    if (!highlightTile()->isVisible())
         return;
 
     if (mMode == Nothing) {
@@ -80,7 +80,7 @@ void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
         if (event->button() == Qt::RightButton) {
             doErase(false);
             mMode = Nothing;
-            brushItem()->setTileRegion(eraseArea());
+            highlightTile()->setTileRegion(eraseArea());
         }
         break;
     }

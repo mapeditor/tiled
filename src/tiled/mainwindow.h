@@ -55,6 +55,7 @@ class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class TimeTickManager;
 class TmxMapFormat;
 class TsxTilesetFormat;
 class Zoomable;
@@ -221,6 +222,7 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+    TimeTickManager *mTimeTickManager;
 
     TmxMapFormat *mTmxMapFormat;
     TsxTilesetFormat *mTsxTilesetFormat;

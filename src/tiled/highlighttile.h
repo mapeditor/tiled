@@ -1,7 +1,8 @@
 /*
- * brushitem.h
+ * highlighttile.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010 Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2017 Leon Moctezuma <leon.moctezuma@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,6 +25,9 @@
 #include "tilelayer.h"
 
 #include <QGraphicsItem>
+#include <Qtimer>
+#include <QPropertyAnimation>
+#include <QColor>
 
 namespace Tiled {
 namespace Internal {
@@ -34,10 +38,15 @@ class MapDocument;
  * This brush item is used to represent a brush in a map scene before it is
  * used.
  */
-class BrushItem : public QGraphicsItem
+class HighlightTile : public QGraphicsObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QColor insideMapColor READ insideMapColor WRITE setInsideMapColor)
+
 public:
-    BrushItem();
+
+
+    HighlightTile();
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -60,6 +69,9 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
+    void setInsideMapColor(const QColor &color);
+    QColor insideMapColor() const { return mInsideMapColor; }
+
 private:
     void updateBoundingRect();
 
@@ -67,12 +79,19 @@ private:
     SharedTileLayer mTileLayer;
     QRegion mRegion;
     QRectF mBoundingRect;
+
+    QColor mInsideMapColor;
+    QPropertyAnimation mAnimation;
+
+public slots:
+
+    void updateHighlight();
 };
 
 /**
  * Clears the tile layer and region set on this item.
  */
-inline void BrushItem::clear()
+inline void HighlightTile::clear()
 {
     setTileLayer(SharedTileLayer());
 }
@@ -80,7 +99,7 @@ inline void BrushItem::clear()
 /**
  * Returns the current tile layer.
  */
-inline const SharedTileLayer &BrushItem::tileLayer() const
+inline const SharedTileLayer &HighlightTile::tileLayer() const
 {
     return mTileLayer;
 }
@@ -89,7 +108,7 @@ inline const SharedTileLayer &BrushItem::tileLayer() const
  * Returns the region of the current tile layer or the region that was set
  * using setTileRegion.
  */
-inline QRegion BrushItem::tileRegion() const
+inline QRegion HighlightTile::tileRegion() const
 {
     return mRegion;
 }

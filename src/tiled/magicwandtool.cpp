@@ -23,7 +23,7 @@
 
 #include "magicwandtool.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "tilepainter.h"
 #include "tile.h"
 #include "mapscene.h"
@@ -53,7 +53,7 @@ void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
 
     TilePainter regionComputer(mapDocument(), tileLayer);
     mSelectedRegion = regionComputer.computeFillRegion(tilePos);
-    brushItem()->setTileRegion(mSelectedRegion);
+    highlightTile()->setTileRegion(mSelectedRegion);
 }
 
 void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)

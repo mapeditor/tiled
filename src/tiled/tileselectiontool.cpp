@@ -20,7 +20,7 @@
 
 #include "tileselectiontool.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "changeselectedarea.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -48,12 +48,12 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
 void TileSelectionTool::tilePositionChanged(const QPoint &)
 {
     if (mSelecting)
-        brushItem()->setTileRegion(selectedArea());
+        highlightTile()->setTileRegion(selectedArea());
 }
 
 void TileSelectionTool::updateStatusInfo()
 {
-    if (!isBrushVisible() || !mSelecting) {
+    if (!isTileHighlightVisible() || !mSelecting) {
         AbstractTileTool::updateStatusInfo();
         return;
     }
@@ -100,7 +100,7 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mMouseDown = true;
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
-        brushItem()->setTileRegion(QRegion());
+        highlightTile()->setTileRegion(QRegion());
     }
 
     if (button == Qt::RightButton) {
@@ -108,7 +108,7 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             // Cancel selecting
             mSelecting = false;
             mMouseDown = false; // Avoid restarting select on move
-            brushItem()->setTileRegion(QRegion());
+            highlightTile()->setTileRegion(QRegion());
         } else {
             clearSelection();
         }
@@ -139,7 +139,7 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             document->undoStack()->push(cmd);
         }
 
-        brushItem()->setTileRegion(QRegion());
+        highlightTile()->setTileRegion(QRegion());
         updateStatusInfo();
     } else if (mMouseDown) {
         // Clicked without dragging and not cancelled

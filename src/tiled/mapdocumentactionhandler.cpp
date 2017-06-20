@@ -27,7 +27,7 @@
 #include "clipboardmanager.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
-#include "gotodialog.h"
+#include "finddialog.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -60,7 +60,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mInstance = this;
 
     mActionGotoTile = new QAction(this);
-    mActionGotoTile->setShortcut(tr("Ctrl+Shift+G"));
+    mActionGotoTile->setShortcut(tr("Ctrl+Shift+F"));
 
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
@@ -144,7 +144,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Utils::setThemeIcon(mActionLayerProperties, "document-properties");
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
-    connect(mActionGotoTile, SIGNAL(triggered()), SLOT(gotoTile()));
+    connect(mActionGotoTile, SIGNAL(triggered()), SLOT(findDialog()));
     connect(mActionSelectAll, &QAction::triggered, this, &MapDocumentActionHandler::selectAll);
     connect(mActionSelectInverse, &QAction::triggered, this, &MapDocumentActionHandler::selectInverse);
     connect(mActionSelectNone, &QAction::triggered, this, &MapDocumentActionHandler::selectNone);
@@ -182,7 +182,7 @@ MapDocumentActionHandler::~MapDocumentActionHandler()
 
 void MapDocumentActionHandler::retranslateUi()
 {
-    mActionGotoTile->setText(tr("&Go to Tile"));
+    mActionGotoTile->setText(tr("&Find"));
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
@@ -329,9 +329,9 @@ void MapDocumentActionHandler::delete_()
     undoStack->endMacro();
 }
 
-void MapDocumentActionHandler::gotoTile()
+void MapDocumentActionHandler::findDialog()
 {
-    GotoDialog::showDialog();
+    FindDialog::showDialog();
 }
 
 void MapDocumentActionHandler::selectAll()

@@ -1,5 +1,5 @@
 /*
- * %gotodialog.cpp%
+ * %finddialog.cpp%
  * Copyright 2017, Your Name <leon.moctezuma@gmail.com>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "gotodialog.h"
+#include "finddialog.h"
 
 #include "documentmanager.h"
 #include "mapview.h"
@@ -30,21 +30,21 @@
 using namespace Tiled::Internal;
 using namespace Tiled;
 
-GotoDialog *GotoDialog::mInstance;
+FindDialog *FindDialog::mInstance;
 
-GotoDialog::GotoDialog(QWidget *parent, Qt::WindowFlags f )
-    : QDialog(parent, f)
+FindDialog::FindDialog(QWidget *parent, Qt::WindowFlags f )
+    : QDialog(parent, f), mHighlightTile(new HighlightTile())
 {
     setWindowTitle(tr("Go to"));
 
-    QGroupBox *horizontalGroupBox = new QGroupBox(tr("Go to tile:"));
+    QGroupBox *horizontalGroupBox = new QGroupBox(tr("Find"));
     QHBoxLayout *layout = new QHBoxLayout;
     horizontalGroupBox->setLayout(layout);
     QLabel *labelX = new QLabel(tr("X:"));
     QLabel *labelY = new QLabel(tr("Y:"));
     lineEditX = new QLineEdit(tr("0"));
     lineEditY = new QLineEdit(tr("0"));
-    QPushButton* goButton = new QPushButton(tr("Go"));
+    QPushButton* goButton = new QPushButton(tr("Find"));
 
     lineEditX->setMaximumWidth(50);
     lineEditY->setMaximumWidth(50);
@@ -60,16 +60,16 @@ GotoDialog::GotoDialog(QWidget *parent, Qt::WindowFlags f )
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(horizontalGroupBox);
 
-    connect(goButton, &QAbstractButton::clicked, this, &GotoDialog::goToCoordinates);
+    connect(goButton, &QAbstractButton::clicked, this, &FindDialog::goToCoordinates);
 
     setLayout(mainLayout);
 }
 
-GotoDialog* GotoDialog::showDialog()
+FindDialog* FindDialog::showDialog()
 {
     if (!mInstance) {
         QWidget *parentWidget = QApplication::activeWindow();
-        mInstance = new GotoDialog(parentWidget, Qt::Tool);
+        mInstance = new FindDialog(parentWidget, Qt::Tool);
     }
 
     mInstance->show();
@@ -79,7 +79,7 @@ GotoDialog* GotoDialog::showDialog()
     return mInstance;
 }
 
-void GotoDialog::goToCoordinates()
+void FindDialog::goToCoordinates()
 {
     QString textX = lineEditX->text();
     QString textY = lineEditY->text();
@@ -101,6 +101,14 @@ void GotoDialog::goToCoordinates()
         }
 
         mapView->centerOn(point);
+
+        QRect region(textX.toInt(),textY.toInt(),1,1);
+
+        highlightTile()->setZValue(10000);
+        highlightTile()->setMapDocument(mapDocument);
+        mapView->mapScene()->addItem(highlightTile());
+        highlightTile()->setVisible(true);
+        highlightTile()->setTileRegion(region);
     }
 
     close();

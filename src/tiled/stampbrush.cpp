@@ -22,7 +22,7 @@
 #include "stampbrush.h"
 
 #include "addremovetileset.h"
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -66,7 +66,7 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
 
             // Only update the brush item for the last drawn piece
             if (i == points.size() - 1)
-                brushItem()->setTileLayer(mPreviewLayer);
+                highlightTile()->setTileLayer(mPreviewLayer);
 
             editedRegion |= doPaint(Mergeable | SuppressRegionEdited);
         }
@@ -80,7 +80,7 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
 
 void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (!brushItem()->isVisible())
+    if (!highlightTile()->isVisible())
         return;
 
     if (event->button() == Qt::LeftButton) {
@@ -528,9 +528,9 @@ void StampBrush::updatePreview(QPoint tilePos)
         }
     }
 
-    brushItem()->setTileLayer(mPreviewLayer);
+    highlightTile()->setTileLayer(mPreviewLayer);
     if (!tileRegion.isEmpty())
-        brushItem()->setTileRegion(tileRegion);
+        highlightTile()->setTileRegion(tileRegion);
 }
 
 void StampBrush::setRandom(bool value)

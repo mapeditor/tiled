@@ -1,6 +1,7 @@
 /*
- * brushitem.cpp
+ * highlighttile.cpp
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2017 Leon Moctezuma <leon.moctezuma@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,7 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "brushitem.h"
+#include "highlighttile.h"
 
 #include "map.h"
 #include "mapdocument.h"
@@ -35,16 +36,27 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-BrushItem::BrushItem():
-    mMapDocument(nullptr)
+HighlightTile::HighlightTile():
+    mMapDocument(nullptr),
+    mAnimation(this, "insideMapColor")
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+
+    setInsideMapColor(QApplication::palette().highlight().color());
+
+    mAnimation.setStartValue(insideMapColor());
+    mAnimation.setEndValue(QColor(255,255,255,0));
+    mAnimation.setDuration(1000);
+    mAnimation.setEasingCurve(QEasingCurve::InOutCirc);
+    mAnimation.setLoopCount(-1);
+
+    mAnimation.start();
 }
 
 /**
  * Sets the map document this brush is operating on.
  */
-void BrushItem::setMapDocument(MapDocument *mapDocument)
+void HighlightTile::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
         return;
@@ -59,7 +71,7 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
  * Sets a tile layer representing this brush. When no tile layer is set,
  * the brush only draws the selection color.
  */
-void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
+void HighlightTile::setTileLayer(const SharedTileLayer &tileLayer)
 {
     mTileLayer = tileLayer;
     mRegion = tileLayer ? tileLayer->region() : QRegion();
@@ -73,7 +85,7 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
  * with it. This allows highlighting of areas that are not covered by tiles in
  * the given tile layer.
  */
-void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
+void HighlightTile::setTileLayer(const SharedTileLayer &tileLayer,
                              const QRegion &region)
 {
     mTileLayer = tileLayer;
@@ -86,7 +98,7 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
 /**
  * Changes the position of the tile layer, if one is set.
  */
-void BrushItem::setTileLayerPosition(const QPoint &pos)
+void HighlightTile::setTileLayerPosition(const QPoint &pos)
 {
     if (!mTileLayer)
         return;
@@ -104,7 +116,7 @@ void BrushItem::setTileLayerPosition(const QPoint &pos)
 /**
  * Sets the region of tiles that this brush item occupies.
  */
-void BrushItem::setTileRegion(const QRegion &region)
+void HighlightTile::setTileRegion(const QRegion &region)
 {
     if (mRegion == region)
         return;
@@ -116,23 +128,23 @@ void BrushItem::setTileRegion(const QRegion &region)
 /**
  * Sets the layer offset used by the currently active layer.
  */
-void BrushItem::setLayerOffset(const QPointF &offset)
+void HighlightTile::setLayerOffset(const QPointF &offset)
 {
     setPos(offset);
 }
 
-QRectF BrushItem::boundingRect() const
+QRectF HighlightTile::boundingRect() const
 {
     return mBoundingRect;
 }
 
-void BrushItem::paint(QPainter *painter,
+void HighlightTile::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *)
 {
-    QColor insideMapHighlight = QApplication::palette().highlight().color();
-    insideMapHighlight.setAlpha(64);
-    QColor outsideMapHighlight = QColor(255, 0, 0, 64);
+    QColor insideMapHighlight = insideMapColor();
+    //insideMapHighlight.setAlpha(64);
+    QColor outsideMapHighlight = QColor(255, 255, 0, 64);
     
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
@@ -156,7 +168,7 @@ void BrushItem::paint(QPainter *painter,
                                 option->exposedRect);
 }
 
-void BrushItem::updateBoundingRect()
+void HighlightTile::updateBoundingRect()
 {
     prepareGeometryChange();
 
@@ -183,4 +195,13 @@ void BrushItem::updateBoundingRect()
                              qMax(0, drawMargins.right()),
                              qMax(0, drawMargins.bottom()));
     }
+}
+
+void HighlightTile::setInsideMapColor(const QColor& color) {
+    mInsideMapColor = color;
+    this->update();
+}
+
+void HighlightTile::updateHighlight() {
+
 }

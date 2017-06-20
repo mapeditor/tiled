@@ -91,7 +91,6 @@ SOURCES += aboutdialog.cpp \
     automappingutils.cpp  \
     autoupdater.cpp \
     brokenlinks.cpp \
-    brushitem.cpp \
     bucketfilltool.cpp \
     changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
@@ -138,11 +137,12 @@ SOURCES += aboutdialog.cpp \
     eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
+    finddialog.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
-	gotodialog.cpp \
     grouplayeritem.cpp \
+    highlighttile.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
@@ -312,7 +312,7 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
-	gotodialog.h \
+    gotodialog.h \
     grouplayeritem.h \
     id.h \
     imagecolorpickerwidget.h \

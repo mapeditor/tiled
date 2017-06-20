@@ -20,7 +20,7 @@
 
 #include "abstracttiletool.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -39,36 +39,36 @@ AbstractTileTool::AbstractTileTool(const QString &name,
                                    QObject *parent)
     : AbstractTool(name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
-    , mBrushItem(new BrushItem)
-    , mBrushVisible(false)
+    , mHighlightTile(new HighlightTile)
+    , mHighlightVisible(false)
 {
-    mBrushItem->setVisible(false);
-    mBrushItem->setZValue(10000);
+    mHighlightTile->setVisible(false);
+    mHighlightTile->setZValue(10000);
 }
 
 AbstractTileTool::~AbstractTileTool()
 {
-    delete mBrushItem;
+    delete mHighlightTile;
 }
 
 void AbstractTileTool::activate(MapScene *scene)
 {
-    scene->addItem(mBrushItem);
+    scene->addItem(mHighlightTile);
 }
 
 void AbstractTileTool::deactivate(MapScene *scene)
 {
-    scene->removeItem(mBrushItem);
+    scene->removeItem(mHighlightTile);
 }
 
 void AbstractTileTool::mouseEntered()
 {
-    setBrushVisible(true);
+    setHighlightVisible(true);
 }
 
 void AbstractTileTool::mouseLeft()
 {
-    setBrushVisible(false);
+    setHighlightVisible(false);
 }
 
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
@@ -77,7 +77,7 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer()) {
         offsetPos -= layer->totalOffset();
-        mBrushItem->setLayerOffset(layer->totalOffset());
+        mHighlightTile->setLayerOffset(layer->totalOffset());
     }
 
     const MapRenderer *renderer = mapDocument()->renderer();
@@ -102,7 +102,7 @@ void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
                                           MapDocument *newDocument)
 {
     Q_UNUSED(oldDocument)
-    mBrushItem->setMapDocument(newDocument);
+    mHighlightTile->setMapDocument(newDocument);
 }
 
 void AbstractTileTool::updateEnabledState()
@@ -112,7 +112,7 @@ void AbstractTileTool::updateEnabledState()
 
 void AbstractTileTool::updateStatusInfo()
 {
-    if (mBrushVisible) {
+    if (mHighlightVisible) {
         int tileId = -1;
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
@@ -131,27 +131,27 @@ void AbstractTileTool::updateStatusInfo()
     }
 }
 
-void AbstractTileTool::setBrushVisible(bool visible)
+void AbstractTileTool::setHighlightVisible(bool visible)
 {
-    if (mBrushVisible == visible)
+    if (mHighlightVisible == visible)
         return;
 
-    mBrushVisible = visible;
+    mHighlightVisible = visible;
     updateStatusInfo();
-    updateBrushVisibility();
+    updateHighlightVisibility();
 }
 
-void AbstractTileTool::updateBrushVisibility()
+void AbstractTileTool::updateHighlightVisibility()
 {
     // Show the tile brush only when a visible tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible) {
+    bool showHighlight = false;
+    if (mHighlightVisible) {
         if (Layer *layer = currentTileLayer()) {
             if (layer->isVisible())
-                showBrush = true;
+                showHighlight = true;
         }
     }
-    mBrushItem->setVisible(showBrush);
+    mHighlightTile->setVisible(showHighlight);
 }
 
 TileLayer *AbstractTileTool::currentTileLayer() const

@@ -24,7 +24,7 @@
 #include "bucketfilltool.h"
 
 #include "addremovetileset.h"
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "tilepainter.h"
 #include "tile.h"
 #include "mapscene.h"
@@ -179,7 +179,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
     if (fillRegionChanged) {
         // Update the brush item to draw the overlay
-        brushItem()->setTileLayer(mFillOverlay);
+        highlightTile()->setTileLayer(mFillOverlay);
     }
     // Create connections to know when the overlay should be cleared
     makeConnections();
@@ -189,7 +189,7 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton || mFillRegion.isEmpty())
         return;
-    if (!brushItem()->isVisible())
+    if (!highlightTile()->isVisible())
         return;
 
     const TileLayer *preview = mFillOverlay.data();
@@ -257,7 +257,7 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
     updateRandomListAndMissingTilesets();
 
-    if (mIsActive && brushItem()->isVisible())
+    if (mIsActive && highlightTile()->isVisible())
         tilePositionChanged(tilePosition());
 }
 
@@ -267,7 +267,7 @@ void BucketFillTool::clearOverlay()
     // risk of getting a callback and causing an infinite loop
     clearConnections(mapDocument());
 
-    brushItem()->clear();
+    highlightTile()->clear();
     mFillOverlay.clear();
     mFillRegion = QRegion();
 }

@@ -130,7 +130,7 @@ public slots:
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
 
-    void gotoTile();
+    void findDialog();
 
 private slots:
     void updateActions();

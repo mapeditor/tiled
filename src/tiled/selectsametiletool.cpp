@@ -20,7 +20,7 @@
 
 #include "selectsametiletool.h"
 
-#include "brushitem.h"
+#include "highlighttile.h"
 #include "mapdocument.h"
 #include "changeselectedarea.h"
 
@@ -51,7 +51,7 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
         resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
     }
     mSelectedRegion = resultRegion;
-    brushItem()->setTileRegion(mSelectedRegion);
+    highlightTile()->setTileRegion(mSelectedRegion);
 }
 
 void SelectSameTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
