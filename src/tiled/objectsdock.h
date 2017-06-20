@@ -90,6 +90,7 @@ public:
     MapObjectModel *mapObjectModel() const;
 
 protected:
+    bool event(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
@@ -98,8 +99,12 @@ private slots:
     void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
+    void setColumnVisibility(bool visible);
+
+    void showCustomMenu(const QPoint &point);
 
 private:
+    void restoreVisibleSections();
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;

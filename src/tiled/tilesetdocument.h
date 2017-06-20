@@ -24,7 +24,6 @@
 #include "tileset.h"
 
 #include <QList>
-#include <QPointer>
 
 namespace Tiled {
 
@@ -48,6 +47,7 @@ public:
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
+    bool canReload() const;
     bool reload(QString *error);
 
     /**
@@ -57,9 +57,6 @@ public:
     static TilesetDocument *load(const QString &fileName,
                                  TilesetFormat *format,
                                  QString *error = nullptr);
-
-    TilesetFormat *readerFormat() const;
-    void setReaderFormat(TilesetFormat *format);
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(TilesetFormat *format);
@@ -95,7 +92,8 @@ public:
 signals:
     /**
      * This signal is currently used when adding or removing tiles from a
-     * tileset, or when changing the tileset column count or color.
+     * tileset, when changing the tileset column count or color, or when the
+     * tileset has been swapped.
      *
      * @todo Emit more specific signals.
      */
@@ -119,7 +117,7 @@ signals:
     void tileProbabilityChanged(Tile *tile);
 
     /**
-     * Notifies the TileCollisionEditor about the object group of a tile changing.
+     * Notifies the TileCollisionDock about the object group of a tile changing.
      */
     void tileObjectGroupChanged(Tile *tile);
 
@@ -147,9 +145,6 @@ private slots:
 private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
-
-    QPointer<TilesetFormat> mReaderFormat;
-    QPointer<TilesetFormat> mWriterFormat;
 
     TilesetTerrainModel *mTerrainModel;
 

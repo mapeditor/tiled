@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "clipboardmanager.h"
 #include "editor.h"
 
 #include <QHash>
@@ -40,10 +41,12 @@ namespace Internal {
 
 class PropertiesDock;
 class TerrainDock;
-class TilesetDocument;
-class TilesetView;
 class TileAnimationEditor;
-class TileCollisionEditor;
+class TileCollisionDock;
+class TilesetDocument;
+class TilesetEditorWindow;
+class TilesetView;
+class UndoDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -67,6 +70,9 @@ public:
     QList<QToolBar *> toolBars() const override;
     QList<QDockWidget *> dockWidgets() const override;
 
+    StandardActions enabledStandardActions() const override;
+    void performStandardAction(StandardAction action) override;
+
     TilesetView *currentTilesetView() const;
     Tileset *currentTileset() const;
     Zoomable *zoomable() const override;
@@ -74,9 +80,9 @@ public:
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
+    QAction *editCollisionAction() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
-    TileCollisionEditor *tileCollisionEditor() const;
 
 signals:
     void currentTileChanged(Tile *tile);
@@ -91,11 +97,14 @@ private slots:
     void tilesetChanged();
     void updateTilesetView(Tileset *tileset);
 
-    void addTiles();
+    void openAddTilesDialog();
+    void addTiles(const QStringList &files);
     void removeTiles();
 
     void setEditTerrain(bool editTerrain);
     void currentTerrainChanged(const Terrain *terrain);
+
+    void setEditCollision(bool editCollision);
 
     void updateAddRemoveActions();
 
@@ -108,21 +117,20 @@ private:
 
     void retranslateUi();
 
-    QMainWindow *mMainWindow;
+    TilesetEditorWindow *mMainWindow;
     QToolBar *mMainToolBar;
     QStackedWidget *mWidgetStack;
     QToolBar *mTilesetToolBar;
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
-    QAction *mEditTerrain;
 
     PropertiesDock *mPropertiesDock;
+    UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
-    Zoomable *mZoomable;
+    TileCollisionDock *mTileCollisionDock;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
-    TileCollisionEditor *mTileCollisionEditor;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument;
@@ -140,19 +148,9 @@ inline QAction *TilesetEditor::removeTilesAction() const
     return mRemoveTiles;
 }
 
-inline QAction *TilesetEditor::editTerrainAction() const
-{
-    return mEditTerrain;
-}
-
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const
 {
     return mTileAnimationEditor;
-}
-
-inline TileCollisionEditor *TilesetEditor::tileCollisionEditor() const
-{
-    return mTileCollisionEditor;
 }
 
 } // namespace Internal

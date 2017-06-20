@@ -46,7 +46,7 @@ public:
     void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset) override;
     bool canMergeWith(Layer *other) const override;
     Layer *mergedWith(Layer *other) const override;
-    Layer *clone() const override;
+    GroupLayer *clone() const override;
 
     // Enable easy iteration over children with range-based for
     QList<Layer*>::iterator begin() { return mLayers.begin(); }

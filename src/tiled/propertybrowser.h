@@ -74,7 +74,8 @@ public:
     /**
      * Returns whether the given \a item displays a custom property.
      */
-    bool isCustomPropertyItem(QtBrowserItem *item) const;
+    bool isCustomPropertyItem(const QtBrowserItem *item) const;
+    bool allCustomPropertyItems(const QList<QtBrowserItem*> &items) const;
 
     /**
      * Makes the custom property with the \a name the currently edited one,
@@ -186,6 +187,10 @@ private:
                                    const QString &name,
                                    QtProperty *parent);
 
+    QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
+    void deleteCustomProperty(QtVariantProperty *property);
+    void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
+
     void addProperties();
     void removeProperties();
     void updateProperties();
@@ -193,7 +198,7 @@ private:
     void retranslateUi();
     bool mUpdating;
 
-    void updatePropertyColor(const QString &name);
+    void updateCustomPropertyColor(const QString &name);
 
     Object *mObject;
     Document *mDocument;

@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QString>
+#include <QKeySequence>
 #include <QProcess>
 #include <QVariant>
 
@@ -35,19 +36,38 @@ struct Command
 {
     Command(bool isEnabled = true,
             QString name = QString(),
-            QString command = QString())
+            QString executable = QString(),
+            QString arguments = QString(),
+            QString workingDirectory = QString(),
+            QKeySequence shortcut = QKeySequence(),
+            bool showOutput = true,
+            bool saveBeforeExecute = true)
         : isEnabled(isEnabled)
         , name(std::move(name))
-        , command(std::move(command)) {}
+        , executable(std::move(executable))
+        , arguments(std::move(arguments))
+        , workingDirectory(std::move(workingDirectory))
+        , shortcut(shortcut)
+        , showOutput(showOutput)
+        , saveBeforeExecute(saveBeforeExecute) {}
 
     bool isEnabled;
     QString name;
-    QString command;
+    QString executable;
+    QString arguments;
+    QString workingDirectory;
+    QKeySequence shortcut;
+    bool showOutput;
+    bool saveBeforeExecute;
 
     /**
      * Returns the final command with replaced tokens.
      */
     QString finalCommand() const;
+
+    QString finalWorkingDirectory() const;
+
+    QString replaceVariables(const QString &string, bool quoteValues = true) const;
 
     /**
      * Executes the command in the operating system shell or terminal
@@ -71,16 +91,21 @@ class CommandProcess : public QProcess
     Q_OBJECT
 
 public:
-    CommandProcess(const Command &command, bool inTerminal = false);
+    CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
 
 private slots:
     void handleError(QProcess::ProcessError);
+
+    void consoleOutput();
+
+    void consoleError();
 
 private:
     void handleError(const QString &);
 
     QString mName;
     QString mFinalCommand;
+    QString mFinalWorkingDirectory;
 
 #ifdef Q_OS_MAC
     QTemporaryFile mFile;

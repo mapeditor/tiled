@@ -29,6 +29,8 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QModelIndex>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -41,10 +43,35 @@ CommandDialog::CommandDialog(QWidget *parent)
     resize(Utils::dpiScaled(size()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
-
     setWindowTitle(tr("Edit Commands"));
     Utils::restoreGeometry(this);
+
+    connect(mUi->saveBox, &QCheckBox::stateChanged,
+            this, &CommandDialog::setSaveBeforeExecute);
+
+    connect(mUi->outputBox, &QCheckBox::stateChanged,
+            this, &CommandDialog::setShowOutput);
+
+    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+            this, &CommandDialog::setShortcut);
+
+    connect(mUi->executableEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setExecutable);
+
+    connect(mUi->argumentsEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setArguments);
+
+    connect(mUi->workingDirectoryEdit, &QLineEdit::textChanged,
+            this, &CommandDialog::setWorkingDirectory);
+
+    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
+            this, &CommandDialog::updateWidgets);
+
+    connect(mUi->exBrowseButton, &QPushButton::clicked,
+            this, &CommandDialog::browseExecutable);
+
+    connect(mUi->wdBrowseButton, &QPushButton::clicked,
+            this, &CommandDialog::browseWorkingDirectory);
 }
 
 CommandDialog::~CommandDialog()
@@ -57,10 +84,102 @@ void CommandDialog::closeEvent(QCloseEvent *event)
 {
     QDialog::closeEvent(event);
 
-    mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
     mUi->treeView->model()->commit();
 
     CommandManager::instance()->updateActions();
+}
+
+void CommandDialog::setShortcut(const QKeySequence &keySequence)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setShortcut(current, keySequence);
+}
+
+void CommandDialog::setSaveBeforeExecute(int state)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setSaveBeforeExecute(current, state);
+}
+
+void CommandDialog::setShowOutput(int state)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setShowOutput(current, state);
+}
+
+
+void CommandDialog::setExecutable(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setExecutable(current, text);
+}
+
+void CommandDialog::setArguments(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setArguments(current, text);
+}
+
+void CommandDialog::setWorkingDirectory(const QString &text)
+{
+    const QModelIndex &current = mUi->treeView->currentIndex();
+    if (current.row() < mUi->treeView->model()->rowCount())
+        mUi->treeView->model()->setWorkingDirectory(current, text);
+}
+
+void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex &)
+{
+    bool enable = (current.row() < mUi->treeView->model()->rowCount() - 1);
+
+    mUi->saveBox->setEnabled(enable);
+    mUi->executableEdit->setEnabled(enable);
+    mUi->argumentsEdit->setEnabled(enable);
+    mUi->workingDirectoryEdit->setEnabled(enable);
+    mUi->exBrowseButton->setEnabled(enable);
+    mUi->keySequenceEdit->setEnabled(enable);
+    mUi->clearButton->setEnabled(enable);
+    mUi->outputBox->setEnabled(enable);
+
+    if (enable) {
+        const Command command = mUi->treeView->model()->command(current);
+        mUi->executableEdit->setText(command.executable);
+        mUi->argumentsEdit->setText(command.arguments);
+        mUi->workingDirectoryEdit->setText(command.workingDirectory);
+        mUi->keySequenceEdit->setKeySequence(command.shortcut);
+        mUi->saveBox->setChecked(command.saveBeforeExecute);
+        mUi->outputBox->setChecked(command.showOutput);
+    } else {
+        mUi->executableEdit->clear();
+        mUi->argumentsEdit->clear();
+        mUi->workingDirectoryEdit->clear();
+        mUi->keySequenceEdit->clear();
+    }
+}
+
+void CommandDialog::browseExecutable()
+{
+    QString caption = tr("Select Executable");
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QString executableName = QFileDialog::getOpenFileName(this, caption, dir);
+
+    if (!executableName.isEmpty())
+        mUi->executableEdit->setText(executableName);
+}
+
+void CommandDialog::browseWorkingDirectory()
+{
+    QString caption = tr("Select Working Directory");
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString workingDirectoryName = QFileDialog::getExistingDirectory(this, caption, dir,
+                            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (!workingDirectoryName.isEmpty())
+        mUi->workingDirectoryEdit->setText(workingDirectoryName);
 }
 
 CommandTreeView::CommandTreeView(QWidget *parent)
@@ -74,8 +193,8 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     setColumnWidth(0, 200);
     QHeaderView *h = header();
     h->setStretchLastSection(false);
-    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
-    h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
 

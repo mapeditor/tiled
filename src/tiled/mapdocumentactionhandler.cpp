@@ -44,6 +44,7 @@
 #include <QCursor>
 #include <QMenu>
 #include <QtCore/qmath.h>
+#include <QStyle>
 
 namespace Tiled {
 namespace Internal {
@@ -65,6 +66,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
     mActionCropToSelection = new QAction(this);
+    mActionAutocrop = new QAction(this);
 
     QIcon addTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png"));
     QIcon addObjectLayerIcon(QLatin1String(":/images/16x16/layer-object.png"));
@@ -80,6 +82,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddImageLayer = new QAction(this);
     mActionAddImageLayer->setIcon(addImageLayerIcon);
     mActionAddGroupLayer = new QAction(this);
+    mActionAddGroupLayer->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirIcon));
 
     mActionLayerViaCopy = new QAction(this);
     mActionLayerViaCopy->setShortcut(tr("Ctrl+J"));
@@ -142,6 +145,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionSelectInverse, &QAction::triggered, this, &MapDocumentActionHandler::selectInverse);
     connect(mActionSelectNone, &QAction::triggered, this, &MapDocumentActionHandler::selectNone);
     connect(mActionCropToSelection, &QAction::triggered, this, &MapDocumentActionHandler::cropToSelection);
+    connect(mActionAutocrop, &QAction::triggered, this, &MapDocumentActionHandler::autocrop);
     connect(mActionAddTileLayer, &QAction::triggered, this, &MapDocumentActionHandler::addTileLayer);
     connect(mActionAddObjectGroup, &QAction::triggered, this, &MapDocumentActionHandler::addObjectGroup);
     connect(mActionAddImageLayer, &QAction::triggered, this, &MapDocumentActionHandler::addImageLayer);
@@ -179,6 +183,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
     mActionCropToSelection->setText(tr("&Crop to Selection"));
+    mActionAutocrop->setText(tr("Autocrop"));
 
     mActionAddTileLayer->setText(tr("&Tile Layer"));
     mActionAddObjectGroup->setText(tr("&Object Layer"));
@@ -423,6 +428,12 @@ void MapDocumentActionHandler::cropToSelection()
     mMapDocument->resizeMap(bounds.size(), -bounds.topLeft(), true);
 }
 
+void MapDocumentActionHandler::autocrop()
+{
+    if (mMapDocument)
+        mMapDocument->autocropMap();
+}
+
 void MapDocumentActionHandler::addTileLayer()
 {
     if (mMapDocument)
@@ -664,6 +675,7 @@ void MapDocumentActionHandler::updateActions()
 
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
+    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);

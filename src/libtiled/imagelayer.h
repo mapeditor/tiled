@@ -120,7 +120,7 @@ public:
      */
     bool isEmpty() const override;
 
-    Layer *clone() const override;
+    ImageLayer *clone() const override;
 
 protected:
     ImageLayer *initializeClone(ImageLayer *clone) const;

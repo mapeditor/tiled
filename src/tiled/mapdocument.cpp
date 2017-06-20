@@ -300,16 +300,14 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
         case Layer::ObjectGroupType: {
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
-            // Remove objects that will fall outside of the map
-            if (removeObjects) {
-                for (MapObject *o : objectGroup->objects()) {
-                    if (!visibleIn(visibleArea, o, mRenderer)) {
-                        new RemoveMapObject(this, o, command);
-                    } else {
-                        QPointF oldPos = o->position();
-                        QPointF newPos = oldPos + pixelOffset;
-                        new MoveMapObject(this, o, newPos, oldPos, command);
-                    }
+            for (MapObject *o : objectGroup->objects()) {
+                if (removeObjects && !visibleIn(visibleArea, o, mRenderer)) {
+                    // Remove objects that will fall outside of the map
+                    new RemoveMapObject(this, o, command);
+                } else {
+                    QPointF oldPos = o->position();
+                    QPointF newPos = oldPos + pixelOffset;
+                    new MoveMapObject(this, o, newPos, oldPos, command);
                 }
             }
             break;
@@ -335,6 +333,20 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     mUndoStack->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
+}
+
+void MapDocument::autocropMap()
+{
+    if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
+        return;
+    
+    TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
+
+    const QRect bounds = tileLayer->region().boundingRect();
+    if (bounds.isNull())
+        return;
+
+    resizeMap(bounds.size(), -bounds.topLeft(), true);
 }
 
 void MapDocument::offsetMap(const QList<Layer*> &layers,

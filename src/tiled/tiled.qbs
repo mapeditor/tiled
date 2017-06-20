@@ -11,7 +11,6 @@ QtGuiApplication {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.4" }
-    Depends { name: "Qt.opengl"; condition: Qt.core.versionMinor < 4 }
 
     property string sparkleDir: {
         if (qbs.architecture === "x86_64")
@@ -21,6 +20,7 @@ QtGuiApplication {
     }
 
     cpp.includePaths: ["."]
+    cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
@@ -244,6 +244,8 @@ QtGuiApplication {
         "minimapdock.cpp",
         "minimapdock.h",
         "minimap.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "movelayer.cpp",
         "movelayer.h",
         "movemapobject.cpp",
@@ -328,6 +330,8 @@ QtGuiApplication {
         "selectsametiletool.h",
         "snaphelper.cpp",
         "snaphelper.h",
+        "stampactions.cpp",
+        "stampactions.h",
         "stampbrush.cpp",
         "stampbrush.h",
         "standardautoupdater.cpp",
@@ -354,8 +358,8 @@ QtGuiApplication {
         "tileanimationeditor.cpp",
         "tileanimationeditor.h",
         "tileanimationeditor.ui",
-        "tilecollisioneditor.cpp",
-        "tilecollisioneditor.h",
+        "tilecollisiondock.cpp",
+        "tilecollisiondock.h",
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
@@ -473,6 +477,86 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: "Tiled.app/Contents/Resources"
         files: ["images/*.icns"]
+    }
+
+    Group {
+        name: "Desktop file (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/applications"
+        files: [ "../../tiled.desktop" ]
+    }
+
+    Group {
+        name: "Thumbnailer (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/thumbnailers"
+        files: [ "../../mime/tiled.thumbnailer" ]
+    }
+
+    Group {
+        name: "MIME info (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/mime/packages"
+        files: [ "../../mime/tiled.xml" ]
+    }
+
+    Group {
+        name: "Man page (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/man/man1"
+        files: [ "../../man/tiled.1" ]
+    }
+
+    Group {
+        name: "Icon 16x16 (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/16x16/apps"
+        files: [ "images/16x16/tiled.png" ]
+    }
+
+    Group {
+        name: "Icon 32x32 (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/32x32/apps"
+        files: [ "images/32x32/tiled.png" ]
+    }
+
+    Group {
+        name: "Icon scalable (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/scalable/apps"
+        files: [ "images/scalable/tiled.svg" ]
+    }
+
+    Group {
+        name: "MIME icon 16x16 (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/16x16/mimetypes"
+        files: [ "images/16x16/application-x-tiled.png" ]
+    }
+
+    Group {
+        name: "MIME icon 32x32 (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/32x32/mimetypes"
+        files: [ "images/32x32/application-x-tiled.png" ]
+    }
+
+    Group {
+        name: "MIME icon scalable (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/icons/hicolor/scalable/mimetypes"
+        files: [ "images/scalable/application-x-tiled.svg" ]
     }
 
     // Generate the tiled.rc file in order to dynamically specify the version

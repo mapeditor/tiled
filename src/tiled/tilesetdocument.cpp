@@ -24,9 +24,9 @@
 #include "map.h"
 #include "terrain.h"
 #include "tile.h"
+#include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
-#include "tmxmapformat.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -94,13 +94,12 @@ TilesetDocument::~TilesetDocument()
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
 {
-    TilesetFormat *tilesetFormat = mWriterFormat;
+    TilesetFormat *tilesetFormat = mTileset->format();
 
-    TsxTilesetFormat tsxTilesetFormat;
-    if (!tilesetFormat)
-        tilesetFormat = &tsxTilesetFormat;
+    if (!tilesetFormat || !(tilesetFormat->capabilities() & MapFormat::Write))
+        return false;
 
-    // todo: workaround to avoid it writing the tileset like an extenal tileset reference
+    // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
@@ -110,21 +109,27 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
+
+    mTileset->setFileName(fileName);
     setFileName(fileName);
+
     mLastSaved = QFileInfo(fileName).lastModified();
 
     emit saved();
     return true;
 }
 
+bool TilesetDocument::canReload() const
+{
+    return !fileName().isEmpty() && mTileset->format();
+}
+
 bool TilesetDocument::reload(QString *error)
 {
-    auto format = mReaderFormat;
-    if (!format)
-        format = mWriterFormat;
+    if (!canReload())
+        return false;
 
-    // Either the file was saved or it was loaded, so now we must have a format
-    Q_ASSERT(format);
+    auto format = mTileset->format();
 
     SharedTileset tileset = format->read(fileName());
 
@@ -133,6 +138,8 @@ bool TilesetDocument::reload(QString *error)
             *error = format->errorString();
         return false;
     }
+
+    tileset->setFormat(format);
 
     mUndoStack->push(new ReloadTileset(this, tileset));
     mUndoStack->setClean();
@@ -153,32 +160,19 @@ TilesetDocument *TilesetDocument::load(const QString &fileName,
         return nullptr;
     }
 
-    auto *document = new TilesetDocument(tileset, fileName);
-    document->setReaderFormat(format);
-    if (format->hasCapabilities(MapFormat::Write))
-        document->setWriterFormat(format);
+    tileset->setFormat(format);
 
-    return document;
-}
-
-TilesetFormat *TilesetDocument::readerFormat() const
-{
-    return mReaderFormat;
-}
-
-void TilesetDocument::setReaderFormat(TilesetFormat *format)
-{
-    mReaderFormat = format;
+    return new TilesetDocument(tileset, fileName);
 }
 
 FileFormat *TilesetDocument::writerFormat() const
 {
-    return mWriterFormat;
+    return mTileset->format();
 }
 
 void TilesetDocument::setWriterFormat(TilesetFormat *format)
 {
-    mWriterFormat = format;
+    mTileset->setFormat(format);
 }
 
 QString TilesetDocument::displayName() const

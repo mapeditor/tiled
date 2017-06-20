@@ -121,6 +121,8 @@ public:
      */
     void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
 
+    void autocropMap();
+
     /**
      * Offsets the \a layers by \a offset, within \a bounds, and optionally
      * wraps on the X or Y axis.

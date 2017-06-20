@@ -193,11 +193,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int endY = qMin(qCeil(rect.bottom()),
                           map()->height() * tileHeight + 1);
 
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setCosmetic(true);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    QPen gridPen = makeGridPen(painter->device(), gridColor);
 
     if (startY < endY) {
         gridPen.setDashOffset(startY);

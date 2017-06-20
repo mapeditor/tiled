@@ -42,6 +42,8 @@ DynamicLibrary {
         "gidmapper.h",
         "grouplayer.cpp",
         "grouplayer.h",
+        "hex.cpp",
+        "hex.h",
         "hexagonalrenderer.cpp",
         "hexagonalrenderer.h",
         "imagelayer.cpp",
@@ -98,6 +100,13 @@ DynamicLibrary {
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
     ]
+
+    Group {
+        condition: project.installHeaders
+        qbs.install: true
+        qbs.installDir: "include/tiled"
+        fileTagsFilter: "hpp"
+    }
 
     Export {
         Depends { name: "cpp" }

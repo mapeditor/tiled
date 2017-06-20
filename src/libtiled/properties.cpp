@@ -29,6 +29,7 @@
 #include "properties.h"
 
 #include <QColor>
+#include <QJsonObject>
 
 namespace Tiled {
 
@@ -41,6 +42,47 @@ void Properties::merge(const Properties &other)
         --it;
         insert(it.key(), it.value());
     }
+}
+
+QJsonArray Properties::toJson() const
+{
+    QJsonArray json;
+
+    const_iterator it = begin();
+    const const_iterator it_end = end();
+    for (; it != it_end; ++it) {
+        const QString &name = it.key();
+        const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
+        const QString type = typeToName(it.value().userType());
+
+        QJsonObject propertyObject;
+        propertyObject.insert(QLatin1String("name"), name);
+        propertyObject.insert(QLatin1String("value"), value);
+        propertyObject.insert(QLatin1String("type"), type);
+
+        json.append(propertyObject);
+    }
+
+    return json;
+}
+
+Properties Properties::fromJson(const QJsonArray &json)
+{
+    Properties properties;
+
+    for (const QJsonValue &property : json) {
+        const QJsonObject propertyObject = property.toObject();
+        const QString name = propertyObject.value(QLatin1String("name")).toString();
+        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
+        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
+
+        if (!typeName.isEmpty())
+            value = fromExportValue(value, nameToType(typeName));
+
+        properties.insert(name, value);
+    }
+
+    return properties;
 }
 
 void AggregatedProperties::aggregate(const Properties &properties)

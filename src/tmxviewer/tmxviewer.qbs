@@ -15,4 +15,12 @@ TiledQtGuiApplication {
         "tmxviewer.cpp",
         "tmxviewer.h",
     ]
+
+    Group {
+        name: "Man page (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/man/man1"
+        files: [ "../../man/tmxviewer.1" ]
+    }
 }

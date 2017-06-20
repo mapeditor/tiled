@@ -27,27 +27,112 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 namespace Tiled {
 namespace Internal {
 
-bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
-                                         const ObjectTypes &objectTypes)
+static QString resolveReference(const QString &reference, const QString &filePath)
 {
-    mError.clear();
+    if (!reference.isEmpty() && QDir::isRelativePath(reference))
+        return QDir::cleanPath(filePath + QLatin1Char('/') + reference);
+    return reference;
+}
 
-    SaveFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "Could not open file for writing.");
-        return false;
+static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
+{
+    const QString NAME = QStringLiteral("name");
+    const QString VALUE = QStringLiteral("value");
+    const QString TYPE = QStringLiteral("type");
+    const QString COLOR = QStringLiteral("color");
+    const QString PROPERTIES = QStringLiteral("properties");
+
+    QJsonObject json;
+    json.insert(NAME, objectType.name);
+
+    if (objectType.color.isValid())
+        json.insert(COLOR, objectType.color.name(QColor::HexArgb));
+
+    QJsonArray propertiesJson;
+
+    QMapIterator<QString,QVariant> it(objectType.defaultProperties);
+    while (it.hasNext()) {
+        it.next();
+
+        int type = it.value().userType();
+
+        const QString typeName = typeToName(type);
+        QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
+
+        if (type == filePathTypeId())
+            value = fileDir.relativeFilePath(value.toString());
+
+        QJsonObject propertyJson;
+        propertyJson.insert(NAME, it.key());
+        propertyJson.insert(TYPE, typeName);
+        propertyJson.insert(VALUE, value);
+
+        propertiesJson.append(propertyJson);
     }
 
-    const QDir fileDir(QFileInfo(fileName).path());
+    json.insert(PROPERTIES, propertiesJson);
 
-    QXmlStreamWriter writer(file.device());
+    return json;
+}
+
+static QJsonArray toJson(const ObjectTypes &objectTypes, const QDir &fileDir)
+{
+    QJsonArray json;
+    for (const ObjectType &objectType : objectTypes)
+        json.append(toJson(objectType, fileDir));
+    return json;
+}
+
+static void fromJson(const QJsonObject &object, ObjectType &objectType, const QString &filePath)
+{
+    objectType.name = object.value(QLatin1String("name")).toString();
+
+    const QString colorName = object.value(QLatin1String("color")).toString();
+    if (QColor::isValidColor(colorName))
+        objectType.color.setNamedColor(colorName);
+
+    const QJsonArray properties = object.value(QLatin1String("properties")).toArray();
+    for (const QJsonValue &property : properties) {
+        const QJsonObject propertyObject = property.toObject();
+        const QString name = propertyObject.value(QLatin1String("name")).toString();
+        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
+        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
+
+        if (!typeName.isEmpty()) {
+            int type = nameToType(typeName);
+
+            if (type == filePathTypeId())
+                value = resolveReference(value.toString(), filePath);
+
+            value = fromExportValue(value, type);
+        }
+
+        objectType.defaultProperties.insert(name, value);
+    }
+}
+
+static void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const QString &filePath)
+{
+    for (const QJsonValue &value : array) {
+        objectTypes.append(ObjectType());
+        fromJson(value.toObject(), objectTypes.last(), filePath);
+    }
+}
+
+static void writeObjectTypesXml(QFileDevice *device,
+                                const QDir &fileDir,
+                                const ObjectTypes &objectTypes)
+{
+    QXmlStreamWriter writer(device);
 
     writer.setAutoFormatting(true);
     writer.setAutoFormattingIndent(1);
@@ -87,81 +172,11 @@ bool ObjectTypesWriter::writeObjectTypes(const QString &fileName,
 
     writer.writeEndElement();
     writer.writeEndDocument();
-
-    if (!file.commit()) {
-        mError = file.errorString();
-        return false;
-    }
-
-    return true;
 }
 
-ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
-{
-    mError.clear();
-
-    ObjectTypes objectTypes;
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "Could not open file.");
-        return objectTypes;
-    }
-
-    const QString filePath(QFileInfo(fileName).path());
-
-    QXmlStreamReader reader(&file);
-
-    if (!reader.readNextStartElement() || reader.name() != QLatin1String("objecttypes")) {
-        mError = QCoreApplication::translate(
-                    "ObjectTypes", "File doesn't contain object types.");
-        return objectTypes;
-    }
-
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("objecttype")) {
-            const QXmlStreamAttributes atts = reader.attributes();
-
-            const QString name(atts.value(QLatin1String("name")).toString());
-            const QColor color(atts.value(QLatin1String("color")).toString());
-
-            // read the custom properties
-            Properties props;
-            while (reader.readNextStartElement()) {
-                if (reader.name() == QLatin1String("property")){
-                    readObjectTypeProperty(reader, props, filePath);
-                } else {
-                    reader.skipCurrentElement();
-                }
-            }
-
-            objectTypes.append(ObjectType(name, color, props));
-        }
-    }
-
-    if (reader.hasError()) {
-        mError = QCoreApplication::translate("ObjectTypes",
-                                             "%3\n\nLine %1, column %2")
-                .arg(reader.lineNumber())
-                .arg(reader.columnNumber())
-                .arg(reader.errorString());
-        return objectTypes;
-    }
-
-    return objectTypes;
-}
-
-static QString resolveReference(const QString &reference, const QString &filePath)
-{
-    if (!reference.isEmpty() && QDir::isRelativePath(reference))
-        return QDir::cleanPath(filePath + QLatin1Char('/') + reference);
-    return reference;
-}
-
-void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml,
-                                               Properties &props,
-                                               const QString &filePath)
+static void readObjectTypePropertyXml(QXmlStreamReader &xml,
+                                      Properties &props,
+                                      const QString &filePath)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
@@ -182,6 +197,129 @@ void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader &xml,
     props.insert(name, defaultValue);
 
     xml.skipCurrentElement();
+}
+
+static void readObjectTypesXml(QFileDevice *device,
+                               const QString &filePath,
+                               ObjectTypes &objectTypes,
+                               QString &error)
+{
+    QXmlStreamReader reader(device);
+
+    if (!reader.readNextStartElement() || reader.name() != QLatin1String("objecttypes")) {
+        error = QCoreApplication::translate(
+                    "ObjectTypes", "File doesn't contain object types.");
+        return;
+    }
+
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("objecttype")) {
+            const QXmlStreamAttributes atts = reader.attributes();
+
+            const QString name(atts.value(QLatin1String("name")).toString());
+            const QColor color(atts.value(QLatin1String("color")).toString());
+
+            // read the custom properties
+            Properties props;
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("property")){
+                    readObjectTypePropertyXml(reader, props, filePath);
+                } else {
+                    reader.skipCurrentElement();
+                }
+            }
+
+            objectTypes.append(ObjectType(name, color, props));
+        }
+    }
+
+    if (reader.hasError()) {
+        error = QCoreApplication::translate("ObjectTypes",
+                                             "%3\n\nLine %1, column %2")
+                .arg(reader.lineNumber())
+                .arg(reader.columnNumber())
+                .arg(reader.errorString());
+    }
+}
+
+static ObjectTypesSerializer::Format detectFormat(const QString &fileName)
+{
+    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive))
+        return ObjectTypesSerializer::Json;
+    else
+        return ObjectTypesSerializer::Xml;
+}
+
+
+ObjectTypesSerializer::ObjectTypesSerializer(Format format)
+    : mFormat(format)
+{
+}
+
+bool ObjectTypesSerializer::writeObjectTypes(const QString &fileName,
+                                             const ObjectTypes &objectTypes)
+{
+    mError.clear();
+
+    SaveFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = QCoreApplication::translate(
+                    "ObjectTypes", "Could not open file for writing.");
+        return false;
+    }
+
+    const QDir fileDir(QFileInfo(fileName).path());
+
+    Format format = mFormat;
+    if (format == Autodetect)
+        format = detectFormat(fileName);
+
+    if (format == Xml) {
+        writeObjectTypesXml(file.device(), fileDir, objectTypes);
+    } else {
+        QJsonDocument document(toJson(objectTypes, fileDir));
+        file.device()->write(document.toJson());
+    }
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
+                                            ObjectTypes &objectTypes)
+{
+    mError.clear();
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = QCoreApplication::translate(
+                    "ObjectTypes", "Could not open file.");
+        return false;
+    }
+
+    const QString filePath(QFileInfo(fileName).path());
+
+    Format format = mFormat;
+    if (format == Autodetect)
+        format = detectFormat(fileName);
+
+    if (format == Xml) {
+        readObjectTypesXml(&file, filePath, objectTypes, mError);
+    } else {
+        QJsonParseError jsonError;
+        const QByteArray json = file.readAll();
+        const QJsonDocument document = QJsonDocument::fromJson(json, &jsonError);
+        if (document.isNull())
+            mError = jsonError.errorString();
+        else
+            fromJson(document.array(), objectTypes, filePath);
+    }
+
+    return mError.isEmpty();
 }
 
 } // namespace Internal

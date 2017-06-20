@@ -192,7 +192,7 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
 
     const ObjectGroup *og = static_cast<ObjectGroup*>(other);
 
-    ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
+    ObjectGroup *merged = clone();
     for (const MapObject *mapObject : og->objects())
         merged->addObject(mapObject->clone());
     return merged;
@@ -203,7 +203,7 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  *
  * \sa Layer::clone()
  */
-Layer *ObjectGroup::clone() const
+ObjectGroup *ObjectGroup::clone() const
 {
     return initializeClone(new ObjectGroup(mName, mX, mY));
 }

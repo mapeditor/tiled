@@ -18,16 +18,17 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "resizehelper.h"
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QResizeEvent>
-
-#include "resizehelper.h"
 
 using namespace Tiled::Internal;
 
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
+    , mZoom(0)
 {
     setMinimumSize(20, 20);
     setOldSize(QSize(1, 1));
@@ -98,6 +99,11 @@ void ResizeHelper::setNewHeight(int height)
     recalculateScale();
 }
 
+void ResizeHelper::setMiniMapRenderer(std::function<QImage (QSize)> renderer)
+{
+    mMiniMapRenderer = renderer;
+}
+
 void ResizeHelper::paintEvent(QPaintEvent *)
 {
     const QSize _size = size() - QSize(2, 2);
@@ -122,10 +128,15 @@ void ResizeHelper::paintEvent(QPaintEvent *)
 
     pen.setColor(Qt::white);
 
-    painter.setPen(pen);
-    painter.setBrush(Qt::white);
     painter.setOpacity(0.5);
-    painter.drawRect(oldRect);
+
+    if (mMiniMap.isNull()) {
+        painter.setPen(pen);
+        painter.setBrush(Qt::white);
+        painter.drawRect(oldRect);
+    } else {
+        painter.drawImage(oldRect, mMiniMap);
+    }
 
     pen.setColor(Qt::black);
     pen.setStyle(Qt::DashLine);
@@ -156,6 +167,15 @@ void ResizeHelper::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+void ResizeHelper::wheelEvent(QWheelEvent *event)
+{
+    if (event->delta() > 0)// zooming in
+        mZoom += 0.2;
+    else
+        mZoom -= 0.2;
+    recalculateScale();
+}
+
 void ResizeHelper::resizeEvent(QResizeEvent *)
 {
     recalculateScale();
@@ -179,8 +199,29 @@ void ResizeHelper::recalculateScale()
     // Pick the smallest scale
     const double scaleW = _size.width() / (double) width;
     const double scaleH = _size.height() / (double) height;
-    mScale = (scaleW < scaleH) ? scaleW : scaleH;
+    double newScale = qMin(scaleW, scaleH);
 
+    const double maxScaleW = _size.width() / (double) mNewSize.width();
+    const double maxScaleH = _size.height() / (double) mNewSize.height();
+    const double maxScaleAdd = qMin(maxScaleW, maxScaleH) - newScale;
+
+    mZoom = qMin(mZoom, maxScaleAdd);
+    mZoom = qMax(mZoom, 0.0);
+
+    newScale += mZoom;
+
+    if (newScale != mScale && mMiniMapRenderer) {
+        const qreal ratio =
+#if QT_VERSION >= 0x050600
+                devicePixelRatioF();
+#else
+                devicePixelRatio();
+#endif
+        const QSize size = mOldSize * (newScale * ratio);
+        mMiniMap = mMiniMapRenderer(size);
+    }
+
+    mScale = newScale;
     update();
 }
 

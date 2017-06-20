@@ -107,3 +107,5 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Internal::MapObjectItem*)

@@ -213,6 +213,9 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
+protected:
+    QPen makeGridPen(const QPaintDevice *device, QColor color) const;
+
 private:
     const Map *mMap;
 

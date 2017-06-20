@@ -178,6 +178,7 @@ inline void Terrain::setTransitionDistances(const QVector<int> &transitionDistan
 inline Terrain *Terrain::clone(Tileset *tileset) const
 {
     Terrain *c = new Terrain(mId, tileset, mName, mImageTileId);
+    c->setProperties(properties());
     c->mTransitionDistance = mTransitionDistance;
     return c;
 }

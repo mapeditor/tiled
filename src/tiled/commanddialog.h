@@ -46,6 +46,25 @@ public:
       */
     void closeEvent(QCloseEvent *event) override;
 
+public slots:
+    void setShortcut(const QKeySequence &keySequence);
+
+    void setSaveBeforeExecute(int state);
+
+    void setShowOutput(int state);
+
+    void setExecutable(const QString &text);
+
+    void setArguments(const QString &text);
+
+    void setWorkingDirectory(const QString &text);
+
+    void updateWidgets(const QModelIndex &current, const QModelIndex&);
+
+    void browseExecutable();
+
+    void browseWorkingDirectory();
+
 private:
     Ui::CommandDialog *mUi;
 };

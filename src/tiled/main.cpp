@@ -47,7 +47,10 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#endif
+#if QT_VERSION >= 0x050700
+#include <QtPlatformHeaders\QWindowsWindowFunctions>
+#endif // QT_VERSION >= 0x050700
+#endif // Q_OS_WIN
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -179,7 +182,7 @@ void CommandLineHandler::startNewInstance()
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
     // Make console output work on Windows, if running in a console.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         FILE *dummy = nullptr;
@@ -323,6 +326,9 @@ int main(int argc, char *argv[])
     w.show();
 
     a.setActivationWindow(&w);
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050700
+    QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
+#endif
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));

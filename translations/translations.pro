@@ -15,8 +15,10 @@ LANGUAGES = \
     de \
     en \
     es \
+    fi \
     fr \
     he \
+    hu \
     it \
     ja \
     nb \
@@ -26,6 +28,7 @@ LANGUAGES = \
     pt_PT \
     ru \
     tr \
+    uk \
     zh \
     zh_TW
 

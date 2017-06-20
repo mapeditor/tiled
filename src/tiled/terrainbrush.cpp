@@ -199,7 +199,7 @@ void TerrainBrush::capture()
 
     // TODO: we need to know which corner the mouse is closest to...
 
-    const QPoint &position = tilePosition();
+    const QPoint position = tilePosition() - tileLayer->position();
 
     if (!tileLayer->contains(position))
         return;
@@ -305,6 +305,24 @@ static unsigned short rightEdge(const Tile *tile)
     return ((t >> 8) & 0xFF00) | (t & 0xFF);
 }
 
+namespace {
+
+struct ConsiderationPoint : public QPoint
+{
+    ConsiderationPoint()
+        : paintCorner(0)
+    {}
+
+    ConsiderationPoint(QPoint p, int paintCorner = 0)
+        : QPoint(p)
+        , paintCorner(paintCorner)
+    {}
+
+    int paintCorner;
+};
+
+} // anonymous namespace
+
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
     mPaintX = cursorPos.x();
@@ -314,10 +332,13 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
-    int layerWidth = currentLayer->width();
-    int layerHeight = currentLayer->height();
-    int numTiles = layerWidth * layerHeight;
+    const QPoint layerPosition = currentLayer->position();
+    const int layerWidth = currentLayer->width();
+    const int layerHeight = currentLayer->height();
+    const int numTiles = layerWidth * layerHeight;
     int paintCorner = 0;
+
+    cursorPos -= layerPosition;
 
     // if we are in vertex paint mode, the bottom right corner on the map will appear as an invalid tile offset...
     if (mBrushMode == PaintVertex) {
@@ -332,7 +353,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // if the cursor is outside of the map, bail out
-    if (!currentLayer->bounds().contains(cursorPos)) {
+    if (!currentLayer->contains(cursorPos)) {
         brushItem()->clear();
         return;
     }
@@ -352,12 +373,18 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     memset(checked, 0, numTiles);
 
     // create a consideration list, and push the start points
-    QVector<QPoint> transitionList;
+    QVector<ConsiderationPoint> transitionList;
 
-    if (list) // if we were supplied a list of start points
-        transitionList = *list;
-    else
-        transitionList.append(cursorPos);
+    if (list) { // if we were supplied a list of start points
+        transitionList.reserve(list->size());
+        for (QPoint p : *list) {
+            p -= layerPosition;
+            if (currentLayer->contains(p))
+                transitionList.append(p);
+        }
+    } else {
+        transitionList.append(ConsiderationPoint(cursorPos, paintCorner));
+    }
 
     if (mMirrorDiagonally) {
         const int w = currentLayer->width();
@@ -365,8 +392,9 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         for (int i = 0, e = transitionList.size(); i < e; ++i) {
             const auto &p = transitionList.at(i);
-            transitionList.append(QPoint(w - p.x() - 1,
-                                         h - p.y() - 1));
+            transitionList.append(ConsiderationPoint(QPoint(w - p.x() - 1,
+                                                            h - p.y() - 1),
+                                                     p.paintCorner ^ 3));
         }
     }
 
@@ -377,7 +405,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {
         // get the next point in the consideration list
-        QPoint p = transitionList.takeFirst();
+        ConsiderationPoint p = transitionList.takeFirst();
         int x = p.x(), y = p.y();
         int i = y*layerWidth + x;
 
@@ -436,10 +464,10 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
                     continue;
 
                 // calculate the corner mask
-                mask = 0xFF << (3 - paintCorner)*8;
+                mask = 0xFF << (3 - p.paintCorner)*8;
 
                 // mask in the selected terrain
-                preferredTerrain = (currentTerrain & ~mask) | (terrainId << (3 - paintCorner)*8);
+                preferredTerrain = (currentTerrain & ~mask) | (terrainId << (3 - p.paintCorner)*8);
             }
 
             --initialTiles;
@@ -550,6 +578,10 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             }
         }
     }
+
+    // Translate to map coordinate space
+    stamp->setPosition(brushRect.topLeft() + layerPosition);
+    brushRegion.translate(layerPosition);
 
     // set the new tile layer as the brush
     brushItem()->setTileLayer(stamp, brushRegion);

@@ -55,7 +55,6 @@ public:
     int sizeHintForColumn(int column) const override;
     int sizeHintForRow(int row) const override;
 
-    void setZoomable(Zoomable *zoomable);
     Zoomable *zoomable() const { return mZoomable; }
 
     /**
@@ -117,9 +116,11 @@ signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
+    void changeSelectedMapObjectsTileRequested(Tile *tile);
 
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -132,6 +133,7 @@ private slots:
     void selectTerrainImage();
     void editTileProperties();
     void swapTiles();
+    void changeSelectedMapObjectsTile();
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();

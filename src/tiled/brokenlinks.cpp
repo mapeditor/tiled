@@ -205,6 +205,7 @@ QVariant BrokenLinksModel::data(const QModelIndex &index, int role) const
             }
             break;
         }
+        break;
 
     case Qt::DecorationRole:
         switch (index.column()) {
@@ -343,6 +344,7 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
     mView->setUniformRowHeights(true);
     mView->setSortingEnabled(true);
     mView->sortByColumn(0, Qt::AscendingOrder);
+    mView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     mView->header()->setStretchLastSection(false);
     mView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -370,7 +372,7 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
     // For some reason a model reset doesn't trigger the selectionChanged signal,
     // so we need to handle that explicitly.
     connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, [this](){
-        selectionChanged(mView->selectionModel()->selection());
+        selectionChanged();
     });
 }
 
@@ -383,23 +385,28 @@ void BrokenLinksWidget::clicked(QAbstractButton *button)
         if (proxySelection.isEmpty())
             return;
 
-        const auto firstIndex = mProxyModel->mapToSource(proxySelection.first());
-        const BrokenLink &link = mBrokenLinksModel->brokenLink(firstIndex.row());
+        QVector<BrokenLink> links;
+        links.reserve(proxySelection.size());
 
-        tryFixLink(link);
+        for (const QModelIndex &proxyIndex : proxySelection) {
+            const auto index = mProxyModel->mapToSource(proxyIndex);
+            links.append(mBrokenLinksModel->brokenLink(index.row()));
+        }
 
-        // todo: support multi-selection and do something smart
+        tryFixLinks(links);
     }
 }
 
-void BrokenLinksWidget::selectionChanged(const QItemSelection &selected)
+void BrokenLinksWidget::selectionChanged()
 {
-    mLocateButton->setEnabled(!selected.isEmpty());
+    const auto selection = mView->selectionModel()->selectedRows();
+
+    mLocateButton->setEnabled(!selection.isEmpty());
 
     bool isTileset = qobject_cast<TilesetDocument*>(mBrokenLinksModel->document()) != nullptr;
 
-    if (!selected.isEmpty()) {
-        const auto firstIndex = selected.first().topLeft();
+    if (!selection.isEmpty()) {
+        const auto firstIndex = selection.first();
         const BrokenLink &link = mBrokenLinksModel->brokenLink(firstIndex.row());
 
         switch (link.type) {
@@ -415,6 +422,56 @@ void BrokenLinksWidget::selectionChanged(const QItemSelection &selected)
             break;
         }
     }
+}
+
+void BrokenLinksWidget::tryFixLinks(const QVector<BrokenLink> &links)
+{
+    if (links.isEmpty())
+        return;
+
+    if (links.size() == 1)
+        return tryFixLink(links.first());
+
+    // If any of the links need to be fixed in a tileset, open the first such tileset and abort
+    Document *document = mBrokenLinksModel->document();
+    bool editingTileset = qobject_cast<TilesetDocument*>(document) != nullptr;
+    for (const BrokenLink &link : links) {
+        if (link.type == TilesetImageSource || link.type == TilesetTileImageSource) {
+            if (!editingTileset) {
+                // We need to open the tileset document in order to be able to make changes to it...
+                const SharedTileset tileset = link.tileset()->sharedPointer();
+                DocumentManager::instance()->openTileset(tileset);
+                return;
+            }
+        }
+    }
+
+    // todo: fix caption after string freeze (and the text on the button)
+    static QString startingLocation = QFileInfo(links.first().filePath()).path();
+    const QString directory = QFileDialog::getExistingDirectory(window(),
+                                                                tr("Locate File"),
+                                                                startingLocation);
+
+    if (directory.isEmpty())
+        return;
+
+    startingLocation = directory;
+
+    const QDir dir(directory);
+    const auto files = dir.entryList(QDir::Files |
+                                     QDir::Readable |
+                                     QDir::NoDotAndDotDot).toSet();
+
+    // See if any of the links we're looking for is located in this directory
+    for (const BrokenLink &link : links) {
+        const QString fileName = QFileInfo(link.filePath()).fileName();
+        if (files.contains(fileName))
+            if (!tryFixLink(link, dir.filePath(fileName)))
+                break;
+    }
+
+    // todo: provide better feedback (like maybe a dialog showing any errors
+    // or the number of links fixed)
 }
 
 void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
@@ -490,7 +547,7 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
 
         // It could be, that we have already loaded this tileset.
         SharedTileset newTileset = TilesetManager::instance()->findTileset(fileName);
-        if (!newTileset) {
+        if (!newTileset || !newTileset->loaded()) {
             newTileset = Tiled::readTileset(fileName, &error);
 
             if (!newTileset) {
@@ -507,6 +564,64 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         prefs->setLastPath(Preferences::ExternalTileset,
                            QFileInfo(fileName).path());
     }
+}
+
+// todo: look into sharing some code between this function and the one above
+bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFilePath)
+{
+    Q_ASSERT(!newFilePath.isEmpty());
+
+    Document *document = mBrokenLinksModel->document();
+
+    if (link.type == TilesetImageSource || link.type == TilesetTileImageSource) {
+        auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
+        Q_ASSERT(tilesetDocument);
+
+        QImageReader reader(newFilePath);
+        QImage image = reader.read();
+
+        if (image.isNull()) {
+            QMessageBox::critical(this, tr("Error Loading Image"), reader.errorString());
+            return false;
+        }
+
+        if (link.type == TilesetImageSource) {
+            TilesetParameters parameters(*link._tileset);
+            parameters.imageSource = newFilePath;
+
+            auto command = new ChangeTilesetParameters(tilesetDocument,
+                                                       parameters);
+
+            tilesetDocument->undoStack()->push(command);
+        } else {
+            auto command = new ChangeTileImageSource(tilesetDocument,
+                                                     link._tile,
+                                                     newFilePath);
+
+            tilesetDocument->undoStack()->push(command);
+        }
+
+    } else if (link.type == MapTilesetReference) {
+        QString error;
+
+        // It could be, that we have already loaded this tileset.
+        SharedTileset newTileset = TilesetManager::instance()->findTileset(newFilePath);
+        if (!newTileset || !newTileset->loaded()) {
+            newTileset = Tiled::readTileset(newFilePath, &error);
+
+            if (!newTileset) {
+                QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
+                return false;
+            }
+        }
+
+        MapDocument *mapDocument = static_cast<MapDocument*>(document);
+        int index = mapDocument->map()->tilesets().indexOf(link._tileset->sharedPointer());
+        if (index != -1)
+            document->undoStack()->push(new ReplaceTileset(mapDocument, index, newTileset));
+    }
+
+    return true;
 }
 
 } // namespace Internal

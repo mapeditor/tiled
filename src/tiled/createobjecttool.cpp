@@ -21,6 +21,7 @@
 #include "createobjecttool.h"
 
 #include "addremovemapobject.h"
+#include "addremovetileset.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -42,7 +43,7 @@ using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
-                         QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
+                         QIcon(),
                          QKeySequence(tr("O")),
                          parent)
     , mNewMapObjectGroup(new ObjectGroup)
@@ -202,9 +203,19 @@ void CreateObjectTool::finishNewMapObject()
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
     clearNewMapObjectItem();
 
-    mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),
-                                                      objectGroup,
-                                                      newMapObject));
+    auto addObjectCommand = new AddMapObject(mapDocument(),
+                                             objectGroup,
+                                             newMapObject);
+
+    if (Tileset *tileset = newMapObject->cell().tileset()) {
+        SharedTileset sharedTileset = tileset->sharedPointer();
+
+        // Make sure this tileset is part of the map
+        if (!mapDocument()->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mapDocument(), sharedTileset, addObjectCommand);
+    }
+
+    mapDocument()->undoStack()->push(addObjectCommand);
 
     mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }

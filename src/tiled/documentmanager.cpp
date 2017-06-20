@@ -29,33 +29,37 @@
 #include "filesystemwatcher.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
+#include "mapformat.h"
 #include "map.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
+#include "preferences.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
+#include "tmxmapformat.h"
+#include "utils.h"
 #include "zoomable.h"
-
-#include <QFileInfo>
-#include <QUndoGroup>
 
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
 #include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
 #include <QScrollBar>
+#include <QStackedLayout>
 #include <QTabBar>
 #include <QTabWidget>
+#include <QUndoGroup>
 #include <QUndoStack>
 #include <QVBoxLayout>
-#include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -200,6 +204,11 @@ void DocumentManager::deleteEditor(Document::DocumentType documentType)
     if (editor == mMapEditor)
         mMapEditor = nullptr;
     delete editor;
+}
+
+QList<Editor *> DocumentManager::editors() const
+{
+    return mEditorForType.values();
 }
 
 Editor *DocumentManager::currentEditor() const
@@ -401,6 +410,107 @@ bool DocumentManager::isDocumentChangedOnDisk(Document *document) const
     }
 
     return mDocumentsChangedOnDisk.contains(document);
+}
+
+/**
+ * Save the given document with the given file name. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool DocumentManager::saveDocument(Document *document, const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return false;
+
+    QString error;
+    if (!document->save(fileName, &error)) {
+        QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving File"), error);
+        return false;
+    }
+
+    Preferences::instance()->addRecentFile(fileName);
+    return true;
+}
+
+/**
+ * Save the given document with a file name chosen by the user. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool DocumentManager::saveDocumentAs(Document *document)
+{
+    QString filter;
+    QString selectedFilter;
+    QString fileName = document->fileName();
+
+    if (FileFormat *format = document->writerFormat())
+        selectedFilter = format->nameFilter();
+
+    auto getSaveFileName = [&,this](const QString &defaultFileName) {
+        if (fileName.isEmpty()) {
+            fileName = Preferences::instance()->fileDialogStartLocation();
+            fileName += QLatin1Char('/');
+            fileName += defaultFileName;
+        }
+
+        fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
+                                                fileName,
+                                                filter,
+                                                &selectedFilter);
+
+        if (!fileName.isEmpty() &&
+            !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+        {
+            QMessageBox messageBox(QMessageBox::Warning,
+                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
+                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                   QMessageBox::Yes | QMessageBox::No,
+                                   mWidget->window());
+
+            messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
+                                                                      "Tiled may not automatically recognize your file when loading. "
+                                                                      "Are you sure you want to save with this extension?"));
+
+            int answer = messageBox.exec();
+            if (answer != QMessageBox::Yes)
+                return QString();
+        }
+
+        return fileName;
+    };
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TmxMapFormat().nameFilter();
+
+        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tmx"));
+        if (fileName.isEmpty())
+            return false;
+
+        MapFormat *format = helper.formatByNameFilter(selectedFilter);
+        mapDocument->setWriterFormat(format);
+
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TsxTilesetFormat().nameFilter();
+
+        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tsx"));
+        if (fileName.isEmpty())
+            return false;
+
+        TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
+        tilesetDocument->setWriterFormat(format);
+    }
+
+    return saveDocument(document, fileName);
 }
 
 void DocumentManager::closeCurrentDocument()

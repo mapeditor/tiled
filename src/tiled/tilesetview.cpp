@@ -394,7 +394,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
-    , mZoomable(nullptr)
+    , mZoomable(new Zoomable(this))
     , mTilesetDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
@@ -409,6 +409,7 @@ TilesetView::TilesetView(QWidget *parent)
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
+    setTabKeyNavigation(false);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -433,6 +434,8 @@ TilesetView::TilesetView(QWidget *parent)
 
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
             this, &TilesetView::updateBackgroundColor);
+
+    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -471,21 +474,9 @@ int TilesetView::sizeHintForRow(int row) const
     return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
 }
 
-void TilesetView::setZoomable(Zoomable *zoomable)
-{
-    if (mZoomable)
-        mZoomable->disconnect(this);
-
-    if (zoomable)
-        connect(zoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
-
-    mZoomable = zoomable;
-    adjustScale();
-}
-
 qreal TilesetView::scale() const
 {
-    return mZoomable ? mZoomable->scale() : 1;
+    return mZoomable->scale();
 }
 
 void TilesetView::setModel(QAbstractItemModel *model)
@@ -505,13 +496,38 @@ void TilesetView::setMarkAnimatedTiles(bool enabled)
 
 bool TilesetView::event(QEvent *event)
 {
-    if (mZoomable && event->type() == QEvent::Gesture) {
+    if (event->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
+    } else if (event->type() == QEvent::ShortcutOverride) {
+        auto keyEvent = static_cast<QKeyEvent*>(event);
+        if (Utils::isZoomInShortcut(keyEvent) ||
+                Utils::isZoomOutShortcut(keyEvent) ||
+                Utils::isResetZoomShortcut(keyEvent)) {
+            event->accept();
+            return true;
+        }
     }
 
     return QTableView::event(event);
+}
+
+void TilesetView::keyPressEvent(QKeyEvent *event)
+{
+    if (Utils::isZoomInShortcut(event)) {
+        mZoomable->zoomIn();
+        return;
+    }
+    if (Utils::isZoomOutShortcut(event)) {
+        mZoomable->zoomOut();
+        return;
+    }
+    if (Utils::isResetZoomShortcut(event)) {
+        mZoomable->resetZoom();
+        return;
+    }
+    return QTableView::keyPressEvent(event);
 }
 
 void TilesetView::setEditTerrain(bool enabled)
@@ -650,8 +666,7 @@ void TilesetView::leaveEvent(QEvent *event)
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
-    if (mZoomable &&
-            event->modifiers() & Qt::ControlModifier &&
+    if (event->modifiers() & Qt::ControlModifier &&
             event->orientation() == Qt::Vertical)
     {
         mZoomable->handleWheelDelta(event->delta());
@@ -709,6 +724,17 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             swapTilesAction->setEnabled(exactlyTwoTilesSelected);
             connect(swapTilesAction, SIGNAL(triggered()),
                     SLOT(swapTiles()));
+
+            bool onlyOneTileSelected =
+                    (selectionModel()->selectedIndexes().size() == 1);
+
+            // TODO: check that at least one object is selected
+
+            QAction *changeSelectedMapObjectsTileAction =
+                    menu.addAction(tr("&Replace Tile of Selected Objects"));
+            changeSelectedMapObjectsTileAction->setEnabled(onlyOneTileSelected);
+            connect(changeSelectedMapObjectsTileAction, &QAction::triggered,
+                    this, &TilesetView::changeSelectedMapObjectsTile);
         }
 
         menu.addSeparator();
@@ -763,6 +789,14 @@ void TilesetView::swapTiles()
         return;
 
     emit swapTilesRequested(tile1, tile2);
+}
+
+void TilesetView::changeSelectedMapObjectsTile()
+{
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    const TilesetModel *model = tilesetModel();
+    Tile *tile = model->tileAt(selectedIndexes[0]);
+    emit changeSelectedMapObjectsTileRequested(tile);
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)

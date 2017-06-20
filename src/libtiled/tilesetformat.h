@@ -73,6 +73,11 @@ public:
 TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
                                              QString *error = nullptr);
 
+/**
+ * Attempts to find a tileset format supporting the given file.
+ */
+TILEDSHARED_EXPORT TilesetFormat *findSupportingFormat(const QString &fileName);
+
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")

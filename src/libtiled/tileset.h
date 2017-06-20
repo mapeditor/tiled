@@ -34,11 +34,12 @@
 
 #include <QColor>
 #include <QList>
-#include <QVector>
+#include <QPixmap>
 #include <QPoint>
+#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
-#include <QPixmap>
+#include <QVector>
 
 class QImage;
 
@@ -46,6 +47,7 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
+class TilesetFormat;
 class Terrain;
 
 typedef QSharedPointer<Tileset> SharedTileset;
@@ -63,7 +65,7 @@ class TILEDSHARED_EXPORT Tileset : public Object
 public:
     /**
      * The orientation of the tileset determines the projection used in the
-     * TileCollisionEditor and for the terrain information overlay of the
+     * TileCollisionDock and for the terrain information overlay of the
      * TilesetView.
      */
     enum Orientation {
@@ -110,6 +112,9 @@ public:
     const QString &fileName() const;
     void setFileName(const QString &fileName);
     bool isExternal() const;
+
+    void setFormat(TilesetFormat *format);
+    TilesetFormat *format() const;
 
     int tileWidth() const;
     int tileHeight() const;
@@ -244,6 +249,7 @@ private:
     bool mTerrainDistancesDirty;
     bool mLoaded;
     QColor mBackgroundColor;
+    QPointer<TilesetFormat> mFormat;
 
     QWeakPointer<Tileset> mWeakPointer;
 };

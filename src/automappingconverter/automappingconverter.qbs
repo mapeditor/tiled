@@ -23,6 +23,14 @@ TiledQtGuiApplication {
         "main.cpp",
     ]
 
+    Group {
+        name: "Man page (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/man/man1"
+        files: [ "../../man/automappingconverter.1" ]
+    }
+
     Properties {
         condition: qbs.targetOS.contains("macos")
         targetName: "Automapping Converter"

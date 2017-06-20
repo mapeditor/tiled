@@ -232,6 +232,20 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
 
     for (const TileStampVariation &variation : flipped.variations()) {
         TileLayer *layer = variation.tileLayer();
+
+        if (variation.map->isStaggered()) {
+            Map::StaggerAxis staggerAxis = variation.map->staggerAxis();
+
+            if (staggerAxis == Map::StaggerY) {
+                if ((direction == FlipVertically && !(layer->height() & 1)) || direction == FlipHorizontally)
+                    variation.map->invertStaggerIndex();
+
+            } else {
+                if ((direction == FlipHorizontally && !(layer->width() & 1)) || direction == FlipVertically)
+                    variation.map->invertStaggerIndex();
+            }
+        }
+
         if (variation.map->orientation() == Map::Hexagonal)
             layer->flipHexagonal(direction);
         else
@@ -253,7 +267,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     for (const TileStampVariation &variation : rotated.variations()) {
         TileLayer *layer = variation.tileLayer();
         if (variation.map->orientation() == Map::Hexagonal)
-            layer->rotateHexagonal(direction);
+            layer->rotateHexagonal(direction, variation.map);
         else
             layer->rotate(direction);
 

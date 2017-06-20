@@ -35,13 +35,14 @@
 #include "terraindock.h"
 #include "tile.h"
 #include "tileanimationeditor.h"
-#include "tilecollisioneditor.h"
+#include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "tilesetmodel.h"
 #include "tilesetterrainmodel.h"
 #include "tilesetview.h"
+#include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -49,10 +50,12 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QSettings>
 #include <QStackedWidget>
 #include <QStatusBar>
@@ -103,25 +106,73 @@ private:
 } // anonymous namespace
 
 
+class TilesetEditorWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    TilesetEditorWindow(TilesetEditor *editor, QWidget *parent = nullptr)
+        : QMainWindow(parent)
+        , mEditor(editor)
+    {
+        setAcceptDrops(true);
+    }
+
+signals:
+    void localFilesDropped(const QStringList &files);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
+
+private:
+    TilesetEditor *mEditor;
+};
+
+void TilesetEditorWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    Tileset *tileset = mEditor->currentTileset();
+    if (!tileset || !tileset->isCollection())
+        return; // only collection tilesets can accept drops
+
+    const QList<QUrl> urls = e->mimeData()->urls();
+    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
+        e->acceptProposedAction();
+}
+
+void TilesetEditorWindow::dropEvent(QDropEvent *e)
+{
+    QStringList paths;
+    for (const QUrl &url : e->mimeData()->urls()) {
+        const QString localFile = url.toLocalFile();
+        if (!localFile.isEmpty())
+            paths.append(localFile);
+    }
+    if (!paths.isEmpty()) {
+        emit localFilesDropped(paths);
+        e->acceptProposedAction();
+    }
+}
+
 
 TilesetEditor::TilesetEditor(QObject *parent)
     : Editor(parent)
-    , mMainWindow(new QMainWindow)
+    , mMainWindow(new TilesetEditorWindow(this))
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
-    , mEditTerrain(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
+    , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
-    , mZoomable(nullptr)
+    , mTileCollisionDock(new TileCollisionDock(mMainWindow))
     , mZoomComboBox(new QComboBox)
     , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
-    , mTileCollisionEditor(new TileCollisionEditor(mMainWindow))
     , mCurrentTilesetDocument(nullptr)
     , mCurrentTile(nullptr)
 {
     mTerrainDock->setVisible(false);
+    mTileCollisionDock->setVisible(false);
 
 #if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
@@ -130,13 +181,21 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTileCollisionDock);
+
+    mUndoDock->setVisible(false);
+
+    QAction *editTerrain = mTerrainDock->toggleViewAction();
+    QAction *editCollision = mTileCollisionDock->toggleViewAction();
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
-    mEditTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
-    mEditTerrain->setCheckable(true);
-    mEditTerrain->setIconVisibleInMenu(false);
+    editTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    editTerrain->setIconVisibleInMenu(false);
+    editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
+    editCollision->setIconVisibleInMenu(false);
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -146,16 +205,20 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(mAddTiles);
     mTilesetToolBar->addAction(mRemoveTiles);
     mTilesetToolBar->addSeparator();
-    mTilesetToolBar->addAction(mEditTerrain);
+    mTilesetToolBar->addAction(editTerrain);
+    mTilesetToolBar->addAction(editCollision);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
+    connect(mMainWindow, &TilesetEditorWindow::localFilesDropped, this, &TilesetEditor::addTiles);
+
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
-    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::addTiles);
+    connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
-    connect(mEditTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
+    connect(editTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
+    connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged, this, &TilesetEditor::currentTerrainChanged);
     connect(mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
@@ -164,7 +227,17 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(this, &TilesetEditor::currentTileChanged,
             mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged,
-            mTileCollisionEditor, &TileCollisionEditor::setTile);
+            mTileCollisionDock, &TileCollisionDock::setTile);
+
+    connect(mTileCollisionDock, &TileCollisionDock::dummyMapDocumentChanged,
+            this, [this](MapDocument *mapDocument) {
+        if (mTileCollisionDock->isVisible())
+            mPropertiesDock->setDocument(mapDocument);
+    });
+    connect(mTileCollisionDock, &TileCollisionDock::canCopyChanged,
+            this, &Editor::enabledStandardActionsChanged);
+    connect(mTileCollisionDock, &TileCollisionDock::visibilityChanged,
+            this, &Editor::enabledStandardActionsChanged);
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &TilesetEditor::updateTilesetView);
@@ -197,11 +270,16 @@ void TilesetEditor::addDocument(Document *document)
 
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
-    view->setZoomable(new Zoomable(this));
+
+    Tileset *tileset = tilesetDocument->tileset().data();
+
+    QString path = QLatin1String("TilesetEditor/TilesetScale/") + tileset->name();
+    qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
+    view->zoomable()->setScale(scale);
+
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    Tileset *tileset = tilesetDocument->tileset().data();
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
     view->setModel(tilesetModel);
 
@@ -236,6 +314,15 @@ void TilesetEditor::removeDocument(Document *document)
     tilesetDocument->disconnect(this);
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
+
+    QString path = QLatin1String("TilesetEditor/TilesetScale/") +
+            tilesetDocument->tileset()->name();
+    QSettings *settings = Preferences::instance()->settings();
+    if (view->scale() != 1.0)
+        settings->setValue(path, view->scale());
+    else
+        settings->remove(path);
+
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);
     delete view;
@@ -249,11 +336,6 @@ void TilesetEditor::setCurrentDocument(Document *document)
     if (mCurrentTilesetDocument == tilesetDocument)
         return;
 
-    if (mZoomable) {
-        mZoomable->setComboBox(nullptr);
-        mZoomable = nullptr;
-    }
-
     TilesetView *tilesetView = nullptr;
 
     if (document) {
@@ -261,15 +343,14 @@ void TilesetEditor::setCurrentDocument(Document *document)
         Q_ASSERT(tilesetView);
 
         mWidgetStack->setCurrentWidget(tilesetView);
-        tilesetView->setEditTerrain(mEditTerrain->isChecked());
-
-        mZoomable = tilesetView->zoomable();
-        mZoomable->setComboBox(mZoomComboBox);
+        tilesetView->setEditTerrain(mTerrainDock->isVisible());
+        tilesetView->zoomable()->setComboBox(mZoomComboBox);
     }
 
     mPropertiesDock->setDocument(document);
+    mUndoDock->setStack(document ? document->undoStack() : nullptr);
     mTileAnimationEditor->setTilesetDocument(tilesetDocument);
-    mTileCollisionEditor->setTilesetDocument(tilesetDocument);
+    mTileCollisionDock->setTilesetDocument(tilesetDocument);
     mTerrainDock->setDocument(document);
 
     mCurrentTilesetDocument = tilesetDocument;
@@ -304,8 +385,46 @@ QList<QDockWidget *> TilesetEditor::dockWidgets() const
 {
     return QList<QDockWidget*> {
         mPropertiesDock,
-        mTerrainDock
+        mUndoDock,
+        mTerrainDock,
+        mTileCollisionDock
     };
+}
+
+Editor::StandardActions TilesetEditor::enabledStandardActions() const
+{
+    StandardActions standardActions;
+
+    if (mCurrentTile && mTileCollisionDock->isVisible()) {
+        if (mTileCollisionDock->canCopy())
+            standardActions |= CutAction | CopyAction | DeleteAction;
+
+        if (ClipboardManager::instance()->hasMap())
+            standardActions |= PasteAction | PasteInPlaceAction;
+    }
+
+    return standardActions;
+}
+
+void TilesetEditor::performStandardAction(StandardAction action)
+{
+    switch (action) {
+    case CutAction:
+        mTileCollisionDock->cut();
+        break;
+    case CopyAction:
+        mTileCollisionDock->copy();
+        break;
+    case PasteAction:
+        mTileCollisionDock->paste();
+        break;
+    case PasteInPlaceAction:
+        mTileCollisionDock->pasteInPlace();
+        break;
+    case DeleteAction:
+        mTileCollisionDock->delete_();
+        break;
+    }
 }
 
 TilesetView *TilesetEditor::currentTilesetView() const
@@ -325,6 +444,16 @@ Zoomable *TilesetEditor::zoomable() const
     if (auto view = currentTilesetView())
         return view->zoomable();
     return nullptr;
+}
+
+QAction *TilesetEditor::editTerrainAction() const
+{
+    return mTerrainDock->toggleViewAction();
+}
+
+QAction *TilesetEditor::editCollisionAction() const
+{
+    return mTileCollisionDock->toggleViewAction();
 }
 
 void TilesetEditor::currentWidgetChanged()
@@ -415,7 +544,7 @@ void TilesetEditor::retranslateUi()
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
 
-    mEditTerrain->setText(tr("Edit &Terrain Information"));
+    mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::Internal::MainWindow", "Ctrl+Shift+O"));
 }
 
 static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
@@ -427,12 +556,8 @@ static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
     return false;
 }
 
-void TilesetEditor::addTiles()
+void TilesetEditor::openAddTilesDialog()
 {
-    Tileset *tileset = currentTileset();
-    if (!tileset)
-        return;
-
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
@@ -440,6 +565,19 @@ void TilesetEditor::addTiles()
                                                             tr("Add Tiles"),
                                                             startLocation,
                                                             filter);
+
+    if (!files.isEmpty())
+        addTiles(files);
+}
+
+void TilesetEditor::addTiles(const QStringList &files)
+{
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
+    Preferences *prefs = Preferences::instance();
+
     struct LoadedFile {
         QString imageSource;
         QPixmap image;
@@ -596,13 +734,11 @@ void TilesetEditor::removeTiles()
 
 void TilesetEditor::setEditTerrain(bool editTerrain)
 {
-    TilesetView *view = currentTilesetView();
-    if (!view)
-        return;
+    if (TilesetView *view = currentTilesetView())
+        view->setEditTerrain(editTerrain);
 
-    view->setEditTerrain(editTerrain);
-
-    mTerrainDock->setVisible(editTerrain);
+    if (editTerrain)
+        mTileCollisionDock->setVisible(false);
 }
 
 void TilesetEditor::currentTerrainChanged(const Terrain *terrain)
@@ -616,6 +752,16 @@ void TilesetEditor::currentTerrainChanged(const Terrain *terrain)
         view->setEraseTerrain(false);
     } else {
         view->setEraseTerrain(true);
+    }
+}
+
+void TilesetEditor::setEditCollision(bool editCollision)
+{
+    if (editCollision) {
+        mPropertiesDock->setDocument(mTileCollisionDock->dummyMapDocument());
+        mTerrainDock->setVisible(false);
+    } else {
+        mPropertiesDock->setDocument(mCurrentTilesetDocument);
     }
 }
 
@@ -707,3 +853,5 @@ void TilesetEditor::updateAddRemoveActions()
 
 } // namespace Internal
 } // namespace Tiled
+
+#include "tileseteditor.moc"
