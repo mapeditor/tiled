@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  TMX version 1.1 by
+    Tiled Developers (mapeditor.org)
+  documented in xsd form by
+    Mike Thomas <mikepthomas@outlook.com>
+  documented in dtd form originally by
+    Olivier.Beaton@quadir.net
+    Creative Commons Attribution 3.0
+    http://creativecommons.org/licenses/by/3.0/
+  last updated on
+    2017-06-20
+  %%
+  Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+  Copyright (C) 2017 Mike Thomas <mikepthomas@outlook.com>
+  %%
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+#L%
+-->
+<xs:schema version="1.0"
+           targetNamespace="http://www.mapeditor.org"
+           xmlns="http://www.mapeditor.org"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:element name="map" type="Map"/>
+    <xs:element name="tileset" type="TileSet"/>
+
+    <xs:complexType name="Data">
+        <xs:simpleContent>
+            <xs:extension base="xs:token">
+                <xs:attribute name="encoding" type="xs:string"/>
+                <xs:attribute name="compression" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="Image">
+        <xs:all>
+            <xs:element name="data" type="Data"/>
+        </xs:all>
+
+        <xs:attribute name="format" type="xs:string"/>
+        <xs:attribute name="id" type="xs:int"/>
+        <xs:attribute name="source" type="xs:anyURI"/>
+        <xs:attribute name="trans" type="xs:string"/>
+        <xs:attribute name="width" type="xs:int"/>
+        <xs:attribute name="height" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="ImageLayer">
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="image" type="Image" maxOccurs="1"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="offsetx" type="xs:int"/>
+        <xs:attribute name="offsety" type="xs:int"/>
+        <xs:attribute name="x" type="xs:int"/>
+        <xs:attribute name="y" type="xs:int"/>
+        <xs:attribute name="width" type="xs:int"/>
+        <xs:attribute name="height" type="xs:int"/>
+        <xs:attribute name="opacity" type="xs:double"/>
+        <xs:attribute name="visible" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:complexType name="Layer">
+        <xs:all>
+            <xs:element name="data" type="Data"/>
+        </xs:all>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="width" type="xs:int" use="required"/>
+        <xs:attribute name="height" type="xs:int" use="required"/>
+        <xs:attribute name="x" type="xs:int"/>
+        <xs:attribute name="y" type="xs:int"/>
+        <xs:attribute name="opacity" type="xs:float"/>
+        <xs:attribute name="visible" type="xs:boolean"/>
+        <xs:attribute name="offsetx" type="xs:int"/>
+        <xs:attribute name="offsety" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="Map">
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="tileset" type="TileSet" maxOccurs="unbounded"/>
+            <xs:element name="layer" type="Layer" maxOccurs="unbounded"/>
+            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+            <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="version" type="xs:string" fixed="1.0"/>
+        <xs:attribute name="tiledversion" type="xs:string"/>
+        <xs:attribute name="orientation" type="Orientation" use="required"/>
+        <xs:attribute name="renderorder" type="RenderOrder" default="right-down"/>
+        <xs:attribute name="width" type="xs:int" use="required"/>
+        <xs:attribute name="height" type="xs:int" use="required"/>
+        <xs:attribute name="tilewidth" type="xs:int" use="required"/>
+        <xs:attribute name="tileheight" type="xs:int" use="required"/>
+        <xs:attribute name="hexsidelength" type="xs:int"/>
+        <xs:attribute name="staggeraxis" type="StaggerAxis"/>
+        <xs:attribute name="staggerindex" type="StaggerIndex"/>
+        <xs:attribute name="backgroundcolor" type="xs:string"/>
+        <xs:attribute name="nextobjectid" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="MapObject">
+        <xs:all>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="polygon" type="Polygon"/>
+            <xs:element name="polyline" type="Polyline"/>
+        </xs:all>
+
+        <xs:attribute name="id" type="xs:int"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="x" type="xs:double" use="required"/>
+        <xs:attribute name="y" type="xs:double" use="required"/>
+        <xs:attribute name="width" type="xs:double"/>
+        <xs:attribute name="height" type="xs:double"/>
+        <xs:attribute name="rotation" type="xs:double" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ObjectGroup">
+        <xs:sequence>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="object" type="MapObject" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="color" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="x" type="xs:int"/>
+        <xs:attribute name="y" type="xs:int"/>
+        <xs:attribute name="width" type="xs:int"/>
+        <xs:attribute name="height" type="xs:int"/>
+        <xs:attribute name="opacity" type="xs:double"/>
+        <xs:attribute name="visible" type="xs:boolean"/>
+        <xs:attribute name="offsetx" type="xs:int"/>
+        <xs:attribute name="offsety" type="xs:int"/>
+        <xs:attribute name="draworder" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Polygon">
+        <xs:attribute name="points" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Polyline">
+        <xs:attribute name="points" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Properties">
+        <xs:sequence>
+            <xs:element name="property" type="Property" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Property">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="type" type="PropertyType"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="Terrain">
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="tile" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="TerrainTypes">
+        <xs:sequence>
+            <xs:element name="terrain" type="Terrain" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Tile">
+        <xs:sequence>
+            <xs:element name="image" type="Image"/>
+            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+            <xs:element name="properties" type="Properties"/>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:int"/>
+        <xs:attribute name="terrain" type="xs:string"/>
+        <xs:attribute name="probability" type="xs:double"/>
+    </xs:complexType>
+
+    <xs:complexType name="TileOffset">
+        <xs:attribute name="x" type="xs:int"/>
+        <xs:attribute name="y" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="TileSet">
+        <xs:sequence>
+            <xs:element name="tileoffset" type="TileOffset"/>
+            <xs:element name="properties" type="Properties"/>
+            <xs:element name="image" type="Image"/>
+            <xs:element name="terraintypes" type="TerrainTypes" minOccurs="0"/>
+            <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <xs:attribute name="firstgid" type="xs:int" use="required"/>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="source" type="xs:anyURI"/>
+        <xs:attribute name="tilewidth" type="xs:int" use="required"/>
+        <xs:attribute name="tileheight" type="xs:int" use="required"/>
+        <xs:attribute name="spacing" type="xs:int"/>
+        <xs:attribute name="margin" type="xs:int"/>
+        <xs:attribute name="tilecount" type="xs:int"/>
+        <xs:attribute name="columns" type="xs:int" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="Orientation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="orthogonal"/>
+            <xs:enumeration value="isometric"/>
+            <xs:enumeration value="staggered"/>
+            <xs:enumeration value="hexagonal"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="PropertyType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="float"/>
+            <xs:enumeration value="bool"/>
+            <xs:enumeration value="color"/>
+            <xs:enumeration value="file"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RenderOrder">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="right-down"/>
+            <xs:enumeration value="right-up"/>
+            <xs:enumeration value="left-down"/>
+            <xs:enumeration value="left-up"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="StaggerAxis">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="x"/>
+            <xs:enumeration value="y"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="StaggerIndex">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="even"/>
+            <xs:enumeration value="odd"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

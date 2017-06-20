@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<jxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+              jxb:version="2.0"
+              jxb:extensionBindingPrefixes="xjc">
+    <jxb:bindings schemaLocation="../resources/org/mapeditor/io/map.xsd" node="/xs:schema">
+
+        <jxb:globalBindings>
+            <xjc:simple/>
+        </jxb:globalBindings>
+
+        <jxb:bindings node="xs:complexType[@name='Image']">
+            <jxb:class name="ImageData" />
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Layer']">
+            <jxb:class name="LayerData" implClass="Layer"/>
+            <jxb:bindings node="xs:attribute[@name='height']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The layer height in tiles.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='name']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The name of this layer.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='opacity']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The layer opacity. ranging from 0.0 to 1.0.
+                        If it is different from the previous value
+                        and the layer is visible, a MapChangedEvent
+                        is fired.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='visible']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The visibility of this map layer. If it
+                        changes from its current value, a
+                        MapChangedEvent is fired.
+
+                        &lt;code&gt;true&lt;/code&gt; if the layer
+                        is visible, &lt;code7gt;false&lt;/code&gt;
+                        otherwise.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='width']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The layer width in tiles.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Map']">
+            <jxb:class name="MapData" implClass="Map"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='layer']">
+                    <jxb:property>
+                        <jxb:baseType name="Layer"/>
+                    </jxb:property>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='objectgroup']">
+                    <jxb:property name="objectGroups">
+                        <jxb:baseType name="ObjectGroup"/>
+                    </jxb:property>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='tileset']">
+                    <jxb:property name="tileSets">
+                        <jxb:baseType name="TileSet"/>
+                        <jxb:javadoc>
+                            A list with the currently loaded tileSets.
+                        </jxb:javadoc>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='height']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        Height of the map in tiles.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='hexsidelength']">
+                <jxb:property name="hexSideLength"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='nextobjectid']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        Stores the next available ID for new objects.
+                        This number is stored to prevent reuse of the same ID
+                        after objects have been removed.
+                        @since 0.11
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='orientation']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The orientation of this map will be one of.
+                        {@link org.mapeditor.core.Orientation#ISOMETRIC},
+                        {@link org.mapeditor.core.Orientation#ORTHOGONAL},
+                        {@link org.mapeditor.core.Orientation#HEXAGONAL} and
+                        {@link org.mapeditor.core.Orientation#STAGGERED}.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='staggeraxis']">
+                <jxb:property name="staggerAxis"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='staggerindex']">
+                <jxb:property name="staggerIndex"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tileheight']">
+                <jxb:property name="tileHeight">
+                    <jxb:javadoc>
+                        Default tile height for this map.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tilewidth']">
+                <jxb:property name="tileWidth">
+                    <jxb:javadoc>
+                        Default tile width for this map.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='width']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        Width of the map in tiles.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='MapObject']">
+            <jxb:class name="MapObjectData" implClass="MapObject"/>
+
+            <jxb:bindings node="xs:all/xs:element[@name='properties']">
+                <jxb:property>
+                    <jxb:baseType name="Properties"/>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='ObjectGroup']">
+            <jxb:class name="ObjectGroupData" implClass="ObjectGroup"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='object']">
+                    <jxb:property>
+                        <jxb:baseType name="MapObject"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='color']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The ObjectGroup's color.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='draworder']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The draw order (topdown, index).
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='offsetx']">
+                <jxb:property name="offsetX"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='offsety']">
+                <jxb:property name="offsetY"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Properties']">
+            <jxb:class name="PropertiesData" implClass="Properties" />
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Tile']">
+            <jxb:class name="TileData" implClass="Tile"/>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='image']">
+                    <jxb:property name="imageData"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='id']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        Returns the tile id of this tile, relative to tileset.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='TileSet']">
+            <jxb:class name="TileSetData" implClass="TileSet"/>
+            <jxb:property>
+                <jxb:javadoc>
+                    If there are multiple tileset elements, they are in
+                    ascending order of their firstgid attribute.
+                    The first tileset always has a firstgid value of 1.
+                    Since Tiled 0.15, image collection tilesets do not
+                    necessarily number their tiles consecutively since
+                    gaps can occur when removing tiles.
+                </jxb:javadoc>
+            </jxb:property>
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='image']">
+                    <jxb:property name="imageData"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='tile']">
+                    <jxb:property>
+                        <jxb:baseType name="Tile"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+
+            <jxb:bindings node="xs:attribute[@name='columns']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The number of tiles per row in the original
+                        tileset image.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='margin']">
+                <jxb:property name="tileMargin">
+                    <jxb:javadoc>
+                        The margin in pixels around the tiles on the
+                        tileset image.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='name']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The name of this tileset.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='source']">
+                <jxb:property>
+                    <jxb:javadoc>
+                        The source URI path of the external source of
+                        this tileset.
+
+                        If a filename is set, the tileset is external or
+                        &lt;code&gt;null&lt;/code&gt; if tileset is internal.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='spacing']">
+                <jxb:property name="tileSpacing">
+                    <jxb:javadoc>
+                        The spacing in pixels between the tiles on
+                        the tileset image.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tileheight']">
+                <jxb:property name="tileHeight">
+                    <jxb:javadoc>
+                        The maximum height of tiles in this tileset.
+
+                        Not all tiles in a tileset are required to
+                        have the same height, but the height should
+                        be at least the tile height of the map the
+                        tileset is used with.
+
+                        If there are tiles with varying heights in
+                        this tileset, the returned height will be
+                        the maximum.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='tilewidth']">
+                <jxb:property name="tileWidth">
+                    <jxb:javadoc>
+                        The maximum width of tiles in this tileset.
+
+                        All tiles in a tileset should be the same
+                        width, and the same as the tile width of
+                        the map the tileset is used with.
+                    </jxb:javadoc>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+    </jxb:bindings>
+</jxb:bindings>

@@ -1,40 +1,52 @@
-/*
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- *
+/*-
+ * #%L
  * This file is part of tmxviewer-java.
- *
+ * %%
+ * Copyright (C) 2010 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
  */
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
-import tiled.core.Map;
-import tiled.core.MapLayer;
-import tiled.core.TileLayer;
-import tiled.io.TMXMapReader;
-import tiled.view.MapRenderer;
-import tiled.view.OrthogonalRenderer;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
-import javax.swing.*;
-import java.awt.*;
-import tiled.view.IsometricRenderer;
+import org.mapeditor.core.Map;
+import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.Layer;
+import org.mapeditor.io.TMXMapReader;
+import org.mapeditor.view.MapRenderer;
+import org.mapeditor.view.OrthogonalRenderer;
+import org.mapeditor.view.IsometricRenderer;
 
 /**
  * An example showing how to use libtiled-java to do a simple TMX viewer.
@@ -98,8 +110,8 @@ public class TMXViewer
 
 class MapView extends JPanel implements Scrollable
 {
-    private Map map;
-    private MapRenderer renderer;
+    private final Map map;
+    private final MapRenderer renderer;
 
     public MapView(Map map) {
         this.map = map;
@@ -119,10 +131,12 @@ class MapView extends JPanel implements Scrollable
         g2d.fill(clip);
 
         // Draw each tile map layer
-        for (MapLayer layer : map) {
-            if (layer instanceof TileLayer) {
-                renderer.paintTileLayer(g2d, (TileLayer) layer);
-            }
+        for (Layer layer : map.getLayers()) {
+            renderer.paintTileLayer(g2d, layer);
+        }
+        // Draw each object group
+        for (ObjectGroup group : map.getObjectGroups()) {
+            renderer.paintObjectGroup(g2d, group);
         }
     }
 
