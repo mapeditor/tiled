@@ -30,8 +30,8 @@
 #include "tile.h"
 #include "tileset.h"
 
-#include <QMap>
-#include <QMultiMap>
+#include <QHash>
+#include <QMultiHash>
 #include <QString>
 #include <QList>
 
@@ -40,47 +40,50 @@ namespace Tiled {
 class WangId
 {
 public:
-    WangId(unsigned id){ mId = id; }
-    WangId() { mId = 0; }
+    WangId(unsigned id) : mId(id) {}
+    WangId() : mId(0) {}
 
-    inline unsigned id() const { return mId; }
+    operator unsigned() const { return mId; }
     inline void setId(unsigned id) { mId = id; }
 
     /**
      * @brief getColor returns the color of a desired edge/corner of a given wang id
      * @param index index 0-3 with zero being the top right, and 3 left top
-     * @param edges requesting edge color (corners if false)
      * @return
      */
-    int getColor(int index, bool edges) const;
+    int edgeColor(int index) const;
+    int cornerColor(int index) const;
 
     /**
      * @brief rotateWangId rotates the wang id 90 * rotations degrees ccw
      * @param rotations 1-3
      * @return
      */
-    void rotate(int rotations);
-
-    //used in maping
-    bool operator <(const WangId w) const
-    {
-        return mId < w.id();
-    }
+    void rotate(int rotations);\
 
 private:
     unsigned mId;
 };
 
-inline int WangId::getColor(int index, bool edges) const
+inline int WangId::edgeColor(int index) const
 {
-    int shift = (index * 8) + ((!edges) * 4);
+    int shift = (index * 8);
 
     int color = (mId >> shift) & 0xf;
 
     return color;
 }
 
-void WangId::rotate(int rotations)
+inline int WangId::cornerColor(int index) const
+{
+    int shift = (index * 8) + 4;
+
+    int color = (mId >> shift) & 0xf;
+
+    return color;
+}
+
+inline void WangId::rotate(int rotations)
 {
     if (rotations < 0)
         rotations = 4 + (rotations % 4);
@@ -104,6 +107,9 @@ public:
             int cornerColors,
             QString name,
             int imageTileId);
+
+    Tileset *tileset() const { return mTileSet; }
+    void setTileset(Tileset *tileset) { mTileSet = tileset; }
 
     QString name() const { return mName; }
     void setName(const QString &name) { mName = name; }
@@ -132,7 +138,7 @@ public:
      * @param wangId
      * @return
      */
-    Tile *getMatchingTile(WangId wangId) const;
+    Tile *findMatchingTile(WangId wangId) const;
 
     /**
      * @brief getAllTiles Returns a list of all tiles which match a wangId
@@ -140,23 +146,25 @@ public:
      * @param wangId
      * @return
      */
-    QList<Tile*> getAllTiles(WangId wangId) const;
+    QList<Tile*> findMatchingTiles(WangId wangId) const;
 
 
     /**
      * @brief wangIdOfTile returns the wangId of a given tileId
      * @param tileId
      */
-    WangId getWangIdOfTile(Tile *tile) const;
+    WangId wangIdOfTile(Tile *tile) const;
+
+    WangSet *clone(Tileset *tileset) const;
 
 private:
     Tileset *mTileSet;
     QString mName;
     int mImageTileId;
-    QMultiMap<WangId, Tile*> mWangIdToTile;
-    QMap<int, WangId> mTileIdToWangId; //This could be stored in the tile object.
     int mEdgeColors;
     int mCornerColors;
+    QMultiHash<WangId, Tile*> mWangIdToTile;
+    QHash<int, WangId> mTileIdToWangId; //This could be stored in the tile object.
 };
 
 } // namespace Tiled

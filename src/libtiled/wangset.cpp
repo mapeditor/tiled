@@ -39,12 +39,12 @@ WangSet::WangSet(Tileset *tileset,
                  int imageTileId):
     Object(Object::TerrainType), //for now, will add unique type soon
     mTileSet(tileset),
-    mEdgeColors(edgeColors),
-    mCornerColors(cornerColors),
     mName(std::move(name)),
     mImageTileId(imageTileId),
-    mWangIdToTile(QMultiMap<WangId, Tile*>()),
-    mTileIdToWangId(QMap<int, WangId>())
+    mEdgeColors(edgeColors),
+    mCornerColors(cornerColors)/*,
+    mWangIdToTile(QMultiHash<WangId, Tile*>()),
+    mTileIdToWangId(QHash<int, WangId>())*/
 {
 }
 
@@ -53,20 +53,20 @@ void WangSet::addTile(Tile *tile, WangId wangId)
     Q_ASSERT(tile->tileset() == mTileSet);
 
     for (int i = 0; i < 4; ++i) {
-        Q_ASSERT(wangId.getColor(i,true) <= mEdgeColors);
+        Q_ASSERT(wangId.edgeColor(i) <= mEdgeColors);
     }
 
     for (int i = 0; i < 4; ++i) {
-        Q_ASSERT(wangId.getColor(i,false) <= mCornerColors);
+        Q_ASSERT(wangId.cornerColor(i) <= mCornerColors);
     }
 
     mWangIdToTile.insert(wangId, tile);
     mTileIdToWangId.insert(tile->id(), wangId);
 }
 
-Tile *WangSet::getMatchingTile(WangId wangId) const
+Tile *WangSet::findMatchingTile(WangId wangId) const
 {
-    auto potentials = getAllTiles(wangId);
+    auto potentials = findMatchingTiles(wangId);
 
     if (potentials.length() > 0)
         return potentials[qrand() % potentials.length()];
@@ -74,25 +74,38 @@ Tile *WangSet::getMatchingTile(WangId wangId) const
         return NULL;
 }
 
-QList<Tile*> WangSet::getAllTiles(WangId wangId) const
+typedef struct WangWildCard
+{
+    int index, colorCount;
+} WangWildCard;
+
+QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
 {
     QList<Tile*> list;
 
     //Stores the space of a wild card, followed by how many colors that space can have.
-    QVector<QPoint> wildCards;
+    QVector<WangWildCard> wildCards;
 
     if (mEdgeColors > 0) {
         for (int i = 0; i < 4; ++i) {
-            if (!wangId.getColor(i,true)) {
-                wildCards.append(QPoint(i * 8, mEdgeColors));
+            if (!wangId.edgeColor(i)) {
+                WangWildCard w;
+                w.index = i * 8;
+                w.colorCount = mEdgeColors;
+
+                wildCards.append(w);
             }
         }
     }
 
     if (mCornerColors > 0) {
         for (int i = 0; i < 4; ++i) {
-            if (!wangId.getColor(i,false)) {
-                wildCards.append(QPoint(i * 8 + 4, mCornerColors));
+            if (!wangId.cornerColor(i)) {
+                WangWildCard w;
+                w.index = i * 8 + 4;
+                w.colorCount = mCornerColors;
+
+                wildCards.append(w);
             }
         }
     }
@@ -100,11 +113,9 @@ QList<Tile*> WangSet::getAllTiles(WangId wangId) const
     if (wildCards.isEmpty()) {
         list.append(mWangIdToTile.values(wangId));
     } else {
-        QStack<QPoint> stack;
+        QStack<WangWildCard> stack;
 
-        for (int i = 0; i < wildCards.size(); ++i) {
-            stack.push(wildCards[i]);
-        }
+        stack.append(wildCards);
 
         int max = wildCards.size();
 
@@ -113,19 +124,19 @@ QList<Tile*> WangSet::getAllTiles(WangId wangId) const
                 int idVariation = 0;
 
                 for (int i = 0; i < max; ++i) {
-                    idVariation |= stack[i].y() << stack[i].x();
+                    idVariation |= stack[i].colorCount << stack[i].index;
                 }
 
-                list.append(mWangIdToTile.values(idVariation | wangId.id()));
+                list.append(mWangIdToTile.values(idVariation | wangId));
 
-                QPoint top = stack.pop();
-                top.setY(top.y() - 1);
-                if (top.y() > 0)
+                WangWildCard top = stack.pop();
+                top.colorCount -= 1;
+                if (top.colorCount > 0)
                     stack.push(top);
             } else {
-                QPoint top = stack.pop();
-                top.setY(top.y() - 1);
-                if (top.y() > 0) {
+                WangWildCard top = stack.pop();
+                top.colorCount -= 1;
+                if (top.colorCount > 0) {
                     stack.push(top);
 
                     for (int i = stack.size(); i < max; ++i) {
@@ -139,10 +150,17 @@ QList<Tile*> WangSet::getAllTiles(WangId wangId) const
     return list;
 }
 
-WangId WangSet::getWangIdOfTile(Tile *tile) const
+WangId WangSet::wangIdOfTile(Tile *tile) const
 {
-    if (tile->tileset() == mTileSet && mTileIdToWangId.contains(tile->id()))
-        return mTileIdToWangId.value(tile->id());
-    else
-        return WangId(0);
+    return mTileIdToWangId.value(tile->id());
+}
+
+WangSet *WangSet::clone(Tileset *tileset) const
+{
+    WangSet *c = new WangSet(tileset, mEdgeColors, mCornerColors, mName, mImageTileId);
+
+    c->mWangIdToTile = mWangIdToTile;
+    c->mTileIdToWangId = mTileIdToWangId;
+
+    return c;
 }
