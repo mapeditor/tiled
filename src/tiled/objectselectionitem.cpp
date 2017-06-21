@@ -413,21 +413,44 @@ void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int ind
             delete mObjectLabels.take(object);
 }
 
+static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
+{
+    for (Layer *layer : groupLayer) {
+        switch (layer->layerType()) {
+        case Layer::ObjectGroupType:
+            objects.append(static_cast<ObjectGroup*>(layer)->objects());
+            break;
+        case Layer::GroupLayerType:
+            collectObjects(*static_cast<GroupLayer*>(layer), objects);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 void ObjectSelectionItem::layerChanged(Layer *layer)
 {
     ObjectGroup *objectGroup = layer->asObjectGroup();
+    GroupLayer *groupLayer = layer->asGroupLayer();
+    if (!(objectGroup || groupLayer))
+        return;
 
     // If labels for all objects are visible, some labels may need to be added
     // removed based on layer visibility.
-    if (objectGroup || layer->isGroupLayer())
-        if (objectLabelVisibility() == Preferences::AllObjectLabels)
-            addRemoveObjectLabels();
+    if (objectLabelVisibility() == Preferences::AllObjectLabels)
+        addRemoveObjectLabels();
 
-    // If an object layer changed, that means its offset may have changed,
-    // which affects the outlines of selected objects on that layer and the
-    // positions of any name labels that are shown.
-    if (objectGroup)
+    // If an object or group layer changed, that means its offset may have
+    // changed, which affects the outlines of selected objects on that layer
+    // and the positions of any name labels that are shown.
+    if (objectGroup) {
         syncOverlayItems(objectGroup->objects());
+    } else {
+        QList<MapObject*> affectedObjects;
+        collectObjects(*groupLayer, affectedObjects);
+        syncOverlayItems(affectedObjects);
+    }
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
