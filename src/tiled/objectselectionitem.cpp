@@ -416,18 +416,18 @@ void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int ind
 void ObjectSelectionItem::layerChanged(Layer *layer)
 {
     ObjectGroup *objectGroup = layer->asObjectGroup();
-    if (!objectGroup)
-        return;
 
     // If labels for all objects are visible, some labels may need to be added
     // removed based on layer visibility.
-    if (objectLabelVisibility() == Preferences::AllObjectLabels)
-        addRemoveObjectLabels();
+    if (objectGroup || layer->isGroupLayer())
+        if (objectLabelVisibility() == Preferences::AllObjectLabels)
+            addRemoveObjectLabels();
 
     // If an object layer changed, that means its offset may have changed,
     // which affects the outlines of selected objects on that layer and the
     // positions of any name labels that are shown.
-    syncOverlayItems(objectGroup->objects());
+    if (objectGroup)
+        syncOverlayItems(objectGroup->objects());
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
@@ -509,7 +509,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
     case Preferences::AllObjectLabels: {
         LayerIterator iterator(mMapDocument->map());
         while (Layer *layer = iterator.next()) {
-            if (!layer->isVisible())
+            if (layer->isHidden())
                 continue;
 
             if (ObjectGroup *objectGroup = layer->asObjectGroup())
