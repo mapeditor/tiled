@@ -22,6 +22,9 @@
 
 #include "abstracttiletool.h"
 
+class QAction;
+class QActionGroup;
+
 namespace Tiled {
 namespace Internal {
 
@@ -36,7 +39,11 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
+
     void languageChanged() override;
+
+    void populateToolBar(QToolBar *toolBar) override;
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -60,6 +67,12 @@ private:
     SelectionMode mSelectionMode;
     bool mMouseDown;
     bool mSelecting;
+
+    QAction *mReplace;
+    QAction *mAdd;
+    QAction *mSubtract;
+    QAction *mIntersect;
+    QActionGroup *mActionGroup;
 };
 
 } // namespace Internal

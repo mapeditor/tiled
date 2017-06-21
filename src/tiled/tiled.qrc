@@ -41,6 +41,10 @@
         <file>images/16x16/zoom-in.png</file>
         <file>images/16x16/zoom-original.png</file>
         <file>images/16x16/zoom-out.png</file>
+        <file>images/16x16/selection-add.png</file>
+        <file>images/16x16/selection-replace.png</file>
+        <file>images/16x16/selection-subtract.png</file>
+        <file>images/16x16/selection-intersect.png</file>
         <file>images/22x22/add.png</file>
         <file>images/22x22/remove.png</file>
         <file>images/22x22/stock-tool-clone.png</file>

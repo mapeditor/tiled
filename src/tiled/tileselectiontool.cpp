@@ -27,7 +27,10 @@
 #include "mapscene.h"
 #include "tilelayer.h"
 
+#include <QAction>
+#include <QActionGroup>
 #include <QApplication>
+#include <QToolBar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -43,6 +46,43 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
     , mSelecting(false)
 {
     setTilePositionMethod(OnTiles);
+    QIcon replaceIcon(QLatin1String(":images/16x16/selection-replace.png"));
+    QIcon addIcon(QLatin1String(":images/16x16/selection-add.png"));
+    QIcon subtractIcon(QLatin1String(":images/16x16/selection-subtract.png"));
+    QIcon intersectIcon(QLatin1String(":images/16x16/selection-intersect.png"));
+
+    mReplace = new QAction(this);
+    mReplace->setIcon(replaceIcon);
+    mReplace->setCheckable(true);
+    mReplace->setChecked(true);
+    mReplace->setToolTip(tr("Replace Selection"));
+
+    mAdd = new QAction(this);
+    mAdd->setIcon(addIcon);
+    mAdd->setCheckable(true);
+    mAdd->setToolTip(tr("Add Selection"));
+    mReplace->setShortcut(QKeySequence(tr("Ctrl")));
+
+    mSubtract = new QAction(this);
+    mSubtract->setIcon(subtractIcon);
+    mSubtract->setCheckable(true);
+    mSubtract->setToolTip(tr("Subtract Selection"));
+
+    mIntersect = new QAction(this);
+    mIntersect->setIcon(intersectIcon);
+    mIntersect->setCheckable(true);
+    mIntersect->setToolTip(tr("Intersect Selection"));
+
+    mActionGroup = new QActionGroup(this);
+    mActionGroup->addAction(mReplace);
+    mActionGroup->addAction(mAdd);
+    mActionGroup->addAction(mSubtract);
+    mActionGroup->addAction(mIntersect);
+
+    connect(mReplace, &QAction::triggered, [this]() { mSelectionMode = Replace; });
+    connect(mAdd, &QAction::triggered, [this]() { mSelectionMode = Add; });
+    connect(mSubtract, &QAction::triggered, [this]() { mSelectionMode = Subtract; });
+    connect(mIntersect, &QAction::triggered, [this]() { mSelectionMode = Intersect; });
 }
 
 void TileSelectionTool::tilePositionChanged(const QPoint &)
@@ -84,19 +124,8 @@ void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
-    const Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if (button == Qt::LeftButton) {
-        if (modifiers == Qt::ControlModifier) {
-            mSelectionMode = Subtract;
-        } else if (modifiers == Qt::ShiftModifier) {
-            mSelectionMode = Add;
-        } else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier)) {
-            mSelectionMode = Intersect;
-        } else {
-            mSelectionMode = Replace;
-        }
-
         mMouseDown = true;
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
@@ -149,10 +178,35 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     mMouseDown = false;
 }
 
+void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    if (modifiers == Qt::ControlModifier) {
+        mSelectionMode = Subtract;
+        mSubtract->setChecked(true);
+    } else if (modifiers == Qt::ShiftModifier) {
+        mSelectionMode = Add;
+        mAdd->setChecked(true);
+    } else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier)) {
+        mSelectionMode = Intersect;
+        mIntersect->setChecked(true);
+    } else {
+        mSelectionMode = Replace;
+        mReplace->setChecked(true);
+    }
+}
+
 void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
     setShortcut(QKeySequence(tr("R")));
+}
+
+void TileSelectionTool::populateToolBar(QToolBar *toolBar)
+{
+    toolBar->addAction(mReplace);
+    toolBar->addAction(mAdd);
+    toolBar->addAction(mSubtract);
+    toolBar->addAction(mIntersect);
 }
 
 QRect TileSelectionTool::selectedArea() const
