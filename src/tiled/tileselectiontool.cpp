@@ -199,6 +199,10 @@ void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
     setShortcut(QKeySequence(tr("R")));
+    mReplace->setToolTip(tr("Replace Selection"));
+    mAdd->setToolTip(tr("Add Selection"));
+    mSubtract->setToolTip(tr("Subtract Selection"));
+    mIntersect->setToolTip(tr("Intersect Selection"));
 }
 
 void TileSelectionTool::populateToolBar(QToolBar *toolBar)

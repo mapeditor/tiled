@@ -851,6 +851,7 @@ void MapEditor::setupQuickStamps()
 void MapEditor::retranslateUi()
 {
     mToolsToolBar->setWindowTitle(tr("Tools"));
+    mToolSpecificToolBar->setWindowTitle(tr("Tool Specific Tool Bar"));
 }
 
 } // namespace Internal
