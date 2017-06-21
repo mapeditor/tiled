@@ -202,6 +202,7 @@ SOURCES += aboutdialog.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
     snaphelper.cpp \
+    stampactions.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
@@ -375,6 +376,7 @@ HEADERS += aboutdialog.h \
     selectsametiletool.h \
     snaphelper.h \
     sparkleautoupdater.h \
+    stampactions.h \
     stampbrush.h \
     standardautoupdater.h \
     stylehelper.h \

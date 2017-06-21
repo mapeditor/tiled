@@ -271,16 +271,15 @@ void TilesetEditor::addDocument(Document *document)
     TilesetView *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
 
+    Tileset *tileset = tilesetDocument->tileset().data();
 
-    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
-            tilesetDocument->tileset()->name();
+    QString path = QLatin1String("TilesetEditor/TilesetScale/") + tileset->name();
     qreal scale = Preferences::instance()->settings()->value(path, 1).toReal();
     view->zoomable()->setScale(scale);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    Tileset *tileset = tilesetDocument->tileset().data();
     TilesetModel *tilesetModel = new TilesetModel(tileset, view);
     view->setModel(tilesetModel);
 
@@ -316,9 +315,13 @@ void TilesetEditor::removeDocument(Document *document)
 
     TilesetView *view = mViewForTileset.take(tilesetDocument);
 
-    QString path =  QLatin1String("TilesetEditor/TilesetScale/") +
+    QString path = QLatin1String("TilesetEditor/TilesetScale/") +
             tilesetDocument->tileset()->name();
-    Preferences::instance()->settings()->setValue(path, view->scale());
+    QSettings *settings = Preferences::instance()->settings();
+    if (view->scale() != 1.0)
+        settings->setValue(path, view->scale());
+    else
+        settings->remove(path);
 
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(view);

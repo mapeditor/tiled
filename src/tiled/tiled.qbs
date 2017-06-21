@@ -330,6 +330,8 @@ QtGuiApplication {
         "selectsametiletool.h",
         "snaphelper.cpp",
         "snaphelper.h",
+        "stampactions.cpp",
+        "stampactions.h",
         "stampbrush.cpp",
         "stampbrush.h",
         "standardautoupdater.cpp",

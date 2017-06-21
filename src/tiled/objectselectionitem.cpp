@@ -506,15 +506,19 @@ void ObjectSelectionItem::addRemoveObjectLabels()
     };
 
     switch (objectLabelVisibility()) {
-    case Preferences::AllObjectLabels:
-        for (Layer *layer : mMapDocument->map()->layers()) {
+    case Preferences::AllObjectLabels: {
+        LayerIterator iterator(mMapDocument->map());
+        while (Layer *layer = iterator.next()) {
             if (!layer->isVisible())
                 continue;
 
             if (ObjectGroup *objectGroup = layer->asObjectGroup())
                 for (MapObject *object : objectGroup->objects())
                     ensureLabel(object);
+        }
     }
+        // We want labels on selected objects regardless layer visibility
+        /*FALLTHROUGH*/
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())

@@ -30,8 +30,11 @@
 #include "mapscene.h"
 #include "mapdocument.h"
 #include "painttilelayer.h"
+#include "stampactions.h"
 
+#include <QAction>
 #include <QApplication>
+#include <QToolBar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -46,7 +49,18 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mLastShiftStatus(false)
     , mIsRandom(false)
     , mLastRandomStatus(false)
+    , mStampActions(new StampActions(this))
 {
+    connect(mStampActions->random(), &QAction::toggled, this, &BucketFillTool::randomChanged);
+
+    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
+    connect(mStampActions->flipVertical(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
+    connect(mStampActions->rotateLeft(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
+    connect(mStampActions->rotateRight(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
 BucketFillTool::~BucketFillTool()
@@ -233,6 +247,8 @@ void BucketFillTool::languageChanged()
 {
     setName(tr("Bucket Fill Tool"));
     setShortcut(QKeySequence(tr("F")));
+
+    mStampActions->languageChanged();
 }
 
 void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
@@ -259,6 +275,11 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
     if (mIsActive && brushItem()->isVisible())
         tilePositionChanged(tilePosition());
+}
+
+void BucketFillTool::populateToolBar(QToolBar *toolBar)
+{
+    mStampActions->populateToolBar(toolBar, mIsRandom);
 }
 
 void BucketFillTool::clearOverlay()

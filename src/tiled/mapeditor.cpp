@@ -151,16 +151,11 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
 
-    QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
-    diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
-
-    mRandomButton = new QToolButton(mMainToolBar);
-    mRandomButton->setIcon(diceIcon);
-    mRandomButton->setCheckable(true);
-    mMainToolBar->addWidget(mRandomButton);
-
     mToolsToolBar = new QToolBar(mMainWindow);
     mToolsToolBar->setObjectName(QLatin1String("toolsToolBar"));
+
+    mToolSpecificToolBar = new QToolBar(mMainWindow);
+    mToolSpecificToolBar->setObjectName(QLatin1String("toolSpecificToolBar"));
 
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
@@ -193,6 +188,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addToolBar(mToolsToolBar);
+    mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
@@ -234,10 +230,11 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
-    connect(mStampBrush, &StampBrush::stampCaptured, this, &MapEditor::setStamp);
 
-    connect(mRandomButton, &QToolButton::toggled, mStampBrush, &StampBrush::setRandom);
-    connect(mRandomButton, &QToolButton::toggled, mBucketFillTool, &BucketFillTool::setRandom);
+    connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
+    connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
+    connect(mStampBrush, &StampBrush::randomChanged, this, &MapEditor::setRandom);
+    connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -252,16 +249,6 @@ MapEditor::MapEditor(QObject *parent)
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
-
-    QShortcut *flipHorizontallyShortcut = new QShortcut(tr("X"), mMainWindow);
-    QShortcut *flipVerticallyShortcut = new QShortcut(tr("Y"), mMainWindow);
-    QShortcut *rotateRightShortcut = new QShortcut(tr("Z"), mMainWindow);
-    QShortcut *rotateLeftShortcut = new QShortcut(tr("Shift+Z"), mMainWindow);
-
-    connect(flipHorizontallyShortcut, &QShortcut::activated, this, &MapEditor::flipHorizontally);
-    connect(flipVerticallyShortcut, &QShortcut::activated, this, &MapEditor::flipVertically);
-    connect(rotateRightShortcut, &QShortcut::activated, this, &MapEditor::rotateRight);
-    connect(rotateLeftShortcut, &QShortcut::activated, this, &MapEditor::rotateLeft);
 
     setupQuickStamps();
     retranslateUi();
@@ -435,7 +422,8 @@ QList<QToolBar *> MapEditor::toolBars() const
 {
     return QList<QToolBar*> {
         mMainToolBar,
-        mToolsToolBar
+        mToolsToolBar,
+        mToolSpecificToolBar
     };
 }
 
@@ -519,6 +507,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     }
 
     mSelectedTool = tool;
+    mToolSpecificToolBar->clear();
 
     if (mViewWithTool) {
         MapScene *mapScene = mViewWithTool->mapScene();
@@ -538,6 +527,8 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     if (tool) {
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
+
+        tool->populateToolBar(mToolSpecificToolBar);
     }
 }
 
@@ -620,6 +611,12 @@ void MapEditor::rotate(RotateDirection direction)
     } else if (mCurrentMapDocument) {
         mCurrentMapDocument->rotateSelectedObjects(direction);
     }
+}
+
+void MapEditor::setRandom(bool value)
+{
+    mStampBrush->setRandom(value);
+    mBucketFillTool->setRandom(value);
 }
 
 /**
@@ -853,9 +850,6 @@ void MapEditor::setupQuickStamps()
 
 void MapEditor::retranslateUi()
 {
-    mRandomButton->setToolTip(tr("Random Mode"));
-    mRandomButton->setShortcut(QKeySequence(tr("D")));
-
     mToolsToolBar->setWindowTitle(tr("Tools"));
 }
 

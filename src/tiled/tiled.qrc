@@ -83,6 +83,10 @@
         <file>images/24x24/system-run.png</file>
         <file>images/16x16/show_hide_others.png</file>
         <file>images/24x24/dice.png</file>
+        <file>images/24x24/flip-horizontal.png</file>
+        <file>images/24x24/flip-vertical.png</file>
+        <file>images/24x24/rotate-left.png</file>
+        <file>images/24x24/rotate-right.png</file>
         <file>images/24x24/terrain-edit.png</file>
         <file>images/32x32/tiled.png</file>
         <file>images/24x24/move-image-layer.png</file>
@@ -107,6 +111,10 @@
         <file>images/dock-restore@2x.png</file>
         <file>images/24x24/insert-text.png</file>
         <file>images/32x32/dice.png</file>
+        <file>images/32x32/flip-horizontal.png</file>
+        <file>images/32x32/flip-vertical.png</file>
+        <file>images/32x32/rotate-left.png</file>
+        <file>images/32x32/rotate-right.png</file>
         <file>images/48x48/insert-rectangle.png</file>
         <file>images/48x48/insert-ellipse.png</file>
         <file>images/48x48/insert-polyline.png</file>
