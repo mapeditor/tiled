@@ -38,19 +38,17 @@ WangSet::WangSet(Tileset *tileset,
                  QString name,
                  int imageTileId):
     Object(Object::TerrainType), //for now, will add unique type soon
-    mTileSet(tileset),
+    mTileset(tileset),
     mName(std::move(name)),
     mImageTileId(imageTileId),
     mEdgeColors(edgeColors),
-    mCornerColors(cornerColors)/*,
-    mWangIdToTile(QMultiHash<WangId, Tile*>()),
-    mTileIdToWangId(QHash<int, WangId>())*/
+    mCornerColors(cornerColors)
 {
 }
 
 void WangSet::addTile(Tile *tile, WangId wangId)
 {
-    Q_ASSERT(tile->tileset() == mTileSet);
+    Q_ASSERT(tile->tileset() == mTileset);
 
     for (int i = 0; i < 4; ++i) {
         Q_ASSERT(wangId.edgeColor(i) <= mEdgeColors);
@@ -74,10 +72,10 @@ Tile *WangSet::findMatchingTile(WangId wangId) const
         return NULL;
 }
 
-typedef struct WangWildCard
+struct WangWildCard
 {
     int index, colorCount;
-} WangWildCard;
+};
 
 QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
 {
@@ -123,9 +121,8 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
             if (stack.size() == max) {
                 int idVariation = 0;
 
-                for (int i = 0; i < max; ++i) {
+                for (int i = 0; i < max; ++i)
                     idVariation |= stack[i].colorCount << stack[i].index;
-                }
 
                 list.append(mWangIdToTile.values(idVariation | wangId));
 
@@ -139,9 +136,8 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
                 if (top.colorCount > 0) {
                     stack.push(top);
 
-                    for (int i = stack.size(); i < max; ++i) {
+                    for (int i = stack.size(); i < max; ++i)
                         stack.push(wildCards[i]);
-                    }
                 }
             }
         }
