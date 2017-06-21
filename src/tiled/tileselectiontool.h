@@ -65,6 +65,7 @@ private:
     QPoint mMouseScreenStart;
     QPoint mSelectionStart;
     SelectionMode mSelectionMode;
+    SelectionMode mDefaultMode;
     bool mMouseDown;
     bool mSelecting;
 

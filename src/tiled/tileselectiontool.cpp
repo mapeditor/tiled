@@ -79,10 +79,14 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
     mActionGroup->addAction(mSubtract);
     mActionGroup->addAction(mIntersect);
 
-    connect(mReplace, &QAction::triggered, [this]() { mSelectionMode = Replace; });
-    connect(mAdd, &QAction::triggered, [this]() { mSelectionMode = Add; });
-    connect(mSubtract, &QAction::triggered, [this]() { mSelectionMode = Subtract; });
-    connect(mIntersect, &QAction::triggered, [this]() { mSelectionMode = Intersect; });
+    connect(mReplace, &QAction::triggered,
+        [this]() { mSelectionMode = mDefaultMode = Replace; });
+    connect(mAdd, &QAction::triggered,
+            [this]() { mSelectionMode = mDefaultMode = Add; });
+    connect(mSubtract, &QAction::triggered,
+            [this]() { mSelectionMode = mDefaultMode = Subtract; });
+    connect(mIntersect, &QAction::triggered,
+            [this]() { mSelectionMode = mDefaultMode = Intersect; });
 }
 
 void TileSelectionTool::tilePositionChanged(const QPoint &)
@@ -190,8 +194,13 @@ void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
         mSelectionMode = Intersect;
         mIntersect->setChecked(true);
     } else {
-        mSelectionMode = Replace;
-        mReplace->setChecked(true);
+        mSelectionMode = mDefaultMode;
+        switch (mDefaultMode) {
+        case Replace:   mReplace->setChecked(true); break;
+        case Add:       mAdd->setChecked(true); break;
+        case Subtract:  mSubtract->setChecked(true); break;
+        case Intersect: mIntersect->setChecked(true); break;
+        }
     }
 }
 
