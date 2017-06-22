@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
+#include "gotodialog.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -57,6 +58,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
+
+    mActionGotoTile = new QAction(this);
+    mActionGotoTile->setShortcut(tr("Ctrl+Shift+G"));
 
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
@@ -141,6 +145,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Utils::setThemeIcon(mActionLayerProperties, "document-properties");
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
+    connect(mActionGotoTile, SIGNAL(triggered()), SLOT(findDialog()));
     connect(mActionSelectAll, &QAction::triggered, this, &MapDocumentActionHandler::selectAll);
     connect(mActionSelectInverse, &QAction::triggered, this, &MapDocumentActionHandler::selectInverse);
     connect(mActionSelectNone, &QAction::triggered, this, &MapDocumentActionHandler::selectNone);
@@ -179,6 +184,7 @@ MapDocumentActionHandler::~MapDocumentActionHandler()
 
 void MapDocumentActionHandler::retranslateUi()
 {
+    mActionGotoTile->setText(tr("&Go to"));
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectInverse->setText(tr("Invert S&election"));
     mActionSelectNone->setText(tr("Select &None"));
@@ -324,6 +330,11 @@ void MapDocumentActionHandler::delete_()
 
     selectNone();
     undoStack->endMacro();
+}
+
+void MapDocumentActionHandler::findDialog()
+{
+    GotoDialog::showDialog();
 }
 
 void MapDocumentActionHandler::selectAll()
