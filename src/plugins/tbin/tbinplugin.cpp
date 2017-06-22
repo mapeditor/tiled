@@ -22,6 +22,8 @@
 
 #include "tbin/Map.hpp"
 #include "map.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -121,16 +123,13 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             if ( tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y )
                 throw std::invalid_argument( "Different tile sizes per layer are not supported." );
 
-            // TODO: Objects
-
-            qDebug() << "layer:"<<tlayer.id.c_str()<<'\n';
             Tiled::TileLayer* layer = new Tiled::TileLayer( tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y );
+            Tiled::ObjectGroup* objects = new Tiled::ObjectGroup( tlayer.id.c_str(), 0, 0 );
             for ( int i = 0; i < tlayer.tiles.size(); ++i )
             {
                 const tbin::Tile& ttile = tlayer.tiles[ i ];
                 int ix = i % tlayer.layerSize.x;
                 int iy = i / tlayer.layerSize.x;
-                qDebug() << "\tt:"<<ix<<' '<<iy;
 
                 if ( ttile.isNullTile() )
                     continue;
@@ -138,18 +137,39 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                 Tiled::Cell cell;
                 if ( ttile.animatedData.frames.size() > 0 )
                 {
-                    qDebug() << "\ttile:"<<ttile.animatedData.frames.size()<<'\n';
-                    // Animated tile - TODO
+                    tbin::Tile tfirstTile = ttile.animatedData.frames[ 0 ];
+                    Tiled::Tile* firstTile = map->tilesetAt( tmapTilesheetMapping[ tfirstTile.tilesheet ] )->tileAt( tfirstTile.staticData.tileIndex );
+                    QVector<Tiled::Frame> frames;
+                    for ( const tbin::Tile& tframe : ttile.animatedData.frames )
+                    {
+                        if ( tframe.isNullTile() || tframe.animatedData.frames.size() > 0 ||
+                             tframe.tilesheet != tfirstTile.tilesheet )
+                            throw std::invalid_argument( "Invalid animation frame." );
+
+                        Tiled::Frame frame;
+                        frame.tileId = tframe.staticData.tileIndex;
+                        frame.duration = ttile.animatedData.frameInterval;
+                        frames.append( frame );
+                    }
+                    firstTile->setFrames( frames );
+                    cell = Tiled::Cell( firstTile );
                 }
                 else
                 {
-                    qDebug() << "\ttile:"<<ttile.tilesheet.c_str()<<' '<<ttile.staticData.tileIndex<<'\n';
                     cell = Tiled::Cell( map->tilesetAt( tmapTilesheetMapping[ ttile.tilesheet ] )->tileAt( ttile.staticData.tileIndex ) );
                 }
                 layer->setCell( ix, iy, cell );
+
+                if ( ttile.props.size() > 0 )
+                {
+                    qDebug() <<"propc:"<<ttile.props.size();
+                    Tiled::MapObject* obj = new Tiled::MapObject( "TileData", "", QPointF( ix * tlayer.tileSize.x, iy * tlayer.tileSize.y ), QSizeF( 1 * tlayer.tileSize.x, 1 * tlayer.tileSize.y ) );
+                    doProperties( obj, ttile.props );
+                    objects->addObject( obj );
+                }
             }
-            qDebug() << "adding layer\n";
             map->addLayer( layer );
+            map->addLayer( objects );
         }
     }
     catch ( std::exception& e )
