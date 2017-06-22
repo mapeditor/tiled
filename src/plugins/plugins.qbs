@@ -10,6 +10,7 @@ Project {
         "lua",
         "python",
         "replicaisland",
+        "tbin",
         "tengine",
         "tmw",
         "gmx"
