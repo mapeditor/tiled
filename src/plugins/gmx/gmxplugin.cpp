@@ -111,15 +111,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
-    writeProperty(stream, map, "enableViews", false);
-
-    stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
-
-    // Write out views
-    // Last view in Object layer is the first view in the room
-    stream.writeStartElement("views");
+    // Check if views are defined
+    bool enableViews = false;
     LayerIterator iterator(map);
-    int viewCount = 0;
     while (const Layer *layer = iterator.next()) {
 
         if (layer->layerType() != Layer::ObjectGroupType)
@@ -129,42 +123,66 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
           for (const MapObject *object : objectLayer->objects()) {
             const QString type = effectiveObjectType(object);
-            if (type.isEmpty())
-                continue;
-            if (type.operator !=("view"))
-                continue;
-
-            // GM only has 8 views so drop anything more than that
-            if (viewCount > 7)
+            if (type == "view") {
+                enableViews = true;
                 break;
-
-            viewCount++;
-            stream.writeStartElement("view");
-
-            stream.writeAttribute("visible", toString(object->isVisible()));
-            stream.writeAttribute("objName", QString(optionalProperty(object, "objName", QString(""))));
-            QPointF pos = object->position();
-            // Note: GM only supports ints for positioning
-            // so views could be off if user doesn't align to whole number
-            stream.writeAttribute("xview", QString::number(qRound(pos.x())));
-            stream.writeAttribute("yview", QString::number(qRound(pos.y())));
-            stream.writeAttribute("wview", QString::number(qRound(object->width())));
-            stream.writeAttribute("hview", QString::number(qRound(object->height())));
-            // Round these incase user adds properties as floats and not ints
-            stream.writeAttribute("xport", QString::number(qRound(optionalProperty(object, "xport", 0.0))));
-            stream.writeAttribute("yport", QString::number(qRound(optionalProperty(object, "yport", 0.0))));
-            stream.writeAttribute("wport", QString::number(qRound(optionalProperty(object, "wport", 1024.0))));
-            stream.writeAttribute("hport", QString::number(qRound(optionalProperty(object, "hport", 768.0))));
-            stream.writeAttribute("hborder", QString::number(qRound(optionalProperty(object, "hborder", 32.0))));
-            stream.writeAttribute("vborder", QString::number(qRound(optionalProperty(object, "vborder", 32.0))));
-            stream.writeAttribute("hspeed", QString::number(qRound(optionalProperty(object, "hspeed", -1.0))));
-            stream.writeAttribute("vspeed", QString::number(qRound(optionalProperty(object, "vspeed", -1.0))));
-
-            stream.writeEndElement();
-        }
+            }
+          }
     }
+    writeProperty(stream, map, "enableViews", enableViews);
 
-    stream.writeEndElement();
+    stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
+
+    // Write out views
+    // Last view in Object layer is the first view in the room
+    if (enableViews) {
+        stream.writeStartElement("views");
+        iterator.toFront();
+        int viewCount = 0;
+        while (const Layer *layer = iterator.next()) {
+
+            if (layer->layerType() != Layer::ObjectGroupType)
+                continue;
+
+            const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+              for (const MapObject *object : objectLayer->objects()) {
+                const QString type = effectiveObjectType(object);
+                if (type != "view")
+                    continue;
+
+                // GM only has 8 views so drop anything more than that
+                if (viewCount > 7)
+                    break;
+
+                viewCount++;
+                stream.writeStartElement("view");
+
+                stream.writeAttribute("visible", toString(object->isVisible()));
+                stream.writeAttribute("objName", QString(optionalProperty(object, "objName", QString())));
+                QPointF pos = object->position();
+                // Note: GM only supports ints for positioning
+                // so views could be off if user doesn't align to whole number
+                stream.writeAttribute("xview", QString::number(qRound(pos.x())));
+                stream.writeAttribute("yview", QString::number(qRound(pos.y())));
+                stream.writeAttribute("wview", QString::number(qRound(object->width())));
+                stream.writeAttribute("hview", QString::number(qRound(object->height())));
+                // Round these incase user adds properties as floats and not ints
+                stream.writeAttribute("xport", QString::number(qRound(optionalProperty(object, "xport", 0.0))));
+                stream.writeAttribute("yport", QString::number(qRound(optionalProperty(object, "yport", 0.0))));
+                stream.writeAttribute("wport", QString::number(qRound(optionalProperty(object, "wport", 1024.0))));
+                stream.writeAttribute("hport", QString::number(qRound(optionalProperty(object, "hport", 768.0))));
+                stream.writeAttribute("hborder", QString::number(qRound(optionalProperty(object, "hborder", 32.0))));
+                stream.writeAttribute("vborder", QString::number(qRound(optionalProperty(object, "vborder", 32.0))));
+                stream.writeAttribute("hspeed", QString::number(qRound(optionalProperty(object, "hspeed", -1.0))));
+                stream.writeAttribute("vspeed", QString::number(qRound(optionalProperty(object, "vspeed", -1.0))));
+
+                stream.writeEndElement();
+            }
+        }
+
+        stream.writeEndElement();
+    }
 
     stream.writeStartElement("instances");
 
@@ -185,7 +203,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             const QString type = effectiveObjectType(object);
             if (type.isEmpty())
                 continue;
-            if (type.operator ==("view"))
+            if (type == "view")
                 continue;
 
             stream.writeStartElement("instance");
