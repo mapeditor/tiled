@@ -23,6 +23,7 @@
 #include "tbin/Map.hpp"
 #include "map.h"
 #include "tile.h"
+#include "tilelayer.h"
 
 #include <map>
 #include <QFile>
@@ -91,14 +92,16 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
         tmap.loadFromStream( ss );
         map = new Tiled::Map( Tiled::Map::Orthogonal, tmap.layers[ 0 ].layerSize.x, tmap.layers[ 0 ].layerSize.y, tmap.layers[ 0 ].tileSize.x, tmap.layers[ 0 ].tileSize.y );
 
-        int currFirstGid = 1;
-        std::map< std::string, int > gids;
-        for ( const tbin::TileSheet& ttilesheet : tmap.tilesheets )
+        std::map< std::string, int > tmapTilesheetMapping;
+        for ( int i = 0; i < tmap.tilesheets.size(); ++i )
         {
+            const tbin::TileSheet& ttilesheet = tmap.tilesheets[ i ];
+            tmapTilesheetMapping[ ttilesheet.id ] = i;
+
             if ( ttilesheet.spacing.x != ttilesheet.spacing.y )
-                throw std::invalid_argument( "Tilesheet must have equal spacings" );
+                throw std::invalid_argument( "Tilesheet must have equal spacings." );
             if ( ttilesheet.margin.x != ttilesheet.margin.y )
-                throw std::invalid_argument( "Tilesheet must have equal margins" );
+                throw std::invalid_argument( "Tilesheet must have equal margins." );
 
             auto tilesheet = Tiled::Tileset::create( ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x );
             tilesheet->setImageSource( ttilesheet.image.c_str() );
@@ -112,12 +115,41 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             tilesheet->addTiles( tiles );
 
             map->addTileset( tilesheet );
-            gids.insert( std::make_pair( ttilesheet.id, currFirstGid ) );
-            currFirstGid += ttilesheet.sheetSize.x * ttilesheet.sheetSize.y;
         }
         for ( const tbin::Layer& tlayer : tmap.layers )
         {
+            if ( tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y )
+                throw std::invalid_argument( "Different tile sizes per layer are not supported." );
 
+            // TODO: Objects
+
+            qDebug() << "layer:"<<tlayer.id.c_str()<<'\n';
+            Tiled::TileLayer* layer = new Tiled::TileLayer( tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y );
+            for ( int i = 0; i < tlayer.tiles.size(); ++i )
+            {
+                const tbin::Tile& ttile = tlayer.tiles[ i ];
+                int ix = i % tlayer.layerSize.x;
+                int iy = i / tlayer.layerSize.x;
+                qDebug() << "\tt:"<<ix<<' '<<iy;
+
+                if ( ttile.isNullTile() )
+                    continue;
+
+                Tiled::Cell cell;
+                if ( ttile.animatedData.frames.size() > 0 )
+                {
+                    qDebug() << "\ttile:"<<ttile.animatedData.frames.size()<<'\n';
+                    // Animated tile - TODO
+                }
+                else
+                {
+                    qDebug() << "\ttile:"<<ttile.tilesheet.c_str()<<' '<<ttile.staticData.tileIndex<<'\n';
+                    cell = Tiled::Cell( map->tilesetAt( tmapTilesheetMapping[ ttile.tilesheet ] )->tileAt( ttile.staticData.tileIndex ) );
+                }
+                layer->setCell( ix, iy, cell );
+            }
+            qDebug() << "adding layer\n";
+            map->addLayer( layer );
         }
     }
     catch ( std::exception& e )
