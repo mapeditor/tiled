@@ -14,5 +14,6 @@ TiledPlugin {
         "tbin/PropertyValue.hpp",
         "tbin/Tile.hpp",
         "tbin/TileSheet.hpp",
+        "tbin/FakeSfml.hpp",
     ]
 }
