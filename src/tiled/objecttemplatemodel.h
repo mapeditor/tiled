@@ -39,7 +39,7 @@ public:
     static ObjectTemplateModel *instance();
 
     const TemplateDocuments templateDocuments() const;
-    void setTemplateDocuments(const TemplateDocuments &templateDocuments);
+    void setTemplateDocuments(TemplateDocuments &templateDocuments);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -54,16 +54,16 @@ public:
 
 private:
     ObjectTemplateModel(QObject *parent = nullptr);
-    TemplateDocuments mTemplateDocuments;
+    TemplateDocuments *mTemplateDocuments;
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
 
-inline void ObjectTemplateModel::setTemplateDocuments(const TemplateDocuments &templateDocuments)
-{ mTemplateDocuments = templateDocuments; }
+inline void ObjectTemplateModel::setTemplateDocuments(TemplateDocuments &templateDocuments)
+{ mTemplateDocuments = &templateDocuments; }
 
 inline const TemplateDocuments ObjectTemplateModel::templateDocuments() const
-{ return mTemplateDocuments; }
+{ return *mTemplateDocuments; }
 
 } // namespace Internal
 } // namespace Tiled

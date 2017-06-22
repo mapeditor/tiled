@@ -66,7 +66,7 @@ void TemplateGroup::addTileset(const SharedTileset &tileset)
     if (mTilesets.contains(tileset))
         return;
 
-    // TODO: If a tileset was  not used by any  template it will be added again
+    // TODO: If a tileset was not used by any template it will be added again
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
 

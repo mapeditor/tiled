@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "templategroupdocument.h"
+
 #include <QDockWidget>
 #include <QTreeView>
 #include <QAction>
@@ -41,6 +43,7 @@ class TemplatesDock : public QDockWidget
 
 public:
     TemplatesDock(QWidget *parent = nullptr);
+    ~TemplatesDock();
 
 private slots:
     void newTemplateGroup();
@@ -49,6 +52,7 @@ private:
     void retranslateUi();
 
     TemplatesView *mTemplatesView;
+    TemplateDocuments mTemplateDocuments;
 
     QAction *mNewTemplateGroup;
 };

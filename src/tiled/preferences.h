@@ -107,9 +107,6 @@ public:
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
-    const TemplateDocuments &templateDocuments() const { return mTemplateDocuments; }
-    void setTemplateDocuments(const TemplateDocuments &templateDocuments);
-
     enum FileType {
         ObjectTypesFile,
         TemplateDocumentsFile,
@@ -248,7 +245,6 @@ private:
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
     ObjectTypes mObjectTypes;
-    TemplateDocuments mTemplateDocuments;
 
     bool mAutoMapDrawing;
 

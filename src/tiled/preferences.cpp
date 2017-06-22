@@ -28,7 +28,6 @@
 #include "savefile.h"
 #include "tilesetmanager.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
@@ -125,13 +124,6 @@ Preferences::Preferences()
         mSettings->remove(QLatin1String("ObjectTypes"));
     }
 
-    // Retrieve saved template groups
-    TemplateDocumentsSerializer templateDocumentsSerializer;
-    bool templatesLoaded = templateDocumentsSerializer.readTemplateDocuments(templateDocumentsFile(), mTemplateDocuments);
-
-    if (!templatesLoaded)
-        qDebug() << templateDocumentsSerializer.errorString();
-
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
@@ -183,7 +175,6 @@ Preferences::Preferences()
 
 Preferences::~Preferences()
 {
-    qDeleteAll(mTemplateDocuments);
 }
 
 void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
@@ -442,11 +433,6 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;
     emit objectTypesChanged();
-}
-
-void Preferences::setTemplateDocuments(const TemplateDocuments &templateDocuments)
-{
-    mTemplateDocuments = templateDocuments;
 }
 
 static QString lastPathKey(Preferences::FileType fileType)

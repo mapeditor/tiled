@@ -62,6 +62,27 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     layout->addWidget(toolBar);
     setWidget(widget);
     retranslateUi();
+
+    // Retrieve saved template groups
+    Preferences *prefs = Preferences::instance();
+    QString documentsFileName = prefs->templateDocumentsFile();
+
+    TemplateDocumentsSerializer templateDocumentsSerializer;
+    templateDocumentsSerializer.readTemplateDocuments(documentsFileName, mTemplateDocuments);
+
+    auto model = ObjectTemplateModel::instance();
+    model->setTemplateDocuments(mTemplateDocuments);
+
+    mTemplatesView->setModel(model);
+
+    connect(mTemplatesView->model(), &ObjectTemplateModel::dataChanged,
+            mTemplatesView, &TemplatesView::applyTemplateGroups);
+    connect(mTemplatesView->model(), &ObjectTemplateModel::rowsInserted,
+            mTemplatesView, &TemplatesView::applyTemplateGroups);
+}
+
+TemplatesDock::~TemplatesDock() {
+    qDeleteAll(mTemplateDocuments);
 }
 
 void TemplatesDock::newTemplateGroup()
@@ -102,26 +123,15 @@ TemplatesView::TemplatesView(QWidget *parent)
     setUniformRowHeights(true);
     setHeaderHidden(true);
 
-    Preferences *prefs = Preferences::instance();
-    auto model = ObjectTemplateModel::instance();
-    model->setTemplateDocuments(prefs->templateDocuments());
-
-    setModel(model);
-
     setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    connect(model, &ObjectTemplateModel::dataChanged,
-            this, &TemplatesView::applyTemplateGroups);
-    connect(model, &ObjectTemplateModel::rowsInserted,
-            this, &TemplatesView::applyTemplateGroups);
 }
 
 void TemplatesView::applyTemplateGroups()
 {
     auto model = ObjectTemplateModel::instance();
-    auto templateGroups = model->templateDocuments();
+    auto templateDocuments = model->templateDocuments();
+
     Preferences *prefs = Preferences::instance();
-    prefs->setTemplateDocuments(templateGroups);
 
     QString templateDocumentsFile = prefs->templateDocumentsFile();
     QDir templateDocumentsDir = QFileInfo(templateDocumentsFile).dir();
@@ -130,7 +140,7 @@ void TemplatesView::applyTemplateGroups()
         templateDocumentsDir.mkpath(QLatin1String("."));
 
     TemplateDocumentsSerializer serializer;
-    if (!serializer.writeTemplateDocuments(templateDocumentsFile, templateGroups)) {
+    if (!serializer.writeTemplateDocuments(templateDocumentsFile, templateDocuments)) {
         QMessageBox::critical(this, tr("Error Writing Template Groups"),
                               tr("Error writing to %1:\n%2")
                               .arg(prefs->templateDocumentsFile(),

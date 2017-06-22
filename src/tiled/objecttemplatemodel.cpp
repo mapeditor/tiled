@@ -45,8 +45,8 @@ QModelIndex ObjectTemplateModel::index(int row, int column,
                                        const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        if (row < mTemplateDocuments.size())
-            return createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
+        if (row < mTemplateDocuments->size())
+            return createIndex(row, column, mTemplateDocuments->at(row)->templateGroup());
     } else if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
         if (row < templateGroup->templateCount())
             return createIndex(row, column, templateGroup->templateAt(row));
@@ -62,8 +62,8 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 
     if (ObjectTemplate *objectTemplate = toObjectTemplate(index)) {
         auto templateGroup = objectTemplate->templateGroup();
-        for (int i = 0; i < mTemplateDocuments.size(); ++i) {
-            if (mTemplateDocuments.at(i)->templateGroup() == templateGroup)
+        for (int i = 0; i < mTemplateDocuments->size(); ++i) {
+            if (mTemplateDocuments->at(i)->templateGroup() == templateGroup)
                 return createIndex(i, 0, templateGroup);
         }
     }
@@ -74,7 +74,7 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 int ObjectTemplateModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mTemplateDocuments.size();
+        return mTemplateDocuments->size();
 
     if (TemplateGroup *templateGroup = toTemplateGroup(parent))
         return templateGroup->templateCount();
@@ -103,11 +103,11 @@ QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
 bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
 {
     // Remove old document if the new document overwrites it
-    for (int i = mTemplateDocuments.size() - 1; i >= 0; --i) {
-        if (mTemplateDocuments.at(i)->fileName() == fileName) {
+    for (int i = mTemplateDocuments->size() - 1; i >= 0; --i) {
+        if (mTemplateDocuments->at(i)->fileName() == fileName) {
             beginRemoveRows(QModelIndex(), i, i);
-            delete mTemplateDocuments.at(i);
-            mTemplateDocuments.removeAt(i);
+            delete mTemplateDocuments->at(i);
+            mTemplateDocuments->removeAt(i);
             endRemoveRows();
         }
     }
@@ -118,8 +118,8 @@ bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
     if (!templateGroupDocument->save(fileName, error))
         return false;
 
-    beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
-    mTemplateDocuments.append(templateGroupDocument.take());
+    beginInsertRows(QModelIndex(), mTemplateDocuments->size(), mTemplateDocuments->size());
+    mTemplateDocuments->append(templateGroupDocument.take());
     endInsertRows();
 
     return true;
@@ -127,7 +127,7 @@ bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
 
 bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, int documentIndex)
 {
-    auto document = mTemplateDocuments.at(documentIndex);
+    auto document = mTemplateDocuments->at(documentIndex);
     auto templateGroup = document->templateGroup();
     auto templates = document->templateGroup()->templates();
     int count = templates.count();
