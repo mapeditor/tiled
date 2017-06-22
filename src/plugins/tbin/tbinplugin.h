@@ -63,7 +63,6 @@ public:
 
 protected:
     QString mError;
-    SubFormat mSubFormat;
 };
 
 } // namespace Json

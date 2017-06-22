@@ -1,10 +1,11 @@
 #ifndef TBIN_TILE_HPP
 #define TBIN_TILE_HPP
 
-#include <SFML/Config.hpp>
+//#include <SFML/Config.hpp>
 #include <vector>
 
-#include "tbin/PropertyValue.hpp"
+#include "FakeSfml.hpp"
+#include "PropertyValue.hpp"
 
 namespace tbin
 {

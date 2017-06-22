@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-#include "tbin/Layer.hpp"
-#include "tbin/PropertyValue.hpp"
-#include "tbin/TileSheet.hpp"
+#include "Layer.hpp"
+#include "PropertyValue.hpp"
+#include "TileSheet.hpp"
 
 namespace tbin
 {

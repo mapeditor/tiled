@@ -4,7 +4,7 @@ TiledPlugin {
     cpp.defines: ["TBIN_LIBRARY"]
 
     files: [
-        "tbin_global.h"
+        "tbin_global.h",
         "tbinplugin.cpp",
         "tbinplugin.h",
         "plugin.json",

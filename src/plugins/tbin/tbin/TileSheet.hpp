@@ -1,10 +1,11 @@
 #ifndef TBIN_TILESHEET_HPP
 #define TBIN_TILESHEET_HPP
 
-#include <SFML/System/Vector2.hpp>
+//#include <SFML/System/Vector2.hpp>
 #include <string>
 
-#include "tbin/PropertyValue.hpp"
+#include "FakeSfml.hpp"
+#include "PropertyValue.hpp"
 
 namespace tbin
 {

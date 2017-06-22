@@ -1,13 +1,13 @@
 #ifndef TBIN_LAYER_HPP
 #define TBIN_LAYER_HPP
 
-#include <SFML/System/Vector2.hpp>
+//#include <SFML/System/Vector2.hpp>
 #include <string>
 #include <vector>
 
-#include "fakeSfml.hpp"
-#include "tbin/PropertyValue.hpp"
-#include "tbin/Tile.hpp"
+#include "FakeSfml.hpp"
+#include "PropertyValue.hpp"
+#include "Tile.hpp"
 
 namespace tbin
 {

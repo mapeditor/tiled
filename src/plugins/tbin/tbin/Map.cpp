@@ -1,7 +1,8 @@
-#include "tbin/Map.hpp"
+#include "Map.hpp"
 
 #include <fstream>
 #include <stdexcept>
+#include <QDebug>
 
 #include "FakeSfml.hpp"
 
@@ -70,7 +71,7 @@ namespace tbin
                 case PropertyValue::Integer: value.data.i  = read< sf::Int32   >( in );     break;
                 case PropertyValue::Float:   value.data.f  = read< float       >( in );     break;
                 case PropertyValue::String:  value.dataStr = read< std::string >( in );     break;
-                default: throw std::invalid_argument( util::format( "Bad property type: $", static_cast< int >( value.type ) ) );
+                default: throw std::invalid_argument( "Bad property type: " + std::to_string( value.type ) );
             }
 
             ret[ key ] = value;
@@ -93,7 +94,7 @@ namespace tbin
                 case PropertyValue::Integer: write( out, prop.second.data.i ); break;
                 case PropertyValue::Float: write( out, prop.second.data.f ); break;
                 case PropertyValue::String: write( out, prop.second.dataStr ); break;
-                default: throw std::invalid_argument( util::format( "Bad property type: $", prop.second.type ) );
+                default: throw std::invalid_argument( "Bad property type: " + std::to_string( prop.second.type ) );
             }
         }
     }
@@ -162,7 +163,7 @@ namespace tbin
                     ++i;
                     break;
                 default:
-                    throw std::invalid_argument( util::format( "Bad layer tile data: $", c ) );
+                    throw std::invalid_argument( "Bad layer tile data: " + std::to_string( c ) );
             }
         }
 
@@ -228,7 +229,7 @@ namespace tbin
                         currTilesheet = read< std::string >( in );
                         break;
                     default:
-                        throw std::invalid_argument( util::format( "Bad layer tile data: $ @ $", static_cast< int >( c ), in.tellg() - 1 ) );
+                        throw std::invalid_argument( "Bad layer tile data: " + std::to_string( static_cast< int >( c ) ) + " @ " + std::to_string( in.tellg() - 1 ) );
                 }
             }
         }

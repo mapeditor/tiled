@@ -2,8 +2,10 @@
 #define TBIN_PROPERTYVALUE_HPP
 
 #include <map>
-#include <SFML/Config.hpp>
+//#include <SFML/Config.hpp>
 #include <string>
+
+#include "FakeSfml.hpp"
 
 namespace tbin
 {
