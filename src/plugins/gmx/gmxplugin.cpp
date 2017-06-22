@@ -83,6 +83,26 @@ GmxPlugin::GmxPlugin()
 {
 }
 
+bool GmxPlugin::checkIfViewsDefined(LayerIterator iterator)
+{
+    while (const Layer *layer = iterator.next()) {
+
+        if (layer->layerType() != Layer::ObjectGroupType)
+            continue;
+
+        const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+        for (const MapObject *object : objectLayer->objects()) {
+            const QString type = effectiveObjectType(object);
+            if (type == "view") {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool GmxPlugin::write(const Map *map, const QString &fileName)
 {
     SaveFile file(fileName);
@@ -111,24 +131,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
-    // Check if views are defined
-    bool enableViews = false;
     LayerIterator iterator(map);
-    while (const Layer *layer = iterator.next()) {
-
-        if (layer->layerType() != Layer::ObjectGroupType)
-            continue;
-
-        const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
-
-          for (const MapObject *object : objectLayer->objects()) {
-            const QString type = effectiveObjectType(object);
-            if (type == "view") {
-                enableViews = true;
-                break;
-            }
-          }
-    }
+    // Check if views are defined
+    bool enableViews = checkIfViewsDefined(iterator);
     writeProperty(stream, map, "enableViews", enableViews);
 
     stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
@@ -146,7 +151,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
-              for (const MapObject *object : objectLayer->objects()) {
+            for (const MapObject *object : objectLayer->objects()) {
                 const QString type = effectiveObjectType(object);
                 if (type != "view")
                     continue;
