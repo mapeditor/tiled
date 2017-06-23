@@ -41,58 +41,58 @@
 
 namespace
 {
-    void tbinToTiledProperties( const tbin::Properties& props, Tiled::Object* obj )
+    void tbinToTiledProperties(const tbin::Properties& props, Tiled::Object* obj)
     {
-        for ( const std::pair< std::string, tbin::PropertyValue >& prop : props )
+        for (const std::pair< std::string, tbin::PropertyValue >& prop : props)
         {
-            switch ( prop.second.type )
+            switch (prop.second.type)
             {
                 case tbin::PropertyValue::String:
-                    obj->setProperty( prop.first.c_str(), QVariant( prop.second.dataStr.c_str() ) );
+                    obj->setProperty(prop.first.c_str(), QVariant(prop.second.dataStr.c_str()));
                     break;
 
                 case tbin::PropertyValue::Bool:
-                    obj->setProperty( prop.first.c_str(), QVariant( prop.second.data.b ) );
+                    obj->setProperty(prop.first.c_str(), QVariant(prop.second.data.b));
                     break;
 
                 case tbin::PropertyValue::Float:
-                    obj->setProperty( prop.first.c_str(), QVariant( prop.second.data.f ) );
+                    obj->setProperty(prop.first.c_str(), QVariant(prop.second.data.f));
                     break;
 
                 case tbin::PropertyValue::Integer:
-                    obj->setProperty( prop.first.c_str(), QVariant( prop.second.data.i ) );
+                    obj->setProperty(prop.first.c_str(), QVariant(prop.second.data.i));
                     break;
             }
         }
     }
 
-    void tiledToTbinProperties( const Tiled::Object* obj, tbin::Properties& props )
+    void tiledToTbinProperties(const Tiled::Object* obj, tbin::Properties& props)
     {
-        for ( auto it = obj->properties().cbegin(); it != obj->properties().cend(); ++it )
+        for (auto it = obj->properties().cbegin(); it != obj->properties().cend(); ++it)
         {
             tbin::PropertyValue prop;
-            if ( it.value().type() == QVariant::Bool )
+            if (it.value().type() == QVariant::Bool)
             {
                 prop.type = tbin::PropertyValue::Bool;
                 prop.data.b = it.value().toBool();
             }
-            else if ( it.value().type() == QMetaType::Float )
+            else if (it.value().type() == QMetaType::Float)
             {
                 prop.type = tbin::PropertyValue::Float;
                 prop.data.f = it.value().toFloat();
             }
-            else if ( it.value().type() == QVariant::Int )
+            else if (it.value().type() == QVariant::Int)
             {
                 prop.type = tbin::PropertyValue::Integer;
                 prop.data.i = it.value().toInt();
             }
-            else if ( it.value().type() == QVariant::String )
+            else if (it.value().type() == QVariant::String)
             {
                 prop.type = tbin::PropertyValue::String;
                 prop.dataStr = it.value().toString().toStdString();
             }
-            else throw std::invalid_argument( "Unsupported property type" );
-            props.insert( std::make_pair( it.key().toStdString(), prop ) );
+            else throw std::invalid_argument("Unsupported property type");
+            props.insert(std::make_pair(it.key().toStdString(), prop));
         }
     }
 }
@@ -118,97 +118,97 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
     }
 
     QByteArray contents = file.readAll();
-    std::istringstream ss( std::string( contents.constData(), contents.length() ) );
+    std::istringstream ss(std::string(contents.constData(), contents.length()));
 
     tbin::Map tmap;
     Tiled::Map* map;
     try
     {
-        tmap.loadFromStream( ss );
-        map = new Tiled::Map( Tiled::Map::Orthogonal, tmap.layers[ 0 ].layerSize.x, tmap.layers[ 0 ].layerSize.y, tmap.layers[ 0 ].tileSize.x, tmap.layers[ 0 ].tileSize.y );
-        tbinToTiledProperties( tmap.props, map );
+        tmap.loadFromStream(ss);
+        map = new Tiled::Map(Tiled::Map::Orthogonal, tmap.layers[0].layerSize.x, tmap.layers[0].layerSize.y, tmap.layers[0].tileSize.x, tmap.layers[0].tileSize.y);
+        tbinToTiledProperties(tmap.props, map);
 
         std::map< std::string, int > tmapTilesheetMapping;
-        for ( int i = 0; i < tmap.tilesheets.size(); ++i )
+        for (int i = 0; i < tmap.tilesheets.size(); ++i)
         {
-            const tbin::TileSheet& ttilesheet = tmap.tilesheets[ i ];
-            tmapTilesheetMapping[ ttilesheet.id ] = i;
+            const tbin::TileSheet& ttilesheet = tmap.tilesheets[i];
+            tmapTilesheetMapping[ttilesheet.id] = i;
 
-            if ( ttilesheet.spacing.x != ttilesheet.spacing.y )
-                throw std::invalid_argument( "Tilesheet must have equal spacings." );
-            if ( ttilesheet.margin.x != ttilesheet.margin.y )
-                throw std::invalid_argument( "Tilesheet must have equal margins." );
+            if (ttilesheet.spacing.x != ttilesheet.spacing.y)
+                throw std::invalid_argument("Tilesheet must have equal spacings.");
+            if (ttilesheet.margin.x != ttilesheet.margin.y)
+                throw std::invalid_argument("Tilesheet must have equal margins.");
 
-            auto tilesheet = Tiled::Tileset::create( ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x );
-            tilesheet->setImageSource( ttilesheet.image.c_str() );
-            tbinToTiledProperties( ttilesheet.props, tilesheet.data() );
+            auto tilesheet = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
+            tilesheet->setImageSource(ttilesheet.image.c_str());
+            tbinToTiledProperties(ttilesheet.props, tilesheet.data());
 
             // TODO: Per-tile properties, investigate syntax
 
             QList<Tiled::Tile*> tiles;
-            for ( int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i )
+            for (int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i)
             {
-                tiles.append( new Tiled::Tile( i, tilesheet.data() ) );
+                tiles.append(new Tiled::Tile(i, tilesheet.data()));
             }
-            tilesheet->addTiles( tiles );
+            tilesheet->addTiles(tiles);
 
-            map->addTileset( tilesheet );
+            map->addTileset(tilesheet);
         }
-        for ( const tbin::Layer& tlayer : tmap.layers )
+        for (const tbin::Layer& tlayer : tmap.layers)
         {
-            if ( tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y )
-                throw std::invalid_argument( "Different tile sizes per layer are not supported." );
+            if (tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y)
+                throw std::invalid_argument("Different tile sizes per layer are not supported.");
 
-            Tiled::TileLayer* layer = new Tiled::TileLayer( tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y );
-            tbinToTiledProperties( tlayer.props, layer );
-            Tiled::ObjectGroup* objects = new Tiled::ObjectGroup( tlayer.id.c_str(), 0, 0 );
-            for ( int i = 0; i < tlayer.tiles.size(); ++i )
+            Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
+            tbinToTiledProperties(tlayer.props, layer);
+            Tiled::ObjectGroup* objects = new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0);
+            for (int i = 0; i < tlayer.tiles.size(); ++i)
             {
-                const tbin::Tile& ttile = tlayer.tiles[ i ];
+                const tbin::Tile& ttile = tlayer.tiles[i];
                 int ix = i % tlayer.layerSize.x;
                 int iy = i / tlayer.layerSize.x;
 
-                if ( ttile.isNullTile() )
+                if (ttile.isNullTile())
                     continue;
 
                 Tiled::Cell cell;
-                if ( ttile.animatedData.frames.size() > 0 )
+                if (ttile.animatedData.frames.size() > 0)
                 {
-                    tbin::Tile tfirstTile = ttile.animatedData.frames[ 0 ];
-                    Tiled::Tile* firstTile = map->tilesetAt( tmapTilesheetMapping[ tfirstTile.tilesheet ] )->tileAt( tfirstTile.staticData.tileIndex );
+                    tbin::Tile tfirstTile = ttile.animatedData.frames[0];
+                    Tiled::Tile* firstTile = map->tilesetAt(tmapTilesheetMapping[tfirstTile.tilesheet])->tileAt(tfirstTile.staticData.tileIndex);
                     QVector<Tiled::Frame> frames;
-                    for ( const tbin::Tile& tframe : ttile.animatedData.frames )
+                    for (const tbin::Tile& tframe : ttile.animatedData.frames)
                     {
-                        if ( tframe.isNullTile() || tframe.animatedData.frames.size() > 0 ||
-                             tframe.tilesheet != tfirstTile.tilesheet )
-                            throw std::invalid_argument( "Invalid animation frame." );
+                        if (tframe.isNullTile() || tframe.animatedData.frames.size() > 0 ||
+                             tframe.tilesheet != tfirstTile.tilesheet)
+                            throw std::invalid_argument("Invalid animation frame.");
 
                         Tiled::Frame frame;
                         frame.tileId = tframe.staticData.tileIndex;
                         frame.duration = ttile.animatedData.frameInterval;
-                        frames.append( frame );
+                        frames.append(frame);
                     }
-                    firstTile->setFrames( frames );
-                    cell = Tiled::Cell( firstTile );
+                    firstTile->setFrames(frames);
+                    cell = Tiled::Cell(firstTile);
                 }
                 else
                 {
-                    cell = Tiled::Cell( map->tilesetAt( tmapTilesheetMapping[ ttile.tilesheet ] )->tileAt( ttile.staticData.tileIndex ) );
+                    cell = Tiled::Cell(map->tilesetAt(tmapTilesheetMapping[ttile.tilesheet])->tileAt(ttile.staticData.tileIndex));
                 }
-                layer->setCell( ix, iy, cell );
+                layer->setCell(ix, iy, cell);
 
-                if ( ttile.props.size() > 0 )
+                if (ttile.props.size() > 0)
                 {
-                    Tiled::MapObject* obj = new Tiled::MapObject( "TileData", "", QPointF( ix * tlayer.tileSize.x, iy * tlayer.tileSize.y ), QSizeF( 1 * tlayer.tileSize.x, 1 * tlayer.tileSize.y ) );
-                    tbinToTiledProperties( ttile.props, obj );
-                    objects->addObject( obj );
+                    Tiled::MapObject* obj = new Tiled::MapObject("TileData", "", QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(1 * tlayer.tileSize.x, 1 * tlayer.tileSize.y));
+                    tbinToTiledProperties(ttile.props, obj);
+                    objects->addObject(obj);
                 }
             }
-            map->addLayer( layer );
-            map->addLayer( objects );
+            map->addLayer(layer);
+            map->addLayer(objects);
         }
     }
-    catch ( std::exception& e )
+    catch (std::exception& e)
     {
         mError = tr((std::string("Exception: ") + e.what()).c_str());
     }
@@ -222,9 +222,9 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
     {
         tbin::Map tmap;
         //tmap.id = map->name();
-        tiledToTbinProperties( map, tmap.props );
+        tiledToTbinProperties(map, tmap.props);
 
-        for( const Tiled::SharedTileset& tilesheet : map->tilesets() )
+        for(const Tiled::SharedTileset& tilesheet : map->tilesets())
         {
             tbin::TileSheet ttilesheet;
             ttilesheet.id = tilesheet->name().toStdString();
@@ -235,22 +235,22 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             ttilesheet.sheetSize.y = tilesheet->gridSize().height();
             ttilesheet.tileSize.x = tilesheet->tileSize().width();
             ttilesheet.tileSize.y = tilesheet->tileSize().height();
-            tiledToTbinProperties( map, tmap.props );
+            tiledToTbinProperties(map, tmap.props);
 
             // TODO: Per tile properties, investigate syntax
 
-            tmap.tilesheets.push_back( std::move( ttilesheet ) );
+            tmap.tilesheets.push_back(std::move(ttilesheet));
         }
 
         std::vector< Tiled::ObjectGroup* > objGroups;
         std::map< std::string, tbin::Layer* > tileLayerIdMap;
-        for ( Tiled::Layer* rawLayer : map->layers() )
+        for (Tiled::Layer* rawLayer : map->layers())
         {
-            if ( Tiled::ObjectGroup* layer = rawLayer->asObjectGroup() )
+            if (Tiled::ObjectGroup* layer = rawLayer->asObjectGroup())
             {
-                objGroups.push_back( layer );
+                objGroups.push_back(layer);
             }
-            else if ( Tiled::TileLayer* layer = rawLayer->asTileLayer() )
+            else if (Tiled::TileLayer* layer = rawLayer->asTileLayer())
             {
                 tbin::Layer tlayer;
                 tlayer.id = layer->name().toStdString();
@@ -259,18 +259,18 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                 tlayer.tileSize.x = map->tileSize().width();
                 tlayer.tileSize.y = map->tileSize().height();
                 //tlayer.visible = ???;
-                for ( int iy = 0; iy < tlayer.layerSize.y; ++iy )
+                for (int iy = 0; iy < tlayer.layerSize.y; ++iy)
                 {
-                    for ( int ix = 0; ix < tlayer.layerSize.x; ++ix )
+                    for (int ix = 0; ix < tlayer.layerSize.x; ++ix)
                     {
-                        Tiled::Cell cell = layer->cellAt( ix, iy );
+                        Tiled::Cell cell = layer->cellAt(ix, iy);
                         tbin::Tile ttile;
                         ttile.staticData.tileIndex = -1;
 
-                        if ( cell.tile() != NULL )
+                        if (cell.tile() != NULL)
                         {
                             ttile.tilesheet = cell.tile()->tileset()->name().toStdString();
-                            if ( cell.tile()->frames().size() == 0 )
+                            if (cell.tile()->frames().size() == 0)
                             {
                                 ttile.staticData.tileIndex = cell.tile()->id();
                             }
@@ -278,53 +278,53 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                             {
 
                                 // TODO: Check all frame durations are the same
-                                for ( Tiled::Frame frame : cell.tile()->frames() )
+                                for (Tiled::Frame frame : cell.tile()->frames())
                                 {
                                     ttile.animatedData.frameInterval = frame.duration;
                                     tbin::Tile tframe;
                                     tframe.tilesheet = ttile.tilesheet;
                                     tframe.staticData.tileIndex = frame.tileId;
-                                    ttile.animatedData.frames.push_back( tframe );
+                                    ttile.animatedData.frames.push_back(tframe);
                                 }
                             }
                         }
-                        tlayer.tiles.push_back( ttile );
+                        tlayer.tiles.push_back(ttile);
                     }
                 }
-                tiledToTbinProperties(layer, tlayer.props );
-                tmap.layers.push_back( std::move( tlayer ) );
-                tileLayerIdMap[ tmap.layers.back().id ] = &tmap.layers.back();
+                tiledToTbinProperties(layer, tlayer.props);
+                tmap.layers.push_back(std::move(tlayer));
+                tileLayerIdMap[tmap.layers.back().id] = &tmap.layers.back();
             }
             else
             {
-                throw std::invalid_argument( "Only object and tile layers supported." );
+                throw std::invalid_argument("Only object and tile layers supported.");
             }
         }
 
-        for ( Tiled::ObjectGroup* objs : objGroups )
+        for (Tiled::ObjectGroup* objs : objGroups)
         {
-            for ( Tiled::MapObject* obj : objs->objects() )
+            for (Tiled::MapObject* obj : objs->objects())
             {
-               if ( obj->name() != "TileData" || obj->size().width() != 1 || obj->size().height() != 1 ||
-                    obj->position().x() != std::floor( obj->position().x() ) || obj->position().y() != std::floor( obj->position().y() ) )
+               if (obj->name() != "TileData" || obj->size().width() != 1 || obj->size().height() != 1 ||
+                    obj->position().x() != std::floor(obj->position().x()) || obj->position().y() != std::floor(obj->position().y()))
                    continue;
 
-                tbin::Layer* tiles = tileLayerIdMap[ objs->name().toStdString() ];
-                int idx = static_cast< int >( obj->position().x() + obj->position().y() * tiles->layerSize.x );
-                tiledToTbinProperties( obj, tiles->tiles[ idx ].props );
+                tbin::Layer* tiles = tileLayerIdMap[objs->name().toStdString()];
+                int idx = static_cast< int >(obj->position().x() + obj->position().y() * tiles->layerSize.x);
+                tiledToTbinProperties(obj, tiles->tiles[idx].props);
             }
         }
 
-        std::ofstream file( fileName.toStdString(), std::ios::trunc | std::ios::binary );
-        if ( !file )
+        std::ofstream file(fileName.toStdString(), std::ios::trunc | std::ios::binary);
+        if (!file)
         {
-            mError = tr( "Could not open file for writing" );
+            mError = tr("Could not open file for writing");
             return false;
         }
-        tmap.saveToStream( file );
+        tmap.saveToStream(file);
         file.close();
     }
-    catch ( std::exception& e )
+    catch (std::exception& e)
     {
         mError = tr((std::string("Exception: ") + e.what()).c_str());
         return false;
