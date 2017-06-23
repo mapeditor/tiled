@@ -24,8 +24,6 @@
 
 #include "gmx_global.h"
 
-#include "layer.h"
-
 namespace Gmx {
 
 class GMXSHARED_EXPORT GmxPlugin : public Tiled::WritableMapFormat
@@ -45,7 +43,6 @@ protected:
 
 private:
     QString mError;
-    bool checkIfViewsDefined(Tiled::LayerIterator iterator);
 };
 
 } // namespace Gmx

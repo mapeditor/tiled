@@ -79,12 +79,9 @@ static QString effectiveObjectType(const MapObject *object)
     return QString();
 }
 
-GmxPlugin::GmxPlugin()
+static bool checkIfViewsDefined(const Map *map)
 {
-}
-
-bool GmxPlugin::checkIfViewsDefined(LayerIterator iterator)
-{
+    LayerIterator iterator(map);
     while (const Layer *layer = iterator.next()) {
 
         if (layer->layerType() != Layer::ObjectGroupType)
@@ -94,13 +91,16 @@ bool GmxPlugin::checkIfViewsDefined(LayerIterator iterator)
 
         for (const MapObject *object : objectLayer->objects()) {
             const QString type = effectiveObjectType(object);
-            if (type == "view") {
+            if (type == "view")
                 return true;
-            }
         }
     }
 
     return false;
+}
+
+GmxPlugin::GmxPlugin()
+{
 }
 
 bool GmxPlugin::write(const Map *map, const QString &fileName)
@@ -131,18 +131,18 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
     writeProperty(stream, map, "clearViewBackground", false);
-    LayerIterator iterator(map);
+
     // Check if views are defined
-    bool enableViews = checkIfViewsDefined(iterator);
+    bool enableViews = checkIfViewsDefined(map);
     writeProperty(stream, map, "enableViews", enableViews);
 
     stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
 
     // Write out views
     // Last view in Object layer is the first view in the room
+    LayerIterator iterator(map);
     if (enableViews) {
         stream.writeStartElement("views");
-        iterator.toFront();
         int viewCount = 0;
         while (const Layer *layer = iterator.next()) {
 
