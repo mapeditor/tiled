@@ -1213,6 +1213,9 @@ TemplateGroup *MapReader::readTemplateGroup(const QString &fileName)
 
     TemplateGroup *templateGroup = readTemplateGroup(&file, QFileInfo(fileName).absolutePath());
 
+    if (templateGroup)
+        templateGroup->setFileName(fileName);
+
     return templateGroup;
 }
 

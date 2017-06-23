@@ -112,7 +112,9 @@ bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
         }
     }
 
-    auto templateGroup = new TemplateGroup(QFileInfo(fileName).baseName());
+    auto templateGroup = new TemplateGroup();
+    templateGroup->setName(QFileInfo(fileName).baseName());
+    templateGroup->setFileName(fileName);
     QScopedPointer<TemplateGroupDocument> templateGroupDocument(new TemplateGroupDocument(templateGroup, fileName));
 
     if (!templateGroupDocument->save(fileName, error))

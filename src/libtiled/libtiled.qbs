@@ -88,6 +88,8 @@ DynamicLibrary {
         "templategroup.cpp",
         "templategroup.h",
         "templategroupformat.h",
+        "templatemanager.cpp",
+        "templatemanager.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",

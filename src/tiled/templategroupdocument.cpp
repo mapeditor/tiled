@@ -45,7 +45,7 @@ TemplateGroupDocument::TemplateGroupDocument(TemplateGroup *templateGroup, const
     : Document(TemplateGroupDocumentType, fileName)
     , mTemplateGroup(templateGroup)
 {
-    mFileName = fileName;
+    mFileName = mTemplateGroup->fileName();
 }
 
 TemplateGroupDocument::~TemplateGroupDocument()
@@ -151,14 +151,14 @@ static void readTemplateDocumentsXml(QFileDevice *device,
     // Saves the paths of loaded template groups to prevent loading duplicates
     QSet<QString> loadedPaths;
 
+    auto templateGroupFormat = TtxTemplateGroupFormat::instance();
+
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("templategroup")) {
             const QXmlStreamAttributes atts = reader.attributes();
 
             QString path(atts.value(QLatin1String("path")).toString());
             path = resolveReference(path, filePath);
-
-            auto templateGroupFormat = TtxTemplateGroupFormat::instance();
 
             if (!loadedPaths.contains(path)) {
                 loadedPaths.insert(path);

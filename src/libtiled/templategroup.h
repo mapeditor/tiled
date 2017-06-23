@@ -54,6 +54,9 @@ public:
     const QString &name() const;
     void setName(const QString &name);
 
+    const QString &fileName() const;
+    void setFileName(const QString &fileName);
+
     TemplateGroupFormat *format() const;
     void setFormat(TemplateGroupFormat *format);
 
@@ -66,7 +69,10 @@ private:
     QVector<SharedTileset> mTilesets;
     TemplateGroupFormat *mFormat;
     QString mName;
+    QString mFileName;
 };
+
+typedef QList<TemplateGroup*> TemplateGroups;
 
 inline const QList<ObjectTemplate*> &TemplateGroup::templates() const
 { return mTemplates; }
@@ -79,6 +85,12 @@ inline void TemplateGroup::setName(const QString &name)
 
 inline const QString &TemplateGroup::name() const
 { return mName; }
+
+inline void TemplateGroup::setFileName(const QString &name)
+{ mFileName = name; }
+
+inline const QString &TemplateGroup::fileName() const
+{ return mFileName; }
 
 inline void TemplateGroup::setFormat(TemplateGroupFormat *format)
 { mFormat = format; }

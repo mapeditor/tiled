@@ -24,6 +24,7 @@
 #include "objecttemplatemodel.h"
 #include "preferences.h"
 #include "tmxmapformat.h"
+#include "templatemanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -79,6 +80,15 @@ TemplatesDock::TemplatesDock(QWidget *parent):
             mTemplatesView, &TemplatesView::applyTemplateGroups);
     connect(mTemplatesView->model(), &ObjectTemplateModel::rowsInserted,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
+
+    auto manager = TemplateManager::instance();
+
+    TemplateGroups templateGroups;
+
+    for (auto document : mTemplateDocuments)
+        templateGroups.append(document->templateGroup());
+
+    manager->setTemplateGroups(templateGroups);
 }
 
 TemplatesDock::~TemplatesDock() {
