@@ -71,7 +71,7 @@ namespace tbin
                 case PropertyValue::Integer: value.data.i  = read< sf::Int32   >( in );     break;
                 case PropertyValue::Float:   value.data.f  = read< float       >( in );     break;
                 case PropertyValue::String:  value.dataStr = read< std::string >( in );     break;
-                default: throw std::invalid_argument( "Bad property type: " + std::to_string( value.type ) );
+                default: throw std::invalid_argument( QT_TR_NOOP( "Bad property type: " + std::to_string( value.type ) ) );
             }
 
             ret[ key ] = value;
@@ -94,7 +94,7 @@ namespace tbin
                 case PropertyValue::Integer: write( out, prop.second.data.i ); break;
                 case PropertyValue::Float: write( out, prop.second.data.f ); break;
                 case PropertyValue::String: write( out, prop.second.dataStr ); break;
-                default: throw std::invalid_argument( "Bad property type: " + std::to_string( prop.second.type ) );
+                default: throw std::invalid_argument( QT_TR_NOOP( "Bad property type" ) );
             }
         }
     }
@@ -163,7 +163,7 @@ namespace tbin
                     ++i;
                     break;
                 default:
-                    throw std::invalid_argument( "Bad layer tile data: " + std::to_string( c ) );
+                    throw std::invalid_argument( QT_TR_NOOP( "Bad layer tile data" ) );
             }
         }
 
@@ -231,7 +231,7 @@ namespace tbin
                         currTilesheet = read< std::string >( in );
                         break;
                     default:
-                        throw std::invalid_argument( "Bad layer tile data: " + std::to_string( static_cast< int >( c ) ) + " @ " + std::to_string( in.tellg() - 1 ) );
+                        throw std::invalid_argument( QT_TR_NOOP( "Bad layer tile data" ) );
                 }
             }
         }
@@ -303,7 +303,7 @@ namespace tbin
         std::ifstream file( path, std::ifstream::binary );
         if ( !file )
         {
-            throw std::runtime_error( "Failed to open file." );
+            throw std::runtime_error( QT_TR_NOOP( "Failed to open file." ) );
             return false;
         }
 
@@ -318,7 +318,7 @@ namespace tbin
         in.read( &magic[ 0 ], 6 );
         if ( magic != MAGIC_1_0 )
         {
-            throw std::runtime_error( "File is not a tbin file." );
+            throw std::runtime_error( QT_TR_NOOP( "File is not a tbin file." ) );
             return false;
         }
 
@@ -354,7 +354,7 @@ namespace tbin
         std::ofstream file( path, std::ofstream::binary | std::ofstream::trunc );
         if ( !file )
         {
-            throw std::runtime_error( "Failed to open file." );
+            throw std::runtime_error( QT_TR_NOOP( "Failed to open file." ) );
             return false;
         }
 

@@ -86,7 +86,7 @@ namespace
                 prop.type = tbin::PropertyValue::String;
                 prop.dataStr = it.value().toString().toStdString();
             }
-            else throw std::invalid_argument("Unsupported property type");
+            else throw std::invalid_argument(QT_TR_NOOP("Unsupported property type"));
             props.insert(std::make_pair(it.key().toStdString(), prop));
         }
     }
@@ -130,9 +130,9 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             tmapTilesheetMapping[ttilesheet.id] = i;
 
             if (ttilesheet.spacing.x != ttilesheet.spacing.y)
-                throw std::invalid_argument("Tilesheet must have equal spacings.");
+                throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal spacings."));
             if (ttilesheet.margin.x != ttilesheet.margin.y)
-                throw std::invalid_argument("Tilesheet must have equal margins.");
+                throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
             auto tilesheet = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
             tilesheet->setImageSource(ttilesheet.image.c_str());
@@ -152,7 +152,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
         for (const tbin::Layer& tlayer : tmap.layers)
         {
             if (tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y)
-                throw std::invalid_argument("Different tile sizes per layer are not supported.");
+                throw std::invalid_argument(QT_TR_NOOP("Different tile sizes per layer are not supported."));
 
             Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
             tbinToTiledProperties(tlayer.props, layer);
@@ -176,7 +176,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                     {
                         if (tframe.isNullTile() || tframe.animatedData.frames.size() > 0 ||
                              tframe.tilesheet != tfirstTile.tilesheet)
-                            throw std::invalid_argument("Invalid animation frame.");
+                            throw std::invalid_argument(QT_TR_NOOP("Invalid animation frame."));
 
                         Tiled::Frame frame;
                         frame.tileId = tframe.staticData.tileIndex;
@@ -292,7 +292,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             }
             else
             {
-                throw std::invalid_argument("Only object and tile layers supported.");
+                throw std::invalid_argument(QT_TR_NOOP("Only object and tile layers supported."));
             }
         }
 
@@ -321,7 +321,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
     }
     catch (std::exception& e)
     {
-        mError = tr((std::string("Exception: ") + e.what()).c_str());
+        mError = tr("Exception: %1").arg(tr(e.what()));
         return false;
     }
 
