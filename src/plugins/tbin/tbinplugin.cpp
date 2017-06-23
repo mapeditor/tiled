@@ -1,5 +1,5 @@
 /*
- * JSON Tiled Plugin
+ * TBIN Tiled Plugin
  * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
  *
  * This file is part of Tiled.
@@ -31,11 +31,6 @@
 #include <cmath>
 #include <fstream>
 #include <map>
-#include <QFile>
-#include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QTextStream>
 #include <QDebug>
 #include <sstream>
 
