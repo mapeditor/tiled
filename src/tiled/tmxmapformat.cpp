@@ -28,41 +28,21 @@
 
 #include <QBuffer>
 #include <QDir>
+#include <QXmlStreamReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace {
-
-class EditorMapReader : public MapReader
+TmxMapFormat::TmxMapFormat(QObject *parent)
+    : MapFormat(parent)
 {
-protected:
-    /**
-     * Overridden in order to check with the TilesetManager whether the tileset
-     * is already loaded.
-     */
-    SharedTileset readExternalTileset(const QString &source, QString *error) override
-    {
-        // Check if this tileset is already loaded
-        TilesetManager *manager = TilesetManager::instance();
-        SharedTileset tileset = manager->findTileset(source);
-
-        // If not, try to load it
-        if (!tileset)
-            tileset = MapReader::readExternalTileset(source, error);
-
-        return tileset;
-    }
-};
-
-} // anonymous namespace
-
+}
 
 Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(fileName);
     if (!map)
         mError = reader.errorString();
@@ -105,7 +85,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.setData(data);
     buffer.open(QBuffer::ReadOnly);
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(&buffer);
     if (!map)
         mError = reader.errorString();
@@ -113,12 +93,37 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     return map;
 }
 
+bool TmxMapFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("map"))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+
+TsxTilesetFormat::TsxTilesetFormat(QObject *parent)
+    : TilesetFormat(parent)
+{
+}
 
 SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     SharedTileset tileset = reader.readTileset(fileName);
     if (!tileset)
         mError = reader.errorString();
@@ -140,4 +145,24 @@ bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
         mError.clear();
 
     return result;
+}
+
+bool TsxTilesetFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".tsx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("tileset"))
+                return true;
+        }
+    }
+
+    return false;
 }

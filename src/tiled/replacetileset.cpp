@@ -20,6 +20,7 @@
 
 #include "replacetileset.h"
 
+#include "map.h"
 #include "mapdocument.h"
 
 #include <QCoreApplication>
@@ -36,6 +37,7 @@ ReplaceTileset::ReplaceTileset(MapDocument *mapDocument,
     , mIndex(index)
     , mTileset(tileset)
 {
+    Q_ASSERT(mMapDocument->map()->tilesetAt(index) != tileset);
 }
 
 void ReplaceTileset::swap()

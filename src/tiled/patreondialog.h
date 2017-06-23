@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PATREONDIALOG_H
-#define PATREONDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -40,8 +39,8 @@ public:
 
 private slots:
     void openPatreonPage();
-    void togglePatreonStatus();
-    void updatePatreonStatus();
+    void sayThanks();
+    void maybeLater(QAction *action);
 
 private:
     Ui::PatreonDialog *ui;
@@ -49,5 +48,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PATREONDIALOG_H

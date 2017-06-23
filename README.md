@@ -16,7 +16,6 @@ tilesets while also allowing each tileset to grow or shrink as necessary later.
 [![Build status](https://ci.appveyor.com/api/projects/status/ceb79jn5cf99y3qd/branch/master?svg=true)](https://ci.appveyor.com/project/bjorn/tiled/branch/master)
 [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
-[![LiveCoding.tv](http://codiad-billauger.rhcloud.com/badges/?style=online-status-v1&channel=bjorn&offline=Follow to get notified)](https://www.livecoding.tv/bjorn/)
 
 About the Qt Version
 -------------------------------------------------------------------------------
@@ -30,15 +29,15 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 5.2) development libraries are installed:
+Make sure the Qt (>= 5.4) development libraries are installed:
 
 * In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
-  + When using Qt < 5.4: `apt-get install libqt5opengl5-dev`
-* In Fedora:        `yum install qt-devel`
+* In Fedora:        `sudo dnf builddep tiled`
 * In Arch Linux:    `pacman -S qt`
 * In Mac OS X with [Homebrew](http://brew.sh/):
   + `brew install qt5`
   + `brew link qt5 --force`
+* Or you can download Qt from: https://www.qt.io/download-open-source/
 
 Now you can compile by running:
 

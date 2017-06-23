@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ERASER_H
-#define ERASER_H
+#pragma once
 
 #include "abstracttiletool.h"
 
@@ -61,5 +60,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ERASER_H

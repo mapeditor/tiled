@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATERECTANGLEOBJECTTOOL_H
-#define CREATERECTANGLEOBJECTTOOL_H
+#pragma once
 
 #include "createscalableobjecttool.h"
 
@@ -39,5 +38,3 @@ protected:
 
 }
 }
-
-#endif // CREATERECTANGLEOBJECTTOOL_H

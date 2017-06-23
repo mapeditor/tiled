@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILESTAMPSDOCK_H
-#define TILED_INTERNAL_TILESTAMPSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -92,9 +91,10 @@ public:
     explicit TileStampView(QWidget *parent = nullptr);
 
     QSize sizeHint() const override;
+
+protected:
+    bool event(QEvent *event) override;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILESTAMPSDOCK_H

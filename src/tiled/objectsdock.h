@@ -18,12 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSDOCK_H
-#define OBJECTSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
 
+class QAbstractProxyModel;
 class QTreeView;
 
 namespace Tiled {
@@ -32,6 +32,7 @@ class ObjectGroup;
 
 namespace Internal {
 
+class Document;
 class MapDocument;
 class MapObjectModel;
 class ObjectsView;
@@ -53,17 +54,21 @@ private slots:
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
-    void documentAboutToClose(MapDocument *mapDocument);
+    void documentAboutToClose(Document *document);
+    void moveObjectsUp();
+    void moveObjectsDown();
 
 private:
     void retranslateUi();
 
-    void saveExpandedGroups(MapDocument *mapDoc);
-    void restoreExpandedGroups(MapDocument *mapDoc);
+    void saveExpandedGroups();
+    void restoreExpandedGroups();
 
     QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
     QAction *mActionMoveToGroup;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
@@ -82,26 +87,30 @@ public:
 
     void setMapDocument(MapDocument *mapDoc);
 
-    MapObjectModel *model() const;
+    MapObjectModel *mapObjectModel() const;
 
 protected:
+    bool event(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
 
 private slots:
-    void onPressed(const QModelIndex &index);
-    void onActivated(const QModelIndex &index);
+    void onPressed(const QModelIndex &proxyIndex);
+    void onActivated(const QModelIndex &proxyIndex);
     void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
+    void setColumnVisibility(bool visible);
+
+    void showCustomMenu(const QPoint &point);
 
 private:
+    void restoreVisibleSections();
     void synchronizeSelectedItems();
 
     MapDocument *mMapDocument;
+    QAbstractProxyModel *mProxyModel;
     bool mSynching;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTSDOCK_H

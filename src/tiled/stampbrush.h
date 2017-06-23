@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STAMPBRUSH_H
-#define STAMPBRUSH_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "randompicker.h"
@@ -34,6 +33,7 @@ class Tile;
 namespace Internal {
 
 class MapDocument;
+class StampActions;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -65,6 +65,8 @@ public:
      */
     const TileStamp &stamp() const { return mStamp; }
 
+    void populateToolBar(QToolBar *toolBar) override;
+
 public slots:
     void setRandom(bool value);
 
@@ -74,7 +76,9 @@ signals:
      * this signal instead of setting its stamp directly so that the fill tool
      * also gets the new stamp.
      */
-    void stampCaptured(const TileStamp &stamp);
+    void stampChanged(const TileStamp &stamp);
+
+    void randomChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -139,9 +143,9 @@ private:
     RandomPicker<Cell> mRandomCellPicker;
 
     void updateRandomList();
+
+    StampActions *mStampActions;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // STAMPBRUSH_H

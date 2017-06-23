@@ -21,6 +21,7 @@
 #include "createobjecttool.h"
 
 #include "addremovemapobject.h"
+#include "addremovetileset.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -40,9 +41,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
+CreateObjectTool::CreateObjectTool(QObject *parent)
     : AbstractObjectTool(QString(),
-                         QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
+                         QIcon(),
                          QKeySequence(tr("O")),
                          parent)
     , mNewMapObjectGroup(new ObjectGroup)
@@ -50,7 +51,6 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mNewMapObjectItem(nullptr)
     , mOverlayPolygonItem(nullptr)
     , mTile(nullptr)
-    , mMode(mode)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
@@ -107,7 +107,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
     if (mNewMapObjectItem) {
-        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->offset();
+        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
         mouseMovedWhileCreatingObject(pos - offset, modifiers);
     }
 }
@@ -129,25 +129,13 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF offsetPos = event->scenePos() - objectGroup->offset();
-    QPointF pixelCoords;
+    const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
 
-    /* TODO: calculate the tile offset with a polymorphic behaviour object
-     * that is instantiated by the corresponded ObjectTool
-     */
-    if (mMode == CreateTile) {
-        if (!mTile)
-            return;
-
-        const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        pixelCoords = renderer->screenToPixelCoords(offsetPos + diff);
-    } else {
-        pixelCoords = renderer->screenToPixelCoords(offsetPos);
-    }
-
+    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
     SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
 
-    startNewMapObject(pixelCoords, objectGroup);
+    if (startNewMapObject(pixelCoords, objectGroup))
+        mouseMovedWhileCreatingObject(offsetPos, event->modifiers());
 }
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
@@ -156,24 +144,27 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mouseReleasedWhileCreatingObject(event);
 }
 
-void CreateObjectTool::startNewMapObject(const QPointF &pos,
+bool CreateObjectTool::startNewMapObject(const QPointF &pos,
                                          ObjectGroup *objectGroup)
 {
     Q_ASSERT(!mNewMapObjectItem);
 
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
-        return;
+        return false;
+
     newMapObject->setPosition(pos);
 
     mNewMapObjectGroup->addObject(newMapObject);
 
     mNewMapObjectGroup->setColor(objectGroup->color());
-    mNewMapObjectGroup->setOffset(objectGroup->offset());
+    mNewMapObjectGroup->setOffset(objectGroup->totalOffset());
 
     mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
+
+    return true;
 }
 
 MapObject *CreateObjectTool::clearNewMapObjectItem()
@@ -212,9 +203,19 @@ void CreateObjectTool::finishNewMapObject()
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
     clearNewMapObjectItem();
 
-    mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),
-                                                      objectGroup,
-                                                      newMapObject));
+    auto addObjectCommand = new AddMapObject(mapDocument(),
+                                             objectGroup,
+                                             newMapObject);
+
+    if (Tileset *tileset = newMapObject->cell().tileset()) {
+        SharedTileset sharedTileset = tileset->sharedPointer();
+
+        // Make sure this tileset is part of the map
+        if (!mapDocument()->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mapDocument(), sharedTileset, addObjectCommand);
+    }
+
+    mapDocument()->undoStack()->push(addObjectCommand);
 
     mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }

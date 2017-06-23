@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_WINSPARKLEAUTOUPDATER_H
-#define TILED_INTERNAL_WINSPARKLEAUTOUPDATER_H
+#pragma once
 
 #include "autoupdater.h"
 
@@ -40,5 +39,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_WINSPARKLEAUTOUPDATER_H

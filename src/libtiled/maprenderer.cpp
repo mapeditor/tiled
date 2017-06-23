@@ -36,6 +36,8 @@
 #include <QPainter>
 #include <QVector2D>
 
+#include <cmath>
+
 using namespace Tiled;
 
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
@@ -81,6 +83,47 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     return polygon;
 }
 
+QPen MapRenderer::makeGridPen(const QPaintDevice *device, QColor color) const
+{
+#if QT_VERSION >= 0x050600
+    const qreal devicePixelRatio = device->devicePixelRatioF();
+#else
+    const int devicePixelRatio = device->devicePixelRatio();
+#endif
+
+#ifdef Q_OS_MAC
+    const qreal dpiScale = 1.0f;
+#else
+    const qreal dpiScale = device->logicalDpiX() / 96.0;
+#endif
+
+    const qreal dashLength = std::ceil(2.0 * dpiScale * devicePixelRatio);
+
+    color.setAlpha(128);
+
+    QPen pen(color);
+    pen.setCosmetic(true);
+    pen.setDashPattern({dashLength, dashLength});
+    return pen;
+}
+
+
+static void renderMissingImageMarker(QPainter &painter, const QRectF &rect)
+{
+    QRectF r { rect.adjusted(0.5, 0.5, -0.5, -0.5) };
+    QPen pen { Qt::red, 1 };
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setJoinStyle(Qt::MiterJoin);
+
+    painter.save();
+    painter.fillRect(r, QColor(0, 0, 0, 128));
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(pen);
+    painter.drawRect(r);
+    painter.drawLine(r.topLeft(), r.bottomRight());
+    painter.drawLine(r.topRight(), r.bottomLeft());
+    painter.restore();
+}
 
 static bool hasOpenGLEngine(const QPainter *painter)
 {
@@ -89,10 +132,11 @@ static bool hasOpenGLEngine(const QPainter *painter)
             type == QPaintEngine::OpenGL2);
 }
 
-CellRenderer::CellRenderer(QPainter *painter)
+CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
     : mPainter(painter)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
+    , mCellType(cellType)
 {
 }
 
@@ -105,45 +149,65 @@ CellRenderer::CellRenderer(QPainter *painter)
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call is not needed.
  */
-void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &cellSize, Origin origin)
+void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
-    const Tile *tile = cell.tile->currentFrameTile();
-    if (!tile)
+    const Tile *tile = cell.tile();
+
+    if (tile)
+        tile = tile->currentFrameTile();
+
+    if (!tile || tile->image().isNull()) {
+        QRectF target { pos - QPointF(0, size.height()), size };
+        if (origin == BottomCenter)
+            target.moveLeft(target.left() - size.width() / 2);
+        renderMissingImageMarker(*mPainter, target);
         return;
+    }
 
     if (mTile != tile)
         flush();
 
     const QPixmap &image = tile->image();
-    const QSizeF size = image.size();
-    const QSizeF objectSize = (cellSize == QSizeF(0,0)) ? size : cellSize;
-    const QSizeF scale(objectSize.width() / size.width(), objectSize.height() / size.height());
+    const QSizeF imageSize = image.size();
+    if (imageSize.isEmpty())
+        return;
+
+    const QSizeF scale(size.width() / imageSize.width(), size.height() / imageSize.height());
     const QPoint offset = tile->offset();
-    const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
+    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+
+    bool flippedHorizontally = cell.flippedHorizontally();
+    bool flippedVertically = cell.flippedVertically();
 
     QPainter::PixmapFragment fragment;
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - objectSize.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
-    fragment.width = size.width();
-    fragment.height = size.height();
-    fragment.scaleX = cell.flippedHorizontally ? -1 : 1;
-    fragment.scaleY = cell.flippedVertically ? -1 : 1;
+    fragment.width = imageSize.width();
+    fragment.height = imageSize.height();
+    fragment.scaleX = flippedHorizontally ? -1 : 1;
+    fragment.scaleY = flippedVertically ? -1 : 1;
     fragment.rotation = 0;
     fragment.opacity = 1;
     
-    bool flippedHorizontally = cell.flippedHorizontally;
-    bool flippedVertically = cell.flippedVertically;
-
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
-    if (cell.flippedAntiDiagonally) {
+    if (mCellType == HexagonalCells) {
+
+        if (cell.flippedAntiDiagonally())
+            fragment.rotation += 60;
+
+        if (cell.rotatedHexagonal120())
+            fragment.rotation += 120;
+
+    } else if (cell.flippedAntiDiagonally()) {
+        Q_ASSERT(mCellType == OrthogonalCells);
         fragment.rotation = 90;
         
-        flippedHorizontally = cell.flippedVertically;
-        flippedVertically = !cell.flippedHorizontally;
+        flippedHorizontally = cell.flippedVertically();
+        flippedVertically = !cell.flippedHorizontally();
 
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();

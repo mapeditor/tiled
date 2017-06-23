@@ -24,11 +24,11 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
-#include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "preferences.h"
 
 #include <QFileInfo>
+#include <QScopedPointer>
 #include <QTextStream>
 
 using namespace Tiled;
@@ -155,7 +155,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
             TmxMapFormat tmxFormat;
 
-            Map *rules = tmxFormat.read(rulePath);
+            QScopedPointer<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
@@ -164,11 +164,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 continue;
             }
 
-            TilesetManager *tilesetManager = TilesetManager::instance();
-            tilesetManager->addReferences(rules->tilesets());
-
-            AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument, rules, rulePath);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
 
             mWarning += autoMapper->warningString();
             const QString error = autoMapper->errorString(); 

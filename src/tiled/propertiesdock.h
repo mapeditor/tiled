@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTIESDOCK_H
-#define PROPERTIESDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QVariant>
@@ -33,7 +32,7 @@ class Tileset;
 
 namespace Internal {
 
-class MapDocument;
+class Document;
 class PropertyBrowser;
 
 class PropertiesDock : public QDockWidget
@@ -44,24 +43,27 @@ public:
     explicit PropertiesDock(QWidget *parent = nullptr);
 
     /**
-     * Sets the \a mapDocument on which this properties dock will act.
+     * Sets the \a document on which this properties dock will act.
      */
-    void setMapDocument(MapDocument *mapDocument);
+    void setDocument(Document *document);
 
 public slots:
     void bringToFront();
 
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void currentObjectChanged(Object *object);
-    void currentItemChanged(QtBrowserItem *item);
-    void tilesetFileNameChanged(Tileset *tileset);
+    void updateActions();
 
+    void cutProperties();
+    bool copyProperties();
+    void pasteProperties();
     void addProperty();
     void addProperty(const QString &name, const QVariant &value);
-    void removeProperty();
+    void removeProperties();
     void renameProperty();
     void renameProperty(const QString &name);
     void showContextMenu(const QPoint& pos);
@@ -69,7 +71,7 @@ private slots:
 private:
     void retranslateUi();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     PropertyBrowser *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
@@ -78,5 +80,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PROPERTIESDOCK_H

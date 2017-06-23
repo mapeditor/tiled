@@ -18,13 +18,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <QIcon>
 #include <QString>
 
 class QAction;
+class QKeyEvent;
 class QMenu;
 
 namespace Tiled {
@@ -61,7 +61,16 @@ void setThemeIcon(T *t, const char *name)
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+qreal defaultDpiScale();
+qreal dpiScaled(qreal value);
+QSize dpiScaled(QSize value);
+QPoint dpiScaled(QPoint value);
+QRectF dpiScaled(QRectF value);
+QSize smallIconSize();
+
+bool isZoomInShortcut(QKeyEvent *event);
+bool isZoomOutShortcut(QKeyEvent *event);
+bool isResetZoomShortcut(QKeyEvent *event);
+
 } // namespace Utils
 } // namespace Tiled
-
-#endif // UTILS_H

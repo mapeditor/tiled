@@ -20,7 +20,7 @@
 
 #include "changetileimagesource.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -28,10 +28,10 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileImageSource::ChangeTileImageSource(MapDocument *mapDocument,
+ChangeTileImageSource::ChangeTileImageSource(TilesetDocument *tilesetDocument,
                                              Tile *tile,
                                              const QString &imageSource)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTile(tile)
     , mOldImageSource(tile->imageSource())
     , mNewImageSource(imageSource)
@@ -42,11 +42,9 @@ ChangeTileImageSource::ChangeTileImageSource(MapDocument *mapDocument,
 
 void ChangeTileImageSource::apply(const QString &imageSource)
 {
-    mTile->tileset()->setTileImage(mTile,
+    mTilesetDocument->setTileImage(mTile,
                                    QPixmap(imageSource),
                                    imageSource);
-
-    emit mMapDocument->tileImageSourceChanged(mTile);
 }
 
 } // namespace Internal

@@ -29,6 +29,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [TMXParser](https://github.com/solar-storm-studios/TMXParser) General *.tmx tileset data loader. Intended to be used with TSXParser for external tileset loading. (No internal tileset support)
 * [TSXParser](https://github.com/solar-storm-studios/TSXParser) General *.tsx tileset data loader. Intended to be used with TMXParser.
 * [TMXLoader](https://bitbucket.org/martingrant/tmxloader) based on [RapidXml](http://rapidxml.sourceforge.net/). Limited functionality (check the [website](http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/) for details).
+* [tmxlite](https://github.com/fallahn/tmxlite) C++14 map parser with compressed map support but no external linking required. Includes examples for SFML and SDL2 rendering. Currently has full tmx support up to 0.16. (Zlib/libpng)
 
 ### C#/.NET ###
 * [MonoGame.Extended](https://github.com/craftworkgames/MonoGame.Extended) has a Tiled map loader and renderer that works with MonoGame on all platforms that support portable class libraries.
@@ -94,13 +95,18 @@ Following entries are integrated solutions for specific game engines. They are t
 
 ### Corona SDK
 
-* [Lime](https://github.com/OutlawGameTools/Lime2DTileEngine) is a 2D engine for making tile-based games with Corona SDK and Tiled
+* [PonyTiled](https://github.com/ponywolf/ponytiled) is a simple Tiled Map Loader for Corona SDK ([forum announcement](http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826))
+* [Dusk Engine](https://github.com/GymbylCoding/Dusk-Engine) is a fully featured Tiled map game engine for Corona SDK
 
 ### Flixel
 * Lithander demonstrated his [Flash TMX parser combined with Flixel rendering](http://blog.pixelpracht.net/?p=59)
 
 ### Game Maker
 * [Tiled2GM Converter](http://gmc.yoyogames.com/index.php?showtopic=539494) by Dmi7ry
+
+### Godot
+
+* [Tiled Map Importer](https://godotengine.org/asset-library/asset/25) imports each map as Godot scene which can be instanced or inherited ([forum announcement](http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1))
 
 ### Haxe
 * [HaxePunk](https://github.com/HaxePunk/tiled) Tiled Loader for HaxePunk
@@ -128,6 +134,9 @@ Following entries are integrated solutions for specific game engines. They are t
 ### LibGDX
 * [libgdx](http://libgdx.badlogicgames.com/), a Java-based Android/desktop/HTML5 game library, [provides](https://github.com/libgdx/libgdx/wiki/Tile-maps) a packer, loader and renderer for TMX maps
 
+### LITIengine
+* [LITIengine](https://litiengine.com) is a 2D Java Game Engine that supports loading, saving and rendering maps in the .tmx format.
+
 ### LÖVE
 * [Simple Tiled Implementation](https://github.com/Karai17/Simple-Tiled-Implementation) Lua loader for the LÖVE (Love2d) game framework.
 
@@ -141,6 +150,9 @@ Following entries are integrated solutions for specific game engines. They are t
 
 ### Node.js
 * [node-tmx-parser](https://github.com/andrewrk/node-tmx-parser) - loads the TMX file into a JavaScript object
+
+### Orx Portable Game Engine
+* [TMX to ORX Converter](http://orx-project.org/wiki/tutorials/community/sausage/tmx_to_orx) Tutorial and converter download for Orx.
 
 ### Pygame
 * [Pygame map loader](http://www.pygame.org/project/1158/) by dr0id

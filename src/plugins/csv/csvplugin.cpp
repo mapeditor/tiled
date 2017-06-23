@@ -21,13 +21,12 @@
 #include "csvplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
-#include <QSaveFile>
 
 using namespace Tiled;
 using namespace Csv;
@@ -43,39 +42,41 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
 
     // Traverse all tile layers
     uint currentLayer = 0u;
-    foreach (const Layer *layer, map->layers()) {
+    for (const Layer *layer : map->layers()) {
         if (layer->layerType() != Layer::TileLayerType)
             continue;
             
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
 
-        QSaveFile file(layerPaths.at(currentLayer));
+        SaveFile file(layerPaths.at(currentLayer));
 
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
             return false;
         }
 
+        auto device = file.device();
+
         // Write out tiles either by ID or their name, if given. -1 is "empty"
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
                 if (x > 0)
-                    file.write(",", 1);
+                    device->write(",", 1);
     
                 const Cell &cell = tileLayer->cellAt(x, y);
-                const Tile *tile = cell.tile;
+                const Tile *tile = cell.tile();
                 if (tile && tile->hasProperty(QLatin1String("name"))) {
-                    file.write(tile->property(QLatin1String("name")).toString().toUtf8());
+                    device->write(tile->property(QLatin1String("name")).toString().toUtf8());
                 } else {
                     const int id = tile ? tile->id() : -1;
-                    file.write(QByteArray::number(id));
+                    device->write(QByteArray::number(id));
                 }
             }
     
-            file.write("\n", 1);
+            device->write("\n", 1);
         }
     
-        if (file.error() != QFile::NoError) {
+        if (file.error() != QFileDevice::NoError) {
             mError = file.errorString();
             return false;
         }
@@ -105,7 +106,7 @@ QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileNam
     const QString path = fileInfo.path();
 
     // Loop layers to calculate the path for the exported file
-    foreach (const Layer *layer, map->layers()) {
+    for (const Layer *layer : map->layers()) {
         if (layer->layerType() != Layer::TileLayerType)
             continue;
 
@@ -128,4 +129,9 @@ QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileNam
 QString CsvPlugin::nameFilter() const
 {
     return tr("CSV files (*.csv)");
+}
+
+QString CsvPlugin::shortName() const
+{
+    return QLatin1String("csv");
 }

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWTILESETDIALOG_H
-#define NEWTILESETDIALOG_H
+#pragma once
 
 #include "tileset.h"
 #include "tilesetchanges.h"
@@ -55,6 +54,8 @@ public:
 
     SharedTileset createTileset();
 
+    bool isEmbedded() const;
+
     bool editTilesetParameters(TilesetParameters &parameters);
 
 private slots:
@@ -79,5 +80,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWTILESETDIALOG_H

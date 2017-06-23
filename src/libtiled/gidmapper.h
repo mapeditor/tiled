@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_GIDMAPPER_H
-#define TILED_GIDMAPPER_H
+#pragma once
 
 #include "map.h"
 #include "tilelayer.h"
@@ -109,5 +108,3 @@ inline unsigned GidMapper::invalidTile() const
 }
 
 } // namespace Tiled
-
-#endif // TILED_GIDMAPPER_H

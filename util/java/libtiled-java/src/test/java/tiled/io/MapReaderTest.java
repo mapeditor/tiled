@@ -33,13 +33,15 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.ObjectGroup;
 import tiled.core.TileLayer;
 
-public class MapReaderTest extends TestCase {
+public class MapReaderTest {
 
     @Test
     public void testAcceptValidFilenames() {
@@ -58,7 +60,7 @@ public class MapReaderTest extends TestCase {
     }
 
     @Test
-    public void testReadingExampleMap() throws Exception {
+    public void testReadingSewersMap() throws Exception {
         // Arrange
         File mapFile = getFileFromResources("resources/sewers.tmx");
 
@@ -67,16 +69,30 @@ public class MapReaderTest extends TestCase {
 
         // Assert
         assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
-        assertEquals(50, map.getHeight());
+        assertEquals(50, map.getWidth());
         assertEquals(50, map.getHeight());
         assertEquals(24, map.getTileWidth());
         assertEquals(24, map.getTileHeight());
         assertEquals(3, map.getLayerCount());
-        assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
+
+        MapLayer bottom = map.getLayer(0);
+        assertEquals("Bottom", bottom.getName());
+        assertEquals(50, bottom.getWidth());
+        assertEquals(50, bottom.getHeight());
+        assertNotNull(((TileLayer) bottom).getTileAt(0, 0));
+
+        MapLayer top = map.getLayer(1);
+        assertEquals("Top", top.getName());
+        assertEquals(50, top.getWidth());
+        assertEquals(50, top.getHeight());
+        assertEquals(0.49f, top.getOpacity(), 0.01);
+
+        ObjectGroup objectGroup = (ObjectGroup) map.getLayer(2);
+        assertEquals("Objects", objectGroup.getName());
     }
 
     @Test
-    public void testReadingExampleCsvMap() throws Exception {
+    public void testReadingCsvMap() throws Exception {
         // Arrange
         File mapFile = getFileFromResources("resources/csvmap.tmx");
 
@@ -85,36 +101,90 @@ public class MapReaderTest extends TestCase {
 
         // Assert
         assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
-        assertEquals(100, map.getHeight());
+        assertEquals(100, map.getWidth());
         assertEquals(100, map.getHeight());
         assertEquals(32, map.getTileWidth());
         assertEquals(32, map.getTileHeight());
         assertEquals(1, map.getLayerCount());
-        assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
+        assertNotNull(((TileLayer) map.getLayer(0)).getTileAt(0, 0));
     }
 
     @Test
-    public void testReadingExampleHexagonalMap() throws Exception {
+    public void testReadingDesertMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("resources/hexagonal.tmx");
+        File mapFile = getFileFromResources("resources/desert.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+
+        // Assert
+        assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(40, map.getWidth());
+        assertEquals(40, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+        assertNotNull(((TileLayer) map.getLayer(0)).getTileAt(0, 0));
+    }
+
+    @Test
+    public void testReadingExampleOutsideMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/orthogonal-outside.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+
+        // Assert
+        assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(45, map.getWidth());
+        assertEquals(31, map.getHeight());
+        assertEquals(16, map.getTileWidth());
+        assertEquals(16, map.getTileHeight());
+        assertEquals(3, map.getLayerCount());
+        assertNotNull(((TileLayer) map.getLayer(0)).getTileAt(0, 0));
+    }
+
+    @Test
+    public void testReadingPerspectiveWallsMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/perspective_walls.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+
+        // Assert
+        assertEquals(Map.Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(32, map.getWidth());
+        assertEquals(32, map.getHeight());
+        assertEquals(31, map.getTileWidth());
+        assertEquals(31, map.getTileHeight());
+        assertEquals(3, map.getLayerCount());
+        assertNotNull(((TileLayer) map.getLayer(0)).getTileAt(6, 11));
+    }
+
+    @Test
+    public void testReadingHexagonalMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/hexagonal-mini.tmx");
 
         // Act
         Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
 
         // Assert
         assertEquals(Map.Orientation.HEXAGONAL, map.getOrientation());
-        assertEquals(9, map.getHeight());
-        assertEquals(9, map.getHeight());
-        assertEquals(32, map.getTileWidth());
-        assertEquals(32, map.getTileHeight());
-        assertEquals(16, map.getHexSideLength());
+        assertEquals(20, map.getWidth());
+        assertEquals(20, map.getHeight());
+        assertEquals(14, map.getTileWidth());
+        assertEquals(12, map.getTileHeight());
+        assertEquals(6, map.getHexSideLength());
         assertEquals(Map.StaggerAxis.Y, map.getStaggerAxis());
         assertEquals(Map.StaggerIndex.ODD, map.getStaggerIndex());
         assertEquals(1, map.getLayerCount());
     }
 
     @Test
-    public void testReadingExampleStaggeredMap() throws Exception {
+    public void testReadingStaggeredMap() throws Exception {
         // Arrange
         File mapFile = getFileFromResources("resources/staggered.tmx");
 
@@ -123,7 +193,7 @@ public class MapReaderTest extends TestCase {
 
         // Assert
         assertEquals(Map.Orientation.STAGGERED, map.getOrientation());
-        assertEquals(9, map.getHeight());
+        assertEquals(9, map.getWidth());
         assertEquals(9, map.getHeight());
         assertEquals(32, map.getTileWidth());
         assertEquals(32, map.getTileHeight());

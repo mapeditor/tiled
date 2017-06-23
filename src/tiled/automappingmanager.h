@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPINGMANAGER_H
-#define AUTOMAPPINGMANAGER_H
+#pragma once
 
 #include <QObject>
 #include <QRegion>
@@ -138,5 +137,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPINGMANAGER_H

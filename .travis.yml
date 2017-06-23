@@ -34,14 +34,13 @@ matrix:
       env:
         - MAKEFLAGS=-j2
       before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt57-trusty
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt57base qt57svg qt57tools binutils zlib1g-dev libqt5opengl5-dev
-        - source /opt/*/bin/qt*-env.sh
-        - openssl aes-256-cbc -K $encrypted_498dac83364f_key -iv $encrypted_498dac83364f_iv -in dist/butler_creds.enc -out butler_creds -d
+        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools binutils zlib1g-dev
+        - source /opt/qt58/bin/qt58-env.sh
       script:
         - mkdir Tiled ; cd Tiled/
-        - qmake ../tiled.pro TILED_LINUX_ARCHIVE=true
+        - qmake ../tiled.pro TILED_VERSION=$TILED_VERSION TILED_LINUX_ARCHIVE=true
         - make
         - rm -rf src/
         - find -name Makefile -delete
@@ -49,14 +48,16 @@ matrix:
         - cp LICENSE* COPYING *md Tiled/
         - cp ./tiled.desktop Tiled/
         - cp ./src/tiled/images/32x32/tiled.png Tiled/
-        - wget -c "https://update.mapeditor.org/linuxdeployqt/linuxdeployqt-9a1fbab-x86-64.appimage"
-        - chmod a+x linuxdeployqt-9a1fbab-x86-64.appimage
+        - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/2/linuxdeployqt-2-x86_64.AppImage" -O linuxdeployqt
+        - chmod a+x linuxdeployqt
         - unset LD_LIBRARY_PATH
-        - ./linuxdeployqt-9a1fbab-x86-64.appimage ./Tiled/tiled -appimage -verbose=2
+        - ./linuxdeployqt ./Tiled/tiled -appimage -verbose=2
         - rm -rf Tiled/
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
         - provider: releases
+          skip_cleanup: true
+          draft: true
           api_key:
             secure: g8B2MDEElF5v1K1awuhB1C54Fbl2eUmKdfJTPhYC8kYiLoWClgufOPavJOHO+hH5us1LtbCvOa6Z+lrSe9YnuwNcV2MKENQQ4CjpViEI51wpAOM1/WW+C7tDu2BNFKCJjldRrSGttFD2lgVbNYBY7w56/2stZNRBuTfdE8YZEFc=
           file: Tiled*.AppImage
@@ -72,6 +73,7 @@ matrix:
         - provider: script
           skip_cleanup: true
           on:
+            repo: bjorn/tiled
             branch: snapshot
           script: dist/linux/push-to-itch.sh
     - os: linux
@@ -80,8 +82,10 @@ matrix:
         - QMAKESPEC=linux-clang
         - MAKEFLAGS=-j2
       before_install:
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt542-trusty
         - sudo apt-get update -qq
-        - sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck xvfb
+        - sudo apt-get -y install qt54base qt54svg qt54tools binutils zlib1g-dev cppcheck xvfb
+        - source /opt/qt54/bin/qt54-env.sh
       script:
         - qmake
         - make
@@ -109,4 +113,5 @@ before_script:
   - qmake -version
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
+  - if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi
   - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi

@@ -33,6 +33,7 @@
 #include "painttilelayer.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
@@ -48,26 +49,29 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
     int newColumnCount = tileset.columnCount();
 
     auto isFromTileset = [&](const Cell &cell) -> bool {
-        return cell.tile && cell.tile->tileset() == &tileset;
+        return cell.tileset() == &tileset;
     };
 
-    auto adjustTile = [&](const Tile *tile) -> Tile* {
-        int tileIndex = tile->id();
+    auto adjustCell = [&](Cell cell) -> Cell {
+        int tileIndex = cell.tileId();
         int row = tileIndex / oldColumnCount;
         int column = tileIndex % oldColumnCount;
 
         if (column < newColumnCount) {
             int newTileIndex = row * newColumnCount + column;
-            return tileset.findTile(newTileIndex);
+            cell.setTile(cell.tileset(), newTileIndex);
+        } else {
+            cell.setTile(nullptr);
         }
 
-        return nullptr;
+        return cell;
     };
 
-    QVector<MapObjectChange> objectChanges;
+    QVector<MapObjectCell> objectChanges;
 
     // Adjust tile references from map layers
-    for (Layer *layer : mapDocument->map()->layers()) {
+    LayerIterator iterator(mapDocument->map());
+    while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             TileLayer *tileLayer = static_cast<TileLayer*>(layer);
@@ -82,9 +86,7 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
                 for (const QRect &rect : region.rects()) {
                     for (int x = rect.left(); x <= rect.right(); ++x) {
                         for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                            Cell cell = tileLayer->cellAt(x, y);
-                            cell.tile = adjustTile(cell.tile);
-
+                            Cell cell = adjustCell(tileLayer->cellAt(x, y));
                             changedLayer->setCell(x - boundingRect.x(),
                                                   y - boundingRect.y(),
                                                   cell);
@@ -107,32 +109,30 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
         case Layer::ObjectGroupType:
             for (MapObject *mapObject : *static_cast<ObjectGroup*>(layer)) {
                 if (isFromTileset(mapObject->cell())) {
-                    MapObjectChange change;
+                    MapObjectCell change;
                     change.object = mapObject;
-                    change.tile = adjustTile(mapObject->cell().tile);;
+                    change.cell = adjustCell(mapObject->cell());
                     objectChanges.append(change);
                 }
             }
             break;
 
         case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
             break;
         }
     }
 
-    if (!objectChanges.isEmpty()) {
-        new ChangeMapObjects(mapDocument,
-                             objectChanges,
-                             ChangeMapObjects::ChangeTile,
-                             this);
-    }
+    if (!objectChanges.isEmpty())
+        new ChangeMapObjectCells(mapDocument, objectChanges, this);
 }
 
-AdjustTileMetaData::AdjustTileMetaData(MapDocument *mapDocument,
-                                       const Tileset &tileset)
+AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Adjust Tile Indexes"))
 {
+    const Tileset &tileset = *tilesetDocument->tileset();
+
     int oldColumnCount = tileset.expectedColumnCount();
     int newColumnCount = tileset.columnCount();
 
@@ -174,7 +174,7 @@ AdjustTileMetaData::AdjustTileMetaData(MapDocument *mapDocument,
                              const QVector<Frame> &frames)
     {
         if (properties != toTile->properties()) {
-            new ChangeProperties(mapDocument,
+            new ChangeProperties(tilesetDocument,
                                  QCoreApplication::translate("MapDocument", "Tile"),
                                  toTile,
                                  properties,
@@ -192,10 +192,10 @@ AdjustTileMetaData::AdjustTileMetaData(MapDocument *mapDocument,
         }
 
         if (objectGroup != toTile->objectGroup())
-            new ChangeTileObjectGroup(mapDocument, toTile, objectGroup, this);
+            new ChangeTileObjectGroup(tilesetDocument, toTile, objectGroup, this);
 
         if (frames != toTile->frames())
-            new ChangeTileAnimation(mapDocument, toTile, frames, this);
+            new ChangeTileAnimation(tilesetDocument, toTile, frames, this);
     };
 
     auto moveMetaData = [&](Tile *fromTile) {
@@ -214,7 +214,7 @@ AdjustTileMetaData::AdjustTileMetaData(MapDocument *mapDocument,
 
         ObjectGroup *objectGroup = nullptr;
         if (fromTile->objectGroup())
-            objectGroup = static_cast<ObjectGroup*>(fromTile->objectGroup()->clone());
+            objectGroup = fromTile->objectGroup()->clone();
 
         applyMetaData(toTile,
                       fromTile->properties(),
@@ -245,14 +245,14 @@ AdjustTileMetaData::AdjustTileMetaData(MapDocument *mapDocument,
     }
 
     if (!tilesChangingProbability.isEmpty()) {
-        new ChangeTileProbability(mapDocument,
+        new ChangeTileProbability(tilesetDocument,
                                   tilesChangingProbability,
                                   tileProbabilities,
                                   this);
     }
 
     if (!terrainChanges.isEmpty())
-        new ChangeTileTerrain(mapDocument, terrainChanges, this);
+        new ChangeTileTerrain(tilesetDocument, terrainChanges, this);
 }
 
 } // namespace Internal

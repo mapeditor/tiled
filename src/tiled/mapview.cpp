@@ -23,6 +23,7 @@
 #include "flexiblescrollbar.h"
 #include "mapscene.h"
 #include "preferences.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QApplication>
@@ -34,13 +35,10 @@
 #include <QScrollBar>
 
 #ifndef QT_NO_OPENGL
-#if QT_VERSION >= 0x050400
 #include <QOpenGLWidget>
-#else
-#include <QGLWidget>
-#endif
 #endif
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent, Mode mode)
@@ -104,7 +102,6 @@ void MapView::adjustScale(qreal scale)
 void MapView::setUseOpenGL(bool useOpenGL)
 {
 #ifndef QT_NO_OPENGL
-#if QT_VERSION >= 0x050400
     if (useOpenGL) {
         if (!qobject_cast<QOpenGLWidget*>(viewport())) {
             QSurfaceFormat format = QSurfaceFormat::defaultFormat();
@@ -119,19 +116,6 @@ void MapView::setUseOpenGL(bool useOpenGL)
         if (qobject_cast<QOpenGLWidget*>(viewport()))
             setViewport(nullptr);
     }
-#else
-    if (useOpenGL && QGLFormat::hasOpenGL()) {
-        if (!qobject_cast<QGLWidget*>(viewport())) {
-            QGLFormat format = QGLFormat::defaultFormat();
-            format.setDepth(false);         // No need for a depth buffer
-            format.setSampleBuffers(true);  // Enable anti-aliasing
-            setViewport(new QGLWidget(format));
-        }
-    } else {
-        if (qobject_cast<QGLWidget*>(viewport()))
-            setViewport(nullptr);
-    }
-#endif
 
     QWidget *v = viewport();
     if (mMode == StaticContents)
@@ -211,6 +195,14 @@ bool MapView::event(QEvent *e)
             if (pinch->changeFlags() & QPinchGesture::ScaleFactorChanged)
                 handlePinchGesture(pinch);
         }
+    } else if (e->type() == QEvent::ShortcutOverride) {
+        auto keyEvent = static_cast<QKeyEvent*>(e);
+        if (Utils::isZoomInShortcut(keyEvent) ||
+                Utils::isZoomOutShortcut(keyEvent) ||
+                Utils::isResetZoomShortcut(keyEvent)) {
+            e->accept();
+            return true;
+        }
     }
 
     return QGraphicsView::event(e);
@@ -221,6 +213,23 @@ void MapView::hideEvent(QHideEvent *event)
     // Disable hand scrolling when the view gets hidden in any way
     setHandScrolling(false);
     QGraphicsView::hideEvent(event);
+}
+
+void MapView::keyPressEvent(QKeyEvent *event)
+{
+    if (Utils::isZoomInShortcut(event)) {
+        mZoomable->zoomIn();
+        return;
+    }
+    if (Utils::isZoomOutShortcut(event)) {
+        mZoomable->zoomOut();
+        return;
+    }
+    if (Utils::isResetZoomShortcut(event)) {
+        mZoomable->resetZoom();
+        return;
+    }
+    return QGraphicsView::keyPressEvent(event);
 }
 
 /**
@@ -265,6 +274,8 @@ void MapView::wheelEvent(QWheelEvent *event)
         int lines = QApplication::wheelScrollLines();
         pixels.setX(int(steps.x() * lines * hBar->singleStep()));
         pixels.setY(int(steps.y() * lines * vBar->singleStep()));
+    } else {
+        pixels = Utils::dpiScaled(pixels);
     }
 
     if (!pixels.isNull()) {
@@ -333,7 +344,7 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
 {
-    setTransformationAnchor(QGraphicsView::NoAnchor);
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     mZoomable->handlePinchGesture(pinch);
 

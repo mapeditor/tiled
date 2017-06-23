@@ -18,13 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTTYPES_H
-#define OBJECTTYPES_H
+#pragma once
 
 #include <QString>
 #include <QColor>
 #include <QVector>
-#include <QXmlStreamReader>
 
 #include "properties.h"
 
@@ -55,35 +53,29 @@ struct ObjectType
 typedef QVector<ObjectType> ObjectTypes;
 
 
-class ObjectTypesWriter
+class ObjectTypesSerializer
 {
 public:
+    enum Format {
+        Autodetect,
+        Xml,
+        Json
+    };
+
+    ObjectTypesSerializer(Format format = Autodetect);
+
     bool writeObjectTypes(const QString &fileName,
                           const ObjectTypes &objectTypes);
 
-    QString errorString() const { return mError; }
-
-private:
-    QString mError;
-};
-
-
-class ObjectTypesReader
-{
-public:
-    ObjectTypes readObjectTypes(const QString &fileName);
-
-    void readObjectTypeProperty(QXmlStreamReader& xml,
-                                Properties &props,
-                                const QString &filePath);
+    bool readObjectTypes(const QString &fileName,
+                         ObjectTypes &objectTypes);
 
     QString errorString() const { return mError; }
 
 private:
+    Format mFormat;
     QString mError;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTTYPES_H

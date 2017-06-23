@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_CHANGETILEIMAGESOURCE_H
-#define TILED_INTERNAL_CHANGETILEIMAGESOURCE_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -29,12 +28,12 @@ class Tile;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class ChangeTileImageSource : public QUndoCommand
 {
 public:
-    ChangeTileImageSource(MapDocument *mapDocument,
+    ChangeTileImageSource(TilesetDocument *tilesetDocument,
                           Tile *tile,
                           const QString &imageSource);
 
@@ -44,7 +43,7 @@ public:
 private:
     void apply(const QString &imageSource);
 
-    MapDocument *mMapDocument;
+    TilesetDocument *mTilesetDocument;
     Tile *mTile;
     QString mOldImageSource;
     QString mNewImageSource;
@@ -52,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_CHANGETILEIMAGESOURCE_H

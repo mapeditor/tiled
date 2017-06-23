@@ -23,6 +23,7 @@
 
 #include "fileedit.h"
 #include "textpropertyedit.h"
+#include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
 #include "utils.h"
 #include "variantpropertymanager.h"
@@ -59,7 +60,7 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
 
     QToolButton *resetButton = new QToolButton(this);
     resetButton->setIcon(QIcon(QLatin1String(":/images/16x16/edit-clear.png")));
-    resetButton->setIconSize(QSize(16, 16));
+    resetButton->setIconSize(Utils::smallIconSize());
     resetButton->setAutoRaise(true);
     Utils::setThemeIcon(resetButton, "edit-clear");
 
@@ -117,7 +118,7 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
 
     if (type == VariantPropertyManager::tilesetParametersTypeId()) {
         auto editor = new TilesetParametersEdit(parent);
-        editor->setTileset(manager->value(property).value<EmbeddedTileset>());
+        editor->setTilesetDocument(manager->value(property).value<TilesetDocument*>());
         mCreatedTilesetEdits[property].append(editor);
         mTilesetEditToProperty[editor] = property;
 
@@ -189,7 +190,7 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
     }
     else if (mCreatedTilesetEdits.contains(property)) {
         for (TilesetParametersEdit *edit : mCreatedTilesetEdits[property])
-            edit->setTileset(value.value<EmbeddedTileset>());
+            edit->setTilesetDocument(value.value<TilesetDocument*>());
     }
     else if (mCreatedTextPropertyEdits.contains(property)) {
         for (TextPropertyEdit *edit : mCreatedTextPropertyEdits[property])

@@ -40,14 +40,13 @@
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
-    : Layer(ObjectGroupType, QString(), 0, 0, 0, 0)
+    : Layer(ObjectGroupType, QString(), 0, 0)
     , mDrawOrder(TopDownOrder)
 {
 }
 
-ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height)
-    : Layer(ObjectGroupType, name, x, y, width, height)
+ObjectGroup::ObjectGroup(const QString &name, int x, int y)
+    : Layer(ObjectGroupType, name, x, y)
     , mDrawOrder(TopDownOrder)
 {
 }
@@ -129,7 +128,7 @@ QSet<SharedTileset> ObjectGroup::usedTilesets() const
     QSet<SharedTileset> tilesets;
 
     for (const MapObject *object : mObjects)
-        if (const Tile *tile = object->cell().tile)
+        if (const Tile *tile = object->cell().tile())
             tilesets.insert(tile->sharedTileset());
 
     return tilesets;
@@ -138,8 +137,7 @@ QSet<SharedTileset> ObjectGroup::usedTilesets() const
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
     for (const MapObject *object : mObjects) {
-        const Tile *tile = object->cell().tile;
-        if (tile && tile->tileset() == tileset)
+        if (object->cell().tileset() == tileset)
             return true;
     }
 
@@ -150,10 +148,9 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
     for (MapObject *object : mObjects) {
-        const Tile *tile = object->cell().tile;
-        if (tile && tile->tileset() == oldTileset) {
+        if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
-            cell.tile = newTileset->findOrCreateTile(tile->id());
+            cell.setTile(newTileset, cell.tileId());
             object->setCell(cell);
         }
     }
@@ -195,7 +192,7 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
 
     const ObjectGroup *og = static_cast<ObjectGroup*>(other);
 
-    ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
+    ObjectGroup *merged = clone();
     for (const MapObject *mapObject : og->objects())
         merged->addObject(mapObject->clone());
     return merged;
@@ -206,9 +203,9 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  *
  * \sa Layer::clone()
  */
-Layer *ObjectGroup::clone() const
+ObjectGroup *ObjectGroup::clone() const
 {
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new ObjectGroup(mName, mX, mY));
 }
 
 /**

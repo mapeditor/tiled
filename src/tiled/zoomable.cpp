@@ -109,7 +109,7 @@ void Zoomable::handleWheelDelta(int delta)
 
         qreal scale = qBound(mZoomFactors.first(),
                              mScale * factor,
-                             mZoomFactors.back());
+                             mZoomFactors.last());
 
         // Round to at most four digits after the decimal point
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
@@ -128,10 +128,10 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         mGestureStartScale = mScale;
         // fall through
     case Qt::GestureUpdated: {
-        qreal factor = pinch->scaleFactor();
+        qreal factor = pinch->totalScaleFactor();
         qreal scale = qBound(mZoomFactors.first(),
                              mGestureStartScale * factor,
-                             mZoomFactors.back());
+                             mZoomFactors.last());
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
         break;
     }
@@ -171,7 +171,7 @@ void Zoomable::setZoomFactors(const QVector<qreal>& factors)
     mZoomFactors = factors;
 }
 
-void Zoomable::connectToComboBox(QComboBox *comboBox)
+void Zoomable::setComboBox(QComboBox *comboBox)
 {
     if (mComboBox) {
         mComboBox->disconnect(this);

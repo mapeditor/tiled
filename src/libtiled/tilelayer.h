@@ -27,13 +27,15 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILELAYER_H
-#define TILELAYER_H
+#pragma once
 
 #include "tiled_global.h"
 
+#include "map.h"
 #include "layer.h"
 #include "tiled.h"
+#include "tile.h"
+#include "tileset.h"
 
 #include <QMargins>
 #include <QString>
@@ -53,42 +55,99 @@ class Cell
 {
 public:
     Cell() :
-        tile(nullptr),
-        flippedHorizontally(false),
-        flippedVertically(false),
-        flippedAntiDiagonally(false)
+        _tileset(nullptr),
+        _tileId(-1),
+        _flippedHorizontally(false),
+        _flippedVertically(false),
+        _flippedAntiDiagonally(false),
+        _rotatedHexagonal120(false)
     {}
 
     explicit Cell(Tile *tile) :
-        tile(tile),
-        flippedHorizontally(false),
-        flippedVertically(false),
-        flippedAntiDiagonally(false)
+        _tileset(tile ? tile->tileset() : nullptr),
+        _tileId(tile ? tile->id() : -1),
+        _flippedHorizontally(false),
+        _flippedVertically(false),
+        _flippedAntiDiagonally(false),
+        _rotatedHexagonal120(false)
     {}
 
-    bool isEmpty() const { return tile == nullptr; }
+    bool isEmpty() const { return _tileset == nullptr; }
 
     bool operator == (const Cell &other) const
     {
-        return tile == other.tile
-                && flippedHorizontally == other.flippedHorizontally
-                && flippedVertically == other.flippedVertically
-                && flippedAntiDiagonally == other.flippedAntiDiagonally;
+        return _tileset == other._tileset
+                && _tileId == other._tileId
+                && _flippedHorizontally == other._flippedHorizontally
+                && _flippedVertically == other._flippedVertically
+                && _flippedAntiDiagonally == other._flippedAntiDiagonally
+                && _rotatedHexagonal120 == other._rotatedHexagonal120;
     }
 
     bool operator != (const Cell &other) const
     {
-        return tile != other.tile
-                || flippedHorizontally != other.flippedHorizontally
-                || flippedVertically != other.flippedVertically
-                || flippedAntiDiagonally != other.flippedAntiDiagonally;
+        return _tileset != other._tileset
+                || _tileId != other._tileId
+                || _flippedHorizontally != other._flippedHorizontally
+                || _flippedVertically != other._flippedVertically
+                || _flippedAntiDiagonally != other._flippedAntiDiagonally
+                || _rotatedHexagonal120 != other._rotatedHexagonal120;
     }
 
-    Tile *tile;
-    bool flippedHorizontally;
-    bool flippedVertically;
-    bool flippedAntiDiagonally;
+    Tileset *tileset() const { return _tileset; }
+    int tileId() const { return _tileId; }
+
+    bool flippedHorizontally() const { return _flippedHorizontally; }
+    bool flippedVertically() const { return _flippedVertically; }
+    bool flippedAntiDiagonally() const { return _flippedAntiDiagonally; }
+
+    bool rotatedHexagonal120() const { return _rotatedHexagonal120; }
+
+    void setFlippedHorizontally(bool f) { _flippedHorizontally = f; }
+    void setFlippedVertically(bool f) { _flippedVertically = f; }
+    void setFlippedAntiDiagonally(bool f) { _flippedAntiDiagonally = f; }
+
+    void setRotatedHexagonal120(bool f) { _rotatedHexagonal120 = f; }
+
+    Tile *tile() const;
+    void setTile(Tile *tile);
+    void setTile(Tileset *tileset, int tileId);
+    bool refersTile(const Tile *tile) const;
+
+private:
+    Tileset *_tileset;
+    int _tileId;
+    bool _flippedHorizontally;
+    bool _flippedVertically;
+    bool _flippedAntiDiagonally;
+
+    bool _rotatedHexagonal120;
 };
+
+inline Tile *Cell::tile() const
+{
+    return _tileset ? _tileset->findTile(_tileId) : nullptr;
+}
+
+inline void Cell::setTile(Tile *tile)
+{
+    if (tile)
+        setTile(tile->tileset(), tile->id());
+    else
+        setTile(nullptr, -1);
+}
+
+inline void Cell::setTile(Tileset *tileset, int tileId)
+{
+    _tileset = tileset;
+    _tileId = tileId;
+}
+
+inline bool Cell::refersTile(const Tile *tile) const
+{
+    return _tileset == tile->tileset() && _tileId == tile->id();
+}
+
 
 /**
  * A tile layer is a grid of cells. Each cell refers to a specific tile, and
@@ -104,6 +163,28 @@ public:
      * Constructor.
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
+
+    /**
+     * Returns the width of this layer.
+     */
+    int width() const { return mWidth; }
+
+    /**
+     * Returns the height of this layer.
+     */
+    int height() const { return mHeight; }
+
+    /**
+     * Returns the size of this layer.
+     */
+    QSize size() const { return QSize(mWidth, mHeight); }
+
+    void setSize(const QSize &size);
+
+    /**
+     * Returns the bounds of this layer.
+     */
+    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
 
     QMargins drawMargins() const;
 
@@ -158,6 +239,8 @@ public:
     void setCells(int x, int y, TileLayer *tileLayer,
                   const QRegion &mask = QRegion());
 
+    void setTiles(const QRegion &area, Tile *tile);
+
     /**
      * Flip this tile layer in the given \a direction. Direction must be
      * horizontal or vertical. This doesn't change the dimensions of the
@@ -166,11 +249,26 @@ public:
     void flip(FlipDirection direction);
 
     /**
+     * Hexagonal flip this tile layer in the given \a direction. Direction must be
+     * horizontal or vertical. This doesn't change the dimensions of the
+     * tile layer.
+     */
+    void flipHexagonal(FlipDirection direction);
+
+    /**
      * Rotate this tile layer by 90 degrees left or right. The tile positions
      * are rotated within the layer, and the tiles themselves are rotated. The
      * dimensions of the tile layer are swapped.
      */
     void rotate(RotateDirection direction);
+
+    /**
+     * Hexagonal rotate this tile layer by 60 degrees left or right. The tile positions
+     * are rotated within the layer, and the tiles themselves are rotated.
+     * As a temporary measure, a Map* is passed to give information about stagger index
+     * and axis, which affects rotation. The stagger index of this map can change.
+     */
+    void rotateHexagonal(RotateDirection direction, Map *map);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.
@@ -231,7 +329,7 @@ public:
      */
     bool isEmpty() const override;
 
-    virtual Layer *clone() const override;
+    TileLayer *clone() const override;
 
     // Enable easy iteration over cells with range-based for
     QVector<Cell>::iterator begin() { return mGrid.begin(); }
@@ -243,11 +341,22 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
+    int mWidth;
+    int mHeight;
     QVector<Cell> mGrid;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
 
+
+/**
+ * Sets the size of this layer.
+ */
+inline void TileLayer::setSize(const QSize &size)
+{
+    mWidth = size.width();
+    mHeight = size.height();
+}
 
 /**
  * Returns whether (x, y) is inside this map layer.
@@ -285,5 +394,3 @@ inline const Cell &TileLayer::cellAt(const QPoint &point) const
 typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
-
-#endif // TILELAYER_H

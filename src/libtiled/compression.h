@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef COMPRESSION_H
-#define COMPRESSION_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -68,5 +67,3 @@ QByteArray TILEDSHARED_EXPORT compress(const QByteArray &data,
                                        CompressionMethod method = Zlib);
 
 } // namespace Tiled
-
-#endif // COMPRESSION_H

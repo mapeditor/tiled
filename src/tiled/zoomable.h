@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ZOOMABLE_H
-#define ZOOMABLE_H
+#pragma once
 
 #include <QObject>
 #include <QRegExp>
@@ -75,7 +74,7 @@ public:
     { return mScale != qreal(1) && mScale < qreal(2); }
 
     void setZoomFactors(const QVector<qreal>& factors);
-    void connectToComboBox(QComboBox *comboBox);
+    void setComboBox(QComboBox *comboBox);
 
 public slots:
     void zoomIn();
@@ -103,5 +102,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ZOOMABLE_H

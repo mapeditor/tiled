@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESIZEMAPOBJECT_H
-#define RESIZEMAPOBJECT_H
+#pragma once
 
 #include <QUndoCommand>
 #include <QSizeF>
@@ -56,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEMAPOBJECT_H

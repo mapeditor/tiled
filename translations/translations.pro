@@ -15,7 +15,10 @@ LANGUAGES = \
     de \
     en \
     es \
+    fi \
     fr \
+    he \
+    hu \
     it \
     ja \
     nb \
@@ -25,11 +28,11 @@ LANGUAGES = \
     pt_PT \
     ru \
     tr \
+    uk \
     zh \
     zh_TW
 
 # Disabled languages because they're too outdated
-#    he \
 #    lv \
 
 # Helper function to adapt the slashes in a path to the system

@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BUCKETFILLTOOL_H
-#define BUCKETFILLTOOL_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "randompicker.h"
@@ -32,6 +31,7 @@ namespace Tiled {
 namespace Internal {
 
 class MapDocument;
+class StampActions;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
@@ -65,8 +65,15 @@ public:
      */
     const TileStamp &stamp() const { return mStamp; }
 
+    void populateToolBar(QToolBar *toolBar) override;
+
 public slots:
     void setRandom(bool value);
+
+signals:
+    void stampChanged(const TileStamp &stamp);
+
+    void randomChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -114,9 +121,9 @@ private:
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
     void randomFill(TileLayer &tileLayer, const QRegion &region) const;
+
+    StampActions *mStampActions;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // BUCKETFILLTOOL_H

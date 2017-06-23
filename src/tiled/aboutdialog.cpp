@@ -22,21 +22,31 @@
 #include "aboutdialog.h"
 
 #include "tiledproxystyle.h"
+#include "utils.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QDesktopServices>
+
+#include <cmath>
 
 using namespace Tiled::Internal;
 
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
+    logo->setMinimumWidth(Utils::dpiScaled(logo->minimumWidth()));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    connect(textBrowser->document()->documentLayout(), &QAbstractTextDocumentLayout::documentSizeChanged,
+            this, [this](const QSizeF &size) {
+        textBrowser->setMinimumHeight(int(std::ceil(size.height() + textBrowser->document()->documentMargin())));
+    });
 
     const QString html = QCoreApplication::translate(
             "AboutDialog",
             "<p align=\"center\"><font size=\"+2\"><b>Tiled Map Editor</b></font><br><i>Version %1</i></p>\n"
-            "<p align=\"center\">Copyright 2008-2016 Thorbj&oslash;rn Lindeijer<br>(see the AUTHORS file for a full list of contributors)</p>\n"
+            "<p align=\"center\">Copyright 2008-2017 Thorbj&oslash;rn Lindeijer<br>(see the AUTHORS file for a full list of contributors)</p>\n"
             "<p align=\"center\">You may modify and redistribute this program under the terms of the GPL (version 2 or later). "
             "A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.</p>\n"
             "<p align=\"center\"><a href=\"http://www.mapeditor.org/\">http://www.mapeditor.org/</a></p>\n")

@@ -20,7 +20,7 @@
 
 #include "mapsdock.h"
 
-#include "mainwindow.h"
+#include "documentmanager.h"
 #include "mapformat.h"
 #include "pluginmanager.h"
 #include "preferences.h"
@@ -61,10 +61,10 @@ public:
     }
 };
 
-MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
+MapsDock::MapsDock(QWidget *parent)
     : QDockWidget(parent)
     , mDirectoryEdit(new QLineEdit)
-    , mMapsView(new MapsView(mainWindow))
+    , mMapsView(new MapsView)
 {
     setObjectName(QLatin1String("MapsDock"));
 
@@ -140,9 +140,8 @@ void MapsDock::retranslateUi()
 
 ///// ///// ///// ///// /////
 
-MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
+MapsView::MapsView(QWidget *parent)
     : QTreeView(parent)
-    , mMainWindow(mainWindow)
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
@@ -159,8 +158,8 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     if (!mapsDir.exists())
         mapsDir.setPath(QDir::currentPath());
 
-    mFSModel = new FileSystemModel(this);
-    mFSModel->setRootPath(mapsDir.absolutePath());
+    mFileSystemModel = new FileSystemModel(this);
+    mFileSystemModel->setRootPath(mapsDir.absolutePath());
 
     QStringList nameFilters(QLatin1String("*.tmx"));
 
@@ -177,18 +176,18 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
             nameFilters.append(filterFinder.cap(1));
     }
 
-    mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
-    mFSModel->setNameFilters(nameFilters);
-    mFSModel->setNameFilterDisables(false); // hide filtered files
+    mFileSystemModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
+    mFileSystemModel->setNameFilters(nameFilters);
+    mFileSystemModel->setNameFilterDisables(false); // hide filtered files
 
-    setModel(mFSModel);
+    setModel(mFileSystemModel);
 
     QHeaderView *headerView = header();
     headerView->hideSection(1); // Size column
-    headerView->hideSection(2);
-    headerView->hideSection(3);
+    headerView->hideSection(2); // Type column
+    headerView->hideSection(3); // Modified column
 
-    setRootIndex(mFSModel->index(mapsDir.absolutePath()));
+    setRootIndex(mFileSystemModel->index(mapsDir.absolutePath()));
     
     header()->setStretchLastSection(false);
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -199,7 +198,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
 
 QSize MapsView::sizeHint() const
 {
-    return QSize(130, 100);
+    return Utils::dpiScaled(QSize(130, 100));
 }
 
 void MapsView::mousePressEvent(QMouseEvent *event)
@@ -219,7 +218,7 @@ void MapsView::onMapsDirectoryChanged()
     QDir mapsDir(prefs->mapsDirectory());
     if (!mapsDir.exists())
         mapsDir.setPath(QDir::currentPath());
-    model()->setRootPath(mapsDir.canonicalPath());
+    model()->setRootPath(mapsDir.absolutePath());
     setRootIndex(model()->index(mapsDir.absolutePath()));
 }
 
@@ -229,8 +228,9 @@ void MapsView::onActivated(const QModelIndex &index)
     QFileInfo fileInfo(path);
     if (fileInfo.isDir()) {
         Preferences *prefs = Preferences::instance();
-        prefs->setMapsDirectory(fileInfo.canonicalFilePath());
+        prefs->setMapsDirectory(fileInfo.absoluteFilePath());
         return;
     }
-    mMainWindow->openFile(path);
+
+    DocumentManager::instance()->openFile(path);
 }

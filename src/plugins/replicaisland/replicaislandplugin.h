@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPLICAISLANDPLUGIN_H
-#define REPLICAISLANDPLUGIN_H
+#pragma once
 
 #include "replicaisland_global.h"
 
@@ -54,6 +53,7 @@ public:
 
     Tiled::Map *read(const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     bool supportsFile(const QString &fileName) const override;
     QString errorString() const override;
     bool write(const Tiled::Map *map, const QString &fileName) override;
@@ -74,5 +74,3 @@ private:
 };
 
 } // namespace ReplicaIsland
-
-#endif // REPLICAISLANDPLUGIN_H

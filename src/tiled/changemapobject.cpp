@@ -21,7 +21,6 @@
 #include "changemapobject.h"
 
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "mapobjectmodel.h"
 
 #include <QCoreApplication>
@@ -31,89 +30,109 @@ using namespace Tiled::Internal;
 
 ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
-                                 const QString &name,
-                                 const QString &type)
+                                 MapObject::Property property,
+                                 const QVariant &value)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Object"))
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mName(name)
-    , mType(type)
+    , mProperty(property)
+    , mValue(value)
 {
+    switch (property) {
+    case MapObject::VisibleProperty:
+        if (value.toBool())
+            setText(QCoreApplication::translate("Undo Commands", "Show Object"));
+        else
+            setText(QCoreApplication::translate("Undo Commands", "Hide Object"));
+        break;
+    default:
+        break;
+    }
 }
 
 void ChangeMapObject::swap()
 {
-    const QString name = mMapObject->name();
-    const QString type = mMapObject->type();
-
-    mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
-    mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
-
-    mName = name;
-    mType = type;
+    QVariant oldValue = mMapObject->mapObjectProperty(mProperty);
+    mMapDocument->mapObjectModel()->setObjectProperty(mMapObject, mProperty, mValue);
+    std::swap(mValue, oldValue);
 }
 
 
-SetMapObjectVisible::SetMapObjectVisible(MapDocument *mapDocument,
-                                         MapObject *mapObject,
-                                         bool visible)
-    : mMapObjectModel(mapDocument->mapObjectModel())
-    , mMapObject(mapObject)
-    , mOldVisible(mapObject->isVisible())
-    , mNewVisible(visible)
-{
-    if (visible)
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Show Object"));
-    else
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Hide Object"));
-}
-
-void SetMapObjectVisible::undo()
-{
-    mMapObjectModel->setObjectVisible(mMapObject, mOldVisible);
-}
-
-void SetMapObjectVisible::redo()
-{
-    mMapObjectModel->setObjectVisible(mMapObject, mNewVisible);
-}
-
-
-ChangeMapObjects::ChangeMapObjects(MapDocument *mapDocument,
-                                   const QVector<MapObjectChange> &changes,
-                                   ChangeProperty property,
-                                   QUndoCommand *parent)
+ChangeMapObjectCells::ChangeMapObjectCells(MapDocument *mapDocument,
+                                           const QVector<MapObjectCell> &changes,
+                                           QUndoCommand *parent)
     : QUndoCommand(parent)
     , mMapObjectModel(mapDocument->mapObjectModel())
     , mChanges(changes)
-    , mProperty(property)
 {
 }
 
-static QList<MapObject*> objectList(const QVector<MapObjectChange> &changes)
+static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
 {
     QList<MapObject*> result;
     result.reserve(changes.size());
 
-    for (const MapObjectChange &change : changes)
+    for (const MapObjectCell &change : changes)
         result.append(change.object);
 
     return result;
 }
 
-void ChangeMapObjects::swap()
+void ChangeMapObjectCells::swap()
 {
-    switch (mProperty) {
-    case ChangeTile:
-        for (MapObjectChange &change : mChanges) {
-            auto cell = change.object->cell();
-            std::swap(cell.tile, change.tile);
-            change.object->setCell(cell);
-        }
-        emit mMapObjectModel->objectsChanged(objectList(mChanges));
-        break;
+    for (MapObjectCell &change : mChanges) {
+        auto cell = change.object->cell();
+        change.object->setCell(change.cell);
+        change.cell = cell;
     }
+    emit mMapObjectModel->objectsChanged(objectList(mChanges));
+}
+
+ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
+                                           const QList<MapObject *> &mapObjects,
+                                           Tile *tile)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change %n Object/s Tile",
+                                               nullptr, mapObjects.size()))
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+    , mTile(tile)
+{
+    for (MapObject *object : mMapObjects) {
+        Cell cell = object->cell();
+        mOldCells.append(cell);
+        Tile *tile = cell.tile();
+        // Update the size if the object's tile is valid and the sizes match
+        mUpdateSize.append(tile && object->size() == tile->size());
+    }
+}
+
+static void setObjectCell(MapObject *object,
+                          const Cell &cell,
+                          const bool updateSize)
+{
+    object->setCell(cell);
+
+    if (updateSize)
+        object->setSize(cell.tile()->size());
+}
+
+void ChangeMapObjectsTile::restoreTiles()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i)
+        setObjectCell(mMapObjects[i], mOldCells[i], mUpdateSize[i]);
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
+
+void ChangeMapObjectsTile::changeTiles()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        Cell cell = mMapObjects[i]->cell();
+        cell.setTile(mTile);
+        setObjectCell(mMapObjects[i], cell, mUpdateSize[i]);
+    }
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

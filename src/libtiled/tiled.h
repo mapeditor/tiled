@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_H
-#define TILED_H
+#pragma once
 
 namespace Tiled {
 
@@ -55,7 +54,7 @@ enum Alignment {
 
 static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
+static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
+static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
 
 } // namespace Tiled
-
-#endif // TILED_H

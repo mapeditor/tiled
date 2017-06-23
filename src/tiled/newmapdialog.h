@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWMAPDIALOG_H
-#define NEWMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -44,7 +43,7 @@ public:
     ~NewMapDialog();
 
     /**
-     * Shows the dialog and returns the created map. Returns 0 if the dialog
+     * Shows the dialog and returns the created map. Returns null if the dialog
      * was cancelled.
      */
     MapDocument *createMap();
@@ -58,5 +57,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWMAPDIALOG_H

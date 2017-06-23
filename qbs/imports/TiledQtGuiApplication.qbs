@@ -1,6 +1,7 @@
 import qbs
 
 QtGuiApplication {
+    cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];
@@ -12,7 +13,7 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++11"
 
     Properties {
-        condition: qbs.targetOS.contains("osx")
+        condition: qbs.targetOS.contains("macos")
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     }
 

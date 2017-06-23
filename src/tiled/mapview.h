@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPVIEW_H
-#define MAPVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 #include <QPinchGesture>
@@ -72,6 +71,8 @@ protected:
 
     void hideEvent(QHideEvent *) override;
 
+    void keyPressEvent(QKeyEvent *event) override;
+
     void wheelEvent(QWheelEvent *event) override;
 
     void mousePressEvent(QMouseEvent *event) override;
@@ -96,5 +97,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPVIEW_H

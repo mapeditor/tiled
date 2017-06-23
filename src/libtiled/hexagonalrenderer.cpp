@@ -163,11 +163,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     QVector<QLine> lines;
     lines.reserve(8);
 
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setCosmetic(true);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    QPen gridPen = makeGridPen(painter->device(), gridColor);
     painter->setPen(gridPen);
 
     if (p.staggerX) {
@@ -290,7 +286,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     if (inLeftHalf)
         startTile.rx()--;
 
-    CellRenderer renderer(painter);
+    CellRenderer renderer(painter, CellRenderer::HexagonalCells);
 
     if (p.staggerX) {
         startTile.setX(qMax(-1, startTile.x()));
@@ -309,8 +305,11 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 if (layer->contains(rowTile)) {
                     const Cell &cell = layer->cellAt(rowTile);
 
-                    if (!cell.isEmpty())
-                        renderer.render(cell, rowPos, QSizeF(0, 0), CellRenderer::BottomLeft);
+                    if (!cell.isEmpty()) {
+                        Tile *tile = cell.tile();
+                        QSize size = tile ? tile->size() : map()->tileSize();
+                        renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                    }
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -350,8 +349,11 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
                 const Cell &cell = layer->cellAt(rowTile);
 
-                if (!cell.isEmpty())
-                    renderer.render(cell, rowPos, QSizeF(0, 0), CellRenderer::BottomLeft);
+                if (!cell.isEmpty()) {
+                    Tile *tile = cell.tile();
+                    QSize size = tile ? tile->size() : map()->tileSize();
+                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
+                }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }

@@ -28,13 +28,8 @@
 
 #include <QSortFilterProxyModel>
 
-#if !defined(QT_NO_OPENGL) && QT_VERSION < 0x050400
-#include <QGLFormat>
-#endif
-
 using namespace Tiled;
 using namespace Tiled::Internal;
-
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : QDialog(parent)
@@ -46,8 +41,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
 #if defined(QT_NO_OPENGL)
     mUi->openGL->setEnabled(false);
-#elif QT_VERSION < 0x050400
-    mUi->openGL->setEnabled(QGLFormat::hasOpenGL());
 #else
     mUi->openGL->setEnabled(true);
 #endif
@@ -65,8 +58,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     mUi->styleCombo->addItems(QStringList()
                               << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Fusion")
                               << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
+    mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
     PluginListModel *pluginListModel = new PluginListModel(this);
     QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -87,6 +82,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setReloadTilesetsOnChanged);
     connect(mUi->openLastFiles, &QCheckBox::toggled,
             preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->safeSaving, &QCheckBox::toggled,
+            preferences, &Preferences::setSafeSavingEnabled);
 
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
@@ -148,6 +145,7 @@ void PreferencesDialog::fromPreferences()
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
+    mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 
@@ -160,7 +158,11 @@ void PreferencesDialog::fromPreferences()
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
-    mUi->styleCombo->setCurrentIndex(prefs->applicationStyle());
+    int styleComboIndex = mUi->styleCombo->findData(prefs->applicationStyle());
+    if (styleComboIndex == -1)
+        styleComboIndex = 1;
+
+    mUi->styleCombo->setCurrentIndex(styleComboIndex);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -187,15 +189,15 @@ void PreferencesDialog::retranslateUi()
     mUi->languageCombo->setItemText(0, tr("System default"));
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
-    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Fusion"));
-    mUi->styleCombo->setItemText(2, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
 }
 
-void PreferencesDialog::styleComboChanged(int index)
+void PreferencesDialog::styleComboChanged()
 {
     Preferences *prefs = Preferences::instance();
+    int style = mUi->styleCombo->currentData().toInt();
 
-    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(index));
+    prefs->setApplicationStyle(static_cast<Preferences::ApplicationStyle>(style));
 
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
     mUi->baseColor->setEnabled(!systemStyle);

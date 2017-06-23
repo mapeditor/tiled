@@ -1,6 +1,8 @@
 source: reference/tmx-map-format.md
 ---
-# TMX Map Format #
+# TMX Map Format
+
+**Version 1.0**
 
 The TMX (Tile Map XML) map format used by [Tiled](http://www.mapeditor.org) is a flexible way to describe a tile based map. It can describe maps with any tile size, any amount of layers, any number of tile sets and it allows custom properties to be set on most elements. Beside tile layers, it can also contain groups of objects that can be placed freely.
 
@@ -14,7 +16,8 @@ Have a look at the [changelog](tmx-changelog.md) when you're interested in what 
 
 ## &lt;map> ##
 
-* <b>version:</b> The TMX format version, generally 1.0.
+* <b>version:</b> The TMX format version. Was "1.0" so far, and will be incremented to match minor Tiled releases.
+* <b>tiledversion:</b> The Tiled version used to save the file (since Tiled 1.0.1). May be a date (for snapshot builds).
 * <b>orientation:</b> Map orientation. Tiled supports "orthogonal", "isometric", "staggered" (since 0.9) and "hexagonal" (since 0.11).
 * <b>renderorder:</b> The order in which tiles on tile layers are rendered. Valid values are `right-down` (the default), `right-up`, `left-down` and `left-up`. In all cases, the map is drawn row-by-row. (since 0.10, but only supported for orthogonal maps at the moment)
 * <b>width:</b> The map width in tiles.
@@ -31,7 +34,7 @@ The `tilewidth` and `tileheight` properties determine the general grid size of t
 
 A map contains three different kinds of layers. Tile layers were once the only type, and are simply called `layer`, object layers have the `objectgroup` tag and image layers use the `imagelayer` tag. The order in which these layers appear is the order in which the layers are rendered by Tiled.
 
-Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [objectgroup](#objectgroup), [imagelayer](#imagelayer)
+Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [objectgroup](#objectgroup), [imagelayer](#imagelayer), [group](#group) (since 1.0)
 
 ## &lt;tileset> ##
 
@@ -84,9 +87,10 @@ Can contain: [properties](#properties)
 
 ### &lt;tile> ###
 
-* <b>id:</b> The local tile ID within its tileset.
-* <b>terrain:</b> Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional) (since 0.9)
-* <b>probability:</b> A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9)
+* **id:** The local tile ID within its tileset.
+* **type:** The type of the tile. Refers to an object type and is used by tile objects. (optional) (since 1.0)
+* **terrain:** Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional) (since 0.9)
+* **probability:** A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9)
 
 Can contain: [properties](#properties), [image](#image) (since 0.9), [objectgroup](#objectgroup) (since 0.10), [animation](#animation) (since 0.10)
 
@@ -140,51 +144,53 @@ When rendering a tile, the order of operation matters. The diagonal flip (x/y ax
 
 The following C++ pseudo-code should make it all clear:
 
-    // Bits on the far end of the 32-bit global tile ID are used for tile flags
-    const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
-    const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
-    const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
+```c++
+// Bits on the far end of the 32-bit global tile ID are used for tile flags
+const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
+const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
 
-    ...
+...
 
-    // Extract the contents of the <data> element
-    string tile_data = ...
+// Extract the contents of the <data> element
+string tile_data = ...
 
-    unsigned char *data = decompress(base64_decode(tile_data));
-    unsigned tile_index = 0;
+unsigned char *data = decompress(base64_decode(tile_data));
+unsigned tile_index = 0;
 
-    // Here you should check that the data has the right size
-    // (map_width * map_height * 4)
+// Here you should check that the data has the right size
+// (map_width * map_height * 4)
 
-    for (int y = 0; y < map_height; ++y) {
-      for (int x = 0; x < map_width; ++x) {
-        unsigned global_tile_id = data[tile_index] |
-                                  data[tile_index + 1] << 8 |
-                                  data[tile_index + 2] << 16 |
-                                  data[tile_index + 3] << 24;
-        tile_index += 4;
+for (int y = 0; y < map_height; ++y) {
+  for (int x = 0; x < map_width; ++x) {
+    unsigned global_tile_id = data[tile_index] |
+                              data[tile_index + 1] << 8 |
+                              data[tile_index + 2] << 16 |
+                              data[tile_index + 3] << 24;
+    tile_index += 4;
 
-        // Read out the flags
-        bool flipped_horizontally = (global_tile_id & FLIPPED_HORIZONTALLY_FLAG);
-        bool flipped_vertically = (global_tile_id & FLIPPED_VERTICALLY_FLAG);
-        bool flipped_diagonally = (global_tile_id & FLIPPED_DIAGONALLY_FLAG);
+    // Read out the flags
+    bool flipped_horizontally = (global_tile_id & FLIPPED_HORIZONTALLY_FLAG);
+    bool flipped_vertically = (global_tile_id & FLIPPED_VERTICALLY_FLAG);
+    bool flipped_diagonally = (global_tile_id & FLIPPED_DIAGONALLY_FLAG);
 
-        // Clear the flags
-        global_tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG |
-                            FLIPPED_VERTICALLY_FLAG |
-                            FLIPPED_DIAGONALLY_FLAG);
+    // Clear the flags
+    global_tile_id &= ~(FLIPPED_HORIZONTALLY_FLAG |
+                        FLIPPED_VERTICALLY_FLAG |
+                        FLIPPED_DIAGONALLY_FLAG);
 
-        // Resolve the tile
-        for (int i = tileset_count - 1; i >= 0; --i) {
-          Tileset *tileset = tilesets[i];
+    // Resolve the tile
+    for (int i = tileset_count - 1; i >= 0; --i) {
+      Tileset *tileset = tilesets[i];
 
-          if (tileset->first_gid() <= global_tile_id) {
-            tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
-            break;
-          }
-        }
+      if (tileset->first_gid() <= global_tile_id) {
+        tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
+        break;
       }
     }
+  }
+}
+```
 
 (Since the above code was put together on this wiki page and can't be directly tested, please make sure to report any errors you encounter when basing your parsing code on it, thanks.)
 
@@ -231,7 +237,7 @@ You generally use objects to add custom information to your tile map, such as sp
 
 When the object has a `gid` set, then it is represented by the image of the tile with that global ID. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
 
-Can contain: [properties](#properties), [ellipse](#ellipse) (since 0.9), [polygon](#polygon), [polyline](#polyline), <i>image</i>
+Can contain: [properties](#properties), [ellipse](#ellipse) (since 0.9), [polygon](#polygon), [polyline](#polyline), [text](#text) (since 1.0), <i>image</i>
 
 ### &lt;ellipse> ###
 
@@ -249,6 +255,22 @@ Each `polygon` object is made up of a space-delimited list of x,y coordinates. T
 
 A `polyline` follows the same placement definition as a `polygon` object.
 
+### &lt;text> ##
+
+* **fontfamily:** The font family used (default: "sand-serif")
+* **pixelsize:** The size of the font in pixels (not using points, because other sizes in the TMX format are also using pixels) (default: 16)
+* **wrap:** Whether word wrapping is enabled (1) or disabled (0). Defaults to 0.
+* **color:** Color of the text in `#AARRGGBB` or `#RRGGBB` format (default: #000000)
+* **bold:** Whether the font is bold (1) or not (0). Defaults to 0.
+* **italic:** Whether the font is italic (1) or not (0). Defaults to 0.
+* **underline:** Whether a line should be drawn below the text (1) or not (0). Defaults to 0.
+* **strikeout:** Whether a line should be drawn through the text (1) or not (0). Defaults to 0.
+* **kerning:** Whether kerning should be used while rendering the text (1) or not (0). Default to 1.
+* **halign:** Horizontal alignment of the text within the object (`left` (default), `center` or `right`)
+* **valign:** Vertical alignment of the text within the object (`top` (default), `center` or `bottom`)
+
+Used to mark an object as a text object. Contains the actual text as character data.
+
 ## &lt;imagelayer> ##
 
 * <b>name:</b> The name of the image layer.
@@ -256,8 +278,6 @@ A `polyline` follows the same placement definition as a `polygon` object.
 * <b>offsety:</b> Rendering offset of the image layer in pixels. Defaults to 0. (since 0.15)
 * <i>x:</i> The x position of the image layer in pixels. (deprecated since 0.15)
 * <i>y:</i> The y position of the image layer in pixels. (deprecated since 0.15)
-* <i>width:</i> The width of the image layer in tiles. Meaningless.
-* <i>height:</i> The height of the image layer in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
 
@@ -265,11 +285,25 @@ A layer consisting of a single image.
 
 Can contain: [properties](#properties), [image](#image)
 
+## &lt;group> ##
+
+* <b>name:</b> The name of the group layer.
+* <b>offsetx:</b> Rendering offset of the group layer in pixels. Defaults to 0.
+* <b>offsety:</b> Rendering offset of the group layer in pixels. Defaults to 0.
+* <i>x:</i> The x position of the group layer in pixels. (deprecated since 0.15)
+* <i>y:</i> The y position of the group layer in pixels. (deprecated since 0.15)
+* <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
+* <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
+
+A group layer, used to organize the layers of the map in a hierarchy. Its attributes `offsetx`, `offsety`, `opacity` and `visible` recursively affect child layers.
+
+Can contain: [properties](#properties), [layer](#layer), [objectgroup](#objectgroup), [imagelayer](#imagelayer), [group](#group)
+
 ## &lt;properties> ##
 
 Can contain: [property](#property)
 
-Wraps any number of custom properties. Can be used as a child of the `map`, `tileset`, `tile` (when part of a `tileset`), `layer`, `objectgroup`, `object` and `imagelayer` elements.
+Wraps any number of custom properties. Can be used as a child of the `map`, `tileset`, `tile` (when part of a `tileset`), `terrain`, `layer`, `objectgroup`, `object`, `imagelayer` and `group` elements.
 
 ### &lt;property> ###
 

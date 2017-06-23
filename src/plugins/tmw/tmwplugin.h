@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TMWPLUGIN_H
-#define TMWPLUGIN_H
+#pragma once
 
 #include "tmw_global.h"
 
@@ -39,6 +38,7 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 private:
@@ -46,5 +46,3 @@ private:
 };
 
 } // namespace Tmw
-
-#endif // TMWPLUGIN_H

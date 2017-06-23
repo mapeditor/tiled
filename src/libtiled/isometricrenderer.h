@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ISOMETRICRENDERER_H
-#define ISOMETRICRENDERER_H
+#pragma once
 
 #include "maprenderer.h"
 
@@ -71,13 +70,13 @@ public:
 
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const override;
-    
+
     using MapRenderer::screenToTileCoords;
     QPointF screenToTileCoords(qreal x, qreal y) const override;
 
     using MapRenderer::tileToScreenCoords;
     QPointF tileToScreenCoords(qreal x, qreal y) const override;
-    
+
     using MapRenderer::screenToPixelCoords;
     QPointF screenToPixelCoords(qreal x, qreal y) const override;
 
@@ -90,5 +89,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // ISOMETRICRENDERER_H

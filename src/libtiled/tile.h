@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
 #include "object.h"
 
@@ -116,6 +115,9 @@ public:
 
     QPoint offset() const;
 
+    const QString &type() const;
+    void setType(const QString &type);
+
     Terrain *terrainAtCorner(int corner) const;
 
     int cornerTerrainId(int corner) const;
@@ -140,11 +142,14 @@ public:
 
     bool imageLoaded() const;
 
+    Tile *clone(Tileset *tileset) const;
+
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
     QString mImageSource;
+    QString mType;
     unsigned mTerrain;
     float mProbability;
     ObjectGroup *mObjectGroup;
@@ -228,6 +233,25 @@ inline QSize Tile::size() const
 }
 
 /**
+ * Returns the type of this tile. Tile objects that do not have a type
+ * explicitly set on them are assumed to be of the type returned by this
+ * function.
+ */
+inline const QString &Tile::type() const
+{
+    return mType;
+}
+
+/**
+ * Sets the type of this tile.
+ * \sa type()
+ */
+inline void Tile::setType(const QString &type)
+{
+    mType = type;
+}
+
+/**
  * Returns the terrain id at a given corner.
  */
 inline int Tile::cornerTerrainId(int corner) const
@@ -300,5 +324,3 @@ inline bool Tile::imageLoaded() const
 }
 
 } // namespace Tiled
-
-#endif // TILE_H

@@ -32,7 +32,7 @@ InstallPackage {
     }
 
     targetName: {
-        var baseName = "tiled-" + project.version;
+        var baseName = "Tiled-" + project.version;
         if (qbs.targetOS.contains("windows"))
             baseName += "-win";
         else if (qbs.targetOS.contains("linux"))

@@ -25,9 +25,11 @@
 #include "languagemanager.h"
 #include "mapdocument.h"
 #include "pluginmanager.h"
+#include "savefile.h"
 #include "tilesetmanager.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
 #include <QStandardPaths>
@@ -60,10 +62,13 @@ Preferences::Preferences()
     mMapRenderOrder = static_cast<Map::RenderOrder>
             (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
+    mSafeSavingEnabled = boolValue("SafeSavingEnabled", true);
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
     mSettings->endGroup();
+
+    SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
@@ -89,16 +94,22 @@ Preferences::Preferences()
     mApplicationStyle = static_cast<ApplicationStyle>
             (intValue("ApplicationStyle", TiledStyle));
 #endif
+
+    // Backwards compatibility check since 'FusionStyle' was removed from the
+    // preferences dialog.
+    if (mApplicationStyle == FusionStyle)
+        mApplicationStyle = TiledStyle;
+
     mBaseColor = colorValue("BaseColor", Qt::lightGray);
     mSelectionColor = colorValue("SelectionColor", QColor(48, 140, 198));
     mSettings->endGroup();
 
     // Retrieve defined object types
-    ObjectTypesReader objectTypesReader;
-    mObjectTypes = objectTypesReader.readObjectTypes(objectTypesFile());
+    ObjectTypesSerializer objectTypesSerializer;
+    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), mObjectTypes);
 
     // For backwards compatibilty, read in object types from settings
-    if (!objectTypesReader.errorString().isEmpty()) {
+    if (!success) {
         mSettings->beginGroup(QLatin1String("ObjectTypes"));
         const QStringList names = mSettings->value(QLatin1String("Names")).toStringList();
         const QStringList colors = mSettings->value(QLatin1String("Colors")).toStringList();
@@ -139,12 +150,20 @@ Preferences::Preferences()
     // Keeping track of some usage information
     mSettings->beginGroup(QLatin1String("Install"));
     mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
+    mPatreonDialogTime = mSettings->value(QLatin1String("PatreonDialogTime")).toDate();
     mRunCount = intValue("RunCount", 0) + 1;
     mIsPatron = boolValue("IsPatron");
     mCheckForUpdates = boolValue("CheckForUpdates");
     if (!mFirstRun.isValid()) {
         mFirstRun = QDate::currentDate();
         mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
+    }
+    if (!mSettings->contains(QLatin1String("PatreonDialogTime"))) {
+        mPatreonDialogTime = mFirstRun.addMonths(1);
+        const QDate today(QDate::currentDate());
+        if (mPatreonDialogTime.daysTo(today) >= 0)
+            mPatreonDialogTime = today.addDays(2);
+        mSettings->setValue(QLatin1String("PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
     }
     mSettings->setValue(QLatin1String("RunCount"), mRunCount);
     mSettings->endGroup();
@@ -357,6 +376,13 @@ void Preferences::setDtdEnabled(bool enabled)
     mSettings->setValue(QLatin1String("Storage/DtdEnabled"), enabled);
 }
 
+void Preferences::setSafeSavingEnabled(bool enabled)
+{
+    mSafeSavingEnabled = enabled;
+    mSettings->setValue(QLatin1String("Storage/SafeSavingEnabled"), enabled);
+    SaveFile::setSafeSavingEnabled(enabled);
+}
+
 QString Preferences::language() const
 {
     return mLanguage;
@@ -372,6 +398,7 @@ void Preferences::setLanguage(const QString &language)
                         mLanguage);
 
     LanguageManager::instance()->installTranslators();
+    emit languageChanged();
 }
 
 bool Preferences::reloadTilesetsOnChange() const
@@ -448,9 +475,9 @@ QString Preferences::lastPath(FileType fileType) const
 
     if (path.isEmpty()) {
         DocumentManager *documentManager = DocumentManager::instance();
-        MapDocument *mapDocument = documentManager->currentDocument();
-        if (mapDocument)
-            path = QFileInfo(mapDocument->fileName()).path();
+        Document *document = documentManager->currentDocument();
+        if (document)
+            path = QFileInfo(document->fileName()).path();
     }
 
     if (path.isEmpty()) {
@@ -466,6 +493,9 @@ QString Preferences::lastPath(FileType fileType) const
  */
 void Preferences::setLastPath(FileType fileType, const QString &path)
 {
+    if (path.isEmpty())
+        return;
+
     mSettings->setValue(lastPathKey(fileType), path);
 }
 
@@ -499,6 +529,69 @@ void Preferences::setPatron(bool isPatron)
     mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
 
     emit isPatronChanged();
+}
+
+bool Preferences::shouldShowPatreonDialog() const
+{
+    if (mIsPatron)
+        return false;
+    if (mRunCount < 7)
+        return false;
+    if (!mPatreonDialogTime.isValid())
+        return false;
+
+    return mPatreonDialogTime.daysTo(QDate::currentDate()) >= 0;
+}
+
+void Preferences::setPatreonDialogReminder(const QDate &date)
+{
+    if (date.isValid())
+        setPatron(false);
+    mPatreonDialogTime = date;
+    mSettings->setValue(QLatin1String("Install/PatreonDialogTime"), mPatreonDialogTime.toString(Qt::ISODate));
+}
+
+QStringList Preferences::recentFiles() const
+{
+    QVariant v = mSettings->value(QLatin1String("recentFiles/fileNames"));
+    return v.toStringList();
+}
+
+QString Preferences::fileDialogStartLocation() const
+{
+    QStringList files = recentFiles();
+    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
+}
+
+/**
+ * Adds the given file to the recent files list.
+ */
+void Preferences::addRecentFile(const QString &fileName)
+{
+    // Remember the file by its absolute file path (not the canonical one,
+    // which avoids unexpected paths when symlinks are involved).
+    const QString absoluteFilePath = QDir::cleanPath(QFileInfo(fileName).absoluteFilePath());
+
+    if (absoluteFilePath.isEmpty())
+        return;
+
+    QStringList files = recentFiles();
+    files.removeAll(absoluteFilePath);
+    files.prepend(absoluteFilePath);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    mSettings->beginGroup(QLatin1String("recentFiles"));
+    mSettings->setValue(QLatin1String("fileNames"), files);
+    mSettings->endGroup();
+
+    emit recentFilesChanged();
+}
+
+void Preferences::clearRecentFiles()
+{
+    mSettings->remove(QLatin1String("recentFiles/fileNames"));
+    emit recentFilesChanged();
 }
 
 void Preferences::setCheckForUpdates(bool on)
@@ -583,11 +676,7 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
 
 static QString dataLocation()
 {
-#if QT_VERSION >= 0x050400
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-#else
-    return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-#endif
 }
 
 QString Preferences::stampsDirectory() const

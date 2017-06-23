@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPWRITER_H
-#define MAPWRITER_H
+#pragma once
 
 #include "map.h"
 #include "tiled_global.h"
@@ -111,5 +110,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPWRITER_H

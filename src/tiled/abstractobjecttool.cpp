@@ -49,11 +49,9 @@ static bool isTileObject(MapObject *mapObject)
 
 static bool isResizedTileObject(MapObject *mapObject)
 {
-    const auto &cell = mapObject->cell();
-    if (cell.isEmpty())
-        return false;
-
-    return mapObject->size() != cell.tile->size();
+    if (const auto tile = mapObject->cell().tile())
+        return mapObject->size() != tile->size();
+    return false;
 }
 
 
@@ -83,6 +81,12 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_D:
+        if (event->modifiers() & Qt::ControlModifier) {
+            duplicateObjects();
+            return;
+        }
+        break;
     }
 
     event->ignore();
@@ -99,12 +103,14 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->offset();
+        offsetPos -= layer->totalOffset();
+
+    const QPoint pixelPos = offsetPos.toPoint();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
+    setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -128,9 +134,22 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
+{
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    QList<MapObjectItem*> objectList;
+    for (auto item : items) {
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+            objectList.append(objectItem);
+    }
+    return objectList;
+}
+
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
     for (QGraphicsItem *item : items) {
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
@@ -158,7 +177,7 @@ void AbstractObjectTool::resetTileSize()
 
         commands << new ResizeMapObject(mapDocument(),
                                         mapObject,
-                                        mapObject->cell().tile->size(),
+                                        mapObject->cell().tile()->size(),
                                         mapObject->size());
     }
 
@@ -278,7 +297,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (action == propertiesAction) {
         MapObject *mapObject = selectedObjects.first();
         mapDocument()->setCurrentObject(mapObject);
-        mapDocument()->emitEditCurrentObject();
+        emit mapDocument()->editCurrentObject();
         return;
     }
 

@@ -24,10 +24,8 @@
 
   <?if $(var.Platform) = x64 ?>
   <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?define SystemDir = "C:\windows\SysWOW64" ?>
   <?else ?>
   <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-  <?define SystemDir = "C:\windows\system32" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
@@ -36,7 +34,8 @@
 
     <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
              Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
-             Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+             Languages='1033' Compressed='yes' SummaryCodepage='1252'
+             InstallScope='perMachine' />
 
     <MajorUpgrade AllowDowngrades="yes" />
 
@@ -94,8 +93,8 @@
             <File Id="libstdc___6_dll" Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
             <File Id="libwinpthread_1_dll" Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
             <?else?>
-            <File Id="MSVCP120" Source="$(var.SystemDir)\MSVCP120.DLL"/>
-            <File Id="MSVCR120" Source="$(var.SystemDir)\MSVCR120.DLL"/>
+            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
+            <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
             <?endif?>
 
             <?ifdef Sparkle ?>
@@ -149,7 +148,6 @@
             </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
-                <File Id="qdds_dll" Source="$(var.QtDir)\plugins\imageformats\qdds.dll"/>
                 <File Id="qgif_dll" Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Id="qjpeg_dll" Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
                 <File Id="qtga_dll" Source="$(var.QtDir)\plugins\imageformats\qtga.dll"/>
@@ -170,6 +168,7 @@
               <File Id="fil5D0F7497E05278ABCA30DE9CE4F56E77" Source="$(var.InstallRoot)\translations\tiled_en.qm" />
               <File Id="filC018335544F53B73675E2FB664EC5FD3" Source="$(var.InstallRoot)\translations\tiled_es.qm" />
               <File Id="fil594E5E839EC4145E8B4B931A2C493B0A" Source="$(var.InstallRoot)\translations\tiled_fr.qm" />
+              <File Id="filB841080212B940E99F0A87530E861878" Source="$(var.InstallRoot)\translations\tiled_he.qm" />
               <File Id="fil4F6A21C501F8FD2F62A48F9F675562F0" Source="$(var.InstallRoot)\translations\tiled_it.qm" />
               <File Id="fil474CB8EA4ACE7F46CDE67A76BD4C7898" Source="$(var.InstallRoot)\translations\tiled_ja.qm" />
               <File Id="filB8359F4627FE4AF698E2DECFCB44C230" Source="$(var.InstallRoot)\translations\tiled_nb.qm" />
@@ -228,6 +227,112 @@
                 <File Id="fil33A5BE7FFA4773701D415525C1C81165" Source="$(var.RootDir)\examples\sewer_automap\sewers.tmx" />
               </Component>
             </Directory>
+            <Directory Id="sticker_knight" Name="sticker-knight">
+              <Component Id="StickerKnightExample" Guid="{6487C380-733E-42CD-8560-81046F945377}">
+                <File Id="sticker_knight_preview.png" Source="$(var.RootDir)\examples\sticker-knight\preview.png" />
+                <File Id="sticker_knight_README.md" Source="$(var.RootDir)\examples\sticker-knight\README.md" />
+                <File Id="sticker_knight_sprites.png" Source="$(var.RootDir)\examples\sticker-knight\sprites.png" />
+              </Component>
+              <Directory Id="sticker_knight_map" Name="map">
+                <Component Id="StickerKnightExampleMap" Guid="{0CAE3CFE-7F15-4F08-9153-955E66F48623}">
+                  <File Id="map_alter.png" Source="$(var.RootDir)\examples\sticker-knight\map\alter.png" />
+                  <File Id="map_backgroundArch.png" Source="$(var.RootDir)\examples\sticker-knight\map\backgroundArch.png" />
+                  <File Id="map_backgroundMountain.png" Source="$(var.RootDir)\examples\sticker-knight\map\backgroundMountain.png" />
+                  <File Id="map_backgroundTower.png" Source="$(var.RootDir)\examples\sticker-knight\map\backgroundTower.png" />
+                  <File Id="map_backgroundTree.png" Source="$(var.RootDir)\examples\sticker-knight\map\backgroundTree.png" />
+                  <File Id="map_blobBlue.png" Source="$(var.RootDir)\examples\sticker-knight\map\blobBlue.png" />
+                  <File Id="map_blobGreen.png" Source="$(var.RootDir)\examples\sticker-knight\map\blobGreen.png" />
+                  <File Id="map_blue.png" Source="$(var.RootDir)\examples\sticker-knight\map\blue.png" />
+                  <File Id="map_bombStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\bombStroked.png" />
+                  <File Id="map_castleWall.png" Source="$(var.RootDir)\examples\sticker-knight\map\castleWall.png" />
+                  <File Id="map_cloud.png" Source="$(var.RootDir)\examples\sticker-knight\map\cloud.png" />
+                  <File Id="map_column1.png" Source="$(var.RootDir)\examples\sticker-knight\map\column1.png" />
+                  <File Id="map_column2.png" Source="$(var.RootDir)\examples\sticker-knight\map\column2.png" />
+                  <File Id="map_doorBlueStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\doorBlueStroked.png" />
+                  <File Id="map_doorGreenStroke.png" Source="$(var.RootDir)\examples\sticker-knight\map\doorGreenStroke.png" />
+                  <File Id="map_doorRedStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\doorRedStroked.png" />
+                  <File Id="map_doorStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\doorStroked.png" />
+                  <File Id="map_earthWall.png" Source="$(var.RootDir)\examples\sticker-knight\map\earthWall.png" />
+                  <File Id="map_earthWall2.png" Source="$(var.RootDir)\examples\sticker-knight\map\earthWall2.png" />
+                  <File Id="map_exit.png" Source="$(var.RootDir)\examples\sticker-knight\map\exit.png" />
+                  <File Id="map_flare.png" Source="$(var.RootDir)\examples\sticker-knight\map\flare.png" />
+                  <File Id="map_gemBlueStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\gemBlueStroked.png" />
+                  <File Id="map_gemRedStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\gemRedStroked.png" />
+                  <File Id="map_grassLarge.png" Source="$(var.RootDir)\examples\sticker-knight\map\grassLarge.png" />
+                  <File Id="map_grassSmall.png" Source="$(var.RootDir)\examples\sticker-knight\map\grassSmall.png" />
+                  <File Id="map_grey.png" Source="$(var.RootDir)\examples\sticker-knight\map\grey.png" />
+                  <File Id="map_hero.png" Source="$(var.RootDir)\examples\sticker-knight\map\hero.png" />
+                  <File Id="map_keyGreenStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\keyGreenStroked.png" />
+                  <File Id="map_keyRedStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\keyRedStroked.png" />
+                  <File Id="map_keyYellowStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\keyYellowStroked.png" />
+                  <File Id="map_platform1.png" Source="$(var.RootDir)\examples\sticker-knight\map\platform1.png" />
+                  <File Id="map_platform2.png" Source="$(var.RootDir)\examples\sticker-knight\map\platform2.png" />
+                  <File Id="map_platform3.png" Source="$(var.RootDir)\examples\sticker-knight\map\platform3.png" />
+                  <File Id="map_platform4.png" Source="$(var.RootDir)\examples\sticker-knight\map\platform4.png" />
+                  <File Id="map_platformBase1.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBase1.png" />
+                  <File Id="map_platformBase2.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBase2.png" />
+                  <File Id="map_platformBase3.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBase3.png" />
+                  <File Id="map_platformBase4.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBase4.png" />
+                  <File Id="map_platformBlock1.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock1.png" />
+                  <File Id="map_platformBlock2.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock2.png" />
+                  <File Id="map_platformBlock3.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock3.png" />
+                  <File Id="map_platformBlock4.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformBlock4.png" />
+                  <File Id="map_platformConnector1.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector1.png" />
+                  <File Id="map_platformConnector2.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector2.png" />
+                  <File Id="map_platformConnector3.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector3.png" />
+                  <File Id="map_platformConnector4.png" Source="$(var.RootDir)\examples\sticker-knight\map\platformConnector4.png" />
+                  <File Id="map_pushBlock1.png" Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock1.png" />
+                  <File Id="map_pushBlock2.png" Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock2.png" />
+                  <File Id="map_pushBlock3.png" Source="$(var.RootDir)\examples\sticker-knight\map\pushBlock3.png" />
+                  <File Id="map_sandbox.tmx" Source="$(var.RootDir)\examples\sticker-knight\map\sandbox.tmx" />
+                  <File Id="map_sandbox2.tmx" Source="$(var.RootDir)\examples\sticker-knight\map\sandbox2.tmx" />
+                  <File Id="map_shadow.png" Source="$(var.RootDir)\examples\sticker-knight\map\shadow.png" />
+                  <File Id="map_shieldStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\shieldStroked.png" />
+                  <File Id="map_sign.png" Source="$(var.RootDir)\examples\sticker-knight\map\sign.png" />
+                  <File Id="map_skeleton.png" Source="$(var.RootDir)\examples\sticker-knight\map\skeleton.png" />
+                  <File Id="map_swordStroked.png" Source="$(var.RootDir)\examples\sticker-knight\map\swordStroked.png" />
+                  <File Id="map_torch.png" Source="$(var.RootDir)\examples\sticker-knight\map\torch.png" />
+                  <File Id="map_trap.png" Source="$(var.RootDir)\examples\sticker-knight\map\trap.png" />
+                  <File Id="map_wallDecor1.png" Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor1.png" />
+                  <File Id="map_wallDecor2.png" Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor2.png" />
+                  <File Id="map_wallDecor3.png" Source="$(var.RootDir)\examples\sticker-knight\map\wallDecor3.png" />
+                  <File Id="map_window1.png" Source="$(var.RootDir)\examples\sticker-knight\map\window1.png" />
+                  <File Id="map_window2.png" Source="$(var.RootDir)\examples\sticker-knight\map\window2.png" />
+                  <File Id="map_window3.png" Source="$(var.RootDir)\examples\sticker-knight\map\window3.png" />
+                </Component>
+              </Directory>
+              <Directory Id="sticker_knight_ui" Name="ui">
+                <Component Id="StickerKnightExampleUi" Guid="{C8569B5C-20AF-482D-B46C-F20794BF646D}">
+                  <File Id="ui_backgroundSet.png" Source="$(var.RootDir)\examples\sticker-knight\ui\backgroundSet.png" />
+                  <File Id="ui_block.png" Source="$(var.RootDir)\examples\sticker-knight\ui\block.png" />
+                  <File Id="ui_buttonHelp.png" Source="$(var.RootDir)\examples\sticker-knight\ui\buttonHelp.png" />
+                  <File Id="ui_buttonStart.png" Source="$(var.RootDir)\examples\sticker-knight\ui\buttonStart.png" />
+                  <File Id="ui_cloud.png" Source="$(var.RootDir)\examples\sticker-knight\ui\cloud.png" />
+                  <File Id="ui_gem.png" Source="$(var.RootDir)\examples\sticker-knight\ui\gem.png" />
+                  <File Id="ui_heart.png" Source="$(var.RootDir)\examples\sticker-knight\ui\heart.png" />
+                  <File Id="ui_helpBackground.png" Source="$(var.RootDir)\examples\sticker-knight\ui\helpBackground.png" />
+                  <File Id="ui_shield.png" Source="$(var.RootDir)\examples\sticker-knight\ui\shield.png" />
+                  <File Id="ui_title.json" Source="$(var.RootDir)\examples\sticker-knight\ui\title.json" />
+                  <File Id="ui_title.png" Source="$(var.RootDir)\examples\sticker-knight\ui\title.png" />
+                </Component>
+              </Directory>
+            </Directory>
+            <Directory Id="python_plugin_example" Name="python">
+              <Component Id="PythonPluginExample" Guid="{EF573450-60C9-4CDF-8E30-78AB4E60C647}">
+                <File Id="fotf.py" Source="$(var.RootDir)\src\plugins\python\scripts\fotf.py" />
+                <File Id="mappy.py" Source="$(var.RootDir)\src\plugins\python\scripts\mappy.py" />
+                <File Id="pk2.py" Source="$(var.RootDir)\src\plugins\python\scripts\pk2.py" />
+                <File Id="zst.py" Source="$(var.RootDir)\src\plugins\python\scripts\zst.py" />
+              </Component>
+              <Directory Id="python_plugin_example_lib" Name="lib">
+                <Component Id="PythonPluginExampleLib" Guid="{7421AD4B-061B-4475-B5F3-7E92747515AC}">
+                  <File Id="__init__.py" Source="$(var.RootDir)\src\plugins\python\scripts\lib\__init__.py" />
+                  <File Id="cpystruct.py" Source="$(var.RootDir)\src\plugins\python\scripts\lib\cpystruct.py" />
+                  <File Id="lbm.py" Source="$(var.RootDir)\src\plugins\python\scripts\lib\lbm.py" />
+                  <File Id="mappy_types.py" Source="$(var.RootDir)\src\plugins\python\scripts\lib\mappy_types.py" />
+                </Component>
+              </Directory>
+            </Directory>
           </Directory>
         </Directory>
       </Directory>
@@ -247,6 +352,11 @@
       <ComponentRef Id='Translations' />
       <ComponentRef Id='Examples' />
       <ComponentRef Id='AutomappingExample' />
+      <ComponentRef Id='StickerKnightExample' />
+      <ComponentRef Id='StickerKnightExampleMap' />
+      <ComponentRef Id='StickerKnightExampleUi' />
+      <ComponentRef Id='PythonPluginExample' />
+      <ComponentRef Id='PythonPluginExampleLib' />
       <ComponentRef Id='PlatformPlugins' />
       <ComponentRef Id='ImageFormatPlugins' />
       <ComponentRef Id='ProgramMenuDir' />

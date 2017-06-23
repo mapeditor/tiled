@@ -47,7 +47,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 
     // version 1 check
     bool hasonlyruleprefix = true;
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         if (!layer->name().startsWith("rule", Qt::CaseInsensitive))
             hasonlyruleprefix = false;
     }
@@ -60,7 +60,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
     bool hasregion = false;
     bool allused = true;
 
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         bool isunused = true;
         if (layer->name().startsWith("input", Qt::CaseInsensitive)) {
             hasrule = true;
@@ -94,7 +94,7 @@ void ConverterControl::convertV1toV2(const QString &fileName)
         return;
     }
 
-    foreach (Tiled::Layer *layer, map->layers()) {
+    for (Tiled::Layer *layer : map->layers()) {
         if (layer->name().startsWith("ruleset", Qt::CaseInsensitive)) {
             layer->setName("Input_set");
         } else if (layer->name().startsWith("rulenotset", Qt::CaseInsensitive)) {

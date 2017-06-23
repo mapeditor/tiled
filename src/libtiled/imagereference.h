@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_IMAGEREFERENCE_H
-#define TILED_IMAGEREFERENCE_H
+#pragma once
 
 #include <QColor>
 #include <QImage>
@@ -44,5 +43,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // TILED_IMAGEREFERENCE_H

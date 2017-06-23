@@ -21,12 +21,12 @@
  */
 
 #include "commandlineparser.h"
-#include "mainwindow.h"
 #include "languagemanager.h"
-#include "pluginmanager.h"
+#include "mainwindow.h"
 #include "mapdocument.h"
-#include "mapreader.h"
 #include "mapformat.h"
+#include "mapreader.h"
+#include "pluginmanager.h"
 #include "preferences.h"
 #include "sparkleautoupdater.h"
 #include "standardautoupdater.h"
@@ -41,9 +41,16 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
+#ifdef TILED_LINUX_ARCHIVE
+#include <QSvgRenderer>
+#endif
+
 #ifdef Q_OS_WIN
 #include <windows.h>
-#endif
+#if QT_VERSION >= 0x050700
+#include <QtPlatformHeaders\QWindowsWindowFunctions>
+#endif // QT_VERSION >= 0x050700
+#endif // Q_OS_WIN
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -132,8 +139,8 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << qPrintable(QApplication::applicationDisplayName())
-                   << qPrintable(QApplication::applicationVersion());
+        qWarning().noquote() << QApplication::applicationDisplayName()
+                             << QApplication::applicationVersion();
         quit = true;
     }
 }
@@ -157,11 +164,11 @@ void CommandLineHandler::showExportFormats()
 {
     PluginManager::instance()->loadPlugins();
 
-    qWarning() << qPrintable(tr("Export formats:"));
-    auto formats = PluginManager::objects<MapFormat>();
+    qWarning().noquote() << tr("Export formats:");
+    const auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning() << " " << format->nameFilter();
+            qWarning(" %s", qUtf8Printable(format->shortName()));
     }
 
     quit = true;
@@ -175,7 +182,7 @@ void CommandLineHandler::startNewInstance()
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
     // Make console output work on Windows, if running in a console.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         FILE *dummy = nullptr;
@@ -186,13 +193,19 @@ int main(int argc, char *argv[])
 
 #if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     TiledApplication a(argc, argv);
+
+#ifdef TILED_LINUX_ARCHIVE
+    // Workaround to get the SVG image format plugin to be shipped by
+    // linuxdeployqt (see probonopd/linuxdeployqt#82).
+    QSvgRenderer svgRenderer;
+    Q_UNUSED(svgRenderer)
+#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
@@ -226,8 +239,7 @@ int main(int argc, char *argv[])
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
         if (commandLine.filesToOpen().length() < 2) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Export syntax is --export-map [format] <tmx file> <target file>"));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Export syntax is --export-map [format] <tmx file> <target file>");
             return 1;
         }
         int index = 0;
@@ -243,14 +255,13 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
+                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
                     chosenFormat = format;
                     break;
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "Format not recognized (see --export-formats)"));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "Format not recognized (see --export-formats)");
                 return 1;
             }
         } else {
@@ -261,16 +272,14 @@ int main(int argc, char *argv[])
                     continue;
                 if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                     if (chosenFormat) {
-                        qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                             "Non-unique file extension. Can't determine correct export format."));
+                        qWarning().noquote() << QCoreApplication::translate("Command line", "Non-unique file extension. Can't determine correct export format.");
                         return 1;
                     }
                     chosenFormat = format;
                 }
             }
             if (!chosenFormat) {
-                qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                     "No exporter found for target file."));
+                qWarning().noquote() << QCoreApplication::translate("Command line", "No exporter found for target file.");
                 return 1;
             }
         }
@@ -279,8 +288,7 @@ int main(int argc, char *argv[])
         MapReader reader;
         QScopedPointer<Map> map(reader.readMap(sourceFile));
         if (!map) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to load source map."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load source map.");
             return 1;
         }
 
@@ -288,8 +296,7 @@ int main(int argc, char *argv[])
         bool success = chosenFormat->write(map.data(), targetFile);
 
         if (!success) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "Failed to export map to target file."));
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
             return 1;
         }
         return 0;
@@ -319,6 +326,9 @@ int main(int argc, char *argv[])
     w.show();
 
     a.setActivationWindow(&w);
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050700
+    QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
+#endif
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));

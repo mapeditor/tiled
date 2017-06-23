@@ -62,8 +62,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning() << "TMX Map Viewer"
-            << qPrintable(QApplication::applicationVersion());
+    qWarning().noquote() << "TMX Map Viewer"
+                         << QApplication::applicationVersion();
 }
 
 static void parseCommandLineArguments(CommandLineOptions &options)
@@ -88,7 +88,7 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
     // Make console output work on Windows, if running in a console.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         FILE *dummy = nullptr;

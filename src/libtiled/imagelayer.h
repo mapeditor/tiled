@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef IMAGELAYER_H
-#define IMAGELAYER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -50,7 +49,7 @@ public:
     /**
      * Constructor.
      */
-    ImageLayer(const QString &name, int x, int y, int width, int height);
+    ImageLayer(const QString &name, int x, int y);
 
     /**
      * Destructor.
@@ -121,7 +120,7 @@ public:
      */
     bool isEmpty() const override;
 
-    Layer *clone() const override;
+    ImageLayer *clone() const override;
 
 protected:
     ImageLayer *initializeClone(ImageLayer *clone) const;
@@ -139,5 +138,3 @@ inline bool ImageLayer::loadFromImage(const QString &fileName)
 }
 
 } // namespace Tiled
-
-#endif // IMAGELAYER_H

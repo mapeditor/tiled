@@ -20,7 +20,7 @@
 
 #include "changetileprobability.h"
 
-#include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "tile.h"
 
 #include <QCoreApplication>
@@ -28,10 +28,10 @@
 namespace Tiled {
 namespace Internal {
 
-ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile*>& tiles,
                                              float probability)
-    : mMapDocument(mapDocument)
+    : mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
 {
     mProbabilities.reserve(tiles.size());
@@ -42,12 +42,12 @@ ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
                                         "Change Tile Probability"));
 }
 
-ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
                                              const QList<Tile *> &tiles,
                                              const QList<float> &probabilities,
                                              QUndoCommand *parent)
     : QUndoCommand(parent)
-    , mMapDocument(mapDocument)
+    , mTilesetDocument(tilesetDocument)
     , mTiles(tiles)
     , mProbabilities(probabilities)
 {
@@ -59,11 +59,11 @@ ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
 void ChangeTileProbability::swap()
 {
     for (int i = 0; i < mTiles.size(); ++ i) {
-        Tile* tile = mTiles[i];
+        Tile *tile = mTiles[i];
         float probability = tile->probability();
         tile->setProbability(mProbabilities[i]);
         mProbabilities[i] = probability;
-        mMapDocument->emitTileProbabilityChanged(tile);
+        emit mTilesetDocument->tileProbabilityChanged(tile);
     }
 }
 

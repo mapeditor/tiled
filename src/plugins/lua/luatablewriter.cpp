@@ -75,6 +75,7 @@ void LuaTableWriter::writeStartTable(const QByteArray &name)
 
 void LuaTableWriter::writeEndTable()
 {
+    Q_ASSERT(m_indent > 0);
     --m_indent;
     if (m_valueWritten)
         writeNewline();
@@ -220,7 +221,7 @@ void LuaTableWriter::writeNewline()
     }
 }
 
-void LuaTableWriter::write(const char *bytes, unsigned length)
+void LuaTableWriter::write(const char *bytes, qint64 length)
 {
     if (m_device->write(bytes, length) != length)
         m_error = true;

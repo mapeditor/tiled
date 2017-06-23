@@ -112,7 +112,7 @@ void Eraser::doErase(bool continuation)
     erase->setMergeable(continuation);
 
     mapDocument()->undoStack()->push(erase);
-    mapDocument()->emitRegionEdited(eraseRegion, tileLayer);
+    emit mapDocument()->regionEdited(eraseRegion, tileLayer);
 }
 
 QRect Eraser::eraseArea() const

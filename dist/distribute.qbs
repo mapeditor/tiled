@@ -18,26 +18,21 @@ Product {
     Group {
         name: "Examples"
         prefix: "../examples/"
-        files: [
-            "*.tmx",
-            "*.tsx",
-            "*.png",
-        ]
+        files: ["**"]
 
         qbs.install: true
         qbs.installDir: "examples"
+        qbs.installSourceBase: prefix
     }
 
     Group {
-        name: "Examples (automapping)"
-        prefix: "../examples/sewer_automap/"
-        files: [
-            "*.txt",
-            "*.png",
-            "*.tmx",
-        ]
+        name: "Python Scripts"
+        prefix: "../src/plugins/python/scripts/"
+        files: ["**"]
+
         qbs.install: true
-        qbs.installDir: "examples/sewer_automap"
+        qbs.installDir: "examples/python"
+        qbs.installSourceBase: prefix
     }
 
     Group {
@@ -50,11 +45,10 @@ Product {
             }
         }
         property string postfix: {
-            if (qbs.targetOS.contains("windows")) {
-                return qbs.debugInformation ? "d.dll" : ".dll"
-            } else {
-                return ".so"
-            }
+            var suffix = "";
+            if (qbs.targetOS.contains("windows") && qbs.debugInformation)
+                suffix += "d";
+            return suffix + cpp.dynamicLibrarySuffix;
         }
         files: {
             function addQtVersions(libs) {
@@ -68,13 +62,17 @@ Product {
                 return result;
             }
 
-            var list = [
-                "Qt5Core" + postfix,
-                "Qt5Gui" + postfix,
-                "Qt5Network" + postfix,
-                "Qt5Svg" + postfix,
-                "Qt5Widgets" + postfix,
-            ];
+            var list = [];
+
+            if (!Qt.core.frameworkBuild) {
+                list.push(
+                    "Qt5Core" + postfix,
+                    "Qt5Gui" + postfix,
+                    "Qt5Network" + postfix,
+                    "Qt5Svg" + postfix,
+                    "Qt5Widgets" + postfix
+                );
+            }
 
             if (Qt.core.versionMinor < 4) {
                 list.push("Qt5OpenGL" + postfix);
@@ -110,12 +108,37 @@ Product {
         qbs.installDir: qbs.targetOS.contains("windows") ? "" : "lib"
     }
 
+    property var pluginFiles: {
+        if (qbs.targetOS.contains("windows")) {
+            if (qbs.debugInformation)
+                return ["*d.dll"];
+            else
+                return ["*.dll"];
+        } else if (qbs.targetOS.contains("linux")) {
+            return ["*.so"];
+        }
+        return ["*"];
+    }
+
+    property var pluginExcludeFiles: {
+        var files = ["*.pdb"];
+        if (!(qbs.targetOS.contains("windows") && qbs.debugInformation)) {
+            // Exclude debug DLLs.
+            //
+            // This also excludes the qdirect2d.dll platform plugin, but I'm
+            // not sure when it would be preferable over the qwindows.dll. In
+            // testing it, it seems to have severe issues with HiDpi screens
+            // (as of Qt 5.8.0).
+            files.push("*d.dll");
+        }
+        return files;
+    }
+
     Group {
         name: "Qt Platform Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforms/")
-        files: ["*"]
-        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
-        excludeFiles: ["*d.dll", "*.pdb"]
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
         qbs.install: true
         qbs.installDir: "plugins/platforms"
     }
@@ -124,7 +147,7 @@ Product {
         name: "Qt Platform Input Context Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platforminputcontexts/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/platforminputcontexts"
     }
@@ -133,7 +156,7 @@ Product {
         name: "Qt Platform Theme Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/platformthemes/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/platformthemes"
     }
@@ -141,9 +164,8 @@ Product {
     Group {
         name: "Qt Image Format Plugins"
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
-        files: ["*"]
-        // Exclude debug DLLs. Fortunately no real plugin ends with 'd'.
-        excludeFiles: ["*d.dll", "*.pdb"]
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
         qbs.install: true
         qbs.installDir: "plugins/imageformats"
     }
@@ -152,7 +174,7 @@ Product {
         name: "Qt XCB GL Integration Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/xcbglintegrations/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/xcbglintegrations"
     }
@@ -161,7 +183,7 @@ Product {
         name: "Qt Icon Engine Plugins"
         condition: qbs.targetOS.contains("linux")
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
-        files: ["*.so"];
+        files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/iconengines"
     }
@@ -235,9 +257,9 @@ Product {
             if (qbs.toolchain.contains("mingw"))
                 return FileInfo.joinPaths(cpp.toolchainInstallPath) + "/"
             else if (qbs.architecture === "x86_64")
-                return "C:/windows/SysWOW64/"
-            else
                 return "C:/windows/system32/"
+            else
+                return "C:/windows/SysWOW64/"
         }
         files: {
             if (qbs.toolchain.contains("mingw")) {

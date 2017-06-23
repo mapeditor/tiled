@@ -34,6 +34,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QJsonDocument>
 #include <QMimeData>
 #include <QSet>
 #include <QUndoStack>
@@ -45,15 +46,19 @@ using namespace Tiled::Internal;
 
 ClipboardManager *ClipboardManager::mInstance;
 
-ClipboardManager::ClipboardManager() :
-    mHasMap(false)
+ClipboardManager::ClipboardManager()
+    : mClipboard(QApplication::clipboard())
+    , mHasMap(false)
+    , mHasProperties(false)
 {
-    mClipboard = QApplication::clipboard();
-    connect(mClipboard, SIGNAL(dataChanged()), SLOT(updateHasMap()));
-
-    updateHasMap();
+    connect(mClipboard, &QClipboard::dataChanged, this, &ClipboardManager::update);
+    update();
 }
 
+/**
+ * Returns the clipboard manager instance. Creates the instance when it
+ * doesn't exist yet.
+ */
 ClipboardManager *ClipboardManager::instance()
 {
     if (!mInstance)
@@ -61,12 +66,19 @@ ClipboardManager *ClipboardManager::instance()
     return mInstance;
 }
 
+/**
+ * Deletes the clipboard manager instance if it exists.
+ */
 void ClipboardManager::deleteInstance()
 {
     delete mInstance;
     mInstance = nullptr;
 }
 
+/**
+ * Retrieves the map from the clipboard. Returns null when there was no map or
+ * loading failed.
+ */
 Map *ClipboardManager::map() const
 {
     const QMimeData *mimeData = mClipboard->mimeData();
@@ -78,16 +90,43 @@ Map *ClipboardManager::map() const
     return format.fromByteArray(data);
 }
 
-void ClipboardManager::setMap(const Map *map)
+/**
+ * Sets the given map on the clipboard.
+ */
+void ClipboardManager::setMap(const Map &map)
 {
     TmxMapFormat format;
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(map));
+    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(&map));
 
     mClipboard->setMimeData(mimeData);
 }
 
+Properties ClipboardManager::properties() const
+{
+    const QMimeData *mimeData = mClipboard->mimeData();
+    const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
+    const QJsonDocument document = QJsonDocument::fromBinaryData(data);
+
+    return Properties::fromJson(document.array());
+}
+
+void ClipboardManager::setProperties(const Properties &properties)
+{
+    const QJsonDocument document(properties.toJson());
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
+    mimeData->setText(QString::fromUtf8(document.toJson()));
+
+    mClipboard->setMimeData(mimeData);
+}
+
+/**
+ * Convenience method to copy the current selection to the clipboard.
+ * Deals with either tile selection or object selection.
+ */
 void ClipboardManager::copySelection(const MapDocument *mapDocument)
 {
     const Layer *currentLayer = mapDocument->currentLayer();
@@ -101,9 +140,12 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     Layer *copyLayer = nullptr;
 
     if (!selectedArea.isEmpty() && tileLayer) {
+        const QRegion area = selectedArea.intersected(tileLayer->bounds());
+
         // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(selectedArea.translated(-tileLayer->x(),
-                                                             -tileLayer->y()));
+        copyLayer = tileLayer->copy(area.translated(-tileLayer->position()));
+        copyLayer->setPosition(area.boundingRect().topLeft());
+
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
@@ -116,7 +158,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     // Create a temporary map to write to the clipboard
     Map copyMap(map->orientation(),
-                copyLayer->width(), copyLayer->height(),
+                0, 0,
                 map->tileWidth(), map->tileHeight());
 
     copyMap.setRenderOrder(map->renderOrder());
@@ -127,9 +169,13 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 
     copyMap.addLayer(copyLayer);
 
-    setMap(&copyMap);
+    setMap(copyMap);
 }
 
+/**
+ * Convenience method that deals with some of the logic related to pasting
+ * a group of objects.
+ */
 void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
                                         MapDocument *mapDocument,
                                         const MapView *view,
@@ -186,14 +232,23 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     mapDocument->setSelectedObjects(pastedObjects);
 }
 
-void ClipboardManager::updateHasMap()
+void ClipboardManager::update()
 {
-    const QMimeData *data = mClipboard->mimeData();
-    const bool mapInClipboard =
-            data && data->hasFormat(QLatin1String(TMX_MIMETYPE));
+    bool hasMap = false;
+    bool hasProperties = false;
 
-    if (mapInClipboard != mHasMap) {
-        mHasMap = mapInClipboard;
+    if (const QMimeData *data = mClipboard->mimeData()) {
+        hasMap = data->hasFormat(QLatin1String(TMX_MIMETYPE));
+        hasProperties = data->hasFormat(QLatin1String(PROPERTIES_MIMETYPE));
+    }
+
+    if (hasMap != mHasMap) {
+        mHasMap = hasMap;
         emit hasMapChanged();
+    }
+
+    if (hasProperties != mHasProperties) {
+        mHasProperties = hasProperties;
+        emit hasPropertiesChanged();
     }
 }

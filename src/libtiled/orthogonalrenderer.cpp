@@ -62,13 +62,21 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     QRectF boundingRect;
 
     if (!object->cell().isEmpty()) {
-        const QPointF bottomLeft = bounds.topLeft();
-        const Tile *tile = object->cell().tile;
-        const QSize imgSize = tile->image().size();
-        const QPoint tileOffset = tile->offset();
-        const QSizeF objectSize = object->size();
-        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+        const QSizeF objectSize { object->size() };
 
+        QSizeF scale { 1.0, 1.0 };
+        QPoint tileOffset;
+
+        if (const Tile *tile = object->cell().tile()) {
+            QSize imgSize = tile->size();
+            if (!imgSize.isNull()) {
+                scale = QSizeF(objectSize.width() / imgSize.width(),
+                               objectSize.height() / imgSize.height());
+            }
+            tileOffset = tile->offset();
+        }
+
+        const QPointF bottomLeft = bounds.topLeft();
         boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
                               bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                               objectSize.width(),
@@ -106,6 +114,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                                                                  extraSpace + 1);
             break;
         }
+
+        case MapObject::Text:
+            boundingRect = object->bounds();
+            break;
         }
     }
 
@@ -124,9 +136,9 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             const QRectF bounds = object->bounds();
 
             if (bounds.isNull()) {
-                path.addEllipse(bounds.topLeft(), 20, 20);
+                path.addRect(object->x() - 10, object->y() - 10, 20, 20);
             } else {
-                path.addRoundedRect(bounds, 10, 10);
+                path.addRect(bounds);
             }
             break;
         }
@@ -156,6 +168,11 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             }
             break;
         }
+
+        case MapObject::Text: {
+            path.addRect(object->bounds());
+            break;
+        }
         }
     }
 
@@ -178,11 +195,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int endY = qMin(qCeil(rect.bottom()),
                           map()->height() * tileHeight + 1);
 
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setCosmetic(true);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    QPen gridPen = makeGridPen(painter->device(), gridColor);
 
     if (startY < endY) {
         gridPen.setDashOffset(startY);
@@ -206,6 +219,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
+
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
@@ -273,9 +289,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
+            Tile *tile = cell.tile();
+            QSize size = tile ? tile->size() : map()->tileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
-                            QSizeF(0, 0),
+                            size,
                             CellRenderer::BottomLeft);
         }
     }
@@ -312,16 +330,19 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        CellRenderer(painter).render(cell, QPointF(), object->size(),
+        const QSizeF size = object->size();
+        CellRenderer(painter).render(cell, QPointF(), size,
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
-            const Tile *tile = cell.tile;
-            const QSize imgSize = tile->size();
-            const QPointF tileOffset = tile->offset();
+            QPointF tileOffset;
+
+            if (const Tile *tile = cell.tile())
+                tileOffset = tile->offset();
+
             QRectF rect(QPointF(tileOffset.x(),
-                                tileOffset.y() - imgSize.height()),
-                        imgSize);
+                                tileOffset.y() - size.height()),
+                        size);
 
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);
@@ -427,6 +448,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawEllipse(rect);
+            break;
+        }
+
+        case MapObject::Text: {
+            const auto& textData = object->textData();
+            painter->setFont(textData.font);
+            painter->setPen(textData.color);
+            painter->drawText(rect, textData.text, textData.textOption());
             break;
         }
         }

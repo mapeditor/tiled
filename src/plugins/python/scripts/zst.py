@@ -20,6 +20,10 @@ class ZST(Plugin):
     return "zSNES Save State (*.zs?)"
 
   @classmethod
+  def shortName(cls):
+    return "zst"
+
+  @classmethod
   def supportsFile(cls, f):
     return open(f).read(26) == 'ZSNES Save State File V0.6'
 
@@ -63,7 +67,6 @@ class ZST(Plugin):
         tsets[pal].loadFromImage(img, 'script')
 
       la = Tiled.TileLayer('Back', 0,0, 64,32)
-      la.setMap(m)
       fh.seek(tilemapbase)
 
       for y in range(la.height()):

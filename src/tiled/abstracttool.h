@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTOOL_H
-#define ABSTRACTTOOL_H
+#pragma once
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -32,6 +31,7 @@
 
 class QEvent;
 class QKeyEvent;
+class QToolBar;
 
 namespace Tiled {
 
@@ -144,6 +144,8 @@ public:
      */
     virtual void languageChanged() = 0;
 
+    virtual void populateToolBar(QToolBar*) {}
+
 public slots:
     void setMapDocument(MapDocument *mapDocument);
 
@@ -238,5 +240,3 @@ inline bool AbstractTool::isEnabled() const
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
-
-#endif // ABSTRACTTOOL_H

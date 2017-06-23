@@ -25,11 +25,14 @@
 #include <QAction>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QGuiApplication>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
 #include <QRegExp>
+#include <QScreen>
 #include <QSettings>
 
 static QString toImageFileFilter(const QList<QByteArray> &formats)
@@ -142,6 +145,85 @@ void saveGeometry(QWidget *widget)
         const QString stateKey = widget->objectName() + QLatin1String("/State");
         settings->setValue(stateKey, mainWindow->saveState());
     }
+}
+
+qreal defaultDpiScale()
+{
+    static qreal scale = []() {
+        if (const QScreen *screen = QGuiApplication::primaryScreen())
+            return screen->logicalDotsPerInchX() / 96.0;
+        return 1.0;
+    }();
+    return scale;
+}
+
+qreal dpiScaled(qreal value)
+{
+#ifdef Q_OS_MAC
+    // On mac the DPI is always 72 so we should not scale it
+    return value;
+#else
+    static const qreal scale = defaultDpiScale();
+    return value * scale;
+#endif
+}
+
+QSize dpiScaled(QSize value)
+{
+    return QSize(qRound(dpiScaled(value.width())),
+                 qRound(dpiScaled(value.height())));
+}
+
+QPoint dpiScaled(QPoint value)
+{
+    return QPoint(qRound(dpiScaled(value.x())),
+                  qRound(dpiScaled(value.y())));
+}
+
+QRectF dpiScaled(QRectF value)
+{
+    return QRectF(dpiScaled(value.x()),
+                  dpiScaled(value.y()),
+                  dpiScaled(value.width()),
+                  dpiScaled(value.height()));
+}
+
+QSize smallIconSize()
+{
+    static QSize size = dpiScaled(QSize(16, 16));
+    return size;
+}
+
+bool isZoomInShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomIn))
+        return true;
+    if (event->key() == Qt::Key_Plus)
+        return true;
+    if (event->key() == Qt::Key_Equal)
+        return true;
+
+    return false;
+}
+
+bool isZoomOutShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomOut))
+        return true;
+    if (event->key() == Qt::Key_Minus)
+        return true;
+    if (event->key() == Qt::Key_Underscore)
+        return true;
+
+    return false;
+}
+
+bool isResetZoomShortcut(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_0 && event->modifiers() & Qt::ControlModifier)
+        return true;
+
+    return false;
 }
 
 } // namespace Utils

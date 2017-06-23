@@ -24,6 +24,7 @@
 
 #include "preferences.h"
 #include "properties.h"
+#include "utils.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -40,6 +41,7 @@ AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     mUi->setupUi(this);
+    resize(Utils::dpiScaled(size()));
 
     QString stringType = typeToName(QVariant::String);
 

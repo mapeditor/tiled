@@ -9,10 +9,22 @@ div.col-md-9 img {
     margin: 10px auto 10px auto;
 }
 
-.future h3 {
+.future h2 {
     border-bottom: 2px solid rgb(255, 148, 90);
     color: rgb(254, 89, 0);
 }
 .future a {
     color: rgb(254, 89, 0);
+}
+
+.new {
+    font-weight: bold;
+    font-size: 80%;
+    background-color: rgb(254, 89, 0);
+    color: white;
+    display: block;
+    border-radius: 4px;
+    float: right;
+    padding: 4px;
+    margin: 4px 0px 10px 10px;
 }

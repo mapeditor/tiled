@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_ADJUSTTILEINDEXES_H
-#define TILED_INTERNAL_ADJUSTTILEINDEXES_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -30,6 +29,7 @@ class Tileset;
 namespace Internal {
 
 class MapDocument;
+class TilesetDocument;
 
 /**
  * Adjusts tile indexes based on a change in the number of columns in a tileset
@@ -48,10 +48,8 @@ public:
 class AdjustTileMetaData : public QUndoCommand
 {
 public:
-    AdjustTileMetaData(MapDocument *mapDocument, const Tileset &tileset);
+    AdjustTileMetaData(TilesetDocument *tilesetDocument);
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_ADJUSTTILEINDEXES_H

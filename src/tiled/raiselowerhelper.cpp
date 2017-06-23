@@ -106,7 +106,7 @@ void RaiseLowerHelper::raiseToTop()
         return;
 
     RangeSet<int> ranges;
-    foreach (MapObjectItem *item, selectedItems)
+    for (MapObjectItem *item : selectedItems)
         ranges.insert(static_cast<int>(item->zValue()));
 
     // Iterate backwards over the ranges in order to keep the indexes valid
@@ -149,7 +149,7 @@ void RaiseLowerHelper::lowerToBottom()
         return;
 
     RangeSet<int> ranges;
-    foreach (MapObjectItem *item, selectedItems)
+    for (MapObjectItem *item : selectedItems)
         ranges.insert(static_cast<int>(item->zValue()));
 
     RangeSet<int>::Range it = ranges.begin();
@@ -184,7 +184,7 @@ ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &item
     // All selected objects need to be in the same group
     ObjectGroup *group = (*items.begin())->mapObject()->objectGroup();
 
-    foreach (const MapObjectItem *item, items)
+    for (const MapObjectItem *item : items)
         if (item->mapObject()->objectGroup() != group)
             return nullptr;
 
@@ -215,7 +215,7 @@ bool RaiseLowerHelper::initContext()
 
     QPainterPath shape;
 
-    foreach (const MapObjectItem *item, selectedItems) {
+    for (const MapObjectItem *item : selectedItems) {
         if (item->mapObject()->objectGroup() != mObjectGroup)
             return false;
 
@@ -224,18 +224,18 @@ bool RaiseLowerHelper::initContext()
 
     // The list of related items are all items from the same object group
     // that share space with the selected items.
-    QList<QGraphicsItem*> items = mMapScene->items(shape,
-                                                   Qt::IntersectsItemShape,
-                                                   Qt::AscendingOrder);
+    const QList<QGraphicsItem*> items = mMapScene->items(shape,
+                                                         Qt::IntersectsItemShape,
+                                                         Qt::AscendingOrder);
 
-    foreach (QGraphicsItem *item, items) {
+    for (QGraphicsItem *item : items) {
         if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item)) {
             if (mapObjectItem->mapObject()->objectGroup() == mObjectGroup)
                 mRelatedObjects.append(mapObjectItem);
         }
     }
 
-    foreach (MapObjectItem *item, selectedItems) {
+    for (MapObjectItem *item : selectedItems) {
         int index = mRelatedObjects.indexOf(item);
         Q_ASSERT(index != -1);
         mSelectionRanges.insert(index);
@@ -252,7 +252,7 @@ void RaiseLowerHelper::push(const QList<QUndoCommand*> &commands,
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(text);
-    foreach (QUndoCommand *command, commands)
+    for (QUndoCommand *command : commands)
         undoStack->push(command);
     undoStack->endMacro();
 }

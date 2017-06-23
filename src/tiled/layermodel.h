@@ -1,6 +1,6 @@
 /*
  * layermodel.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,14 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAYERMODEL_H
-#define LAYERMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
 #include <QIcon>
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 class Map;
 
@@ -38,7 +38,7 @@ class MapDocument;
  * The model also allows modification of the layer stack while keeping the
  * layer views up to date.
  */
-class LayerModel : public QAbstractListModel
+class LayerModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -52,7 +52,11 @@ public:
 
     LayerModel(QObject *parent = nullptr);
 
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &index) const override;
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
@@ -64,33 +68,36 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
-    int toLayerIndex(const QModelIndex &index) const;
-    int toLayerIndex(int index) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    Qt::DropActions supportedDropActions() const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column,
+                      const QModelIndex &parent) override;
 
-    int layerIndexToRow(int layerIndex) const;
+    QModelIndex index(Layer *layer) const;
+    Layer *toLayer(const QModelIndex &index) const;
 
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *mapDocument);
 
-    void insertLayer(int index, Layer *layer);
+    void insertLayer(GroupLayer *parentLayer, int index, Layer *layer);
+    Layer *takeLayerAt(GroupLayer *parentLayer, int index);
+    void replaceLayer(Layer *layer, Layer *replacement);
 
-    Layer *takeLayerAt(int index);
+    void setLayerVisible(Layer *layer, bool visible);
+    void setLayerOpacity(Layer *layer, float opacity);
+    void setLayerOffset(Layer *layer, const QPointF &offset);
 
-    void setLayerVisible(int layerIndex, bool visible);
-    void setLayerOpacity(int layerIndex, float opacity);
-    void setLayerOffset(int layerIndex, const QPointF &offset);
+    void renameLayer(Layer *layer, const QString &name);
 
-    void renameLayer(int index, const QString &name);
-
-    void toggleOtherLayers(int layerIndex);
+    void toggleOtherLayers(Layer *layer);
 
 signals:
-    void layerAdded(int index);
-    void layerAboutToBeRemoved(int index);
-    void layerRemoved(int index);
-    void layerAboutToBeRenamed(int index);
-    void layerRenamed(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
 private:
     MapDocument *mMapDocument;
@@ -111,5 +118,3 @@ inline MapDocument *LayerModel::mapDocument() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // LAYERMODEL_H

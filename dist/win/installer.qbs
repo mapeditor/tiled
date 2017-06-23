@@ -4,10 +4,15 @@ import qbs.File
 import qbs.TextFile
 
 WindowsInstallerPackage {
-    builtByDefault: false
     condition: {
-        return (project.snapshot || project.release) &&
-               (qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"));
+        if (project.windowsInstaller) {
+            if (!(qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"))) {
+                console.error("Unsupported configuration for Windows installer");
+                return false;
+            }
+        }
+
+        return project.windowsInstaller;
     }
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
@@ -23,7 +28,7 @@ WindowsInstallerPackage {
             return 32;
     }
 
-    targetName: "tiled-" + project.version + "-win" + bits
+    targetName: "Tiled-" + project.version + "-win" + bits
 
     wix.defines: {
         var defs = [
@@ -33,9 +38,10 @@ WindowsInstallerPackage {
             "RootDir=" + project.sourceDirectory
         ];
 
-        if (qbs.toolchain.contains("mingw")) {
+        if (qbs.toolchain.contains("mingw"))
             defs.push("MingwDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."));
-        }
+        else if (qbs.toolchain.contains("msvc"))
+            defs.push("VcInstallDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, "../.."));
 
         if (project.sparkleEnabled)
             defs.push("Sparkle");

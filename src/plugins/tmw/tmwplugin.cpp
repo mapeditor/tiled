@@ -21,11 +21,11 @@
 #include "tmwplugin.h"
 
 #include "map.h"
+#include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
 
 #include <QDataStream>
-#include <QSaveFile>
 
 using namespace Tmw;
 
@@ -39,7 +39,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     TileLayer *collisionLayer = nullptr;
 
-    foreach (Layer *layer, map->layers()) {
+    for (Layer *layer : map->layers()) {
         if (layer->name().compare(QLatin1String("collision"),
                                   Qt::CaseInsensitive) == 0) {
             if (TileLayer *tileLayer = layer->asTileLayer()) {
@@ -57,7 +57,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-    QSaveFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -66,7 +66,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
     const int width = collisionLayer->width();
     const int height = collisionLayer->height();
 
-    QDataStream stream(&file);
+    QDataStream stream(file.device());
     stream.setByteOrder(QDataStream::LittleEndian);
 
     stream << (qint16) width;
@@ -74,7 +74,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            Tile *tile = collisionLayer->cellAt(x, y).tile;
+            Tile *tile = collisionLayer->cellAt(x, y).tile();
             stream << (qint8) (tile && tile->id() > 0);
         }
     }
@@ -90,6 +90,11 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
 QString TmwPlugin::nameFilter() const
 {
     return tr("TMW-eAthena collision files (*.wlk)");
+}
+
+QString TmwPlugin::shortName() const
+{
+    return QLatin1String("tmw");
 }
 
 QString TmwPlugin::errorString() const

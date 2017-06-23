@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDLINEPARSER_H
-#define COMMANDLINEPARSER_H
+#pragma once
 
 #include <QCoreApplication>
 #include <QStringList>
@@ -105,7 +104,7 @@ public:
     const QStringList &filesToOpen() const { return mFilesToOpen; }
 
 private:
-    void showHelp();
+    void showHelp() const;
 
     bool handleLongOption(const QString &longName);
     bool handleShortOption(QChar c);
@@ -148,5 +147,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMANDLINEPARSER_H
