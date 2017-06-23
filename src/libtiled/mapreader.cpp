@@ -441,6 +441,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
             unsigned wangId = wangAtts.value(QLatin1String("wangId")).toUInt();
 
             wangSet->addTile(tile, wangId);
+
+            //not sure if this is necessary... seens not to work without
+            xml.skipCurrentElement();
         } else {
             readUnknownElement();
         }
@@ -588,6 +591,9 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
             int tile = atts.value(QLatin1String("tile")).toInt();
 
             tileset.insertWangSet(new WangSet(&tileset, edges, corners, name, tile));
+
+            //eventually will read properties.
+            xml.skipCurrentElement();
         } else {
             readUnknownElement();
         }
