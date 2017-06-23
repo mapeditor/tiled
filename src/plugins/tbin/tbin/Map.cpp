@@ -190,6 +190,8 @@ namespace tbin
             write< sf::Uint8 >( out, 'S' );
             writeStaticTile( out, tile );
         }
+
+        writeProperties( out, tile.props );
     }
 
     Layer readLayer( std::istream& in )

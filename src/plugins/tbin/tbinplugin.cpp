@@ -29,6 +29,7 @@
 #include "tilelayer.h"
 
 #include <cmath>
+#include <fstream>
 #include <map>
 #include <QFile>
 #include <QFileInfo>
@@ -264,26 +265,33 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                     {
                         Tiled::Cell cell = layer->cellAt( ix, iy );
                         tbin::Tile ttile;
-                        ttile.tilesheet = cell.tile()->tileset()->imageSource().toStdString();
-                        if ( cell.tile()->frames().size() == 0 )
+                        ttile.staticData.tileIndex = -1;
+
+                        if ( cell.tile() != NULL )
                         {
-                            ttile.staticData.tileIndex = cell.tile()->id();
-                        }
-                        else
-                        {
-                            // TODO: Check all frame durations are the same
-                            for ( Tiled::Frame frame : cell.tile()->frames() )
+                            ttile.tilesheet = cell.tile()->tileset()->name().toStdString();
+                            if ( cell.tile()->frames().size() == 0 )
                             {
-                                ttile.animatedData.frameInterval = frame.duration;
-                                tbin::Tile tframe;
-                                tframe.tilesheet = ttile.tilesheet;
-                                tframe.staticData.tileIndex = frame.tileId;
-                                ttile.animatedData.frames.push_back( tframe );
+                                ttile.staticData.tileIndex = cell.tile()->id();
+                            }
+                            else
+                            {
+
+                                // TODO: Check all frame durations are the same
+                                for ( Tiled::Frame frame : cell.tile()->frames() )
+                                {
+                                    ttile.animatedData.frameInterval = frame.duration;
+                                    tbin::Tile tframe;
+                                    tframe.tilesheet = ttile.tilesheet;
+                                    tframe.staticData.tileIndex = frame.tileId;
+                                    ttile.animatedData.frames.push_back( tframe );
+                                }
                             }
                         }
                         tlayer.tiles.push_back( ttile );
                     }
                 }
+                tiledToTbinProperties(layer, tlayer.props );
                 tmap.layers.push_back( std::move( tlayer ) );
                 tileLayerIdMap[ tmap.layers.back().id ] = &tmap.layers.back();
             }
@@ -307,28 +315,14 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             }
         }
 
-        Tiled::SaveFile file( fileName );
-        if ( !file.open( QIODevice::WriteOnly ) )
+        std::ofstream file( fileName.toStdString(), std::ios::trunc | std::ios::binary );
+        if ( !file )
         {
             mError = tr( "Could not open file for writing" );
             return false;
         }
-
-        std::ostringstream ss;
-        tmap.saveToStream( ss );
-
-        QDataStream out( file.device() );
-        out.writeBytes( ss.str().c_str(), ss.str().length() );
-
-        if (file.error() != QFileDevice::NoError) {
-            mError = tr("Error while writing file:\n%1").arg(file.errorString());
-            return false;
-        }
-
-        if (!file.commit()) {
-            mError = file.errorString();
-            return false;
-        }
+        tmap.saveToStream( file );
+        file.close();
     }
     catch ( std::exception& e )
     {
