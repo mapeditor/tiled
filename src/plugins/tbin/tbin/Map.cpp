@@ -71,7 +71,7 @@ namespace tbin
                 case PropertyValue::Integer: value.data.i  = read< sf::Int32   >( in );     break;
                 case PropertyValue::Float:   value.data.f  = read< float       >( in );     break;
                 case PropertyValue::String:  value.dataStr = read< std::string >( in );     break;
-                default: throw std::invalid_argument( QT_TR_NOOP( "Bad property type: " + std::to_string( value.type ) ) );
+                default: throw std::invalid_argument( QT_TR_NOOP( "Bad property type" ) );
             }
 
             ret[ key ] = value;
@@ -175,7 +175,7 @@ namespace tbin
     void writeAnimatedTile( std::ostream& out, const Tile& tile )
     {
         write( out, tile.animatedData.frameInterval );
-        write( out, tile.animatedData.frames.size() );
+        write< sf::Int32 >( out, tile.animatedData.frames.size() );
 
         std::string currTilesheet;
         for ( const Tile& tile : tile.animatedData.frames )

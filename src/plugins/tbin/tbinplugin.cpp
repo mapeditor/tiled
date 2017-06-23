@@ -128,7 +128,13 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             QDir dir(fileName);
             dir.cdUp();
             tilesheet->setImageSource(QDir::cleanPath(dir.filePath(QString::fromStdString(ttilesheet.image))));
-            tilesheet->loadImage();
+            if (!tilesheet->loadImage()) {
+                QList<Tiled::Tile*> tiles;
+                for (int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i) {
+                    tiles.append(new Tiled::Tile(i, tilesheet.data()));
+                }
+                tilesheet->addTiles(tiles);
+            }
             tbinToTiledProperties(ttilesheet.props, tilesheet.data());
 
             // TODO: Per-tile properties, investigate syntax
