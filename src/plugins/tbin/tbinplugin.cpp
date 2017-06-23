@@ -32,6 +32,7 @@
 #include <fstream>
 #include <map>
 #include <QDebug>
+#include <QDir>
 #include <sstream>
 
 namespace
@@ -106,25 +107,22 @@ TbinMapFormat::TbinMapFormat(QObject *parent)
 
 Tiled::Map *TbinMapFormat::read(const QString &fileName)
 {
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
+    std::ifstream file( fileName.toStdString(), std::ios::in | std::ios::binary );
+    if (!file) {
         mError = tr("Could not open file for reading.");
         return nullptr;
     }
-
-    QByteArray contents = file.readAll();
-    std::istringstream ss(std::string(contents.constData(), contents.length()));
 
     tbin::Map tmap;
     Tiled::Map* map;
     try
     {
-        tmap.loadFromStream(ss);
+        tmap.loadFromStream(file);
         map = new Tiled::Map(Tiled::Map::Orthogonal, tmap.layers[0].layerSize.x, tmap.layers[0].layerSize.y, tmap.layers[0].tileSize.x, tmap.layers[0].tileSize.y);
         tbinToTiledProperties(tmap.props, map);
 
         std::map< std::string, int > tmapTilesheetMapping;
-        for (int i = 0; i < tmap.tilesheets.size(); ++i)
+        for (std::size_t i = 0; i < tmap.tilesheets.size(); ++i)
         {
             const tbin::TileSheet& ttilesheet = tmap.tilesheets[i];
             tmapTilesheetMapping[ttilesheet.id] = i;
@@ -135,17 +133,13 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                 throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
             auto tilesheet = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
-            tilesheet->setImageSource(ttilesheet.image.c_str());
+            QDir dir(fileName);
+            dir.cdUp();
+            tilesheet->setImageSource(QDir::cleanPath(dir.filePath(QString::fromStdString(ttilesheet.image))));
+            tilesheet->loadImage();
             tbinToTiledProperties(ttilesheet.props, tilesheet.data());
 
             // TODO: Per-tile properties, investigate syntax
-
-            QList<Tiled::Tile*> tiles;
-            for (int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i)
-            {
-                tiles.append(new Tiled::Tile(i, tilesheet.data()));
-            }
-            tilesheet->addTiles(tiles);
 
             map->addTileset(tilesheet);
         }
@@ -157,7 +151,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
             tbinToTiledProperties(tlayer.props, layer);
             Tiled::ObjectGroup* objects = new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0);
-            for (int i = 0; i < tlayer.tiles.size(); ++i)
+            for (std::size_t i = 0; i < tlayer.tiles.size(); ++i)
             {
                 const tbin::Tile& ttile = tlayer.tiles[i];
                 int ix = i % tlayer.layerSize.x;
@@ -262,18 +256,18 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                         tbin::Tile ttile;
                         ttile.staticData.tileIndex = -1;
 
-                        if (cell.tile() != NULL)
+                        if (Tiled::Tile *tile = cell.tile())
                         {
-                            ttile.tilesheet = cell.tile()->tileset()->name().toStdString();
-                            if (cell.tile()->frames().size() == 0)
+                            ttile.tilesheet = tile->tileset()->name().toStdString();
+                            if (tile->frames().size() == 0)
                             {
-                                ttile.staticData.tileIndex = cell.tile()->id();
+                                ttile.staticData.tileIndex = tile->id();
                             }
                             else
                             {
 
                                 // TODO: Check all frame durations are the same
-                                for (Tiled::Frame frame : cell.tile()->frames())
+                                for (Tiled::Frame frame : tile->frames())
                                 {
                                     ttile.animatedData.frameInterval = frame.duration;
                                     tbin::Tile tframe;
@@ -340,9 +334,14 @@ QString TbinMapFormat::shortName() const
 
 bool TbinMapFormat::supportsFile(const QString &fileName) const
 {
-    // ...
+    std::ifstream file(fileName.toStdString(), std::ios::in | std::ios::binary);
+    if (!file)
+        return false;
 
-    return false;
+    std::string magic(6, '\0');
+    file.read(&magic[ 0 ], magic.length());
+
+    return magic == "tBIN10";
 }
 
 QString TbinMapFormat::errorString() const

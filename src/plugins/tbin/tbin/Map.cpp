@@ -296,7 +296,7 @@ namespace tbin
         }
     }
 
-    constexpr const char* MAGIC_1_0 = "tBIN10";
+    Q_DECL_CONSTEXPR const char* MAGIC_1_0 = "tBIN10";
 
     bool Map::loadFromFile( const std::string& path )
     {
