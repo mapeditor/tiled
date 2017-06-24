@@ -33,7 +33,7 @@ using namespace Tiled;
 GotoDialog *GotoDialog::mInstance;
 
 GotoDialog::GotoDialog(QWidget *parent, Qt::WindowFlags f )
-    : QDialog(parent, f), mHighlightTile()
+    : QDialog(parent, f), mHighlightTile(), mMessageBox(this)
 {
     setWindowTitle(tr("Go to"));
 
@@ -63,6 +63,9 @@ GotoDialog::GotoDialog(QWidget *parent, Qt::WindowFlags f )
     connect(goButton, &QAbstractButton::clicked, this, &GotoDialog::goToCoordinates);
 
     setLayout(mainLayout);
+
+    mMessageBox.setStandardButtons(QMessageBox::Ok);
+    mMessageBox.setIcon(QMessageBox::Critical);
 }
 
 GotoDialog* GotoDialog::showDialog()
@@ -88,29 +91,32 @@ void GotoDialog::goToCoordinates()
 
     if (mapView) {
         MapDocument *mapDocument = mapView->mapScene()->mapDocument();
-        MapRenderer *renderer = mapDocument->renderer();
-        QPointF point = renderer->tileToScreenCoords(textX.toDouble(),textY.toDouble());
-        QSize size = mapView->viewport()->geometry().size();
-        QPoint origin(point.x() - size.width()/2.0, point.y() - size.height()/2.0f);
+        Map *map = mapDocument->map();
+        int x = textX.toInt();
+        int y = textY.toInt();
+        int width = map->width();
+        int height = map->height();
 
-        QRectF rect(origin,size);
+        if ( (x >= 0 && x < width) && (y >= 0 && y < height)) {
+            MapRenderer *renderer = mapDocument->renderer();
+            QPointF point = renderer->tileToScreenCoords(textX.toDouble(),textY.toDouble());
 
-        if (!mapView->sceneRect().contains(rect)) {
-            QRectF newRect = mapView->sceneRect().united(rect);
-            mapView->setSceneRect(newRect);
+            mapView->centerOn(point);
+
+            QRect region(textX.toInt(),textY.toInt(),1,1);
+
+            mHighlightTile.setZValue(10000);
+            mHighlightTile.setMapDocument(mapDocument);
+            mapView->mapScene()->addItem(&mHighlightTile);
+            mHighlightTile.setVisible(true);
+            mHighlightTile.setTileRegion(region);
+            mHighlightTile.animate();
+
+            close();
+        } else {
+            mMessageBox.setText(tr("Coordinate ( %1 , %2 ) out map range with size [ %3 , %4 ]")
+                                .arg(textX,textY,QString::number(width),QString::number(height)));
+            mMessageBox.exec();
         }
-
-        mapView->centerOn(point);
-
-        QRect region(textX.toInt(),textY.toInt(),1,1);
-
-        mHighlightTile.setZValue(10000);
-        mHighlightTile.setMapDocument(mapDocument);
-        mapView->mapScene()->addItem(&mHighlightTile);
-        mHighlightTile.setVisible(true);
-        mHighlightTile.setTileRegion(region);
-        mHighlightTile.animate();
     }
-
-    close();
 }

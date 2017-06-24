@@ -28,6 +28,7 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QString>
 
@@ -55,6 +56,8 @@ private:
     QLineEdit *lineEditY;
 
     HighlightTile mHighlightTile;
+
+    QMessageBox mMessageBox;
 
     static GotoDialog *mInstance;
 };
