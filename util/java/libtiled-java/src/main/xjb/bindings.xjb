@@ -14,6 +14,16 @@
             <jxb:class name="ImageData" />
         </jxb:bindings>
 
+        <jxb:bindings node="xs:complexType[@name='ImageLayer']">
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
+            </jxb:bindings>
+        </jxb:bindings>
+
         <jxb:bindings node="xs:complexType[@name='Layer']">
             <jxb:class name="LayerData" implClass="Layer"/>
             <jxb:bindings node="xs:attribute[@name='height']">
@@ -170,6 +180,11 @@
                         <jxb:baseType name="MapObject"/>
                     </jxb:property>
                 </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
+                </jxb:bindings>
             </jxb:bindings>
 
             <jxb:bindings node="xs:attribute[@name='color']">
@@ -237,6 +252,11 @@
             <jxb:bindings node="xs:sequence">
                 <jxb:bindings node="xs:element[@name='image']">
                     <jxb:property name="imageData"/>
+                </jxb:bindings>
+                <jxb:bindings node="xs:element[@name='properties']">
+                    <jxb:property>
+                        <jxb:baseType name="Properties"/>
+                    </jxb:property>
                 </jxb:bindings>
                 <jxb:bindings node="xs:element[@name='tile']">
                     <jxb:property>

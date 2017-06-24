@@ -47,7 +47,7 @@ public interface TileCutter {
      *
      * @param image the image that this cutter should cut
      */
-    public void setImage(BufferedImage image);
+    void setImage(BufferedImage image);
 
     /**
      * Retrieves the next tile image.
@@ -55,7 +55,7 @@ public interface TileCutter {
      * @return the next tile image, or <code>null</code> when no more tile
      * images are available
      */
-    public BufferedImage getNextTile();
+    BufferedImage getNextTile();
 
     /**
      * Resets the tile cutter so that the next call to <code>getNextTile</code>
@@ -68,19 +68,19 @@ public interface TileCutter {
      *
      * @return the default tile width of tiles cut by this cutter.
      */
-    public int getTileWidth();
+    int getTileWidth();
 
     /**
      * Returns the default tile height of tiles cut by this cutter.
      *
      * @return the default tile height of tiles cut by this cutter.
      */
-    public int getTileHeight();
+    int getTileHeight();
 
     /**
      * Returns the name of this tile cutter.
      *
      * @return the name of this tile cutter
      */
-    public String getName();
+    String getName();
 }

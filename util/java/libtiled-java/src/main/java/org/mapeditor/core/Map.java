@@ -38,8 +38,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The Map class is the focal point of the
- * <code>org.mapeditor.core</code> package.
+ * The Map class is the focal point of the <code>org.mapeditor.core</code>
+ * package.
  *
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
@@ -275,11 +275,9 @@ public class Map extends MapData implements Iterable<Layer> {
         if (t != null) {
             int tw = t.getWidth();
             int th = t.getHeight();
-            if (tw != tileWidth) {
-                if (tileWidth == 0) {
-                    tileWidth = tw;
-                    tileHeight = th;
-                }
+            if (tw != tileWidth && tileWidth == 0) {
+                tileWidth = tw;
+                tileHeight = th;
             }
         }
 
@@ -287,8 +285,8 @@ public class Map extends MapData implements Iterable<Layer> {
     }
 
     /**
-     * Removes a {@link org.mapeditor.core.TileSet} from the map, and removes any tiles
-     * in the set from the map layers.
+     * Removes a {@link org.mapeditor.core.TileSet} from the map, and removes
+     * any tiles in the set from the map layers.
      *
      * @param tileset TileSet to remove
      */

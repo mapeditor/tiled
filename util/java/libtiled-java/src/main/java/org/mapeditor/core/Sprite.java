@@ -332,10 +332,8 @@ public class Sprite {
         Iterator<KeyFrame> itr = keys.iterator();
         while (itr.hasNext()) {
             KeyFrame k = itr.next();
-            if (k == currentKey) {
-                if (itr.hasNext()) {
-                    return itr.next();
-                }
+            if (k == currentKey && itr.hasNext()) {
+                return itr.next();
             }
         }
 
@@ -429,11 +427,8 @@ public class Sprite {
      * <p>iterateFrame.</p>
      */
     public void iterateFrame() {
-
-        if (currentKey != null) {
-            if (bPlaying) {
-                setCurrentFrame(currentFrame + currentKey.getFrameRate());
-            }
+        if (currentKey != null && bPlaying) {
+            setCurrentFrame(currentFrame + currentKey.getFrameRate());
         }
     }
 

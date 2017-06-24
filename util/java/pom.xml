@@ -3,12 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
-
     <groupId>org.mapeditor</groupId>
     <artifactId>tiled-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -55,7 +49,7 @@
     </modules>
 
     <scm>
-        <url>https://github.com/bjorn/tiled/</url>
+        <url>https://github.com/bjorn/tiled</url>
         <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
         <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
     </scm>
@@ -67,6 +61,17 @@
         <system>Travis CI</system>
         <url>https://travis-ci.org/bjorn/tiled</url>
     </ciManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,9 +185,8 @@
                 <version>2.3</version>
                 <configuration>
                     <displayChangeSetDetailUrl>${project.scm.url}/commit/%REV%</displayChangeSetDetailUrl>
-                    <displayFileDetailUrl>${project.scm.url}/%FILE%</displayFileDetailUrl>
+                    <displayFileDetailUrl>${project.scm.url}/blob/master/%FILE%</displayFileDetailUrl>
                     <displayFileRevDetailUrl>${project.scm.url}/blob/%REV%/%FILE%</displayFileRevDetailUrl>
-                    <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
                 </configuration>
                 <reportSets>
                     <reportSet>

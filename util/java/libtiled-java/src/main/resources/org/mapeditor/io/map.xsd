@@ -218,7 +218,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="tile" type="Tile" maxOccurs="unbounded"/>
         </xs:sequence>
 
-        <xs:attribute name="firstgid" type="xs:int" use="required"/>
+        <xs:attribute name="firstgid" type="xs:int"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="source" type="xs:anyURI"/>
         <xs:attribute name="tilewidth" type="xs:int" use="required"/>

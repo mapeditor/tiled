@@ -55,7 +55,7 @@ public class ImageHelper {
      * @param image a {@link java.awt.image.BufferedImage} object.
      * @return a byte array with the PNG data
      */
-    static public byte[] imageToPNG(BufferedImage image) {
+    public static byte[] imageToPNG(BufferedImage image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
@@ -83,7 +83,7 @@ public class ImageHelper {
      * @throws java.io.IOException if any.
      * @see java.awt.Toolkit#createImage(byte[] imagedata)
      */
-    static public BufferedImage bytesToImage(byte[] imageData) throws IOException {
+    public static BufferedImage bytesToImage(byte[] imageData) throws IOException {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Image toolkitImage = toolkit.createImage(imageData);
         int width = toolkitImage.getWidth(null);
@@ -97,7 +97,7 @@ public class ImageHelper {
                 Image.SCALE_FAST);
 
         BufferedImage img = new BufferedImage(width, height,
-              BufferedImage.TYPE_INT_ARGB);
+                BufferedImage.TYPE_INT_ARGB);
         Graphics g = img.getGraphics();
         g.drawImage(toolkitImage, 0, 0, null);
         g.dispose();

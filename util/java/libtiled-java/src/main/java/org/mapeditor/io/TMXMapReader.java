@@ -103,6 +103,7 @@ public class TMXMapReader {
     private final HashMap<String, TileSet> cachedTilesets = new HashMap<>();
 
     public static final class TMXMapReaderSettings {
+
         public boolean reuseCachedTilesets = false;
     }
 
@@ -390,9 +391,9 @@ public class TMXMapReader {
                 long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
 
                 // Clear the flags
-                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG |
-                            FLIPPED_VERTICALLY_FLAG |
-                            FLIPPED_DIAGONALLY_FLAG);
+                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
+                        | FLIPPED_VERTICALLY_FLAG
+                        | FLIPPED_DIAGONALLY_FLAG);
             }
             Tile tile = getTileForTileGID((int) tileId);
             obj.setTile(tile);
@@ -603,9 +604,9 @@ public class TMXMapReader {
                             for (int x = 0; x < ml.getWidth(); x++) {
                                 int tileId = 0;
                                 tileId |= is.read();
-                                tileId |= is.read() << 8;
-                                tileId |= is.read() << 16;
-                                tileId |= is.read() << 24;
+                                tileId |= is.read() << Byte.SIZE;
+                                tileId |= is.read() << Byte.SIZE * 2;
+                                tileId |= is.read() << Byte.SIZE * 3;
 
                                 setTileAtFromTileId(ml, y, x, tileId);
                             }
@@ -698,7 +699,7 @@ public class TMXMapReader {
     }
 
     /**
-     * Helper method to get the tile based on its global id
+     * Helper method to get the tile based on its global id.
      *
      * @param tileId global id of the tile
      * @return    <ul><li>{@link Tile} object corresponding to the global id, if

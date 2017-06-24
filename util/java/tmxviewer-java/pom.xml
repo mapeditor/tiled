@@ -17,6 +17,12 @@
       A small example application that views Tiled maps using libtiled-java.
     </description>
 
+    <scm>
+        <url>https://github.com/bjorn/tiled</url>
+        <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
+        <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.mapeditor</groupId>

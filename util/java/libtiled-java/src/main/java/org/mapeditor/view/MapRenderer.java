@@ -51,7 +51,7 @@ public interface MapRenderer {
      *
      * @return the dimensions of the given map in pixels
      */
-    public Dimension getMapSize();
+    Dimension getMapSize();
 
     /**
      * Paints the given tile layer, taking into account the clip rect of the
@@ -60,7 +60,7 @@ public interface MapRenderer {
      * @param g the graphics context to paint to
      * @param layer the layer to paint
      */
-    public void paintTileLayer(Graphics2D g, Layer layer);
+    void paintTileLayer(Graphics2D g, Layer layer);
 
     /**
      * Paints the given object group, taking into account the clip rect of the
@@ -69,5 +69,5 @@ public interface MapRenderer {
      * @param g the graphics context to paint to
      * @param group the group to paint
      */
-    public void paintObjectGroup(Graphics2D g, ObjectGroup group);
+    void paintObjectGroup(Graphics2D g, ObjectGroup group);
 }

@@ -44,6 +44,7 @@ import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Layer;
 import org.mapeditor.io.TMXMapReader;
+import org.mapeditor.view.HexagonalRenderer;
 import org.mapeditor.view.MapRenderer;
 import org.mapeditor.view.OrthogonalRenderer;
 import org.mapeditor.view.IsometricRenderer;
@@ -147,6 +148,9 @@ class MapView extends JPanel implements Scrollable
 
             case ISOMETRIC:
                 return new IsometricRenderer(map);
+
+            case HEXAGONAL:
+                return new HexagonalRenderer(map);
 
             default:
                 return null;

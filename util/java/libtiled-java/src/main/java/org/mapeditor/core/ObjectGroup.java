@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @version 1.0.1
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ObjectGroup extends ObjectGroupData implements Iterable<MapObject> {
+public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {
 
     private Map map;
 

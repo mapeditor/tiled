@@ -35,8 +35,8 @@ import java.io.IOException;
 import java.util.Stack;
 
 /**
- * A simple helper class to write an XML file, based on
- * http://www.xmlsoft.org/html/libxml-xmlwriter.html
+ * A simple helper class to write an XML file.
+ * Based on http://www.xmlsoft.org/html/libxml-xmlwriter.html
  *
  * @author Thorbjørn Lindeijer
  * @author Adam Turk

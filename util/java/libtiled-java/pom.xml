@@ -17,6 +17,12 @@
         A small Java library to load Tiled maps.
     </description>
 
+    <scm>
+        <url>https://github.com/bjorn/tiled</url>
+        <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
+        <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>

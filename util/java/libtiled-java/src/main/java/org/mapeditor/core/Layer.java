@@ -54,26 +54,11 @@ public class Layer extends LayerData implements Cloneable {
     private Properties properties = new Properties();
     private HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
 
-    /**
-     * MIRROR_HORIZONTAL
-     */
     public static final int MIRROR_HORIZONTAL = 1;
-    /**
-     * MIRROR_VERTICAL
-     */
     public static final int MIRROR_VERTICAL = 2;
 
-    /**
-     * ROTATE_90
-     */
     public static final int ROTATE_90 = 90;
-    /**
-     * ROTATE_180
-     */
     public static final int ROTATE_180 = 180;
-    /**
-     * ROTATE_270
-     */
     public static final int ROTATE_270 = 270;
 
     /**
@@ -110,8 +95,6 @@ public class Layer extends LayerData implements Cloneable {
      */
     public Layer() {
         super();
-        this.opacity = 1.0f;
-        this.visible = true;
         setMap(null);
     }
 
@@ -197,13 +180,13 @@ public class Layer extends LayerData implements Cloneable {
         }
 
         double ra = Math.toRadians(angle);
-        int cos_angle = (int) Math.round(Math.cos(ra));
-        int sin_angle = (int) Math.round(Math.sin(ra));
+        int cosAngle = (int) Math.round(Math.cos(ra));
+        int sinAngle = (int) Math.round(Math.sin(ra));
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                int xrot = x * cos_angle - y * sin_angle;
-                int yrot = x * sin_angle + y * cos_angle;
+                int xrot = x * cosAngle - y * sinAngle;
+                int yrot = x * sinAngle + y * cosAngle;
                 trans[yrot + ytrans][xrot + xtrans] = getTileAt(x + this.x, y + this.y);
             }
         }
@@ -306,31 +289,27 @@ public class Layer extends LayerData implements Cloneable {
             return null;
         }
 
-        if (ml instanceof Layer) {
-            Rectangle r = null;
+        Rectangle r = null;
 
-            for (int y = this.y; y < height + this.y; y++) {
-                for (int x = this.x; x < width + this.x; x++) {
-                    if (ml.getTileAt(x, y) != getTileAt(x, y)) {
-                        if (r != null) {
-                            r.add(x, y);
-                        } else {
-                            r = new Rectangle(new Point(x, y));
-                        }
+        for (int y = this.y; y < height + this.y; y++) {
+            for (int x = this.x; x < width + this.x; x++) {
+                if (ml.getTileAt(x, y) != getTileAt(x, y)) {
+                    if (r != null) {
+                        r.add(x, y);
+                    } else {
+                        r = new Rectangle(new Point(x, y));
                     }
                 }
             }
+        }
 
-            if (r != null) {
-                Layer diff = new Layer(
-                        new Rectangle(r.x, r.y, r.width + 1, r.height + 1));
-                diff.copyFrom(ml);
-                return diff;
-            } else {
-                return new Layer();
-            }
+        if (r != null) {
+            Layer diff = new Layer(
+                    new Rectangle(r.x, r.y, r.width + 1, r.height + 1));
+            diff.copyFrom(ml);
+            return diff;
         } else {
-            return null;
+            return new Layer();
         }
     }
 
@@ -373,7 +352,7 @@ public class Layer extends LayerData implements Cloneable {
      * outside this layer
      */
     public Tile getTileAt(int tx, int ty) {
-        return (getBounds().contains(tx, ty))
+        return getBounds().contains(tx, ty)
                 ? tileMap[ty - this.y][tx - this.x] : null;
     }
 

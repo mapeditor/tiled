@@ -315,14 +315,14 @@ public class TMXMapWriter {
                 }
             }
         } else {
-                        // Check to see if there is a need to write tile elements
+            // Check to see if there is a need to write tile elements
             boolean needWrite = false;
 
             // As long as one has properties, they all need to be written.
             // TODO: This shouldn't be necessary
             for (Tile tile : set) {
-                if (!tile.getProperties().isEmpty() ||
-                        tile.getSource() != null) {
+                if (!tile.getProperties().isEmpty()
+                        || tile.getSource() != null) {
                     needWrite = true;
                     break;
                 }
@@ -377,107 +377,108 @@ public class TMXMapWriter {
             w.writeAttribute("y", bounds.y);
         }
 
-        if (!l.isVisible()) {
+        Boolean isVisible = l.isVisible();
+        if (isVisible != null && !isVisible) {
             w.writeAttribute("visible", "0");
         }
-        if (l.getOpacity() < 1.0f) {
-            w.writeAttribute("opacity", l.getOpacity());
+        Float opacity = l.getOpacity();
+        if (opacity != null && opacity < 1.0f) {
+            w.writeAttribute("opacity", opacity);
         }
 
         writeProperties(l.getProperties(), w);
 
-        if (l instanceof Layer) {
-            final Layer tl = l;
-            w.startElement("data");
-            if (ENCODE_LAYER_DATA) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                OutputStream out;
+        final Layer tl = l;
+        w.startElement("data");
+        if (ENCODE_LAYER_DATA) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            OutputStream out;
 
-                w.writeAttribute("encoding", "base64");
+            w.writeAttribute("encoding", "base64");
 
-                DeflaterOutputStream dos;
-                if (COMPRESS_LAYER_DATA) {
-                    if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
-                        dos = new DeflaterOutputStream(baos);
-                    } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
-                        dos = new GZIPOutputStream(baos);
-                    } else {
-                        throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\" for map layer " + l.getName());
-                    }
-                    out = dos;
-                    w.writeAttribute("compression", settings.layerCompressionMethod);
+            DeflaterOutputStream dos;
+            if (COMPRESS_LAYER_DATA) {
+                if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                    dos = new DeflaterOutputStream(baos);
+                } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                    dos = new GZIPOutputStream(baos);
                 } else {
-                    out = baos;
+                    throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\" for map layer " + l.getName());
                 }
-
-                for (int y = 0; y < l.getHeight(); y++) {
-                    for (int x = 0; x < l.getWidth(); x++) {
-                        Tile tile = tl.getTileAt(x + bounds.x,
-                                y + bounds.y);
-                        int gid = 0;
-
-                        if (tile != null) {
-                            gid = getGid(tile);
-                        }
-
-                        out.write(gid & LAST_BYTE);
-                        out.write(gid >> 8 & LAST_BYTE);
-                        out.write(gid >> 16 & LAST_BYTE);
-                        out.write(gid >> 24 & LAST_BYTE);
-                    }
-                }
-
-                if (COMPRESS_LAYER_DATA && dos != null) {
-                    dos.finish();
-                }
-
-                byte[] dec = baos.toByteArray();
-                w.writeCDATA(DatatypeConverter.printBase64Binary(dec));
+                out = dos;
+                w.writeAttribute("compression", settings.layerCompressionMethod);
             } else {
-                for (int y = 0; y < l.getHeight(); y++) {
-                    for (int x = 0; x < l.getWidth(); x++) {
-                        Tile tile = tl.getTileAt(x + bounds.x, y + bounds.y);
-                        int gid = 0;
-
-                        if (tile != null) {
-                            gid = getGid(tile);
-                        }
-
-                        w.startElement("tile");
-                        w.writeAttribute("gid", gid);
-                        w.endElement();
-                    }
-                }
+                out = baos;
             }
-            w.endElement();
-
-            boolean tilePropertiesElementStarted = false;
 
             for (int y = 0; y < l.getHeight(); y++) {
                 for (int x = 0; x < l.getWidth(); x++) {
-                    Properties tip = tl.getTileInstancePropertiesAt(x, y);
+                    Tile tile = tl.getTileAt(x + bounds.x,
+                            y + bounds.y);
+                    int gid = 0;
 
-                    if (tip != null && !tip.isEmpty()) {
-                        if (!tilePropertiesElementStarted) {
-                            w.startElement("tileproperties");
-                            tilePropertiesElementStarted = true;
-                        }
-                        w.startElement("tile");
-
-                        w.writeAttribute("x", x);
-                        w.writeAttribute("y", y);
-
-                        writeProperties(tip, w);
-
-                        w.endElement();
+                    if (tile != null) {
+                        gid = getGid(tile);
                     }
+
+                    out.write(gid & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE * 2 & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE * 3 & LAST_BYTE);
                 }
             }
 
-            if (tilePropertiesElementStarted) {
-                w.endElement();
+            if (COMPRESS_LAYER_DATA && dos != null) {
+                dos.finish();
+            }
+
+            byte[] dec = baos.toByteArray();
+            w.writeCDATA(DatatypeConverter.printBase64Binary(dec));
+        } else {
+            for (int y = 0; y < l.getHeight(); y++) {
+                for (int x = 0; x < l.getWidth(); x++) {
+                    Tile tile = tl.getTileAt(x + bounds.x, y + bounds.y);
+                    int gid = 0;
+
+                    if (tile != null) {
+                        gid = getGid(tile);
+                    }
+
+                    w.startElement("tile");
+                    w.writeAttribute("gid", gid);
+                    w.endElement();
+                }
             }
         }
+        w.endElement();
+
+        boolean tilePropertiesElementStarted = false;
+
+        for (int y = 0; y < l.getHeight(); y++) {
+            for (int x = 0; x < l.getWidth(); x++) {
+                Properties tip = tl.getTileInstancePropertiesAt(x, y);
+
+                if (tip != null && !tip.isEmpty()) {
+                    if (!tilePropertiesElementStarted) {
+                        w.startElement("tileproperties");
+                        tilePropertiesElementStarted = true;
+                    }
+                    w.startElement("tile");
+
+                    w.writeAttribute("x", x);
+                    w.writeAttribute("y", y);
+
+                    writeProperties(tip, w);
+
+                    w.endElement();
+                }
+            }
+        }
+
+        if (tilePropertiesElementStarted) {
+            w.endElement();
+        }
+
         w.endElement();
     }
 
@@ -674,7 +675,9 @@ public class TMXMapWriter {
     }
 
     private int getFirstGidForTileset(TileSet tileset) {
-        if (firstGidPerTileset == null) return 1;
+        if (firstGidPerTileset == null) {
+            return 1;
+        }
         return firstGidPerTileset.get(tileset);
     }
 }
