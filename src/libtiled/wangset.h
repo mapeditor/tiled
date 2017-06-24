@@ -140,7 +140,7 @@ public:
 
     /* Returns the wangId of a given Tile.
      * */
-    WangId wangIdOfTile(Tile *tile) const;
+    WangId wangIdOfTile(const Tile *tile) const;
 
     /* Returns a clone of this wangset
      * */

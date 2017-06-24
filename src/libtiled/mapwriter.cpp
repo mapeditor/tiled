@@ -42,6 +42,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "terrain.h"
+#include "wangset.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -362,6 +363,23 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         w.writeEndElement();
     }
 
+    // Write the wangsets
+    if (tileset.wangSetCount() > 0) {
+        w.writeStartElement(QLatin1String("wangSets"));
+        for (int i = 0; i < tileset.wangSetCount(); ++i) {
+            const WangSet *ws = tileset.wangSet(i);
+            w.writeStartElement(QLatin1String("wangSet"));
+
+            w.writeAttribute(QLatin1String("name"),ws->name());
+            w.writeAttribute(QLatin1String("edges"),QString::number(ws->edgeColors()));
+            w.writeAttribute(QLatin1String("corners"),QString::number(ws->cornerColors()));
+            w.writeAttribute(QLatin1String("tile"),QString::number(ws->imageTileId()));
+
+            w.writeEndElement(); // </wangSet>
+        }
+        w.writeEndElement(); // </wangSets>
+    }
+
     // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
@@ -420,6 +438,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                     w.writeEndElement(); // </frame>
                 }
                 w.writeEndElement(); // </animation>
+            }
+            for (int i = 0; i < tileset.wangSetCount(); ++i) {
+                unsigned wangId = tileset.wangSet(i)->wangIdOfTile(tile);
+
+                if(!wangId) {
+                    w.writeStartElement(QLatin1String("wangInfo"));
+                    w.writeAttribute(QLatin1String("setIndex"), QString::number(i));
+
+                    //could be made more readable by spacing out the wangId into each corner.
+                    w.writeAttribute(QLatin1String("wangId"), QString::number(wangId));
+                    w.writeEndElement(); // </wangInfo>
+                }
             }
 
             w.writeEndElement(); // </tile>

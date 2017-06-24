@@ -41,6 +41,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "terrain.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -84,6 +85,7 @@ private:
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
+    void readTilesetWangSet(Tileset &tileset);
     ImageReference readImage();
 
     Layer *tryReadLayer();
@@ -353,6 +355,8 @@ SharedTileset MapReaderPrivate::readTileset()
                     }
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(*tileset);
+                } else if (xml.name() == QLatin1String("wangSets")) {
+                    readTilesetWangSet(*tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -430,6 +434,13 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
+        } else if(xml.name() == QLatin1String("wangInfo")) {
+            const QXmlStreamAttributes wangAtts = xml.attributes();
+
+            WangSet *wangSet = tileset.wangSet(wangAtts.value(QLatin1String("setIndex")).toInt());
+            unsigned wangId = wangAtts.value(QLatin1String("wangId")).toUInt();
+
+            wangSet->addTile(tile, wangId);
         } else {
             readUnknownElement();
         }
@@ -558,6 +569,25 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
                 else
                     readUnknownElement();
             }
+        } else {
+            readUnknownElement();
+        }
+    }
+}
+
+void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangSets"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("wangSet")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+            QString name = atts.value(QLatin1String("name")).toString();
+            int edges = atts.value(QLatin1String("edges")).toInt();
+            int corners = atts.value(QLatin1String("corners")).toInt();
+            int tile = atts.value(QLatin1String("tile")).toInt();
+
+            tileset.insertWangSet(new WangSet(&tileset, edges, corners, name, tile));
         } else {
             readUnknownElement();
         }

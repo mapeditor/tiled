@@ -113,7 +113,7 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
     } else {
         QStack<WangWildCard> stack;
 
-        stack.append(wildCards);
+        stack += wildCards;
 
         int max = wildCards.size();
 
@@ -146,7 +146,7 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
     return list;
 }
 
-WangId WangSet::wangIdOfTile(Tile *tile) const
+WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
     return mTileIdToWangId.value(tile->id());
 }
