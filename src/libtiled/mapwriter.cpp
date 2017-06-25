@@ -365,19 +365,19 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
     // Write the wangsets
     if (tileset.wangSetCount() > 0) {
-        w.writeStartElement(QLatin1String("wangSets"));
+        w.writeStartElement(QLatin1String("wangsets"));
         for (int i = 0; i < tileset.wangSetCount(); ++i) {
             const WangSet *ws = tileset.wangSet(i);
-            w.writeStartElement(QLatin1String("wangSet"));
+            w.writeStartElement(QLatin1String("wangset"));
 
             w.writeAttribute(QLatin1String("name"),ws->name());
             w.writeAttribute(QLatin1String("edges"),QString::number(ws->edgeColors()));
             w.writeAttribute(QLatin1String("corners"),QString::number(ws->cornerColors()));
             w.writeAttribute(QLatin1String("tile"),QString::number(ws->imageTileId()));
 
-            w.writeEndElement(); // </wangSet>
+            w.writeEndElement(); // </wangset>
         }
-        w.writeEndElement(); // </wangSets>
+        w.writeEndElement(); // </wangsets>
     }
 
     // Write the properties for those tiles that have them
@@ -440,15 +440,15 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeEndElement(); // </animation>
             }
             for (int i = 0; i < tileset.wangSetCount(); ++i) {
-                unsigned wangId = tileset.wangSet(i)->wangIdOfTile(tile);
+                unsigned wangid = tileset.wangSet(i)->wangIdOfTile(tile);
 
-                if(wangId) {
-                    w.writeStartElement(QLatin1String("wangInfo"));
-                    w.writeAttribute(QLatin1String("setIndex"), QString::number(i));
+                if(wangid) {
+                    w.writeStartElement(QLatin1String("wanginfo"));
+                    w.writeAttribute(QLatin1String("setindex"), QString::number(i));
 
                     //could be made more readable by spacing out the wangId into each corner.
-                    w.writeAttribute(QLatin1String("wangId"), QString::number(wangId));
-                    w.writeEndElement(); // </wangInfo>
+                    w.writeAttribute(QLatin1String("wangid"), QString::number(wangid));
+                    w.writeEndElement(); // </wanginfo>
                 }
             }
 

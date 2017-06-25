@@ -355,7 +355,7 @@ SharedTileset MapReaderPrivate::readTileset()
                     }
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(*tileset);
-                } else if (xml.name() == QLatin1String("wangSets")) {
+                } else if (xml.name() == QLatin1String("wangsets")) {
                     readTilesetWangSet(*tileset);
                 } else {
                     readUnknownElement();
@@ -434,15 +434,14 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
-        } else if(xml.name() == QLatin1String("wangInfo")) {
+        } else if(xml.name() == QLatin1String("wanginfo")) {
             const QXmlStreamAttributes wangAtts = xml.attributes();
 
-            WangSet *wangSet = tileset.wangSet(wangAtts.value(QLatin1String("setIndex")).toInt());
-            unsigned wangId = wangAtts.value(QLatin1String("wangId")).toUInt();
+            WangSet *wangset = tileset.wangSet(wangAtts.value(QLatin1String("setindex")).toInt());
+            unsigned wangid = wangAtts.value(QLatin1String("wangid")).toUInt();
 
-            wangSet->addTile(tile, wangId);
+            wangset->addTile(tile, wangid);
 
-            //not sure if this is necessary... seens not to work without
             xml.skipCurrentElement();
         } else {
             readUnknownElement();
@@ -580,10 +579,10 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 
 void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangSets"));
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangsets"));
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == QLatin1String("wangSet")) {
+        if (xml.name() == QLatin1String("wangset")) {
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
             int edges = atts.value(QLatin1String("edges")).toInt();
