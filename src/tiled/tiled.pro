@@ -135,13 +135,13 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
-    eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     grouplayeritem.cpp \
+    iconcheckdelegate.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
@@ -306,13 +306,13 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
-    eyevisibilitydelegate.h \
     filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
     grouplayeritem.h \
+    iconcheckdelegate.h \
     id.h \
     imagecolorpickerwidget.h \
     imagelayeritem.h \

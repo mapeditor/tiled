@@ -31,7 +31,7 @@
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "eyevisibilitydelegate.h"
+#include "iconcheckdelegate.h"
 
 #include <QBoxLayout>
 #include <QApplication>
@@ -222,7 +222,8 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegate(new EyeVisibilityDelegate(this));
+    setItemDelegateForColumn(0, new IconCheckDelegate(this));
+    setItemDelegateForColumn(1, new IconCheckDelegate(this, true));
     setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(this, SIGNAL(pressed(QModelIndex)),

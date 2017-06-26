@@ -52,6 +52,28 @@ void SetLayerVisible::swap()
     mVisible = previousVisible;
 }
 
+SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
+                               Layer *layer,
+                               bool locked)
+    : mMapDocument(mapDocument)
+    , mLayer(layer)
+    , mLocked(locked)
+{
+    if (locked)
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Unlock Layer"));
+    else
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Lock Layer"));
+}
+
+void SetLayerLocked::swap()
+{
+    const bool previousLocked = mLayer->locked();
+    mMapDocument->layerModel()->setLayerLocked(mLayer, mLocked);
+    mLocked = previousLocked;
+}
+
 
 SetLayerOpacity::SetLayerOpacity(MapDocument *mapDocument,
                                  Layer *layer,

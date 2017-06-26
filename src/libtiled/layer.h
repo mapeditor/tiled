@@ -98,12 +98,24 @@ public:
      */
     bool isVisible() const { return mVisible; }
 
+    /**
+     * Returns the lock status of current layer.
+     */
+    bool locked() const { return mLocked; }
+
+    /**
+     * Returns the lock status of layer including parent layers.
+     */
+    bool isLocked() const;
+
     bool isHidden() const;
 
     /**
      * Sets the visibility of this layer.
      */
     void setVisible(bool visible) { mVisible = visible; }
+
+    void setLocked(bool locked) { mLocked = locked; }
 
     /**
      * Returns the map this layer is part of.
@@ -227,6 +239,7 @@ protected:
     bool mVisible;
     Map *mMap;
     GroupLayer *mParentLayer;
+    bool mLocked;
 
     friend class Map;
     friend class GroupLayer;
