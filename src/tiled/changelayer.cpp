@@ -69,7 +69,7 @@ SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
 
 void SetLayerLocked::swap()
 {
-    const bool previousLocked = mLayer->locked();
+    const bool previousLocked = mLayer->isLocked();
     mMapDocument->layerModel()->setLayerLocked(mLayer, mLocked);
     mLocked = previousLocked;
 }

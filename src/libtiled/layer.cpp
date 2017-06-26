@@ -46,8 +46,8 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mOpacity(1.0f),
     mVisible(true),
     mMap(nullptr),
-    mLocked(false),
-    mParentLayer(nullptr)
+    mParentLayer(nullptr),
+    mLocked(false)
 {
 }
 
@@ -76,10 +76,10 @@ bool Layer::isHidden() const
     return layer;      // encountered an invisible layer
 }
 
-bool Layer::isLocked() const
+bool Layer::isUnlocked() const
 {
     const Layer *layer = this;
-    while (layer && layer->locked())
+    while (layer && !layer->isLocked())
         layer = layer->parentLayer();
     return layer;
 }

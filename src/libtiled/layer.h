@@ -101,12 +101,12 @@ public:
     /**
      * Returns the lock status of current layer.
      */
-    bool locked() const { return mLocked; }
+    bool isLocked() const { return mLocked; }
 
     /**
      * Returns the lock status of layer including parent layers.
      */
-    bool isLocked() const;
+    bool isUnlocked() const;
 
     bool isHidden() const;
 

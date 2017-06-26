@@ -36,6 +36,7 @@
 #include <QBoxLayout>
 #include <QApplication>
 #include <QContextMenuEvent>
+#include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
 #include <QSlider>
@@ -103,6 +104,8 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
+
+    mLayerView->header()->setStretchLastSection(false);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -125,6 +128,9 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     }
 
     mLayerView->setMapDocument(mapDocument);
+    if (mapDocument)
+        mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+
     updateOpacitySlider();
 }
 

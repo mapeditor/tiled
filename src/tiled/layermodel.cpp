@@ -112,6 +112,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     case Qt::EditRole:
         if (index.column() == 0)
             return layer->name();
+        break;
     case Qt::DecorationRole:
         if (index.column() == 0) {
             switch (layer->layerType()) {
@@ -129,12 +130,14 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0)
             return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
         if (index.column() == 1)
-            return layer->locked() ? Qt::Checked : Qt::Unchecked;
+            return layer->isLocked() ? Qt::Checked : Qt::Unchecked;
     case OpacityRole:
         return layer->opacity();
     default:
         return QVariant();
     }
+
+    return QVariant();
 }
 
 /**
@@ -163,7 +166,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         if (index.column() == 1) {
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
             const bool locked = (c == Qt::Checked);
-            if (locked != layer->locked()) {
+            if (locked != layer->isLocked()) {
                 QUndoCommand *command = new SetLayerLocked(mMapDocument,
                                                            layer,
                                                            locked);
@@ -428,7 +431,7 @@ void LayerModel::setLayerVisible(Layer *layer, bool visible)
 
 void LayerModel::setLayerLocked(Layer *layer, bool locked)
 {
-    if (layer->locked() == locked)
+    if (layer->isLocked() == locked)
         return;
 
     layer->setLocked(locked);
