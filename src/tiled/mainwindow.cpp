@@ -160,7 +160,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mConsoleDock->setVisible(false);
 
-//    mUi->actionNew->setShortcuts(QKeySequence::New);
+    mUi->actionNewMap->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
