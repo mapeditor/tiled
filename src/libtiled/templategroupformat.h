@@ -47,6 +47,9 @@ public:
     virtual bool write(const TemplateGroup *templateGroup, const QString &fileName) = 0;
 };
 
+TILEDSHARED_EXPORT TemplateGroup *readTemplateGroup(const QString &fileName,
+                                                    QString *error = nullptr);
+
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::TemplateGroupFormat, "org.mapeditor.TemplateGroupFormat")

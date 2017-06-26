@@ -110,12 +110,20 @@ void TemplatesDock::newTemplateGroup()
     if (fileName.isEmpty())
         return;
 
+    auto templateGroup = new TemplateGroup();
+    templateGroup->setName(QFileInfo(fileName).baseName());
+    templateGroup->setFileName(fileName);
+    QScopedPointer<TemplateGroupDocument>
+        templateGroupDocument(new TemplateGroupDocument(templateGroup, fileName));
+
     QString error;
-    auto model = ObjectTemplateModel::instance();
-    if (!model->addNewDocument(fileName, &error)) {
+    if (!templateGroupDocument->save(fileName, &error)) {
         QMessageBox::critical(this, tr("Error Creating Template Group"), error);
         return;
     }
+
+    auto model = ObjectTemplateModel::instance();
+    model->addNewDocument(templateGroupDocument.take());
 
     prefs->setLastPath(Preferences::TemplateDocumentsFile,
                        QFileInfo(fileName).path());

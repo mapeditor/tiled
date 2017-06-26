@@ -100,9 +100,11 @@ QVariant ObjectTemplateModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
+bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
 {
     // Remove old document if the new document overwrites it
+    QString fileName = document->fileName();
+
     for (int i = mTemplateDocuments->size() - 1; i >= 0; --i) {
         if (mTemplateDocuments->at(i)->fileName() == fileName) {
             beginRemoveRows(QModelIndex(), i, i);
@@ -112,16 +114,8 @@ bool ObjectTemplateModel::addNewDocument(QString fileName, QString *error)
         }
     }
 
-    auto templateGroup = new TemplateGroup();
-    templateGroup->setName(QFileInfo(fileName).baseName());
-    templateGroup->setFileName(fileName);
-    QScopedPointer<TemplateGroupDocument> templateGroupDocument(new TemplateGroupDocument(templateGroup, fileName));
-
-    if (!templateGroupDocument->save(fileName, error))
-        return false;
-
     beginInsertRows(QModelIndex(), mTemplateDocuments->size(), mTemplateDocuments->size());
-    mTemplateDocuments->append(templateGroupDocument.take());
+    mTemplateDocuments->append(document);
     endInsertRows();
 
     return true;

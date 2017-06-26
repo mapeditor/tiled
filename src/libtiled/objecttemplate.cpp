@@ -47,4 +47,11 @@ ObjectTemplate::ObjectTemplate(int id, QString name):
 {
 }
 
+ObjectTemplate *blankObjectTemplate()
+{
+    ObjectTemplate *objectTemplate = new ObjectTemplate;
+    objectTemplate->setObject(new MapObject);
+    return objectTemplate;
+}
+
 } // namespace Tiled

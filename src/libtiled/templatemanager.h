@@ -36,6 +36,7 @@ public:
     static TemplateManager *instance();
 
     TemplateGroup *findTemplateGroup(const QString &fileName);
+    TemplateGroup *loadTemplateGroup(const QString &fileName, QString *error);
 
     void setTemplateGroups(TemplateGroups templateGroups);
 

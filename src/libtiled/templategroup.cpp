@@ -35,13 +35,15 @@
 using namespace Tiled;
 
 TemplateGroup::TemplateGroup():
-    Object(TemplateGroupType)
+    Object(TemplateGroupType),
+    mLoaded(true)
 {
 }
 
 TemplateGroup::TemplateGroup(QString name):
     Object(TemplateGroupType),
-    mName(name)
+    mName(name),
+    mLoaded(true)
 {
 }
 

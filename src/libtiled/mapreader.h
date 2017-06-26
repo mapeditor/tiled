@@ -117,6 +117,9 @@ protected:
     virtual SharedTileset readExternalTileset(const QString &source,
                                               QString *error);
 
+    virtual TemplateGroup *loadTemplateGroup(const QString &source,
+                                             QString *error);
+
 private:
     Q_DISABLE_COPY(MapReader)
 

@@ -1,5 +1,5 @@
 /*
- * templatemanager.cpp
+ * templategroupformat.cpp
  * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
  *
@@ -19,43 +19,25 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "templatemanager.h"
 #include "templategroupformat.h"
 
-using namespace Tiled;
+#include "mapreader.h"
 
-TemplateManager::TemplateManager(QObject *parent)
-    : QObject(parent)
+namespace Tiled {
+
+TemplateGroup *readTemplateGroup(const QString &fileName, QString *error)
 {
-}
+    MapReader reader;
+    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
 
-TemplateManager *TemplateManager::mInstance;
-
-TemplateManager *TemplateManager::instance()
-{
-    if (!mInstance)
-        mInstance = new TemplateManager;
-
-    return mInstance;
-}
-
-TemplateGroup *TemplateManager::findTemplateGroup(const QString &fileName)
-{
-    for (auto *group : mTemplateGroups) {
-        if (group->fileName() == fileName)
-            return group;
+    if (error) {
+        if (!templateGroup)
+            *error = reader.errorString();
+        else
+            *error = QString();
     }
-
-    return nullptr;
-}
-
-TemplateGroup *TemplateManager::loadTemplateGroup(const QString &fileName, QString *error)
-{
-    TemplateGroup *templateGroup = findTemplateGroup(fileName);
-
-    if (!templateGroup)
-        templateGroup = readTemplateGroup(fileName, error);
 
     return templateGroup;
 }
 
+} // namespace Tiled

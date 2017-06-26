@@ -119,7 +119,7 @@ static void writeTemplateDocumentsXml(QFileDevice *device,
         writer.writeStartElement(QLatin1String("templategroup"));
 
         QString path = fileDir.relativeFilePath(templateDocument->fileName());
-        writer.writeAttribute(QLatin1String("path"), path);
+        writer.writeAttribute(QLatin1String("source"), path);
 
         writer.writeEndElement();
     }
@@ -157,14 +157,16 @@ static void readTemplateDocumentsXml(QFileDevice *device,
         if (reader.name() == QLatin1String("templategroup")) {
             const QXmlStreamAttributes atts = reader.attributes();
 
-            QString path(atts.value(QLatin1String("path")).toString());
+            QString path(atts.value(QLatin1String("source")).toString());
             path = resolveReference(path, filePath);
 
             if (!loadedPaths.contains(path)) {
                 loadedPaths.insert(path);
 
                 // TODO: handle errors that might happen while loading
-                QScopedPointer<TemplateGroupDocument> templateGroupDocument(TemplateGroupDocument::load(path, templateGroupFormat));
+                QScopedPointer<TemplateGroupDocument>
+                    templateGroupDocument(TemplateGroupDocument::load(path, templateGroupFormat));
+
                 if (templateGroupDocument)
                     templateDocuments.append(templateGroupDocument.take());
             }

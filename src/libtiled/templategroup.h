@@ -51,16 +51,19 @@ public:
     const QVector<SharedTileset> &tilesets() const;
     void addTileset(const SharedTileset &tileset);
 
-    const QString &name() const;
     void setName(const QString &name);
+    const QString &name() const;
 
-    const QString &fileName() const;
     void setFileName(const QString &fileName);
+    const QString &fileName() const;
 
-    TemplateGroupFormat *format() const;
     void setFormat(TemplateGroupFormat *format);
+    TemplateGroupFormat *format() const;
 
     int templateCount() const { return mTemplates.size(); }
+
+    void setLoaded(bool loaded);
+    bool loaded() const;
 
     ObjectTemplate *templateAt(int index) const { return mTemplates.at(index); }
 
@@ -70,6 +73,7 @@ private:
     TemplateGroupFormat *mFormat;
     QString mName;
     QString mFileName;
+    bool mLoaded;
 };
 
 typedef QList<TemplateGroup*> TemplateGroups;
@@ -97,5 +101,11 @@ inline void TemplateGroup::setFormat(TemplateGroupFormat *format)
 
 inline TemplateGroupFormat *TemplateGroup::format() const
 { return mFormat; }
+
+inline void TemplateGroup::setLoaded(bool loaded)
+{ mLoaded = loaded; }
+
+inline bool TemplateGroup::loaded() const
+{ return mLoaded; }
 
 } // namespace Tiled
