@@ -75,7 +75,7 @@ public:
                       int row, int column,
                       const QModelIndex &parent) override;
 
-    QModelIndex index(Layer *layer) const;
+    QModelIndex index(Layer *layer, int column = 0) const;
     Layer *toLayer(const QModelIndex &index) const;
 
     MapDocument *mapDocument() const;

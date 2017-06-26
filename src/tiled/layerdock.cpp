@@ -128,8 +128,11 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     }
 
     mLayerView->setMapDocument(mapDocument);
-    if (mapDocument)
+    if (mapDocument) {
         mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+        mLayerView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+        mLayerView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    }
 
     updateOpacitySlider();
 }
@@ -228,8 +231,8 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegateForColumn(0, new IconCheckDelegate(this));
-    setItemDelegateForColumn(1, new IconCheckDelegate(this, true));
+    setItemDelegateForColumn(1, new IconCheckDelegate(this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(this, true));
     setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(this, SIGNAL(pressed(QModelIndex)),
