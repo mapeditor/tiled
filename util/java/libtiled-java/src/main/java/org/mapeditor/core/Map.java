@@ -197,7 +197,7 @@ public class Map extends MapData implements Iterable<Layer> {
     public Layer getLayer(int i) {
         try {
             return getLayers().get(i);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             // todo: we should log this
         }
         return null;
@@ -213,7 +213,7 @@ public class Map extends MapData implements Iterable<Layer> {
     public ObjectGroup getObjectGroup(int i) {
         try {
             return objectGroups.get(i);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             // todo: we should log this
         }
         return null;
