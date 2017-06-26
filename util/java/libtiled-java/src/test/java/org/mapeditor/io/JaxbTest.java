@@ -60,7 +60,7 @@ import org.mapeditor.core.TileSet;
 public class JaxbTest {
     @Test
     public void loadMap() throws JAXBException, URISyntaxException, IOException {
-        URL url = this.getClass().getResource("desert.tmx");
+        URL url = getUrlFromResources("desert/desert.tmx");
 
         MapReader reader = new MapReader();
         Map map = reader.readMap(url.getFile());
@@ -101,7 +101,7 @@ public class JaxbTest {
 
     @Test
     public void loadTileSet() throws IOException, JAXBException, XMLStreamException {
-        URL url = this.getClass().getResource("perspective_walls.tsx");
+        URL url = getUrlFromResources("perspective_walls/perspective_walls.tsx");
 
         MapReader reader = new MapReader();
         TileSet tileSet = reader.readTileset(url.getFile());
@@ -116,5 +116,10 @@ public class JaxbTest {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(tileSet, System.out);
+    }
+
+    private URL getUrlFromResources(String filename) {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        return classLoader.getResource(filename);
     }
 }

@@ -268,20 +268,15 @@ public class TMXMapReader {
         String source = set.getSource();
         if (source != null) {
             String filename = xmlPath + source;
-            try {
-                InputStream in = new URL(makeUrl(filename)).openStream();
-                TileSet ext = unmarshalTilesetFile(in, filename);
-                setFirstGidForTileset(ext, firstGid);
+            InputStream in = new URL(makeUrl(filename)).openStream();
+            TileSet ext = unmarshalTilesetFile(in, filename);
+            setFirstGidForTileset(ext, firstGid);
 
-                if (ext == null) {
-                    error = "Tileset " + source + " was not loaded correctly!";
-                    return set;
-                } else {
-                    return ext;
-                }
-            } catch (FileNotFoundException fnf) {
-                error = "Could not find external tileset file " + filename;
+            if (ext == null) {
+                error = "Tileset " + source + " was not loaded correctly!";
                 return set;
+            } else {
+                return ext;
             }
         } else {
             final int tileWidth = getAttribute(t, "tilewidth", map != null ? map.getTileWidth() : 0);

@@ -30,8 +30,9 @@
 package org.mapeditor.io;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.io.IOException;
 import java.net.URL;
+import javax.imageio.IIOException;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -64,10 +65,10 @@ public class MapReaderTest {
     @Test
     public void testReadingSewersMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("sewers.tmx");
+        URL url = getUrlFromResources("sewers/sewers.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
@@ -97,10 +98,10 @@ public class MapReaderTest {
     @Test
     public void testReadingCsvMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("csvmap.tmx");
+        URL url = getUrlFromResources("csvmap/csvmap.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
@@ -115,10 +116,10 @@ public class MapReaderTest {
     @Test
     public void testReadingDesertMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("desert.tmx");
+        URL url = getUrlFromResources("desert/desert.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
@@ -130,13 +131,25 @@ public class MapReaderTest {
         assertNotNull(map.getLayer(0).getTileAt(0, 0));
     }
 
+    @Test(expected = IOException.class)
+    public void testErrorReadingImage() throws Exception {
+        URL url = getUrlFromResources("desert_missing_image/desert.tmx");
+        new TMXMapReader().readMap(url.getPath());
+    }
+
+    @Test(expected = IOException.class)
+    public void testErrorReadingTileset() throws Exception {
+        URL url = getUrlFromResources("desert_missing_tileset/desert.tmx");
+        new TMXMapReader().readMap(url.getPath());
+    }
+
     @Test
     public void testReadingExampleOutsideMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("orthogonal-outside.tmx");
+        URL url = getUrlFromResources("orthogonal-outside/orthogonal-outside.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
@@ -152,10 +165,10 @@ public class MapReaderTest {
     @Test
     public void testReadingPerspectiveWallsMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("perspective_walls.tmx");
+        URL url = getUrlFromResources("perspective_walls/perspective_walls.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
@@ -170,10 +183,10 @@ public class MapReaderTest {
     @Test
     public void testReadingHexagonalMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("hexagonal-mini.tmx");
+        URL url = getUrlFromResources("hexagonal-mini/hexagonal-mini.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.HEXAGONAL, map.getOrientation());
@@ -190,10 +203,10 @@ public class MapReaderTest {
     @Test
     public void testReadingStaggeredMap() throws Exception {
         // Arrange
-        File mapFile = getFileFromResources("staggered.tmx");
+        URL url = getUrlFromResources("staggered.tmx");
 
         // Act
-        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        Map map = new TMXMapReader().readMap(url.getPath());
 
         // Assert
         assertEquals(Orientation.STAGGERED, map.getOrientation());
@@ -206,13 +219,8 @@ public class MapReaderTest {
         assertEquals(1, map.getLayerCount());
     }
 
-    private File getFileFromResources(String filename) throws URISyntaxException {
-        // Need to load files with their absolute paths, since they might refer to
-        // tileset files that are expected to be in the same directory as the TMX file.
-        URL fileUrl = this.getClass().getResource(filename);
-        assertNotNull(fileUrl);
-        File mapFile = new File(fileUrl.toURI());
-        assertTrue(mapFile.exists());
-        return mapFile;
+    private URL getUrlFromResources(String filename) {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        return classLoader.getResource(filename);
     }
 }
