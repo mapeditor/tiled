@@ -337,7 +337,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
     public Tile getTile(int i) {
         try {
             return tiles.get(i);
-        } catch (ArrayIndexOutOfBoundsException a) {
+        } catch (IndexOutOfBoundsException a) {
         }
         return null;
     }
