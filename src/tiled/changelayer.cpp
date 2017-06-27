@@ -61,10 +61,10 @@ SetLayerLocked::SetLayerLocked(MapDocument *mapDocument,
 {
     if (locked)
         setText(QCoreApplication::translate("Undo Commands",
-                                            "Unlock Layer"));
+                                            "Lock Layer"));
     else
         setText(QCoreApplication::translate("Undo Commands",
-                                            "Lock Layer"));
+                                            "Unlock Layer"));
 }
 
 void SetLayerLocked::swap()
