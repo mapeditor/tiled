@@ -138,10 +138,12 @@ SOURCES += aboutdialog.cpp \
     eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
+    finddialog.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     grouplayeritem.cpp \
+    highlighttile.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
@@ -313,6 +315,7 @@ HEADERS += aboutdialog.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
+    gotodialog.h \
     grouplayeritem.h \
     id.h \
     imagecolorpickerwidget.h \
