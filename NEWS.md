@@ -1,6 +1,6 @@
 ### 1.0.2 (27 June 2017)
 
-* Added read-only tile and terrain properties in map editor
+* Added read-only tile and terrain properties in map editor (#1615)
 * Fixed Terrains view to display all tilesets with terrain
 * Fixed hang when trying to fill with a pasted stamp (#1617, #1624)
 * Fixed crash when editing collision when tile image wasn't loaded
