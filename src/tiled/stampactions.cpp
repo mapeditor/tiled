@@ -48,23 +48,17 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
-    mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
 
     mFlipVertical = new QAction(this);
     mFlipVertical->setIcon(flipVerticalIcon);
-    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
-    mFlipVertical->setShortcut(QKeySequence(tr("Y")));
 
     mRotateLeft = new QAction(this);
     mRotateLeft->setIcon(rotateLeftIcon);
-    mRotateLeft->setToolTip(tr("Rotate Left"));
-    mRotateLeft->setShortcut(QKeySequence(tr("Shift+Z")));
 
     mRotateRight = new QAction(this);
     mRotateRight->setIcon(rotateRightIcon);
-    mRotateLeft->setToolTip(tr("Rotate Right"));
-    mRotateRight->setShortcut(QKeySequence(tr("Z")));
+
+    languageChanged();
 }
 
 StampActions::~StampActions()
@@ -75,9 +69,9 @@ void StampActions::languageChanged()
 {
     mRandom->setToolTip(tr("Random Mode"));
     mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
-    mFlipHorizontal->setToolTip(tr("Flip Vertically"));
+    mFlipVertical->setToolTip(tr("Flip Vertically"));
     mRotateLeft->setToolTip(tr("Rotate Left"));
-    mRotateLeft->setToolTip(tr("Rotate Right"));
+    mRotateRight->setToolTip(tr("Rotate Right"));
 
     mRandom->setShortcut(QKeySequence(tr("D")));
     mFlipHorizontal->setShortcut(QKeySequence(tr("X")));
