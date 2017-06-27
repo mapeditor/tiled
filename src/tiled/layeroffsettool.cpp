@@ -95,7 +95,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     }
 
     auto currentLayer = mapDocument()->currentLayer();
-    if (currentLayer) {
+    if (currentLayer && currentLayer->isUnlocked()) {
         QPointF newOffset = mOldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
         mApplyingChange = true;
@@ -153,7 +153,8 @@ void LayerOffsetTool::finishDrag()
     if (!mapDocument())
         return;
 
-    if (Layer *layer = mapDocument()->currentLayer()) {
+    Layer *layer = mapDocument()->currentLayer();
+    if (layer && layer->isUnlocked()) {
         const QPointF newOffset = layer->offset();
         auto currentLayer = mapDocument()->currentLayer();
         mApplyingChange = true;

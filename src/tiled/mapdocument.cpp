@@ -586,6 +586,8 @@ void MapDocument::moveLayerDown(Layer *layer)
 void MapDocument::removeLayer(Layer *layer)
 {
     Q_ASSERT(layer->map() == mMap);
+    if (!layer->isUnlocked())
+        return;
     mUndoStack->push(new RemoveLayer(this,
                                      layer->siblingIndex(),
                                      layer->parentLayer()));

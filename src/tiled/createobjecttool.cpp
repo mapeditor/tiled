@@ -195,7 +195,7 @@ void CreateObjectTool::finishNewMapObject()
     Q_ASSERT(mNewMapObjectItem);
 
     ObjectGroup *objectGroup = currentObjectGroup();
-    if (!objectGroup) {
+    if (!objectGroup || !objectGroup->isUnlocked()) {
         cancelNewMapObject();
         return;
     }
