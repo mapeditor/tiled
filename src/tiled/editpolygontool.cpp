@@ -247,6 +247,7 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                                                Qt::DescendingOrder,
                                                                viewTransform(event));
 
+        mClickedObjectItem = nullptr;
         for (int i = 0; i < items.size(); ++i) {
             if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(items.at(i))) {
                 if (mapObjectItem->mapObject()->objectGroup()->isUnlocked()) {
