@@ -30,6 +30,7 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "objectgroup.h"
 #include "rangeset.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
@@ -246,7 +247,14 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                                                Qt::DescendingOrder,
                                                                viewTransform(event));
 
-        mClickedObjectItem = first<MapObjectItem>(items);
+        for (int i = 0; i < items.size(); ++i) {
+            if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(items.at(i))) {
+                if (mapObjectItem->mapObject()->objectGroup()->isUnlocked()) {
+                    mClickedObjectItem = mapObjectItem;
+                    break;
+                }
+            }
+        }
         mClickedHandle = first<PointHandle>(items);
         break;
     }
@@ -448,7 +456,7 @@ void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
 
         for (QGraphicsItem *item : intersectedItems) {
             MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
-            if (mapObjectItem)
+            if (mapObjectItem && mapObjectItem->mapObject()->objectGroup()->isUnlocked())
                 selectedItems.insert(mapObjectItem);
         }
 
