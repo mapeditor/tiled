@@ -796,6 +796,7 @@ void PropertyBrowser::addTileProperties()
     QtVariantProperty *typeProperty =
             addProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+    typeProperty->setEnabled(mTilesetDocument);
 
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
@@ -1249,6 +1250,9 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
         // Collapse custom color properties, to save space
         if (type == QVariant::Color)
             setExpanded(items(property).first(), false);
+
+        if (mObject->isPartOfTileset())
+            property->setEnabled(mTilesetDocument);
     }
 
     return property;
@@ -1594,6 +1598,8 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
     QtVariantProperty *property = mNameToProperty.value(name);
     if (!property)
+        return;
+    if (!property->isEnabled())
         return;
 
     QString propertyName = property->propertyName();

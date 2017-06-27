@@ -225,6 +225,7 @@ SOURCES += aboutdialog.cpp \
     tilesetchanges.cpp \
     tilesetdock.cpp \
     tilesetdocument.cpp \
+    tilesetdocumentsmodel.cpp \
     tileseteditor.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
@@ -399,6 +400,7 @@ HEADERS += aboutdialog.h \
     tilesetchanges.h \
     tilesetdock.h \
     tilesetdocument.h \
+    tilesetdocumentsmodel.h \
     tileseteditor.h \
     tilesetmodel.h \
     tilesetparametersedit.h \

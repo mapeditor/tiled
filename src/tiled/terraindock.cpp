@@ -30,6 +30,7 @@
 #include "terrainmodel.h"
 #include "terrainview.h"
 #include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
 #include "tilesetterrainmodel.h"
 #include "utils.h"
 
@@ -106,6 +107,8 @@ TerrainDock::TerrainDock(QWidget *parent)
     , mRemoveTerrainType(new QAction(this))
     , mDocument(nullptr)
     , mCurrentTerrain(nullptr)
+    , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
+    , mTerrainModel(new TerrainModel(mTilesetDocumentsFilterModel, this))
     , mProxyModel(new TerrainFilterModel(this))
     , mInitializing(false)
 {
@@ -168,36 +171,23 @@ TerrainDock::~TerrainDock()
 {
 }
 
-static QAbstractItemModel *terrainModel(Document *document)
-{
-    switch (document->type()) {
-    case Document::MapDocumentType:
-        return static_cast<MapDocument*>(document)->terrainModel();
-    case Document::TilesetDocumentType:
-        return static_cast<TilesetDocument*>(document)->terrainModel();
-    }
-    return nullptr;
-}
-
 void TerrainDock::setDocument(Document *document)
 {
     if (mDocument == document)
         return;
 
     // Clear all connections to the previous document
-    if (mDocument) {
-        terrainModel(mDocument)->disconnect(this);
-        mDocument->disconnect(this);
-    }
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+        tilesetDocument->terrainModel()->disconnect(this);
 
     mDocument = document;
     mInitializing = true;
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
-        TerrainModel *terrainModel = mapDocument->terrainModel();
+        mTilesetDocumentsFilterModel->setMapDocument(mapDocument);
 
         mProxyModel->setEnabled(true);
-        mProxyModel->setSourceModel(terrainModel);
+        mProxyModel->setSourceModel(mTerrainModel);
         mTerrainView->expandAll();
 
         setCurrentTerrain(firstTerrain(mapDocument));
@@ -267,8 +257,7 @@ void TerrainDock::refreshCurrentTerrain()
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
     if (Terrain *terrain = mTerrainView->terrainAt(index)) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject(terrain);
+        mDocument->setCurrentObject(terrain);
         emit selectTerrainBrush();
     }
 }
@@ -306,10 +295,8 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
         mCurrentTerrain = nullptr;
     }
 
-    if (terrain && !mInitializing) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject(terrain);
-    }
+    if (terrain && !mInitializing)
+        mDocument->setCurrentObject(terrain);
 
     mEraseTerrainButton->setChecked(terrain == nullptr);
 
@@ -331,11 +318,10 @@ QModelIndex TerrainDock::terrainIndex(Terrain *terrain) const
 {
     QModelIndex sourceIndex;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
-        sourceIndex = mapDocument->terrainModel()->index(terrain);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+    if (mDocument->type() == Document::MapDocumentType)
+        sourceIndex = mTerrainModel->index(terrain);
+    else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
         sourceIndex = tilesetDocument->terrainModel()->index(terrain);
-    }
 
     return mProxyModel->mapFromSource(sourceIndex);
 }

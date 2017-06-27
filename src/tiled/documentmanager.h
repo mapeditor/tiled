@@ -52,6 +52,7 @@ class MapEditor;
 class MapScene;
 class MapView;
 class TilesetDocument;
+class TilesetDocumentsModel;
 
 /**
  * This class controls the open documents.
@@ -169,11 +170,10 @@ public:
      */
     const QList<Document*> &documents() const { return mDocuments; }
 
-    const QList<TilesetDocument*> &tilesetDocuments() const;
+    TilesetDocumentsModel *tilesetDocumentsModel() const;
 
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findTilesetDocument(const QString &fileName) const;
-    TilesetDocument *findOrCreateTilesetDocument(const SharedTileset &tileset);
 
     /**
      * Opens the document for the given \a tileset.
@@ -254,7 +254,7 @@ private:
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
     QList<Document*> mDocuments;
-    QList<TilesetDocument*> mTilesetDocuments;
+    TilesetDocumentsModel *mTilesetDocumentsModel;
 
     QWidget *mWidget;
     QWidget *mNoEditorWidget;
@@ -276,12 +276,9 @@ private:
     static DocumentManager *mInstance;
 };
 
-/**
- * Returns all open tileset documents, either embedded or external.
- */
-inline const QList<TilesetDocument *> &DocumentManager::tilesetDocuments() const
+inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
 {
-    return mTilesetDocuments;
+    return mTilesetDocumentsModel;
 }
 
 } // namespace Tiled::Internal
