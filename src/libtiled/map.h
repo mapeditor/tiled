@@ -43,6 +43,7 @@ namespace Tiled {
 
 class Tile;
 class ObjectGroup;
+class TemplateGroup;
 
 /**
  * A tile map. Consists of a stack of layers, each can be either a TileLayer
@@ -342,6 +343,10 @@ public:
      */
     const QVector<SharedTileset> &tilesets() const { return mTilesets; }
 
+    const QList<TemplateGroup*> &templateGroups() const { return mTemplateGroups; }
+
+    bool addTemplateGroup(TemplateGroup *templateGroup);
+
     /**
      * Returns the background color of this map.
      */
@@ -395,6 +400,7 @@ private:
     mutable bool mDrawMarginsDirty;
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
+    QList<TemplateGroup*> mTemplateGroups;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
 };

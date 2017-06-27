@@ -36,6 +36,7 @@ using namespace Tiled;
 
 TemplateGroup::TemplateGroup():
     Object(TemplateGroupType),
+    mNextTemplateId(0),
     mLoaded(true)
 {
 }
@@ -43,6 +44,7 @@ TemplateGroup::TemplateGroup():
 TemplateGroup::TemplateGroup(QString name):
     Object(TemplateGroupType),
     mName(name),
+    mNextTemplateId(0),
     mLoaded(true)
 {
 }

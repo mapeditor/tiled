@@ -32,10 +32,12 @@
 #include "tiled_global.h"
 #include "objecttemplate.h"
 #include "object.h"
+#include "tileset.h"
 
 namespace Tiled {
 
 class MapObject;
+class ObjectTemplate;
 class TemplateGroupFormat;
 
 class TILEDSHARED_EXPORT TemplateGroup : public Object
@@ -57,6 +59,10 @@ public:
     void setFileName(const QString &fileName);
     const QString &fileName() const;
 
+    void setNextTemplateId(int nextId);
+    int nextTemplateId() const;
+    int takeNextTemplateId();
+
     void setFormat(TemplateGroupFormat *format);
     TemplateGroupFormat *format() const;
 
@@ -73,6 +79,7 @@ private:
     TemplateGroupFormat *mFormat;
     QString mName;
     QString mFileName;
+    int mNextTemplateId;
     bool mLoaded;
 };
 
@@ -107,5 +114,17 @@ inline void TemplateGroup::setLoaded(bool loaded)
 
 inline bool TemplateGroup::loaded() const
 { return mLoaded; }
+
+inline void TemplateGroup::setNextTemplateId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextTemplateId = nextId;
+}
+
+inline int TemplateGroup::nextTemplateId() const
+{ return mNextTemplateId; }
+
+inline int TemplateGroup::takeNextTemplateId()
+{ return mNextTemplateId++; }
 
 } // namespace Tiled

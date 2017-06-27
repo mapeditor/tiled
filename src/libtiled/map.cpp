@@ -32,6 +32,7 @@
 
 #include "layer.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
@@ -286,6 +287,15 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
             return true;
 
     return false;
+}
+
+bool Map::addTemplateGroup(TemplateGroup *templateGroup)
+{
+    if (mTemplateGroups.contains(templateGroup))
+        return false;
+
+    mTemplateGroups.append(templateGroup);
+    return true;
 }
 
 void Map::initializeObjectIds(ObjectGroup &objectGroup)

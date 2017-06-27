@@ -287,7 +287,7 @@ Map *MapReaderPrivate::readMap()
         else if (xml.name() == QLatin1String("tileset"))
             mMap->addTileset(readTileset());
         else if (xml.name() == QLatin1String("templategroup"))
-            readTemplateGroup();
+            mMap->addTemplateGroup(readTemplateGroup());
         else
             readUnknownElement();
     }
@@ -558,6 +558,7 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
     const unsigned firstTid = atts.value(QLatin1String("firsttid")).toUInt();
+    const unsigned nextTemplateId = atts.value(QLatin1String("nexttemplateid")).toUInt();
     const QString name = atts.value(QLatin1String("name")).toString();
 
     TemplateGroup *templateGroup;
@@ -566,6 +567,7 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
         templateGroup = new TemplateGroup(name);
 
         templateGroup->setName(name);
+        templateGroup->setNextTemplateId(nextTemplateId);
 
         while (xml.readNextStartElement()) {
             if (xml.name() == QLatin1String("template"))

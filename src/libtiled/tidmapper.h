@@ -37,6 +37,7 @@ public:
     QMap<unsigned, TemplateGroup*> mFirstTidToTemplateGroup;
 
     void insert(unsigned firstTid, TemplateGroup *templateGroup);
+    void clear();
     bool isEmpty() const;
 
     ObjectTemplate *tidToTemplate(unsigned tid, bool &ok) const;
@@ -44,5 +45,8 @@ public:
 
 inline bool TidMapper::isEmpty() const
 { return mFirstTidToTemplateGroup.isEmpty(); }
+
+inline void TidMapper::clear()
+{ mFirstTidToTemplateGroup.clear(); }
 
 } // namespace Tiled

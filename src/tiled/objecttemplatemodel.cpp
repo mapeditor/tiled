@@ -128,8 +128,7 @@ bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, 
     auto templates = document->templateGroup()->templates();
     int count = templates.count();
 
-    // TODO: Create nextTemplateId member in the templateGroup
-    int id = (count == 0) ? 1 : templates.last()->id() + 1;
+    int id = templateGroup->takeNextTemplateId();
 
     auto objectTemplate = new ObjectTemplate(id, name);
     objectTemplate->setObject(object);
