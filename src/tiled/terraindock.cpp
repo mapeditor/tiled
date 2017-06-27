@@ -257,8 +257,7 @@ void TerrainDock::refreshCurrentTerrain()
 void TerrainDock::indexPressed(const QModelIndex &index)
 {
     if (Terrain *terrain = mTerrainView->terrainAt(index)) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject(terrain);
+        mDocument->setCurrentObject(terrain);
         emit selectTerrainBrush();
     }
 }
@@ -296,10 +295,8 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
         mCurrentTerrain = nullptr;
     }
 
-    if (terrain && !mInitializing) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject(terrain);
-    }
+    if (terrain && !mInitializing)
+        mDocument->setCurrentObject(terrain);
 
     mEraseTerrainButton->setChecked(terrain == nullptr);
 

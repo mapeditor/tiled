@@ -493,6 +493,13 @@ void TilesetDock::updateCurrentTiles()
     setCurrentTiles(tileLayer);
 }
 
+void TilesetDock::indexPressed(const QModelIndex &index)
+{
+    TilesetView *view = currentTilesetView();
+    if (Tile *tile = view->tilesetModel()->tileAt(index))
+        mMapDocument->setCurrentObject(tile);
+}
+
 void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 {
     auto tileset = tilesetDocument->tileset();
@@ -673,6 +680,9 @@ void TilesetDock::setCurrentTile(Tile *tile)
 
     mCurrentTile = tile;
     emit currentTileChanged(tile);
+
+    if (mMapDocument && tile)
+        mMapDocument->setCurrentObject(tile);
 }
 
 void TilesetDock::retranslateUi()
@@ -795,6 +805,8 @@ void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
             this, &TilesetDock::selectionChanged);
     connect(s, &QItemSelectionModel::currentChanged,
             this, &TilesetDock::currentChanged);
+    connect(view, &TilesetView::pressed,
+            this, &TilesetDock::indexPressed);
 }
 
 void TilesetDock::editTileset()

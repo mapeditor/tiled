@@ -114,6 +114,7 @@ private slots:
 
     void updateActions();
     void updateCurrentTiles();
+    void indexPressed(const QModelIndex &index);
 
     void tilesetChanged(Tileset *tileset);
     void tilesetFileNameChanged(const QString &fileName);
