@@ -89,6 +89,9 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
 
 bool CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
+    if (!objectGroup->isUnlocked())
+        return false;
+
     CreateObjectTool::startNewMapObject(pos, objectGroup);
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
     QPolygonF polygon;
