@@ -50,7 +50,6 @@ namespace Internal {
 
 class LayerModel;
 class MapObjectModel;
-class TerrainModel;
 class TileSelectionModel;
 
 /**
@@ -161,8 +160,6 @@ public:
     LayerModel *layerModel() const { return mLayerModel; }
 
     MapObjectModel *mapObjectModel() const { return mMapObjectModel; }
-
-    TerrainModel *terrainModel() const { return mTerrainModel; }
 
     /**
      * Returns the map renderer.
@@ -283,10 +280,6 @@ signals:
     void tilesetTileOffsetChanged(Tileset *tileset);
     void tileTypeChanged(Tile *tile);
     void tileImageSourceChanged(Tile *tile);
-    void tilesetTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
-    void tilesetTerrainAdded(Tileset *tileset, int terrainId);
-    void tilesetTerrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);
-    void tilesetTerrainRemoved(Tileset *tileset, Terrain *terrain);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
@@ -320,7 +313,6 @@ private:
     MapRenderer *mRenderer;
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
-    TerrainModel *mTerrainModel;
 };
 
 

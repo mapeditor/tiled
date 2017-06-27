@@ -137,9 +137,6 @@ private slots:
     void onPropertyChanged(Object *object, const QString &name);
     void onPropertiesChanged(Object *object);
 
-    void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
-    void onTerrainAdded(Tileset *tileset, int terrainId);
-    void onTerrainAboutToBeRemoved(Terrain *terrain);
     void onTerrainRemoved(Terrain *terrain);
 
 private:

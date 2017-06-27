@@ -687,8 +687,6 @@ void TilesetDock::retranslateUi()
 
 void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
 {
-    Q_UNUSED(parent)
-
     for (int row = first; row <= last; ++row) {
         const QModelIndex index = mTilesetDocumentsFilterModel->index(row, 0, parent);
         const QVariant var = mTilesetDocumentsFilterModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
@@ -731,7 +729,7 @@ void TilesetDock::onTilesetLayoutChanged(const QList<QPersistentModelIndex> &par
 
     // Make sure the tileset tabs and views are still in the right order
     for (int i = 0, rows = mTilesetDocumentsFilterModel->rowCount(); i < rows; ++i) {
-        const QModelIndex index = mTilesetDocumentsFilterModel->index(i, 0, QModelIndex());
+        const QModelIndex index = mTilesetDocumentsFilterModel->index(i, 0);
         const QVariant var = mTilesetDocumentsFilterModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
         TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
         int currentIndex = mTilesetDocuments.indexOf(tilesetDocument);

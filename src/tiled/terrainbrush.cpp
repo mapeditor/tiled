@@ -22,7 +22,9 @@
 
 #include "terrainbrush.h"
 
+#include "addremovetileset.h"
 #include "brushitem.h"
+#include "containerhelpers.h"
 #include "geometry.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -231,6 +233,10 @@ void TerrainBrush::doPaint(bool mergeable)
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
                                                stamp->x(), stamp->y(),
                                                stamp, brushItem()->tileRegion());
+
+    if (mTerrain && !contains(mapDocument()->map()->tilesets(), mTerrain->tileset()))
+        new AddTileset(mapDocument(), mTerrain->tileset()->sharedPointer(), paint);
+
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
     emit mapDocument()->regionEdited(brushItem()->tileRegion(), tileLayer);
