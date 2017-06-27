@@ -225,7 +225,7 @@ void TerrainBrush::doPaint(bool mergeable)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    if (!tileLayer->bounds().intersects(stamp->bounds()))
+    if (!tileLayer->bounds().intersects(stamp->bounds()) || !tileLayer->isUnlocked())
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,

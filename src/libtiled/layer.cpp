@@ -81,7 +81,7 @@ bool Layer::isUnlocked() const
     const Layer *layer = this;
     while (layer && !layer->isLocked())
         layer = layer->parentLayer();
-    return layer;
+    return !layer;
 }
 
 /**

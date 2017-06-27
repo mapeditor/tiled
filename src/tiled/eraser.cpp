@@ -95,6 +95,9 @@ void Eraser::languageChanged()
 void Eraser::doErase(bool continuation)
 {
     TileLayer *tileLayer = currentTileLayer();
+    if (!tileLayer->isUnlocked())
+        return;
+
     QRegion eraseRegion(eraseArea());
 
     if (continuation) {

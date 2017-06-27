@@ -269,7 +269,7 @@ void MapDocumentActionHandler::cut()
         return;
 
     Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
+    if (!currentLayer || !currentLayer->isUnlocked())
         return;
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
@@ -305,7 +305,7 @@ void MapDocumentActionHandler::delete_()
         return;
 
     Layer *currentLayer = mMapDocument->currentLayer();
-    if (!currentLayer)
+    if (!currentLayer || !currentLayer->isUnlocked())
         return;
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);

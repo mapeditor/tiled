@@ -207,7 +207,7 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     const TileLayer *preview = mFillOverlay.data();
-    if (!preview)
+    if (!preview || !currentTileLayer()->isUnlocked())
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
