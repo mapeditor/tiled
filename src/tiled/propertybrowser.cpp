@@ -660,6 +660,7 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 {
     addProperty(NameProperty, QVariant::String, tr("Name"), parent);
     addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
+    addProperty(LockedProperty, QVariant::Bool, tr("Locked"), parent);
 
     QtVariantProperty *opacityProperty =
             addProperty(OpacityProperty, QVariant::Double, tr("Opacity"), parent);
@@ -796,6 +797,7 @@ void PropertyBrowser::addTileProperties()
     QtVariantProperty *typeProperty =
             addProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+    typeProperty->setEnabled(mTilesetDocument);
 
     addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
@@ -993,6 +995,9 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
         break;
     case VisibleProperty:
         command = new SetLayerVisible(mMapDocument, layer, val.toBool());
+        break;
+    case LockedProperty:
+        command = new SetLayerLocked(mMapDocument, layer, val.toBool());
         break;
     case OpacityProperty:
         command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
@@ -1249,6 +1254,9 @@ QtVariantProperty *PropertyBrowser::addProperty(PropertyId id, int type,
         // Collapse custom color properties, to save space
         if (type == QVariant::Color)
             setExpanded(items(property).first(), false);
+
+        if (mObject->isPartOfTileset())
+            property->setEnabled(mTilesetDocument);
     }
 
     return property;
@@ -1427,6 +1435,7 @@ void PropertyBrowser::updateProperties()
 
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
+        mIdToProperty[LockedProperty]->setValue(layer->isLocked());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
@@ -1594,6 +1603,8 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 {
     QtVariantProperty *property = mNameToProperty.value(name);
     if (!property)
+        return;
+    if (!property->isEnabled())
         return;
 
     QString propertyName = property->propertyName();

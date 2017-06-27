@@ -604,6 +604,7 @@ static void readLayerAttributes(Layer &layer,
 {
     const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
+    const QStringRef lockedRef = atts.value(QLatin1String("locked"));
 
     bool ok;
     const float opacity = opacityRef.toFloat(&ok);
@@ -613,6 +614,10 @@ static void readLayerAttributes(Layer &layer,
     const int visible = visibleRef.toInt(&ok);
     if (ok)
         layer.setVisible(visible);
+
+    const int locked = lockedRef.toInt(&ok);
+    if (ok)
+        layer.setLocked(locked);
 
     const QPointF offset(atts.value(QLatin1String("offsetx")).toDouble(),
                          atts.value(QLatin1String("offsety")).toDouble());

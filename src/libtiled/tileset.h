@@ -644,3 +644,5 @@ inline bool Tileset::imageLoaded() const
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::SharedTileset)

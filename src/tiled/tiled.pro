@@ -135,13 +135,13 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     exportasimagedialog.cpp \
-    eyevisibilitydelegate.cpp \
     filechangedwarning.cpp \
     fileedit.cpp \
     flexiblescrollbar.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     grouplayeritem.cpp \
+    iconcheckdelegate.cpp \
     id.cpp \
     imagecolorpickerwidget.cpp \
     imagelayeritem.cpp \
@@ -225,6 +225,7 @@ SOURCES += aboutdialog.cpp \
     tilesetchanges.cpp \
     tilesetdock.cpp \
     tilesetdocument.cpp \
+    tilesetdocumentsmodel.cpp \
     tileseteditor.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
@@ -306,13 +307,13 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetiles.h \
     exportasimagedialog.h \
-    eyevisibilitydelegate.h \
     filechangedwarning.h \
     fileedit.h \
     flexiblescrollbar.h \
     flipmapobjects.h \
     geometry.h \
     grouplayeritem.h \
+    iconcheckdelegate.h \
     id.h \
     imagecolorpickerwidget.h \
     imagelayeritem.h \
@@ -399,6 +400,7 @@ HEADERS += aboutdialog.h \
     tilesetchanges.h \
     tilesetdock.h \
     tilesetdocument.h \
+    tilesetdocumentsmodel.h \
     tileseteditor.h \
     tilesetmodel.h \
     tilesetparametersedit.h \

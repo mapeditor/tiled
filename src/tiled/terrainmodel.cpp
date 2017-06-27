@@ -23,12 +23,15 @@
 #include "terrainmodel.h"
 
 #include "containerhelpers.h"
-#include "map.h"
 #include "mapdocument.h"
+#include "map.h"
 #include "renameterrain.h"
 #include "terrain.h"
-#include "tileset.h"
 #include "tile.h"
+#include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
+#include "tileset.h"
+#include "tilesetterrainmodel.h"
 
 #include <QApplication>
 #include <QFont>
@@ -37,30 +40,21 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TerrainModel::TerrainModel(MapDocument *mapDocument,
+TerrainModel::TerrainModel(QAbstractItemModel *tilesetDocumentsModel,
                            QObject *parent):
     QAbstractItemModel(parent),
-    mMapDocument(mapDocument)
+    mTilesetDocumentsModel(tilesetDocumentsModel)
 {
-    connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
-            this, SLOT(tilesetAboutToBeAdded(int)));
-    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-            this, SLOT(tilesetAdded()));
-    connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
-            this, SLOT(tilesetAboutToBeRemoved(int)));
-    connect(mapDocument, SIGNAL(tilesetRemoved(Tileset*)),
-            this, SLOT(tilesetRemoved()));
-
-    connect(mapDocument, &MapDocument::tilesetNameChanged,
-            this, &TerrainModel::tilesetChanged);
-    connect(mapDocument, &MapDocument::tilesetTerrainAboutToBeAdded,
-            this, &TerrainModel::terrainAboutToBeAdded);
-    connect(mapDocument, &MapDocument::tilesetTerrainAdded,
-            this, &TerrainModel::terrainAdded);
-    connect(mapDocument, &MapDocument::tilesetTerrainAboutToBeRemoved,
-            this, &TerrainModel::terrainAboutToBeRemoved);
-    connect(mapDocument, &MapDocument::tilesetTerrainRemoved,
-            this, &TerrainModel::terrainRemoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsInserted,
+            this, &TerrainModel::onTilesetRowsInserted);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsAboutToBeRemoved,
+            this, &TerrainModel::onTilesetRowsAboutToBeRemoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsMoved,
+            this, &TerrainModel::onTilesetRowsMoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::layoutChanged,
+            this, &TerrainModel::onTilesetLayoutChanged);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::dataChanged,
+            this, &TerrainModel::onTilesetDataChanged);
 }
 
 TerrainModel::~TerrainModel()
@@ -82,9 +76,11 @@ QModelIndex TerrainModel::index(int row, int column, const QModelIndex &parent) 
 
 QModelIndex TerrainModel::index(Tileset *tileset) const
 {
-    int row = indexOf(mMapDocument->map()->tilesets(), tileset);
-    Q_ASSERT(row != -1);
-    return createIndex(row, 0);
+    for (int row = 0; row < mTilesetDocuments.size(); ++row)
+        if (mTilesetDocuments.at(row)->tileset() == tileset)
+            return createIndex(row, 0);
+
+    return QModelIndex();
 }
 
 QModelIndex TerrainModel::index(Terrain *terrain) const
@@ -105,7 +101,7 @@ QModelIndex TerrainModel::parent(const QModelIndex &child) const
 int TerrainModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mMapDocument->map()->tilesetCount();
+        return mTilesetDocuments.size();
     else if (Tileset *tileset = tilesetAt(parent))
         return tileset->terrainCount();
 
@@ -153,16 +149,27 @@ QVariant TerrainModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+Qt::ItemFlags TerrainModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+    // Don't allow selecting the tileset headers in the Terrains view
+    if (tilesetAt(index))
+        defaultFlags &= ~Qt::ItemIsSelectable;
+
+    return defaultFlags;
+}
+
 Tileset *TerrainModel::tilesetAt(const QModelIndex &index) const
 {
     if (!index.isValid())
         return nullptr;
     if (index.parent().isValid()) // tilesets don't have parents
         return nullptr;
-    if (index.row() >= mMapDocument->map()->tilesetCount())
+    if (index.row() >= mTilesetDocuments.size())
         return nullptr;
 
-    return mMapDocument->map()->tilesetAt(index.row()).data();
+    return mTilesetDocuments.at(index.row())->tileset().data();
 }
 
 Terrain *TerrainModel::terrainAt(const QModelIndex &index) const
@@ -176,52 +183,115 @@ Terrain *TerrainModel::terrainAt(const QModelIndex &index) const
     return nullptr;
 }
 
-void TerrainModel::tilesetAboutToBeAdded(int index)
+void TerrainModel::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
 {
-    beginInsertRows(QModelIndex(), index, index);
-}
+    beginInsertRows(QModelIndex(), first, last);
+    for (int row = first; row <= last; ++row) {
+        const QModelIndex index = mTilesetDocumentsModel->index(row, 0, parent);
+        const QVariant var = mTilesetDocumentsModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
 
-void TerrainModel::tilesetAdded()
-{
+        mTilesetDocuments.insert(row, tilesetDocument);
+
+        TilesetTerrainModel *tilesetTerrainModel = tilesetDocument->terrainModel();
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
+                this, &TerrainModel::onTerrainAboutToBeAdded);
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainAdded,
+                this, &TerrainModel::onTerrainAdded);
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainAboutToBeRemoved,
+                this, &TerrainModel::onTerrainAboutToBeRemoved);
+        connect(tilesetTerrainModel, &TilesetTerrainModel::terrainRemoved,
+                this, &TerrainModel::onTerrainRemoved);
+    }
     endInsertRows();
 }
 
-void TerrainModel::tilesetAboutToBeRemoved(int index)
+void TerrainModel::onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
 {
-    beginRemoveRows(QModelIndex(), index, index);
-}
+    Q_UNUSED(parent)
 
-void TerrainModel::tilesetRemoved()
-{
+    beginRemoveRows(QModelIndex(), first, last);
+    for (int index = last; index >= first; --index) {
+        TilesetDocument *tilesetDocument = mTilesetDocuments.takeAt(index);
+        tilesetDocument->terrainModel()->disconnect(this);
+    }
     endRemoveRows();
 }
 
-void TerrainModel::tilesetChanged(Tileset *tileset)
+void TerrainModel::onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
 {
-    const QModelIndex index = TerrainModel::index(tileset);
-    emit dataChanged(index, index);
+    Q_UNUSED(parent)
+    Q_UNUSED(destination)
+
+    beginMoveRows(QModelIndex(), start, end, QModelIndex(), row);
+
+    if (start == row)
+        return;
+
+    while (start <= end) {
+        mTilesetDocuments.move(start, row);
+
+        if (row < start) {
+            ++start;
+            ++row;
+        } else {
+            --end;
+        }
+    }
+
+    endMoveRows();
 }
 
-void TerrainModel::terrainAboutToBeAdded(Tileset *tileset, int terrainId)
+void TerrainModel::onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint)
+{
+    Q_UNUSED(parents)
+    Q_UNUSED(hint)
+
+    // Make sure the tileset documents are still in the right order
+    for (int i = 0, rows = mTilesetDocuments.size(); i < rows; ++i) {
+        const QModelIndex index = mTilesetDocumentsModel->index(i, 0);
+        const QVariant var = mTilesetDocumentsModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
+        int currentIndex = mTilesetDocuments.indexOf(tilesetDocument);
+        if (currentIndex != i) {
+            Q_ASSERT(currentIndex > i);
+            onTilesetRowsMoved(QModelIndex(), currentIndex, currentIndex, QModelIndex(), i);
+        }
+    }
+}
+
+void TerrainModel::onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    emit dataChanged(index(topLeft.row(), topLeft.column()),
+                     index(bottomRight.row(), bottomRight.column()));
+}
+
+void TerrainModel::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)
 {
     QModelIndex parent = index(tileset);
     beginInsertRows(parent, terrainId, terrainId);
 }
 
-void TerrainModel::terrainAdded(Tileset *tileset)
+void TerrainModel::onTerrainAdded(Tileset *tileset)
 {
     endInsertRows();
-    tilesetChanged(tileset);    // for the TerrainFilterModel
+
+    // for the TerrainFilterModel
+    const QModelIndex index = TerrainModel::index(tileset);
+    emit dataChanged(index, index);
 }
 
-void TerrainModel::terrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain)
+void TerrainModel::onTerrainAboutToBeRemoved(Terrain *terrain)
 {
-    QModelIndex parent = index(tileset);
+    QModelIndex parent = index(terrain->tileset());
     beginRemoveRows(parent, terrain->id(), terrain->id());
 }
 
-void TerrainModel::terrainRemoved(Tileset *tileset)
+void TerrainModel::onTerrainRemoved(Terrain *terrain)
 {
     endRemoveRows();
-    tilesetChanged(tileset);    // for the TerrainFilterModel
+
+    // for the TerrainFilterModel
+    const QModelIndex index = TerrainModel::index(terrain->tileset());
+    emit dataChanged(index, index);
 }

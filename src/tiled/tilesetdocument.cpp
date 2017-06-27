@@ -76,12 +76,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
 
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
-            this, &TilesetDocument::onTerrainAboutToBeAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAdded,
-            this, &TilesetDocument::onTerrainAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeRemoved,
-            this, &TilesetDocument::onTerrainAboutToBeRemoved);
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
 
@@ -348,31 +342,10 @@ void TilesetDocument::onPropertiesChanged(Object *object)
         emit mapDocument->propertiesChanged(object);
 }
 
-void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAboutToBeAdded(tileset, terrainId);
-}
-
-void TilesetDocument::onTerrainAdded(Tileset *tileset, int terrainId)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAdded(tileset, terrainId);
-}
-
-void TilesetDocument::onTerrainAboutToBeRemoved(Terrain *terrain)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAboutToBeRemoved(mTileset.data(), terrain);
-}
-
 void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
         setCurrentObject(nullptr);
-
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainRemoved(mTileset.data(), terrain);
 }
 
 void TilesetDocument::onWangSetAboutToBeAdded(Tileset *tileset)

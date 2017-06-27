@@ -134,21 +134,6 @@ void PropertiesDock::bringToFront()
     mPropertyBrowser->setFocus();
 }
 
-static bool isPartOfTileset(const Object *object)
-{
-    if (!object)
-        return false;
-
-    switch (object->typeId()) {
-    case Object::TilesetType:
-    case Object::TileType:
-    case Object::TerrainType:
-        return true;
-    default:
-        return false;
-    }
-}
-
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
     for (Object *obj : objects) {
@@ -163,10 +148,10 @@ void PropertiesDock::currentObjectChanged(Object *object)
     mPropertyBrowser->setObject(object);
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
-    bool isTileset = isPartOfTileset(object);
+    bool isTileset = object && object->isPartOfTileset();
     bool enabled = object && (!isTileset || editingTileset);
 
-    mPropertyBrowser->setEnabled(enabled || isTileset);
+    mPropertyBrowser->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
 }
 
@@ -175,7 +160,7 @@ void PropertiesDock::updateActions()
     const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
     bool allCustomProperties = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
-    bool isTileset = isPartOfTileset(mPropertyBrowser->object());
+    bool isTileset = mPropertyBrowser->object() && mPropertyBrowser->object()->isPartOfTileset();
     bool canModify = allCustomProperties && (!isTileset || editingTileset);
 
     // Disable remove and rename actions when none of the selected objects
