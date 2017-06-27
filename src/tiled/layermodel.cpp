@@ -126,6 +126,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
                 return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
             }
         }
+        break;
     case Qt::CheckStateRole:
         if (index.column() == 1)
             return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
@@ -153,8 +154,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     Layer *layer = toLayer(index);
 
     if (role == Qt::CheckStateRole) {
-        if (index.column() == 1)
-        {
+        if (index.column() == 1) {
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
             const bool visible = (c == Qt::Checked);
             if (visible != layer->isVisible()) {

@@ -25,28 +25,31 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-IconCheckDelegate::IconCheckDelegate(QObject *parent, bool lock):
+IconCheckDelegate::IconCheckDelegate(IconType icon, QObject *parent):
     QItemDelegate(parent)
 {
-    if (lock) {
+    switch (icon) {
+    case LockedIcon:
         mCheckedIcon.addFile(QLatin1String(":/images/14x14/locked.png"));
         mCheckedIcon.addFile(QLatin1String(":/images/16x16/locked.png"));
         mCheckedIcon.addFile(QLatin1String(":/images/24x24/locked.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/14x14/unlocked.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/16x16/unlocked.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/24x24/unlocked.png"));
-    } else {
+        break;
+    case VisibilityIcon:
         mCheckedIcon.addFile(QLatin1String(":/images/14x14/visible.png"));
         mCheckedIcon.addFile(QLatin1String(":/images/16x16/visible.png"));
         mCheckedIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/14x14/hidden.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
+        break;
     }
 }
 
 void IconCheckDelegate::drawCheck(QPainter *painter, const QStyleOptionViewItem &,
-                                      const QRect &rect, Qt::CheckState state) const
+                                  const QRect &rect, Qt::CheckState state) const
 {
     const QIcon &icon = (state == Qt::Checked) ? mCheckedIcon : mUncheckedIcon;
     const QPixmap &pixmap = icon.pixmap(rect.size());

@@ -32,7 +32,12 @@ namespace Internal {
 class IconCheckDelegate: public QItemDelegate
 {
 public:
-    explicit IconCheckDelegate(QObject *parent = nullptr, bool lock = false);
+    enum IconType {
+        VisibilityIcon,
+        LockedIcon
+    };
+
+    explicit IconCheckDelegate(IconType icon, QObject *parent = nullptr);
 
 protected:
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
