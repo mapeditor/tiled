@@ -149,6 +149,9 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
+    if (!objectGroup->isUnlocked())
+        return false;
+
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
         return false;
@@ -195,7 +198,7 @@ void CreateObjectTool::finishNewMapObject()
     Q_ASSERT(mNewMapObjectItem);
 
     ObjectGroup *objectGroup = currentObjectGroup();
-    if (!objectGroup || !objectGroup->isUnlocked()) {
+    if (!objectGroup) {
         cancelNewMapObject();
         return;
     }
