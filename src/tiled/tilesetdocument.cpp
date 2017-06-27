@@ -23,10 +23,12 @@
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
+#include "wangset.h"
 #include "tile.h"
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -58,6 +60,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
+    , mWangSetModel(new TilesetWangSetModel(this, this))
 {
     mCurrentObject = tileset.data();
 
@@ -81,6 +84,16 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
             this, &TilesetDocument::onTerrainAboutToBeRemoved);
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
+
+
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetAboutToBeAdded,
+            this, &TilesetDocument::onWangSetAboutToBeAdded);
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetAdded,
+            this, &TilesetDocument::onWangSetAdded);
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetAboutToBeRemoved,
+            this, &TilesetDocument::onWangSetAboutToBeRemoved);
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
+            this, &TilesetDocument::onWangSetRemoved);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -360,6 +373,30 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tilesetTerrainRemoved(mTileset.data(), terrain);
+}
+
+void TilesetDocument::onWangSetAboutToBeAdded(Tileset *tileset)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetWangSetAboutToBeAdded(tileset);
+}
+
+void TilesetDocument::onWangSetAdded(Tileset *tileset)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetWangSetAdded(tileset);
+}
+
+void TilesetDocument::onWangSetAboutToBeRemoved(WangSet *wangSet)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetWangSetAboutToBeRemoved(mTileset.data(), wangSet);
+}
+
+void TilesetDocument::onWangSetRemoved()
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetWangSetRemoved(mTileset.data());
 }
 
 } // namespace Internal

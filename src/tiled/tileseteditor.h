@@ -36,6 +36,7 @@ namespace Tiled {
 class Terrain;
 class Tile;
 class Tileset;
+class WangSet;
 
 namespace Internal {
 
@@ -47,6 +48,7 @@ class TilesetDocument;
 class TilesetEditorWindow;
 class TilesetView;
 class UndoDock;
+class WangDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -106,11 +108,17 @@ private slots:
 
     void setEditCollision(bool editCollision);
 
+    void setEditWang(bool editWang);
+
     void updateAddRemoveActions();
 
     void addTerrainType();
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
+
+    void currentWangSetChanged(const WangSet *wangSet);
+    void addWangSet();
+    void removeWangSet();
 
 private:
     void setCurrentTile(Tile *tile);
@@ -129,6 +137,7 @@ private:
     UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
+    WangDock *mWangDock;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
 

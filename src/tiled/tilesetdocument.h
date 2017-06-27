@@ -33,6 +33,7 @@ namespace Internal {
 
 class MapDocument;
 class TilesetTerrainModel;
+class TilesetWangSetModel;
 
 /**
  * Represents an editable tileset.
@@ -85,6 +86,7 @@ public:
     QList<Object*> currentObjects() const override;
 
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
+    TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QString &source);
@@ -110,6 +112,8 @@ signals:
      * All the \a tiles need to be from the same tileset.
      */
     void tileTerrainChanged(const QList<Tile*> &tiles);
+
+    void tileWangSetChanged(const QList<Tile*> &tiles);
 
     /**
      * Emitted when the terrain probability of a tile changed.
@@ -142,11 +146,17 @@ private slots:
     void onTerrainAboutToBeRemoved(Terrain *terrain);
     void onTerrainRemoved(Terrain *terrain);
 
+    void onWangSetAboutToBeAdded(Tileset *tileset);
+    void onWangSetAdded(Tileset *tileset);
+    void onWangSetAboutToBeRemoved(WangSet *wangSet);
+    void onWangSetRemoved();
+
 private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
     TilesetTerrainModel *mTerrainModel;
+    TilesetWangSetModel *mWangSetModel;
 
     QList<Tile*> mSelectedTiles;
 };
