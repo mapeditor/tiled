@@ -206,6 +206,9 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (!brushItem()->isVisible())
         return;
 
+    if (!currentTileLayer()->isUnlocked())
+        return;
+
     const TileLayer *preview = mFillOverlay.data();
     if (!preview)
         return;

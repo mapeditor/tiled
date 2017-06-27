@@ -227,6 +227,9 @@ void TerrainBrush::doPaint(bool mergeable)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
+    if (!tileLayer->isUnlocked())
+        return;
+
     if (!tileLayer->bounds().intersects(stamp->bounds()))
         return;
 

@@ -90,12 +90,10 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
         // Use a reduced start drag distance to increase the responsiveness
         if (dragDistance >= QApplication::startDragDistance() / 2)
             startDrag(pos);
-        else
-            return;
     }
 
     auto currentLayer = mapDocument()->currentLayer();
-    if (currentLayer) {
+    if (currentLayer && mDragging) {
         QPointF newOffset = mOldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
         mApplyingChange = true;
@@ -136,7 +134,8 @@ void LayerOffsetTool::startDrag(const QPointF &pos)
     if (!mapDocument())
         return;
 
-    if (Layer *layer = mapDocument()->currentLayer()) {
+    Layer *layer = mapDocument()->currentLayer();
+    if (layer && layer->isUnlocked()) {
         mDragging = true;
         mMouseSceneStart = pos;
         mOldOffset = layer->offset();

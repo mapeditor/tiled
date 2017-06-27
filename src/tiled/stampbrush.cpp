@@ -336,6 +336,9 @@ QRegion StampBrush::doPaint(int flags)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
+    if (!tileLayer->isUnlocked())
+        return QRegion();
+
     if (!tileLayer->bounds().intersects(QRect(preview->x(),
                                               preview->y(),
                                               preview->width(),
