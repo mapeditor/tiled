@@ -84,6 +84,7 @@ SOURCES += aboutdialog.cpp \
     addremoveterrain.cpp \
     addremovetiles.cpp \
     addremovetileset.cpp \
+    addremocewangset.cpp \
     adjusttileindexes.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
@@ -109,6 +110,7 @@ SOURCES += aboutdialog.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changetileterrain.cpp \
+    changewangsetdata.cpp \
     clickablelabel.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
@@ -190,6 +192,7 @@ SOURCES += aboutdialog.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
+    renamewangset.cpp \
     reparentlayers.cpp \
     replacetileset.cpp \
     resizedialog.cpp \
@@ -230,6 +233,7 @@ SOURCES += aboutdialog.cpp \
     tilesetmodel.cpp \
     tilesetparametersedit.cpp \
     tilesetterrainmodel.cpp \
+    tilesetwangsetmodel.cpp \
     tilesetview.cpp \
     tilestamp.cpp \
     tilestampmanager.cpp \
@@ -242,6 +246,9 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
+    wangsetview.cpp \
+    wangsetmodel.cpp \
+    wangdock.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -255,6 +262,7 @@ HEADERS += aboutdialog.h \
     addremoveterrain.h \
     addremovetileset.h \
     addremovetiles.h \
+    addremovewangset.h \
     adjusttileindexes.h \
     automapper.h \
     automapperwrapper.h \
@@ -280,6 +288,7 @@ HEADERS += aboutdialog.h \
     changetileobjectgroup.h \
     changetileprobability.h \
     changetileterrain.h \
+    changewangsetdata.h \
     clickablelabel.h \
     clipboardmanager.h \
     colorbutton.h \
@@ -364,6 +373,7 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
+    renamewangset.h \
     reparentlayers.h \
     replacetileset.h \
     resizedialog.h \
@@ -405,6 +415,7 @@ HEADERS += aboutdialog.h \
     tilesetmodel.h \
     tilesetparametersedit.h \
     tilesetterrainmodel.h \
+    tilesetwangsetmodel.h \
     tilesetview.h \
     tilestamp.h \
     tilestampmanager.h \
@@ -418,6 +429,9 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
+    wangsetview.h \
+    wangsetmodel.h \
+    wangdock.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \
