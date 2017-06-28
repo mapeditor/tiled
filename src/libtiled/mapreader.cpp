@@ -589,10 +589,16 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
             int corners = atts.value(QLatin1String("corners")).toInt();
             int tile = atts.value(QLatin1String("tile")).toInt();
 
-            tileset.insertWangSet(new WangSet(&tileset, edges, corners, name, tile));
+            WangSet *wangSet = new WangSet(&tileset, edges, corners, name, tile);
 
-            //eventually will read properties.
-            xml.skipCurrentElement();
+            tileset.insertWangSet(wangSet);
+
+            while (xml.readNextStartElement()) {
+                if (xml.name() == QLatin1String("properties"))
+                    wangSet->mergeProperties(readProperties());
+                else
+                    readUnknownElement();
+            }
         } else {
             readUnknownElement();
         }

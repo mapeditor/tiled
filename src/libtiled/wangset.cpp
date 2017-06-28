@@ -37,7 +37,7 @@ WangSet::WangSet(Tileset *tileset,
                  int cornerColors,
                  QString name,
                  int imageTileId):
-    Object(Object::TerrainType), //for now, will add unique type soon
+    Object(Object::WangSetType),
     mTileset(tileset),
     mName(std::move(name)),
     mImageTileId(imageTileId),

@@ -375,6 +375,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QLatin1String("corners"),QString::number(ws->cornerColors()));
             w.writeAttribute(QLatin1String("tile"),QString::number(ws->imageTileId()));
 
+            writeProperties(w, ws->properties());
+
             w.writeEndElement(); // </wangset>
         }
         w.writeEndElement(); // </wangsets>

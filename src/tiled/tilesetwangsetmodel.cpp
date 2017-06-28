@@ -161,6 +161,22 @@ void TilesetWangSetModel::setWangSetName(int index, const QString &name)
     emitWangSetChange(wangSet);
 }
 
+void TilesetWangSetModel::setWangSetEdges(int index, int value)
+{
+    Tileset *tileset = mTilesetDocument->tileset().data();
+    WangSet *wangSet = tileset->wangSet(index);
+    wangSet->setEdgeColors(value);
+    emitWangSetChange(wangSet);
+}
+
+void TilesetWangSetModel::setWangSetCorners(int index, int value)
+{
+    Tileset *tileset = mTilesetDocument->tileset().data();
+    WangSet *wangSet = tileset->wangSet(index);
+    wangSet->setCornerColors(value);
+    emitWangSetChange(wangSet);
+}
+
 void TilesetWangSetModel::setWangSetImage(int index, int tileId)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
@@ -173,5 +189,5 @@ void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
 {
     const QModelIndex index = TilesetWangSetModel::index(wangSet);
     emit dataChanged(index, index);
-    emit wangSetChanged(wangSet, index.row());
+    emit wangSetChanged(wangSet->tileset(), index.row());
 }

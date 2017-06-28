@@ -79,13 +79,6 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
 
-
-    connect(mWangSetModel, &TilesetWangSetModel::wangSetAboutToBeAdded,
-            this, &TilesetDocument::onWangSetAboutToBeAdded);
-    connect(mWangSetModel, &TilesetWangSetModel::wangSetAdded,
-            this, &TilesetDocument::onWangSetAdded);
-    connect(mWangSetModel, &TilesetWangSetModel::wangSetAboutToBeRemoved,
-            this, &TilesetDocument::onWangSetAboutToBeRemoved);
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
 
@@ -348,25 +341,7 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
         setCurrentObject(nullptr);
 }
 
-void TilesetDocument::onWangSetAboutToBeAdded(Tileset *tileset)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetWangSetAboutToBeAdded(tileset);
-}
-
-void TilesetDocument::onWangSetAdded(Tileset *tileset)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetWangSetAdded(tileset);
-}
-
-void TilesetDocument::onWangSetAboutToBeRemoved(WangSet *wangSet)
-{
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetWangSetAboutToBeRemoved(mTileset.data(), wangSet);
-}
-
-void TilesetDocument::onWangSetRemoved()
+void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tilesetWangSetRemoved(mTileset.data());

@@ -74,6 +74,8 @@ public:
     void insertWangSet(WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
     void setWangSetName(int index, const QString &name);
+    void setWangSetEdges(int index, int value);
+    void setWangSetCorners(int index, int value);
     void setWangSetImage(int index, int tileId);
 
 signals:
@@ -85,7 +87,7 @@ signals:
     /**
      * Emitted when either the name or the image of a terrain changed.
      */
-    void wangSetChanged(WangSet *wangSet, int index);
+    void wangSetChanged(Tileset *tileset, int index);
 
 private:
     void emitWangSetChange(WangSet *wangSet);

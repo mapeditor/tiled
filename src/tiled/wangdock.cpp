@@ -108,7 +108,7 @@ WangDock::WangDock(QWidget *parent)
 
     QWidget *w = new QWidget(this);
 
-    mWangSetView = new WangSetView(nullptr);
+    mWangSetView = new WangSetView(w);
     mWangSetView->setModel(mProxyModel);
     connect(mWangSetView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangSet);
@@ -209,10 +209,9 @@ void WangDock::editWangSetName(WangSet *wangSet)
     const QModelIndex index = wangSetIndex(wangSet);
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
 
-    //Changing the index seems to be causing the crashing... Needs investigation.
-    //selectionModel->setCurrentIndex(index,
-    //                                QItemSelectionModel::ClearAndSelect |
-    //                                QItemSelectionModel::Rows);
+    selectionModel->setCurrentIndex(index,
+                                    QItemSelectionModel::ClearAndSelect |
+                                    QItemSelectionModel::Rows);
 
     mWangSetView->edit(index);
 }

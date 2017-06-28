@@ -43,7 +43,6 @@ public:
 
     WangSetModel(QAbstractItemModel *tilesetDocumentModel,
                  QObject *parent = nullptr);
-
     ~WangSetModel();
 
     QModelIndex index(int row, int column,
