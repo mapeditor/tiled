@@ -28,10 +28,13 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
+#include "stampactions.h"
 #include "tile.h"
 #include "tilestamp.h"
 
 #include <math.h>
+#include <QAction>
+#include <QToolBar>
 #include <QVector>
 
 using namespace Tiled;
@@ -45,7 +48,18 @@ StampBrush::StampBrush(QObject *parent)
                        parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
+    , mStampActions(new StampActions(this))
 {
+    connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
+
+    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
+    connect(mStampActions->flipVertical(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.flipped(FlipVertically)); });
+    connect(mStampActions->rotateLeft(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateLeft)); });
+    connect(mStampActions->rotateRight(), &QAction::triggered,
+            [this]() { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
 StampBrush::~StampBrush()
@@ -167,6 +181,8 @@ void StampBrush::languageChanged()
 {
     setName(tr("Stamp Brush"));
     setShortcut(QKeySequence(tr("B")));
+
+    mStampActions->languageChanged();
 }
 
 void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
@@ -215,6 +231,11 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
     updateRandomList();
     updatePreview();
+}
+
+void StampBrush::populateToolBar(QToolBar *toolBar)
+{
+    mStampActions->populateToolBar(toolBar, mIsRandom);
 }
 
 void StampBrush::beginPaint()
@@ -279,7 +300,7 @@ void StampBrush::endCapture()
 
         stamp->addLayer(capture);
 
-        emit stampCaptured(TileStamp(stamp));
+        emit stampChanged(TileStamp(stamp));
     } else {
         updatePreview();
     }
@@ -314,6 +335,9 @@ QRegion StampBrush::doPaint(int flags)
     // This method shouldn't be called when current layer is not a tile layer
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
+
+    if (!tileLayer->isUnlocked())
+        return QRegion();
 
     if (!tileLayer->bounds().intersects(QRect(preview->x(),
                                               preview->y(),

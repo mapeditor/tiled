@@ -140,7 +140,8 @@ QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
 
     QList<MapObjectItem*> objectList;
     for (auto item : items) {
-        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+        MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
+        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
             objectList.append(objectItem);
     }
     return objectList;
@@ -151,7 +152,8 @@ MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
     for (QGraphicsItem *item : items) {
-        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+        MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
+        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
             return objectItem;
     }
     return nullptr;

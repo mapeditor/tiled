@@ -63,12 +63,40 @@ static void writeProperty(QXmlStreamWriter &writer,
     writer.writeTextElement(name, toString(value));
 }
 
-static QString sanitizeName(const QString &name)
+static QString sanitizeName(QString name)
 {
-    QString sanitized = name;
-    sanitized.replace(QRegularExpression(QLatin1String("[^a-zA-Z0-9]")),
-                      QLatin1String("_"));
-    return sanitized;
+    static const QRegularExpression regexp(QLatin1String("[^a-zA-Z0-9]"));
+    return name.replace(regexp, QLatin1String("_"));
+}
+
+static QString effectiveObjectType(const MapObject *object)
+{
+    if (!object->type().isEmpty())
+        return object->type();
+    if (Tile *tile = object->cell().tile())
+        return tile->type();
+
+    return QString();
+}
+
+static bool checkIfViewsDefined(const Map *map)
+{
+    LayerIterator iterator(map);
+    while (const Layer *layer = iterator.next()) {
+
+        if (layer->layerType() != Layer::ObjectGroupType)
+            continue;
+
+        const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+        for (const MapObject *object : objectLayer->objects()) {
+            const QString type = effectiveObjectType(object);
+            if (type == "view")
+                return true;
+        }
+    }
+
+    return false;
 }
 
 GmxPlugin::GmxPlugin()
@@ -102,8 +130,64 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     writeProperty(stream, map, "speed", 30);
     writeProperty(stream, map, "persistent", false);
     writeProperty(stream, map, "clearDisplayBuffer", true);
+    writeProperty(stream, map, "clearViewBackground", false);
+
+    // Check if views are defined
+    bool enableViews = checkIfViewsDefined(map);
+    writeProperty(stream, map, "enableViews", enableViews);
 
     stream.writeTextElement("isometric", toString(map->orientation() == Map::Orientation::Isometric));
+
+    // Write out views
+    // Last view in Object layer is the first view in the room
+    LayerIterator iterator(map);
+    if (enableViews) {
+        stream.writeStartElement("views");
+        int viewCount = 0;
+        while (const Layer *layer = iterator.next()) {
+
+            if (layer->layerType() != Layer::ObjectGroupType)
+                continue;
+
+            const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
+
+            for (const MapObject *object : objectLayer->objects()) {
+                const QString type = effectiveObjectType(object);
+                if (type != "view")
+                    continue;
+
+                // GM only has 8 views so drop anything more than that
+                if (viewCount > 7)
+                    break;
+
+                viewCount++;
+                stream.writeStartElement("view");
+
+                stream.writeAttribute("visible", toString(object->isVisible()));
+                stream.writeAttribute("objName", QString(optionalProperty(object, "objName", QString())));
+                QPointF pos = object->position();
+                // Note: GM only supports ints for positioning
+                // so views could be off if user doesn't align to whole number
+                stream.writeAttribute("xview", QString::number(qRound(pos.x())));
+                stream.writeAttribute("yview", QString::number(qRound(pos.y())));
+                stream.writeAttribute("wview", QString::number(qRound(object->width())));
+                stream.writeAttribute("hview", QString::number(qRound(object->height())));
+                // Round these incase user adds properties as floats and not ints
+                stream.writeAttribute("xport", QString::number(qRound(optionalProperty(object, "xport", 0.0))));
+                stream.writeAttribute("yport", QString::number(qRound(optionalProperty(object, "yport", 0.0))));
+                stream.writeAttribute("wport", QString::number(qRound(optionalProperty(object, "wport", 1024.0))));
+                stream.writeAttribute("hport", QString::number(qRound(optionalProperty(object, "hport", 768.0))));
+                stream.writeAttribute("hborder", QString::number(qRound(optionalProperty(object, "hborder", 32.0))));
+                stream.writeAttribute("vborder", QString::number(qRound(optionalProperty(object, "vborder", 32.0))));
+                stream.writeAttribute("hspeed", QString::number(qRound(optionalProperty(object, "hspeed", -1.0))));
+                stream.writeAttribute("vspeed", QString::number(qRound(optionalProperty(object, "vspeed", -1.0))));
+
+                stream.writeEndElement();
+            }
+        }
+
+        stream.writeEndElement();
+    }
 
     stream.writeStartElement("instances");
 
@@ -111,7 +195,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     int layerCount = 0;
 
     // Write out object instances
-    LayerIterator iterator(map);
+    iterator.toFront();
     while (const Layer *layer = iterator.next()) {
         ++layerCount;
 
@@ -121,13 +205,16 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            if (object->type().isEmpty())
+            const QString type = effectiveObjectType(object);
+            if (type.isEmpty())
+                continue;
+            if (type == "view")
                 continue;
 
             stream.writeStartElement("instance");
 
             // The type is used to refer to the name of the object
-            stream.writeAttribute("objName", sanitizeName(object->type()));
+            stream.writeAttribute("objName", sanitizeName(type));
 
             QPointF pos = object->position();
             qreal scaleX = 1;
@@ -271,7 +358,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             foreach (const MapObject *object, objects) {
                 // Objects with types are already exported as instances
-                if (!object->type().isEmpty())
+                if (!effectiveObjectType(object).isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is

@@ -541,6 +541,8 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
 
     if (!layer.isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
+    if (layer.isLocked())
+        w.writeAttribute(QLatin1String("locked"), QLatin1String("1"));
     if (opacity != qreal(1))
         w.writeAttribute(QLatin1String("opacity"), QString::number(opacity));
 

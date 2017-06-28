@@ -93,7 +93,7 @@ int LayerModel::rowCount(const QModelIndex &parent) const
 int LayerModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 1;
+    return 3;
 }
 
 /**
@@ -110,25 +110,36 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return layer->name();
+        if (index.column() == 0)
+            return layer->name();
+        break;
     case Qt::DecorationRole:
-        switch (layer->layerType()) {
-        case Layer::TileLayerType:
-            return mTileLayerIcon;
-        case Layer::ObjectGroupType:
-            return mObjectGroupIcon;
-        case Layer::ImageLayerType:
-            return mImageLayerIcon;
-        case Layer::GroupLayerType:
-            return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
+        if (index.column() == 0) {
+            switch (layer->layerType()) {
+            case Layer::TileLayerType:
+                return mTileLayerIcon;
+            case Layer::ObjectGroupType:
+                return mObjectGroupIcon;
+            case Layer::ImageLayerType:
+                return mImageLayerIcon;
+            case Layer::GroupLayerType:
+                return QApplication::style()->standardIcon(QStyle::SP_DirIcon);
+            }
         }
+        break;
     case Qt::CheckStateRole:
-        return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
+        if (index.column() == 1)
+            return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
+        if (index.column() == 2)
+            return layer->isLocked() ? Qt::Checked : Qt::Unchecked;
+        break;
     case OpacityRole:
         return layer->opacity();
     default:
         return QVariant();
     }
+
+    return QVariant();
 }
 
 /**
@@ -143,13 +154,25 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     Layer *layer = toLayer(index);
 
     if (role == Qt::CheckStateRole) {
-        Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
-        const bool visible = (c == Qt::Checked);
-        if (visible != layer->isVisible()) {
-            QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                        layer,
-                                                        visible);
-            mMapDocument->undoStack()->push(command);
+        if (index.column() == 1) {
+            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            const bool visible = (c == Qt::Checked);
+            if (visible != layer->isVisible()) {
+                QUndoCommand *command = new SetLayerVisible(mMapDocument,
+                                                            layer,
+                                                            visible);
+                mMapDocument->undoStack()->push(command);
+            }
+        }
+        if (index.column() == 2) {
+            Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+            const bool locked = (c == Qt::Checked);
+            if (locked != layer->isLocked()) {
+                QUndoCommand *command = new SetLayerLocked(mMapDocument,
+                                                           layer,
+                                                           locked);
+                mMapDocument->undoStack()->push(command);
+            }
         }
         return true;
     } else if (role == OpacityRole) {
@@ -184,8 +207,11 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
 
+    if (index.column() == 1 || index.column() == 2)
+        rc |= Qt::ItemIsUserCheckable;
+
     if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+        rc |= Qt::ItemIsEditable;
 
     Layer *layer = toLayer(index);
 
@@ -207,6 +233,8 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
         case 0: return tr("Layer");
+        case 1: return tr("Visible");
+        case 2: return tr("Locked");
         }
     }
     return QVariant();
@@ -287,7 +315,7 @@ bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     return true;
 }
 
-QModelIndex LayerModel::index(Layer *layer) const
+QModelIndex LayerModel::index(Layer *layer, int column) const
 {
     if (!layer)
         return QModelIndex();
@@ -297,12 +325,12 @@ QModelIndex LayerModel::index(Layer *layer) const
     if (auto parentLayer = layer->parentLayer()) {
         int row = parentLayer->layers().indexOf(layer);
         Q_ASSERT(row != -1);
-        return createIndex(row, 0, parentLayer);
+        return createIndex(row, column, parentLayer);
     }
 
     int row = mMap->layers().indexOf(layer);
     Q_ASSERT(row != -1);
-    return createIndex(row, 0, nullptr);
+    return createIndex(row, column, nullptr);
 }
 
 Layer *LayerModel::toLayer(const QModelIndex &index) const
@@ -399,7 +427,19 @@ void LayerModel::setLayerVisible(Layer *layer, bool visible)
 
     layer->setVisible(visible);
 
-    const QModelIndex modelIndex = index(layer);
+    const QModelIndex modelIndex = index(layer, 1);
+    emit dataChanged(modelIndex, modelIndex);
+    emit layerChanged(layer);
+}
+
+void LayerModel::setLayerLocked(Layer *layer, bool locked)
+{
+    if (layer->isLocked() == locked)
+        return;
+
+    layer->setLocked(locked);
+
+    const QModelIndex modelIndex = index(layer, 2);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layer);
 }

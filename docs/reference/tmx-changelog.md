@@ -8,7 +8,7 @@ Below are described the changes/additions that were made to the [TMX format](tmx
 
 * A new [`group`](tmx-map-format.md#group) element was added which is a group layer that can have other layers as child elements. This means layers now form a hierarchy.
 * Added Text objects, identified by a new [`text`](tmx-map-format.md#text) element which is used as a child of the [`object`](tmx-map-format.md#object) element.
-* Added a [`tile.type`](tmx-map-format.md#tile) attribute for supporting [typed tiles](custom-properties.md#typed-tiles).
+* Added a [`tile.type`](tmx-map-format.md#tile) attribute for supporting [typed tiles](../manual/custom-properties.md#typed-tiles).
 
 ## Tiled 0.18 ##
 

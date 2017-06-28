@@ -76,8 +76,10 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 
         if (const Tile *tile = object->cell().tile()) {
             QSize imgSize = tile->size();
-            scale = QSizeF(objectSize.width() / imgSize.width(),
-                           objectSize.height() / imgSize.height());
+            if (!imgSize.isNull()) {
+                scale = QSizeF(objectSize.width() / imgSize.width(),
+                               objectSize.height() / imgSize.height());
+            }
             tileOffset = tile->offset();
         }
 
@@ -295,25 +297,21 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
+        const QSizeF size = object->size();
         const QPointF pos = pixelToScreenCoords(object->position());
 
-        CellRenderer(painter).render(cell, pos, object->size(),
+        CellRenderer(painter).render(cell, pos, size,
                                      CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
-            QSizeF imgSize;
             QPointF tileOffset;
 
-            if (const Tile *tile = cell.tile()) {
-                imgSize = tile->size();
+            if (const Tile *tile = cell.tile())
                 tileOffset = tile->offset();
-            } else {
-                imgSize = object->size();
-            }
 
-            QRectF rect(QPointF(pos.x() - imgSize.width() / 2 + tileOffset.x(),
-                                pos.y() - imgSize.height() + tileOffset.y()),
-                        imgSize);
+            QRectF rect(QPointF(pos.x() - size.width() / 2 + tileOffset.x(),
+                                pos.y() - size.height() + tileOffset.y()),
+                        size);
 
             pen.setStyle(Qt::SolidLine);
             painter->setPen(pen);
