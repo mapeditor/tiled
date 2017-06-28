@@ -77,6 +77,7 @@ MapObject::MapObject():
     mId(0),
     mSize(0, 0),
     mShape(Rectangle),
+    mTemplateRef({nullptr, 0}),
     mObjectGroup(nullptr),
     mRotation(0.0f),
     mVisible(true)
@@ -93,6 +94,7 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
+    mTemplateRef({nullptr, 0}),
     mObjectGroup(nullptr),
     mRotation(0.0f),
     mVisible(true)

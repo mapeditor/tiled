@@ -64,3 +64,14 @@ ObjectTemplate *TidMapper::tidToTemplate(unsigned tid, bool &ok) const
 
     return objectTemplate;
 }
+
+unsigned TidMapper::templateGroupToFirstTid(TemplateGroup *templateGroup)
+{
+    QMapIterator<unsigned, TemplateGroup*> it(mFirstTidToTemplateGroup);
+    while (it.hasNext()) {
+      it.next();
+      if (it.value() == templateGroup)
+          return it.key();
+    }
+    return 0;
+}

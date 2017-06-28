@@ -985,6 +985,8 @@ MapObject *MapReaderPrivate::readObject()
 
             if (!size.isEmpty())
                 object->setSize(size);
+
+            object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
         }
     }
 

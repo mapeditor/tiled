@@ -32,6 +32,7 @@
 
 #include "compression.h"
 #include "gidmapper.h"
+#include "tidmapper.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -658,6 +659,23 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const int id = mapObject.id();
     const QString &name = mapObject.name();
     const QString &type = mapObject.type();
+
+    const QPointF pos = mapObject.position();
+
+    TemplateRef templateRef = mapObject.templateRef();
+    const int templateId = templateRef.templateId;
+    const auto group = templateRef.templateGroup;
+
+    if (group) {
+        int groupFirstTid = mTidMapper.templateGroupToFirstTid(group);
+        int tid = templateId + groupFirstTid;
+        w.writeAttribute(QLatin1String("tid"), QString::number(tid));
+        w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
+        w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
+        w.writeEndElement();
+        return;
+    }
+
     if (id != 0)
         w.writeAttribute(QLatin1String("id"), QString::number(id));
     if (!name.isEmpty())
@@ -670,7 +688,6 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
-    const QPointF pos = mapObject.position();
     const QSizeF size = mapObject.size();
 
     if (id != 0) {

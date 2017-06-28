@@ -67,6 +67,11 @@ struct TILEDSHARED_EXPORT TextData
     QSizeF textSize() const;
 };
 
+struct TemplateRef {
+    TemplateGroup *templateGroup;
+    int templateId;
+};
+
 /**
  * An object on a map. Objects are positioned and scaled using floating point
  * values, ensuring they are not limited to the tile grid. They are suitable
@@ -165,6 +170,9 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
+    const TemplateRef &templateRef() const;
+    void setTemplateRef(const TemplateRef &templateRef);
+
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
 
@@ -197,6 +205,7 @@ private:
     QPolygonF mPolygon;
     Shape mShape;
     Cell mCell;
+    TemplateRef mTemplateRef;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
@@ -392,6 +401,12 @@ inline const Cell &MapObject::cell() const
  */
 inline void MapObject::setCell(const Cell &cell)
 { mCell = cell; }
+
+inline const TemplateRef &MapObject::templateRef() const
+{ return mTemplateRef; }
+
+inline void MapObject::setTemplateRef(const TemplateRef &templateRef)
+{ mTemplateRef = templateRef; }
 
 /**
  * Returns the object group this object belongs to.

@@ -41,6 +41,7 @@ public:
     bool isEmpty() const;
 
     ObjectTemplate *tidToTemplate(unsigned tid, bool &ok) const;
+    unsigned templateGroupToFirstTid(TemplateGroup *templateGroup);
 };
 
 inline bool TidMapper::isEmpty() const
