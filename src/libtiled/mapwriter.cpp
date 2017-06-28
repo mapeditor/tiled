@@ -362,26 +362,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
         w.writeEndElement();
     }
-
-    // Write the wangsets
-    if (tileset.wangSetCount() > 0) {
-        w.writeStartElement(QLatin1String("wangsets"));
-        for (int i = 0; i < tileset.wangSetCount(); ++i) {
-            const WangSet *ws = tileset.wangSet(i);
-            w.writeStartElement(QLatin1String("wangset"));
-
-            w.writeAttribute(QLatin1String("name"),ws->name());
-            w.writeAttribute(QLatin1String("edges"),QString::number(ws->edgeColors()));
-            w.writeAttribute(QLatin1String("corners"),QString::number(ws->cornerColors()));
-            w.writeAttribute(QLatin1String("tile"),QString::number(ws->imageTileId()));
-
-            writeProperties(w, ws->properties());
-
-            w.writeEndElement(); // </wangset>
-        }
-        w.writeEndElement(); // </wangsets>
-    }
-
     // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
@@ -441,21 +421,36 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
                 w.writeEndElement(); // </animation>
             }
-            for (int i = 0; i < tileset.wangSetCount(); ++i) {
-                unsigned wangid = tileset.wangSet(i)->wangIdOfTile(tile);
-
-                if(wangid) {
-                    w.writeStartElement(QLatin1String("wanginfo"));
-                    w.writeAttribute(QLatin1String("setindex"), QString::number(i));
-
-                    //could be made more readable by spacing out the wangId into each corner.
-                    w.writeAttribute(QLatin1String("wangid"), QString::number(wangid));
-                    w.writeEndElement(); // </wanginfo>
-                }
-            }
-
             w.writeEndElement(); // </tile>
         }
+    }
+
+    // Write the wangsets
+    if (tileset.wangSetCount() > 0) {
+        w.writeStartElement(QLatin1String("wangsets"));
+        for (int i = 0; i < tileset.wangSetCount(); ++i) {
+            const WangSet *ws = tileset.wangSet(i);
+            w.writeStartElement(QLatin1String("wangset"));
+
+            w.writeAttribute(QLatin1String("name"), ws->name());
+            w.writeAttribute(QLatin1String("edges"), QString::number(ws->edgeColors()));
+            w.writeAttribute(QLatin1String("corners"), QString::number(ws->cornerColors()));
+            w.writeAttribute(QLatin1String("tile"), QString::number(ws->imageTileId()));
+
+            //write each tile with a valid wangId
+            for (const Tile *tile : tileset.tiles()) {
+                if (int wId = ws->wangIdOfTile(tile)) {
+                    w.writeStartElement(QLatin1String("wangsettile"));
+                    w.writeAttribute(QLatin1String("tileid"), QString::number(tile->id()));
+                    w.writeAttribute(QLatin1String("wangid"), QString::number(wId));
+                    w.writeEndElement(); // </wangsettile>
+                }
+            }
+            writeProperties(w, ws->properties());
+
+            w.writeEndElement(); // </wangset>
+        }
+        w.writeEndElement(); // </wangsets>
     }
 
     w.writeEndElement();

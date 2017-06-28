@@ -118,7 +118,8 @@ void WangSetView::editWangSetProperties()
     if(!wangSet)
         return;
 
-    //TODO ADD WANGSET PROPERTIES EDITING...
+    mTilesetDocument->setCurrentObject(wangSet);
+    emit mTilesetDocument->editCurrentObject();
 }
 
 void WangSetView::adjustScale()

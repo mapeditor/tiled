@@ -434,15 +434,6 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
-        } else if(xml.name() == QLatin1String("wanginfo")) {
-            const QXmlStreamAttributes wangAtts = xml.attributes();
-
-            WangSet *wangset = tileset.wangSet(wangAtts.value(QLatin1String("setindex")).toInt());
-            unsigned wangid = wangAtts.value(QLatin1String("wangid")).toUInt();
-
-            wangset->addTile(tile, wangid);
-
-            xml.skipCurrentElement();
         } else {
             readUnknownElement();
         }
@@ -596,7 +587,15 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
                     wangSet->mergeProperties(readProperties());
-                else
+                else if (xml.name() == QLatin1String("wangsettile")) {
+                    const QXmlStreamAttributes tileAtts = xml.attributes();
+                    int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
+                    int wangId = tileAtts.value(QLatin1String("wangid")).toInt();
+
+                    wangSet->addTile(tileset.tileAt(tileId), wangId);
+
+                    xml.skipCurrentElement();
+                } else
                     readUnknownElement();
             }
         } else {
