@@ -23,6 +23,7 @@
 #include "addremovemapobject.h"
 #include "addremoveterrain.h"
 #include "addremovetiles.h"
+#include "addremovewangset.h"
 #include "changetileterrain.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
@@ -860,12 +861,26 @@ void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
 
 void TilesetEditor::addWangSet()
 {
+    Tileset *tileset = currentTileset();
+    if(!tileset)
+        return;
 
+    //2 and 0 are default values for number of edges and corners TODO define this some where better?
+    WangSet *wangSet = new WangSet(tileset, 2, 0, QString(), -1);
+    wangSet->setName(tr("New Wang Set"));
+
+    mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,
+                                                              wangSet));
+
+    mWangDock->editWangSetName(wangSet);
 }
 
 void TilesetEditor::removeWangSet()
 {
+    WangSet *wangSet = mWangDock->currentWangSet();
 
+    mCurrentTilesetDocument->undoStack()->push(new RemoveWangSet(mCurrentTilesetDocument,
+                                                                 wangSet));
 }
 
 void TilesetEditor::setTerrainImage(Tile *tile)

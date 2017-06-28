@@ -30,7 +30,7 @@ class WangSet;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 class WangSetModel : public QAbstractItemModel
 {
@@ -41,15 +41,15 @@ public:
         WangSetRole = Qt::UserRole
     };
 
-    WangSetModel(MapDocument *mapDocument,
+    WangSetModel(QAbstractItemModel *tilesetDocumentModel,
                  QObject *parent = nullptr);
 
     ~WangSetModel();
 
     QModelIndex index(int row, int column,
-                      const QModelIndex &parent) const override;
+                      const QModelIndex &parent = QModelIndex()) const override;
 
-    QModelIndex index(Tileset *tileSet) const;
+    QModelIndex index(Tileset *tileset) const;
     QModelIndex index(WangSet *wangSet) const;
 
     QModelIndex parent(const QModelIndex &child) const override;
@@ -60,23 +60,26 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     Tileset *tilesetAt(const QModelIndex &index) const;
     WangSet *wangSetAt(const QModelIndex &index) const;
 
 private slots:
-    void tilesetAboutToBeAdded(int index);
-    void tilesetAdded();
-    void tilesetAboutToBeRemoved(int index);
-    void tilesetRemoved();
-    void tilesetChanged(Tileset *tileset);
+    void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
+    void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
+    void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
-    void wangSetAboutToBeAdded(Tileset *tileset);
-    void wangSetAdded(Tileset *tileset);
-    void wangSetAboutToBeRemoved(Tileset *tileset, WangSet *wangSet);
-    void wangSetRemoved(Tileset *tileset);
+    void onWangSetAboutToBeAdded(Tileset *tileset);
+    void onWangSetAdded(Tileset *tileset);
+    void onWangSetAboutToBeRemoved(WangSet *wangSet);
+    void onWangSetRemoved(WangSet *wangSet);
 
 private:
-    MapDocument *mMapDocument;
+    QAbstractItemModel *mTilesetDocumentsModel;
+    QList<TilesetDocument*> mTilesetDocuments;
 };
 
 } // namespace Internal

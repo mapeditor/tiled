@@ -18,6 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "wangset.h"
 #include "wangdock.h"
 #include "wangsetview.h"
 #include "wangsetmodel.h"
@@ -25,6 +26,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
 #include "tilesetwangsetmodel.h"
 #include "utils.h"
 
@@ -97,6 +99,8 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveWangSet(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
+    , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
+    , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new WangSetFilterModel(this))
     , mInitializing(false)
 {
@@ -149,37 +153,26 @@ WangDock::~WangDock()
 {
 }
 
-static QAbstractItemModel *wangSetModel(Document *document)
-{
-    switch (document->type()) {
-    case Document::MapDocumentType:
-        return static_cast<MapDocument*>(document)->wangSetModel();
-    case Document::TilesetDocumentType:
-        return static_cast<TilesetDocument*>(document)->wangSetModel();
-    }
-
-    return nullptr;
-}
-
 void WangDock::setDocument(Document *document)
 {
     if (mDocument == document)
         return;
 
-    if (mDocument) {
-        wangSetModel(mDocument)->disconnect(this);
-        mDocument->disconnect(this);
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {\
+        tilesetDocument->disconnect(this);
     }
 
     mDocument = document;
     mInitializing = true;
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
-        WangSetModel *wangSetModel = mapDocument->wangSetModel();
+        mTilesetDocumentFilterModel->setMapDocument(mapDocument);
 
         mProxyModel->setEnabled(true);
-        mProxyModel->setSourceModel(wangSetModel);
+        mProxyModel->setSourceModel(mWangSetModel);
         mWangSetView->expandAll();
+
+        setCurrentWangSet((firstWangSet(mapDocument)));
 
         mToolBar->setVisible(false);
 
@@ -195,7 +188,7 @@ void WangDock::setDocument(Document *document)
         mToolBar->setVisible(true);
 
         /*
-         * Removing a terrain usually changes the selected terrain without the
+         * Removing a wangset usually changes the selected terrain without the
          * selection changing rows, so we can't rely on the currentRowChanged
          * signal.
          */
@@ -215,9 +208,12 @@ void WangDock::editWangSetName(WangSet *wangSet)
 {
     const QModelIndex index = wangSetIndex(wangSet);
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
-    selectionModel->setCurrentIndex(index,
-                                    QItemSelectionModel::ClearAndSelect |
-                                    QItemSelectionModel::Rows);
+
+    //Changing the index seems to be causing the crashing... Needs investigation.
+    //selectionModel->setCurrentIndex(index,
+    //                                QItemSelectionModel::ClearAndSelect |
+    //                                QItemSelectionModel::Rows);
+
     mWangSetView->edit(index);
 }
 
@@ -242,10 +238,8 @@ void WangDock::refreshCurrentWangSet()
 
 void WangDock::indexPressed(const QModelIndex &index)
 {
-    if (WangSet *wangSet = mWangSetView->wangSetAt(index)) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject((Object*)wangSet);
-    }
+    if (WangSet *wangSet = mWangSetView->wangSetAt(index))
+        mDocument->setCurrentObject(wangSet);
 }
 
 void WangDock::expandRows(const QModelIndex &parent, int first, int last)
@@ -272,10 +266,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
         mCurrentWangSet = nullptr;
     }
 
-    if (wangSet && !mInitializing) {
-        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
-            tilesetDocument->setCurrentObject((Object*)wangSet);
-    }
+    if (wangSet && !mInitializing)
+        mDocument->setCurrentObject(wangSet);
 
     mRemoveWangSet->setEnabled(wangSet);
 
@@ -292,5 +284,12 @@ void WangDock::retranslateUi()
 
 QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
 {
-    return qobject_cast<WangSetModel*>(mProxyModel->sourceModel())->index(wangSet);
+    QModelIndex sourceIndex;
+
+    if (mDocument->type() == Document::MapDocumentType)
+        sourceIndex = mWangSetModel->index(wangSet);
+    else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+        sourceIndex = tilesetDocument->wangSetModel()->index(wangSet);
+
+    return mProxyModel->mapFromSource(sourceIndex);
 }

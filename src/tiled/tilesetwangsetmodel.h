@@ -80,7 +80,7 @@ signals:
     void wangSetAboutToBeAdded(Tileset *tileset);
     void wangSetAdded(Tileset *tileset);
     void wangSetAboutToBeRemoved(WangSet *wangSet);
-    void wangSetRemoved();
+    void wangSetRemoved(WangSet *wangSet);
 
     /**
      * Emitted when either the name or the image of a terrain changed.

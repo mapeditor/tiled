@@ -28,6 +28,7 @@
 #include "tilesetwangsetmodel.h"
 
 #include "tilesetdocument.h"
+#include "renamewangset.h"
 #include "wangset.h"
 #include "tileset.h"
 #include "tile.h"
@@ -65,7 +66,6 @@ int TilesetWangSetModel::rowCount(const QModelIndex &parent) const
 int TilesetWangSetModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-
     return 1;
 }
 
@@ -93,7 +93,18 @@ bool TilesetWangSetModel::setData(const QModelIndex &index,
                                   const QVariant &value,
                                   int role)
 {
-    //TO ADD RENAME CAPABILITY
+    if(role == Qt::EditRole) {
+        const QString newName = value.toString();
+        WangSet *wangSet = wangSetAt(index);
+        if (wangSet->name() != newName) {
+            RenameWangSet *rename = new RenameWangSet(mTilesetDocument,
+                                                      mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                      newName);
+            mTilesetDocument->undoStack()->push(rename);
+        }
+        return true;
+    }
+
     return false;
 }
 
@@ -134,12 +145,12 @@ WangSet *TilesetWangSetModel::takeWangSetAt(int index)
     emit wangSetAboutToBeRemoved(tileset->wangSet(index));
 
     beginRemoveRows(QModelIndex(), index, index);
-    WangSet *wangset = tileset->takeWangSetAt(index);
+    WangSet *wangSet = tileset->takeWangSetAt(index);
     endRemoveRows();
 
-    emit wangSetRemoved();
+    emit wangSetRemoved(wangSet);
 
-    return wangset;
+    return wangSet;
 }
 
 void TilesetWangSetModel::setWangSetName(int index, const QString &name)

@@ -1,6 +1,6 @@
 /*
- * wangsetview.h
- * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * renamewangset.h
+ * Copyright 2017, Benjamin Trotte <bdtrotte@ucsc.edu>
  *
  * This file is part of Tiled.
  *
@@ -18,45 +18,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wangsetmodel.h"
+#pragma once
 
-#include <QTreeView>
+#include <QUndoCommand>
 
 namespace Tiled {
+
+class Tileset;
+
 namespace Internal {
 
 class TilesetDocument;
-class Zoomable;
+class TilesetWangSetModel;
 
-class WangSetView : public QTreeView
+class RenameWangSet : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    WangSetView(QWidget *parent = nullptr);
+    RenameWangSet(TilesetDocument *tilesetDocument,
+                  int index,
+                  const QString &newName);
 
-    void setTilesetDocument(TilesetDocument *tilesetDocument);
-
-    Zoomable *zoomable() const { return mZoomable; }
-
-    WangSet *wangSetAt(const QModelIndex &index) const;
-
-protected:
-    bool event(QEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
-private slots:
-    void editWangSetProperties();
-
-    void adjustScale();
+    void undo() override;
+    void redo() override;
 
 private:
-    Zoomable *mZoomable;
-    TilesetDocument *mTilesetDocument;
+    TilesetWangSetModel *mWangSetModel;
+    Tileset *mTileset;
+    int mIndex;
+    QString mOldName;
+    QString mNewName;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Internal::WangSetView *)

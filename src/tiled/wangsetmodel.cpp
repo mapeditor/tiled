@@ -26,6 +26,10 @@
 #include "wangset.h"
 #include "tileset.h"
 #include "tile.h"
+#include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
+#include "tileset.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QApplication>
 #include <QFont>
@@ -34,30 +38,21 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-WangSetModel::WangSetModel(MapDocument *mapDocument,
+WangSetModel::WangSetModel(QAbstractItemModel *tilesetDocumentModel,
                            QObject *parent):
     QAbstractItemModel(parent),
-    mMapDocument(mapDocument)
+    mTilesetDocumentsModel(tilesetDocumentModel)
 {
-    connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
-            this, SLOT(tilesetAboutToBeAdded(int)));
-    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-            this, SLOT(tilesetAdded()));
-    connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
-            this, SLOT(tilesetAboutToBeRemoved(int)));
-    connect(mapDocument, SIGNAL(tilesetRemoved(Tileset*)),
-            this, SLOT(tilesetRemoved()));
-    connect(mapDocument, &MapDocument::tilesetNameChanged,
-            this, &WangSetModel::tilesetChanged);
-
-    connect(mapDocument, &MapDocument::tilesetWangSetAboutToBeAdded,
-            this, &WangSetModel::wangSetAboutToBeAdded);
-    connect(mapDocument, &MapDocument::tilesetWangSetAdded,
-            this, &WangSetModel::wangSetAdded);
-    connect(mapDocument, &MapDocument::tilesetWangSetAboutToBeRemoved,
-            this, &WangSetModel::wangSetAboutToBeRemoved);
-    connect(mapDocument, &MapDocument::tilesetWangSetRemoved,
-            this, &WangSetModel::wangSetRemoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsInserted,
+            this, &WangSetModel::onTilesetRowsInserted);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsAboutToBeRemoved,
+            this, &WangSetModel::onTilesetRowsAboutToBeRemoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::rowsMoved,
+            this, &WangSetModel::onTilesetRowsMoved);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::layoutChanged,
+            this, &WangSetModel::onTilesetLayoutChanged);
+    connect(mTilesetDocumentsModel, &QAbstractItemModel::dataChanged,
+            this, &WangSetModel::onTilesetDataChanged);
 }
 
 WangSetModel::~WangSetModel()
@@ -77,11 +72,13 @@ QModelIndex WangSetModel::index(int row, int column, const QModelIndex &parent) 
     return QModelIndex();
 }
 
-QModelIndex WangSetModel::index(Tileset *tileSet) const
+QModelIndex WangSetModel::index(Tileset *tileset) const
 {
-    int row = indexOf(mMapDocument->map()->tilesets(), tileSet);
-    Q_ASSERT(row != -1);
-    return createIndex(row, 0);
+    for (int row = 0; row < mTilesetDocuments.size(); ++row)
+        if (mTilesetDocuments.at(row)->tileset() == tileset)
+            return createIndex(row, 0);
+
+    return QModelIndex();
 }
 
 QModelIndex WangSetModel::index(WangSet *wangSet) const
@@ -102,7 +99,7 @@ QModelIndex WangSetModel::parent(const QModelIndex &child) const
 int WangSetModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mMapDocument->map()->tilesetCount();
+        return mTilesetDocuments.size();
     else if (Tileset *tileset = tilesetAt(parent))
         return tileset->wangSetCount();
 
@@ -150,16 +147,26 @@ QVariant WangSetModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+Qt::ItemFlags WangSetModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+    if (tilesetAt(index))
+        defaultFlags &= ~Qt::ItemIsSelectable;
+
+    return defaultFlags;
+}
+
 Tileset *WangSetModel::tilesetAt(const QModelIndex &index) const
 {
     if (!index.isValid())
         return nullptr;
     if (index.parent().isValid()) // tilesets don't have parents
         return nullptr;
-    if (index.row() >= mMapDocument->map()->tilesetCount())
+    if (index.row() >= mTilesetDocuments.size())
         return nullptr;
 
-    return mMapDocument->map()->tilesetAt(index.row()).data();
+    return mTilesetDocuments.at(index.row())->tileset().data();
 }
 
 WangSet *WangSetModel::wangSetAt(const QModelIndex &index) const
@@ -173,52 +180,113 @@ WangSet *WangSetModel::wangSetAt(const QModelIndex &index) const
     return nullptr;
 }
 
-void WangSetModel::tilesetAboutToBeAdded(int index)
+void WangSetModel::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
 {
-    beginInsertRows(QModelIndex(), index, index);
-}
+    beginInsertRows(QModelIndex(), first, last);
+    for (int row = first; row <= last; ++row) {
+        const QModelIndex index = mTilesetDocumentsModel->index(row, 0, parent);
+        const QVariant var = mTilesetDocumentsModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
 
-void WangSetModel::tilesetAdded()
-{
+        mTilesetDocuments.insert(row, tilesetDocument);
+
+        TilesetWangSetModel *tilesetWangSetModel = tilesetDocument->wangSetModel();
+        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAboutToBeAdded,
+                this, &WangSetModel::onWangSetAboutToBeAdded);
+        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAdded,
+                this, &WangSetModel::onWangSetAdded);
+        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetAboutToBeRemoved,
+                this, &WangSetModel::onWangSetAboutToBeRemoved);
+        connect(tilesetWangSetModel, &TilesetWangSetModel::wangSetRemoved,
+                this, &WangSetModel::onWangSetRemoved);
+    }
     endInsertRows();
 }
 
-void WangSetModel::tilesetAboutToBeRemoved(int index)
+void WangSetModel::onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
 {
-    beginRemoveRows(QModelIndex(), index, index);
-}
+    Q_UNUSED(parent)
 
-void WangSetModel::tilesetRemoved()
-{
+    beginRemoveRows(QModelIndex(), first, last);
+    for (int index = last; index >= first; --index) {
+        TilesetDocument *tilesetDocument = mTilesetDocuments.takeAt(index);
+        tilesetDocument->wangSetModel()->disconnect(this);
+    }
     endRemoveRows();
 }
 
-void WangSetModel::tilesetChanged(Tileset *tileset)
+void WangSetModel::onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
 {
-    const QModelIndex index = WangSetModel::index(tileset);
-    emit dataChanged(index, index);
+    Q_UNUSED(parent)
+    Q_UNUSED(destination)
+
+    beginMoveRows(QModelIndex(), start, end, QModelIndex(), row);
+
+    if (start == row)
+        return;
+
+    while (start <= end) {
+        mTilesetDocuments.move(start, row);
+
+        if (row < start) {
+            ++start;
+            ++row;
+        } else {
+            --end;
+        }
+    }
+
+    endMoveRows();
 }
 
-void WangSetModel::wangSetAboutToBeAdded(Tileset *tileset)
+void WangSetModel::onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint)
+{
+    Q_UNUSED(parents)
+    Q_UNUSED(hint)
+
+    // Make sure the tileset documents are still in the right order
+    for (int i = 0, rows = mTilesetDocuments.size(); i < rows; ++i) {
+        const QModelIndex index = mTilesetDocumentsModel->index(i, 0);
+        const QVariant var = mTilesetDocumentsModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
+        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
+        int currentIndex = mTilesetDocuments.indexOf(tilesetDocument);
+        if (currentIndex != i) {
+            Q_ASSERT(currentIndex > i);
+            onTilesetRowsMoved(QModelIndex(), currentIndex, currentIndex, QModelIndex(), i);
+        }
+    }
+}
+
+void WangSetModel::onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+    emit dataChanged(index(topLeft.row(), topLeft.column()),
+                     index(bottomRight.row(), bottomRight.column()));
+}
+
+void WangSetModel::onWangSetAboutToBeAdded(Tileset *tileset)
 {
     QModelIndex parent = index(tileset);
     beginInsertRows(parent, tileset->wangSetCount(), tileset->wangSetCount());
 }
 
-void WangSetModel::wangSetAdded(Tileset *tileset)
+void WangSetModel::onWangSetAdded(Tileset *tileset)
 {
     endInsertRows();
-    tilesetChanged(tileset);
+
+    const QModelIndex index = WangSetModel::index(tileset);
+    emit dataChanged(index, index);
 }
 
-void WangSetModel::wangSetAboutToBeRemoved(Tileset *tileset, WangSet *wangSet)
+void WangSetModel::onWangSetAboutToBeRemoved(WangSet *wangSet)
 {
-    QModelIndex parent = index(tileset);
-    beginRemoveRows(parent, tileset->wangSets().indexOf(wangSet), tileset->wangSets().indexOf(wangSet));
+    QModelIndex parent = index(wangSet->tileset());
+    beginRemoveRows(parent, index(wangSet).row(), index(wangSet).row());
 }
 
-void WangSetModel::wangSetRemoved(Tileset *tileset)
+void WangSetModel::onWangSetRemoved(WangSet *wangSet)
 {
     endRemoveRows();
-    tilesetChanged(tileset);
+
+    const QModelIndex index = WangSetModel::index(wangSet->tileset());
+    emit dataChanged(index, index);
 }

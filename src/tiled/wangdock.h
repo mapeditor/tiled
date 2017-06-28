@@ -38,6 +38,7 @@ class WangSetFilterModel;
 class WangSetView;
 class WangSetModel;
 class TilesetDocument;
+class TilesetDocumentsFilterModel;
 
 class WangDock : public QDockWidget
 {
@@ -45,7 +46,6 @@ class WangDock : public QDockWidget
 
 public:
     WangDock(QWidget *parent = nullptr);
-
     ~WangDock();
 
     void setDocument(Document *document);
@@ -83,6 +83,8 @@ private:
     Document *mDocument;
     WangSetView *mWangSetView;
     WangSet *mCurrentWangSet;
+    TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
+    WangSetModel *mWangSetModel;
     WangSetFilterModel *mProxyModel;
 
     bool mInitializing;

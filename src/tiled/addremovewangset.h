@@ -1,5 +1,5 @@
 /*
- * wangsetview.h
+ * addremovewangset.h
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
  *
  * This file is part of Tiled.
@@ -18,45 +18,55 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wangsetmodel.h"
+#pragma once
 
-#include <QTreeView>
+#include <QUndoCommand>
 
 namespace Tiled {
+
+class WangSet;
+class Tileset;
+
 namespace Internal {
 
 class TilesetDocument;
-class Zoomable;
 
-class WangSetView : public QTreeView
+class AddRemoveWangSet : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    WangSetView(QWidget *parent = nullptr);
-
-    void setTilesetDocument(TilesetDocument *tilesetDocument);
-
-    Zoomable *zoomable() const { return mZoomable; }
-
-    WangSet *wangSetAt(const QModelIndex &index) const;
+    AddRemoveWangSet(TilesetDocument *tilesetDocument,
+                     int index,
+                     WangSet *wangSet);
+    ~AddRemoveWangSet();
 
 protected:
-    bool event(QEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
-private slots:
-    void editWangSetProperties();
-
-    void adjustScale();
+    void addWangSet();
+    void removeWangSet();
 
 private:
-    Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument;
+    Tileset *mTileset;
+    int mIndex;
+    WangSet *mWangSet;
 };
 
-} // namespace Internal
-} // namespace Tiled
+class AddWangSet : public AddRemoveWangSet
+{
+public:
+    AddWangSet(TilesetDocument *tilesetDocument, WangSet *wangSet);
 
-Q_DECLARE_METATYPE(Tiled::Internal::WangSetView *)
+    void undo() override { removeWangSet(); }
+    void redo() override { addWangSet(); }
+};
+
+class RemoveWangSet : public AddRemoveWangSet
+{
+public:
+    RemoveWangSet(TilesetDocument *tilesetDocument, WangSet *wangset);
+
+    void undo() override { addWangSet(); }
+    void redo() override { removeWangSet(); }
+};
+
+} // namespace internal
+} // namespace tiled
