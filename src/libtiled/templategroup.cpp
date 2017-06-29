@@ -76,3 +76,12 @@ void TemplateGroup::addTileset(const SharedTileset &tileset)
 
     mTilesets.append(tileset);
 }
+
+const ObjectTemplate *TemplateGroup::findTemplate(unsigned id) const
+{
+    for (auto *objectTemplate : mTemplates)
+        if (objectTemplate->id() == id)
+            return objectTemplate;
+
+    return nullptr;
+}

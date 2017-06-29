@@ -36,6 +36,7 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldPolygon(oldPolygon)
     , mNewPolygon(mapObject->polygon())
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
 }
@@ -48,6 +49,7 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldPolygon(oldPolygon)
     , mNewPolygon(newPolygon)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
 }
@@ -55,9 +57,11 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
 void ChangePolygon::undo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mOldPolygon);
+    mMapObject->setPropertyChanged(MapObject::ShapeProperty, mOldChangeState);
 }
 
 void ChangePolygon::redo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mNewPolygon);
+    mMapObject->setPropertyChanged(MapObject::ShapeProperty);
 }

@@ -69,7 +69,7 @@ struct TILEDSHARED_EXPORT TextData
 
 struct TemplateRef {
     TemplateGroup *templateGroup;
-    int templateId;
+    unsigned templateId;
 };
 
 /**
@@ -104,15 +104,21 @@ public:
      * Can be used to get/set property values using QVariant.
      */
     enum Property {
-        NameProperty,
-        TypeProperty,
-        VisibleProperty,
-        TextProperty,
-        TextFontProperty,
-        TextAlignmentProperty,
-        TextWordWrapProperty,
-        TextColorProperty
+        NameProperty             = 1 << 0,
+        TypeProperty             = 1 << 1,
+        VisibleProperty          = 1 << 2,
+        TextProperty             = 1 << 3,
+        TextFontProperty         = 1 << 4,
+        TextAlignmentProperty    = 1 << 5,
+        TextWordWrapProperty     = 1 << 6,
+        TextColorProperty        = 1 << 7,
+        SizeProperty             = 1 << 8,
+        RotationProperty         = 1 << 9,
+        CellProperty             = 1 << 10,
+        ShapeProperty            = 1 << 11
     };
+
+    Q_DECLARE_FLAGS(ChangedProperties, Property)
 
     MapObject();
 
@@ -187,9 +193,16 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
+    void setPropertyChanged(Property property, bool state = true);
+    bool propertyChanged(Property property) const;
+
     void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
+
+    const MapObject *templateObject() const;
+
+    void syncWithTemplate();
 
 private:
     void flipRectObject(const QTransform &flipTransform);
@@ -209,6 +222,7 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    ChangedProperties mChangedProperties;
 };
 
 /**
@@ -438,6 +452,17 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline void MapObject::setPropertyChanged(Property property, bool state)
+{
+    if (state)
+        mChangedProperties |= property;
+    else
+        mChangedProperties &= ~property;
+}
+
+inline bool MapObject::propertyChanged(Property property) const
+{ return mChangedProperties.testFlag(property); }
 
 } // namespace Tiled
 

@@ -36,6 +36,7 @@ RotateMapObject::RotateMapObject(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldRotation(oldRotation)
     , mNewRotation(mapObject->rotation())
+    , mOldChangeState(mapObject->propertyChanged(MapObject::RotationProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
@@ -48,6 +49,7 @@ RotateMapObject::RotateMapObject(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldRotation(oldRotation)
     , mNewRotation(newRotation)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::RotationProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
@@ -55,9 +57,11 @@ RotateMapObject::RotateMapObject(MapDocument *mapDocument,
 void RotateMapObject::undo()
 {
     mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mOldRotation);
+    mMapObject->setPropertyChanged(MapObject::RotationProperty, mOldChangeState);
 }
 
 void RotateMapObject::redo()
 {
     mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mNewRotation);
+    mMapObject->setPropertyChanged(MapObject::RotationProperty);
 }

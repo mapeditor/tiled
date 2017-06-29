@@ -72,6 +72,7 @@ public:
     bool loaded() const;
 
     ObjectTemplate *templateAt(int index) const { return mTemplates.at(index); }
+    const ObjectTemplate *findTemplate(unsigned id) const;
 
 private:
     QList<ObjectTemplate*> mTemplates;

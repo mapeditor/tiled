@@ -652,6 +652,11 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
+static bool shouldWrite(bool holdsInfo, bool isTemplateInstance, bool changed)
+{
+    return isTemplateInstance ? changed : holdsInfo;
+}
+
 void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject &mapObject)
 {
@@ -665,46 +670,46 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     TemplateRef templateRef = mapObject.templateRef();
     const int templateId = templateRef.templateId;
     const auto group = templateRef.templateGroup;
+    bool isTemplateInstance = group;
 
-    if (group) {
+    if (isTemplateInstance) {
         int groupFirstTid = mTidMapper.templateGroupToFirstTid(group);
         int tid = templateId + groupFirstTid;
         w.writeAttribute(QLatin1String("tid"), QString::number(tid));
-        w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
-        w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
-        w.writeEndElement();
-        return;
     }
 
     if (id != 0)
         w.writeAttribute(QLatin1String("id"), QString::number(id));
-    if (!name.isEmpty())
+
+    if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QLatin1String("name"), name);
-    if (!type.isEmpty())
+
+    if (shouldWrite(!type.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::TypeProperty)))
         w.writeAttribute(QLatin1String("type"), type);
 
-    if (!mapObject.cell().isEmpty()) {
+    if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
-
-    const QSizeF size = mapObject.size();
 
     if (id != 0) {
         w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
         w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
     }
 
-    if (size.width() != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
-    if (size.height() != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
+    if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::SizeProperty))) {
+        const QSizeF size = mapObject.size();
+        if (size.width() != 0)
+            w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
+        if (size.height() != 0)
+            w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
+    }
 
     const qreal rotation = mapObject.rotation();
-    if (rotation != 0.0)
+    if (shouldWrite(rotation != 0.0, isTemplateInstance, mapObject.propertyChanged(MapObject::RotationProperty)))
         w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
-    if (!mapObject.isVisible())
+    if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
 
     writeProperties(w, mapObject.properties());
@@ -714,28 +719,37 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         break;
     case MapObject::Polygon:
     case MapObject::Polyline: {
-        if (mapObject.shape() == MapObject::Polygon)
-            w.writeStartElement(QLatin1String("polygon"));
-        else
-            w.writeStartElement(QLatin1String("polyline"));
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty))) {
+            if (mapObject.shape() == MapObject::Polygon)
+                w.writeStartElement(QLatin1String("polygon"));
+            else
+                w.writeStartElement(QLatin1String("polyline"));
 
-        QString points;
-        for (const QPointF &point : mapObject.polygon()) {
-            points.append(QString::number(point.x()));
-            points.append(QLatin1Char(','));
-            points.append(QString::number(point.y()));
-            points.append(QLatin1Char(' '));
+            QString points;
+            for (const QPointF &point : mapObject.polygon()) {
+                points.append(QString::number(point.x()));
+                points.append(QLatin1Char(','));
+                points.append(QString::number(point.y()));
+                points.append(QLatin1Char(' '));
+            }
+            points.chop(1);
+            w.writeAttribute(QLatin1String("points"), points);
+            w.writeEndElement();
         }
-        points.chop(1);
-        w.writeAttribute(QLatin1String("points"), points);
-        w.writeEndElement();
         break;
     }
     case MapObject::Ellipse:
-        w.writeEmptyElement(QLatin1String("ellipse"));
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
+            w.writeEmptyElement(QLatin1String("ellipse"));
         break;
     case MapObject::Text: {
-        writeObjectText(w, mapObject.textData());
+        if (shouldWrite(true, isTemplateInstance,
+                        mapObject.propertyChanged(MapObject::TextProperty) ||
+                        mapObject.propertyChanged(MapObject::TextFontProperty) ||
+                        mapObject.propertyChanged(MapObject::TextAlignmentProperty) ||
+                        mapObject.propertyChanged(MapObject::TextWordWrapProperty) ||
+                        mapObject.propertyChanged(MapObject::TextColorProperty)  ))
+            writeObjectText(w, mapObject.textData());
         break;
     }
     }

@@ -47,6 +47,11 @@ private:
     const QList<MapObject *> mMapObjects;
     QPointF mObjectsCenter;
     FlipDirection mFlipDirection;
+
+    QVector<bool> mOldRotationStates;
+    QVector<bool> mNewRotationStates;
+    QVector<bool> mOldCellStates;
+    QVector<bool> mNewCellStates;
 };
 
 } // namespace Internal

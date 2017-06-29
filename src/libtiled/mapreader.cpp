@@ -964,48 +964,51 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    MapObject *object;
-
-    bool templateLoaded = false;
+    MapObject *object = new MapObject;
 
     if (tid) { // This object is a template instance
         ObjectTemplate *objectTemplate = templateForTid(tid);
-
         if (objectTemplate) {
-            templateLoaded = true;
-            object = objectTemplate->object()->clone();
-
-            if (!name.isEmpty())
-                object->setName(name);
-
-            if (!type.isEmpty())
-                object->setType(type);
-
-            object->setPosition(pos);
-
-            if (!size.isEmpty())
-                object->setSize(size);
-
             object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
         }
     }
 
-    if (!templateLoaded)
-        object = new MapObject(name, type, pos, size);
-
     object->setId(id);
+
+    if (!name.isEmpty()) {
+        object->setName(name);
+        object->setPropertyChanged(MapObject::NameProperty);
+    }
+
+    if (!type.isEmpty()) {
+        object->setType(type);
+        object->setPropertyChanged(MapObject::TypeProperty);
+    }
+
+    object->setPosition(pos);
+
+    if (!size.isEmpty()) {
+        object->setSize(size);
+        object->setPropertyChanged(MapObject::SizeProperty);
+    }
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toDouble(&ok);
-    if (ok)
+    if (ok) {
         object->setRotation(rotation);
+        object->setPropertyChanged(MapObject::RotationProperty);
+    }
 
-    if (gid)
+    if (gid) {
         object->setCell(cellForGid(gid));
+        object->setPropertyChanged(MapObject::CellProperty);
+    }
 
     const int visible = visibleRef.toInt(&ok);
-    if (ok)
+    if (ok) {
         object->setVisible(visible);
+        object->setPropertyChanged(MapObject::VisibleProperty);
+    }
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -1013,19 +1016,25 @@ MapObject *MapReaderPrivate::readObject()
         } else if (xml.name() == QLatin1String("polygon")) {
             object->setPolygon(readPolygon());
             object->setShape(MapObject::Polygon);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("polyline")) {
             object->setPolygon(readPolygon());
             object->setShape(MapObject::Polyline);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("ellipse")) {
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("text")) {
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);
+            object->setPropertyChanged(MapObject::TextProperty);
         } else {
             readUnknownElement();
         }
     }
+
+    object->syncWithTemplate();
 
     return object;
 }
