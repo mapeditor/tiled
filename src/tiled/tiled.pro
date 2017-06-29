@@ -84,7 +84,7 @@ SOURCES += aboutdialog.cpp \
     addremoveterrain.cpp \
     addremovetiles.cpp \
     addremovetileset.cpp \
-    addremocewangset.cpp \
+    addremovewangset.cpp \
     adjusttileindexes.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
