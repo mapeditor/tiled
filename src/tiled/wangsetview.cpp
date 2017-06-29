@@ -22,7 +22,7 @@
 
 #include "tileset.h"
 #include "tilesetdocument.h"
-#include "wangSet.h"
+#include "wangset.h"
 #include "wangsetmodel.h"
 #include "utils.h"
 #include "zoomable.h"

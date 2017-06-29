@@ -341,7 +341,7 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
         setCurrentObject(nullptr);
 }
 
-void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
+void TilesetDocument::onWangSetRemoved()
 {
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tilesetWangSetRemoved(mTileset.data());

@@ -856,7 +856,9 @@ void TilesetEditor::removeTerrainType()
 
 void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
 {
+    //Currently not used, as assigning tiles is not yet supported.
 
+    Q_UNUSED(wangSet);
 }
 
 void TilesetEditor::addWangSet()

@@ -45,7 +45,6 @@ protected:
 
 private:
     TilesetDocument *mTilesetDocument;
-    Tileset *mTileset;
     int mIndex;
     WangSet *mWangSet;
 };
