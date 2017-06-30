@@ -119,6 +119,7 @@ private slots:
     void currentWangSetChanged(const WangSet *wangSet);
     void addWangSet();
     void removeWangSet();
+    void setWangSetImage(Tile *tile);
 
 private:
     void setCurrentTile(Tile *tile);

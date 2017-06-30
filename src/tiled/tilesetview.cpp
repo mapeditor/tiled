@@ -30,6 +30,7 @@
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
+#include "wangset.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -540,6 +541,11 @@ void TilesetView::setEditTerrain(bool enabled)
     viewport()->update();
 }
 
+void TilesetView::setEditWangSet(bool enabled)
+{
+    mEditWangSet = enabled;
+}
+
 /**
  * The id of the terrain currently being specified. Returns -1 when no terrain
  * is set (used for erasing terrain info).
@@ -557,6 +563,11 @@ void TilesetView::setTerrain(const Terrain *terrain)
     mTerrain = terrain;
     if (mEditTerrain)
         viewport()->update();
+}
+
+void TilesetView::setWangSet(const WangSet *wangSet)
+{
+    mWangSet = wangSet;
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -707,6 +718,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 QAction *setImage = menu.addAction(tr("Set Terrain Image"));
                 connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
             }
+        } else if (mEditWangSet) {
+            selectionModel()->setCurrentIndex(index,
+                                              QItemSelectionModel::SelectCurrent |
+                                              QItemSelectionModel::Clear);
+
+            if(mWangSet) {
+                QAction *setImage = menu.addAction(tr("Set WangSet Image"));
+                connect(setImage, SIGNAL(triggered()), SLOT(selectWangSetImage()));
+            }
         } else if (mTilesetDocument) {
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
@@ -761,6 +781,12 @@ void TilesetView::selectTerrainImage()
 {
     if (Tile *tile = currentTile())
         emit terrainImageSelected(tile);
+}
+
+void TilesetView::selectWangSetImage()
+{
+    if (Tile *tile = currentTile())
+        emit wangSetImageSelected(tile);
 }
 
 void TilesetView::editTileProperties()

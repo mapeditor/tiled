@@ -137,10 +137,29 @@ public:
      * */
     QList<Tile*> findMatchingTiles(WangId wangId) const;
 
+    /* Returns a wangId matching that of the provided surrounding wangIds.
+     * This is based off a provided array, {a, b, c, d, e, f, g, h},
+     * which corrisponds to  h|a|b
+     *                       g|X|c
+     *                       f|e|d
+     * */
+    WangId wangIdFromSurrounding(WangId surroundingWangIds[]) const;
+
+    /* Returns a wangId matching that of the provided surrounding tiles.
+     * This is based off a provided array, {a, b, c, d, e, f, g, h},
+     * which corrisponds to  h|a|b
+     *                       g|X|c
+     *                       f|e|d
+     * */
+    WangId wangIdFromSurrounding(const Tile *surroundingWangIds[]) const;
 
     /* Returns the wangId of a given Tile.
      * */
     WangId wangIdOfTile(const Tile *tile) const;
+
+    /* Returns whether or not the given wangId is valid in the contex of the current wangSet
+     * */
+    bool wangIdIsValid(WangId wangId) const;
 
     /* Returns a clone of this wangset
      * */

@@ -28,7 +28,6 @@
 #include "wangset.h"
 
 #include <QStack>
-#include <QPoint>
 
 using namespace Tiled;
 
@@ -144,6 +143,48 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
     }
 
     return list;
+}
+
+WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
+{
+    unsigned id = 0;
+
+    if(mEdgeColors > 0) {
+        for (int i = 0; i < 3; ++i) {
+            id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
+        }
+    }
+
+    if(mCornerColors > 0) {
+        for (int i = 0; i < 3; ++i) {
+            int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
+
+            if (!color) {
+                color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
+            }
+
+            if (!color) {
+                color = surroundingWangIds[i*2 + 2].cornerColor((3 + i) % 4);
+            }
+
+            id |= color << (4 + i*8);
+        }
+    }
+
+    return id;
+}
+
+WangId WangSet::wangIdFromSurrounding(const Tile *surroundingWangIds[]) const
+{
+    WangId wangIds[8];
+
+    for (int i = 0; i < 8; ++i) {
+        wangIds[i] = wangIdOfTile(surroundingWangIds[i]);
+    }
+
+    WangId wangId = wangIdFromSurrounding(wangIds);
+
+    return wangId;
 }
 
 WangId WangSet::wangIdOfTile(const Tile *tile) const

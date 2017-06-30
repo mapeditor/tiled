@@ -25,6 +25,7 @@
 #include "addremovetiles.h"
 #include "addremovewangset.h"
 #include "changetileterrain.h"
+#include "changewangsetdata.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
@@ -311,6 +312,8 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::createNewTerrain, this, &TilesetEditor::addTerrainType);
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
 
+    connect(view, &TilesetView::wangSetImageSelected, this, &TilesetEditor::setWangSetImage);
+
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
     connect(s, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);
@@ -359,6 +362,7 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditTerrain(mTerrainDock->isVisible());
+        tilesetView->setEditWangSet(mWangDock->isVisible());
         tilesetView->zoomable()->setComboBox(mZoomComboBox);
     }
 
@@ -787,6 +791,9 @@ void TilesetEditor::setEditCollision(bool editCollision)
 
 void TilesetEditor::setEditWang(bool editWang)
 {
+    if (TilesetView *view = currentTilesetView())
+        view->setEditWangSet(editWang);
+
     if (editWang) {
         mTerrainDock->setVisible(false);
         mTileCollisionDock->setVisible(false);
@@ -856,9 +863,12 @@ void TilesetEditor::removeTerrainType()
 
 void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
 {
-    //Currently not used, as assigning tiles is not yet supported.
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
 
-    Q_UNUSED(wangSet);
+    if (wangSet)
+        view->setWangSet(wangSet);
 }
 
 void TilesetEditor::addWangSet()
@@ -893,6 +903,17 @@ void TilesetEditor::setTerrainImage(Tile *tile)
 
     mCurrentTilesetDocument->undoStack()->push(new SetTerrainImage(mCurrentTilesetDocument,
                                                                    terrain->id(),
+                                                                   tile->id()));
+}
+
+void TilesetEditor::setWangSetImage(Tile *tile)
+{
+    WangSet *wangSet = mWangDock->currentWangSet();
+    if(!wangSet)
+        return;
+
+    mCurrentTilesetDocument->undoStack()->push(new SetWangSetImage(mCurrentTilesetDocument,
+                                                                   mCurrentTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                                    tile->id()));
 }
 

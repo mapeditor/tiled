@@ -592,7 +592,7 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
                     int wangId = tileAtts.value(QLatin1String("wangid")).toInt();
 
-                    wangSet->addTile(tileset.tileAt(tileId), wangId);
+                    wangSet->addTile(tileset.findOrCreateTile(tileId), wangId);
 
                     xml.skipCurrentElement();
                 } else
