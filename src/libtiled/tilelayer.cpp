@@ -34,11 +34,71 @@
 
 using namespace Tiled;
 
+QRegion Block::region(std::function<bool (const Cell &)> condition) const
+{
+    QRegion region;
+
+    for (int y = 0; y < 16; ++y) {
+        for (int x = 0; x < 16; ++x) {
+            if (condition(cellAt(x, y))) {
+                const int rangeStart = x;
+                for (++x; x <= 16; ++x) {
+                    if (x == 16 || !condition(cellAt(x, y))) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart, y, rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return region;
+}
+
+void Block::setCell(int x, int y, const Cell &cell)
+{
+    int index = x + y * 16;
+
+    if (mGrid[index].isEmpty() && !cell.isEmpty())
+        mCells++;
+    else if (!mGrid[index].isEmpty() && cell.isEmpty())
+        mCells--;
+
+    mGrid[index] = cell;
+}
+
+bool Block::hasCell(std::function<bool (const Cell &)> condition) const
+{
+    for (const Cell &cell : mGrid)
+        if (condition(cell))
+            return true;
+
+    return false;
+}
+
+void Block::removeReferencesToTileset(Tileset *tileset)
+{
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        if (mGrid.at(i).tileset() == tileset)
+            mGrid.replace(i, Cell());
+    }
+}
+
+void Block::replaceReferencesToTileset(Tileset *oldTileset,
+                                           Tileset *newTileset)
+{
+    for (Cell &cell : mGrid) {
+        if (cell.tileset() == oldTileset)
+            cell.setTile(newTileset, cell.tileId());
+    }
+}
+
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
     : Layer(TileLayerType, name, x, y)
     , mWidth(width)
     , mHeight(height)
-    , mGrid(width * height)
+    , mEmptyCell(Cell())
     , mUsedTilesetsDirty(false)
 {
     Q_ASSERT(width >= 0);
@@ -88,20 +148,11 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (condition(cellAt(x, y))) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || !condition(cellAt(x, y))) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
+    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    while (it.hasNext()) {
+        it.next();
+        region += it.value()->region(condition).translated(it.key().first * 16 + mX,
+                                                           it.key().second * 16 + mY);
     }
 
     return region;
@@ -114,7 +165,12 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    Cell &existingCell = mGrid[x + y * mWidth];
+    Cell existingCell = Cell();
+
+    if (mMap.contains(block(x, y)))
+        existingCell = mMap[block(x, y)]->cellAt(x%16, y%16);
+    else
+        mMap[block(x, y)] = new Block();
 
     if (!mUsedTilesetsDirty) {
         Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
@@ -127,7 +183,12 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    existingCell = cell;
+    mMap[block(x, y)]->setCell(x%16, y%16, cell);
+
+    if (mMap[block(x, y)]->isEmpty()) {
+        delete mMap[block(x, y)];
+        mMap.remove(block(x, y));
+    }
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -233,7 +294,11 @@ void TileLayer::flip(FlipDirection direction)
         }
     }
 
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
@@ -269,7 +334,11 @@ void TileLayer::flipHexagonal(FlipDirection direction)
         }
     }
 
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 }
 
 void TileLayer::rotate(RotateDirection direction)
@@ -309,7 +378,11 @@ void TileLayer::rotate(RotateDirection direction)
 
     mWidth = newWidth;
     mHeight = newHeight;
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -390,7 +463,11 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     mWidth = newWidth;
     mHeight = newHeight;
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 
     QRect filledRect = region().boundingRect();
 
@@ -411,12 +488,17 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
     if (mUsedTilesetsDirty) {
         QSet<SharedTileset> tilesets;
 
-        for (const Cell &cell : mGrid)
-            if (const Tile *tile = cell.tile())
-                tilesets.insert(tile->sharedTileset());
+        QMapIterator< QPair<int, int>, Block* > it(mMap);
+        while (it.hasNext()) {
+            it.next();
 
-        mUsedTilesets.swap(tilesets);
-        mUsedTilesetsDirty = false;
+            for (const Cell &cell : *it.value())
+                if (const Tile *tile = cell.tile())
+                    tilesets.insert(tile->sharedTileset());
+
+            mUsedTilesets.swap(tilesets);
+            mUsedTilesetsDirty = false;
+        }
     }
 
     return mUsedTilesets;
@@ -424,9 +506,12 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
 
 bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 {
-    for (const Cell &cell : mGrid)
-        if (condition(cell))
+    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    while (it.hasNext()) {
+        it.next();
+        if (it.value()->hasCell(condition))
             return true;
+    }
 
     return false;
 }
@@ -438,9 +523,10 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        if (mGrid.at(i).tileset() == tileset)
-            mGrid.replace(i, Cell());
+    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    while (it.hasNext()) {
+        it.next();
+        it.value()->removeReferencesToTileset(tileset);
     }
 
     mUsedTilesets.remove(tileset->sharedPointer());
@@ -449,9 +535,10 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
-    for (Cell &cell : mGrid) {
-        if (cell.tileset() == oldTileset)
-            cell.setTile(newTileset, cell.tileId());
+    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    while (it.hasNext()) {
+        it.next();
+        it.value()->replaceReferencesToTileset(oldTileset, newTileset);
     }
 
     if (mUsedTilesets.remove(oldTileset->sharedPointer()))
@@ -478,7 +565,14 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
         }
     }
 
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (y < size.height() && x < size.width())
+                setCell(x, y, newGrid[x + y * size.width()]);
+            else
+                setCell(x, y, mEmptyCell);
+        }
+    }
     setSize(size);
 }
 
@@ -524,7 +618,11 @@ void TileLayer::offsetTiles(const QPoint &offset,
         }
     }
 
-    mGrid = newGrid;
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
@@ -574,9 +672,11 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
 
 bool TileLayer::isEmpty() const
 {
-    for (const Cell &cell : mGrid)
-        if (!cell.isEmpty())
+    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    while (it.hasNext()) {
+        if (!it.value()->isEmpty())
             return false;
+    }
 
     return true;
 }
@@ -594,7 +694,9 @@ TileLayer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    clone->mGrid = mGrid;
+    for (int x = 0; x < mWidth; ++x)
+        for (int y = 0; y < mHeight; ++y)
+            clone->setCell(x, y, cellAt(x, y));
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;

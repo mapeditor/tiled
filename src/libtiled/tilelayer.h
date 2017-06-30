@@ -37,7 +37,9 @@
 #include "tile.h"
 #include "tileset.h"
 
+#include <QMap>
 #include <QMargins>
+#include <QPair>
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
@@ -150,6 +152,57 @@ inline bool Cell::refersTile(const Tile *tile) const
 
 
 /**
+ * A block is a grid of cells of size 16x16.
+ */
+class Block
+{
+public:
+    Block() :
+        mGrid(256),
+        mCells(0)
+    {}
+
+    QRegion region(std::function<bool (const Cell &)> condition) const;
+
+    const Cell &cellAt(int x, int y) const;
+    const Cell &cellAt(const QPoint &point) const;
+
+    void setCell(int x, int y, const Cell &cell);
+
+    bool isEmpty() const;
+
+    bool hasCell(std::function<bool (const Cell &)> condition) const;
+
+    void removeReferencesToTileset(Tileset *tileset);
+
+    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+
+    QVector<Cell>::iterator begin() { return mGrid.begin(); }
+    QVector<Cell>::iterator end() { return mGrid.end(); }
+    QVector<Cell>::const_iterator begin() const { return mGrid.begin(); }
+    QVector<Cell>::const_iterator end() const { return mGrid.end(); }
+
+private:
+    QVector<Cell> mGrid;
+    int mCells;
+};
+
+inline const Cell &Block::cellAt(int x, int y) const
+{
+    return mGrid.at(x + y * 16);
+}
+
+inline const Cell &Block::cellAt(const QPoint &point) const
+{
+    return cellAt(point.x(), point.y());
+}
+
+inline bool Block::isEmpty() const
+{
+    return mCells == 0;
+}
+
+/**
  * A tile layer is a grid of cells. Each cell refers to a specific tile, and
  * stores how the tile is flipped.
  *
@@ -190,6 +243,8 @@ public:
 
     bool contains(int x, int y) const;
     bool contains(const QPoint &point) const;
+
+    QPair<int, int> block(int x, int y) const;
 
     /**
      * Calculates the region of cells in this tile layer for which the given
@@ -331,19 +386,14 @@ public:
 
     TileLayer *clone() const override;
 
-    // Enable easy iteration over cells with range-based for
-    QVector<Cell>::iterator begin() { return mGrid.begin(); }
-    QVector<Cell>::iterator end() { return mGrid.end(); }
-    QVector<Cell>::const_iterator begin() const { return mGrid.begin(); }
-    QVector<Cell>::const_iterator end() const { return mGrid.end(); }
-
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
     int mWidth;
     int mHeight;
-    QVector<Cell> mGrid;
+    Cell mEmptyCell;
+    QMap< QPair<int, int>, Block* > mMap;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
@@ -371,6 +421,11 @@ inline bool TileLayer::contains(const QPoint &point) const
     return contains(point.x(), point.y());
 }
 
+inline QPair<int, int> TileLayer::block(int x, int y) const
+{
+    return qMakePair(x/16, y/16);
+}
+
 inline QRegion TileLayer::region() const
 {
     return region([] (const Cell &cell) { return !cell.isEmpty(); });
@@ -383,7 +438,10 @@ inline QRegion TileLayer::region() const
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
-    return mGrid.at(x + y * mWidth);
+    if (mMap.contains(block(x, y)))
+        return mMap[block(x, y)]->cellAt(x%16, y%16);
+    else
+        return mEmptyCell;
 }
 
 inline const Cell &TileLayer::cellAt(const QPoint &point) const
