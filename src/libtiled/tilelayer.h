@@ -152,13 +152,13 @@ inline bool Cell::refersTile(const Tile *tile) const
 
 
 /**
- * A block is a grid of cells of size 16x16.
+ * A block is a grid of cells of size CHUNK_SIZExCHUNK_SIZE.
  */
 class Block
 {
 public:
     Block() :
-        mGrid(256),
+        mGrid(CHUNK_SIZE * CHUNK_SIZE),
         mCells(0)
     {}
 
@@ -189,7 +189,7 @@ private:
 
 inline const Cell &Block::cellAt(int x, int y) const
 {
-    return mGrid.at(x + y * 16);
+    return mGrid.at(x + y * CHUNK_SIZE);
 }
 
 inline const Cell &Block::cellAt(const QPoint &point) const
@@ -386,6 +386,8 @@ public:
 
     TileLayer *clone() const override;
 
+    void copyGrid(const QVector<Cell> &newGrid);
+
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
@@ -423,7 +425,7 @@ inline bool TileLayer::contains(const QPoint &point) const
 
 inline QPair<int, int> TileLayer::block(int x, int y) const
 {
-    return qMakePair(x/16, y/16);
+    return qMakePair(x / CHUNK_SIZE, y / CHUNK_SIZE);
 }
 
 inline QRegion TileLayer::region() const
@@ -439,7 +441,7 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
     if (mMap.contains(block(x, y)))
-        return mMap[block(x, y)]->cellAt(x%16, y%16);
+        return mMap[block(x, y)]->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
     else
         return mEmptyCell;
 }

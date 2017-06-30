@@ -38,12 +38,12 @@ QRegion Block::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
-    for (int y = 0; y < 16; ++y) {
-        for (int x = 0; x < 16; ++x) {
+    for (int y = 0; y < CHUNK_SIZE; ++y) {
+        for (int x = 0; x < CHUNK_SIZE; ++x) {
             if (condition(cellAt(x, y))) {
                 const int rangeStart = x;
-                for (++x; x <= 16; ++x) {
-                    if (x == 16 || !condition(cellAt(x, y))) {
+                for (++x; x <= CHUNK_SIZE; ++x) {
+                    if (x == CHUNK_SIZE || !condition(cellAt(x, y))) {
                         const int rangeEnd = x;
                         region += QRect(rangeStart, y, rangeEnd - rangeStart, 1);
                         break;
@@ -58,7 +58,7 @@ QRegion Block::region(std::function<bool (const Cell &)> condition) const
 
 void Block::setCell(int x, int y, const Cell &cell)
 {
-    int index = x + y * 16;
+    int index = x + y * CHUNK_SIZE;
 
     if (mGrid[index].isEmpty() && !cell.isEmpty())
         mCells++;
@@ -151,8 +151,8 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
     QMapIterator< QPair<int, int>, Block* > it(mMap);
     while (it.hasNext()) {
         it.next();
-        region += it.value()->region(condition).translated(it.key().first * 16 + mX,
-                                                           it.key().second * 16 + mY);
+        region += it.value()->region(condition).translated(it.key().first * CHUNK_SIZE + mX,
+                                                           it.key().second * CHUNK_SIZE + mY);
     }
 
     return region;
@@ -168,7 +168,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     Cell existingCell = Cell();
 
     if (mMap.contains(block(x, y)))
-        existingCell = mMap[block(x, y)]->cellAt(x%16, y%16);
+        existingCell = mMap[block(x, y)]->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
     else
         mMap[block(x, y)] = new Block();
 
@@ -183,7 +183,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    mMap[block(x, y)]->setCell(x%16, y%16, cell);
+    mMap[block(x, y)]->setCell(x % CHUNK_SIZE, y % CHUNK_SIZE, cell);
 
     if (mMap[block(x, y)]->isEmpty()) {
         delete mMap[block(x, y)];
@@ -294,11 +294,7 @@ void TileLayer::flip(FlipDirection direction)
         }
     }
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
+    copyGrid(newGrid);
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
@@ -334,11 +330,7 @@ void TileLayer::flipHexagonal(FlipDirection direction)
         }
     }
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
+    copyGrid(newGrid);
 }
 
 void TileLayer::rotate(RotateDirection direction)
@@ -378,11 +370,7 @@ void TileLayer::rotate(RotateDirection direction)
 
     mWidth = newWidth;
     mHeight = newHeight;
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
+    copyGrid(newGrid);
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -463,11 +451,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     mWidth = newWidth;
     mHeight = newHeight;
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
+    copyGrid(newGrid);
 
     QRect filledRect = region().boundingRect();
 
@@ -618,11 +602,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
         }
     }
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
+    copyGrid(newGrid);
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
@@ -674,6 +654,7 @@ bool TileLayer::isEmpty() const
 {
     QMapIterator< QPair<int, int>, Block* > it(mMap);
     while (it.hasNext()) {
+        it.next();
         if (!it.value()->isEmpty())
             return false;
     }
@@ -694,10 +675,19 @@ TileLayer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    for (int x = 0; x < mWidth; ++x)
-        for (int y = 0; y < mHeight; ++y)
+    for (int y = 0; y < mHeight; ++y)
+        for (int x = 0; x < mWidth; ++x)
             clone->setCell(x, y, cellAt(x, y));
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
+}
+
+void TileLayer::copyGrid(const QVector<Cell> &newGrid)
+{
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            setCell(x, y, newGrid[x + y * mWidth]);
+        }
+    }
 }

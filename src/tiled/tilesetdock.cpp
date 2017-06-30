@@ -315,9 +315,9 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
 
     for (const TileStampVariation &variation : stamp.variations()) {
         const TileLayer &tileLayer = *variation.tileLayer();
-        for (int x = 0; x < tileLayer.width(); ++x) {
-            for (int y = 0; y < tileLayer.height(); ++y) {
-                const Cell cell = tileLayer.cellAt(x, y);
+        for (int y = 0; y < tileLayer.height(); ++y) {
+            for (int x = 0; x < tileLayer.width(); ++x) {
+                const Cell &cell = tileLayer.cellAt(x, y);
                 if (Tile *tile = cell.tile()) {
                     if (processed.contains(tile))
                         continue;

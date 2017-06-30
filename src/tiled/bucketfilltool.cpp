@@ -370,9 +370,9 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
 
         if (mIsRandom) {
             const TileLayer &tileLayer = *variation.tileLayer();
-            for (int x = 0; x < tileLayer.width(); ++x) {
-                for (int y = 0; y < tileLayer.height(); ++y) {
-                    const Cell cell = tileLayer.cellAt(x, y);
+            for (int y = 0; y < tileLayer.height(); ++y) {
+                for (int x = 0; x < tileLayer.width(); ++x) {
+                    const Cell &cell = tileLayer.cellAt(x, y);
                     if (const Tile *tile = cell.tile())
                         mRandomCellPicker.add(cell, tile->probability());
                 }
