@@ -34,7 +34,12 @@
 
 using namespace Tiled;
 
-QRegion Block::region(std::function<bool (const Cell &)> condition) const
+static QPair<int, int> chunkCoordinates(int x, int y)
+{
+    return qMakePair(x / CHUNK_SIZE, y / CHUNK_SIZE);
+}
+
+QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
@@ -56,19 +61,15 @@ QRegion Block::region(std::function<bool (const Cell &)> condition) const
     return region;
 }
 
-void Block::setCell(int x, int y, const Cell &cell)
+void Chunk::setCell(int x, int y, const Cell &cell)
 {
     int index = x + y * CHUNK_SIZE;
-
-    if (mGrid[index].isEmpty() && !cell.isEmpty())
-        mCells++;
-    else if (!mGrid[index].isEmpty() && cell.isEmpty())
-        mCells--;
+    mUsedCells += mGrid[index].isEmpty() - cell.isEmpty();
 
     mGrid[index] = cell;
 }
 
-bool Block::hasCell(std::function<bool (const Cell &)> condition) const
+bool Chunk::hasCell(std::function<bool (const Cell &)> condition) const
 {
     for (const Cell &cell : mGrid)
         if (condition(cell))
@@ -77,7 +78,7 @@ bool Block::hasCell(std::function<bool (const Cell &)> condition) const
     return false;
 }
 
-void Block::removeReferencesToTileset(Tileset *tileset)
+void Chunk::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
         if (mGrid.at(i).tileset() == tileset)
@@ -85,8 +86,7 @@ void Block::removeReferencesToTileset(Tileset *tileset)
     }
 }
 
-void Block::replaceReferencesToTileset(Tileset *oldTileset,
-                                           Tileset *newTileset)
+void Chunk::replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset)
 {
     for (Cell &cell : mGrid) {
         if (cell.tileset() == oldTileset)
@@ -98,7 +98,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
     : Layer(TileLayerType, name, x, y)
     , mWidth(width)
     , mHeight(height)
-    , mEmptyCell(Cell())
     , mUsedTilesetsDirty(false)
 {
     Q_ASSERT(width >= 0);
@@ -148,7 +147,7 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
-    QMapIterator< QPair<int, int>, Block* > it(mMap);
+    QMapIterator< QPair<int, int>, Chunk* > it(mChunks);
     while (it.hasNext()) {
         it.next();
         region += it.value()->region(condition).translated(it.key().first * CHUNK_SIZE + mX,
@@ -165,12 +164,9 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    Cell existingCell = Cell();
+    Cell existingCell;
 
-    if (mMap.contains(block(x, y)))
-        existingCell = mMap[block(x, y)]->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
-    else
-        mMap[block(x, y)] = new Block();
+    existingCell = chunk(x, y)->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
 
     if (!mUsedTilesetsDirty) {
         Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
@@ -183,12 +179,10 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    mMap[block(x, y)]->setCell(x % CHUNK_SIZE, y % CHUNK_SIZE, cell);
+    chunk(x, y)->setCell(x % CHUNK_SIZE, y % CHUNK_SIZE, cell);
 
-    if (mMap[block(x, y)]->isEmpty()) {
-        delete mMap[block(x, y)];
-        mMap.remove(block(x, y));
-    }
+    if (chunk(x, y)->isEmpty())
+        delete mChunks.take(chunkCoordinates(x, y));
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -472,11 +466,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
     if (mUsedTilesetsDirty) {
         QSet<SharedTileset> tilesets;
 
-        QMapIterator< QPair<int, int>, Block* > it(mMap);
-        while (it.hasNext()) {
-            it.next();
-
-            for (const Cell &cell : *it.value())
+        for (Chunk *chunk : mChunks) {
+            for (const Cell &cell : *chunk)
                 if (const Tile *tile = cell.tile())
                     tilesets.insert(tile->sharedTileset());
 
@@ -490,10 +481,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
 
 bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 {
-    QMapIterator< QPair<int, int>, Block* > it(mMap);
-    while (it.hasNext()) {
-        it.next();
-        if (it.value()->hasCell(condition))
+    for (Chunk *chunk : mChunks) {
+        if (chunk->hasCell(condition))
             return true;
     }
 
@@ -507,10 +496,8 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
-    QMapIterator< QPair<int, int>, Block* > it(mMap);
-    while (it.hasNext()) {
-        it.next();
-        it.value()->removeReferencesToTileset(tileset);
+    for (Chunk *chunk : mChunks) {
+        chunk->removeReferencesToTileset(tileset);
     }
 
     mUsedTilesets.remove(tileset->sharedPointer());
@@ -519,10 +506,8 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
-    QMapIterator< QPair<int, int>, Block* > it(mMap);
-    while (it.hasNext()) {
-        it.next();
-        it.value()->replaceReferencesToTileset(oldTileset, newTileset);
+    for (Chunk *chunk : mChunks) {
+        chunk->replaceReferencesToTileset(oldTileset, newTileset);
     }
 
     if (mUsedTilesets.remove(oldTileset->sharedPointer()))
@@ -652,10 +637,8 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
 
 bool TileLayer::isEmpty() const
 {
-    QMapIterator< QPair<int, int>, Block* > it(mMap);
-    while (it.hasNext()) {
-        it.next();
-        if (!it.value()->isEmpty())
+    for (Chunk *chunk : mChunks) {
+        if (!chunk->isEmpty())
             return false;
     }
 
@@ -675,9 +658,17 @@ TileLayer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            clone->setCell(x, y, cellAt(x, y));
+    QMapIterator< QPair<int, int>, Chunk* > it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int x = 0; x < CHUNK_SIZE; ++x) {
+            for (int y = 0;y < CHUNK_SIZE; ++y) {
+                clone->setCell(it.key().first * CHUNK_SIZE + x,
+                               it.key().second * CHUNK_SIZE + y,
+                               it.value()->cellAt(x, y));
+            }
+        }
+    }
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;

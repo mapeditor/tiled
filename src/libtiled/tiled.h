@@ -52,7 +52,7 @@ enum Alignment {
     BottomRight
 };
 
-static const int CHUNK_SIZE = 16;
+const int CHUNK_SIZE = 16;
 
 static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";

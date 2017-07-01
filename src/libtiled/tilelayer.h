@@ -152,14 +152,14 @@ inline bool Cell::refersTile(const Tile *tile) const
 
 
 /**
- * A block is a grid of cells of size CHUNK_SIZExCHUNK_SIZE.
+ * A Chunk is a grid of cells of size CHUNK_SIZExCHUNK_SIZE.
  */
-class Block
+class Chunk
 {
 public:
-    Block() :
+    Chunk() :
         mGrid(CHUNK_SIZE * CHUNK_SIZE),
-        mCells(0)
+        mUsedCells(0)
     {}
 
     QRegion region(std::function<bool (const Cell &)> condition) const;
@@ -184,22 +184,22 @@ public:
 
 private:
     QVector<Cell> mGrid;
-    int mCells;
+    int mUsedCells;
 };
 
-inline const Cell &Block::cellAt(int x, int y) const
+inline const Cell &Chunk::cellAt(int x, int y) const
 {
     return mGrid.at(x + y * CHUNK_SIZE);
 }
 
-inline const Cell &Block::cellAt(const QPoint &point) const
+inline const Cell &Chunk::cellAt(const QPoint &point) const
 {
     return cellAt(point.x(), point.y());
 }
 
-inline bool Block::isEmpty() const
+inline bool Chunk::isEmpty() const
 {
-    return mCells == 0;
+    return mUsedCells == 0;
 }
 
 /**
@@ -244,7 +244,9 @@ public:
     bool contains(int x, int y) const;
     bool contains(const QPoint &point) const;
 
-    QPair<int, int> block(int x, int y) const;
+    Chunk *chunk(int x, int y);
+
+    Chunk *findChunk(int x, int y) const;
 
     /**
      * Calculates the region of cells in this tile layer for which the given
@@ -395,7 +397,7 @@ private:
     int mWidth;
     int mHeight;
     Cell mEmptyCell;
-    QMap< QPair<int, int>, Block* > mMap;
+    QMap< QPair<int, int>, Chunk* > mChunks;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
@@ -423,9 +425,22 @@ inline bool TileLayer::contains(const QPoint &point) const
     return contains(point.x(), point.y());
 }
 
-inline QPair<int, int> TileLayer::block(int x, int y) const
+inline Chunk* TileLayer::chunk(int x, int y)
 {
-    return qMakePair(x / CHUNK_SIZE, y / CHUNK_SIZE);
+    QPair<int, int> chunkCoordinates(x / CHUNK_SIZE, y / CHUNK_SIZE);
+    if (mChunks.contains(chunkCoordinates))
+        return mChunks[chunkCoordinates];
+    else
+        return mChunks[chunkCoordinates] = new Chunk();
+}
+
+inline Chunk* TileLayer::findChunk(int x, int y) const
+{
+    QPair<int, int> chunkCoordinates(x / CHUNK_SIZE, y / CHUNK_SIZE);
+    if (mChunks.contains(chunkCoordinates))
+        return mChunks[chunkCoordinates];
+    else
+        return nullptr;
 }
 
 inline QRegion TileLayer::region() const
@@ -440,8 +455,8 @@ inline QRegion TileLayer::region() const
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
-    if (mMap.contains(block(x, y)))
-        return mMap[block(x, y)]->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
+    if (Chunk *chunk = findChunk(x, y))
+        return chunk->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
     else
         return mEmptyCell;
 }
