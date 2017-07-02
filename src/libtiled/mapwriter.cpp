@@ -439,7 +439,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
             //write each tile with a valid wangId
             for (const Tile *tile : tileset.tiles()) {
-                if (int wId = ws->wangIdOfTile(tile)) {
+                if (unsigned wId = ws->wangIdOfTile(tile)) {
                     w.writeStartElement(QLatin1String("wangsettile"));
                     w.writeAttribute(QLatin1String("tileid"), QString::number(tile->id()));
                     w.writeAttribute(QLatin1String("wangid"), QString::number(wId));

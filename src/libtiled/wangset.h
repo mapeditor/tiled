@@ -29,6 +29,7 @@
 
 #include "tile.h"
 #include "tileset.h"
+#include "tilelayer.h"
 
 #include <QHash>
 #include <QMultiHash>
@@ -57,6 +58,14 @@ public:
      * and the top right corner, becomes the top bottom.
      * */
     void rotate(int rotations);
+
+    /* Flips the wang Id horizontally
+     * */
+    void flipHorizontally();
+
+    /* Flips the wang Id vertically
+     * */
+    void flipVertically();
 
 private:
     unsigned mId;
@@ -92,6 +101,50 @@ inline void WangId::rotate(int rotations)
 
     mId = rotated;
 }
+
+//Class for holding info about rotation and flipping.
+class TILEDSHARED_EXPORT WangTile
+{
+public:
+    WangTile():
+        mTile(nullptr),
+        mWangId(0),
+        mFlippedHorizontally(false),
+        mFlippedVertically(false),
+        mFlippedAntiDiagonally(false)
+    {}
+
+    WangTile(Tile *tile,
+             WangId wangId):
+        mTile(tile),
+        mWangId(wangId),
+        mFlippedHorizontally(false),
+        mFlippedVertically(false),
+        mFlippedAntiDiagonally(false)
+    {}
+
+    Tile *tile() const { return mTile; }
+
+    WangId wangId() const { return mWangId; }
+
+    bool flippedHorizontally() const { return mFlippedHorizontally; }
+    bool flippedVertically() const { return mFlippedVertically; }
+    bool flippedAntiDiagonally() const { return mFlippedAntiDiagonally; }
+
+    void rotateRight();
+    void rotateLeft();
+    void flipHorizontally();
+    void flipVertically();
+
+    Cell makeCell() const;
+
+private:
+    Tile *mTile;
+    WangId mWangId;
+    bool mFlippedHorizontally;
+    bool mFlippedVertically;
+    bool mFlippedAntiDiagonally;
+};
 
 /**
  * Represents a wang set.
@@ -129,13 +182,18 @@ public:
      * where zeros in the id are treated as wild cards, and can be
      * any color.
      * */
-    Tile *findMatchingTile(WangId wangId) const;
+    WangTile findMatchingWangTile(WangId wangId) const;
 
     /* Finds all the tiles which match the given wangId,
      * where zeros in the id are treated as wild cards, and can be
      * any color.
      * */
-    QList<Tile*> findMatchingTiles(WangId wangId) const;
+    QList<WangTile> findMatchingWangTiles(WangId wangId) const;
+
+    /* Finds a wangTile mathcing the provided wangId, and creates,
+     * and returns a Cell matching the WangTile.
+     * */
+    Cell findMatchingCell(WangId wangId) const;
 
     /* Returns a wangId matching that of the provided surrounding wangIds.
      * This is based off a provided array, {a, b, c, d, e, f, g, h},
@@ -151,11 +209,13 @@ public:
      *                       g|X|c
      *                       f|e|d
      * */
-    WangId wangIdFromSurrounding(const Tile *surroundingWangIds[]) const;
+    WangId wangIdFromSurrounding(const Cell surroundingWangIds[]) const;
 
     /* Returns the wangId of a given Tile.
      * */
     WangId wangIdOfTile(const Tile *tile) const;
+
+    WangId wangIdOfCell(const Cell &cell) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */
@@ -171,8 +231,8 @@ private:
     int mImageTileId;
     int mEdgeColors;
     int mCornerColors;
-    QMultiHash<WangId, Tile*> mWangIdToTile;
-    QHash<int, WangId> mTileIdToWangId;
+    QMultiHash<WangId, WangTile> mWangIdToWangTile;
+    QHash<Cell, WangId> mCellToWangId;
 };
 
 } // namespace Tiled

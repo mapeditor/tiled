@@ -25,11 +25,60 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "tilelayer.h"
 #include "wangset.h"
 
 #include <QStack>
 
 using namespace Tiled;
+
+namespace Tiled {
+
+unsigned qHash(const Cell &cell)
+{
+    unsigned hash = cell.tileId();
+
+    hash |= ((cell.flippedHorizontally() << 2)
+             | (cell.flippedVertically() << 1)
+             | (cell.flippedAntiDiagonally())) << 29;
+
+    return hash;
+}
+
+} // namespace Tiled
+
+void WangTile::rotateRight()
+{
+
+}
+
+void WangTile::rotateLeft()
+{
+
+}
+
+void WangTile::flipHorizontally()
+{
+
+}
+
+void WangTile::flipVertically()
+{
+
+}
+
+Cell WangTile::makeCell() const
+{
+    if(!mTile)
+        return Cell();
+
+    Cell cell(mTile);
+    cell.setFlippedHorizontally(mFlippedHorizontally);
+    cell.setFlippedVertically(mFlippedVertically);
+    cell.setFlippedAntiDiagonally(mFlippedAntiDiagonally);
+
+    return cell;
+}
 
 WangSet::WangSet(Tileset *tileset,
                  int edgeColors,
@@ -57,18 +106,18 @@ void WangSet::addTile(Tile *tile, WangId wangId)
         Q_ASSERT(wangId.cornerColor(i) <= mCornerColors);
     }
 
-    mWangIdToTile.insert(wangId, tile);
-    mTileIdToWangId.insert(tile->id(), wangId);
+    mWangIdToWangTile.insert(wangId, WangTile(tile, wangId));
+    mCellToWangId.insert(Cell(tile), wangId);
 }
 
-Tile *WangSet::findMatchingTile(WangId wangId) const
+WangTile WangSet::findMatchingWangTile(WangId wangId) const
 {
-    auto potentials = findMatchingTiles(wangId);
+    auto potentials = findMatchingWangTiles(wangId);
 
     if (potentials.length() > 0)
         return potentials[qrand() % potentials.length()];
     else
-        return NULL;
+        return WangTile();
 }
 
 struct WangWildCard
@@ -76,9 +125,9 @@ struct WangWildCard
     int index, colorCount;
 };
 
-QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
+QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 {
-    QList<Tile*> list;
+    QList<WangTile> list;
 
     //Stores the space of a wild card, followed by how many colors that space can have.
     QVector<WangWildCard> wildCards;
@@ -108,7 +157,7 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
     }
 
     if (wildCards.isEmpty()) {
-        list.append(mWangIdToTile.values(wangId));
+        list.append(mWangIdToWangTile.values(wangId));
     } else {
         QStack<WangWildCard> stack;
 
@@ -123,7 +172,7 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
                 for (int i = 0; i < max; ++i)
                     idVariation |= stack[i].colorCount << stack[i].index;
 
-                list.append(mWangIdToTile.values(idVariation | wangId));
+                list.append(mWangIdToWangTile.values(idVariation | wangId));
 
                 WangWildCard top = stack.pop();
                 top.colorCount -= 1;
@@ -143,6 +192,13 @@ QList<Tile*> WangSet::findMatchingTiles(WangId wangId) const
     }
 
     return list;
+}
+
+Cell WangSet::findMatchingCell(WangId wangId) const
+{
+    WangTile wangTile = findMatchingWangTile(wangId);
+
+    return wangTile.makeCell();
 }
 
 WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
@@ -174,12 +230,12 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
     return id;
 }
 
-WangId WangSet::wangIdFromSurrounding(const Tile *surroundingWangIds[]) const
+WangId WangSet::wangIdFromSurrounding(const Cell surroundingWangIds[]) const
 {
     WangId wangIds[8];
 
     for (int i = 0; i < 8; ++i) {
-        wangIds[i] = wangIdOfTile(surroundingWangIds[i]);
+        wangIds[i] = wangIdOfCell(surroundingWangIds[i]);
     }
 
     WangId wangId = wangIdFromSurrounding(wangIds);
@@ -189,15 +245,20 @@ WangId WangSet::wangIdFromSurrounding(const Tile *surroundingWangIds[]) const
 
 WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
-    return mTileIdToWangId.value(tile->id());
+    return mCellToWangId.value(Cell((Tile*)tile));
+}
+
+WangId WangSet::wangIdOfCell(const Cell &cell) const
+{
+    return mCellToWangId.value(cell);
 }
 
 WangSet *WangSet::clone(Tileset *tileset) const
 {
     WangSet *c = new WangSet(tileset, mEdgeColors, mCornerColors, mName, mImageTileId);
 
-    c->mWangIdToTile = mWangIdToTile;
-    c->mTileIdToWangId = mTileIdToWangId;
+    c->mWangIdToWangTile = mWangIdToWangTile;
+    c->mCellToWangId = mCellToWangId;
 
     return c;
 }
