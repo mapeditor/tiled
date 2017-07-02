@@ -41,8 +41,9 @@ namespace Tiled {
 class WangId
 {
 public:
-    WangId(unsigned id) : mId(id) {}
+
     WangId() : mId(0) {}
+    WangId(unsigned id) : mId(id) {}
 
     operator unsigned() const { return mId; }
     inline void setId(unsigned id) { mId = id; }
@@ -123,6 +124,14 @@ public:
         mFlippedAntiDiagonally(false)
     {}
 
+    explicit WangTile(const Cell &cell, WangId wangId):
+        mTile(cell.tile()),
+        mWangId(wangId),
+        mFlippedHorizontally(cell.flippedHorizontally()),
+        mFlippedVertically(cell.flippedVertically()),
+        mFlippedAntiDiagonally(cell.flippedAntiDiagonally())
+    {}
+
     Tile *tile() const { return mTile; }
 
     WangId wangId() const { return mWangId; }
@@ -130,6 +139,10 @@ public:
     bool flippedHorizontally() const { return mFlippedHorizontally; }
     bool flippedVertically() const { return mFlippedVertically; }
     bool flippedAntiDiagonally() const { return mFlippedAntiDiagonally; }
+
+    void setFlippedHorizontally(bool b) { mFlippedHorizontally = b; }
+    void setFlippedVertically(bool b) { mFlippedVertically = b; }
+    void setFlippedAntiDiagonally(bool b) { mFlippedAntiDiagonally = b; }
 
     void rotateRight();
     void rotateLeft();
@@ -139,6 +152,10 @@ public:
     Cell makeCell() const;
 
 private:
+    //performs a translation (either flipping or rotating) based on a one to one
+    //map of size 8 (from 0 - 7)
+    void translate(int map[]);
+
     Tile *mTile;
     WangId mWangId;
     bool mFlippedHorizontally;
@@ -178,6 +195,10 @@ public:
      * */
     void addTile(Tile *tile, WangId wangId);
 
+    void addCell(Cell &cell, WangId wangId);
+
+    void addWangTile(WangTile wangTile);
+
     /* Finds a tile whos WangId matches with the one provided,
      * where zeros in the id are treated as wild cards, and can be
      * any color.
@@ -194,6 +215,8 @@ public:
      * and returns a Cell matching the WangTile.
      * */
     Cell findMatchingCell(WangId wangId) const;
+
+    QList<WangTile> wangTiles() const { return mWangIdToWangTile.values(); }
 
     /* Returns a wangId matching that of the provided surrounding wangIds.
      * This is based off a provided array, {a, b, c, d, e, f, g, h},
@@ -232,7 +255,10 @@ private:
     int mEdgeColors;
     int mCornerColors;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
-    QHash<Cell, WangId> mCellToWangId;
+
+    //Tile info being the tileId, with the last three bits (32, 31, 30)
+    //being info on flip (horizontal, vertical, and antidiagonal)
+    QHash<unsigned, WangId> mTileInfoToWangId;
 };
 
 } // namespace Tiled

@@ -587,12 +587,22 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
                     wangSet->mergeProperties(readProperties());
-                else if (xml.name() == QLatin1String("wangsettile")) {
+                else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    int wangId = tileAtts.value(QLatin1String("wangid")).toInt();
+                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt();
+                    bool fH = tileAtts.value(QLatin1String("flippedhorizontally")).toInt();
+                    bool fV = tileAtts.value(QLatin1String("flippedvertically")).toInt();
+                    bool fA = tileAtts.value(QLatin1String("flippedantidiagonally")).toInt();
 
-                    wangSet->addTile(tileset.findOrCreateTile(tileId), wangId);
+                    Tile *tile = tileset.findOrCreateTile(tileId);
+
+                    WangTile wangTile(tile, wangId);
+                    wangTile.setFlippedHorizontally(fH);
+                    wangTile.setFlippedVertically(fV);
+                    wangTile.setFlippedAntiDiagonally(fA);
+
+                    wangSet->addWangTile(wangTile);
 
                     xml.skipCurrentElement();
                 } else

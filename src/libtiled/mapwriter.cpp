@@ -437,6 +437,23 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QLatin1String("corners"), QString::number(ws->cornerColors()));
             w.writeAttribute(QLatin1String("tile"), QString::number(ws->imageTileId()));
 
+            for (const WangTile &wangTile : ws->wangTiles()) {
+                w.writeStartElement(QLatin1String("wangtile"));
+                w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QLatin1String("wangid"), QString::number(wangTile.wangId()));
+
+                if (wangTile.flippedHorizontally())
+                    w.writeAttribute(QLatin1String("flippedhorizontally"), QString::number(1));
+
+                if (wangTile.flippedVertically())
+                    w.writeAttribute(QLatin1String("flippedvertically"), QString::number(1));
+
+                if (wangTile.flippedAntiDiagonally())
+                    w.writeAttribute(QLatin1String("flippedantidiagonally"), QString::number(1));
+
+                w.writeEndElement(); // </wangsettile>
+            }
+
             //write each tile with a valid wangId
             for (const Tile *tile : tileset.tiles()) {
                 if (unsigned wId = ws->wangIdOfTile(tile)) {

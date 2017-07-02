@@ -32,39 +32,61 @@
 
 using namespace Tiled;
 
-namespace Tiled {
-
-unsigned qHash(const Cell &cell)
+unsigned cellToTileInfo(const Cell &cell)
 {
-    unsigned hash = cell.tileId();
-
-    hash |= ((cell.flippedHorizontally() << 2)
-             | (cell.flippedVertically() << 1)
-             | (cell.flippedAntiDiagonally())) << 29;
-
-    return hash;
+    return cell.tileId()
+            | (cell.flippedHorizontally() << 29)
+            | (cell.flippedVertically() << 28)
+            | (cell.flippedAntiDiagonally() << 27);
 }
 
-} // namespace Tiled
+unsigned wangTileToTileInfo(const WangTile &wangTile)
+{
+    return wangTile.tile()->id()
+            | (wangTile.flippedHorizontally() << 29)
+            | (wangTile.flippedVertically() << 28)
+            | (wangTile.flippedAntiDiagonally() << 27);
+}
+
+void WangTile::translate(int map[])
+{
+    int mask = (mFlippedHorizontally << 2)
+            | (mFlippedVertically << 1)
+            | (mFlippedAntiDiagonally);
+
+    mask = map[mask];
+
+    mFlippedHorizontally = mask & 4;
+    mFlippedVertically = mask & 2;
+    mFlippedAntiDiagonally = mask & 1;
+}
 
 void WangTile::rotateRight()
 {
+    int map[] = {5, 4, 1, 0, 7, 6, 3, 2};
 
+    translate(map);
 }
 
 void WangTile::rotateLeft()
 {
+    int map[] = {3, 2, 7, 6, 1, 0, 5, 4};
 
+    translate(map);
 }
 
 void WangTile::flipHorizontally()
 {
+    int map[] = {4, 3, 6, 1, 0, 7, 2, 5};
 
+    translate(map);
 }
 
 void WangTile::flipVertically()
 {
+    int map[] = {2, 5, 0, 7, 6, 1, 4, 3};
 
+    translate(map);
 }
 
 Cell WangTile::makeCell() const
@@ -96,18 +118,26 @@ WangSet::WangSet(Tileset *tileset,
 
 void WangSet::addTile(Tile *tile, WangId wangId)
 {
-    Q_ASSERT(tile->tileset() == mTileset);
-
-    for (int i = 0; i < 4; ++i) {
-        Q_ASSERT(wangId.edgeColor(i) <= mEdgeColors);
-    }
-
-    for (int i = 0; i < 4; ++i) {
-        Q_ASSERT(wangId.cornerColor(i) <= mCornerColors);
-    }
+    Q_ASSERT(tile->tileset() == mTileset && wangIdIsValid(wangId));
 
     mWangIdToWangTile.insert(wangId, WangTile(tile, wangId));
-    mCellToWangId.insert(Cell(tile), wangId);
+    mTileInfoToWangId.insert(tile->id(), wangId);
+}
+
+void WangSet::addCell(Cell &cell, WangId wangId)
+{
+    Q_ASSERT(cell.tileset() == mTileset && wangIdIsValid(wangId));
+
+    mWangIdToWangTile.insert(wangId, WangTile(cell, wangId));
+    mTileInfoToWangId.insert(cellToTileInfo(cell), wangId);
+}
+
+void WangSet::addWangTile(WangTile wangTile)
+{
+    Q_ASSERT(wangTile.tile()->tileset() == mTileset && wangIdIsValid(wangTile.wangId()));
+
+    mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
+    mTileInfoToWangId.insert(wangTileToTileInfo(wangTile), wangTile.wangId());
 }
 
 WangTile WangSet::findMatchingWangTile(WangId wangId) const
@@ -245,12 +275,25 @@ WangId WangSet::wangIdFromSurrounding(const Cell surroundingWangIds[]) const
 
 WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
-    return mCellToWangId.value(Cell((Tile*)tile));
+    return mTileInfoToWangId.value(tile->id());
 }
 
 WangId WangSet::wangIdOfCell(const Cell &cell) const
 {
-    return mCellToWangId.value(cell);
+    return mTileInfoToWangId.value(cellToTileInfo(cell));
+}
+
+bool WangSet::wangIdIsValid(WangId wangId) const
+{
+    for (int i = 0; i < 4; ++i) {
+        if (wangId.edgeColor(i) < 0
+                || wangId.edgeColor(i) > mEdgeColors
+                || wangId.cornerColor(i) < 0
+                || wangId.cornerColor(i) > mCornerColors)
+            return false;
+    }
+
+    return true;
 }
 
 WangSet *WangSet::clone(Tileset *tileset) const
@@ -258,7 +301,7 @@ WangSet *WangSet::clone(Tileset *tileset) const
     WangSet *c = new WangSet(tileset, mEdgeColors, mCornerColors, mName, mImageTileId);
 
     c->mWangIdToWangTile = mWangIdToWangTile;
-    c->mCellToWangId = mCellToWangId;
+    c->mTileInfoToWangId = mTileInfoToWangId;
 
     return c;
 }
