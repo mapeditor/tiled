@@ -37,14 +37,21 @@
 #include "tile.h"
 #include "tileset.h"
 
-#include <QMap>
+#include <QHash>
 #include <QMargins>
-#include <QPair>
+#include <QPoint>
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
 
 #include <functional>
+
+inline uint qHash(const QPoint &key, uint seed = 0) Q_DECL_NOTHROW
+{
+    uint h1 = qHash(key.x(), seed);
+    uint h2 = qHash(key.y(), seed);
+    return ((h1 << 16) | (h1 >> 16)) ^ h2 ^ seed;
+}
 
 namespace Tiled {
 
@@ -397,7 +404,7 @@ private:
     int mWidth;
     int mHeight;
     Cell mEmptyCell;
-    QMap< QPair<int, int>, Chunk* > mChunks;
+    QHash<QPoint, Chunk* > mChunks;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
@@ -427,20 +434,19 @@ inline bool TileLayer::contains(const QPoint &point) const
 
 inline Chunk* TileLayer::chunk(int x, int y)
 {
-    QPair<int, int> chunkCoordinates(x / CHUNK_SIZE, y / CHUNK_SIZE);
-    if (mChunks.contains(chunkCoordinates))
-        return mChunks[chunkCoordinates];
+    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
+                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    if (Chunk *chunk = mChunks.value(chunkCoordinates))
+        return chunk;
     else
         return mChunks[chunkCoordinates] = new Chunk();
 }
 
 inline Chunk* TileLayer::findChunk(int x, int y) const
 {
-    QPair<int, int> chunkCoordinates(x / CHUNK_SIZE, y / CHUNK_SIZE);
-    if (mChunks.contains(chunkCoordinates))
-        return mChunks[chunkCoordinates];
-    else
-        return nullptr;
+    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
+                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    return mChunks.value(chunkCoordinates);
 }
 
 inline QRegion TileLayer::region() const
@@ -456,7 +462,7 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
     if (Chunk *chunk = findChunk(x, y))
-        return chunk->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
+        return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
     else
         return mEmptyCell;
 }

@@ -34,9 +34,10 @@
 
 using namespace Tiled;
 
-static QPair<int, int> chunkCoordinates(int x, int y)
+static QPoint chunkCoordinates(int x, int y)
 {
-    return qMakePair(x / CHUNK_SIZE, y / CHUNK_SIZE);
+    return QPoint(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
+                  y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
 }
 
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
@@ -147,11 +148,11 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
-    QMapIterator< QPair<int, int>, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk* > it(mChunks);
     while (it.hasNext()) {
         it.next();
-        region += it.value()->region(condition).translated(it.key().first * CHUNK_SIZE + mX,
-                                                           it.key().second * CHUNK_SIZE + mY);
+        region += it.value()->region(condition).translated(it.key().x() * CHUNK_SIZE + mX,
+                                                           it.key().y() * CHUNK_SIZE + mY);
     }
 
     return region;
@@ -166,7 +167,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
     Cell existingCell;
 
-    existingCell = chunk(x, y)->cellAt(x % CHUNK_SIZE, y % CHUNK_SIZE);
+    existingCell = chunk(x, y)->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
 
     if (!mUsedTilesetsDirty) {
         Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
@@ -179,7 +180,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    chunk(x, y)->setCell(x % CHUNK_SIZE, y % CHUNK_SIZE, cell);
+    chunk(x, y)->setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 
     if (chunk(x, y)->isEmpty())
         delete mChunks.take(chunkCoordinates(x, y));
@@ -658,13 +659,13 @@ TileLayer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    QMapIterator< QPair<int, int>, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk* > it(mChunks);
     while (it.hasNext()) {
         it.next();
         for (int x = 0; x < CHUNK_SIZE; ++x) {
             for (int y = 0;y < CHUNK_SIZE; ++y) {
-                clone->setCell(it.key().first * CHUNK_SIZE + x,
-                               it.key().second * CHUNK_SIZE + y,
+                clone->setCell(it.key().x() * CHUNK_SIZE + x,
+                               it.key().y() * CHUNK_SIZE + y,
                                it.value()->cellAt(x, y));
             }
         }
