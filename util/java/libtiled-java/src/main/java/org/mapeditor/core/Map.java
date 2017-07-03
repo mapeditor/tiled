@@ -44,11 +44,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlRootElement(name = "map")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Map extends MapData implements Iterable<Layer> {
+public class Map extends MapData implements Iterable<TileLayer> {
 
     private String filename;
 
@@ -138,10 +138,10 @@ public class Map extends MapData implements Iterable<Layer> {
     /**
      * <p>addLayer.</p>
      *
-     * @param layer a {@link org.mapeditor.core.Layer} object.
-     * @return a {@link org.mapeditor.core.Layer} object.
+     * @param layer a {@link org.mapeditor.core.TileLayer} object.
+     * @return a {@link org.mapeditor.core.TileLayer} object.
      */
-    public Layer addLayer(Layer layer) {
+    public TileLayer addLayer(TileLayer layer) {
         layer.setMap(this);
         getLayers().add(layer);
         return layer;
@@ -151,9 +151,9 @@ public class Map extends MapData implements Iterable<Layer> {
      * <p>setLayer.</p>
      *
      * @param index a int.
-     * @param layer a {@link org.mapeditor.core.Layer} object.
+     * @param layer a {@link org.mapeditor.core.TileLayer} object.
      */
-    public void setLayer(int index, Layer layer) {
+    public void setLayer(int index, TileLayer layer) {
         layer.setMap(this);
         getLayers().set(index, layer);
     }
@@ -162,9 +162,9 @@ public class Map extends MapData implements Iterable<Layer> {
      * <p>insertLayer.</p>
      *
      * @param index a int.
-     * @param layer a {@link org.mapeditor.core.Layer} object.
+     * @param layer a {@link org.mapeditor.core.TileLayer} object.
      */
-    public void insertLayer(int index, Layer layer) {
+    public void insertLayer(int index, TileLayer layer) {
         layer.setMap(this);
         getLayers().add(index, layer);
     }
@@ -176,7 +176,7 @@ public class Map extends MapData implements Iterable<Layer> {
      * @param index the index of the layer to be removed
      * @return the layer that was removed from the list
      */
-    public Layer removeLayer(int index) {
+    public TileLayer removeLayer(int index) {
         return getLayers().remove(index);
     }
 
@@ -194,7 +194,7 @@ public class Map extends MapData implements Iterable<Layer> {
      * @return the layer at the specified index, or null if the index is out of
      * bounds
      */
-    public Layer getLayer(int i) {
+    public TileLayer getLayer(int i) {
         try {
             return getLayers().get(i);
         } catch (IndexOutOfBoundsException e) {
@@ -225,14 +225,14 @@ public class Map extends MapData implements Iterable<Layer> {
      * bounds of the map are resized, any other layers are moved by the given
      * shift.
      *
-     * @see org.mapeditor.core.Layer#resize
+     * @see org.mapeditor.core.TileLayer#resize
      * @param width The new width of the map.
      * @param height The new height of the map.
      * @param dx The shift in x direction in tiles.
      * @param dy The shift in y direction in tiles.
      */
     public void resize(int width, int height, int dx, int dy) {
-        for (Layer layer : this) {
+        for (TileLayer layer : this) {
             Rectangle layerBounds = layer.getBounds();
             if (layerBounds.equals(getBounds())) {
                 layer.resize(width, height, dx, dy);
@@ -299,8 +299,8 @@ public class Map extends MapData implements Iterable<Layer> {
 
         // Go through the map and remove any instances of the tiles in the set
         for (Tile tile : tileset) {
-            for (Layer ml : this) {
-                if (ml instanceof Layer) {
+            for (TileLayer ml : this) {
+                if (ml instanceof TileLayer) {
                     ml.removeTile(tile);
                 }
             }
@@ -385,7 +385,7 @@ public class Map extends MapData implements Iterable<Layer> {
 
     /** {@inheritDoc} */
     @Override
-    public Iterator<Layer> iterator() {
+    public Iterator<TileLayer> iterator() {
         return getLayers().iterator();
     }
 

@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {
@@ -69,6 +69,11 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
         this.map = map;
     }
 
+    /**
+     * <p>Setter for the field <code>map</code>.</p>
+     *
+     * @param map a {@link org.mapeditor.core.Map} object.
+     */
     public void setMap(Map map) {
         this.map = map;
     }
@@ -100,10 +105,21 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
         this.height = (int) area.getHeight();
     }
 
+    /**
+     * <p>isEmpty.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isEmpty() {
         return objects.isEmpty();
     }
 
+    /**
+     * <p>setOffset.</p>
+     *
+     * @param offsetX a int.
+     * @param offsetY a int.
+     */
     public void setOffset(int offsetX, int offsetY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;

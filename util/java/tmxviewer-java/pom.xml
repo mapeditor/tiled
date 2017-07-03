@@ -16,6 +16,7 @@
     <description>
       A small example application that views Tiled maps using libtiled-java.
     </description>
+    <url>http://www.mapeditor.org/</url>
 
     <scm>
         <url>https://github.com/bjorn/tiled</url>

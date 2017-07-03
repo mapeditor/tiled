@@ -30,17 +30,19 @@
  */
 package org.mapeditor.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Tile;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 
 /**
  * The orthogonal map renderer. This is the most basic map renderer, dealing
@@ -49,7 +51,7 @@ import org.mapeditor.core.Layer;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class OrthogonalRenderer implements MapRenderer {
 
@@ -74,7 +76,7 @@ public class OrthogonalRenderer implements MapRenderer {
 
     /** {@inheritDoc} */
     @Override
-    public void paintTileLayer(Graphics2D g, Layer layer) {
+    public void paintTileLayer(Graphics2D g, TileLayer layer) {
         final Rectangle clip = g.getClipBounds();
         final int tileWidth = map.getTileWidth();
         final int tileHeight = map.getTileHeight();
@@ -98,7 +100,7 @@ public class OrthogonalRenderer implements MapRenderer {
                 if (tile == null) {
                     continue;
                 }
-                final BufferedImage image = tile.getImage();
+                final Image image = tile.getImage();
                 if (image == null) {
                     continue;
                 }
@@ -114,20 +116,62 @@ public class OrthogonalRenderer implements MapRenderer {
         g.translate(-bounds.x * tileWidth, -bounds.y * tileHeight);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
-        for (MapObject object : group) {
-            final int x = (int) object.getX();
-            final int y = (int) object.getY();
-            final double rotation = object.getRotation();
-            final Tile tile = object.getTile();
+        final Dimension tsize = new Dimension(map.getTileWidth(), map.getTileHeight());
+        assert tsize.width != 0 && tsize.height != 0;
+        final Rectangle bounds = map.getBounds();
+
+        g.translate(
+                bounds.x * tsize.width,
+                bounds.y * tsize.height);
+
+        for (MapObject mo : group) {
+            final double ox = mo.getX();
+            final double oy = mo.getY();
+            final Double objectWidth = mo.getWidth();
+            final Double objectHeight = mo.getHeight();
+            final double rotation = mo.getRotation();
+            final Tile tile = mo.getTile();
+
             if (tile != null) {
-                BufferedImage image = tile.getImage();
+                Image objectImage = tile.getImage();
                 AffineTransform old = g.getTransform();
                 g.rotate(Math.toRadians(rotation));
-                g.drawImage(image, x, y, null);
+                g.drawImage(objectImage, (int) ox, (int) oy, null);
                 g.setTransform(old);
+            } else if (objectWidth == null || objectWidth == 0
+                    || objectHeight == null || objectHeight == 0) {
+                g.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+                g.setColor(Color.black);
+                g.fillOval((int) ox + 1, (int) oy + 1, 10, 10);
+                g.setColor(Color.orange);
+                g.fillOval((int) ox, (int) oy, 10, 10);
+                g.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_OFF);
+            } else {
+                g.setColor(Color.black);
+                g.drawRect((int) ox + 1, (int) oy + 1,
+                        mo.getWidth().intValue(),
+                        mo.getHeight().intValue());
+                g.setColor(Color.orange);
+                g.drawRect((int) ox, (int) oy,
+                        mo.getWidth().intValue(),
+                        mo.getHeight().intValue());
             }
+            final String s = mo.getName() != null ? mo.getName() : "(null)";
+            g.setColor(Color.black);
+            g.drawString(s, (int) (ox - 5) + 1, (int) (oy - 5) + 1);
+            g.setColor(Color.white);
+            g.drawString(s, (int) (ox - 5), (int) (oy - 5));
         }
+
+        g.translate(
+                -bounds.x * tsize.width,
+                -bounds.y * tsize.height);
     }
 }

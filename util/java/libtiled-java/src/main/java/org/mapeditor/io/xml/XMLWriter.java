@@ -41,8 +41,10 @@ import java.util.Stack;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @deprecated
+ * @version 1.0.2
  */
+@Deprecated
 public class XMLWriter {
 
     private boolean bIndent = true;

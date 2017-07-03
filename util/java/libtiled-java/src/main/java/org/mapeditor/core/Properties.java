@@ -36,18 +36,28 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
+ * <p>Properties class.</p>
  *
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Properties extends PropertiesData implements Cloneable {
 
+    /**
+     * <p>Constructor for Properties.</p>
+     */
     public Properties() {
         super();
         this.properties = new ArrayList<>();
     }
 
+    /**
+     * <p>setProperty.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param value a {@link java.lang.String} object.
+     */
     public void setProperty(String name, String value) {
         Property property = new Property();
         property.setName(name);
@@ -55,6 +65,12 @@ public class Properties extends PropertiesData implements Cloneable {
         properties.add(property);
     }
 
+    /**
+     * <p>getProperty.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public String getProperty(String name) {
         for (Property property : properties) {
             if (name.equals(property.getName())) {
@@ -64,14 +80,27 @@ public class Properties extends PropertiesData implements Cloneable {
         return null;
     }
 
+    /**
+     * <p>clear.</p>
+     */
     public void clear() {
         properties.clear();
     }
 
+    /**
+     * <p>isEmpty.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isEmpty() {
         return properties.isEmpty();
     }
 
+    /**
+     * <p>keySet.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<String> keySet() {
         List<String> keys = new ArrayList<>();
         for (Property property : properties) {
@@ -80,10 +109,16 @@ public class Properties extends PropertiesData implements Cloneable {
         return keys;
     }
 
+    /**
+     * <p>putAll.</p>
+     *
+     * @param props a {@link org.mapeditor.core.Properties} object.
+     */
     public void putAll(Properties props) {
         properties.addAll(props.getProperties());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Properties clone() throws CloneNotSupportedException {
         return (Properties) super.clone();

@@ -39,7 +39,7 @@ import java.awt.image.BufferedImage;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Tile;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 
 /**
  * The isometric map renderer.
@@ -47,7 +47,7 @@ import org.mapeditor.core.Layer;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class IsometricRenderer implements MapRenderer {
 
@@ -73,7 +73,7 @@ public class IsometricRenderer implements MapRenderer {
 
     /** {@inheritDoc} */
     @Override
-    public void paintTileLayer(Graphics2D g, Layer layer) {
+    public void paintTileLayer(Graphics2D g, TileLayer layer) {
         final Rectangle clip = g.getClipBounds();
         final int tileWidth = map.getTileWidth();
         final int tileHeight = map.getTileHeight();
@@ -139,6 +139,7 @@ public class IsometricRenderer implements MapRenderer {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
         throw new UnsupportedOperationException("Not supported yet.");

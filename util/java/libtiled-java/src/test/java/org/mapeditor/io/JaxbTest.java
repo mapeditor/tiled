@@ -49,6 +49,7 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.mapeditor.core.Compression;
 import org.mapeditor.core.Data;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.TileSet;
@@ -68,7 +69,7 @@ public class JaxbTest {
         assertEquals("1.0", map.getVersion());
 
         Data data = map.getLayers().get(0).getData();
-        if ("zlib".equals(data.getCompression())) {
+        if (Compression.ZLIB.equals(data.getCompression())) {
             String enc = data.getValue();
             byte[] dec = DatatypeConverter.parseBase64Binary(enc);
             InputStream bais = new ByteArrayInputStream(dec);

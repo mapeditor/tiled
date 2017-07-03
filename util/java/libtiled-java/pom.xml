@@ -16,6 +16,7 @@
     <description>
         A small Java library to load Tiled maps.
     </description>
+    <url>http://www.mapeditor.org/</url>
 
     <scm>
         <url>https://github.com/bjorn/tiled</url>
@@ -56,20 +57,39 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.3.1</version>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.13.2</version>
                 <configuration>
-                    <packageName>org.mapeditor.core</packageName>
-                    <sources>
-                        <extension>true</extension>
-                        <source>src/main/resources/org/mapeditor/io/map.xsd</source>
-                    </sources>
+                    <args>
+                        <arg>-Xannotate</arg>
+                        <arg>-Xjavadoc</arg>
+                    </args>
+                    <extension>true</extension>
+                    <generatePackage>org.mapeditor.core</generatePackage>
+                    <markGenerated>true</markGenerated>
+                    <plugins>
+                        <plugin>
+                            <groupId>fr.pinguet62.xjc</groupId>
+                            <artifactId>xjc-javadoc-plugin</artifactId>
+                            <version>1.2</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2_commons</groupId>
+                            <artifactId>jaxb2-basics-annotate</artifactId>
+                            <version>1.0.2</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2_commons</groupId>
+                            <artifactId>jaxb2-annotate-plugin-test-annox-annotations</artifactId>
+                            <version>1.0.0</version>
+                        </plugin>
+                    </plugins>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -79,6 +99,10 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <excludes>src/main/resources/xs3p.xsl</excludes>
+                    <extraExtensions>
+                        <xjb>xml</xjb>
+                    </extraExtensions>
                     <licenseFile>${project.basedir}/src/COPYING</licenseFile>
                     <licenseName>bsd_2</licenseName>
                     <thirdPartyFilename>LICENSE</thirdPartyFilename>

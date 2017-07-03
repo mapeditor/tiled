@@ -40,7 +40,7 @@ import java.awt.RenderingHints;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Tile;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.Polygon;
 
@@ -81,7 +81,7 @@ import org.mapeditor.core.Polygon;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class HexagonalRenderer implements MapRenderer {
 
@@ -125,9 +125,7 @@ public class HexagonalRenderer implements MapRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Dimension getMapSize() {
         Dimension tsize = getEffectiveMapTileSize();
@@ -147,11 +145,9 @@ public class HexagonalRenderer implements MapRenderer {
         return new Dimension(w, h);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void paintTileLayer(Graphics2D g, Layer layer) {
+    public void paintTileLayer(Graphics2D g, TileLayer layer) {
         // Determine area to draw from clipping rectangle
         Dimension tsize = getEffectiveMapTileSize();
 
@@ -195,6 +191,7 @@ public class HexagonalRenderer implements MapRenderer {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
         // NOTE: Direct copy from OrthoMapView (candidate for generalization)
@@ -283,13 +280,12 @@ public class HexagonalRenderer implements MapRenderer {
      * the viewport. This function works for some coords off the map, i.e. it
      * works for the tile coord -1 and for coords larger than the map size.
      *
-     * @param layer
+     * @param layer a {@link org.mapeditor.core.TileLayer} object.
      * @param screenX The x coordinate of a point in the viewport.
      * @param screenY The y coordinate of a point in the viewport.
-     *
      * @return The corresponding tile coords as Point.
      */
-    public Point screenToTileCoords(Layer layer, int screenX, int screenY) {
+    public Point screenToTileCoords(TileLayer layer, int screenX, int screenY) {
         Dimension tileSize = getEffectiveMapTileSize();
         int tileWidth = tileSize.width;
         int tileHeight = tileSize.height;
@@ -363,10 +359,9 @@ public class HexagonalRenderer implements MapRenderer {
      * Returns the location (center) on screen for the given tile. Works also
      * for hypothetical tiles off the map. The zoom is accounted for.
      *
-     * @param tileSize
+     * @param tileSize a {@link java.awt.Dimension} object.
      * @param x The x coordinate of the tile.
      * @param y The y coordinate of the tile.
-     *
      * @return The point at the centre of the Hex as Point.
      */
     public Point tileToScreenCoords(Dimension tileSize, int x, int y) {

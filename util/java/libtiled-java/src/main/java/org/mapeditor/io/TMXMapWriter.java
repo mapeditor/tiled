@@ -59,7 +59,7 @@ import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
 import org.mapeditor.core.Sprite;
 import org.mapeditor.core.Tile;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 import org.mapeditor.io.xml.XMLWriter;
 
@@ -69,7 +69,7 @@ import org.mapeditor.io.xml.XMLWriter;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class TMXMapWriter {
 
@@ -204,7 +204,7 @@ public class TMXMapWriter {
             firstgid += tileset.getMaxTileId() + 1;
         }
 
-        for (Layer layer : map.getLayers()) {
+        for (TileLayer layer : map.getLayers()) {
             writeMapLayer(layer, w, wp);
         }
         for (ObjectGroup group : map.getObjectGroups()) {
@@ -217,7 +217,7 @@ public class TMXMapWriter {
 
     private static void writeProperties(Properties props, XMLWriter w) throws
             IOException {
-        if (!props.isEmpty()) {
+        if (props != null && !props.isEmpty()) {
             final Set<Object> propertyKeys = new TreeSet<>();
             propertyKeys.addAll(props.keySet());
             w.startElement("properties");
@@ -358,7 +358,7 @@ public class TMXMapWriter {
      * first global ids for the tilesets are determined, in order for the right
      * gids to be written to the layer data.
      */
-    private void writeMapLayer(Layer l, XMLWriter w, String wp) throws IOException {
+    private void writeMapLayer(TileLayer l, XMLWriter w, String wp) throws IOException {
         Rectangle bounds = l.getBounds();
 
         w.startElement("layer");
@@ -388,7 +388,7 @@ public class TMXMapWriter {
 
         writeProperties(l.getProperties(), w);
 
-        final Layer tl = l;
+        final TileLayer tl = l;
         w.startElement("data");
         if (ENCODE_LAYER_DATA) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

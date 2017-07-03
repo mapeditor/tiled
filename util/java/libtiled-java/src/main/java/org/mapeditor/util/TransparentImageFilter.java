@@ -39,7 +39,7 @@ import java.awt.image.RGBImageFilter;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class TransparentImageFilter extends RGBImageFilter {
 

@@ -45,7 +45,7 @@ import javax.imageio.ImageIO;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class ImageHelper {
 

@@ -10,9 +10,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath TMXViewer hexagonal-mini.tmx</exec.args>
+                <exec.args>-classpath %classpath TMXViewer test_hexagonal_tile/test_hexagonal_tile_60x60x30.tmx</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/Volumes/Documents/Repos/Tiled/examples</exec.workingdir>
+                <exec.workingdir>/Volumes/Documents/Repos/Tiled/util/java/libtiled-java/src/test/resources</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -25,10 +25,10 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath TMXViewer hexagonal-mini.tmx</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath TMXViewer test_hexagonal_tile/test_hexagonal_tile_60x60x30.tmx</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
-                <exec.workingdir>/Volumes/Documents/Repos/Tiled/examples</exec.workingdir>
+                <exec.workingdir>/Volumes/Documents/Repos/Tiled/util/java/libtiled-java/src/test/resources</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -41,9 +41,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath TMXViewer hexagonal-mini.tmx</exec.args>
+                <exec.args>-classpath %classpath TMXViewer test_hexagonal_tile/test_hexagonal_tile_60x60x30.tmx</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/Volumes/Documents/Repos/Tiled/examples</exec.workingdir>
+                <exec.workingdir>/Volumes/Documents/Repos/Tiled/util/java/libtiled-java/src/test/resources</exec.workingdir>
             </properties>
         </action>
     </actions>

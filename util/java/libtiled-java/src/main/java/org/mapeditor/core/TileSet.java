@@ -64,7 +64,7 @@ import org.mapeditor.util.BasicTileCutter;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlRootElement(name = "tileset")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -42,7 +42,7 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 
 public class MapReaderTest {
 
@@ -79,13 +79,13 @@ public class MapReaderTest {
         assertEquals(2, map.getLayerCount());
         assertEquals(1, map.getObjectGroupCount());
 
-        Layer bottom = map.getLayer(0);
+        TileLayer bottom = map.getLayer(0);
         assertEquals("Bottom", bottom.getName());
         assertEquals(50, bottom.getWidth());
         assertEquals(50, bottom.getHeight());
         assertNotNull(bottom.getTileAt(0, 0));
 
-        Layer top = map.getLayer(1);
+        TileLayer top = map.getLayer(1);
         assertEquals("Top", top.getName());
         assertEquals(50, top.getWidth());
         assertEquals(50, top.getHeight());

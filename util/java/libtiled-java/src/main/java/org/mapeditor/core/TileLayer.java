@@ -38,20 +38,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * A Layer is a specialized Layer, used for tracking two dimensional tile data.
+ * A TileLayer is a specialized Layer, used for tracking two dimensional tile
+ * data.
  *
  * @see Map
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class Layer extends LayerData implements Cloneable {
+public class TileLayer extends TileLayerData implements Cloneable {
 
     private Map map;
     private Tile[][] tileMap;
-    private Properties properties = new Properties();
     private HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
 
     public static final int MIRROR_HORIZONTAL = 1;
@@ -93,7 +93,7 @@ public class Layer extends LayerData implements Cloneable {
     /**
      * Default constructor.
      */
-    public Layer() {
+    public TileLayer() {
         super();
         setMap(null);
     }
@@ -104,7 +104,7 @@ public class Layer extends LayerData implements Cloneable {
      * @param w width in tiles
      * @param h height in tiles
      */
-    public Layer(int w, int h) {
+    public TileLayer(int w, int h) {
         this(new Rectangle(0, 0, w, h));
     }
 
@@ -113,7 +113,7 @@ public class Layer extends LayerData implements Cloneable {
      *
      * @param r the bounds of the tile layer.
      */
-    public Layer(Rectangle r) {
+    public TileLayer(Rectangle r) {
         this();
         setBounds(r);
     }
@@ -123,7 +123,7 @@ public class Layer extends LayerData implements Cloneable {
      *
      * @param map the map this layer is part of
      */
-    public Layer(Map map) {
+    public TileLayer(Map map) {
         this();
         setMap(map);
     }
@@ -135,7 +135,7 @@ public class Layer extends LayerData implements Cloneable {
      * @param w width in tiles
      * @param h height in tiles
      */
-    public Layer(Map map, int w, int h) {
+    public TileLayer(Map map, int w, int h) {
         this(w, h);
         setMap(map);
     }
@@ -199,8 +199,8 @@ public class Layer extends LayerData implements Cloneable {
     /**
      * Performs a mirroring function on the layer data. Two orientations are
      * allowed: vertical and horizontal.
-     * 
-     * Example: <code>layer.mirror(Layer.MIRROR_VERTICAL);</code> will mirror
+     *
+     * Example: <code>layer.mirror(TileLayer.MIRROR_VERTICAL);</code> will mirror
      * the layer data around a horizontal axis.
      *
      * @param dir a int.
@@ -271,7 +271,7 @@ public class Layer extends LayerData implements Cloneable {
         tileMap = new Tile[height][width];
 
         // Tile instance properties is null when this method is called from
-        // the constructor of Layer
+        // the constructor of TileLayer
         if (tileInstanceProperties != null) {
             tileInstanceProperties.clear();
         }
@@ -281,10 +281,10 @@ public class Layer extends LayerData implements Cloneable {
      * Creates a diff of the two layers, <code>ml</code> is considered the
      * significant difference.
      *
-     * @param ml a {@link org.mapeditor.core.Layer} object.
-     * @return a {@link org.mapeditor.core.Layer} object.
+     * @param ml a {@link org.mapeditor.core.TileLayer} object.
+     * @return a {@link org.mapeditor.core.TileLayer} object.
      */
-    public Layer createDiff(Layer ml) {
+    public TileLayer createDiff(TileLayer ml) {
         if (ml == null) {
             return null;
         }
@@ -304,12 +304,12 @@ public class Layer extends LayerData implements Cloneable {
         }
 
         if (r != null) {
-            Layer diff = new Layer(
+            TileLayer diff = new TileLayer(
                     new Rectangle(r.x, r.y, r.width + 1, r.height + 1));
             diff.copyFrom(ml);
             return diff;
         } else {
-            return new Layer();
+            return new TileLayer();
         }
     }
 
@@ -400,7 +400,7 @@ public class Layer extends LayerData implements Cloneable {
      *
      * @param other the insignificant layer to merge with
      */
-    public void mergeOnto(Layer other) {
+    public void mergeOnto(TileLayer other) {
         for (int y = this.y; y < this.y + height; y++) {
             for (int x = this.x; x < this.x + width; x++) {
                 Tile tile = getTileAt(x, y);
@@ -414,11 +414,11 @@ public class Layer extends LayerData implements Cloneable {
     /**
      * Like mergeOnto, but will only copy the area specified.
      *
-     * @see Layer#mergeOnto(Layer)
-     * @param other a {@link org.mapeditor.core.Layer} object.
+     * @see TileLayer#mergeOnto(TileLayer)
+     * @param other a {@link org.mapeditor.core.TileLayer} object.
      * @param mask a {@link java.awt.geom.Area} object.
      */
-    public void maskedMergeOnto(Layer other, Area mask) {
+    public void maskedMergeOnto(TileLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
         for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
@@ -435,10 +435,10 @@ public class Layer extends LayerData implements Cloneable {
      * Copy data from another layer onto this layer. Unlike mergeOnto,
      * copyFrom() copies the empty cells as well.
      *
-     * @see Layer#mergeOnto
-     * @param other a {@link org.mapeditor.core.Layer} object.
+     * @see TileLayer#mergeOnto
+     * @param other a {@link org.mapeditor.core.TileLayer} object.
      */
-    public void copyFrom(Layer other) {
+    public void copyFrom(TileLayer other) {
         for (int y = this.y; y < this.y + height; y++) {
             for (int x = this.x; x < this.x + width; x++) {
                 setTileAt(x, y, other.getTileAt(x, y));
@@ -449,11 +449,11 @@ public class Layer extends LayerData implements Cloneable {
     /**
      * Like copyFrom, but will only copy the area specified.
      *
-     * @see Layer#copyFrom(Layer)
-     * @param other a {@link org.mapeditor.core.Layer} object.
+     * @see TileLayer#copyFrom(TileLayer)
+     * @param other a {@link org.mapeditor.core.TileLayer} object.
      * @param mask a {@link java.awt.geom.Area} object.
      */
-    public void maskedCopyFrom(Layer other, Area mask) {
+    public void maskedCopyFrom(TileLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
         for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
@@ -468,13 +468,11 @@ public class Layer extends LayerData implements Cloneable {
     /**
      * Unlike mergeOnto, copyTo includes the null tile when merging.
      *
-     * @see Layer#copyFrom
-     * @see Layer#mergeOnto
-     * @see Layer#copyFrom
-     * @see Layer#mergeOnto
+     * @see TileLayer#copyFrom
+     * @see TileLayer#mergeOnto
      * @param other the layer to copy this layer to
      */
-    public void copyTo(Layer other) {
+    public void copyTo(TileLayer other) {
         for (int y = this.y; y < this.y + height; y++) {
             for (int x = this.x; x < this.x + width; x++) {
                 other.setTileAt(x, y, getTileAt(x, y));
@@ -490,7 +488,7 @@ public class Layer extends LayerData implements Cloneable {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        Layer clone = (Layer) super.clone();
+        TileLayer clone = (TileLayer) super.clone();
 
         // Create a new properties object
         clone.properties = (Properties) properties.clone();
@@ -564,25 +562,6 @@ public class Layer extends LayerData implements Cloneable {
      */
     public Map getMap() {
         return map;
-    }
-
-    /**
-     * <p>Setter for the field <code>properties</code>.</p>
-     *
-     * @param p a {@link java.util.Properties} object.
-     */
-    public void setProperties(Properties p) {
-        properties.clear();
-        properties.putAll(p);
-    }
-
-    /**
-     * <p>Getter for the field <code>properties</code>.</p>
-     *
-     * @return a {@link java.util.Properties} object.
-     */
-    public Properties getProperties() {
-        return properties;
     }
 
     /**

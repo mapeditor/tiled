@@ -55,7 +55,7 @@ import org.mapeditor.core.TileSet;
  * *.tsx files.
  *
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class MapReader {
 

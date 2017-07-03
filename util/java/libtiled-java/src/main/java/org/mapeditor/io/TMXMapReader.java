@@ -37,12 +37,12 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
@@ -61,12 +61,9 @@ import org.mapeditor.core.AnimatedTile;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
-import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
-import org.mapeditor.core.StaggerAxis;
-import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.Tile;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 import org.mapeditor.util.BasicTileCutter;
 import org.mapeditor.util.ImageHelper;
@@ -86,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class TMXMapReader {
 
@@ -125,30 +122,6 @@ public class TMXMapReader {
             url = new File(filename).toURI().toString();
         }
         return url;
-    }
-
-    private void setOrientation(String orientation) {
-        try {
-            map.setOrientation(Orientation.valueOf(orientation));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Unknown orientation '" + orientation + "'");
-        }
-    }
-
-    private void setStaggerAxis(String staggerAxis) {
-        try {
-            map.setStaggerAxis(StaggerAxis.valueOf(staggerAxis));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Unknown stagger axis '" + staggerAxis + "'");
-        }
-    }
-
-    private void setStaggerIndex(String staggerIndex) {
-        try {
-            map.setStaggerIndex(StaggerIndex.valueOf(staggerIndex));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Unknown stagger index '" + staggerIndex + "'");
-        }
     }
 
     private static String getAttributeValue(Node node, String attribname) {
@@ -550,11 +523,11 @@ public class TMXMapReader {
      * @return the loaded map layer
      * @throws Exception
      */
-    private Layer readLayer(Node t) throws Exception {
+    private TileLayer readLayer(Node t) throws Exception {
         final int layerWidth = getAttribute(t, "width", map.getWidth());
         final int layerHeight = getAttribute(t, "height", map.getHeight());
 
-        Layer ml = new Layer(layerWidth, layerHeight);
+        TileLayer ml = new TileLayer(layerWidth, layerHeight);
 
         final int offsetX = getAttribute(t, "x", 0);
         final int offsetY = getAttribute(t, "y", 0);
@@ -624,10 +597,23 @@ public class TMXMapReader {
 
                     for (int y = 0; y < ml.getHeight(); y++) {
                         for (int x = 0; x < ml.getWidth(); x++) {
-                            String sTileId = csvTileIds[x + y * ml.getWidth()];
-                            int tileId = Integer.parseInt(sTileId);
+                            String gid = csvTileIds[x + y * ml.getWidth()];
+                            long tileId = Long.parseLong(gid);
 
-                            setTileAtFromTileId(ml, y, x, tileId);
+                            if (tileId > Integer.MAX_VALUE) {
+                                // Read out the flags
+                                // TODO: Save these flags somewhere
+                                long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
+                                long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
+                                long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
+
+                                // Clear the flags
+                                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
+                                        | FLIPPED_VERTICALLY_FLAG
+                                        | FLIPPED_DIAGONALLY_FLAG);
+                            }
+
+                            setTileAtFromTileId(ml, y, x, (int) tileId);
                         }
                     }
                 } else {
@@ -689,7 +675,7 @@ public class TMXMapReader {
      * @param x x-coordinate
      * @param tileId global id of the tile as read from the file
      */
-    private void setTileAtFromTileId(Layer ml, int y, int x, int tileId) {
+    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
         ml.setTileAt(x, y, getTileForTileGID(tileId));
     }
 
@@ -718,65 +704,19 @@ public class TMXMapReader {
             throw new Exception("Not a valid tmx map file.");
         }
 
-        // Get the map dimensions and create the map
-        int mapWidth = getAttribute(mapNode, "width", 0);
-        int mapHeight = getAttribute(mapNode, "height", 0);
-
-        if (mapWidth > 0 && mapHeight > 0) {
-            map = new Map(mapWidth, mapHeight);
-        } else {
-            // Maybe this map is still using the dimensions element
-            NodeList l = doc.getElementsByTagName("dimensions");
-            for (int i = 0; (item = l.item(i)) != null; i++) {
-                if (item.getParentNode() == mapNode) {
-                    mapWidth = getAttribute(item, "width", 0);
-                    mapHeight = getAttribute(item, "height", 0);
-
-                    if (mapWidth > 0 && mapHeight > 0) {
-                        map = new Map(mapWidth, mapHeight);
-                    }
-                }
-            }
-        }
-
+        // unmarshall the map using JAX-B
+        map = unmarshalClass(mapNode, Map.class);
         if (map == null) {
-            throw new Exception("Couldn't locate map dimensions.");
-        }
-
-        // Load other map attributes
-        String orientation = getAttributeValue(mapNode, "orientation");
-        int tileWidth = getAttribute(mapNode, "tilewidth", 0);
-        int tileHeight = getAttribute(mapNode, "tileheight", 0);
-        int hexsidelength = getAttribute(mapNode, "hexsidelength", 0);
-        String staggerAxis = getAttributeValue(mapNode, "staggeraxis");
-        String staggerIndex = getAttributeValue(mapNode, "staggerindex");
-
-        if (orientation != null) {
-            setOrientation(orientation.toUpperCase());
-        } else {
-            map.setOrientation(Orientation.ORTHOGONAL);
-        }
-
-        if (tileWidth > 0) {
-            map.setTileWidth(tileWidth);
-        }
-        if (tileHeight > 0) {
-            map.setTileHeight(tileHeight);
-        }
-        if (hexsidelength > 0) {
-            map.setHexSideLength(hexsidelength);
-        }
-
-        if (staggerAxis != null) {
-            setStaggerAxis(staggerAxis.toUpperCase());
-        }
-
-        if (staggerIndex != null) {
-            setStaggerIndex(staggerIndex.toUpperCase());
+            throw new Exception("Couldn't load map.");
         }
 
         // Load properties
         readProperties(mapNode.getChildNodes(), map.getProperties());
+
+        // Clear untl they are loaded correctly
+        map.getTileSets().clear();
+        map.getLayers().clear();
+        map.getObjectGroups().clear();
 
         // Load tilesets first, in case order is munged
         tilesetPerFirstGid = new TreeMap<>();
@@ -789,7 +729,7 @@ public class TMXMapReader {
         for (Node sibs = mapNode.getFirstChild(); sibs != null;
                 sibs = sibs.getNextSibling()) {
             if ("layer".equals(sibs.getNodeName())) {
-                Layer layer = readLayer(sibs);
+                TileLayer layer = readLayer(sibs);
                 if (layer != null) {
                     map.addLayer(layer);
                 }
@@ -929,8 +869,9 @@ public class TMXMapReader {
         @Override
         public InputSource resolveEntity(String publicId, String systemId) {
             if (systemId.equals("http://mapeditor.org/dtd/1.0/map.dtd")) {
-                return new InputSource(TMXMapReader.class.getResourceAsStream(
-                        "map.dtd"));
+                return new InputSource(
+                        this.getClass().getClassLoader()
+                                .getResourceAsStream("map.dtd"));
             }
             return null;
         }
@@ -965,12 +906,11 @@ public class TMXMapReader {
      * Get the tile set and its corresponding firstgid that matches the given
      * global tile id.
      *
-     *
      * @param gid a global tile id
      * @return the tileset containing the tile with the given global tile id, or
      * <code>null</code> when no such tileset exists
      */
-    private java.util.Map.Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
+    private Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
         return tilesetPerFirstGid.floorEntry(gid);
     }
 

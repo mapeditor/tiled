@@ -37,8 +37,10 @@ package org.mapeditor.io.xml;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @deprecated
+ * @version 1.0.2
  */
+@Deprecated
 public class XMLWriterException extends RuntimeException {
 
     private static final long serialVersionUID = 1629373837269498797L;

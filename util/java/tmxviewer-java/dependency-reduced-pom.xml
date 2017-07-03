@@ -10,6 +10,7 @@
   <artifactId>tmxviewer</artifactId>
   <name>tmxviewer</name>
   <description>A small example application that views Tiled maps using libtiled-java.</description>
+  <url>http://www.mapeditor.org/</url>
   <scm>
     <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
     <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>

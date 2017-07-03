@@ -34,7 +34,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import org.mapeditor.core.ObjectGroup;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 
 /**
  * An interface defining methods to render a map.
@@ -42,7 +42,7 @@ import org.mapeditor.core.Layer;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 public interface MapRenderer {
 
@@ -60,7 +60,7 @@ public interface MapRenderer {
      * @param g the graphics context to paint to
      * @param layer the layer to paint
      */
-    void paintTileLayer(Graphics2D g, Layer layer);
+    void paintTileLayer(Graphics2D g, TileLayer layer);
 
     /**
      * Paints the given object group, taking into account the clip rect of the

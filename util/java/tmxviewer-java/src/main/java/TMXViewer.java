@@ -42,7 +42,7 @@ import javax.swing.WindowConstants;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
-import org.mapeditor.core.Layer;
+import org.mapeditor.core.TileLayer;
 import org.mapeditor.io.TMXMapReader;
 import org.mapeditor.view.HexagonalRenderer;
 import org.mapeditor.view.MapRenderer;
@@ -132,7 +132,7 @@ class MapView extends JPanel implements Scrollable
         g2d.fill(clip);
 
         // Draw each tile map layer
-        for (Layer layer : map.getLayers()) {
+        for (TileLayer layer : map.getLayers()) {
             renderer.paintTileLayer(g2d, layer);
         }
         // Draw each object group

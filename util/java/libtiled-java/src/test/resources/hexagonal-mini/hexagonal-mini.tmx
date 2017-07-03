@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.1" orientation="hexagonal" renderorder="right-down" width="20" height="20" tilewidth="14" tileheight="12" hexsidelength="6" staggeraxis="y" staggerindex="odd" nextobjectid="2">
+<map version="1.0" tiledversion="1.0.2" orientation="hexagonal" renderorder="right-down" width="20" height="20" tilewidth="14" tileheight="12" hexsidelength="6" staggeraxis="y" staggerindex="odd" nextobjectid="2">
  <tileset firstgid="1" name="hex mini" tilewidth="18" tileheight="18" tilecount="20" columns="5">
   <tileoffset x="0" y="1"/>
   <image source="hexmini.png" width="106" height="72"/>

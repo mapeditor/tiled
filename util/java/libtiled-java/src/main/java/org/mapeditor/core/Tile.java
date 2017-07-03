@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
- * @version 1.0.1
+ * @version 1.0.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Tile extends TileData {
@@ -89,9 +89,9 @@ public class Tile extends TileData {
     }
 
     /**
-     * Sets the id of the tile as long as it is at least 0.
+     * {@inheritDoc}
      *
-     * @param value The id of the tile
+     * Sets the id of the tile as long as it is at least 0.
      */
     @Override
     public void setId(Integer value) {
@@ -160,6 +160,11 @@ public class Tile extends TileData {
         return image;
     }
 
+    /**
+     * <p>Getter for the field <code>source</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getSource() {
         return source;
     }
