@@ -664,6 +664,10 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
         it.next();
         for (int x = 0; x < CHUNK_SIZE; ++x) {
             for (int y = 0;y < CHUNK_SIZE; ++y) {
+                if (!contains(it.key().x() * CHUNK_SIZE + x,
+                              it.key().y() * CHUNK_SIZE + y))
+                    continue;
+
                 clone->setCell(it.key().x() * CHUNK_SIZE + x,
                                it.key().y() * CHUNK_SIZE + y,
                                it.value()->cellAt(x, y));
