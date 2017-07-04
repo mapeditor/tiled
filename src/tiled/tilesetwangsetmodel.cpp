@@ -50,7 +50,7 @@ QModelIndex TilesetWangSetModel::index(WangSet *wangSet)
 
 int TilesetWangSetModel::rowCount(const QModelIndex &parent) const
 {
-    if(!parent.isValid())
+    if (!parent.isValid())
         return mTilesetDocument->tileset()->wangSetCount();
 
     return 0;
@@ -65,7 +65,7 @@ int TilesetWangSetModel::columnCount(const QModelIndex &parent) const
 
 QVariant TilesetWangSetModel::data(const QModelIndex &index, int role) const
 {
-    if(WangSet *wangSet = wangSetAt(index)) {
+    if (WangSet *wangSet = wangSetAt(index)) {
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
@@ -86,7 +86,7 @@ bool TilesetWangSetModel::setData(const QModelIndex &index,
                                   const QVariant &value,
                                   int role)
 {
-    if(role == Qt::EditRole) {
+    if (role == Qt::EditRole) {
         const QString newName = value.toString();
         WangSet *wangSet = wangSetAt(index);
         if (wangSet->name() != newName) {
@@ -117,7 +117,7 @@ WangSet *TilesetWangSetModel::wangSetAt(const QModelIndex &index) const
     return nullptr;
 }
 
-void TilesetWangSetModel::insertWangSet(WangSet *wangSet, int index)
+void TilesetWangSetModel::insertWangSet(int index, WangSet *wangSet)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
     int row = tileset->wangSetCount();
@@ -125,7 +125,7 @@ void TilesetWangSetModel::insertWangSet(WangSet *wangSet, int index)
     emit wangSetAboutToBeAdded(tileset);
 
     beginInsertRows(QModelIndex(), row, row);
-    tileset->insertWangSet(wangSet, index);
+    tileset->insertWangSet(index, wangSet);
     endInsertRows();
 
     emit wangSetAdded(tileset);

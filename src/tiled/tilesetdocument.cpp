@@ -341,10 +341,10 @@ void TilesetDocument::onTerrainRemoved(Terrain *terrain)
         setCurrentObject(nullptr);
 }
 
-void TilesetDocument::onWangSetRemoved()
+void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetWangSetRemoved(mTileset.data());
+    if (wangSet == mCurrentObject)
+        setCurrentObject(nullptr);
 }
 
 } // namespace Internal

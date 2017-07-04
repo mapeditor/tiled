@@ -48,7 +48,7 @@ namespace Internal {
 static WangSet *firstWangSet(MapDocument *MapDocument)
 {
     for (const SharedTileset &tileset : MapDocument->map()->tilesets())
-        if(tileset->wangSetCount() > 0)
+        if (tileset->wangSetCount() > 0)
             return tileset->wangSet(0);
 
     return nullptr;
@@ -57,7 +57,7 @@ static WangSet *firstWangSet(MapDocument *MapDocument)
 static WangSet *firstWangSet(TilesetDocument *tilesetDocument)
 {
     Tileset *tileset = tilesetDocument->tileset().data();
-    if(tileset->wangSetCount() > 0)
+    if (tileset->wangSetCount() > 0)
         return tileset->wangSet(0);
 
     return nullptr;

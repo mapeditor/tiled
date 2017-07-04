@@ -190,7 +190,7 @@ public:
     WangSet *wangSet(int index) const;
 
     void addWangSet(WangSet *wangSet);
-    void insertWangSet(WangSet *wangSet, int index);
+    void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
 
     Tile *addTile(const QPixmap &image, const QString &source = QString());

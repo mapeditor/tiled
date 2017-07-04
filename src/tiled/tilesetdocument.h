@@ -142,7 +142,7 @@ private slots:
     void onPropertiesChanged(Object *object);
 
     void onTerrainRemoved(Terrain *terrain);
-    void onWangSetRemoved();
+    void onWangSetRemoved(WangSet *wangSet);
 
 private:
     SharedTileset mTileset;

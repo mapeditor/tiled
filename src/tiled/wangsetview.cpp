@@ -115,7 +115,7 @@ void WangSetView::editWangSetProperties()
 {
     WangSet *wangSet = wangSetAt(selectionModel()->currentIndex());
 
-    if(!wangSet)
+    if (!wangSet)
         return;
 
     mTilesetDocument->setCurrentObject(wangSet);

@@ -91,7 +91,7 @@ void WangTile::flipVertically()
 
 Cell WangTile::makeCell() const
 {
-    if(!mTile)
+    if (!mTile)
         return Cell();
 
     Cell cell(mTile);
@@ -251,7 +251,7 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
                 color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
 
             if (!color)
-                color = surroundingWangIds[i*2 + 2].cornerColor((3 + i) % 4);
+                color = surroundingWangIds[(i*2 + 2) % 8].cornerColor((3 + i) % 4);
 
             id |= color << (4 + i*8);
         }

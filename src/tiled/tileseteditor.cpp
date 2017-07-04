@@ -890,7 +890,7 @@ void TilesetEditor::addWangSet()
 void TilesetEditor::removeWangSet()
 {
     WangSet *wangSet = mWangDock->currentWangSet();
-    if(!wangSet)
+    if (!wangSet)
         return;
 
     mCurrentTilesetDocument->undoStack()->push(new RemoveWangSet(mCurrentTilesetDocument,
@@ -911,7 +911,7 @@ void TilesetEditor::setTerrainImage(Tile *tile)
 void TilesetEditor::setWangSetImage(Tile *tile)
 {
     WangSet *wangSet = mWangDock->currentWangSet();
-    if(!wangSet)
+    if (!wangSet)
         return;
 
     mCurrentTilesetDocument->undoStack()->push(new SetWangSetImage(mCurrentTilesetDocument,

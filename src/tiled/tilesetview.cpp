@@ -723,7 +723,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                               QItemSelectionModel::SelectCurrent |
                                               QItemSelectionModel::Clear);
 
-            if(mWangSet) {
+            if (mWangSet) {
                 QAction *setImage = menu.addAction(tr("Set WangSet Image"));
                 connect(setImage, SIGNAL(triggered()), SLOT(selectWangSetImage()));
             }

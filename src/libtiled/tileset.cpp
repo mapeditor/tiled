@@ -518,7 +518,7 @@ void Tileset::addWangSet(WangSet *wangSet)
  * @brief Tileset::insertWangSet Adds a wangSet.
  * @param wangSet A pointer to the wangset to add.
  */
-void Tileset::insertWangSet(WangSet *wangSet, int index)
+void Tileset::insertWangSet(int index, WangSet *wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
 

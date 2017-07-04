@@ -64,7 +64,7 @@ public:
 
     WangSet *wangSetAt(const QModelIndex &index) const;
 
-    void insertWangSet(WangSet *wangSet, int index);
+    void insertWangSet(int index, WangSet *wangSet);
     WangSet *takeWangSetAt(int index);
     void setWangSetName(int index, const QString &name);
     void setWangSetEdges(int index, int value);
