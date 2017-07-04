@@ -206,7 +206,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
         for(const Tiled::SharedTileset& tilesheet : map->tilesets()) {
             tbin::TileSheet ttilesheet;
             ttilesheet.id = tilesheet->name().toStdString();
-            ttilesheet.image = tilesheet->imageSource().toStdString();
+            ttilesheet.image = QFileInfo( fileName ).dir().relativeFilePath( tilesheet->imageSource() ).replace( "/", "\\" ).toStdString();
             ttilesheet.margin.x = ttilesheet.margin.y = tilesheet->margin();
             ttilesheet.spacing.x = ttilesheet.spacing.y = tilesheet->tileSpacing();
             ttilesheet.sheetSize.x = tilesheet->gridSize().width();
@@ -244,6 +244,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                             ttile.tilesheet = tile->tileset()->name().toStdString();
                             if (tile->frames().size() == 0) {
                                 ttile.staticData.tileIndex = tile->id();
+                                ttile.staticData.blendMode = 0;
                             }
                             else {
 
@@ -253,6 +254,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                                     tbin::Tile tframe;
                                     tframe.tilesheet = ttile.tilesheet;
                                     tframe.staticData.tileIndex = frame.tileId;
+                                    tframe.staticData.blendMode = 0;
                                     ttile.animatedData.frames.push_back(tframe);
                                 }
                             }
