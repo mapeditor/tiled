@@ -209,8 +209,8 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             ttilesheet.image = QFileInfo( fileName ).dir().relativeFilePath( tilesheet->imageSource() ).replace( "/", "\\" ).toStdString();
             ttilesheet.margin.x = ttilesheet.margin.y = tilesheet->margin();
             ttilesheet.spacing.x = ttilesheet.spacing.y = tilesheet->tileSpacing();
-            ttilesheet.sheetSize.x = tilesheet->gridSize().width();
-            ttilesheet.sheetSize.y = tilesheet->gridSize().height();
+            ttilesheet.sheetSize.x = tilesheet->columnCount();
+            ttilesheet.sheetSize.y = tilesheet->rowCount();
             ttilesheet.tileSize.x = tilesheet->tileSize().width();
             ttilesheet.tileSize.y = tilesheet->tileSize().height();
             tiledToTbinProperties(map, tmap.props);
