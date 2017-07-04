@@ -239,12 +239,12 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
     unsigned id = 0;
 
     if (mEdgeColors > 0) {
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 4; ++i)
             id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
     }
 
     if (mCornerColors > 0) {
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 4; ++i) {
             int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
 
             if (!color)
