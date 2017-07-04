@@ -165,8 +165,7 @@ class Chunk
 {
 public:
     Chunk() :
-        mGrid(CHUNK_SIZE * CHUNK_SIZE),
-        mUsedCells(0)
+        mGrid(CHUNK_SIZE * CHUNK_SIZE)
     {}
 
     QRegion region(std::function<bool (const Cell &)> condition) const;
@@ -191,7 +190,6 @@ public:
 
 private:
     QVector<Cell> mGrid;
-    int mUsedCells;
 };
 
 inline const Cell &Chunk::cellAt(int x, int y) const
@@ -202,11 +200,6 @@ inline const Cell &Chunk::cellAt(int x, int y) const
 inline const Cell &Chunk::cellAt(const QPoint &point) const
 {
     return cellAt(point.x(), point.y());
-}
-
-inline bool Chunk::isEmpty() const
-{
-    return mUsedCells == 0;
 }
 
 /**

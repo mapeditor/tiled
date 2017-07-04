@@ -34,12 +34,6 @@
 
 using namespace Tiled;
 
-static QPoint chunkCoordinates(int x, int y)
-{
-    return QPoint(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
-                  y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
-}
-
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
@@ -65,9 +59,20 @@ QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
 void Chunk::setCell(int x, int y, const Cell &cell)
 {
     int index = x + y * CHUNK_SIZE;
-    mUsedCells += mGrid[index].isEmpty() - cell.isEmpty();
 
     mGrid[index] = cell;
+}
+
+bool Chunk::isEmpty() const
+{
+    for (int y = 0; y < CHUNK_SIZE; ++y) {
+        for (int x = 0; x < CHUNK_SIZE; ++x) {
+            if (!cellAt(x, y).isEmpty())
+                return false;
+        }
+    }
+
+    return true;
 }
 
 bool Chunk::hasCell(std::function<bool (const Cell &)> condition) const
@@ -165,6 +170,9 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
+    if (cell.isEmpty() && !findChunk(x, y))
+    return;
+
     Chunk &_chunk = chunk(x, y);
 
     if (!mUsedTilesetsDirty) {
@@ -179,9 +187,6 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     }
 
     _chunk.setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
-
-    if (_chunk.isEmpty())
-        mChunks.remove(chunkCoordinates(x, y));
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -268,7 +273,7 @@ void TileLayer::erase(const QRegion &area)
 
 void TileLayer::flip(FlipDirection direction)
 {
-    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, mWidth, mHeight);
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -280,30 +285,29 @@ void TileLayer::flip(FlipDirection direction)
                 int _x = it.key().x() * CHUNK_SIZE + x;
                 int _y = it.key().y() * CHUNK_SIZE + y;
 
-                if (!contains(_x, _y))
-                    continue;
-
                 const Cell &source = it.value().cellAt(x, y);
                 Cell dest(source);
+
+                if (dest.isEmpty())
+                    continue;
 
                 if (direction == FlipHorizontally) {
                     dest.setFlippedHorizontally(!source.flippedHorizontally());
                     newLayer->setCell(mWidth - _x - 1, _y, dest);
                 } else if (direction == FlipVertically) {
                     dest.setFlippedVertically(!source.flippedVertically());
-                    newLayer->setCell(_x, mHeight -y - 1, dest);
+                    newLayer->setCell(_x, mHeight - _y - 1, dest);
                 }
             }
         }
     }
 
     mChunks = newLayer->mChunks;
-    delete newLayer;
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, mWidth, mHeight);
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -321,10 +325,10 @@ void TileLayer::flipHexagonal(FlipDirection direction)
                 int _x = it.key().x() * CHUNK_SIZE + x;
                 int _y = it.key().y() * CHUNK_SIZE + y;
 
-                if (!contains(_x, _y))
-                    continue;
-
                 Cell dest(it.value().cellAt(x, y));
+
+                if (dest.isEmpty())
+                    continue;
 
                 unsigned char mask =
                         (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
@@ -339,14 +343,15 @@ void TileLayer::flipHexagonal(FlipDirection direction)
                 dest.setFlippedAntiDiagonally((mask & 2) != 0);
                 dest.setRotatedHexagonal120((mask & 1) != 0);
 
-                (direction == FlipHorizontally) ? newLayer->setCell(mWidth - _x - 1, _y, dest)
-                                                : newLayer->setCell(_x, mHeight - _y - 1, dest);
+                if (direction == FlipHorizontally)
+                    newLayer->setCell(mWidth - _x - 1, _y, dest);
+                else
+                    newLayer->setCell(_x, mHeight - _y - 1, dest);
             }
         }
     }
 
     mChunks = newLayer->mChunks;
-    delete newLayer;
 }
 
 void TileLayer::rotate(RotateDirection direction)
@@ -359,7 +364,7 @@ void TileLayer::rotate(RotateDirection direction)
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, newWidth, newHeight);
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -369,10 +374,10 @@ void TileLayer::rotate(RotateDirection direction)
                 int _x = it.key().x() * CHUNK_SIZE + x;
                 int _y = it.key().y() * CHUNK_SIZE + y;
 
-                if (!contains(_x, _y))
-                    continue;
-
                 Cell dest(it.value().cellAt(x, y));
+
+                if (dest.isEmpty())
+                    continue;
 
                 unsigned char mask =
                         (dest.flippedHorizontally() << 2) |
@@ -396,7 +401,6 @@ void TileLayer::rotate(RotateDirection direction)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
-    delete newLayer;
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -416,7 +420,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, newWidth, newHeight);
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -452,10 +456,10 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
                 int _x = it.key().x() * CHUNK_SIZE + x;
                 int _y = it.key().y() * CHUNK_SIZE + y;
 
-                if (!contains(_x, _y))
-                    continue;
-
                 Cell dest(it.value().cellAt(x, y));
+
+                if (dest.isEmpty())
+                    continue;
 
                 unsigned char mask =
                         (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
@@ -485,7 +489,6 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     mWidth = newWidth;
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
-    delete newLayer;
 
     QRect filledRect = region().boundingRect();
 
@@ -587,56 +590,39 @@ void TileLayer::offsetTiles(const QPoint &offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
 {
-    TileLayer *newLayer = clone();
+    QScopedPointer<TileLayer> newLayer(clone());
 
-    QHashIterator<QPoint, Chunk> it(newLayer->mChunks);
-    while (it.hasNext()) {
-        it.next();
-        for (int y = 0; y < CHUNK_SIZE; ++y) {
-            for (int x = 0; x < CHUNK_SIZE; ++x) {
-                int _x = it.key().x() * CHUNK_SIZE + x;
-                int _y = it.key().y() * CHUNK_SIZE + y;
+    for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+        for (int x = bounds.left(); x <= bounds.right(); ++x) {
+            // Get position to pull tile value from
+            int oldX = x - offset.x();
+            int oldY = y - offset.y();
 
-                if (!contains(_x, _y))
-                    continue;
-
-                // Skip out of bounds tiles
-                if (!bounds.contains(_x, _y)) {
-                    newLayer->setCell(x, y, cellAt(_x, _y));
-                    continue;
-                }
-
-                // Get position to pull tile value from
-                int oldX = _x - offset.x();
-                int oldY = _y - offset.y();
-
-                // Wrap x value that will be pulled from
-                if (wrapX && bounds.width() > 0) {
-                    while (oldX < bounds.left())
-                        oldX += bounds.width();
-                    while (oldX > bounds.right())
-                        oldX -= bounds.width();
-                }
-
-                // Wrap y value that will be pulled from
-                if (wrapY && bounds.height() > 0) {
-                    while (oldY < bounds.top())
-                        oldY += bounds.height();
-                    while (oldY > bounds.bottom())
-                        oldY -= bounds.height();
-                }
-
-                // Set the new tile
-                if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
-                    newLayer->setCell(x, y, cellAt(oldX, oldY));
-                else
-                    newLayer->setCell(x, y, Cell());
+            // Wrap x value that will be pulled from
+            if (wrapX && bounds.width() > 0) {
+                while (oldX < bounds.left())
+                    oldX += bounds.width();
+                while (oldX > bounds.right())
+                    oldX -= bounds.width();
             }
+
+            // Wrap y value that will be pulled from
+            if (wrapY && bounds.height() > 0) {
+                while (oldY < bounds.top())
+                    oldY += bounds.height();
+                while (oldY > bounds.bottom())
+                    oldY -= bounds.height();
+            }
+
+            // Set the new tile
+            if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
+                newLayer->setCell(x, y, cellAt(oldX, oldY));
+            else
+                newLayer->setCell(x, y, Cell());
         }
     }
 
     mChunks = newLayer->mChunks;
-    delete newLayer;
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
