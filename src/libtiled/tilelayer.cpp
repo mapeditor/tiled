@@ -559,7 +559,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     if (this->size() == size && offset.isNull())
         return;
 
-    QVector<Cell> newGrid(size.width() * size.height());
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
 
     // Copy over the preserved part
     const int startX = qMax(0, -offset.x());
@@ -569,19 +569,11 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            const int index = x + offset.x() + (y + offset.y()) * size.width();
-            newGrid[index] = cellAt(x, y);
+            newLayer->setCell(x + offset.x(), y + offset.y(), cellAt(x, y));
         }
     }
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (y < size.height() && x < size.width())
-                setCell(x, y, newGrid[x + y * size.width()]);
-            else
-                setCell(x, y, mEmptyCell);
-        }
-    }
+    mChunks = newLayer->mChunks;
     setSize(size);
 }
 
