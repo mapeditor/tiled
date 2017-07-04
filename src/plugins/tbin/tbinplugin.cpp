@@ -140,19 +140,16 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             tbinToTiledProperties(ttilesheet.props, tilesheet.data());
 
             for (auto prop : ttilesheet.props) {
-                qInfo() << prop.first.c_str();
                 if (prop.first[0] != '@')
                     continue;
 
                 QStringList strs = QString(prop.first.c_str()).split('@');
-                qInfo() << strs[1];
                 if (strs[1] == "TileIndex") {
                     int index = strs[2].toInt();
                     tbin::Properties dummyProps;
                     dummyProps.insert(std::make_pair(strs[3].toStdString(), prop.second));
                     Tiled::Tile* tile = tilesheet->tileAt(index);
                     tbinToTiledProperties(dummyProps, tile);
-                    qInfo() << index << ' ' << strs[3] << "\n";
                 }
                 // TODO: 'AutoTile' ?
                 // Purely for map making. Appears to be similar to terrains
