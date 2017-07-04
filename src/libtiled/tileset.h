@@ -189,7 +189,8 @@ public:
     int wangSetCount() const;
     WangSet *wangSet(int index) const;
 
-    void insertWangSet(WangSet *wangSet);
+    void addWangSet(WangSet *wangSet);
+    void insertWangSet(WangSet *wangSet, int index);
     WangSet *takeWangSetAt(int index);
 
     Tile *addTile(const QPixmap &image, const QString &source = QString());

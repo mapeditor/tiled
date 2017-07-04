@@ -166,8 +166,6 @@ public:
 
     MapObjectModel *mapObjectModel() const { return mMapObjectModel; }
 
-    TerrainModel *terrainModel() const { return mTerrainModel; }
-
     WangSetModel *wangSetModel() const { return mWangSetModel; }
 
     /**

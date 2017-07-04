@@ -60,8 +60,8 @@ void ChangeWangSetEdges::redo()
 }
 
 ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
-                                       int index,
-                                       int newValue)
+                                            int index,
+                                            int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set corner count"))
     , mWangSetModel(tilesetDocument->wangSetModel())

@@ -153,8 +153,8 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        EdgeProperty,
-        CornerProperty,
+        EdgeCountProperty,
+        CornerCountProperty,
         CustomProperty
     };
 

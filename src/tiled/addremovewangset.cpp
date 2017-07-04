@@ -53,7 +53,7 @@ void AddRemoveWangSet::removeWangSet()
 void AddRemoveWangSet::addWangSet()
 {
     Q_ASSERT(mWangSet);
-    mTilesetDocument->wangSetModel()->insertWangSet(mWangSet);
+    mTilesetDocument->wangSetModel()->insertWangSet(mWangSet, mIndex);
     mWangSet = nullptr;
 }
 

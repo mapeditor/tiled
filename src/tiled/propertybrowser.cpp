@@ -336,7 +336,7 @@ void PropertyBrowser::terrainChanged(Tileset *tileset, int index)
 
 void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
 {
-    if(mObject == tileset->wangSet(index))
+    if (mObject == tileset->wangSet(index))
         updateProperties();
 }
 
@@ -854,8 +854,11 @@ void PropertyBrowser::addWangSetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("WangSet"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    QtVariantProperty *edgeProperty = addProperty(EdgeProperty, QVariant::Int, tr("Edge Count"), groupProperty);
-    QtVariantProperty *cornerProperty = addProperty(CornerProperty, QVariant::Int, tr("Corner Count"), groupProperty);
+    QtVariantProperty *edgeProperty = addProperty(EdgeCountProperty, QVariant::Int, tr("Edge Count"), groupProperty);
+    QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);
+
+    edgeProperty->setAttribute(QLatin1String("minimum"), 0);
+    cornerProperty->setAttribute(QLatin1String("minimum"), 0);
 
     nameProperty->setEnabled(mTilesetDocument);
     edgeProperty->setEnabled(mTilesetDocument);
@@ -1254,12 +1257,12 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
                                                        mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                        val.toString()));
         break; 
-    case EdgeProperty:
+    case EdgeCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
                                                             mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                             val.toInt()));
         break;
-    case CornerProperty:
+    case CornerCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetCorners(mTilesetDocument,
                                                               mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                               val.toInt()));
@@ -1567,8 +1570,8 @@ void PropertyBrowser::updateProperties()
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
-        mIdToProperty[EdgeProperty]->setValue(wangSet->edgeColors());
-        mIdToProperty[CornerProperty]->setValue(wangSet->cornerColors());
+        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColors());
+        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColors());
     }
     }
 

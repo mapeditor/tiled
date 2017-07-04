@@ -124,7 +124,7 @@ public:
         mFlippedAntiDiagonally(false)
     {}
 
-    explicit WangTile(const Cell &cell, WangId wangId):
+    WangTile(const Cell &cell, WangId wangId):
         mTile(cell.tile()),
         mWangId(wangId),
         mFlippedHorizontally(cell.flippedHorizontally()),
@@ -195,9 +195,9 @@ public:
      * */
     void addTile(Tile *tile, WangId wangId);
 
-    void addCell(Cell &cell, WangId wangId);
+    void addCell(const Cell &cell, WangId wangId);
 
-    void addWangTile(WangTile wangTile);
+    void addWangTile(const WangTile &wangTile);
 
     /* Finds a tile whos WangId matches with the one provided,
      * where zeros in the id are treated as wild cards, and can be
@@ -232,7 +232,7 @@ public:
      *                       g|X|c
      *                       f|e|d
      * */
-    WangId wangIdFromSurrounding(const Cell surroundingWangIds[]) const;
+    WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     /* Returns the wangId of a given Tile.
      * */

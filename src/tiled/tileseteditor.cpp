@@ -874,7 +874,7 @@ void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
 void TilesetEditor::addWangSet()
 {
     Tileset *tileset = currentTileset();
-    if(!tileset)
+    if (!tileset)
         return;
 
     //2 and 0 are default values for number of edges and corners TODO define this some where better?
@@ -890,6 +890,8 @@ void TilesetEditor::addWangSet()
 void TilesetEditor::removeWangSet()
 {
     WangSet *wangSet = mWangDock->currentWangSet();
+    if(!wangSet)
+        return;
 
     mCurrentTilesetDocument->undoStack()->push(new RemoveWangSet(mCurrentTilesetDocument,
                                                                  wangSet));

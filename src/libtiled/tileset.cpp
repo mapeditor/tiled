@@ -507,15 +507,22 @@ void Tileset::recalculateTerrainDistances()
     } while (bNewConnections);
 }
 
-/**
- * @brief Tileset::insertWangSet Adds a wangSet.
- * @param wangSet A pointer to the wangset to add.
- */
-void Tileset::insertWangSet(WangSet *wangSet)
+void Tileset::addWangSet(WangSet *wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
 
     mWangSets.append(wangSet);
+}
+
+/**
+ * @brief Tileset::insertWangSet Adds a wangSet.
+ * @param wangSet A pointer to the wangset to add.
+ */
+void Tileset::insertWangSet(WangSet *wangSet, int index)
+{
+    Q_ASSERT(wangSet->tileset() == this);
+
+    mWangSets.insert(index, wangSet);
 }
 
 /**

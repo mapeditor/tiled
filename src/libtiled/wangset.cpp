@@ -118,23 +118,26 @@ WangSet::WangSet(Tileset *tileset,
 
 void WangSet::addTile(Tile *tile, WangId wangId)
 {
-    Q_ASSERT(tile->tileset() == mTileset && wangIdIsValid(wangId));
+    Q_ASSERT(tile->tileset() == mTileset);
+    Q_ASSERT(wangIdIsValid(wangId));
 
     mWangIdToWangTile.insert(wangId, WangTile(tile, wangId));
     mTileInfoToWangId.insert(tile->id(), wangId);
 }
 
-void WangSet::addCell(Cell &cell, WangId wangId)
+void WangSet::addCell(const Cell &cell, WangId wangId)
 {
-    Q_ASSERT(cell.tileset() == mTileset && wangIdIsValid(wangId));
+    Q_ASSERT(cell.tileset() == mTileset);
+    Q_ASSERT(wangIdIsValid(wangId));
 
     mWangIdToWangTile.insert(wangId, WangTile(cell, wangId));
     mTileInfoToWangId.insert(cellToTileInfo(cell), wangId);
 }
 
-void WangSet::addWangTile(WangTile wangTile)
+void WangSet::addWangTile(const WangTile &wangTile)
 {
-    Q_ASSERT(wangTile.tile()->tileset() == mTileset && wangIdIsValid(wangTile.wangId()));
+    Q_ASSERT(wangTile.tile()->tileset() == mTileset);
+    Q_ASSERT(wangIdIsValid(wangTile.wangId()));
 
     mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
     mTileInfoToWangId.insert(wangTileToTileInfo(wangTile), wangTile.wangId());
@@ -235,23 +238,20 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
 {
     unsigned id = 0;
 
-    if(mEdgeColors > 0) {
-        for (int i = 0; i < 3; ++i) {
+    if (mEdgeColors > 0) {
+        for (int i = 0; i < 3; ++i)
             id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
-        }
     }
 
-    if(mCornerColors > 0) {
+    if (mCornerColors > 0) {
         for (int i = 0; i < 3; ++i) {
             int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
 
-            if (!color) {
+            if (!color)
                 color = surroundingWangIds[i*2].cornerColor((1 + i) % 4);
-            }
 
-            if (!color) {
+            if (!color)
                 color = surroundingWangIds[i*2 + 2].cornerColor((3 + i) % 4);
-            }
 
             id |= color << (4 + i*8);
         }
@@ -260,13 +260,12 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
     return id;
 }
 
-WangId WangSet::wangIdFromSurrounding(const Cell surroundingWangIds[]) const
+WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
 {
     WangId wangIds[8];
 
-    for (int i = 0; i < 8; ++i) {
-        wangIds[i] = wangIdOfCell(surroundingWangIds[i]);
-    }
+    for (int i = 0; i < 8; ++i)
+        wangIds[i] = wangIdOfCell(surroundingCells[i]);
 
     WangId wangId = wangIdFromSurrounding(wangIds);
 
@@ -286,9 +285,7 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
 bool WangSet::wangIdIsValid(WangId wangId) const
 {
     for (int i = 0; i < 4; ++i) {
-        if (wangId.edgeColor(i) < 0
-                || wangId.edgeColor(i) > mEdgeColors
-                || wangId.cornerColor(i) < 0
+        if (wangId.edgeColor(i) > mEdgeColors
                 || wangId.cornerColor(i) > mCornerColors)
             return false;
     }

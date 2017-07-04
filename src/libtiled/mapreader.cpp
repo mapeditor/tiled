@@ -85,7 +85,7 @@ private:
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
-    void readTilesetWangSet(Tileset &tileset);
+    void readTilesetWangSets(Tileset &tileset);
     ImageReference readImage();
 
     Layer *tryReadLayer();
@@ -356,7 +356,7 @@ SharedTileset MapReaderPrivate::readTileset()
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(*tileset);
                 } else if (xml.name() == QLatin1String("wangsets")) {
-                    readTilesetWangSet(*tileset);
+                    readTilesetWangSets(*tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -568,7 +568,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
     }
 }
 
-void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
+void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangsets"));
 
@@ -582,18 +582,18 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
 
             WangSet *wangSet = new WangSet(&tileset, edges, corners, name, tile);
 
-            tileset.insertWangSet(wangSet);
+            tileset.addWangSet(wangSet);
 
             while (xml.readNextStartElement()) {
-                if (xml.name() == QLatin1String("properties"))
+                if (xml.name() == QLatin1String("properties")) {
                     wangSet->mergeProperties(readProperties());
-                else if (xml.name() == QLatin1String("wangtile")) {
+                } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
                     unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt();
-                    bool fH = tileAtts.value(QLatin1String("flippedhorizontally")).toInt();
-                    bool fV = tileAtts.value(QLatin1String("flippedvertically")).toInt();
-                    bool fA = tileAtts.value(QLatin1String("flippedantidiagonally")).toInt();
+                    bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
+                    bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
+                    bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
 
                     Tile *tile = tileset.findOrCreateTile(tileId);
 
@@ -605,8 +605,9 @@ void MapReaderPrivate::readTilesetWangSet(Tileset &tileset)
                     wangSet->addWangTile(wangTile);
 
                     xml.skipCurrentElement();
-                } else
+                } else {
                     readUnknownElement();
+                }
             }
         } else {
             readUnknownElement();

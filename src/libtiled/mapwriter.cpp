@@ -362,6 +362,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
         }
         w.writeEndElement();
     }
+
     // Write the properties for those tiles that have them
     for (const Tile *tile : tileset.tiles()) {
         if (imageSource.isEmpty() || includeTile(tile)) {
@@ -428,8 +429,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     // Write the wangsets
     if (tileset.wangSetCount() > 0) {
         w.writeStartElement(QLatin1String("wangsets"));
-        for (int i = 0; i < tileset.wangSetCount(); ++i) {
-            const WangSet *ws = tileset.wangSet(i);
+        for (const WangSet *ws : tileset.wangSets()) {
             w.writeStartElement(QLatin1String("wangset"));
 
             w.writeAttribute(QLatin1String("name"), ws->name());
@@ -443,26 +443,17 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QLatin1String("wangid"), QString::number(wangTile.wangId()));
 
                 if (wangTile.flippedHorizontally())
-                    w.writeAttribute(QLatin1String("flippedhorizontally"), QString::number(1));
+                    w.writeAttribute(QLatin1String("hflip"), QString::number(1));
 
                 if (wangTile.flippedVertically())
-                    w.writeAttribute(QLatin1String("flippedvertically"), QString::number(1));
+                    w.writeAttribute(QLatin1String("vflip"), QString::number(1));
 
                 if (wangTile.flippedAntiDiagonally())
-                    w.writeAttribute(QLatin1String("flippedantidiagonally"), QString::number(1));
+                    w.writeAttribute(QLatin1String("dflip"), QString::number(1));
 
-                w.writeEndElement(); // </wangsettile>
+                w.writeEndElement(); // </wangtile>
             }
 
-            //write each tile with a valid wangId
-            for (const Tile *tile : tileset.tiles()) {
-                if (unsigned wId = ws->wangIdOfTile(tile)) {
-                    w.writeStartElement(QLatin1String("wangsettile"));
-                    w.writeAttribute(QLatin1String("tileid"), QString::number(tile->id()));
-                    w.writeAttribute(QLatin1String("wangid"), QString::number(wId));
-                    w.writeEndElement(); // </wangsettile>
-                }
-            }
             writeProperties(w, ws->properties());
 
             w.writeEndElement(); // </wangset>
