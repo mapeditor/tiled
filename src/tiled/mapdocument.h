@@ -44,6 +44,7 @@ class MapObject;
 class MapRenderer;
 class MapFormat;
 class Terrain;
+class TemplateGroup;
 class Tile;
 
 namespace Internal {
@@ -149,6 +150,8 @@ public:
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
+
+    TemplateGroup *replaceTemplateGroup(int index, TemplateGroup *templateGroup);
 
     void duplicateObjects(const QList<MapObject*> &objects);
     void removeObjects(const QList<MapObject*> &objects);
@@ -273,6 +276,7 @@ signals:
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
+    void templateGroupReplaced(int index, TemplateGroup *templateGroup, TemplateGroup *oldTemplateGroup);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);

@@ -54,6 +54,8 @@
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
+#include "templategroup.h"
+#include "templategroupdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "tile.h"
@@ -61,7 +63,6 @@
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
-#include "templategroupdocument.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -668,6 +669,19 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
         emit tilesetRemoved(oldTileset.data());
 
     return oldTileset;
+}
+
+TemplateGroup *MapDocument::replaceTemplateGroup(int index, TemplateGroup *templateGroup)
+{
+    TemplateGroup *oldTemplateGroup = mMap->templateGroups().at(index);
+    auto changedObjects = mMap->replaceTemplateGroup(oldTemplateGroup, templateGroup);
+
+    // Update the objects in the map scene
+    emit objectsChanged(changedObjects);
+
+    emit templateGroupReplaced(index, templateGroup, oldTemplateGroup);
+
+    return oldTemplateGroup;
 }
 
 void MapDocument::setSelectedArea(const QRegion &selection)

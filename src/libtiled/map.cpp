@@ -298,6 +298,26 @@ bool Map::addTemplateGroup(TemplateGroup *templateGroup)
     return true;
 }
 
+QList<MapObject*> Map::replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *newTemplateGroup)
+{
+    Q_ASSERT(oldTemplateGroup != newTemplateGroup);
+
+    QList<MapObject*> changedObjects;
+    const int index = mTemplateGroups.indexOf(oldTemplateGroup);
+    for (auto group : objectGroups()) {
+        for (auto o : group->objects()){
+            if (o->templateRef().templateGroup == oldTemplateGroup) {
+                o->setTemplateRef({newTemplateGroup, o->templateRef().templateId});
+                o->syncWithTemplate();
+                changedObjects.append(o);
+            }
+        }
+    }
+
+    mTemplateGroups.replace(index, newTemplateGroup);
+    return changedObjects;
+}
+
 void Map::initializeObjectIds(ObjectGroup &objectGroup)
 {
     for (MapObject *o : objectGroup) {

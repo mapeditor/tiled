@@ -312,6 +312,8 @@ QtGuiApplication {
         "renameterrain.h",
         "reparentlayers.cpp",
         "reparentlayers.h",
+        "replacetemplate.cpp",
+        "replacetemplate.h",
         "replacetileset.cpp",
         "replacetileset.h",
         "resizedialog.cpp",

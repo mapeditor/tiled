@@ -41,6 +41,7 @@
 
 namespace Tiled {
 
+class MapObject;
 class Tile;
 class ObjectGroup;
 class TemplateGroup;
@@ -338,6 +339,8 @@ public:
      */
     SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
 
+    TemplateGroup *templateAt(int index) const { return mTemplateGroups.at(index); }
+
     /**
      * Returns the tilesets that the tiles on this map are using.
      */
@@ -346,6 +349,11 @@ public:
     const QList<TemplateGroup*> &templateGroups() const { return mTemplateGroups; }
 
     bool addTemplateGroup(TemplateGroup *templateGroup);
+
+    /**
+     * Returns a list of MapObjects to be updated in the map scene
+     */
+    QList<MapObject*> replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *templateGroup);
 
     /**
      * Returns the background color of this map.

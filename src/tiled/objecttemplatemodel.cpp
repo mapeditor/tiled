@@ -22,6 +22,7 @@
 #include "objecttemplatemodel.h"
 
 #include "templategroup.h"
+#include "templatemanager.h"
 #include "tmxmapformat.h"
 
 #include <QFileInfo>
@@ -52,6 +53,12 @@ void ObjectTemplateModel::setTemplateDocuments(const TemplateDocuments &template
     qDeleteAll(mTemplateDocuments);
     mTemplateDocuments = templateDocuments;
     endResetModel();
+
+    TemplateGroups templateGroups;
+    for (auto document : templateDocuments)
+        templateGroups.append(document->templateGroup());
+
+    TemplateManager::instance()->setTemplateGroups(templateGroups);
 }
 
 ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
@@ -140,6 +147,19 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
     beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
     mTemplateDocuments.append(document);
     endInsertRows();
+
+    TemplateManager::instance()->addTemplateGroup(document->templateGroup());
+
+    return true;
+}
+
+bool ObjectTemplateModel::addDocument(TemplateGroupDocument *document)
+{
+    beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
+    mTemplateDocuments.append(document);
+    endInsertRows();
+
+    TemplateManager::instance()->addTemplateGroup(document->templateGroup());
 
     return true;
 }

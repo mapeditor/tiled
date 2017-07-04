@@ -39,6 +39,7 @@ public:
     TemplateGroup *loadTemplateGroup(const QString &fileName, QString *error);
 
     void setTemplateGroups(TemplateGroups templateGroups);
+    void addTemplateGroup(TemplateGroup *templateGroup);
 
 private:
     Q_DISABLE_COPY(TemplateManager)
@@ -52,5 +53,8 @@ private:
 
 inline void TemplateManager::setTemplateGroups(TemplateGroups templateGroups)
 { mTemplateGroups = templateGroups; }
+
+inline void TemplateManager::addTemplateGroup(TemplateGroup *templateGroup)
+{ mTemplateGroups.append(templateGroup); }
 
 } // namespace Tiled::Internal
