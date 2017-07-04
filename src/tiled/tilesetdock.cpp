@@ -315,24 +315,27 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
 
     for (const TileStampVariation &variation : stamp.variations()) {
         const TileLayer &tileLayer = *variation.tileLayer();
-        for (const Cell &cell : tileLayer) {
-            if (Tile *tile = cell.tile()) {
-                if (processed.contains(tile))
-                    continue;
+        for (int y = 0; y < tileLayer.height(); ++y) {
+            for (int x = 0; x < tileLayer.width(); ++x) {
+                const Cell &cell = tileLayer.cellAt(x, y);
+                if (Tile *tile = cell.tile()) {
+                    if (processed.contains(tile))
+                        continue;
 
-                processed.insert(tile); // avoid spending time on duplicates
+                    processed.insert(tile); // avoid spending time on duplicates
 
-                Tileset *tileset = tile->tileset();
-                int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
-                if (tilesetIndex != -1) {
-                    TilesetView *view = tilesetViewAt(tilesetIndex);
-                    if (!view->model()) // Lazily set up the model
-                        setupTilesetModel(view, tileset);
+                    Tileset *tileset = tile->tileset();
+                    int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
+                    if (tilesetIndex != -1) {
+                        TilesetView *view = tilesetViewAt(tilesetIndex);
+                        if (!view->model()) // Lazily set up the model
+                            setupTilesetModel(view, tileset);
 
-                    const TilesetModel *model = view->tilesetModel();
-                    const QModelIndex modelIndex = model->tileIndex(tile);
-                    QItemSelectionModel *selectionModel = view->selectionModel();
-                    selections[selectionModel].select(modelIndex, modelIndex);
+                        const TilesetModel *model = view->tilesetModel();
+                        const QModelIndex modelIndex = model->tileIndex(tile);
+                        QItemSelectionModel *selectionModel = view->selectionModel();
+                        selections[selectionModel].select(modelIndex, modelIndex);
+                    }
                 }
             }
         }
