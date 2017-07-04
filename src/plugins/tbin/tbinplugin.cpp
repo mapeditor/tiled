@@ -238,7 +238,6 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             for (auto tile : tilesheet->tiles()) {
                 Tiled::Object obj(Tiled::Object::TileType);
                 auto props = tile->properties();
-                qInfo() << props.size();
                 for (auto it = props.begin(); it != props.end(); ++it) {
                     obj.setProperty("@TileIndex@" + QString::number(tile->id()) + "@" + it.key(), it.value());
                 }
