@@ -37,9 +37,10 @@ class ObjectTemplateModel : public QAbstractItemModel
 
 public:
     static ObjectTemplateModel *instance();
+    static void deleteInstance();
 
-    const TemplateDocuments templateDocuments() const;
-    void setTemplateDocuments(TemplateDocuments &templateDocuments);
+    const TemplateDocuments &templateDocuments() const;
+    void setTemplateDocuments(const TemplateDocuments &templateDocuments);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -50,20 +51,22 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     bool addNewDocument(TemplateGroupDocument *document);
+    bool addDocument(TemplateGroupDocument *document);
     bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
 
 private:
     ObjectTemplateModel(QObject *parent = nullptr);
-    TemplateDocuments *mTemplateDocuments;
+    ~ObjectTemplateModel();
+
+    static ObjectTemplateModel *mInstance;
+
+    TemplateDocuments mTemplateDocuments;
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
 
-inline void ObjectTemplateModel::setTemplateDocuments(TemplateDocuments &templateDocuments)
-{ mTemplateDocuments = &templateDocuments; }
-
-inline const TemplateDocuments ObjectTemplateModel::templateDocuments() const
-{ return *mTemplateDocuments; }
+inline const TemplateDocuments &ObjectTemplateModel::templateDocuments() const
+{ return mTemplateDocuments; }
 
 } // namespace Internal
 } // namespace Tiled

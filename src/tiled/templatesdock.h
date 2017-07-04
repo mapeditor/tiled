@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "templategroupdocument.h"
-
 #include <QDockWidget>
 #include <QTreeView>
 #include <QAction>
@@ -52,7 +50,6 @@ private:
     void retranslateUi();
 
     TemplatesView *mTemplatesView;
-    TemplateDocuments mTemplateDocuments;
 
     QAction *mNewTemplateGroup;
 };

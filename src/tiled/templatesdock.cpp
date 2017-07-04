@@ -23,8 +23,8 @@
 
 #include "objecttemplatemodel.h"
 #include "preferences.h"
-#include "tmxmapformat.h"
 #include "templatemanager.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -68,11 +68,13 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     Preferences *prefs = Preferences::instance();
     QString documentsFileName = prefs->templateDocumentsFile();
 
+    TemplateDocuments templateDocuments;
+
     TemplateDocumentsSerializer templateDocumentsSerializer;
-    templateDocumentsSerializer.readTemplateDocuments(documentsFileName, mTemplateDocuments);
+    templateDocumentsSerializer.readTemplateDocuments(documentsFileName, templateDocuments);
 
     auto model = ObjectTemplateModel::instance();
-    model->setTemplateDocuments(mTemplateDocuments);
+    model->setTemplateDocuments(templateDocuments);
 
     mTemplatesView->setModel(model);
 
@@ -85,14 +87,15 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     TemplateGroups templateGroups;
 
-    for (auto document : mTemplateDocuments)
+    for (auto document : templateDocuments)
         templateGroups.append(document->templateGroup());
 
     manager->setTemplateGroups(templateGroups);
 }
 
-TemplatesDock::~TemplatesDock() {
-    qDeleteAll(mTemplateDocuments);
+TemplatesDock::~TemplatesDock()
+{
+    ObjectTemplateModel::deleteInstance();
 }
 
 void TemplatesDock::newTemplateGroup()

@@ -30,10 +30,28 @@
 namespace Tiled {
 namespace Internal {
 
+ObjectTemplateModel *ObjectTemplateModel::mInstance;
+
 ObjectTemplateModel *ObjectTemplateModel::instance()
 {
-    static ObjectTemplateModel model;
-    return &model;
+    if (!mInstance)
+        mInstance = new ObjectTemplateModel;
+
+    return mInstance;
+}
+
+void ObjectTemplateModel::deleteInstance()
+{
+    delete mInstance;
+    mInstance = nullptr;
+}
+
+void ObjectTemplateModel::setTemplateDocuments(const TemplateDocuments &templateDocuments)
+{
+    beginResetModel();
+    qDeleteAll(mTemplateDocuments);
+    mTemplateDocuments = templateDocuments;
+    endResetModel();
 }
 
 ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
@@ -41,12 +59,17 @@ ObjectTemplateModel::ObjectTemplateModel(QObject *parent):
 {
 }
 
+ObjectTemplateModel::~ObjectTemplateModel()
+{
+    qDeleteAll(mTemplateDocuments);
+}
+
 QModelIndex ObjectTemplateModel::index(int row, int column,
                                        const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        if (row < mTemplateDocuments->size())
-            return createIndex(row, column, mTemplateDocuments->at(row)->templateGroup());
+        if (row < mTemplateDocuments.size())
+            return createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
     } else if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
         if (row < templateGroup->templateCount())
             return createIndex(row, column, templateGroup->templateAt(row));
@@ -62,8 +85,8 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 
     if (ObjectTemplate *objectTemplate = toObjectTemplate(index)) {
         auto templateGroup = objectTemplate->templateGroup();
-        for (int i = 0; i < mTemplateDocuments->size(); ++i) {
-            if (mTemplateDocuments->at(i)->templateGroup() == templateGroup)
+        for (int i = 0; i < mTemplateDocuments.size(); ++i) {
+            if (mTemplateDocuments.at(i)->templateGroup() == templateGroup)
                 return createIndex(i, 0, templateGroup);
         }
     }
@@ -74,7 +97,7 @@ QModelIndex ObjectTemplateModel::parent(const QModelIndex &index) const
 int ObjectTemplateModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid())
-        return mTemplateDocuments->size();
+        return mTemplateDocuments.size();
 
     if (TemplateGroup *templateGroup = toTemplateGroup(parent))
         return templateGroup->templateCount();
@@ -105,17 +128,17 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
     // Remove old document if the new document overwrites it
     QString fileName = document->fileName();
 
-    for (int i = mTemplateDocuments->size() - 1; i >= 0; --i) {
-        if (mTemplateDocuments->at(i)->fileName() == fileName) {
+    for (int i = mTemplateDocuments.size() - 1; i >= 0; --i) {
+        if (mTemplateDocuments.at(i)->fileName() == fileName) {
             beginRemoveRows(QModelIndex(), i, i);
-            delete mTemplateDocuments->at(i);
-            mTemplateDocuments->removeAt(i);
+            delete mTemplateDocuments.at(i);
+            mTemplateDocuments.removeAt(i);
             endRemoveRows();
         }
     }
 
-    beginInsertRows(QModelIndex(), mTemplateDocuments->size(), mTemplateDocuments->size());
-    mTemplateDocuments->append(document);
+    beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
+    mTemplateDocuments.append(document);
     endInsertRows();
 
     return true;
@@ -123,7 +146,7 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
 
 bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, int documentIndex)
 {
-    auto document = mTemplateDocuments->at(documentIndex);
+    auto document = mTemplateDocuments.at(documentIndex);
     auto templateGroup = document->templateGroup();
     auto templates = document->templateGroup()->templates();
     int count = templates.count();
