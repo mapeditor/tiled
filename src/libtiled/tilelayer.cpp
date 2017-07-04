@@ -148,11 +148,11 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
 
-    QHashIterator<QPoint, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
         it.next();
-        region += it.value()->region(condition).translated(it.key().x() * CHUNK_SIZE + mX,
-                                                           it.key().y() * CHUNK_SIZE + mY);
+        region += it.value().region(condition).translated(it.key().x() * CHUNK_SIZE + mX,
+                                                          it.key().y() * CHUNK_SIZE + mY);
     }
 
     return region;
@@ -165,13 +165,10 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    Chunk *_chunk = chunk(x, y);
-
-    Cell existingCell;
-    existingCell = _chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
+    Chunk &_chunk = chunk(x, y);
 
     if (!mUsedTilesetsDirty) {
-        Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
+        Tileset *oldTileset = _chunk.cellAt(x & CHUNK_MASK, y & CHUNK_MASK).tileset();
         Tileset *newTileset = cell.tileset();
         if (oldTileset != newTileset) {
             if (oldTileset)
@@ -181,10 +178,10 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    _chunk->setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
+    _chunk.setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 
-    if (_chunk->isEmpty())
-        delete mChunks.take(chunkCoordinates(x, y));
+    if (_chunk.isEmpty())
+        mChunks.remove(chunkCoordinates(x, y));
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -275,7 +272,7 @@ void TileLayer::flip(FlipDirection direction)
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
-    QHashIterator<QPoint, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
         it.next();
         for (int y = 0; y < CHUNK_SIZE; ++y) {
@@ -286,7 +283,7 @@ void TileLayer::flip(FlipDirection direction)
                 if (!contains(_x, _y))
                     continue;
 
-                const Cell &source = it.value()->cellAt(x, y);
+                const Cell &source = it.value().cellAt(x, y);
                 Cell dest(source);
 
                 if (direction == FlipHorizontally) {
@@ -316,7 +313,7 @@ void TileLayer::flipHexagonal(FlipDirection direction)
 
     const char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
 
-    QHashIterator<QPoint, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
         it.next();
         for (int y = 0; y < CHUNK_SIZE; ++y) {
@@ -327,7 +324,7 @@ void TileLayer::flipHexagonal(FlipDirection direction)
                 if (!contains(_x, _y))
                     continue;
 
-                Cell dest(it.value()->cellAt(x, y));
+                Cell dest(it.value().cellAt(x, y));
 
                 unsigned char mask =
                         (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
@@ -364,7 +361,7 @@ void TileLayer::rotate(RotateDirection direction)
     int newHeight = mWidth;
     TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, newWidth, newHeight);
 
-    QHashIterator<QPoint, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
         it.next();
         for (int y = 0; y < CHUNK_SIZE; ++y) {
@@ -375,7 +372,7 @@ void TileLayer::rotate(RotateDirection direction)
                 if (!contains(_x, _y))
                     continue;
 
-                Cell dest(it.value()->cellAt(x, y));
+                Cell dest(it.value().cellAt(x, y));
 
                 unsigned char mask =
                         (dest.flippedHorizontally() << 2) |
@@ -447,7 +444,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     const char (&rotateMask)[16] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
-    QHashIterator<QPoint, Chunk* > it(mChunks);
+    QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
         it.next();
         for (int y = 0; y < CHUNK_SIZE; ++y) {
@@ -458,7 +455,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
                 if (!contains(_x, _y))
                     continue;
 
-                Cell dest(it.value()->cellAt(x, y));
+                Cell dest(it.value().cellAt(x, y));
 
                 unsigned char mask =
                         (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
@@ -509,8 +506,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
     if (mUsedTilesetsDirty) {
         QSet<SharedTileset> tilesets;
 
-        for (Chunk *chunk : mChunks) {
-            for (const Cell &cell : *chunk)
+        for (const Chunk &chunk : mChunks) {
+            for (const Cell &cell : chunk)
                 if (const Tile *tile = cell.tile())
                     tilesets.insert(tile->sharedTileset());
 
@@ -524,8 +521,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
 
 bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 {
-    for (Chunk *chunk : mChunks) {
-        if (chunk->hasCell(condition))
+    for (const Chunk &chunk : mChunks) {
+        if (chunk.hasCell(condition))
             return true;
     }
 
@@ -539,9 +536,8 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
-    for (Chunk *chunk : mChunks) {
-        chunk->removeReferencesToTileset(tileset);
-    }
+    for (Chunk &chunk : mChunks)
+        chunk.removeReferencesToTileset(tileset);
 
     mUsedTilesets.remove(tileset->sharedPointer());
 }
@@ -549,9 +545,8 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
-    for (Chunk *chunk : mChunks) {
-        chunk->replaceReferencesToTileset(oldTileset, newTileset);
-    }
+    for (Chunk &chunk : mChunks)
+        chunk.replaceReferencesToTileset(oldTileset, newTileset);
 
     if (mUsedTilesets.remove(oldTileset->sharedPointer()))
         mUsedTilesets.insert(newTileset->sharedPointer());
@@ -594,7 +589,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
 {
     TileLayer *newLayer = clone();
 
-    QHashIterator<QPoint, Chunk* > it(newLayer->mChunks);
+    QHashIterator<QPoint, Chunk> it(newLayer->mChunks);
     while (it.hasNext()) {
         it.next();
         for (int y = 0; y < CHUNK_SIZE; ++y) {
@@ -691,10 +686,9 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
 
 bool TileLayer::isEmpty() const
 {
-    for (Chunk *chunk : mChunks) {
-        if (!chunk->isEmpty())
+    for (const Chunk &chunk : mChunks)
+        if (!chunk.isEmpty())
             return false;
-    }
 
     return true;
 }
@@ -712,11 +706,7 @@ TileLayer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    QHashIterator<QPoint, Chunk* > it(mChunks);
-    while (it.hasNext()) {
-        it.next();
-        clone->mChunks.insert(it.key(), new Chunk(*it.value()));
-    }
+    clone->mChunks = mChunks;
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
