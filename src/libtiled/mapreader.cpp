@@ -111,7 +111,7 @@ private:
      *         empty cell if not found
      */
     Cell cellForGid(unsigned gid);
-    ObjectTemplate *templateForTid(unsigned tid);
+    TemplateRef templateRefForTid(unsigned tid);
 
     ImageLayer *readImageLayer();
     void readImageLayerImage(ImageLayer &imageLayer);
@@ -841,10 +841,10 @@ Cell MapReaderPrivate::cellForGid(unsigned gid)
     return result;
 }
 
-ObjectTemplate *MapReaderPrivate::templateForTid(unsigned tid)
+TemplateRef MapReaderPrivate::templateRefForTid(unsigned tid)
 {
     bool ok;
-    ObjectTemplate *result = mTidMapper.tidToTemplate(tid, ok);
+    TemplateRef result = mTidMapper.tidToTemplateRef(tid, ok);
 
     if (!ok) {
         if (mTidMapper.isEmpty())
@@ -966,12 +966,8 @@ MapObject *MapReaderPrivate::readObject()
 
     MapObject *object = new MapObject;
 
-    if (tid) { // This object is a template instance
-        ObjectTemplate *objectTemplate = templateForTid(tid);
-        if (objectTemplate) {
-            object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
-        }
-    }
+    if (tid) // This object is a template instance
+        object->setTemplateRef(templateRefForTid(tid));
 
     object->setId(id);
 

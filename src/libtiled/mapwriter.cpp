@@ -32,7 +32,6 @@
 
 #include "compression.h"
 #include "gidmapper.h"
-#include "tidmapper.h"
 #include "grouplayer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -279,7 +278,13 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     for (TemplateGroup *templateGroup : map.templateGroups()) {
         writeTemplateGroup(w, *templateGroup, firstTid);
         mTidMapper.insert(firstTid, templateGroup);
-        firstTid += templateGroup->nextTemplateId();
+
+        // When a template group is not loaded, reserve enough space
+        // to enable loading when the templateGroup is fixed
+        if (templateGroup->loaded())
+            firstTid += templateGroup->nextTemplateId();
+        else
+            firstTid += templateGroup->maxId() + 1;
     }
 
     writeLayers(w, map.layers());
@@ -664,17 +669,15 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const int id = mapObject.id();
     const QString &name = mapObject.name();
     const QString &type = mapObject.type();
-
     const QPointF pos = mapObject.position();
 
     TemplateRef templateRef = mapObject.templateRef();
-    const int templateId = templateRef.templateId;
-    const auto group = templateRef.templateGroup;
-    bool isTemplateInstance = group;
+
+    // Use the template group pointer as an indicator for valid templates
+    bool isTemplateInstance = templateRef.templateGroup;
 
     if (isTemplateInstance) {
-        int groupFirstTid = mTidMapper.templateGroupToFirstTid(group);
-        int tid = templateId + groupFirstTid;
+        unsigned tid = mTidMapper.templateRefToTid(templateRef);
         w.writeAttribute(QLatin1String("tid"), QString::number(tid));
     }
 

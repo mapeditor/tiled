@@ -59,9 +59,9 @@ public:
     void setFileName(const QString &fileName);
     const QString &fileName() const;
 
-    void setNextTemplateId(int nextId);
-    int nextTemplateId() const;
-    int takeNextTemplateId();
+    void setNextTemplateId(unsigned nextId);
+    unsigned nextTemplateId() const;
+    unsigned takeNextTemplateId();
 
     void setFormat(TemplateGroupFormat *format);
     TemplateGroupFormat *format() const;
@@ -74,14 +74,18 @@ public:
     ObjectTemplate *templateAt(int index) const { return mTemplates.at(index); }
     const ObjectTemplate *findTemplate(unsigned id) const;
 
+    unsigned maxId() const;
+    void updateMaxId(unsigned maxId);
+
 private:
     QList<ObjectTemplate*> mTemplates;
     QVector<SharedTileset> mTilesets;
     TemplateGroupFormat *mFormat;
     QString mName;
     QString mFileName;
-    int mNextTemplateId;
+    unsigned mNextTemplateId;
     bool mLoaded;
+    unsigned mMaxId;
 };
 
 typedef QList<TemplateGroup*> TemplateGroups;
@@ -116,16 +120,22 @@ inline void TemplateGroup::setLoaded(bool loaded)
 inline bool TemplateGroup::loaded() const
 { return mLoaded; }
 
-inline void TemplateGroup::setNextTemplateId(int nextId)
+inline void TemplateGroup::setNextTemplateId(unsigned nextId)
 {
-    Q_ASSERT(nextId > 0);
+    // Q_ASSERT(nextId >= 0);
     mNextTemplateId = nextId;
 }
 
-inline int TemplateGroup::nextTemplateId() const
+inline unsigned TemplateGroup::nextTemplateId() const
 { return mNextTemplateId; }
 
-inline int TemplateGroup::takeNextTemplateId()
+inline unsigned TemplateGroup::takeNextTemplateId()
 { return mNextTemplateId++; }
+
+inline void TemplateGroup::updateMaxId(unsigned id)
+{ mMaxId = std::max(id, mMaxId); }
+
+inline unsigned TemplateGroup::maxId() const
+{ return mMaxId; }
 
 } // namespace Tiled

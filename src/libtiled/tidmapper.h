@@ -28,6 +28,7 @@ namespace Tiled {
 
 class TemplateGroup;
 class ObjectTemplate;
+class TemplateRef;
 
 class TILEDSHARED_EXPORT TidMapper
 {
@@ -40,8 +41,9 @@ public:
     void clear();
     bool isEmpty() const;
 
-    ObjectTemplate *tidToTemplate(unsigned tid, bool &ok) const;
-    unsigned templateGroupToFirstTid(TemplateGroup *templateGroup);
+    TemplateRef tidToTemplateRef(unsigned tid, bool &ok) const;
+    unsigned templateGroupToFirstTid(TemplateGroup *templateGroup) const;
+    unsigned templateRefToTid(TemplateRef templateRef) const;
 };
 
 inline bool TidMapper::isEmpty() const

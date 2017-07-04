@@ -35,12 +35,14 @@ namespace Tiled {
 
 ObjectTemplate::ObjectTemplate():
     Object(ObjectTemplateType),
+    mObject(nullptr),
     mTemplateGroup(nullptr)
 {
 }
 
-ObjectTemplate::ObjectTemplate(int id, QString name):
+ObjectTemplate::ObjectTemplate(unsigned id, QString name):
     Object(ObjectTemplateType),
+    mObject(nullptr),
     mId(id),
     mName(name),
     mTemplateGroup(nullptr)
@@ -50,7 +52,6 @@ ObjectTemplate::ObjectTemplate(int id, QString name):
 ObjectTemplate *blankObjectTemplate()
 {
     ObjectTemplate *objectTemplate = new ObjectTemplate;
-    objectTemplate->setObject(new MapObject);
     return objectTemplate;
 }
 

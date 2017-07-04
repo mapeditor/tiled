@@ -33,45 +33,46 @@ void TidMapper::insert(unsigned firstTid, Tiled::TemplateGroup *templateGroup)
     mFirstTidToTemplateGroup.insert(firstTid, templateGroup);
 }
 
-ObjectTemplate *TidMapper::tidToTemplate(unsigned tid, bool &ok) const
+TemplateRef TidMapper::tidToTemplateRef(unsigned tid, bool &ok) const
 {
-    ObjectTemplate *objectTemplate;
-
     QMap<unsigned, TemplateGroup*>::const_iterator i = mFirstTidToTemplateGroup.upperBound(tid);
 
     // This works exactly like GidMapper
-    if (i == mFirstTidToTemplateGroup.begin()) {
+    if (isEmpty() || i == mFirstTidToTemplateGroup.begin()) {
         ok = false;
-    } else if (isEmpty()) {
-        ok = false;
+        return {nullptr, 0};
     } else {
         --i;
 
-        int index = tid - i.key();
+        unsigned id = tid - i.key();
         TemplateGroup *templateGroup = i.value();
 
-        if (!templateGroup->loaded()) { // Create blank placeholder object
+        if (templateGroup->loaded())
+            ok = id < templateGroup->nextTemplateId();
+        else // We can't be sure if the id is invalid if the template group is not loaded
             ok = true;
-            objectTemplate = blankObjectTemplate();
-        } else if (index < templateGroup->templateCount()) { // Make sure that the index is valid
-            ok = true;
-            objectTemplate = templateGroup->templateAt(index);
-        } else {
-            ok = false;
-            objectTemplate = nullptr;
-        }
-    }
 
-    return objectTemplate;
+        if (!templateGroup->loaded())
+            templateGroup->updateMaxId(id);
+
+        return {templateGroup, id};
+    }
 }
 
-unsigned TidMapper::templateGroupToFirstTid(TemplateGroup *templateGroup)
+unsigned TidMapper::templateGroupToFirstTid(TemplateGroup *templateGroup) const
+{
+    return mFirstTidToTemplateGroup.key(templateGroup);
+}
+
+unsigned TidMapper::templateRefToTid(TemplateRef templateRef) const
 {
     QMapIterator<unsigned, TemplateGroup*> it(mFirstTidToTemplateGroup);
+
     while (it.hasNext()) {
       it.next();
-      if (it.value() == templateGroup)
-          return it.key();
+      if (it.value() == templateRef.templateGroup)
+          return templateRef.templateId + it.key();
     }
+
     return 0;
 }

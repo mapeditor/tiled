@@ -40,13 +40,13 @@ class TILEDSHARED_EXPORT ObjectTemplate : public Object
 {
 public:
     ObjectTemplate();
-    ObjectTemplate(int id, QString name);
+    ObjectTemplate(unsigned id, QString name);
 
     const MapObject *object() const;
     void setObject(MapObject *object);
 
-    int id() const;
-    void setId(int id);
+    unsigned id() const;
+    void setId(unsigned id);
 
     const QString &name() const;
     void setName(const QString &name);
@@ -56,7 +56,7 @@ public:
 
 private:
     MapObject *mObject;
-    int mId;
+    unsigned mId;
     QString mName;
     TemplateGroup *mTemplateGroup;
 };
@@ -72,10 +72,10 @@ inline void ObjectTemplate::setObject(MapObject *object)
     mObject->setId(0);
 }
 
-inline int ObjectTemplate::id() const
+inline unsigned ObjectTemplate::id() const
 { return mId; }
 
-inline void ObjectTemplate::setId(int id)
+inline void ObjectTemplate::setId(unsigned id)
 { mId = id; }
 
 inline const QString &ObjectTemplate::name() const
