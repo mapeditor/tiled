@@ -178,13 +178,13 @@ namespace tbin
         write< sf::Int32 >( out, tile.animatedData.frames.size() );
 
         std::string currTilesheet;
-        for ( const Tile& tile : tile.animatedData.frames )
+        for ( const Tile& frame : tile.animatedData.frames )
         {
-            if ( tile.tilesheet != currTilesheet )
+            if ( frame.tilesheet != currTilesheet )
             {
                 write< sf::Uint8 >( out, 'T' );
-                write( out, tile.tilesheet );
-                currTilesheet = tile.tilesheet;
+                write( out, frame.tilesheet );
+                currTilesheet = frame.tilesheet;
             }
 
             write< sf::Uint8 >( out, 'S' );

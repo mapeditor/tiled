@@ -70,7 +70,7 @@ namespace
                 prop.type = tbin::PropertyValue::Bool;
                 prop.data.b = it.value().toBool();
             }
-            else if (it.value().type() == QMetaType::Float) {
+            else if ((QMetaType::Type)it.value().type() == QMetaType::Float) {
                 prop.type = tbin::PropertyValue::Float;
                 prop.data.f = it.value().toFloat();
             }
@@ -96,7 +96,7 @@ void TbinPlugin::initialize()
 }
 
 
-TbinMapFormat::TbinMapFormat(QObject *parent)
+TbinMapFormat::TbinMapFormat(QObject *)
 {
 }
 
@@ -109,7 +109,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
     }
 
     tbin::Map tmap;
-    Tiled::Map* map;
+    Tiled::Map* map = nullptr;
     try
     {
         tmap.loadFromStream(file);
