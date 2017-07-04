@@ -204,7 +204,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editTerrain->setIconVisibleInMenu(false);
     editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
     editCollision->setIconVisibleInMenu(false);
-    editWang->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    editWang->setIcon(QIcon(QLatin1String(":images/24x24/wangtile.png")));
     editWang->setIconVisibleInMenu(false);
 
     Utils::setThemeIcon(mAddTiles, "add");

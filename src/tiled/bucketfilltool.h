@@ -28,6 +28,9 @@
 #include "tilestamp.h"
 
 namespace Tiled {
+
+class WangSet;
+
 namespace Internal {
 
 class MapDocument;
@@ -69,11 +72,15 @@ public:
 
 public slots:
     void setRandom(bool value);
+    void setWangFill(bool value);
+    void setWangSet(const WangSet *wangSet) { mWangSet = wangSet; }
 
 signals:
     void stampChanged(const TileStamp &stamp);
 
     void randomChanged(bool value);
+
+    void wangFillChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -101,6 +108,9 @@ private:
      */
     bool mIsRandom;
 
+    bool mIsWangFill;
+    const WangSet *mWangSet;
+
     /**
      * Contains the value of mIsRandom at that time, when the latest call of
      * tilePositionChanged() took place.
@@ -121,6 +131,8 @@ private:
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
     void randomFill(TileLayer &tileLayer, const QRegion &region) const;
+
+    void wangFill(TileLayer &tileLayerToFill, const TileLayer &backgroundtileLayer, const QRegion &region) const;
 
     StampActions *mStampActions;
 };

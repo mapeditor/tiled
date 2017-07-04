@@ -68,6 +68,8 @@
 #include "toolmanager.h"
 #include "treeviewcombobox.h"
 #include "undodock.h"
+#include "wangdock.h"
+#include "wangset.h"
 #include "zoomable.h"
 
 #include <QComboBox>
@@ -132,6 +134,7 @@ MapEditor::MapEditor(QObject *parent)
     , mObjectsDock(new ObjectsDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
+    , mWangDock(new WangDock(mMainWindow))
     , mMiniMapDock(new MiniMapDock(mMainWindow))
     , mLayerComboBox(new TreeViewComboBox)
     , mUncheckableProxyModel(new UncheckableItemsModel(this))
@@ -200,12 +203,14 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
 
     mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
+    mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
 
     // These dock widgets may not be immediately useful to many people, so
@@ -235,6 +240,8 @@ MapEditor::MapEditor(QObject *parent)
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
     connect(mStampBrush, &StampBrush::randomChanged, this, &MapEditor::setRandom);
     connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
+    connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
+    connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -242,6 +249,11 @@ MapEditor::MapEditor(QObject *parent)
             this, &MapEditor::selectTerrainBrush);
     connect(mTerrainBrush, &TerrainBrush::terrainCaptured,
             mTerrainDock, &TerrainDock::setCurrentTerrain);
+
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            mBucketFillTool, &BucketFillTool::setWangSet);
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            mStampBrush, &StampBrush::setWangSet);
 
     connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
@@ -364,6 +376,7 @@ void MapEditor::setCurrentDocument(Document *document)
     mObjectsDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setDocument(mapDocument);
+    mWangDock->setDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {
@@ -437,6 +450,7 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mObjectsDock,
         mTilesetDock,
         mTerrainDock,
+        mWangDock,
         mMiniMapDock,
         mTileStampsDock
     };
@@ -617,6 +631,12 @@ void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
     mBucketFillTool->setRandom(value);
+}
+
+void MapEditor::setWangFill(bool value)
+{
+    mStampBrush->setWangFill(value);
+    mBucketFillTool->setWangFill(value);
 }
 
 /**

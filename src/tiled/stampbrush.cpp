@@ -48,9 +48,11 @@ StampBrush::StampBrush(QObject *parent)
                        parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
+    , mIsWangFill(false)
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
+    connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
@@ -235,7 +237,7 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
 void StampBrush::populateToolBar(QToolBar *toolBar)
 {
-    mStampActions->populateToolBar(toolBar, mIsRandom);
+    mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill);
 }
 
 void StampBrush::beginPaint()
@@ -564,6 +566,24 @@ void StampBrush::setRandom(bool value)
 
     mIsRandom = value;
 
+    if (mIsRandom) {
+        mIsWangFill = false;
+        mStampActions->wangFill()->setChecked(false);
+    }
+
     updateRandomList();
     updatePreview();
+}
+
+void StampBrush::setWangFill(bool value)
+{
+    if (mIsWangFill == value)
+        return;
+
+    mIsWangFill = value;
+
+    if (mIsWangFill) {
+        mIsRandom = false;
+        mStampActions->random()->setChecked(false);
+    }
 }

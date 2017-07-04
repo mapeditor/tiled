@@ -128,5 +128,7 @@
         <file>images/48x48/tile-collision-editor.png</file>
         <file>images/48x48/insert-text.png</file>
         <file>images/48x48/insert-image.png</file>
+        <file>images/24x24/wangtile.png</file>
+        <file>images/32x32/wangtile.png</file>
     </qresource>
 </RCC>
