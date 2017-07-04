@@ -165,9 +165,10 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    Cell existingCell;
+    Chunk *_chunk = chunk(x, y);
 
-    existingCell = chunk(x, y)->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
+    Cell existingCell;
+    existingCell = _chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
 
     if (!mUsedTilesetsDirty) {
         Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tileset();
@@ -180,9 +181,9 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
         }
     }
 
-    chunk(x, y)->setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
+    _chunk->setCell(x & CHUNK_MASK, y & CHUNK_MASK, cell);
 
-    if (chunk(x, y)->isEmpty())
+    if (_chunk->isEmpty())
         delete mChunks.take(chunkCoordinates(x, y));
 }
 
@@ -662,17 +663,7 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
     QHashIterator<QPoint, Chunk* > it(mChunks);
     while (it.hasNext()) {
         it.next();
-        for (int x = 0; x < CHUNK_SIZE; ++x) {
-            for (int y = 0;y < CHUNK_SIZE; ++y) {
-                if (!contains(it.key().x() * CHUNK_SIZE + x,
-                              it.key().y() * CHUNK_SIZE + y))
-                    continue;
-
-                clone->setCell(it.key().x() * CHUNK_SIZE + x,
-                               it.key().y() * CHUNK_SIZE + y,
-                               it.value()->cellAt(x, y));
-            }
-        }
+        clone->mChunks.insert(it.key(), new Chunk(*it.value()));
     }
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
