@@ -32,6 +32,7 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
+#include "wangset.h"
 
 #include <QBitmap>
 
@@ -62,6 +63,7 @@ Tileset::~Tileset()
 {
     qDeleteAll(mTiles);
     qDeleteAll(mTerrainTypes);
+    qDeleteAll(mWangSets);
 }
 
 void Tileset::setFormat(TilesetFormat *format)
@@ -505,6 +507,35 @@ void Tileset::recalculateTerrainDistances()
     } while (bNewConnections);
 }
 
+void Tileset::addWangSet(WangSet *wangSet)
+{
+    Q_ASSERT(wangSet->tileset() == this);
+
+    mWangSets.append(wangSet);
+}
+
+/**
+ * @brief Tileset::insertWangSet Adds a wangSet.
+ * @param wangSet A pointer to the wangset to add.
+ */
+void Tileset::insertWangSet(int index, WangSet *wangSet)
+{
+    Q_ASSERT(wangSet->tileset() == this);
+
+    mWangSets.insert(index, wangSet);
+}
+
+/**
+ * @brief Tileset::takeWangSetAt Removes the wangset at a given index
+ *                               And returns it to the caller.
+ * @param index Index to take at.
+ * @return
+ */
+WangSet *Tileset::takeWangSetAt(int index)
+{
+    return mWangSets.takeAt(index);
+}
+
 /**
  * Adds a new tile to the end of the tileset.
  */
@@ -617,6 +648,7 @@ void Tileset::swap(Tileset &other)
     std::swap(mTiles, other.mTiles);
     std::swap(mNextTileId, other.mNextTileId);
     std::swap(mTerrainTypes, other.mTerrainTypes);
+    std::swap(mWangSets, other.mWangSets);
     std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
     std::swap(mLoaded, other.mLoaded);
     std::swap(mBackgroundColor, other.mBackgroundColor);
@@ -629,11 +661,15 @@ void Tileset::swap(Tileset &other)
         tile->mTileset = this;
     for (auto terrain : mTerrainTypes)
         terrain->mTileset = this;
+    for (auto wangSet : mWangSets)
+        wangSet->setTileset(this);
 
     for (auto tile : other.mTiles)
         tile->mTileset = &other;
     for (auto terrain : other.mTerrainTypes)
         terrain->mTileset = &other;
+    for (auto wangSet : other.mWangSets)
+        wangSet->setTileset(&other);
 }
 
 SharedTileset Tileset::clone() const
@@ -668,6 +704,10 @@ SharedTileset Tileset::clone() const
     c->mTerrainTypes.reserve(mTerrainTypes.size());
     for (Terrain *terrain : mTerrainTypes)
         c->mTerrainTypes.append(terrain->clone(c.data()));
+
+    c->mWangSets.reserve(mWangSets.size());
+    for (WangSet *wangSet : mWangSets)
+        c->mWangSets.append(wangSet->clone(c.data()));
 
     return c;
 }

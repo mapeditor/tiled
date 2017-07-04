@@ -41,6 +41,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "terrain.h"
+#include "wangset.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -84,6 +85,7 @@ private:
     void readTilesetGrid(Tileset &tileset);
     void readTilesetImage(Tileset &tileset);
     void readTilesetTerrainTypes(Tileset &tileset);
+    void readTilesetWangSets(Tileset &tileset);
     ImageReference readImage();
 
     Layer *tryReadLayer();
@@ -353,6 +355,8 @@ SharedTileset MapReaderPrivate::readTileset()
                     }
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(*tileset);
+                } else if (xml.name() == QLatin1String("wangsets")) {
+                    readTilesetWangSets(*tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -557,6 +561,53 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
                     terrain->mergeProperties(readProperties());
                 else
                     readUnknownElement();
+            }
+        } else {
+            readUnknownElement();
+        }
+    }
+}
+
+void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("wangsets"));
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("wangset")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+            QString name = atts.value(QLatin1String("name")).toString();
+            int edges = atts.value(QLatin1String("edges")).toInt();
+            int corners = atts.value(QLatin1String("corners")).toInt();
+            int tile = atts.value(QLatin1String("tile")).toInt();
+
+            WangSet *wangSet = new WangSet(&tileset, edges, corners, name, tile);
+
+            tileset.addWangSet(wangSet);
+
+            while (xml.readNextStartElement()) {
+                if (xml.name() == QLatin1String("properties")) {
+                    wangSet->mergeProperties(readProperties());
+                } else if (xml.name() == QLatin1String("wangtile")) {
+                    const QXmlStreamAttributes tileAtts = xml.attributes();
+                    int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
+                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt();
+                    bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
+                    bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
+                    bool fA = tileAtts.value(QLatin1String("dflip")).toInt();
+
+                    Tile *tile = tileset.findOrCreateTile(tileId);
+
+                    WangTile wangTile(tile, wangId);
+                    wangTile.setFlippedHorizontally(fH);
+                    wangTile.setFlippedVertically(fV);
+                    wangTile.setFlippedAntiDiagonally(fA);
+
+                    wangSet->addWangTile(wangTile);
+
+                    xml.skipCurrentElement();
+                } else {
+                    readUnknownElement();
+                }
             }
         } else {
             readUnknownElement();

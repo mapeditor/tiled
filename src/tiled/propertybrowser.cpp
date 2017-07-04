@@ -30,6 +30,7 @@
 #include "changetile.h"
 #include "changetileimagesource.h"
 #include "changetileprobability.h"
+#include "changewangsetdata.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"
@@ -42,6 +43,7 @@
 #include "resizemapobject.h"
 #include "renamelayer.h"
 #include "renameterrain.h"
+#include "renamewangset.h"
 #include "rotatemapobject.h"
 #include "terrain.h"
 #include "tile.h"
@@ -51,9 +53,11 @@
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
+#include "tilesetwangsetmodel.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
+#include "wangset.h"
 
 #include <QtGroupPropertyManager>
 
@@ -145,8 +149,10 @@ void PropertyBrowser::setDocument(Document *document)
 
     if (mDocument) {
         mDocument->disconnect(this);
-        if (mTilesetDocument)
+        if (mTilesetDocument) {
             mTilesetDocument->terrainModel()->disconnect(this);
+            mTilesetDocument->wangSetModel()->disconnect(this);
+        }
     }
 
     mDocument = document;
@@ -194,6 +200,10 @@ void PropertyBrowser::setDocument(Document *document)
         TilesetTerrainModel *terrainModel = tilesetDocument->terrainModel();
         connect(terrainModel, &TilesetTerrainModel::terrainChanged,
                 this, &PropertyBrowser::terrainChanged);
+
+        TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
+        connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
+                this, &PropertyBrowser::wangSetChanged);
     }
 
     if (document) {
@@ -324,6 +334,12 @@ void PropertyBrowser::terrainChanged(Tileset *tileset, int index)
         updateProperties();
 }
 
+void PropertyBrowser::wangSetChanged(Tileset *tileset, int index)
+{
+    if (mObject == tileset->wangSet(index))
+        updateProperties();
+}
+
 static QVariant predefinedPropertyValue(Object *object, const QString &name)
 {
     QString objectType;
@@ -349,6 +365,7 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::MapType:
     case Object::TerrainType:
     case Object::TilesetType:
+    case Object::WangSetType:
         break;
     }
 
@@ -532,6 +549,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TilesetType:   applyTilesetValue(id, val); break;
     case Object::TileType:      applyTileValue(id, val); break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
+    case Object::WangSetType:   applyWangSetValue(id, val); break;
     }
 }
 
@@ -829,6 +847,23 @@ void PropertyBrowser::addTerrainProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Terrain"));
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     nameProperty->setEnabled(mTilesetDocument);
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addWangSetProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("WangSet"));
+    QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    QtVariantProperty *edgeProperty = addProperty(EdgeCountProperty, QVariant::Int, tr("Edge Count"), groupProperty);
+    QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);
+
+    edgeProperty->setAttribute(QLatin1String("minimum"), 0);
+    cornerProperty->setAttribute(QLatin1String("minimum"), 0);
+
+    nameProperty->setEnabled(mTilesetDocument);
+    edgeProperty->setEnabled(mTilesetDocument);
+    cornerProperty->setEnabled(mTilesetDocument);
+
     addProperty(groupProperty);
 }
 
@@ -1210,6 +1245,32 @@ void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
     }
 }
 
+void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
+{
+    Q_ASSERT(mTilesetDocument);
+
+    WangSet *wangSet = static_cast<WangSet*>(mObject);
+
+    switch (id) {
+    case NameProperty:
+        mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
+                                                       mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                       val.toString()));
+        break; 
+    case EdgeCountProperty:
+        mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
+                                                            mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                            val.toInt()));
+        break;
+    case CornerCountProperty:
+        mDocument->undoStack()->push(new ChangeWangSetCorners(mTilesetDocument,
+                                                              mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
+                                                              val.toInt()));
+    default:
+        break;
+    }
+}
+
 /**
  * @warning This function does not add the property to the view.
  */
@@ -1337,6 +1398,7 @@ void PropertyBrowser::addProperties()
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
+    case Object::WangSetType:           addWangSetProperties(); break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1505,6 +1567,12 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(terrain->name());
         break;
     }
+    case Object::WangSetType: {
+        const WangSet *wangSet = static_cast<const WangSet*>(mObject);
+        mIdToProperty[NameProperty]->setValue(wangSet->name());
+        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColors());
+        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColors());
+    }
     }
 
     mUpdating = false;
@@ -1564,6 +1632,7 @@ void PropertyBrowser::updateCustomProperties()
     case Object::MapType:
     case Object::TerrainType:
     case Object::TilesetType:
+    case Object::WangSetType:
         break;
     }
 

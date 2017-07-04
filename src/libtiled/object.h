@@ -44,6 +44,7 @@ public:
         MapObjectType,
         MapType,
         TerrainType,
+        WangSetType,
         TilesetType,
         TileType
     };
@@ -135,6 +136,7 @@ inline bool Object::isPartOfTileset() const
     case Object::TilesetType:
     case Object::TileType:
     case Object::TerrainType:
+    case Object::WangSetType:
         return true;
     default:
         return false;

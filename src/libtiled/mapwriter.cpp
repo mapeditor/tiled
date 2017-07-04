@@ -42,6 +42,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "terrain.h"
+#include "wangset.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -421,9 +422,43 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
                 w.writeEndElement(); // </animation>
             }
-
             w.writeEndElement(); // </tile>
         }
+    }
+
+    // Write the wangsets
+    if (tileset.wangSetCount() > 0) {
+        w.writeStartElement(QLatin1String("wangsets"));
+        for (const WangSet *ws : tileset.wangSets()) {
+            w.writeStartElement(QLatin1String("wangset"));
+
+            w.writeAttribute(QLatin1String("name"), ws->name());
+            w.writeAttribute(QLatin1String("edges"), QString::number(ws->edgeColors()));
+            w.writeAttribute(QLatin1String("corners"), QString::number(ws->cornerColors()));
+            w.writeAttribute(QLatin1String("tile"), QString::number(ws->imageTileId()));
+
+            for (const WangTile &wangTile : ws->wangTiles()) {
+                w.writeStartElement(QLatin1String("wangtile"));
+                w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QLatin1String("wangid"), QString::number(wangTile.wangId()));
+
+                if (wangTile.flippedHorizontally())
+                    w.writeAttribute(QLatin1String("hflip"), QString::number(1));
+
+                if (wangTile.flippedVertically())
+                    w.writeAttribute(QLatin1String("vflip"), QString::number(1));
+
+                if (wangTile.flippedAntiDiagonally())
+                    w.writeAttribute(QLatin1String("dflip"), QString::number(1));
+
+                w.writeEndElement(); // </wangtile>
+            }
+
+            writeProperties(w, ws->properties());
+
+            w.writeEndElement(); // </wangset>
+        }
+        w.writeEndElement(); // </wangsets>
     }
 
     w.writeEndElement();

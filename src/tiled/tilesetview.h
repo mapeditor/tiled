@@ -27,6 +27,7 @@
 namespace Tiled {
 
 class Terrain;
+class WangSet;
 
 namespace Internal {
 
@@ -91,6 +92,9 @@ public:
      */
     void setEditTerrain(bool enabled);
 
+    bool isEditWangSet() const { return mEditWangSet; }
+    void setEditWangSet(bool enabled);
+
     /**
      * Sets whether terrain editing is in "erase" mode.
      * \sa setEditTerrain
@@ -105,6 +109,8 @@ public:
      */
     void setTerrain(const Terrain *terrain);
 
+    void setWangSet(const WangSet *wangSet);
+
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
 
@@ -115,6 +121,7 @@ public:
 signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
+    void wangSetImageSelected(Tile *tile);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
     void changeSelectedMapObjectsTileRequested(Tile *tile);
 
@@ -131,6 +138,7 @@ protected:
 private slots:
     void addTerrainType();
     void selectTerrainImage();
+    void selectWangSetImage();
     void editTileProperties();
     void swapTiles();
     void changeSelectedMapObjectsTile();
@@ -150,8 +158,10 @@ private:
 
     bool mMarkAnimatedTiles;
     bool mEditTerrain;
+    bool mEditWangSet;
     bool mEraseTerrain;
     const Terrain *mTerrain;
+    const WangSet *mWangSet;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;

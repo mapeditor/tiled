@@ -23,10 +23,12 @@
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
+#include "wangset.h"
 #include "tile.h"
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -58,6 +60,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
+    , mWangSetModel(new TilesetWangSetModel(this, this))
 {
     mCurrentObject = tileset.data();
 
@@ -75,6 +78,9 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
 
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
+
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
+            this, &TilesetDocument::onWangSetRemoved);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -332,6 +338,12 @@ void TilesetDocument::onPropertiesChanged(Object *object)
 void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
+        setCurrentObject(nullptr);
+}
+
+void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
+{
+    if (wangSet == mCurrentObject)
         setCurrentObject(nullptr);
 }
 

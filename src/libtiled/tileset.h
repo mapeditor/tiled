@@ -49,6 +49,7 @@ class Tile;
 class Tileset;
 class TilesetFormat;
 class Terrain;
+class WangSet;
 
 typedef QSharedPointer<Tileset> SharedTileset;
 
@@ -184,6 +185,14 @@ public:
 
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
+    const QList<WangSet*> &wangSets() const;
+    int wangSetCount() const;
+    WangSet *wangSet(int index) const;
+
+    void addWangSet(WangSet *wangSet);
+    void insertWangSet(int index, WangSet *wangSet);
+    WangSet *takeWangSetAt(int index);
+
     Tile *addTile(const QPixmap &image, const QString &source = QString());
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
@@ -246,6 +255,7 @@ private:
     QMap<int, Tile*> mTiles;
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
+    QList<WangSet*> mWangSets;
     bool mTerrainDistancesDirty;
     bool mLoaded;
     QColor mBackgroundColor;
@@ -551,6 +561,21 @@ inline int Tileset::terrainCount() const
 inline Terrain *Tileset::terrain(int index) const
 {
     return index >= 0 ? mTerrainTypes[index] : nullptr;
+}
+
+inline const QList<WangSet*> &Tileset::wangSets() const
+{
+    return mWangSets;
+}
+
+inline int Tileset::wangSetCount() const
+{
+    return mWangSets.size();
+}
+
+inline WangSet *Tileset::wangSet(int index) const
+{
+    return index >= 0 ? mWangSets[index] : nullptr;
 }
 
 /**
