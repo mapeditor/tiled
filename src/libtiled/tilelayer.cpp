@@ -171,7 +171,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
     Q_ASSERT(contains(x, y));
 
     if (cell.isEmpty() && !findChunk(x, y))
-    return;
+        return;
 
     Chunk &_chunk = chunk(x, y);
 
@@ -285,17 +285,16 @@ void TileLayer::flip(FlipDirection direction)
                 int _x = it.key().x() * CHUNK_SIZE + x;
                 int _y = it.key().y() * CHUNK_SIZE + y;
 
-                const Cell &source = it.value().cellAt(x, y);
-                Cell dest(source);
+                Cell dest(it.value().cellAt(x, y));
 
                 if (dest.isEmpty())
                     continue;
 
                 if (direction == FlipHorizontally) {
-                    dest.setFlippedHorizontally(!source.flippedHorizontally());
+                    dest.setFlippedHorizontally(!dest.flippedHorizontally());
                     newLayer->setCell(mWidth - _x - 1, _y, dest);
                 } else if (direction == FlipVertically) {
-                    dest.setFlippedVertically(!source.flippedVertically());
+                    dest.setFlippedVertically(!dest.flippedVertically());
                     newLayer->setCell(_x, mHeight - _y - 1, dest);
                 }
             }
