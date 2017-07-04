@@ -36,9 +36,7 @@
               jxb:extensionBindingPrefixes="xjc annox">
     <jxb:bindings schemaLocation="map.xsd" node="/xs:schema">
 
-        <jxb:globalBindings>
-            <xjc:simple/>
-        </jxb:globalBindings>
+        <jxb:globalBindings choiceContentProperty="true"/>
 
         <jxb:bindings node="xs:complexType[@name='Group']">
             <jxb:bindings node="xs:attribute[@name='x']">
@@ -63,6 +61,8 @@
         </jxb:bindings>
 
         <jxb:bindings node="xs:complexType[@name='Layer']">
+            <jxb:class name="LayerData" implClass="MapLayer"/>
+
             <jxb:bindings node="xs:sequence">
                 <jxb:bindings node="xs:element[@name='properties']">
                     <jxb:property>
@@ -77,6 +77,16 @@
                 <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
             </jxb:bindings>
             <jxb:bindings node="xs:attribute[@name='y']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='height']">
+                <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
+                <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='width']">
                 <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
                 <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
                 <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
@@ -116,15 +126,8 @@
             <jxb:class name="MapData" implClass="Map"/>
 
             <jxb:bindings node="xs:sequence">
-                <jxb:bindings node="xs:element[@name='layer']">
-                    <jxb:property>
-                        <jxb:baseType name="TileLayer"/>
-                    </jxb:property>
-                </jxb:bindings>
-                <jxb:bindings node="xs:element[@name='objectgroup']">
-                    <jxb:property name="objectGroups">
-                        <jxb:baseType name="ObjectGroup"/>
-                    </jxb:property>
+                <jxb:bindings node="xs:choice">
+                    <jxb:property name="layers"/>
                 </jxb:bindings>
                 <jxb:bindings node="xs:element[@name='properties']">
                     <jxb:property>
@@ -185,27 +188,22 @@
             <jxb:bindings node="xs:complexContent/xs:extension">
                 <jxb:bindings node="xs:sequence">
                     <jxb:bindings node="xs:element[@name='object']">
-                        <jxb:property>
+                        <jxb:property name="objects">
                             <jxb:baseType name="MapObject"/>
                         </jxb:property>
                     </jxb:bindings>
-                </jxb:bindings>
-
-                <jxb:bindings node="xs:attribute[@name='height']">
-                    <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-                </jxb:bindings>
-                <jxb:bindings node="xs:attribute[@name='width']">
-                    <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
                 </jxb:bindings>
             </jxb:bindings>
         </jxb:bindings>
 
         <jxb:bindings node="xs:complexType[@name='Properties']">
             <jxb:class name="PropertiesData" implClass="Properties" />
+
+            <jxb:bindings node="xs:sequence">
+                <jxb:bindings node="xs:element[@name='property']">
+                    <jxb:property name="properties"/>
+                </jxb:bindings>
+            </jxb:bindings>
         </jxb:bindings>
 
         <jxb:bindings node="xs:complexType[@name='Tile']">
@@ -225,19 +223,6 @@
 
         <jxb:bindings node="xs:complexType[@name='TileLayer']">
             <jxb:class name="TileLayerData" implClass="TileLayer"/>
-
-            <jxb:bindings node="xs:complexContent/xs:extension">
-                <jxb:bindings node="xs:attribute[@name='height']">
-                    <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-                </jxb:bindings>
-                <jxb:bindings node="xs:attribute[@name='width']">
-                    <annox:annotate target="setter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="getter">@java.lang.Deprecated</annox:annotate>
-                    <annox:annotate target="field">@java.lang.Deprecated</annox:annotate>
-                </jxb:bindings>
-            </jxb:bindings>
         </jxb:bindings>
 
         <jxb:bindings node="xs:complexType[@name='TileSet']">
@@ -253,7 +238,7 @@
                     </jxb:property>
                 </jxb:bindings>
                 <jxb:bindings node="xs:element[@name='tile']">
-                    <jxb:property>
+                    <jxb:property name="tiles">
                         <jxb:baseType name="Tile"/>
                     </jxb:property>
                 </jxb:bindings>

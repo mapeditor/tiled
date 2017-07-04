@@ -716,7 +716,6 @@ public class TMXMapReader {
         // Clear untl they are loaded correctly
         map.getTileSets().clear();
         map.getLayers().clear();
-        map.getObjectGroups().clear();
 
         // Load tilesets first, in case order is munged
         tilesetPerFirstGid = new TreeMap<>();
@@ -736,7 +735,7 @@ public class TMXMapReader {
             } else if ("objectgroup".equals(sibs.getNodeName())) {
                 ObjectGroup group = unmarshalObjectGroup(sibs);
                 if (group != null) {
-                    map.addObjectGroup(group);
+                    map.addLayer(group);
                 }
             }
         }

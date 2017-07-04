@@ -76,22 +76,21 @@ public class MapReaderTest {
         assertEquals(50, map.getHeight());
         assertEquals(24, map.getTileWidth());
         assertEquals(24, map.getTileHeight());
-        assertEquals(2, map.getLayerCount());
-        assertEquals(1, map.getObjectGroupCount());
+        assertEquals(3, map.getLayerCount());
 
-        TileLayer bottom = map.getLayer(0);
+        TileLayer bottom = (TileLayer) map.getLayer(0);
         assertEquals("Bottom", bottom.getName());
         assertEquals(50, bottom.getWidth());
         assertEquals(50, bottom.getHeight());
         assertNotNull(bottom.getTileAt(0, 0));
 
-        TileLayer top = map.getLayer(1);
+        TileLayer top = (TileLayer) map.getLayer(1);
         assertEquals("Top", top.getName());
         assertEquals(50, top.getWidth());
         assertEquals(50, top.getHeight());
         assertEquals(0.49f, top.getOpacity(), 0.01);
 
-        ObjectGroup objectGroup = map.getObjectGroup(0);
+        ObjectGroup objectGroup = (ObjectGroup) map.getLayer(2);
         assertEquals("Objects", objectGroup.getName());
     }
 
@@ -110,7 +109,9 @@ public class MapReaderTest {
         assertEquals(32, map.getTileWidth());
         assertEquals(32, map.getTileHeight());
         assertEquals(1, map.getLayerCount());
-        assertNotNull(map.getLayer(0).getTileAt(0, 0));
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
     }
 
     @Test
@@ -128,7 +129,9 @@ public class MapReaderTest {
         assertEquals(32, map.getTileWidth());
         assertEquals(32, map.getTileHeight());
         assertEquals(1, map.getLayerCount());
-        assertNotNull(map.getLayer(0).getTileAt(0, 0));
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
     }
 
     @Test(expected = IOException.class)
@@ -157,9 +160,10 @@ public class MapReaderTest {
         assertEquals(31, map.getHeight());
         assertEquals(16, map.getTileWidth());
         assertEquals(16, map.getTileHeight());
-        assertEquals(2, map.getLayerCount());
-        assertEquals(1, map.getObjectGroupCount());
-        assertNotNull(map.getLayer(0).getTileAt(0, 0));
+        assertEquals(3, map.getLayerCount());
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
     }
 
     @Test
@@ -177,7 +181,9 @@ public class MapReaderTest {
         assertEquals(31, map.getTileWidth());
         assertEquals(31, map.getTileHeight());
         assertEquals(3, map.getLayerCount());
-        assertNotNull(map.getLayer(0).getTileAt(6, 11));
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(6, 11));
     }
 
     @Test

@@ -34,6 +34,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -41,25 +42,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * A TileLayer is a specialized Layer, used for tracking two dimensional tile
  * data.
  *
- * @see Map
+ * @see org.mapeditor.core.Map
  * @author Thorbjørn Lindeijer
  * @author Adam Turk
  * @author Mike Thomas
  * @version 1.0.2
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class TileLayer extends TileLayerData implements Cloneable {
+public class TileLayer extends TileLayerData {
 
-    private Map map;
     private Tile[][] tileMap;
     private HashMap<Object, Properties> tileInstanceProperties = new HashMap<>();
-
-    public static final int MIRROR_HORIZONTAL = 1;
-    public static final int MIRROR_VERTICAL = 2;
-
-    public static final int ROTATE_90 = 90;
-    public static final int ROTATE_180 = 180;
-    public static final int ROTATE_270 = 270;
 
     /**
      * <p>getTileInstancePropertiesAt.</p>
@@ -138,17 +131,6 @@ public class TileLayer extends TileLayerData implements Cloneable {
     public TileLayer(Map map, int w, int h) {
         this(w, h);
         setMap(map);
-    }
-
-    /**
-     * Performs a linear translation of this layer by (<i>x, y</i>).
-     *
-     * @param x distance over x axis
-     * @param y distance over y axis
-     */
-    public void translate(int x, int y) {
-        this.x += x;
-        this.y += y;
     }
 
     /**
@@ -262,12 +244,9 @@ public class TileLayer extends TileLayerData implements Cloneable {
      *
      * @param bounds a {@link java.awt.Rectangle} object.
      */
-    private void setBounds(Rectangle bounds) {
-        this.x = bounds.x;
-        this.y = bounds.y;
-        this.width = bounds.width;
-        this.height = bounds.height;
-
+    @Override
+    protected void setBounds(Rectangle bounds) {
+        super.setBounds(bounds);
         tileMap = new Tile[height][width];
 
         // Tile instance properties is null when this method is called from
@@ -480,48 +459,8 @@ public class TileLayer extends TileLayerData implements Cloneable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Creates a copy of this layer.
-     * @see Object#clone
-     */
+    /** {@inheritDoc} */
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        TileLayer clone = (TileLayer) super.clone();
-
-        // Create a new properties object
-        clone.properties = (Properties) properties.clone();
-
-        // Clone the layer data
-        clone.tileMap = new Tile[tileMap.length][];
-        clone.tileInstanceProperties = new HashMap<>();
-
-        for (int i = 0; i < tileMap.length; i++) {
-            clone.tileMap[i] = new Tile[tileMap[i].length];
-            System.arraycopy(tileMap[i], 0, clone.tileMap[i], 0, tileMap[i].length);
-
-            for (int j = 0; j < tileMap[i].length; j++) {
-                Properties p = getTileInstancePropertiesAt(i, j);
-
-                if (p != null) {
-                    Integer key = i + j * width;
-                    clone.tileInstanceProperties.put(key, (Properties) p.clone());
-                }
-            }
-        }
-
-        return clone;
-    }
-
-    /**
-     * <p>resize.</p>
-     *
-     * @param width the new width of the layer
-     * @param height the new height of the layer
-     * @param dx the shift in x direction
-     * @param dy the shift in y direction
-     */
     public void resize(int width, int height, int dx, int dy) {
         Tile[][] newMap = new Tile[height][width];
         HashMap<Object, Properties> newTileInstanceProperties = new HashMap<>();
@@ -544,69 +483,5 @@ public class TileLayer extends TileLayerData implements Cloneable {
         tileInstanceProperties = newTileInstanceProperties;
         this.width = width;
         this.height = height;
-    }
-
-    /**
-     * Sets the map this layer is part of.
-     *
-     * @param map the Map object
-     */
-    public final void setMap(Map map) {
-        this.map = map;
-    }
-
-    /**
-     * <p>getMap.</p>
-     *
-     * @return a {@link org.mapeditor.core.Map} object.
-     */
-    public Map getMap() {
-        return map;
-    }
-
-    /**
-     * Sets the offset of this map layer. The offset is a distance by which to
-     * shift this layer from the origin of the map.
-     *
-     * @param x x offset in tiles
-     * @param y y offset in tiles
-     */
-    public void setOffset(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     * Returns the layer bounds in tiles.
-     *
-     * @return the layer bounds in tiles
-     */
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
-    }
-
-    /**
-     * Assigns the layer bounds in tiles to the given rectangle.
-     *
-     * @param rect the rectangle to which the layer bounds are assigned
-     */
-    public void getBounds(Rectangle rect) {
-        rect.x = this.x;
-        rect.y = this.y;
-        rect.width = this.width;
-        rect.height = this.height;
-    }
-
-    /**
-     * A convenience method to check if a point in tile-space is within the
-     * layer boundaries.
-     *
-     * @param x the x-coordinate of the point
-     * @param y the y-coordinate of the point
-     * @return <code>true</code> if the point (x,y) is within the layer
-     * boundaries, <code>false</code> otherwise.
-     */
-    public boolean contains(int x, int y) {
-        return getBounds().contains(x, y);
     }
 }

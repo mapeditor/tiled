@@ -50,8 +50,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<MapObject> {
 
-    private Map map;
-
     /**
      * Default constructor.
      */
@@ -66,15 +64,6 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      */
     public ObjectGroup(Map map) {
         this();
-        this.map = map;
-    }
-
-    /**
-     * <p>Setter for the field <code>map</code>.</p>
-     *
-     * @param map a {@link org.mapeditor.core.Map} object.
-     */
-    public void setMap(Map map) {
         this.map = map;
     }
 
@@ -112,17 +101,6 @@ public class ObjectGroup extends ObjectGroupData implements Cloneable, Iterable<
      */
     public boolean isEmpty() {
         return objects.isEmpty();
-    }
-
-    /**
-     * <p>setOffset.</p>
-     *
-     * @param offsetX a int.
-     * @param offsetY a int.
-     */
-    public void setOffset(int offsetX, int offsetY) {
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
     }
 
     /** {@inheritDoc} */

@@ -52,6 +52,7 @@ import static org.junit.Assert.*;
 import org.mapeditor.core.Compression;
 import org.mapeditor.core.Data;
 import org.mapeditor.core.Map;
+import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
 /**
@@ -68,7 +69,8 @@ public class JaxbTest {
 
         assertEquals("1.0", map.getVersion());
 
-        Data data = map.getLayers().get(0).getData();
+        TileLayer layer = (TileLayer) map.getLayers().get(0);
+        Data data = layer.getData();
         if (Compression.ZLIB.equals(data.getCompression())) {
             String enc = data.getValue();
             byte[] dec = DatatypeConverter.parseBase64Binary(enc);

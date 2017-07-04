@@ -42,6 +42,10 @@ build_script:
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
   - qbs build --all-products release Tiled.windowsInstaller:true
   - qbs build --all-products itch qbs.buildVariant:release Tiled.sparkleEnabled:false Tiled.version:%TILED_ITCH_VERSION%
+  - pushd util\java
+  - mvn --version
+  - mvn clean install
+  - popd
 
 after_build:
   - cd release
@@ -61,6 +65,9 @@ artifacts:
     path: 'tiled-*.7z'
   - name: AppCast
     path: 'appcast-win*-snapshots.xml'
+
+cache:
+  - C:\Users\appveyor\.m2
 
 deploy:
   - provider: GitHub

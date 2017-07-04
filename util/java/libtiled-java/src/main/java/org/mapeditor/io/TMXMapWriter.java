@@ -52,6 +52,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.bind.DatatypeConverter;
 
 import org.mapeditor.core.AnimatedTile;
+import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
@@ -204,11 +205,12 @@ public class TMXMapWriter {
             firstgid += tileset.getMaxTileId() + 1;
         }
 
-        for (TileLayer layer : map.getLayers()) {
-            writeMapLayer(layer, w, wp);
-        }
-        for (ObjectGroup group : map.getObjectGroups()) {
-            writeObjectGroup(group, w, wp);
+        for (MapLayer layer : map.getLayers()) {
+            if (layer instanceof TileLayer) {
+                writeMapLayer((TileLayer) layer, w, wp);
+            } else if (layer instanceof ObjectGroup) {
+                writeObjectGroup((ObjectGroup) layer, w, wp);
+            }
         }
         firstGidPerTileset = null;
 

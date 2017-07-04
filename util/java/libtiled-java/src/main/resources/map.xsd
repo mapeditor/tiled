@@ -197,6 +197,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:annotation>
                 <xs:documentation>
                     The x position of the group layer in pixels.
+
                     @deprecated since 0.15
                 </xs:documentation>
             </xs:annotation>
@@ -205,6 +206,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:annotation>
                 <xs:documentation>
                     The y position of the group layer in pixels.
+
                     @deprecated since 0.15
                 </xs:documentation>
             </xs:annotation>
@@ -263,6 +265,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:annotation>
                 <xs:documentation>
                     Used by some versions of Tiled Java.
+
                     @deprecated and unsupported by Tiled Qt.
                 </xs:documentation>
             </xs:annotation>
@@ -337,6 +340,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:documentation>
                     The x coordinate of the layer in tiles. Defaults to 0 and
                     can no longer be changed in Tiled Qt.
+
                     @deprecated
                 </xs:documentation>
             </xs:annotation>
@@ -346,6 +350,27 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:documentation>
                     The y coordinate of the layer in tiles. Defaults to 0 and
                     can no longer be changed in Tiled Qt.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the layer in tiles. Traditionally required, but
+                    as of Tiled Qt always the same as the map width.
+
+                    @deprecated
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the layer in tiles. Traditionally required,
+                    but as of Tiled Qt always the same as the map height.
+
                     @deprecated
                 </xs:documentation>
             </xs:annotation>
@@ -404,9 +429,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <xs:sequence>
             <xs:element name="properties" type="Properties"/>
             <xs:element name="tileset" type="TileSet" maxOccurs="unbounded"/>
-            <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
-            <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
-            <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+            <xs:choice>
+                <xs:element name="layer" type="TileLayer" maxOccurs="unbounded"/>
+                <xs:element name="objectgroup" type="ObjectGroup" maxOccurs="unbounded"/>
+                <xs:element name="imagelayer" type="ImageLayer" maxOccurs="unbounded"/>
+            </xs:choice>
             <xs:element name="group" type="Group" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation>
@@ -675,24 +702,6 @@ POSSIBILITY OF SUCH DAMAGE.
                     <xs:annotation>
                         <xs:documentation>
                             The color used to display the objects in this group.
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="width" type="xs:int">
-                    <xs:annotation>
-                        <xs:documentation>
-                            The width of the object group in tiles.
-                            Meaningless.
-                            @deprecated
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="height" type="xs:int">
-                    <xs:annotation>
-                        <xs:documentation>
-                            The height of the object group in tiles.
-                            Meaningless.
-                            @deprecated
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
@@ -1019,27 +1028,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:sequence>
                     <xs:element name="data" type="Data"/>
                 </xs:sequence>
-
-                <xs:attribute name="width" type="xs:int" use="required">
-                    <xs:annotation>
-                        <xs:documentation>
-                            The width of the layer in tiles. Traditionally
-                            required, but as of Tiled Qt always the same as the
-                            map width.
-                            @deprecated
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute name="height" type="xs:int" use="required">
-                    <xs:annotation>
-                        <xs:documentation>
-                            The height of the layer in tiles. Traditionally
-                            required, but as of Tiled Qt always the same as the
-                            map height.
-                            @deprecated
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

@@ -42,6 +42,7 @@ import javax.swing.WindowConstants;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.io.TMXMapReader;
 import org.mapeditor.view.HexagonalRenderer;
@@ -131,13 +132,13 @@ class MapView extends JPanel implements Scrollable
         g2d.setPaint(new Color(100, 100, 100));
         g2d.fill(clip);
 
-        // Draw each tile map layer
-        for (TileLayer layer : map.getLayers()) {
-            renderer.paintTileLayer(g2d, layer);
-        }
-        // Draw each object group
-        for (ObjectGroup group : map.getObjectGroups()) {
-            renderer.paintObjectGroup(g2d, group);
+        // Draw each map layer
+        for (MapLayer layer : map.getLayers()) {
+            if (layer instanceof TileLayer) {
+                renderer.paintTileLayer(g2d, (TileLayer) layer);
+            } else if (layer instanceof ObjectGroup) {
+                renderer.paintObjectGroup(g2d, (ObjectGroup) layer);
+            }
         }
     }
 
