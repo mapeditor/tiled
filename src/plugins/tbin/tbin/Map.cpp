@@ -245,11 +245,11 @@ namespace tbin
                         ix += read< sf::Int32 >( in );
                         break;
                     case 'S':
-                        ret.tiles[ ix + iy * ret.layerSize.x ] = std::move( readStaticTile( in, currTilesheet ) );
+                        ret.tiles[ ix + iy * ret.layerSize.x ] = readStaticTile( in, currTilesheet );
                         ++ix;
                         break;
                     case 'A':
-                        ret.tiles[ ix + iy * ret.layerSize.x ] = std::move( readAnimatedTile( in ) );
+                        ret.tiles[ ix + iy * ret.layerSize.x ] = readAnimatedTile( in );
                         ++ix;
                         break;
                     case 'T':
