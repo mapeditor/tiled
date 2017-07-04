@@ -40,6 +40,8 @@ namespace
     void tbinToTiledProperties(const tbin::Properties& props, Tiled::Object* obj)
     {
         for (const std::pair< std::string, tbin::PropertyValue >& prop : props) {
+            if (prop.first[0] == '@')
+                continue;
             switch (prop.second.type) {
                 case tbin::PropertyValue::String:
                     obj->setProperty(prop.first.c_str(), QVariant(prop.second.dataStr.c_str()));
@@ -137,7 +139,25 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             }
             tbinToTiledProperties(ttilesheet.props, tilesheet.data());
 
-            // TODO: Per-tile properties, investigate syntax
+            for (auto prop : ttilesheet.props) {
+                qInfo() << prop.first.c_str();
+                if (prop.first[0] != '@')
+                    continue;
+
+                QStringList strs = QString(prop.first.c_str()).split('@');
+                qInfo() << strs[1];
+                if (strs[1] == "TileIndex") {
+                    int index = strs[2].toInt();
+                    tbin::Properties dummyProps;
+                    dummyProps.insert(std::make_pair(strs[3].toStdString(), prop.second));
+                    Tiled::Tile* tile = tilesheet->tileAt(index);
+                    tbinToTiledProperties(dummyProps, tile);
+                    qInfo() << index << ' ' << strs[3] << "\n";
+                }
+                // TODO: 'AutoTile' ?
+                // Purely for map making. Appears to be similar to terrains
+                // (In tIDE, right click a tilesheet and choose "Auto Tiles..."
+            }
 
             map->addTileset(tilesheet);
         }
@@ -215,7 +235,15 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
             ttilesheet.tileSize.y = tilesheet->tileSize().height();
             tiledToTbinProperties(map, tmap.props);
 
-            // TODO: Per tile properties, investigate syntax
+            for (auto tile : tilesheet->tiles()) {
+                Tiled::Object obj(Tiled::Object::TileType);
+                auto props = tile->properties();
+                qInfo() << props.size();
+                for (auto it = props.begin(); it != props.end(); ++it) {
+                    obj.setProperty("@TileIndex@" + QString::number(tile->id()) + "@" + it.key(), it.value());
+                }
+                tiledToTbinProperties(&obj, ttilesheet.props);
+            }
 
             tmap.tilesheets.push_back(std::move(ttilesheet));
         }
