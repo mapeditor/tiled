@@ -271,31 +271,42 @@ void TileLayer::erase(const QRegion &area)
 
 void TileLayer::flip(FlipDirection direction)
 {
-    QVector<Cell> newGrid(mWidth * mHeight);
+    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            Cell &dest = newGrid[x + y * mWidth];
-            if (direction == FlipHorizontally) {
-                const Cell &source = cellAt(mWidth - x - 1, y);
-                dest = source;
-                dest.setFlippedHorizontally(!source.flippedHorizontally());
-            } else if (direction == FlipVertically) {
-                const Cell &source = cellAt(x, mHeight - y - 1);
-                dest = source;
-                dest.setFlippedVertically(!source.flippedVertically());
+    QHashIterator<QPoint, Chunk* > it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
+            for (int x = 0; x < CHUNK_SIZE; ++x) {
+                int _x = it.key().x() * CHUNK_SIZE + x;
+                int _y = it.key().y() * CHUNK_SIZE + y;
+
+                if (!contains(_x, _y))
+                    continue;
+
+                const Cell &source = it.value()->cellAt(x, y);
+                Cell dest(source);
+
+                if (direction == FlipHorizontally) {
+                    dest.setFlippedHorizontally(!source.flippedHorizontally());
+                    newLayer->setCell(mWidth - _x - 1, _y, dest);
+                } else if (direction == FlipVertically) {
+                    dest.setFlippedVertically(!source.flippedVertically());
+                    newLayer->setCell(_x, mHeight -y - 1, dest);
+                }
             }
         }
     }
 
-    copyGrid(newGrid);
+    mChunks = newLayer->mChunks;
+    delete newLayer;
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    QVector<Cell> newGrid(mWidth * mHeight);
+    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, mWidth, mHeight);
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -305,28 +316,40 @@ void TileLayer::flipHexagonal(FlipDirection direction)
 
     const char (&flipMask)[16] = (direction == FlipHorizontally ? flipMaskH : flipMaskV);
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            const Cell &source = (direction == FlipHorizontally ? cellAt(mWidth - x - 1, y) : cellAt(x, mHeight - y - 1));
-            Cell &dest = newGrid[x + y * mWidth];
-            dest = source;
+    QHashIterator<QPoint, Chunk* > it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
+            for (int x = 0; x < CHUNK_SIZE; ++x) {
+                int _x = it.key().x() * CHUNK_SIZE + x;
+                int _y = it.key().y() * CHUNK_SIZE + y;
 
-            unsigned char mask =
-                    (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
-                    (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
-                    (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
-                    (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
+                if (!contains(_x, _y))
+                    continue;
 
-            mask = flipMask[mask];
+                Cell dest(it.value()->cellAt(x, y));
 
-            dest.setFlippedHorizontally((mask & 8) != 0);
-            dest.setFlippedVertically((mask & 4) != 0);
-            dest.setFlippedAntiDiagonally((mask & 2) != 0);
-            dest.setRotatedHexagonal120((mask & 1) != 0);
+                unsigned char mask =
+                        (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
+                        (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
+                        (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
+                        (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
+
+                mask = flipMask[mask];
+
+                dest.setFlippedHorizontally((mask & 8) != 0);
+                dest.setFlippedVertically((mask & 4) != 0);
+                dest.setFlippedAntiDiagonally((mask & 2) != 0);
+                dest.setRotatedHexagonal120((mask & 1) != 0);
+
+                (direction == FlipHorizontally) ? newLayer->setCell(mWidth - _x - 1, _y, dest)
+                                                : newLayer->setCell(_x, mHeight - _y - 1, dest);
+            }
         }
     }
 
-    copyGrid(newGrid);
+    mChunks = newLayer->mChunks;
+    delete newLayer;
 }
 
 void TileLayer::rotate(RotateDirection direction)
@@ -339,34 +362,44 @@ void TileLayer::rotate(RotateDirection direction)
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    QVector<Cell> newGrid(newWidth * newHeight);
+    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, newWidth, newHeight);
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            const Cell &source = cellAt(x, y);
-            Cell dest = source;
+    QHashIterator<QPoint, Chunk* > it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
+            for (int x = 0; x < CHUNK_SIZE; ++x) {
+                int _x = it.key().x() * CHUNK_SIZE + x;
+                int _y = it.key().y() * CHUNK_SIZE + y;
 
-            unsigned char mask =
-                    (dest.flippedHorizontally() << 2) |
-                    (dest.flippedVertically() << 1) |
-                    (dest.flippedAntiDiagonally() << 0);
+                if (!contains(_x, _y))
+                    continue;
 
-            mask = rotateMask[mask];
+                Cell dest(it.value()->cellAt(x, y));
 
-            dest.setFlippedHorizontally((mask & 4) != 0);
-            dest.setFlippedVertically((mask & 2) != 0);
-            dest.setFlippedAntiDiagonally((mask & 1) != 0);
+                unsigned char mask =
+                        (dest.flippedHorizontally() << 2) |
+                        (dest.flippedVertically() << 1) |
+                        (dest.flippedAntiDiagonally() << 0);
 
-            if (direction == RotateRight)
-                newGrid[x * newWidth + (mHeight - y - 1)] = dest;
-            else
-                newGrid[(mWidth - x - 1) * newWidth + y] = dest;
+                mask = rotateMask[mask];
+
+                dest.setFlippedHorizontally((mask & 4) != 0);
+                dest.setFlippedVertically((mask & 2) != 0);
+                dest.setFlippedAntiDiagonally((mask & 1) != 0);
+
+                if (direction == RotateRight)
+                    newLayer->setCell(mHeight - _y - 1, _x, dest);
+                else
+                    newLayer->setCell(_y, mWidth - _x - 1, dest);
+            }
         }
     }
 
     mWidth = newWidth;
     mHeight = newHeight;
-    copyGrid(newGrid);
+    mChunks = newLayer->mChunks;
+    delete newLayer;
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -386,7 +419,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    QVector<Cell> newGrid(newWidth * newHeight);
+    TileLayer *newLayer = new TileLayer(QLatin1String(""), 0, 0, newWidth, newHeight);
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -414,40 +447,48 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     const char (&rotateMask)[16] =
             (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            const Cell &source = cellAt(x, y);
-            Cell dest = source;
+    QHashIterator<QPoint, Chunk* > it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
+            for (int x = 0; x < CHUNK_SIZE; ++x) {
+                int _x = it.key().x() * CHUNK_SIZE + x;
+                int _y = it.key().y() * CHUNK_SIZE + y;
 
-            unsigned char mask =
-                    (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
-                    (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
-                    (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
-                    (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
+                if (!contains(_x, _y))
+                    continue;
 
-            mask = rotateMask[mask];
+                Cell dest(it.value()->cellAt(x, y));
 
-            dest.setFlippedHorizontally((mask & 8) != 0);
-            dest.setFlippedVertically((mask & 4) != 0);
-            dest.setFlippedAntiDiagonally((mask & 2) != 0);
-            dest.setRotatedHexagonal120((mask & 1) != 0);
+                unsigned char mask =
+                        (static_cast<unsigned char>(dest.flippedHorizontally()) << 3) |
+                        (static_cast<unsigned char>(dest.flippedVertically()) << 2) |
+                        (static_cast<unsigned char>(dest.flippedAntiDiagonally()) << 1) |
+                        (static_cast<unsigned char>(dest.rotatedHexagonal120()) << 0);
 
-            Hex rotatedHex(x, y, staggerIndex, staggerAxis);
-            rotatedHex -= center;
-            rotatedHex.rotate(direction);
-            rotatedHex += newCenter;
+                mask = rotateMask[mask];
 
-            QPoint rotatedPoint = rotatedHex.toStaggered(staggerIndex, staggerAxis);
+                dest.setFlippedHorizontally((mask & 8) != 0);
+                dest.setFlippedVertically((mask & 4) != 0);
+                dest.setFlippedAntiDiagonally((mask & 2) != 0);
+                dest.setRotatedHexagonal120((mask & 1) != 0);
 
-            int index = rotatedPoint.y() * newWidth + rotatedPoint.x();
+                Hex rotatedHex(_x, _y, staggerIndex, staggerAxis);
+                rotatedHex -= center;
+                rotatedHex.rotate(direction);
+                rotatedHex += newCenter;
 
-            newGrid[index] = dest;
+                QPoint rotatedPoint = rotatedHex.toStaggered(staggerIndex, staggerAxis);
+
+                newLayer->setCell(rotatedPoint.x(), rotatedPoint.y(), dest);
+            }
         }
     }
 
     mWidth = newWidth;
     mHeight = newHeight;
-    copyGrid(newGrid);
+    mChunks = newLayer->mChunks;
+    delete newLayer;
 
     QRect filledRect = region().boundingRect();
 
@@ -551,45 +592,56 @@ void TileLayer::offsetTiles(const QPoint &offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
 {
-    QVector<Cell> newGrid(mWidth * mHeight);
+    TileLayer *newLayer = clone();
 
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            // Skip out of bounds tiles
-            if (!bounds.contains(x, y)) {
-                newGrid[x + y * mWidth] = cellAt(x, y);
-                continue;
+    QHashIterator<QPoint, Chunk* > it(newLayer->mChunks);
+    while (it.hasNext()) {
+        it.next();
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
+            for (int x = 0; x < CHUNK_SIZE; ++x) {
+                int _x = it.key().x() * CHUNK_SIZE + x;
+                int _y = it.key().y() * CHUNK_SIZE + y;
+
+                if (!contains(_x, _y))
+                    continue;
+
+                // Skip out of bounds tiles
+                if (!bounds.contains(_x, _y)) {
+                    newLayer->setCell(x, y, cellAt(_x, _y));
+                    continue;
+                }
+
+                // Get position to pull tile value from
+                int oldX = _x - offset.x();
+                int oldY = _y - offset.y();
+
+                // Wrap x value that will be pulled from
+                if (wrapX && bounds.width() > 0) {
+                    while (oldX < bounds.left())
+                        oldX += bounds.width();
+                    while (oldX > bounds.right())
+                        oldX -= bounds.width();
+                }
+
+                // Wrap y value that will be pulled from
+                if (wrapY && bounds.height() > 0) {
+                    while (oldY < bounds.top())
+                        oldY += bounds.height();
+                    while (oldY > bounds.bottom())
+                        oldY -= bounds.height();
+                }
+
+                // Set the new tile
+                if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
+                    newLayer->setCell(x, y, cellAt(oldX, oldY));
+                else
+                    newLayer->setCell(x, y, Cell());
             }
-
-            // Get position to pull tile value from
-            int oldX = x - offset.x();
-            int oldY = y - offset.y();
-
-            // Wrap x value that will be pulled from
-            if (wrapX && bounds.width() > 0) {
-                while (oldX < bounds.left())
-                    oldX += bounds.width();
-                while (oldX > bounds.right())
-                    oldX -= bounds.width();
-            }
-
-            // Wrap y value that will be pulled from
-            if (wrapY && bounds.height() > 0) {
-                while (oldY < bounds.top())
-                    oldY += bounds.height();
-                while (oldY > bounds.bottom())
-                    oldY -= bounds.height();
-            }
-
-            // Set the new tile
-            if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
-                newGrid[x + y * mWidth] = cellAt(oldX, oldY);
-            else
-                newGrid[x + y * mWidth] = Cell();
         }
     }
 
-    copyGrid(newGrid);
+    mChunks = newLayer->mChunks;
+    delete newLayer;
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
@@ -668,13 +720,4 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
-}
-
-void TileLayer::copyGrid(const QVector<Cell> &newGrid)
-{
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            setCell(x, y, newGrid[x + y * mWidth]);
-        }
-    }
 }

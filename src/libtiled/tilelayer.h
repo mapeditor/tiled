@@ -395,8 +395,6 @@ public:
 
     TileLayer *clone() const override;
 
-    void copyGrid(const QVector<Cell> &newGrid);
-
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
