@@ -53,8 +53,12 @@ TemplateGroup *TemplateManager::loadTemplateGroup(const QString &fileName, QStri
 {
     TemplateGroup *templateGroup = findTemplateGroup(fileName);
 
-    if (!templateGroup)
+    if (!templateGroup) {
         templateGroup = readTemplateGroup(fileName, error);
+        // This templateGroup is specifically read for a certian map and is not part of the templates model
+        if (templateGroup)
+            templateGroup->setEmbedded(false);
+    }
 
     return templateGroup;
 }

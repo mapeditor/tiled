@@ -53,6 +53,7 @@
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
+#include "objecttemplatemodel.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "pluginmanager.h"
@@ -608,7 +609,33 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     Document *document = nullptr;
 
     if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
-        document = MapDocument::load(fileName, mapFormat, &error);
+        MapDocument *mapDocument =  MapDocument::load(fileName, mapFormat, &error);
+        document = mapDocument;
+
+        bool embedTemplateGroups = false;
+        for (auto templateGroup : mapDocument->map()->templateGroups()) {
+            if (!templateGroup->embedded()) {
+                const QMessageBox::StandardButton reply = QMessageBox::question(
+                    this,
+                    tr("Load Template Groups"),
+                    tr("Some Template Groups used in this map aren't loaded into Tiled. Would you like to load them?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::Yes);
+                embedTemplateGroups = reply == QMessageBox::Yes;
+                break;
+            }
+        }
+
+        auto model = ObjectTemplateModel::instance();
+        for (auto templateGroup : mapDocument->map()->templateGroups()) {
+            if (!templateGroup->embedded()) {
+                if (embedTemplateGroups) {
+                    model->addTemplateGroup(templateGroup);
+                } else {
+                    mapDocument->addNonEmbeddedTemplateGroup(templateGroup);
+                }
+            }
+        }
     } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
         // It could be, that we have already loaded this tileset while loading some map.
         if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {

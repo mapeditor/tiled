@@ -71,6 +71,9 @@ public:
     void setLoaded(bool loaded);
     bool loaded() const;
 
+    void setEmbedded(bool embedded);
+    bool embedded() const;
+
     ObjectTemplate *templateAt(int index) const { return mTemplates.at(index); }
     const ObjectTemplate *findTemplate(unsigned id) const;
 
@@ -85,6 +88,7 @@ private:
     QString mFileName;
     unsigned mNextTemplateId;
     bool mLoaded;
+    bool mEmbedded;
     unsigned mMaxId;
 };
 
@@ -119,6 +123,12 @@ inline void TemplateGroup::setLoaded(bool loaded)
 
 inline bool TemplateGroup::loaded() const
 { return mLoaded; }
+
+inline void TemplateGroup::setEmbedded(bool embedded)
+{ mEmbedded = embedded; }
+
+inline bool TemplateGroup::embedded() const
+{ return mEmbedded; }
 
 inline void TemplateGroup::setNextTemplateId(unsigned nextId)
 {

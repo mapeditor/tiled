@@ -125,6 +125,7 @@ MapDocument::~MapDocument()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMap->tilesets());
 
+    qDeleteAll(mNonEmbeddedTemplateGroups);
     delete mRenderer;
     delete mMap;
 }

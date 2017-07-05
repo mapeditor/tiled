@@ -51,7 +51,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     bool addNewDocument(TemplateGroupDocument *document);
-    bool addDocument(TemplateGroupDocument *document);
+    bool addTemplateGroup(TemplateGroup *templateGroup);
     bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
 
 private:

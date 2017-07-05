@@ -153,8 +153,14 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
     return true;
 }
 
-bool ObjectTemplateModel::addDocument(TemplateGroupDocument *document)
+bool ObjectTemplateModel::addTemplateGroup(TemplateGroup *templateGroup)
 {
+    for (auto templateDocument : mTemplateDocuments)
+        if (templateDocument->fileName() == templateGroup->fileName())
+            return false;
+
+    auto document = new TemplateGroupDocument(templateGroup, templateGroup->fileName());
+
     beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
     mTemplateDocuments.append(document);
     endInsertRows();

@@ -566,7 +566,6 @@ TemplateGroup *MapReaderPrivate::readTemplateGroup()
     if (source.isEmpty()) {
         templateGroup = new TemplateGroup(name);
 
-        templateGroup->setName(name);
         templateGroup->setNextTemplateId(nextTemplateId);
 
         while (xml.readNextStartElement()) {

@@ -38,6 +38,7 @@ TemplateGroup::TemplateGroup():
     Object(TemplateGroupType),
     mNextTemplateId(0),
     mLoaded(true),
+    mEmbedded(true),
     mMaxId(0)
 {
 }
@@ -47,6 +48,7 @@ TemplateGroup::TemplateGroup(QString name):
     mName(name),
     mNextTemplateId(0),
     mLoaded(true),
+    mEmbedded(true),
     mMaxId(0)
 {
 }

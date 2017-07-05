@@ -210,6 +210,8 @@ public:
 
     void emitEditLayerNameRequested();
 
+    void addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup);
+
 signals:
     /**
      * Emitted when the selected tile region changes. Sends the currently
@@ -328,6 +330,7 @@ private:
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
     TerrainModel *mTerrainModel;
+    QList<TemplateGroup*> mNonEmbeddedTemplateGroups;
 };
 
 
@@ -339,6 +342,11 @@ inline QString MapDocument::lastExportFileName() const
 inline void MapDocument::setLastExportFileName(const QString &fileName)
 {
     mLastExportFileName = fileName;
+}
+
+inline void MapDocument::addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup)
+{
+    mNonEmbeddedTemplateGroups.append(templateGroup);
 }
 
 } // namespace Internal
