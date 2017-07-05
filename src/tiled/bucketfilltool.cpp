@@ -391,18 +391,16 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
     }
 }
 
-//Helper function to get cell from bTL if one exists, otherwise
-//gets from fTL
+//Helper function which gets a cell from the front or background tilelayer based on x and y
+//All positions are given relative to the frontTL (and assumes backTL.pos = 0,0)
+//If outside fillRegion, then a cell is given from backTL (if it has one)
 //Wasent sure what to name this, so sloppy names for now.
-const Cell &adjCell(const TileLayer bTL, const TileLayer fTL, const QRegion &fillRegion, int x, int y)
+static const Cell &adjCell(const TileLayer *backTL, const TileLayer *frontTL, const QRegion &fillRegion, int x, int y)
 {
-    if (!fillRegion.contains(QPoint(x + fTL.x(), y + fTL.y())) && bTL.contains(x + fTL.x(), y + fTL.y())) {
-        const Cell &cell = bTL.cellAt(x + fTL.x(), y + fTL.y());
-        if (!cell.tile() && fTL.contains(x, y))
-            return fTL.cellAt(x, y);
-        return cell;
-    } else if (fTL.contains(x, y)) {
-        return fTL.cellAt(x, y);
+    if (!fillRegion.contains(QPoint(x + frontTL->x(), y + frontTL->y())) && backTL->contains(x + frontTL->x(), y + frontTL->y())) {
+        return backTL->cellAt(x + frontTL->x(), y + frontTL->y());
+    } else if (frontTL->contains(x, y)) {
+        return frontTL->cellAt(x, y);
     } else {
         const Cell &cell = Cell();
         return cell;
@@ -430,14 +428,14 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
                 //gathering the Cells around the current point.
-                surroundingCells[0] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x    , _y - 1);
-                surroundingCells[1] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x + 1, _y - 1);
-                surroundingCells[2] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x + 1, _y    );
-                surroundingCells[3] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x + 1, _y + 1);
-                surroundingCells[4] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x    , _y + 1);
-                surroundingCells[5] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x - 1, _y + 1);
-                surroundingCells[6] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x - 1, _y    );
-                surroundingCells[7] = adjCell(backgroundtileLayer, tileLayerToFill, region, _x - 1, _y - 1);
+                surroundingCells[0] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x    , _y - 1);
+                surroundingCells[1] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x + 1, _y - 1);
+                surroundingCells[2] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x + 1, _y    );
+                surroundingCells[3] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x + 1, _y + 1);
+                surroundingCells[4] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x    , _y + 1);
+                surroundingCells[5] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x - 1, _y + 1);
+                surroundingCells[6] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x - 1, _y    );
+                surroundingCells[7] = adjCell(&backgroundtileLayer, &tileLayerToFill, region, _x - 1, _y - 1);
 
                 WangId wangId = mWangSet->wangIdFromSurrounding(surroundingCells);
                 tileLayerToFill.setCell(_x, _y, mWangSet->findMatchingCell(wangId));
