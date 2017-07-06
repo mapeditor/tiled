@@ -38,7 +38,7 @@
 
 namespace Tiled {
 
-class WangId
+class TILEDSHARED_EXPORT WangId
 {
 public:
 
@@ -53,6 +53,9 @@ public:
      * */
     int edgeColor(int index) const;
     int cornerColor(int index) const;
+
+    void setEdgeColor(int index, unsigned value);
+    void setCornerColor(int index, unsigned value);
 
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
@@ -71,37 +74,6 @@ public:
 private:
     unsigned mId;
 };
-
-inline int WangId::edgeColor(int index) const
-{
-    int shift = (index * 8);
-
-    int color = (mId >> shift) & 0xf;
-
-    return color;
-}
-
-inline int WangId::cornerColor(int index) const
-{
-    int shift = (index * 8) + 4;
-
-    int color = (mId >> shift) & 0xf;
-
-    return color;
-}
-
-inline void WangId::rotate(int rotations)
-{
-    if (rotations < 0)
-        rotations = 4 + (rotations % 4);
-    else
-        rotations %= 4;
-
-    unsigned rotated = mId << rotations*8;
-    rotated = rotated | (mId >> ((4 - rotations) * 8));
-
-    mId = rotated;
-}
 
 //Class for holding info about rotation and flipping.
 class TILEDSHARED_EXPORT WangTile

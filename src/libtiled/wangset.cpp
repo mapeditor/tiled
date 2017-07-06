@@ -48,6 +48,70 @@ unsigned wangTileToTileInfo(const WangTile &wangTile)
             | (wangTile.flippedAntiDiagonally() << 27);
 }
 
+int WangId::edgeColor(int index) const
+{
+    int shift = (index * 8);
+
+    int color = (mId >> shift) & 0xf;
+
+    return color;
+}
+
+int WangId::cornerColor(int index) const
+{
+    int shift = (index * 8) + 4;
+
+    int color = (mId >> shift) & 0xf;
+
+    return color;
+}
+
+void WangId::setEdgeColor(int index, unsigned value)
+{
+    value = value & 0xf;
+    mId &= ~(0xf << (index * 8));
+    mId |= value << (index * 8);
+}
+
+void WangId::setCornerColor(int index, unsigned value)
+{
+    value = value & 0xf;
+    mId &= ~(0xf << (index * 8 + 4));
+    mId |= value << (index * 8 + 4);
+}
+
+void WangId::rotate(int rotations)
+{
+    if (rotations < 0)
+        rotations = 4 + (rotations % 4);
+    else
+        rotations %= 4;
+
+    unsigned rotated = mId << rotations*8;
+    rotated = rotated | (mId >> ((4 - rotations) * 8));
+
+    mId = rotated;
+}
+
+void WangId::flipHorizontally()
+{
+    WangId newWangId = mId;
+
+    newWangId.setEdgeColor(2, edgeColor(6));
+    newWangId.setEdgeColor(6, edgeColor(2));
+
+    for (int i = 1; i < 8; i+=2)
+        newWangId.setCornerColor(i, edgeColor(8 - i));
+
+    mId = newWangId;
+}
+
+void WangId::flipVertically()
+{
+    flipHorizontally();
+    rotate(2);
+}
+
 void WangTile::translate(int map[])
 {
     int mask = (mFlippedHorizontally << 2)
@@ -64,6 +128,7 @@ void WangTile::translate(int map[])
 void WangTile::rotateRight()
 {
     int map[] = {5, 4, 1, 0, 7, 6, 3, 2};
+    mWangId.rotate(1);
 
     translate(map);
 }
@@ -71,6 +136,7 @@ void WangTile::rotateRight()
 void WangTile::rotateLeft()
 {
     int map[] = {3, 2, 7, 6, 1, 0, 5, 4};
+    mWangId.rotate(3);
 
     translate(map);
 }
@@ -78,6 +144,7 @@ void WangTile::rotateLeft()
 void WangTile::flipHorizontally()
 {
     int map[] = {4, 3, 6, 1, 0, 7, 2, 5};
+    mWangId.flipHorizontally();
 
     translate(map);
 }
@@ -85,6 +152,7 @@ void WangTile::flipHorizontally()
 void WangTile::flipVertically()
 {
     int map[] = {2, 5, 0, 7, 6, 1, 4, 3};
+    mWangId.flipVertically();
 
     translate(map);
 }
