@@ -212,6 +212,168 @@ inline const Cell &Chunk::cellAt(const QPoint &point) const
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
+    class iterator
+    {
+    public:
+        iterator(QHash<QPoint, Chunk>::iterator it, QHash<QPoint, Chunk>::iterator end)
+            : mChunkPointer(it)
+            , mChunkEndPointer(end)
+        {
+            if (it != end)
+                mCellPointer = it.value().begin();
+        }
+
+        iterator operator++()
+        {
+            iterator it = *this;
+
+            if (mChunkPointer != mChunkEndPointer) {
+                if (mCellPointer == mChunkPointer.value().end()) {
+                    mChunkPointer++;
+                    if (mChunkPointer != mChunkEndPointer)
+                        mCellPointer = mChunkPointer.value().begin();
+                } else {
+                    mCellPointer++;
+                }
+            }
+
+            return it;
+        }
+
+        iterator operator++(int)
+        {
+            if (mChunkPointer != mChunkEndPointer) {
+                if (mCellPointer == mChunkPointer.value().end()) {
+                    mChunkPointer++;
+                    if (mChunkPointer != mChunkEndPointer)
+                        mCellPointer = mChunkPointer.value().begin();
+                } else {
+                    mCellPointer++;
+                }
+            }
+
+            return *this;
+        }
+
+        Cell &operator*() { return *mCellPointer; }
+
+        QVector<Cell>::iterator operator->() { return mCellPointer; }
+
+        bool operator==(const iterator& rhs)
+        {
+            if (mChunkPointer == mChunkEndPointer)
+                return mChunkPointer == rhs.mChunkPointer;
+            else
+                return mCellPointer == rhs.mCellPointer;
+        }
+
+        bool operator!=(const iterator& rhs)
+        {
+            if (mChunkPointer == mChunkEndPointer)
+                return mChunkPointer != rhs.mChunkPointer;
+            else
+                return mCellPointer != rhs.mCellPointer;
+        }
+
+        Cell &value() { return *mCellPointer; }
+
+        const QPoint key()
+        {
+            QPoint chunkStart = mChunkPointer.key();
+
+            int index = mCellPointer - mChunkPointer.value().begin();
+            chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+            return chunkStart;
+        }
+
+    private:
+        QHash<QPoint, Chunk>::iterator mChunkPointer;
+        QHash<QPoint, Chunk>::iterator mChunkEndPointer;
+        QVector<Cell>::iterator mCellPointer;
+    };
+
+    class const_iterator
+    {
+    public:
+        const_iterator(QHash<QPoint, Chunk>::const_iterator it, QHash<QPoint, Chunk>::const_iterator end)
+            : mChunkPointer(it)
+            , mChunkEndPointer(end)
+        {
+            if (it != end)
+                mCellPointer = it.value().begin();
+        }
+
+        const_iterator operator++()
+        {
+            const_iterator it = *this;
+
+            if (mChunkPointer != mChunkEndPointer) {
+                if (mCellPointer == mChunkPointer.value().end()) {
+                    mChunkPointer++;
+                    if (mChunkPointer != mChunkEndPointer)
+                        mCellPointer = mChunkPointer.value().begin();
+                } else {
+                    mCellPointer++;
+                }
+            }
+
+            return it;
+        }
+
+        const_iterator operator++(int)
+        {
+            if (mChunkPointer != mChunkEndPointer) {
+                if (mCellPointer == mChunkPointer.value().end()) {
+                    mChunkPointer++;
+                    if (mChunkPointer != mChunkEndPointer)
+                        mCellPointer = mChunkPointer.value().begin();
+                } else {
+                    mCellPointer++;
+                }
+            }
+
+            return *this;
+        }
+
+        const Cell &operator*() { return *mCellPointer; }
+
+        QVector<Cell>::const_iterator operator->() { return mCellPointer; }
+
+        bool operator==(const const_iterator& rhs)
+        {
+            if (mChunkPointer == mChunkEndPointer)
+                return mChunkPointer == rhs.mChunkPointer;
+            else
+                return mCellPointer == rhs.mCellPointer;
+        }
+
+        bool operator!=(const const_iterator& rhs)
+        {
+            if (mChunkPointer == mChunkEndPointer)
+                return mChunkPointer != rhs.mChunkPointer;
+            else
+                return mCellPointer != rhs.mCellPointer;
+        }
+
+        const Cell &value() { return *mCellPointer; }
+
+        const QPoint key()
+        {
+            QPoint chunkStart = mChunkPointer.key();
+
+            int index = mCellPointer - mChunkPointer.value().begin();
+            chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+            return chunkStart;
+        }
+
+    private:
+        QHash<QPoint, Chunk>::const_iterator mChunkPointer;
+        QHash<QPoint, Chunk>::const_iterator mChunkEndPointer;
+        QVector<Cell>::const_iterator mCellPointer;
+    };
+
     /**
      * Constructor.
      */
@@ -387,6 +549,11 @@ public:
     bool isEmpty() const override;
 
     TileLayer *clone() const override;
+
+    iterator begin() { return iterator(mChunks.begin(), mChunks.end()); }
+    iterator end() { return iterator(mChunks.end(), mChunks.end()); }
+    const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
+    const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
