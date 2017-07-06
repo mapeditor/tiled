@@ -118,6 +118,18 @@ static void setObjectCell(MapObject *object,
         object->setSize(cell.tile()->size());
 }
 
+void ChangeMapObjectsTile::undo()
+{
+    restoreTiles();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void ChangeMapObjectsTile::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    changeTiles();
+}
+
 void ChangeMapObjectsTile::restoreTiles()
 {
     for (int i = 0; i < mMapObjects.size(); ++i)

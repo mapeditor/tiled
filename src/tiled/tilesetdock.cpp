@@ -1006,6 +1006,15 @@ void TilesetDock::changeSelectedMapObjectsTile(Tile *tile)
     if (tileObjects.isEmpty())
         return;
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new ChangeMapObjectsTile(mMapDocument, tileObjects, tile));
+    auto changeMapObjectCommand = new ChangeMapObjectsTile(mMapDocument, tileObjects, tile);
+
+    if (Tileset *tileset = tile->tileset()) {
+        SharedTileset sharedTileset = tileset->sharedPointer();
+
+        // Make sure this tileset is part of the map
+        if (!mMapDocument->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mMapDocument, sharedTileset, changeMapObjectCommand);
+    }
+
+    mMapDocument->undoStack()->push(changeMapObjectCommand);
 }
