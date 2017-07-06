@@ -1008,13 +1008,10 @@ void TilesetDock::changeSelectedMapObjectsTile(Tile *tile)
 
     auto changeMapObjectCommand = new ChangeMapObjectsTile(mMapDocument, tileObjects, tile);
 
-    if (Tileset *tileset = tile->tileset()) {
-        SharedTileset sharedTileset = tileset->sharedPointer();
-
-        // Make sure this tileset is part of the map
-        if (!mMapDocument->map()->tilesets().contains(sharedTileset))
-            new AddTileset(mMapDocument, sharedTileset, changeMapObjectCommand);
-    }
+    // Make sure the tileset is part of the map
+    SharedTileset sharedTileset = tile->tileset()->sharedPointer();
+    if (!mMapDocument->map()->tilesets().contains(sharedTileset))
+        new AddTileset(mMapDocument, sharedTileset, changeMapObjectCommand);
 
     mMapDocument->undoStack()->push(changeMapObjectCommand);
 }
