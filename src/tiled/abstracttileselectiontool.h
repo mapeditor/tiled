@@ -1,6 +1,6 @@
 /*
  * abstracttileselectiontool.h
- * Copyright 2015, Mamed Ibrahimov <ibramlab@gmail.com>
+ * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
  *
