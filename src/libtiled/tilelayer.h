@@ -223,7 +223,7 @@ public:
                 mCellPointer = it.value().begin();
         }
 
-        iterator operator++()
+        iterator operator++(int)
         {
             iterator it = *this;
 
@@ -240,7 +240,7 @@ public:
             return it;
         }
 
-        iterator operator++(int)
+        iterator &operator++()
         {
             if (mChunkPointer != mChunkEndPointer) {
                 if (mCellPointer == mChunkPointer.value().end()) {
@@ -259,20 +259,20 @@ public:
 
         QVector<Cell>::iterator operator->() { return mCellPointer; }
 
-        bool operator==(const iterator& rhs)
+        friend bool operator==(const iterator& lhs, const iterator& rhs)
         {
-            if (mChunkPointer == mChunkEndPointer)
-                return mChunkPointer == rhs.mChunkPointer;
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer == rhs.mChunkPointer;
             else
-                return mCellPointer == rhs.mCellPointer;
+                return lhs.mCellPointer == rhs.mCellPointer;
         }
 
-        bool operator!=(const iterator& rhs)
+        friend bool operator!=(const iterator& lhs, const iterator& rhs)
         {
-            if (mChunkPointer == mChunkEndPointer)
-                return mChunkPointer != rhs.mChunkPointer;
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer != rhs.mChunkPointer;
             else
-                return mCellPointer != rhs.mCellPointer;
+                return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         Cell &value() { return *mCellPointer; }
@@ -304,7 +304,7 @@ public:
                 mCellPointer = it.value().begin();
         }
 
-        const_iterator operator++()
+        const_iterator operator++(int)
         {
             const_iterator it = *this;
 
@@ -321,7 +321,7 @@ public:
             return it;
         }
 
-        const_iterator operator++(int)
+        const_iterator &operator++()
         {
             if (mChunkPointer != mChunkEndPointer) {
                 if (mCellPointer == mChunkPointer.value().end()) {
@@ -340,20 +340,20 @@ public:
 
         QVector<Cell>::const_iterator operator->() { return mCellPointer; }
 
-        bool operator==(const const_iterator& rhs)
+        friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
         {
-            if (mChunkPointer == mChunkEndPointer)
-                return mChunkPointer == rhs.mChunkPointer;
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer == rhs.mChunkPointer;
             else
-                return mCellPointer == rhs.mCellPointer;
+                return lhs.mCellPointer == rhs.mCellPointer;
         }
 
-        bool operator!=(const const_iterator& rhs)
+        friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
         {
-            if (mChunkPointer == mChunkEndPointer)
-                return mChunkPointer != rhs.mChunkPointer;
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer != rhs.mChunkPointer;
             else
-                return mCellPointer != rhs.mCellPointer;
+                return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         const Cell &value() { return *mCellPointer; }
