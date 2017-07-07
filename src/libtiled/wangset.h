@@ -167,16 +167,23 @@ public:
 
     int edgeColors() const { return mEdgeColors; }
     int cornerColors() const { return mCornerColors; }
-    void setEdgeColors(int n) { mEdgeColors = n; }
-    void setCornerColors(int n) { mCornerColors = n; }
+    void setEdgeColors(int n);
+    void setCornerColors(int n);
+
+    /* Checks all wangIds to see if they are still valid
+     * If not, that wangId/wangTile pair are removed
+     * */
+    void updateWangSet();
 
     /* Adds a tile to the wang set with a given wangId
      * */
     void addTile(Tile *tile, WangId wangId);
-
     void addCell(const Cell &cell, WangId wangId);
-
     void addWangTile(const WangTile &wangTile);
+
+    void removeTile(Tile *tile);
+    void removeCell(const Cell &cell);
+    void removeWangTile(const WangTile &wangTile);
 
     /* Finds a tile whos WangId matches with the one provided,
      * where zeros in the id are treated as wild cards, and can be
@@ -223,13 +230,27 @@ public:
      * */
     bool wangIdIsValid(WangId wangId) const;
 
-    /* Returns a list of all the template wangIds of this wangSet.
+    /* Returns whether the given wangId is assigned to a WangTile.
+     * If edge count of this set is <= 1, then edges are ignored
+     * Same for corners.
      * */
-    QList<WangId> templateWangIds() const;
+    bool wangIdIsUsed(WangId wangId) const;
+
+    /* Returns the nth wangId starting at 0x11111111
+     * and, when C is the number of corners,
+     * and E is the number of edges,
+     * ending at 0xCECECECE
+     *
+     * Note this does NOT include wildcards (no zeros)
+     * */
+    WangId templateWangIdAt(unsigned n) const;
 
     /* Returns a clone of this wangset
      * */
     WangSet *clone(Tileset *tileset) const;
+
+signals:
+    void wangSetChanged (WangSet *wangSet);
 
 private:
     Tileset *mTileset;

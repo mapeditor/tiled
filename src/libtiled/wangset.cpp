@@ -205,6 +205,41 @@ WangSet::WangSet(Tileset *tileset,
 {
 }
 
+void WangSet::setEdgeColors(int n)
+{
+    if (mEdgeColors == n)
+        return;
+
+    int oldValue = mEdgeColors;
+    mEdgeColors = n;
+
+    if (n < oldValue)
+        updateWangSet();
+}
+
+void WangSet::setCornerColors(int n)
+{
+    if (mCornerColors == n)
+        return;
+
+    int oldValue = mCornerColors;
+    mCornerColors = n;
+
+    if (n < oldValue)
+        updateWangSet();
+}
+
+void WangSet::updateWangSet()
+{
+    for (WangId wangId : mWangIdToWangTile.keys()) {
+        if (!wangIdIsValid(wangId)) {
+            for (WangTile wangTile : mWangIdToWangTile.values())
+                mTileInfoToWangId.remove(wangTileToTileInfo(wangTile));
+            mWangIdToWangTile.remove(wangId);
+        }
+    }
+}
+
 void WangSet::addTile(Tile *tile, WangId wangId)
 {
     Q_ASSERT(tile->tileset() == mTileset);
@@ -230,6 +265,27 @@ void WangSet::addWangTile(const WangTile &wangTile)
 
     mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
     mTileInfoToWangId.insert(wangTileToTileInfo(wangTile), wangTile.wangId());
+}
+
+void WangSet::removeTile(Tile *tile)
+{
+    WangId wangId = mTileInfoToWangId.value(tile->id());
+    mTileInfoToWangId.remove(tile->id());
+    mWangIdToWangTile.remove(wangId);
+}
+
+void WangSet::removeCell(const Cell &cell)
+{
+    WangId wangId = mTileInfoToWangId.value(cellToTileInfo(cell), 0);
+    mTileInfoToWangId.remove(cellToTileInfo(cell));
+    mWangIdToWangTile.remove(wangId);
+}
+
+void WangSet::removeWangTile(const WangTile &wangTile)
+{
+    WangId wangId = mTileInfoToWangId.value(wangTileToTileInfo(wangTile), 0);
+    mTileInfoToWangId.remove(wangTileToTileInfo(wangTile));
+    mWangIdToWangTile.remove(wangId);
 }
 
 WangTile WangSet::findMatchingWangTile(WangId wangId) const
@@ -382,39 +438,39 @@ bool WangSet::wangIdIsValid(WangId wangId) const
     return true;
 }
 
-QList<WangId> WangSet::templateWangIds() const
+bool WangSet::wangIdIsUsed(WangId wangId) const
 {
-    WangId curId = 0x11111111;
-    int idCount = qPow(mEdgeColors, 4) * qPow(mCornerColors, 4);
+    unsigned mask = 0;
 
-    QList<WangId> list;
-    list.reserve(idCount);
-    list.append(curId);
+    if (mEdgeColors > 1)
+        mask |= 0x0f0f0f0f;
+    if (mCornerColors > 1)
+        mask |= 0xf0f0f0f0;
 
-    for (int i = 1; i < idCount; ++i) {
-        curId = curId + 1;
-
-        //go through and carry based on edges and corner counts
-        for (int j = 0; j < 8; ++j) {
-            if (j & 1) {
-                //if on a corner
-                if (curId.cornerColor(j/2) > mCornerColors) {
-                    curId.setCornerColor(j/2, 1);
-                    if (j < 7)
-                        curId = curId + (1 << ((j + 1) * 4));
-                }
-            } else {
-                if (curId.edgeColor(j/2) > mEdgeColors) {
-                    curId.setEdgeColor(j/2, 1);
-                    curId = curId + (1 << ((j + 1) * 4));
-                }
-            }
-        }
-
-        list.append(curId);
+    for (WangId usedId : mWangIdToWangTile.keys()) {
+        if ((usedId & mask) == (wangId & mask))
+            return true;
     }
 
-    return list;
+    return false;
+}
+
+WangId WangSet::templateWangIdAt(unsigned n) const
+{
+    unsigned wangId = 0;
+    //number of permutations of a corner and edge together.
+    int cornerEdgePermutations = mEdgeColors * mCornerColors;
+
+    for (int i = 7; i >= 0; --i) {
+        //this is the number of permutations possible bellow this point in the wangId
+        int bellowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? mEdgeColors : 1);
+        int value = n / bellowPermutations;
+        n -= value * bellowPermutations;
+
+        wangId |= value << i * 4;
+    }
+
+    return wangId + 0x11111111;
 }
 
 WangSet *WangSet::clone(Tileset *tileset) const

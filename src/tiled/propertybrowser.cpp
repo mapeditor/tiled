@@ -858,7 +858,9 @@ void PropertyBrowser::addWangSetProperties()
     QtVariantProperty *cornerProperty = addProperty(CornerCountProperty, QVariant::Int, tr("Corner Count"), groupProperty);
 
     edgeProperty->setAttribute(QLatin1String("minimum"), 1);
+    edgeProperty->setAttribute(QLatin1String("maximum"), 15);
     cornerProperty->setAttribute(QLatin1String("minimum"), 1);
+    cornerProperty->setAttribute(QLatin1String("maximum"), 15);
 
     nameProperty->setEnabled(mTilesetDocument);
     edgeProperty->setEnabled(mTilesetDocument);

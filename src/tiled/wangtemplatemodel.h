@@ -61,10 +61,7 @@ public slots:
     void wangSetChanged();
 
 private:
-    void refreshWangIds();
-
     WangSet *mWangSet;
-    QList<WangId> mWangIds;
 };
 
 } // namespace Internal

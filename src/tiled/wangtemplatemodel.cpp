@@ -20,17 +20,15 @@
 
 #include "wangtemplatemodel.h"
 
+#include <QtMath>
+
 using namespace Tiled;
 using namespace Internal;
-
-//For now this is arbitrary, but could be set dynamicly based on zoom
-static const int COLUMN_COUNT = 4;
 
 WangTemplateModel::WangTemplateModel(WangSet *wangSet, QObject *parent)
     : QAbstractListModel(parent)
     , mWangSet(wangSet)
 {
-    refreshWangIds();
 }
 
 int WangTemplateModel::rowCount(const QModelIndex &parent) const
@@ -38,24 +36,22 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    const int wangIdCount = mWangIds.size();
-    const int columns = columnCount();
+    if (mWangSet) {
+        int rows = mWangSet->edgeColors() * mWangSet->cornerColors();
+        rows *= rows;
+        rows *= rows;
 
-    int rows = 1;
-    if (columns > 0) {
-        rows = wangIdCount / columns;
-        if (wangIdCount % columns)
-            ++rows;
+        return rows;
+    } else {
+        return 0;
     }
-
-    return rows;
 }
 
 int WangTemplateModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return COLUMN_COUNT;
+    return 1;
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
@@ -71,10 +67,11 @@ WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    const int idIndex = index.column() + index.row() * columnCount();
+    const int idIndex = index.row();
 
-    if (idIndex < mWangIds.size())
-        return mWangIds.at(idIndex);
+    if (WangSet *set = wangSet())
+        if (idIndex < rowCount())
+            return set->templateWangIdAt(idIndex);
 
     return 0;
 }
@@ -86,31 +83,34 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
+    int edges = mWangSet->edgeColors();
+    int corners = mWangSet->cornerColors();
+
     //Only wangIds with all edges/corners assigned are valid here
-    if (mWangSet->edgeColors() > 1)
+    if (edges > 1)
         Q_ASSERT(!wangId.hasEdgeWildCards());
-    if (mWangSet->cornerColors() > 1)
+    if (edges > 1)
         Q_ASSERT(!wangId.hasCornerWildCards());
 
-    int idIndex = mWangIds.indexOf(wangId);
+    int row = 0;
+    int cornerEdgePermutations = edges * corners;
 
-    int row = idIndex / columnCount();
-    int column = idIndex % columnCount();
+    for (int i = 0; i < 8; ++i) {
+        int bellowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edges : 1);
+        if (i&1)
+            row += wangId.cornerColor(i/2) * bellowPermutations;
+        else
+            row += wangId.edgeColor(i/2) * bellowPermutations;
+    }
 
-    return index(row, column);
+    return index(row, 0);
 }
 
 void WangTemplateModel::setWangSet(WangSet *wangSet)
 {
     mWangSet = wangSet;
-    wangSetChanged();
-}
 
-void WangTemplateModel::wangSetChanged()
-{
-    beginResetModel();
-    refreshWangIds();
-    endResetModel();
+    resetModel();
 }
 
 void WangTemplateModel::resetModel()
@@ -119,10 +119,7 @@ void WangTemplateModel::resetModel()
     endResetModel();
 }
 
-void WangTemplateModel::refreshWangIds()
+void WangTemplateModel::wangSetChanged()
 {
-    if (mWangSet)
-        mWangIds = mWangSet->templateWangIds();
-    else
-        mWangIds.clear();
+    resetModel();
 }

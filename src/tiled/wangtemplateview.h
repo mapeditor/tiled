@@ -22,7 +22,7 @@
 
 #include "wangtemplatemodel.h"
 
-#include <QTableView>
+#include <QListView>
 
 namespace Tiled {
 
@@ -31,12 +31,18 @@ class WangId;
 
 namespace Internal {
 
-class WangTemplateView : public QTableView
+class Zoomable;
+
+class WangTemplateView : public QListView
 {
     Q_OBJECT
 
 public:
     WangTemplateView(QWidget *parent = nullptr);
+
+    Zoomable *zoomable() const { return mZoomable; }
+
+    qreal scale() const;
 
     void setModel(QAbstractItemModel *model) override;
     void updateBackgroundColor();
@@ -48,12 +54,16 @@ public:
 
     bool wangIdIsUsed(WangId wangId) const;
 
-public slots:
-    void wangIdUsed(WangId wangId);
-    void wangIdRemoved(WangId wangId);
+protected:
+    bool event(QEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+
+private slots:
+    void adjustScale();
 
 private:
-    QHash<unsigned, bool> mUsedWangIds;
+    Zoomable *mZoomable;
 };
 
 }
