@@ -428,6 +428,10 @@ QtGuiApplication {
         "wangsetmodel.h",
         "wangsetview.cpp",
         "wangsetview.h",
+        "wangtemplatemodel.cpp",
+        "wangtemplatemodel.h",
+        "wangtemplateview.cpp",
+        "wangtemplateview.h",
         "zoomable.cpp",
         "zoomable.h",
     ]

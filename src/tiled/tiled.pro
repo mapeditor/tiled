@@ -249,6 +249,8 @@ SOURCES += aboutdialog.cpp \
     wangsetview.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
+    wangtemplateview.cpp \
+    wangtemplatemodel.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -432,6 +434,8 @@ HEADERS += aboutdialog.h \
     wangsetview.h \
     wangsetmodel.h \
     wangdock.h \
+    wangtemplateview.h \
+    wangtemplatemodel.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \

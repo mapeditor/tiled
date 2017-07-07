@@ -22,6 +22,8 @@
 #include "wangdock.h"
 #include "wangsetview.h"
 #include "wangsetmodel.h"
+#include "wangtemplateview.h"
+#include "wangtemplatemodel.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -102,6 +104,7 @@ WangDock::WangDock(QWidget *parent)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new WangSetFilterModel(this))
+    , mWangTemplateModel(new WangTemplateModel(nullptr, this))
     , mInitializing(false)
 {
     setObjectName(QLatin1String("WangSetDock"));
@@ -131,6 +134,10 @@ WangDock::WangDock(QWidget *parent)
     mToolBar->addAction(mAddWangSet);
     mToolBar->addAction(mRemoveWangSet);
 
+    mWangTemplateView = new WangTemplateView(w);
+    mWangTemplateView->setModel(mWangTemplateModel);
+    mWangTemplateView->setVisible(false);
+
     QHBoxLayout *horizontal = new QHBoxLayout;
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
@@ -138,6 +145,7 @@ WangDock::WangDock(QWidget *parent)
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setMargin(0);
     vertical->addWidget(mWangSetView);
+    vertical->addWidget(mWangTemplateView);
     vertical->addLayout(horizontal);
 
     connect(mAddWangSet, &QAction::triggered,
@@ -174,6 +182,7 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet((firstWangSet(mapDocument)));
 
+        mWangTemplateView->setVisible(false);
         mToolBar->setVisible(false);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
@@ -185,6 +194,10 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet(firstWangSet(tilesetDocument));
 
+        connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
+                mWangTemplateModel, &WangTemplateModel::wangSetChanged);
+
+        mWangTemplateView->setVisible(true);
         mToolBar->setVisible(true);
 
         /*
@@ -259,6 +272,7 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
+        mWangTemplateModel->setWangSet(wangSet);
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();

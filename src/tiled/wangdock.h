@@ -37,6 +37,8 @@ class Document;
 class WangSetFilterModel;
 class WangSetView;
 class WangSetModel;
+class WangTemplateView;
+class WangTemplateModel;
 class TilesetDocument;
 class TilesetDocumentsFilterModel;
 
@@ -86,6 +88,8 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangSetModel *mWangSetModel;
     WangSetFilterModel *mProxyModel;
+    WangTemplateView *mWangTemplateView;
+    WangTemplateModel *mWangTemplateModel;
 
     bool mInitializing;
 };

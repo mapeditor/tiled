@@ -29,6 +29,7 @@
 #include "wangset.h"
 
 #include <QStack>
+#include <QtMath>
 
 using namespace Tiled;
 
@@ -78,6 +79,26 @@ void WangId::setCornerColor(int index, unsigned value)
     value = value & 0xf;
     mId &= ~(0xf << (index * 8 + 4));
     mId |= value << (index * 8 + 4);
+}
+
+bool WangId::hasEdgeWildCards() const
+{
+    for (int i = 0; i < 4; ++i) {
+        if (!edgeColor(i))
+            return true;
+    }
+
+    return false;
+}
+
+bool WangId::hasCornerWildCards() const
+{
+    for (int i = 0; i < 4; ++i) {
+        if (!cornerColor(i))
+            return true;
+    }
+
+    return false;
 }
 
 void WangId::rotate(int rotations)
@@ -233,7 +254,7 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
     //Stores the space of a wild card, followed by how many colors that space can have.
     QVector<WangWildCard> wildCards;
 
-    if (mEdgeColors > 0) {
+    if (mEdgeColors > 1) {
         for (int i = 0; i < 4; ++i) {
             if (!wangId.edgeColor(i)) {
                 WangWildCard w;
@@ -245,7 +266,7 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
         }
     }
 
-    if (mCornerColors > 0) {
+    if (mCornerColors > 1) {
         for (int i = 0; i < 4; ++i) {
             if (!wangId.cornerColor(i)) {
                 WangWildCard w;
@@ -306,12 +327,12 @@ WangId WangSet::wangIdFromSurrounding(WangId surroundingWangIds[]) const
 {
     unsigned id = 0;
 
-    if (mEdgeColors > 0) {
+    if (mEdgeColors > 1) {
         for (int i = 0; i < 4; ++i)
             id |= (surroundingWangIds[i*2].edgeColor((2 + i) % 4)) << (i*8);
     }
 
-    if (mCornerColors > 0) {
+    if (mCornerColors > 1) {
         for (int i = 0; i < 4; ++i) {
             int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % 4);
 
@@ -359,6 +380,41 @@ bool WangSet::wangIdIsValid(WangId wangId) const
     }
 
     return true;
+}
+
+QList<WangId> WangSet::templateWangIds() const
+{
+    WangId curId = 0x11111111;
+    int idCount = qPow(mEdgeColors, 4) * qPow(mCornerColors, 4);
+
+    QList<WangId> list;
+    list.reserve(idCount);
+    list.append(curId);
+
+    for (int i = 1; i < idCount; ++i) {
+        curId = curId + 1;
+
+        //go through and carry based on edges and corner counts
+        for (int j = 0; j < 8; ++j) {
+            if (j & 1) {
+                //if on a corner
+                if (curId.cornerColor(j/2) > mCornerColors) {
+                    curId.setCornerColor(j/2, 1);
+                    if (j < 7)
+                        curId = curId + (1 << ((j + 1) * 4));
+                }
+            } else {
+                if (curId.edgeColor(j/2) > mEdgeColors) {
+                    curId.setEdgeColor(j/2, 1);
+                    curId = curId + (1 << ((j + 1) * 4));
+                }
+            }
+        }
+
+        list.append(curId);
+    }
+
+    return list;
 }
 
 WangSet *WangSet::clone(Tileset *tileset) const

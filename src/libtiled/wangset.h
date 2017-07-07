@@ -57,6 +57,13 @@ public:
     void setEdgeColor(int index, unsigned value);
     void setCornerColor(int index, unsigned value);
 
+    /* Returns true if one or more edges are zero
+     * */
+    bool hasEdgeWildCards() const;
+    /* Returns true if one or more corners are zero
+     * */
+    bool hasCornerWildCards() const;
+
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
      * and the top right corner, becomes the top bottom.
@@ -216,6 +223,10 @@ public:
      * */
     bool wangIdIsValid(WangId wangId) const;
 
+    /* Returns a list of all the template wangIds of this wangSet.
+     * */
+    QList<WangId> templateWangIds() const;
+
     /* Returns a clone of this wangset
      * */
     WangSet *clone(Tileset *tileset) const;
@@ -236,3 +247,4 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::WangSet*)
+Q_DECLARE_METATYPE(Tiled::WangId)
