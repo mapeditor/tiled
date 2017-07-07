@@ -20,15 +20,12 @@
 
 #pragma once
 
-#include "abstracttiletool.h"
-
-class QAction;
-class QActionGroup;
+#include "abstracttileselectiontool.h"
 
 namespace Tiled {
 namespace Internal {
 
-class TileSelectionTool : public AbstractTileTool
+class TileSelectionTool : public AbstractTileSelectionTool
 {
     Q_OBJECT
 
@@ -39,11 +36,7 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
-
     void languageChanged() override;
-
-    void populateToolBar(QToolBar *toolBar) override;
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -51,29 +44,14 @@ protected:
     void updateStatusInfo() override;
 
 private:
-    enum SelectionMode {
-        Replace,
-        Add,
-        Subtract,
-        Intersect
-    };
-
     QRect selectedArea() const;
 
     void clearSelection();
 
     QPoint mMouseScreenStart;
     QPoint mSelectionStart;
-    SelectionMode mSelectionMode;
-    SelectionMode mDefaultMode;
     bool mMouseDown;
     bool mSelecting;
-
-    QAction *mReplace;
-    QAction *mAdd;
-    QAction *mSubtract;
-    QAction *mIntersect;
-    QActionGroup *mActionGroup;
 };
 
 } // namespace Internal

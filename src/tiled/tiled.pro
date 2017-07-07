@@ -75,6 +75,7 @@ macx {
 
 SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
+    abstracttileselectiontool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
     actionmanager.cpp \
@@ -245,6 +246,7 @@ SOURCES += aboutdialog.cpp \
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
+    abstracttileselectiontool.h \
     abstracttiletool.h \
     abstracttool.h \
     actionmanager.h \
