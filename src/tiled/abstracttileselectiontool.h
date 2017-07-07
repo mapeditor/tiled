@@ -36,10 +36,10 @@ class AbstractTileSelectionTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-	AbstractTileSelectionTool(const QString &name,
-                    		  const QIcon &icon,
-                    		  const QKeySequence &shortcut,
-                    		  QObject *parent = nullptr);
+    AbstractTileSelectionTool(const QString &name,
+                              const QIcon &icon,
+                              const QKeySequence &shortcut,
+                              QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -51,7 +51,7 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
-	enum SelectionMode {
+    enum SelectionMode {
         Replace,
         Add,
         Subtract,

@@ -32,14 +32,14 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
-                                					 const QIcon &icon,
-													 const QKeySequence &shortcut,
-													 QObject *parent)
+                                                     const QIcon &icon,
+                                                     const QKeySequence &shortcut,
+                                                     QObject *parent)
     : AbstractTileTool(name, icon, shortcut, parent)
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {
-	QIcon replaceIcon(QLatin1String(":images/16x16/selection-replace.png"));
+    QIcon replaceIcon(QLatin1String(":images/16x16/selection-replace.png"));
     QIcon addIcon(QLatin1String(":images/16x16/selection-add.png"));
     QIcon subtractIcon(QLatin1String(":images/16x16/selection-subtract.png"));
     QIcon intersectIcon(QLatin1String(":images/16x16/selection-intersect.png"));
@@ -68,7 +68,7 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     mActionGroup->addAction(mIntersect);
 
     connect(mReplace, &QAction::triggered,
-			[this]() { mSelectionMode = mDefaultMode = Replace; });
+            [this]() { mSelectionMode = mDefaultMode = Replace; });
     connect(mAdd, &QAction::triggered,
             [this]() { mSelectionMode = mDefaultMode = Add; });
     connect(mSubtract, &QAction::triggered,
