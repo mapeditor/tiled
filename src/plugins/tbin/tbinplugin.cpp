@@ -246,6 +246,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
 
         std::vector< Tiled::ObjectGroup* > objGroups;
         std::map< std::string, tbin::Layer* > tileLayerIdMap;
+        tmap.layers.reserve(map->layers().size());
         for (Tiled::Layer* rawLayer : map->layers()) {
             if (Tiled::ObjectGroup* layer = rawLayer->asObjectGroup()) {
                 objGroups.push_back(layer);
@@ -297,12 +298,19 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
 
         for (Tiled::ObjectGroup* objs : objGroups) {
             for (Tiled::MapObject* obj : objs->objects()) {
-               if (obj->name() != "TileData" || obj->size().width() != 1 || obj->size().height() != 1 ||
-                    obj->position().x() != std::floor(obj->position().x()) || obj->position().y() != std::floor(obj->position().y()))
+                if (obj->name() != "TileData")
                    continue;
 
                 tbin::Layer* tiles = tileLayerIdMap[objs->name().toStdString()];
-                int idx = static_cast< int >(obj->position().x() + obj->position().y() * tiles->layerSize.x);
+
+                if (obj->size().width() != tiles->tileSize.x || obj->size().height() != tiles->tileSize.y ||
+                    obj->position().x() / tiles->tileSize.x != std::floor(obj->position().x() / tiles->tileSize.x) ||
+                    obj->position().y() / tiles->tileSize.y != std::floor(obj->position().y() / tiles->tileSize.y))
+                   continue;
+
+                int tileX = obj->position().x() / tiles->tileSize.x;
+                int tileY = obj->position().y() / tiles->tileSize.y;
+                int idx = static_cast< int >(tileX + tileY * tiles->layerSize.x);
                 tiledToTbinProperties(obj, tiles->tiles[idx].props);
             }
         }
