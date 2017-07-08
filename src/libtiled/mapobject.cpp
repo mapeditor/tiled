@@ -280,6 +280,9 @@ void MapObject::syncWithTemplate()
     if (!base)
         return;
 
+    if (!propertyChanged(MapObject::NameProperty))
+        setName(base->name());
+
     if (!propertyChanged(MapObject::SizeProperty))
         setSize(base->size());
 
@@ -302,6 +305,16 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
+}
+
+bool MapObject::isTemplateInstance() const
+{
+    return templateRef().templateGroup;
+}
+
+TemplateGroup *MapObject::templateGroup() const
+{
+    return templateRef().templateGroup;
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)

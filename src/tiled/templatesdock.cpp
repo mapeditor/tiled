@@ -51,7 +51,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     Utils::setThemeIcon(mNewTemplateGroup, "document-new");
-    connect(mNewTemplateGroup, SIGNAL(triggered()), SLOT(newTemplateGroup()));
+    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
@@ -77,6 +77,9 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     model->setTemplateDocuments(templateDocuments);
 
     mTemplatesView->setModel(model);
+
+    connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
+            this, &TemplatesDock::currentTemplateChanged);
 
     connect(mTemplatesView->model(), &ObjectTemplateModel::dataChanged,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
@@ -135,6 +138,8 @@ TemplatesView::TemplatesView(QWidget *parent)
     setUniformRowHeights(true);
     setHeaderHidden(true);
 
+    connect(this, &QAbstractItemView::pressed, this, &TemplatesView::onPressed);
+
     setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
@@ -163,4 +168,12 @@ void TemplatesView::applyTemplateGroups()
 QSize TemplatesView::sizeHint() const
 {
     return Utils::dpiScaled(QSize(130, 100));
+}
+
+void TemplatesView::onPressed(const QModelIndex &index)
+{
+    auto model = ObjectTemplateModel::instance();
+
+    if (ObjectTemplate *objectTemplate = model->toObjectTemplate(index))
+        emit currentTemplateChanged(objectTemplate);
 }

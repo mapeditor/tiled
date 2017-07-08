@@ -275,7 +275,14 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     mTidMapper.clear();
     unsigned firstTid = 1;
-    for (TemplateGroup *templateGroup : map.templateGroups()) {
+
+    QSet<TemplateGroup*> templateGroups;
+    for (ObjectGroup *group : map.objectGroups())
+        for (MapObject *object : group->objects())
+            if (object->isTemplateInstance())
+                templateGroups.insert(object->templateGroup());
+
+    for (TemplateGroup *templateGroup : templateGroups) {
         writeTemplateGroup(w, *templateGroup, firstTid);
         mTidMapper.insert(firstTid, templateGroup);
 
@@ -673,13 +680,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const QString &type = mapObject.type();
     const QPointF pos = mapObject.position();
 
-    TemplateRef templateRef = mapObject.templateRef();
-
-    // Use the template group pointer as an indicator for valid templates
-    bool isTemplateInstance = templateRef.templateGroup;
+    bool isTemplateInstance = mapObject.isTemplateInstance();
 
     if (isTemplateInstance) {
-        unsigned tid = mTidMapper.templateRefToTid(templateRef);
+        unsigned tid = mTidMapper.templateRefToTid(mapObject.templateRef());
         w.writeAttribute(QLatin1String("tid"), QString::number(tid));
     }
 

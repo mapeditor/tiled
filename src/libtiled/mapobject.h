@@ -204,6 +204,10 @@ public:
 
     void syncWithTemplate();
 
+    bool isTemplateInstance() const;
+
+    TemplateGroup *templateGroup() const;
+
 private:
     void flipRectObject(const QTransform &flipTransform);
     void flipPolygonObject(const QTransform &flipTransform);

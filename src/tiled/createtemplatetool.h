@@ -1,5 +1,5 @@
 /*
- * templatesdock.h
+ * createtemplatetool.h
  * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
  *
@@ -21,11 +21,7 @@
 
 #pragma once
 
-#include <QDockWidget>
-#include <QTreeView>
-#include <QAction>
-
-class QAbstractProxyModel;
+#include "createobjecttool.h"
 
 namespace Tiled {
 
@@ -33,47 +29,29 @@ class ObjectTemplate;
 
 namespace Internal {
 
-class ObjectTemplateModel;
-
-class TemplatesView;
-
-class TemplatesDock : public QDockWidget
+class CreateTemplateTool : public CreateObjectTool
 {
     Q_OBJECT
 
 public:
-    TemplatesDock(QWidget *parent = nullptr);
-    ~TemplatesDock();
+    CreateTemplateTool(QObject *parent);
 
-signals:
-    void currentTemplateChanged(ObjectTemplate *objectTemplate);
+    void languageChanged() override;
 
-private slots:
-    void newTemplateGroup();
+public slots:
+    void setTemplate(ObjectTemplate *objectTemplate) { mObjectTemplate = objectTemplate; }
+
+protected:
+    void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+
+    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    MapObject *createNewMapObject() override;
 
 private:
-    void retranslateUi();
-
-    TemplatesView *mTemplatesView;
-
-    QAction *mNewTemplateGroup;
-};
-
-class TemplatesView : public QTreeView
-{
-    Q_OBJECT
-
-public:
-    QSize sizeHint() const override;
-    TemplatesView(QWidget *parent = nullptr);
-
-    void applyTemplateGroups();
-
-signals:
-    void currentTemplateChanged(ObjectTemplate *objectTemplate);
-
-private slots:
-    void onPressed(const QModelIndex &index);
+    ObjectTemplate *mObjectTemplate;
 };
 
 } // namespace Internal

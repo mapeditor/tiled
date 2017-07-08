@@ -54,6 +54,11 @@ void AddRemoveMapObject::addObject()
 {
     mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
                                                  mMapObject);
+
+    auto templateGroup = mMapObject->templateGroup();
+    if (templateGroup)
+        mMapDocument->map()->addTemplateGroup(templateGroup);
+
     mOwnsObject = false;
 }
 

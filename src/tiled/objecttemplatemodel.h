@@ -53,6 +53,7 @@ public:
     bool addNewDocument(TemplateGroupDocument *document);
     bool addTemplateGroup(TemplateGroup *templateGroup);
     bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
+    ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
 
 private:
     ObjectTemplateModel(QObject *parent = nullptr);
@@ -61,7 +62,6 @@ private:
     static ObjectTemplateModel *mInstance;
 
     TemplateDocuments mTemplateDocuments;
-    ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
 
