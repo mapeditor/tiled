@@ -213,7 +213,7 @@ namespace tbin
             }
 
             write< sf::Uint8 >( out, 'S' );
-            writeStaticTile( out, tile );
+            writeStaticTile( out, frame );
         }
 
         writeProperties( out, tile.props );
