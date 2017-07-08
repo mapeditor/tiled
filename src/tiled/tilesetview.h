@@ -109,6 +109,7 @@ public:
      */
     void setTerrain(const Terrain *terrain);
 
+    const WangSet *wangSet() const { return mWangSet; }
     void setWangSet(const WangSet *wangSet);
 
     QModelIndex hoveredIndex() const { return mHoveredIndex; }

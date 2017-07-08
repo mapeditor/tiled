@@ -40,8 +40,11 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
         int rows = mWangSet->edgeColors() * mWangSet->cornerColors();
         rows *= rows;
         rows *= rows;
+        rows &= ~(1<<31);
 
-        return rows;
+        //arbitrary large cap on how many rows can be displayed.
+        //could eventually be moved to pagination...
+        return std::min(rows, 0xffff);
     } else {
         return 0;
     }

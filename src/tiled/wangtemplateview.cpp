@@ -269,7 +269,8 @@ void WangTemplateDelegate::paint(QPainter *painter,
 
     //Highlight currently selected tile.
     if (mWangTemplateView->currentIndex() == index) {
-        painter->setBrush(QColor(0,0,255,100));
+        QColor high = option.palette.highlight().color();
+        painter->setBrush(QColor(high.red(), high.green(), high.blue(), 100));
         painter->setPen(Qt::NoPen);
         painter->drawRect(option.rect);
     }
