@@ -591,6 +591,12 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
                     unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt();
+
+                    if (!wangSet->wangIdIsValid(wangId)) {
+                        xml.skipCurrentElement();
+                        continue;
+                    }
+
                     bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
                     bool fV = tileAtts.value(QLatin1String("vflip")).toInt();
                     bool fA = tileAtts.value(QLatin1String("dflip")).toInt();

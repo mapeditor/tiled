@@ -233,7 +233,7 @@ void WangSet::updateWangSet()
 {
     for (WangId wangId : mWangIdToWangTile.keys()) {
         if (!wangIdIsValid(wangId)) {
-            for (WangTile wangTile : mWangIdToWangTile.values())
+            for (WangTile wangTile : mWangIdToWangTile.values(wangId))
                 mTileInfoToWangId.remove(wangTileToTileInfo(wangTile));
             mWangIdToWangTile.remove(wangId);
         }
@@ -242,20 +242,12 @@ void WangSet::updateWangSet()
 
 void WangSet::addTile(Tile *tile, WangId wangId)
 {
-    Q_ASSERT(tile->tileset() == mTileset);
-    Q_ASSERT(wangIdIsValid(wangId));
-
-    mWangIdToWangTile.insert(wangId, WangTile(tile, wangId));
-    mTileInfoToWangId.insert(tile->id(), wangId);
+    addWangTile(WangTile(tile, wangId));
 }
 
 void WangSet::addCell(const Cell &cell, WangId wangId)
 {
-    Q_ASSERT(cell.tileset() == mTileset);
-    Q_ASSERT(wangIdIsValid(wangId));
-
-    mWangIdToWangTile.insert(wangId, WangTile(cell, wangId));
-    mTileInfoToWangId.insert(cellToTileInfo(cell), wangId);
+    addWangTile(WangTile(cell, wangId));
 }
 
 void WangSet::addWangTile(const WangTile &wangTile)
@@ -263,29 +255,42 @@ void WangSet::addWangTile(const WangTile &wangTile)
     Q_ASSERT(wangTile.tile()->tileset() == mTileset);
     Q_ASSERT(wangIdIsValid(wangTile.wangId()));
 
+    if (WangId previousWangId = mTileInfoToWangId.value(wangTileToTileInfo(wangTile))) {
+        if (wangTile.wangId() == 0) {
+            removeWangTile(wangTile);
+            return;
+        }
+        if (previousWangId == wangTile.wangId())
+            return;
+        removeWangTile(wangTile);
+    }
+
+    if (wangTile.wangId() == 0)
+        return;
+
     mWangIdToWangTile.insert(wangTile.wangId(), wangTile);
     mTileInfoToWangId.insert(wangTileToTileInfo(wangTile), wangTile.wangId());
 }
 
 void WangSet::removeTile(Tile *tile)
 {
-    WangId wangId = mTileInfoToWangId.value(tile->id());
-    mTileInfoToWangId.remove(tile->id());
-    mWangIdToWangTile.remove(wangId);
+    removeWangTile(WangTile(tile, 0));
 }
 
 void WangSet::removeCell(const Cell &cell)
 {
-    WangId wangId = mTileInfoToWangId.value(cellToTileInfo(cell), 0);
-    mTileInfoToWangId.remove(cellToTileInfo(cell));
-    mWangIdToWangTile.remove(wangId);
+    removeWangTile(WangTile(cell, 0));
 }
 
 void WangSet::removeWangTile(const WangTile &wangTile)
 {
     WangId wangId = mTileInfoToWangId.value(wangTileToTileInfo(wangTile), 0);
     mTileInfoToWangId.remove(wangTileToTileInfo(wangTile));
-    mWangIdToWangTile.remove(wangId);
+
+    WangTile w = wangTile;
+    w.setWangId(wangId);
+
+    mWangIdToWangTile.remove(wangId, w);
 }
 
 WangTile WangSet::findMatchingWangTile(WangId wangId) const
@@ -354,12 +359,12 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 
                 WangWildCard top = stack.pop();
                 top.colorCount -= 1;
-                if (top.colorCount > 0)
+                if (top.colorCount >= 0)
                     stack.push(top);
             } else {
                 WangWildCard top = stack.pop();
                 top.colorCount -= 1;
-                if (top.colorCount > 0) {
+                if (top.colorCount >= 0) {
                     stack.push(top);
 
                     for (int i = stack.size(); i < max; ++i)
@@ -412,9 +417,7 @@ WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
     for (int i = 0; i < 8; ++i)
         wangIds[i] = wangIdOfCell(surroundingCells[i]);
 
-    WangId wangId = wangIdFromSurrounding(wangIds);
-
-    return wangId;
+    return wangIdFromSurrounding(wangIds);
 }
 
 WangId WangSet::wangIdOfTile(const Tile *tile) const
@@ -433,6 +436,14 @@ bool WangSet::wangIdIsValid(WangId wangId) const
         if (wangId.edgeColor(i) > mEdgeColors
                 || wangId.cornerColor(i) > mCornerColors)
             return false;
+
+        if (mEdgeColors <= 1)
+            if (wangId.edgeColor(i))
+                return false;
+
+        if (mCornerColors <= 1)
+            if (wangId.cornerColor(i))
+                return false;
     }
 
     return true;
@@ -470,7 +481,15 @@ WangId WangSet::templateWangIdAt(unsigned n) const
         wangId |= value << i * 4;
     }
 
-    return wangId + 0x11111111;
+    //before this is like a base 10 range (0 - 9) where we want (1 - 10) for each digit
+    wangId += 0x11111111;
+    //If edges/corners don't have variations then those spots should be wild.
+    if (mEdgeColors <= 1)
+        wangId &= 0xf0f0f0f0;
+    if (mCornerColors <= 1)
+        wangId &= 0x0f0f0f0f;
+
+    return wangId;
 }
 
 WangSet *WangSet::clone(Tileset *tileset) const

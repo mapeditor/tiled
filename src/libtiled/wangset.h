@@ -114,6 +114,7 @@ public:
     Tile *tile() const { return mTile; }
 
     WangId wangId() const { return mWangId; }
+    void setWangId(WangId wangId) { mWangId = wangId; }
 
     bool flippedHorizontally() const { return mFlippedHorizontally; }
     bool flippedVertically() const { return mFlippedVertically; }
@@ -129,6 +130,13 @@ public:
     void flipVertically();
 
     Cell makeCell() const;
+
+    bool operator== (const WangTile &other) const
+    { return mTile == other.mTile
+                && mWangId == other.mWangId
+                && mFlippedHorizontally == other.mFlippedHorizontally
+                && mFlippedVertically == other.mFlippedVertically
+                && mFlippedAntiDiagonally == other.flippedAntiDiagonally(); }
 
 private:
     //performs a translation (either flipping or rotating) based on a one to one
@@ -175,7 +183,11 @@ public:
      * */
     void updateWangSet();
 
-    /* Adds a tile to the wang set with a given wangId
+    /* Adds a wangtile to the wang set with a given wangId
+     * If the given WangTile is already in the set with a
+     * different wangId, then that reference is removed, and
+     * replaced with the new wangId. If the wangId provided is zero
+     * then the wangTile is removed if already in the set.
      * */
     void addTile(Tile *tile, WangId wangId);
     void addCell(const Cell &cell, WangId wangId);

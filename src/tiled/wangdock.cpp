@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wangset.h"
 #include "wangdock.h"
+
 #include "wangsetview.h"
 #include "wangsetmodel.h"
 #include "wangtemplateview.h"
@@ -101,6 +101,7 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveWangSet(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
+    , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new WangSetFilterModel(this))
@@ -138,7 +139,21 @@ WangDock::WangDock(QWidget *parent)
     mWangTemplateView->setModel(mWangTemplateModel);
     mWangTemplateView->setVisible(false);
 
+    connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &WangDock::refreshCurrentWangId);
+
+    mEraseWangIdsButton = new QPushButton(this);
+    mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
+    mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseWangIdsButton->setCheckable(true);
+    mEraseWangIdsButton->setAutoExclusive(true);
+    mEraseWangIdsButton->setChecked(mCurrentWangId == 0);
+
+    connect(mEraseWangIdsButton, &QPushButton::clicked,
+            this, &WangDock::eraseWangIdsButtonClicked);
+
     QHBoxLayout *horizontal = new QHBoxLayout;
+    horizontal->addWidget(mEraseWangIdsButton);
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
 
@@ -184,6 +199,7 @@ void WangDock::setDocument(Document *document)
 
         mWangTemplateView->setVisible(false);
         mToolBar->setVisible(false);
+        mEraseWangIdsButton->setVisible(false);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
@@ -199,9 +215,10 @@ void WangDock::setDocument(Document *document)
 
         mWangTemplateView->setVisible(true);
         mToolBar->setVisible(true);
+        mEraseWangIdsButton->setVisible(true);
 
         /*
-         * Removing a wangset usually changes the selected terrain without the
+         * Removing a wangset usually changes the selected wangset without the
          * selection changing rows, so we can't rely on the currentRowChanged
          * signal.
          */
@@ -241,11 +258,35 @@ void WangDock::changeEvent(QEvent *event)
     }
 }
 
+void WangDock::eraseWangIdsButtonClicked()
+{
+    mCurrentWangId = 0;
+    mEraseWangIdsButton->setChecked(true);
+    mWangTemplateView->selectionModel()->clearCurrentIndex();
+    mWangTemplateView->selectionModel()->clearSelection();
+    emit currentWangIdChanged(mCurrentWangId);
+}
+
 void WangDock::refreshCurrentWangSet()
 {
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     WangSet *wangSet = mWangSetView->wangSetAt(selectionModel->currentIndex());
     setCurrentWangSet(wangSet);
+}
+
+void WangDock::refreshCurrentWangId()
+{
+    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
+    WangId wangId = mWangTemplateView->wangTemplateModel()->wangIdAt(selectionModel->currentIndex());
+
+    if (mCurrentWangId == wangId)
+        return;
+
+    mCurrentWangId = wangId;
+
+    mEraseWangIdsButton->setChecked(!mCurrentWangId);
+
+    emit currentWangIdChanged(mCurrentWangId);
 }
 
 void WangDock::indexPressed(const QModelIndex &index)
@@ -270,6 +311,11 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mCurrentWangSet = wangSet;
 
+    //start off with no wangId selected
+    mCurrentWangId = 0;
+    mEraseWangIdsButton->setChecked(true);
+    mWangTemplateView->selectionModel()->clearSelection();
+
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
         mWangTemplateModel->setWangSet(wangSet);
@@ -291,6 +337,7 @@ void WangDock::retranslateUi()
 {
     setWindowTitle(tr("Wang Sets"));
 
+    mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
 }

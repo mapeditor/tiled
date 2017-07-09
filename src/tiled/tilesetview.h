@@ -21,13 +21,13 @@
 #pragma once
 
 #include "tilesetmodel.h"
+#include "wangset.h"
 
 #include <QTableView>
 
 namespace Tiled {
 
 class Terrain;
-class WangSet;
 
 namespace Internal {
 
@@ -92,8 +92,8 @@ public:
      */
     void setEditTerrain(bool enabled);
 
-    bool isEditWangSet() const { return mEditWangSet; }
     void setEditWangSet(bool enabled);
+    bool isEditWangSet() const { return mEditWangSet; }
 
     /**
      * Sets whether terrain editing is in "erase" mode.
@@ -110,7 +110,10 @@ public:
     void setTerrain(const Terrain *terrain);
 
     const WangSet *wangSet() const { return mWangSet; }
-    void setWangSet(const WangSet *wangSet);
+    void setWangSet(WangSet *wangSet);
+
+    WangId wangId() const { return mWangId; }
+    void setWangId(WangId  wangId);
 
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
@@ -150,6 +153,7 @@ private slots:
 private:
     void applyTerrain();
     void finishTerrainChange();
+    void applyWangId();
     Tile *currentTile() const;
     void setHandScrolling(bool handScrolling);
 
@@ -162,7 +166,8 @@ private:
     bool mEditWangSet;
     bool mEraseTerrain;
     const Terrain *mTerrain;
-    const WangSet *mWangSet;
+    WangSet *mWangSet;
+    WangId mWangId;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;

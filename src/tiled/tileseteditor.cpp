@@ -47,7 +47,6 @@
 #include "undodock.h"
 #include "utils.h"
 #include "wangdock.h"
-#include "wangset.h"
 #include "zoomable.h"
 
 #include <QAction>
@@ -237,6 +236,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
 
     connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::currentWangSetChanged);
+    connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
 
@@ -300,6 +300,8 @@ void TilesetEditor::addDocument(Document *document)
     view->setModel(tilesetModel);
 
     connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
+            tilesetModel, &TilesetModel::tilesChanged);
+    connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
             tilesetModel, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
             tilesetModel, &TilesetModel::tileChanged);
@@ -861,7 +863,7 @@ void TilesetEditor::removeTerrainType()
         undoStack->endMacro();
 }
 
-void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
+void TilesetEditor::currentWangSetChanged(WangSet *wangSet)
 {
     TilesetView *view = currentTilesetView();
     if (!view)
@@ -869,6 +871,15 @@ void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
 
     if (wangSet)
         view->setWangSet(wangSet);
+}
+
+void TilesetEditor::currentWangIdChanged(WangId wangId)
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    view->setWangId(wangId);
 }
 
 void TilesetEditor::addWangSet()

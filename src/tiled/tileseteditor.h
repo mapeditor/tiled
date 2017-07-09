@@ -22,6 +22,7 @@
 
 #include "clipboardmanager.h"
 #include "editor.h"
+#include "wangset.h"
 
 #include <QHash>
 
@@ -36,7 +37,6 @@ namespace Tiled {
 class Terrain;
 class Tile;
 class Tileset;
-class WangSet;
 
 namespace Internal {
 
@@ -116,7 +116,8 @@ private slots:
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
 
-    void currentWangSetChanged(const WangSet *wangSet);
+    void currentWangSetChanged(WangSet *wangSet);
+    void currentWangIdChanged(WangId wangId);
     void addWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
