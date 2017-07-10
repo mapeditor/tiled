@@ -41,10 +41,6 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
-#ifdef TILED_LINUX_ARCHIVE
-#include <QSvgRenderer>
-#endif
-
 #ifdef Q_OS_WIN
 #include <windows.h>
 #if QT_VERSION >= 0x050700
@@ -199,13 +195,6 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     TiledApplication a(argc, argv);
-
-#ifdef TILED_LINUX_ARCHIVE
-    // Workaround to get the SVG image format plugin to be shipped by
-    // linuxdeployqt (see probonopd/linuxdeployqt#82).
-    QSvgRenderer svgRenderer;
-    Q_UNUSED(svgRenderer)
-#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
