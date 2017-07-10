@@ -28,6 +28,7 @@
 
 #include <QDir>
 #include <QMessageBox>
+#include <QStandardPaths>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -41,7 +42,12 @@ QString Command::finalWorkingDirectory() const
     QString finalExecutable = replaceVariables(executable);
     QFileInfo mFile(finalExecutable);
 
-    finalWorkingDirectory.replace(QLatin1String("%executablepath"), mFile.absolutePath());
+    if (mFile.exists())
+        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                                      mFile.absolutePath());
+    else
+        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                                      QStandardPaths::findExecutable(finalExecutable));
 
     return finalWorkingDirectory;
 }
