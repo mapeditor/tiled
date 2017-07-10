@@ -169,6 +169,7 @@ SOURCES += aboutdialog.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
+    moveselectiontool.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
     noeditorwidget.cpp \
@@ -342,6 +343,7 @@ HEADERS += aboutdialog.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
+    moveselectiontool.h \
     newmapdialog.h \
     newtilesetdialog.h \
     noeditorwidget.h \
