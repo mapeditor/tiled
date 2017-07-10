@@ -31,28 +31,27 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      env:
-        - MAKEFLAGS=-j2
       before_install:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools binutils zlib1g-dev
+        - sudo apt-get -y install qt58base qt58svg qt58imageformats qt58tools qt58qbs binutils zlib1g-dev
         - source /opt/qt58/bin/qt58-env.sh
       script:
-        - mkdir Tiled ; cd Tiled/
-        - qmake ../tiled.pro TILED_VERSION=$TILED_VERSION TILED_LINUX_ARCHIVE=true
-        - make
-        - rm -rf src/
-        - find -name Makefile -delete
-        - cd ../
+        - qbs --version
+        - qbs setup-toolchains --detect
+        - qbs setup-qt --detect
+        - qbs config defaultProfile qt-5-8-0
+        - qbs install --install-root Tiled/usr release Tiled.version:$TILED_VERSION
         - cp LICENSE* COPYING *md Tiled/
-        - cp ./tiled.desktop Tiled/
-        - cp ./src/tiled/images/32x32/tiled.png Tiled/
-        - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/2/linuxdeployqt-2-x86_64.AppImage" -O linuxdeployqt
+      after_success:
+        - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
         - chmod a+x linuxdeployqt
-        - unset LD_LIBRARY_PATH
-        - ./linuxdeployqt ./Tiled/tiled -appimage -verbose=2
-        - rm -rf Tiled/
+        - unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
+        - mkdir -p Tiled/usr/plugins/imageformats
+        - cp /opt/qt58/plugins/imageformats/libqsvg.so Tiled/usr/plugins/imageformats/
+        - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -bundle-non-qt-libs -verbose=2
+        - ./linuxdeployqt ./Tiled/usr/share/applications/tiled.desktop -appimage
+        - find ./Tiled -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
         - mv Tiled-x86_64.AppImage Tiled-$TILED_VERSION-x86_64.AppImage
       deploy:
         - provider: releases
