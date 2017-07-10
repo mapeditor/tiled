@@ -226,34 +226,19 @@ public:
         iterator operator++(int)
         {
             iterator it = *this;
-
-            if (mChunkPointer != mChunkEndPointer) {
-                if (++mCellPointer == mChunkPointer.value().end()) {
-                    mChunkPointer++;
-                    if (mChunkPointer != mChunkEndPointer)
-                        mCellPointer = mChunkPointer.value().begin();
-                }
-            }
-
+            advance();
             return it;
         }
 
         iterator &operator++()
         {
-            if (mChunkPointer != mChunkEndPointer) {
-                if (++mCellPointer == mChunkPointer.value().end()) {
-                    mChunkPointer++;
-                    if (mChunkPointer != mChunkEndPointer)
-                        mCellPointer = mChunkPointer.value().begin();
-                }
-            }
-
+            advance();
             return *this;
         }
 
         Cell &operator*() { return *mCellPointer; }
 
-        QVector<Cell>::iterator operator->() { return mCellPointer; }
+        QVector<Cell>::iterator operator->() const { return mCellPointer; }
 
         friend bool operator==(const iterator& lhs, const iterator& rhs)
         {
@@ -271,19 +256,13 @@ public:
                 return lhs.mCellPointer != rhs.mCellPointer;
         }
 
-        Cell &value() { return *mCellPointer; }
+        Cell &value() const { return *mCellPointer; }
 
-        const QPoint key()
-        {
-            QPoint chunkStart = mChunkPointer.key();
-
-            int index = mCellPointer - mChunkPointer.value().begin();
-            chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
-
-            return chunkStart;
-        }
+        QPoint key() const;
 
     private:
+        void advance();
+
         QHash<QPoint, Chunk>::iterator mChunkPointer;
         QHash<QPoint, Chunk>::iterator mChunkEndPointer;
         QVector<Cell>::iterator mCellPointer;
@@ -303,34 +282,19 @@ public:
         const_iterator operator++(int)
         {
             const_iterator it = *this;
-
-            if (mChunkPointer != mChunkEndPointer) {
-                if (++mCellPointer == mChunkPointer.value().end()) {
-                    mChunkPointer++;
-                    if (mChunkPointer != mChunkEndPointer)
-                        mCellPointer = mChunkPointer.value().begin();
-                }
-            }
-
+            advance();
             return it;
         }
 
         const_iterator &operator++()
         {
-            if (mChunkPointer != mChunkEndPointer) {
-                if (++mCellPointer == mChunkPointer.value().end()) {
-                    mChunkPointer++;
-                    if (mChunkPointer != mChunkEndPointer)
-                        mCellPointer = mChunkPointer.value().begin();
-                }
-            }
-
+            advance();
             return *this;
         }
 
         const Cell &operator*() { return *mCellPointer; }
 
-        QVector<Cell>::const_iterator operator->() { return mCellPointer; }
+        QVector<Cell>::const_iterator operator->() const { return mCellPointer; }
 
         friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
         {
@@ -348,19 +312,13 @@ public:
                 return lhs.mCellPointer != rhs.mCellPointer;
         }
 
-        const Cell &value() { return *mCellPointer; }
+        const Cell &value() const { return *mCellPointer; }
 
-        const QPoint key()
-        {
-            QPoint chunkStart = mChunkPointer.key();
-
-            int index = mCellPointer - mChunkPointer.value().begin();
-            chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
-
-            return chunkStart;
-        }
+        QPoint key() const;
 
     private:
+        void advance();
+
         QHash<QPoint, Chunk>::const_iterator mChunkPointer;
         QHash<QPoint, Chunk>::const_iterator mChunkEndPointer;
         QVector<Cell>::const_iterator mCellPointer;
@@ -559,6 +517,47 @@ private:
     mutable bool mUsedTilesetsDirty;
 };
 
+inline QPoint TileLayer::iterator::key() const
+{
+    QPoint chunkStart = mChunkPointer.key();
+
+    int index = mCellPointer - mChunkPointer.value().begin();
+    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+    return chunkStart;
+}
+
+inline void TileLayer::iterator::advance()
+{
+    if (mChunkPointer != mChunkEndPointer) {
+        if (++mCellPointer == mChunkPointer.value().end()) {
+            mChunkPointer++;
+            if (mChunkPointer != mChunkEndPointer)
+                mCellPointer = mChunkPointer.value().begin();
+        }
+    }
+}
+
+inline QPoint TileLayer::const_iterator::key() const
+{
+    QPoint chunkStart = mChunkPointer.key();
+
+    int index = mCellPointer - mChunkPointer.value().begin();
+    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+    return chunkStart;
+}
+
+inline void TileLayer::const_iterator::advance()
+{
+    if (mChunkPointer != mChunkEndPointer) {
+        if (++mCellPointer == mChunkPointer.value().end()) {
+            mChunkPointer++;
+            if (mChunkPointer != mChunkEndPointer)
+                mCellPointer = mChunkPointer.value().begin();
+        }
+    }
+}
 
 /**
  * Sets the size of this layer.
