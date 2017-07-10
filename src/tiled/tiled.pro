@@ -110,6 +110,7 @@ SOURCES += aboutdialog.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changetileterrain.cpp \
+    changetilewangid.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
     clipboardmanager.cpp \
@@ -290,6 +291,7 @@ HEADERS += aboutdialog.h \
     changetileobjectgroup.h \
     changetileprobability.h \
     changetileterrain.h \
+    changetilewangid.h \
     changewangsetdata.h \
     clickablelabel.h \
     clipboardmanager.h \

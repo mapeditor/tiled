@@ -154,6 +154,7 @@ private:
     void applyTerrain();
     void finishTerrainChange();
     void applyWangId();
+    void finishWangIdChange();
     Tile *currentTile() const;
     void setHandScrolling(bool handScrolling);
 
@@ -171,6 +172,7 @@ private:
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;
+    bool mWangIdChanged;
 
     bool mHandScrolling;
     QPoint mLastMousePos;

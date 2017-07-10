@@ -21,6 +21,7 @@
 #include "tilesetview.h"
 
 #include "changetileterrain.h"
+#include "changetilewangid.h"
 #include "map.h"
 #include "preferences.h"
 #include "stylehelper.h"
@@ -697,6 +698,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mWangId(0)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
+    , mWangIdChanged(false)
     , mHandScrolling(false)
     , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
 {
@@ -939,16 +941,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     if (mEditTerrain || mEditWangSet) {
         const QPoint pos = event->pos();
         const QModelIndex hoveredIndex = indexAt(pos);
-
-        if (mHoveredIndex != hoveredIndex) {
-            const QModelIndex previousHoveredIndex = mHoveredIndex;
-            mHoveredIndex = hoveredIndex;
-
-            if (previousHoveredIndex.isValid())
-                update(previousHoveredIndex);
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        }
+        const QModelIndex previousHoveredIndex = mHoveredIndex;
+        mHoveredIndex = hoveredIndex;
+        int previousHoverCorner = mHoveredCorner;
 
         if (mEditTerrain) {
             int hoveredCorner = 0;
@@ -963,16 +958,21 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                     hoveredCorner += 1;
                 if (mappedPos.y() > center.y())
                     hoveredCorner += 2;
+
+                mHoveredCorner = hoveredCorner;
             }
-
-            mHoveredCorner = hoveredCorner;
-
-            if (event->buttons() & Qt::LeftButton)
-                applyTerrain();
-        } else {
-            if (event->buttons() & Qt::LeftButton)
-                applyWangId();
         }
+
+        if (previousHoveredIndex.isValid())
+            update(previousHoveredIndex);
+        if (mHoveredIndex.isValid() &&
+                (previousHoverCorner != mHoveredCorner || mHoveredIndex != previousHoveredIndex))
+            update(mHoveredIndex);
+
+        if (mEditTerrain && (event->buttons() & Qt::LeftButton))
+            applyTerrain();
+        if (mEditWangSet && (event->buttons() & Qt::LeftButton))
+            applyWangId();
 
         return;
     }
@@ -992,6 +992,11 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
             finishTerrainChange();
 
         return;
+    }
+
+    if (mEditWangSet) {
+        if (event->button() == Qt::LeftButton)
+            finishWangIdChange();
     }
 
     QTableView::mouseReleaseEvent(event);
@@ -1218,10 +1223,18 @@ void TilesetView::applyWangId()
     if (mWangSet->wangIdOfTile(tile) == mWangId)
         return;
 
-    //TODO need undo command for this, for now will just manually set
-    mWangSet->addTile(tile, mWangId);
+    QUndoCommand *command = new ChangeTileWangId(mTilesetDocument, mWangSet, tile, mWangId);
+    mTilesetDocument->undoStack()->push(command);
+    mWangIdChanged = true;
+}
 
-    update(mHoveredIndex);
+void TilesetView::finishWangIdChange()
+{
+    if (!mWangIdChanged)
+        return;
+
+    mTilesetDocument->undoStack()->push(new ChangeTileWangId);
+    mWangIdChanged = false;
 }
 
 Tile *TilesetView::currentTile() const
