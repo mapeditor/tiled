@@ -420,6 +420,23 @@ WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
     return wangIdFromSurrounding(wangIds);
 }
 
+QList<Tile *> WangSet::tilesWithWangId() const
+{
+    if (!mTileset)
+        return QList<Tile *>();
+
+    QList<Tile *> tiles;
+
+    for (unsigned tileInfo : mTileInfoToWangId.keys()) {
+        tileInfo &= 0x1fffffff;
+
+        if (Tile *tile = mTileset->tileAt(tileInfo))
+            tiles.append(tile);
+    }
+
+    return tiles;
+}
+
 WangId WangSet::wangIdOfTile(const Tile *tile) const
 {
     return mTileInfoToWangId.value(tile->id());

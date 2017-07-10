@@ -32,6 +32,7 @@
 namespace Tiled {
 
 class Tileset;
+class Tile;
 
 namespace Internal {
 
@@ -49,10 +50,12 @@ public:
     void redo() override;
 
 private:
+    TilesetDocument *mTilesetDocument;
     TilesetWangSetModel *mWangSetModel;
     int mIndex;
     int mOldValue;
     int mNewValue;
+    QList<Tile *> mAffectedTiles;
 };
 
 class ChangeWangSetCorners : public QUndoCommand
@@ -66,10 +69,12 @@ public:
     void redo() override;
 
 private:
+    TilesetDocument *mTilesetDocument;
     TilesetWangSetModel *mWangSetModel;
     int mIndex;
     int mOldValue;
     int mNewValue;
+    QList<Tile *> mAffectedTiles;
 };
 
 class SetWangSetImage : public QUndoCommand

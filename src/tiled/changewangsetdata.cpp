@@ -42,21 +42,33 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
                                        int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set edge count"))
+
+    , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
     , mOldValue(tilesetDocument->tileset()->wangSet(index)->edgeColors())
     , mNewValue(newValue)
 {
+    //when edge size changes, all tiles with wangIds need to be updated.
+    if (Tileset *tileset = mTilesetDocument->tileset().data())
+        if (WangSet *wangSet = tileset->wangSet(index))
+            mAffectedTiles = wangSet->tilesWithWangId();
 }
 
 void ChangeWangSetEdges::undo()
 {
     mWangSetModel->setWangSetEdges(mIndex, mOldValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
 }
 
 void ChangeWangSetEdges::redo()
 {
     mWangSetModel->setWangSetEdges(mIndex, mNewValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
 }
 
 ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
@@ -64,21 +76,32 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
                                            int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set corner count"))
+    , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
     , mOldValue(tilesetDocument->tileset()->wangSet(index)->cornerColors())
     , mNewValue(newValue)
 {
+    //when edge size changes, all tiles with wangIds need to be updated.
+    if (Tileset *tileset = mTilesetDocument->tileset().data())
+        if (WangSet *wangSet = tileset->wangSet(index))
+            mAffectedTiles = wangSet->tilesWithWangId();
 }
 
 void ChangeWangSetCorners::undo()
 {
     mWangSetModel->setWangSetCorners(mIndex, mOldValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
 }
 
 void ChangeWangSetCorners::redo()
 {
     mWangSetModel->setWangSetCorners(mIndex, mNewValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
 }
 
 SetWangSetImage::SetWangSetImage(TilesetDocument *tilesetDocument, int index, int tileId)

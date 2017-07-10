@@ -232,6 +232,10 @@ public:
      * */
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
+    /* Returns a list of all the tiles with a wangId.
+     * */
+    QList<Tile *> tilesWithWangId() const;
+
     /* Returns the wangId of a given Tile.
      * */
     WangId wangIdOfTile(const Tile *tile) const;
@@ -260,9 +264,6 @@ public:
     /* Returns a clone of this wangset
      * */
     WangSet *clone(Tileset *tileset) const;
-
-signals:
-    void wangSetChanged (WangSet *wangSet);
 
 private:
     Tileset *mTileset;
