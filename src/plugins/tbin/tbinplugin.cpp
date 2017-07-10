@@ -197,7 +197,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                 layer->setCell(ix, iy, cell);
 
                 if (ttile.props.size() > 0) {
-                    Tiled::MapObject* obj = new Tiled::MapObject("TileData", "", QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(1 * tlayer.tileSize.x, 1 * tlayer.tileSize.y));
+                    Tiled::MapObject* obj = new Tiled::MapObject("TileData", QString(), QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y), QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
                     tbinToTiledProperties(ttile.props, obj);
                     objects->addObject(obj);
                 }
@@ -220,7 +220,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
         //tmap.id = map->name();
         tiledToTbinProperties(map, tmap.props);
 
-        for(const Tiled::SharedTileset& tilesheet : map->tilesets()) {
+        for (const Tiled::SharedTileset& tilesheet : map->tilesets()) {
             tbin::TileSheet ttilesheet;
             ttilesheet.id = tilesheet->name().toStdString();
             ttilesheet.image = QFileInfo( fileName ).dir().relativeFilePath( tilesheet->imageSource() ).replace( "/", "\\" ).toStdString();
@@ -272,7 +272,6 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
                                 ttile.staticData.blendMode = 0;
                             }
                             else {
-
                                 // TODO: Check all frame durations are the same
                                 for (Tiled::Frame frame : tile->frames()) {
                                     ttile.animatedData.frameInterval = frame.duration;
@@ -297,11 +296,13 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
         }
 
         for (Tiled::ObjectGroup* objs : objGroups) {
+            tbin::Layer* tiles = tileLayerIdMap[objs->name().toStdString()];
+            if (!tiles)
+                continue;
+
             for (Tiled::MapObject* obj : objs->objects()) {
                 if (obj->name() != "TileData")
                    continue;
-
-                tbin::Layer* tiles = tileLayerIdMap[objs->name().toStdString()];
 
                 if (obj->size().width() != tiles->tileSize.x || obj->size().height() != tiles->tileSize.y ||
                     obj->position().x() / tiles->tileSize.x != std::floor(obj->position().x() / tiles->tileSize.x) ||
