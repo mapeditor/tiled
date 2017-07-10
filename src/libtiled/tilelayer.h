@@ -228,12 +228,10 @@ public:
             iterator it = *this;
 
             if (mChunkPointer != mChunkEndPointer) {
-                if (mCellPointer == mChunkPointer.value().end()) {
+                if (++mCellPointer == mChunkPointer.value().end()) {
                     mChunkPointer++;
                     if (mChunkPointer != mChunkEndPointer)
                         mCellPointer = mChunkPointer.value().begin();
-                } else {
-                    mCellPointer++;
                 }
             }
 
@@ -243,12 +241,10 @@ public:
         iterator &operator++()
         {
             if (mChunkPointer != mChunkEndPointer) {
-                if (mCellPointer == mChunkPointer.value().end()) {
+                if (++mCellPointer == mChunkPointer.value().end()) {
                     mChunkPointer++;
                     if (mChunkPointer != mChunkEndPointer)
                         mCellPointer = mChunkPointer.value().begin();
-                } else {
-                    mCellPointer++;
                 }
             }
 
@@ -309,12 +305,10 @@ public:
             const_iterator it = *this;
 
             if (mChunkPointer != mChunkEndPointer) {
-                if (mCellPointer == mChunkPointer.value().end()) {
+                if (++mCellPointer == mChunkPointer.value().end()) {
                     mChunkPointer++;
                     if (mChunkPointer != mChunkEndPointer)
                         mCellPointer = mChunkPointer.value().begin();
-                } else {
-                    mCellPointer++;
                 }
             }
 
@@ -324,12 +318,10 @@ public:
         const_iterator &operator++()
         {
             if (mChunkPointer != mChunkEndPointer) {
-                if (mCellPointer == mChunkPointer.value().end()) {
+                if (++mCellPointer == mChunkPointer.value().end()) {
                     mChunkPointer++;
                     if (mChunkPointer != mChunkEndPointer)
                         mCellPointer = mChunkPointer.value().begin();
-                } else {
-                    mCellPointer++;
                 }
             }
 
