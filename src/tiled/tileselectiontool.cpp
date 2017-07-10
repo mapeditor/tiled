@@ -44,8 +44,10 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
     setTilePositionMethod(OnTiles);
 }
 
-void TileSelectionTool::tilePositionChanged(const QPoint &)
+void TileSelectionTool::tilePositionChanged(const QPoint &pos)
 {
+    AbstractTileSelectionTool::tilePositionChanged(pos);
+
     if (mSelecting)
         brushItem()->setTileRegion(selectedArea());
 }
@@ -77,34 +79,47 @@ void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
         }
     }
 
-    AbstractTileTool::mouseMoved(pos, modifiers);
+    AbstractTileSelectionTool::mouseMoved(pos, modifiers);
 }
 
 void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    const Qt::MouseButton button = event->button();
+    if (selectionMode() == Intersect)
+        setSelectedRegion(mapDocument()->selectedArea());
+    else
+        setSelectedRegion(QRegion());
+    AbstractTileSelectionTool::mousePressed(event);
 
-    if (button == Qt::LeftButton) {
-        mMouseDown = true;
-        mMouseScreenStart = event->screenPos();
-        mSelectionStart = tilePosition();
-        brushItem()->setTileRegion(QRegion());
-    }
+    if (!moving()) {
+        const Qt::MouseButton button = event->button();
 
-    if (button == Qt::RightButton) {
-        if (mSelecting) {
-            // Cancel selecting
-            mSelecting = false;
-            mMouseDown = false; // Avoid restarting select on move
+        if (button == Qt::LeftButton) {
+            mMouseDown = true;
+            mMouseScreenStart = event->screenPos();
+            mSelectionStart = tilePosition();
             brushItem()->setTileRegion(QRegion());
-        } else {
-            clearSelection();
+        }
+
+        if (button == Qt::RightButton) {
+            if (mSelecting) {
+                // Cancel selecting
+                mSelecting = false;
+                mMouseDown = false; // Avoid restarting select on move
+                brushItem()->setTileRegion(QRegion());
+            } else {
+                clearSelection();
+            }
         }
     }
 }
 
 void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileSelectionTool::mouseReleased(event);
+
+    if (moving())
+        return;
+
     if (event->button() != Qt::LeftButton)
         return;
 

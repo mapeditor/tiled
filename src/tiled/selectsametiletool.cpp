@@ -36,6 +36,11 @@ SelectSameTileTool::SelectSameTileTool(QObject *parent)
 
 void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
 {
+    AbstractTileSelectionTool::tilePositionChanged(tilePos);
+
+    if (moving())
+        return;
+
     // Make sure that a tile layer is selected and contains current tile pos.
     TileLayer *tileLayer = currentTileLayer();
     if (!tileLayer)

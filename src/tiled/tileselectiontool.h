@@ -39,7 +39,7 @@ public:
     void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(const QPoint &pos) override;
 
     void updateStatusInfo() override;
 

@@ -23,6 +23,8 @@
 
 #include "abstracttiletool.h"
 
+#include "tilelayer.h"
+
 class QAction;
 class QActionGroup;
 
@@ -41,6 +43,7 @@ public:
                               const QKeySequence &shortcut,
                               QObject *parent = nullptr);
 
+    void mouseMoved(const QPointF &pos,Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
@@ -51,6 +54,8 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
+    void tilePositionChanged(const QPoint &pos) override;
+
     enum SelectionMode {
         Replace,
         Add,
@@ -63,7 +68,28 @@ protected:
     QRegion selectedRegion() { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
+    bool moving() { return mMoving; }
+
 private:
+    void activate();
+    void deactivate();
+
+    void refreshCursor();
+
+    void cut();
+    void paste();
+
+    bool mMoving;
+    bool mDragging;
+    bool mMousePressed;
+    bool mDuplicate;
+
+    QPoint mMouseStart;
+    QPoint mDragStart;
+    QPoint mLastUpdate;
+
+    SharedTileLayer mPreviewLayer;
+    TileLayer *mTargetLayer;
 
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
