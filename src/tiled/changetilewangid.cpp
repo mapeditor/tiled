@@ -26,6 +26,19 @@ ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument, WangSet *wa
         mChanges.append(WangIdChange(mWangSet->wangIdOfTile(tile), wangId, tile));
 }
 
+ChangeTileWangId::ChangeTileWangId(TilesetDocument *tilesetDocument,
+                                   WangSet *wangSet,
+                                   const QList<WangIdChange> &changes,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mTilesetDocument(tilesetDocument)
+    , mWangSet(wangSet)
+    , mChanges(changes)
+    , mMergeable(true)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile WangId"));
+}
+
 void ChangeTileWangId::undo()
 {
     if (mChanges.isEmpty())

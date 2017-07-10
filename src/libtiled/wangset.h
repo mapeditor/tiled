@@ -175,13 +175,16 @@ public:
 
     int edgeColors() const { return mEdgeColors; }
     int cornerColors() const { return mCornerColors; }
+
+    /* Sets the edge/corner color count
+     * This can make wangIds already in the set invalid, so should only be used from
+     * ChangeWangSet(Edges/Corners)
+     * */
     void setEdgeColors(int n);
     void setCornerColors(int n);
 
-    /* Checks all wangIds to see if they are still valid
-     * If not, that wangId/wangTile pair are removed
-     * */
-    void updateWangSet();
+    QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
+    QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);
 
     /* Adds a wangtile to the wang set with a given wangId
      * If the given WangTile is already in the set with a

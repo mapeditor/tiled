@@ -118,11 +118,12 @@ void WangId::flipHorizontally()
 {
     WangId newWangId = mId;
 
-    newWangId.setEdgeColor(2, edgeColor(6));
-    newWangId.setEdgeColor(6, edgeColor(2));
+    newWangId.setEdgeColor(1, edgeColor(3));
+    newWangId.setEdgeColor(3, edgeColor(1));
 
-    for (int i = 1; i < 8; i+=2)
-        newWangId.setCornerColor(i, edgeColor(8 - i));
+    for (int i = 0; i < 4; ++i) {
+        newWangId.setCornerColor(i, cornerColor(3-i));
+    }
 
     mId = newWangId;
 }
@@ -210,11 +211,7 @@ void WangSet::setEdgeColors(int n)
     if (mEdgeColors == n)
         return;
 
-    int oldValue = mEdgeColors;
     mEdgeColors = n;
-
-    if (n < oldValue)
-        updateWangSet();
 }
 
 void WangSet::setCornerColors(int n)
@@ -222,22 +219,45 @@ void WangSet::setCornerColors(int n)
     if (mCornerColors == n)
         return;
 
-    int oldValue = mCornerColors;
     mCornerColors = n;
-
-    if (n < oldValue)
-        updateWangSet();
 }
 
-void WangSet::updateWangSet()
+QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors)
 {
+    QList<Tile *> tiles;
+
+    int previousEdgeColors = mEdgeColors;
+    mEdgeColors = newEdgeColors;
+
     for (WangId wangId : mWangIdToWangTile.keys()) {
         if (!wangIdIsValid(wangId)) {
-            for (WangTile wangTile : mWangIdToWangTile.values(wangId))
-                mTileInfoToWangId.remove(wangTileToTileInfo(wangTile));
-            mWangIdToWangTile.remove(wangId);
+            for (WangTile &wangTile : mWangIdToWangTile.values(wangId))
+                tiles.append(wangTile.tile());
         }
     }
+
+    mEdgeColors = previousEdgeColors;
+
+    return tiles;
+}
+
+QList<Tile *> WangSet::tilesChangedOnSetCornerColors(int newCornerColors)
+{
+    QList<Tile *> tiles;
+
+    int previousCornerColors = mCornerColors;
+    mCornerColors = newCornerColors;
+
+    for (WangId wangId : mWangIdToWangTile.keys()) {
+        if (!wangIdIsValid(wangId)) {
+            for (WangTile &wangTile : mWangIdToWangTile.values(wangId))
+                tiles.append(wangTile.tile());
+        }
+    }
+
+    mCornerColors = previousCornerColors;
+
+    return tiles;
 }
 
 void WangSet::addTile(Tile *tile, WangId wangId)

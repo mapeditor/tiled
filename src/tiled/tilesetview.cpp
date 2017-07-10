@@ -477,22 +477,6 @@ static void paintWangOverlay(QPainter *painter,
                 qPoly.clear();
             }
 
-            //bottom left
-            corner = wangId.cornerColor(2);
-            if (corner > 0) {
-                setWangStyle(painter, corner, corners);
-
-                qPoly.append(rect.bottomLeft());
-                qPoly.append(QPoint(rect.left(), rect.center().y()));
-                qPoly.append(QPoint(rect.left() + thicknessW, rect.center().y()));
-                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom() - thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom()));
-
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
-            }
-
             //top left
             corner = wangId.cornerColor(3);
             if (corner > 0) {
@@ -504,6 +488,22 @@ static void paintWangOverlay(QPainter *painter,
                 qPoly.append(rect.topLeft() + QPoint(thicknessW, thicknessH));
                 qPoly.append(QPoint(rect.center().x(), rect.top() + thicknessH));
                 qPoly.append(QPoint(rect.center().x(), rect.top()));
+
+                painter->drawPolygon(qPoly);
+                qPoly.clear();
+            }
+
+            //bottom left
+            corner = wangId.cornerColor(2);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                qPoly.append(rect.bottomLeft());
+                qPoly.append(QPoint(rect.left(), rect.center().y()));
+                qPoly.append(QPoint(rect.left() + thicknessW, rect.center().y()));
+                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
+                qPoly.append(QPoint(rect.center().x(), rect.bottom() - thicknessH));
+                qPoly.append(QPoint(rect.center().x(), rect.bottom()));
 
                 painter->drawPolygon(qPoly);
                 qPoly.clear();
@@ -825,6 +825,36 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
+    if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+        if (event->key() == Qt::Key_Z) {
+            if (event->modifiers() & Qt::ShiftModifier)
+                mWangId.rotate(3);
+            else
+                mWangId.rotate(1);
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+        if (event->key() == Qt::Key_X) {
+            mWangId.flipHorizontally();
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+        if (event->key() == Qt::Key_Y) {
+            mWangId.flipVertically();
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+    }
+
     return QTableView::keyPressEvent(event);
 }
 
@@ -939,6 +969,12 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     }
 
     if (mEditTerrain || mEditWangSet) {
+        //TODO this should tell the wangtemplate view to update
+        if (mEditWangSet && mWangSet) {
+            if (!mWangSet->wangIdIsValid(mWangId))
+                mWangId = 0;
+        }
+
         const QPoint pos = event->pos();
         const QModelIndex hoveredIndex = indexAt(pos);
         const QModelIndex previousHoveredIndex = mHoveredIndex;
