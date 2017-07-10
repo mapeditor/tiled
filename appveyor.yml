@@ -42,10 +42,10 @@ build_script:
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] set PUSH_TO_ITCH=true
   - qbs build --all-products release Tiled.windowsInstaller:true
   - qbs build --all-products itch qbs.buildVariant:release Tiled.sparkleEnabled:false Tiled.version:%TILED_ITCH_VERSION%
-  - pushd util\java
+  - cd util\java
   - mvn --version
   - mvn clean install
-  - popd
+  - cd ..\..
 
 after_build:
   - cd release
