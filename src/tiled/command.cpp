@@ -42,12 +42,11 @@ QString Command::finalWorkingDirectory() const
     QString finalExecutable = replaceVariables(executable);
     QFileInfo mFile(finalExecutable);
 
-    if (mFile.exists())
-        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                                      mFile.absolutePath());
-    else
-        finalWorkingDirectory.replace(QLatin1String("%executablepath"),
-                                      QStandardPaths::findExecutable(finalExecutable));
+    if (!mFile.exists())
+        mFile = QFileInfo(QStandardPaths::findExecutable(finalExecutable));
+
+    finalWorkingDirectory.replace(QLatin1String("%executablepath"),
+                                  mFile.absolutePath());
 
     return finalWorkingDirectory;
 }
