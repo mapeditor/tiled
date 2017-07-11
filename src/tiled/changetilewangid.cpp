@@ -105,7 +105,7 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
 
     //suboptimal, could use a map to remove any unnessesary changes if the same tile has
     //multiple changes.
-    mChanges.append(o->mChanges);
+    mChanges += o->mChanges;
 
     mMergeable = o->mMergeable;
 
