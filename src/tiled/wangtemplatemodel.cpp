@@ -89,11 +89,19 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
     int edges = mWangSet->edgeColors();
     int corners = mWangSet->cornerColors();
 
-    //Only wangIds with all edges/corners assigned are valid here
-    if (edges > 1)
-        Q_ASSERT(!wangId.hasEdgeWildCards());
-    if (edges > 1)
-        Q_ASSERT(!wangId.hasCornerWildCards());
+    //as this is a model of template tiles, a valid wangId can't have wildcards
+    if (edges > 1) {
+        if (wangId.hasEdgeWildCards())
+            return QModelIndex();
+
+        wangId = wangId - 0x01010101;
+    }
+    if (corners > 1) {
+        if (wangId.hasCornerWildCards())
+            return QModelIndex();
+
+        wangId = wangId - 0x10101010;
+    }
 
     int row = 0;
     int cornerEdgePermutations = edges * corners;

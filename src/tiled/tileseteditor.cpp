@@ -869,8 +869,7 @@ void TilesetEditor::currentWangSetChanged(WangSet *wangSet)
     if (!view)
         return;
 
-    if (wangSet)
-        view->setWangSet(wangSet);
+    view->setWangSet(wangSet);
 }
 
 void TilesetEditor::currentWangIdChanged(WangId wangId)
