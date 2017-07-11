@@ -126,6 +126,8 @@ signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
     void wangSetImageSelected(Tile *tile);
+    void activeWangIdChanged(WangId wangId);
+    void wangIdUsedChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
     void changeSelectedMapObjectsTileRequested(Tile *tile);
 
@@ -135,6 +137,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void enterEvent(QEvent *) override;
     void leaveEvent(QEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;

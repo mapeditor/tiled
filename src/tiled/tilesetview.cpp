@@ -338,7 +338,7 @@ static void paintWangOverlay(QPainter *painter,
                     rect.topRight() + QPoint(-thicknessW, thicknessH)
                 };
 
-                painter->drawPolyline(points, 4);
+                painter->drawPolygon(points, 4);
             }
 
             //bottom
@@ -833,6 +833,7 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
     }
 
     if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+
         if (event->key() == Qt::Key_Z) {
             if (event->modifiers() & Qt::ShiftModifier)
                 mWangId.rotate(-1);
@@ -976,10 +977,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     }
 
     if (mEditTerrain || mEditWangSet) {
-        //TODO this should tell the wangtemplate view to update
         if (mEditWangSet && mWangSet) {
             if (!mWangSet->wangIdIsValid(mWangId))
-                mWangId = 0;
+                emit activeWangIdChanged(0);
         }
 
         const QPoint pos = event->pos();
@@ -1050,6 +1050,14 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
     QTableView::mouseReleaseEvent(event);
     return;
+}
+
+void TilesetView::enterEvent(QEvent *event)
+{
+    if (mEditWangSet)
+        setFocus();
+
+    QTableView::enterEvent(event);
 }
 
 void TilesetView::leaveEvent(QEvent *event)
@@ -1269,12 +1277,22 @@ void TilesetView::applyWangId()
     if (!tile)
         return;
 
-    if (mWangSet->wangIdOfTile(tile) == mWangId)
+    WangId previousWangId = mWangSet->wangIdOfTile(tile);
+
+    if (previousWangId == mWangId)
         return;
+
+    bool wasUnused = !mWangSet->wangIdIsUsed(mWangId);
 
     QUndoCommand *command = new ChangeTileWangId(mTilesetDocument, mWangSet, tile, mWangId);
     mTilesetDocument->undoStack()->push(command);
     mWangIdChanged = true;
+
+    if (!mWangSet->wangIdIsUsed(previousWangId))
+        emit wangIdUsedChanged(previousWangId);
+
+    if (wasUnused)
+        emit wangIdUsedChanged(mWangId);
 }
 
 void TilesetView::finishWangIdChange()

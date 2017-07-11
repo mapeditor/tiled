@@ -277,7 +277,7 @@ void WangDock::refreshCurrentWangSet()
 void WangDock::refreshCurrentWangId()
 {
     QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
-    WangId wangId = mWangTemplateView->wangTemplateModel()->wangIdAt(selectionModel->currentIndex());
+    WangId wangId = mWangTemplateModel->wangIdAt(selectionModel->currentIndex());
 
     if (mCurrentWangId == wangId)
         return;
@@ -352,4 +352,26 @@ QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
         sourceIndex = tilesetDocument->wangSetModel()->index(wangSet);
 
     return mProxyModel->mapFromSource(sourceIndex);
+}
+
+void WangDock::onWangIdUsedChanged(WangId wangId)
+{
+    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+
+    if (index.isValid())
+        mWangTemplateView->update(index);
+}
+
+void WangDock::onActiveWangIdChanged(WangId wangId)
+{
+    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+    if (!index.isValid()) {
+        eraseWangIdsButtonClicked();
+        return;
+    }
+
+    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
+
+    //this emits current changed, and thus updates the wangId and such.
+    selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 }

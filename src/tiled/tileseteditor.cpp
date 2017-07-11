@@ -315,6 +315,8 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
 
     connect(view, &TilesetView::wangSetImageSelected, this, &TilesetEditor::setWangSetImage);
+    connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
+    connect(view, &TilesetView::activeWangIdChanged, mWangDock, &WangDock::onActiveWangIdChanged);
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);

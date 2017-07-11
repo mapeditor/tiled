@@ -65,6 +65,8 @@ signals:
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
+    void onActiveWangIdChanged(WangId wangId);
+    void onWangIdUsedChanged(WangId wangId);
 
 protected:
     void changeEvent(QEvent *event) override;
