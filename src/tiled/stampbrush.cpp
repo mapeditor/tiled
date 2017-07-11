@@ -377,17 +377,16 @@ struct PaintOperation {
 };
 
 //Helper function which gets a cell from the front or background tilelayer based on x and y
-//All positions are given relative to the frontTL (and assumes backTL.pos = 0,0)
-//If outside fillRegion, then a cell is given from backTL (if it has one)
-//Wasent sure what to name this, so sloppy names for now.
-static const Cell &adjCell(const TileLayer *backTL, const TileLayer *frontTL, const QRegion &fillRegion, int x, int y)
+//All positions are given relative to the front (and assumes back.pos = 0,0)
+//If outside fillRegion, then a cell is given from back (if it has one)
+static const Cell &adjacentCell(const TileLayer &back, const TileLayer &front, const QRegion &fillRegion, int x, int y)
 {
-    if (!fillRegion.contains(QPoint(x + frontTL->x(), y + frontTL->y())) && backTL->contains(x + frontTL->x(), y + frontTL->y())) {
-        return backTL->cellAt(x + frontTL->x(), y + frontTL->y());
-    } else if (frontTL->contains(x, y)) {
-        return frontTL->cellAt(x, y);
+    if (!fillRegion.contains(QPoint(x + front.x(), y + front.y())) && back.contains(x + front.x(), y + front.y())) {
+        return back.cellAt(x + front.x(), y + front.y());
+    } else if (front.contains(x, y)) {
+        return front.cellAt(x, y);
     } else {
-        const Cell &cell = Cell();
+        static const Cell cell;
         return cell;
     }
 }
@@ -447,31 +446,31 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         Cell surroundingCells[8];
 
-        for (const QPoint &p : list) {
-            surroundingCells[0] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left(),
-                                          p.y() - bounds.top()  - 1);
-            surroundingCells[1] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() + 1,
-                                          p.y() - bounds.top()  - 1);
-            surroundingCells[2] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() + 1,
-                                          p.y() - bounds.top());
-            surroundingCells[3] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() + 1,
-                                          p.y() - bounds.top()  + 1);
-            surroundingCells[4] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left(),
-                                          p.y() - bounds.top()  + 1);
-            surroundingCells[5] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() - 1,
-                                          p.y() - bounds.top()  + 1);
-            surroundingCells[6] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() - 1,
-                                          p.y() - bounds.top());
-            surroundingCells[7] = adjCell(tileLayer, preview.data(), paintedRegion,
-                                          p.x() - bounds.left() - 1,
-                                          p.y() - bounds.top()  - 1);
+        for (const QPoint p : list) {
+            surroundingCells[0] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left(),
+                                               p.y() - bounds.top()  - 1);
+            surroundingCells[1] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() + 1,
+                                               p.y() - bounds.top()  - 1);
+            surroundingCells[2] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() + 1,
+                                               p.y() - bounds.top());
+            surroundingCells[3] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() + 1,
+                                               p.y() - bounds.top()  + 1);
+            surroundingCells[4] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left(),
+                                               p.y() - bounds.top()  + 1);
+            surroundingCells[5] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() - 1,
+                                               p.y() - bounds.top()  + 1);
+            surroundingCells[6] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() - 1,
+                                               p.y() - bounds.top());
+            surroundingCells[7] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
+                                               p.x() - bounds.left() - 1,
+                                               p.y() - bounds.top()  - 1);
 
             WangId wangId = mWangSet->wangIdFromSurrounding(surroundingCells);
 

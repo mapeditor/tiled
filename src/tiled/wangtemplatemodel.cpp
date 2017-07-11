@@ -50,13 +50,6 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     }
 }
 
-int WangTemplateModel::columnCount(const QModelIndex &parent) const
-{
-    if (parent.isValid())
-        return 0;
-    return 1;
-}
-
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
 {
     if (role == WangIdRole)
@@ -107,11 +100,11 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
     int cornerEdgePermutations = edges * corners;
 
     for (int i = 0; i < 8; ++i) {
-        int bellowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edges : 1);
+        int belowPermutations = qPow(cornerEdgePermutations, i/2) * ((i&1)? edges : 1);
         if (i&1)
-            row += wangId.cornerColor(i/2) * bellowPermutations;
+            row += wangId.cornerColor(i/2) * belowPermutations;
         else
-            row += wangId.edgeColor(i/2) * bellowPermutations;
+            row += wangId.edgeColor(i/2) * belowPermutations;
     }
 
     return index(row, 0);
@@ -119,9 +112,9 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 
 void WangTemplateModel::setWangSet(WangSet *wangSet)
 {
+    beginResetModel();
     mWangSet = wangSet;
-
-    resetModel();
+    endResetModel();
 }
 
 void WangTemplateModel::resetModel()

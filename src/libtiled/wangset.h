@@ -180,8 +180,8 @@ public:
      * This can make wangIds already in the set invalid, so should only be used from
      * ChangeWangSet(Edges/Corners)
      * */
-    void setEdgeColors(int n);
-    void setCornerColors(int n);
+    void setEdgeColors(int n) { mEdgeColors = n; }
+    void setCornerColors(int n) { mCornerColors = n; }
 
     QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
     QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);

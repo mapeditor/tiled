@@ -20,6 +20,7 @@
 
 #include "wangtemplateview.h"
 
+#include "stylehelper.h"
 #include "utils.h"
 #include "wangtemplatemodel.h"
 #include "wangset.h"
@@ -305,21 +306,18 @@ WangTemplateView::WangTemplateView(QWidget *parent)
     setSelectionMode(QAbstractItemView::SingleSelection);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new WangTemplateDelegate(this, this));
-    setTabKeyNavigation(true);
+    setUniformItemSizes(true);
 
     connect(mZoomable, &Zoomable::scaleChanged,
             this, &WangTemplateView::adjustScale);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied,
+            this, &WangTemplateView::updateBackgroundColor);
 }
 
 qreal WangTemplateView::scale() const
 {
     return mZoomable->scale();
-}
-
-void WangTemplateView::setModel(QAbstractItemModel *model)
-{
-    QListView::setModel(model);
-    updateBackgroundColor();
 }
 
 void WangTemplateView::updateBackgroundColor()

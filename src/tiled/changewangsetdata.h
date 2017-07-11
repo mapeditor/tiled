@@ -56,7 +56,6 @@ private:
     int mOldValue;
     int mNewValue;
     QList<Tile *> mAffectedTiles;
-    QUndoCommand *mClearTiles;
 };
 
 class ChangeWangSetCorners : public QUndoCommand
@@ -76,7 +75,6 @@ private:
     int mOldValue;
     int mNewValue;
     QList<Tile *> mAffectedTiles;
-    QUndoCommand *mClearTiles;
 };
 
 class SetWangSetImage : public QUndoCommand

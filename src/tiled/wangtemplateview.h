@@ -44,7 +44,6 @@ public:
 
     qreal scale() const;
 
-    void setModel(QAbstractItemModel *model) override;
     void updateBackgroundColor();
 
     WangTemplateModel *wangTemplateModel() const

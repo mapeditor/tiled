@@ -241,14 +241,10 @@ static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter
     return transform;
 }
 
-static void setWangStyle(QPainter *painter,int index, int max)
+static void setWangStyle(QPainter *painter, int index, int max)
 {
-    QColor c;
-
-    if (index == 0)
-        c = QColor(0,0,0,0);
-    float hue = ((float)index-1)/(float)max;
-    c = QColor::fromHsvF(hue,1,1);
+    float hue = (float) (index-1) / max;
+    QColor c = QColor::fromHsvF(hue, 1, 1);
 
     painter->setBrush(QColor(c.red(), c.green(), c.blue(), 200));
     setCosmeticPen(painter, c, 2);
@@ -313,7 +309,6 @@ static void paintWangOverlay(QPainter *painter,
                 painter->drawRect(wRect);
             }
         } else {
-            QPolygon qPoly;
             int edge;
 
             //top
@@ -321,13 +316,14 @@ static void paintWangOverlay(QPainter *painter,
             if (edge > 0) {
                 setWangStyle(painter, edge, edges);
 
-                qPoly.append(rect.topLeft());
-                qPoly.append(rect.topRight());
-                qPoly.append(rect.topRight() + QPoint(-thicknessW, thicknessH));
-                qPoly.append(rect.topLeft() + QPoint(thicknessW, thicknessH));
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    rect.topRight(),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH)
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 4);
             }
 
             //right
@@ -335,13 +331,14 @@ static void paintWangOverlay(QPainter *painter,
             if (edge > 0) {
                 setWangStyle(painter, edge, edges);
 
-                qPoly.append(rect.topRight());
-                qPoly.append(rect.bottomRight());
-                qPoly.append(rect.bottomRight() + QPoint(-thicknessW, -thicknessH));
-                qPoly.append(rect.topRight() + QPoint(-thicknessW, thicknessH));
+                const QPoint points[] = {
+                    rect.topRight(),
+                    rect.bottomRight(),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH)
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolyline(points, 4);
             }
 
             //bottom
@@ -349,13 +346,14 @@ static void paintWangOverlay(QPainter *painter,
             if (edge > 0) {
                 setWangStyle(painter, edge, edges);
 
-                qPoly.append(rect.bottomRight());
-                qPoly.append(rect.bottomLeft());
-                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
-                qPoly.append(rect.bottomRight() + QPoint(-thicknessW, -thicknessH));
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    rect.bottomLeft(),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH)
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 4);
             }
 
             //left
@@ -363,19 +361,20 @@ static void paintWangOverlay(QPainter *painter,
             if (edge > 0) {
                 setWangStyle(painter, edge, edges);
 
-                qPoly.append(rect.topLeft());
-                qPoly.append(rect.bottomLeft());
-                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
-                qPoly.append(rect.topLeft() + QPoint(thicknessW, thicknessH));
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    rect.bottomLeft(),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH)
+                };
 
-                painter->drawPolygon(qPoly);
+                painter->drawPolygon(points, 4);
             }
         }
     }
 
     if (corners > 1) {
         if (edges > 1) {
-            QPolygon qPoly;
             int corner;
 
             //top right
@@ -383,15 +382,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.topRight());
-                qPoly.append(QPoint(rect.right(), rect.top() + rect.height()/3));
-                qPoly.append(QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3));
-                qPoly.append(rect.topRight() + QPoint(-thicknessW, thicknessH));
-                qPoly.append(QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH));
-                qPoly.append(QPoint(rect.right() - rect.width()/3, rect.top()));
+                const QPoint points[] = {
+                    rect.topRight(),
+                    QPoint(rect.right(), rect.top() + rect.height()/3),
+                    QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.top())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //bottom right
@@ -399,15 +399,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.bottomRight());
-                qPoly.append(QPoint(rect.right(), rect.bottom() - rect.height()/3));
-                qPoly.append(QPoint(rect.right() - thicknessW, rect.bottom() - rect.height()/3));
-                qPoly.append(rect.bottomRight() + QPoint(-thicknessW, -thicknessH));
-                qPoly.append(QPoint(rect.right() - rect.width()/3, rect.bottom() - thicknessH));
-                qPoly.append(QPoint(rect.right() - rect.width()/3, rect.bottom()));
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    QPoint(rect.right(), rect.bottom() - rect.height()/3),
+                    QPoint(rect.right() - thicknessW, rect.bottom() - rect.height()/3),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.bottom() - thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.bottom())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //bottom left
@@ -415,15 +416,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.bottomLeft());
-                qPoly.append(QPoint(rect.left(), rect.bottom() - rect.height()/3));
-                qPoly.append(QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3));
-                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
-                qPoly.append(QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH));
-                qPoly.append(QPoint(rect.left() + rect.width()/3, rect.bottom()));
+                const QPoint points[] = {
+                    rect.bottomLeft(),
+                    QPoint(rect.left(), rect.bottom() - rect.height()/3),
+                    QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.bottom()),
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //top left
@@ -431,15 +433,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.topLeft());
-                qPoly.append(QPoint(rect.left(), rect.top() + rect.height()/3));
-                qPoly.append(QPoint(rect.left() + thicknessW, rect.top() + rect.height()/3));
-                qPoly.append(rect.topLeft() + QPoint(thicknessW, thicknessH));
-                qPoly.append(QPoint(rect.left() + rect.width()/3, rect.top() + thicknessH));
-                qPoly.append(QPoint(rect.left() + rect.width()/3, rect.top()));
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    QPoint(rect.left(), rect.top() + rect.height()/3),
+                    QPoint(rect.left() + thicknessW, rect.top() + rect.height()/3),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.top() + thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.top())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
         } else {
             QPolygon qPoly;
@@ -450,15 +453,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.topRight());
-                qPoly.append(QPoint(rect.right(), rect.center().y()));
-                qPoly.append(QPoint(rect.right() - thicknessW, rect.center().y()));
-                qPoly.append(rect.topRight() + QPoint(-thicknessW, thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.top() + thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.top()));
+                const QPoint points[] = {
+                    rect.topRight(),
+                    QPoint(rect.right(), rect.center().y()),
+                    QPoint(rect.right() - thicknessW, rect.center().y()),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    QPoint(rect.center().x(), rect.top() + thicknessH),
+                    QPoint(rect.center().x(), rect.top())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //bottom right
@@ -466,15 +470,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.bottomRight());
-                qPoly.append(QPoint(rect.right(), rect.center().y()));
-                qPoly.append(QPoint(rect.right() - thicknessW, rect.center().y()));
-                qPoly.append(rect.bottomRight() + QPoint(-thicknessW, -thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom() - thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom()));
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    QPoint(rect.right(), rect.center().y()),
+                    QPoint(rect.right() - thicknessW, rect.center().y()),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
+                    QPoint(rect.center().x(), rect.bottom()),
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //top left
@@ -482,15 +487,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.topLeft());
-                qPoly.append(QPoint(rect.left(), rect.center().y()));
-                qPoly.append(QPoint(rect.left() + thicknessW, rect.center().y()));
-                qPoly.append(rect.topLeft() + QPoint(thicknessW, thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.top() + thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.top()));
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    QPoint(rect.left(), rect.center().y()),
+                    QPoint(rect.left() + thicknessW, rect.center().y()),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH),
+                    QPoint(rect.center().x(), rect.top() + thicknessH),
+                    QPoint(rect.center().x(), rect.top())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
 
             //bottom left
@@ -498,15 +504,16 @@ static void paintWangOverlay(QPainter *painter,
             if (corner > 0) {
                 setWangStyle(painter, corner, corners);
 
-                qPoly.append(rect.bottomLeft());
-                qPoly.append(QPoint(rect.left(), rect.center().y()));
-                qPoly.append(QPoint(rect.left() + thicknessW, rect.center().y()));
-                qPoly.append(rect.bottomLeft() + QPoint(thicknessW, -thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom() - thicknessH));
-                qPoly.append(QPoint(rect.center().x(), rect.bottom()));
+                const QPoint points[] = {
+                    rect.bottomLeft(),
+                    QPoint(rect.left(), rect.center().y()),
+                    QPoint(rect.left() + thicknessW, rect.center().y()),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
+                    QPoint(rect.center().x(), rect.bottom())
+                };
 
-                painter->drawPolygon(qPoly);
-                qPoly.clear();
+                painter->drawPolygon(points, 6);
             }
         }
     }
@@ -828,7 +835,7 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
     if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
         if (event->key() == Qt::Key_Z) {
             if (event->modifiers() & Qt::ShiftModifier)
-                mWangId.rotate(3);
+                mWangId.rotate(-1);
             else
                 mWangId.rotate(1);
 
@@ -999,11 +1006,15 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        if (previousHoveredIndex.isValid())
-            update(previousHoveredIndex);
-        if (mHoveredIndex.isValid() &&
-                (previousHoverCorner != mHoveredCorner || mHoveredIndex != previousHoveredIndex))
-            update(mHoveredIndex);
+        if (previousHoveredIndex != mHoveredIndex) {
+            if (previousHoveredIndex.isValid())
+                update(previousHoveredIndex);
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        } else if (previousHoverCorner != mHoveredCorner) {
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        }
 
         if (mEditTerrain && (event->buttons() & Qt::LeftButton))
             applyTerrain();
@@ -1033,6 +1044,8 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
+
+        return;
     }
 
     QTableView::mouseReleaseEvent(event);

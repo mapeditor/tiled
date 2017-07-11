@@ -49,26 +49,23 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
     , mIndex(index)
     , mOldValue(tilesetDocument->tileset()->wangSet(index)->edgeColors())
     , mNewValue(newValue)
-    , mClearTiles(nullptr)
 {
     //when edge size changes, all tiles with wangIds need to be updated.
-    if (Tileset *tileset = mTilesetDocument->tileset().data()) {
-        if (WangSet *wangSet = tileset->wangSet(index)) {
-            mAffectedTiles = wangSet->tilesWithWangId();
+    WangSet *wangSet = mTilesetDocument->tileset()->wangSet(index);
+    Q_ASSERT(wangSet);
+    mAffectedTiles = wangSet->tilesWithWangId();
 
-            if (mNewValue < mOldValue) {
-                //when the size is reduced, some wang assignments can be lost.
-                const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetEdgeColors(mNewValue);
+    if (mNewValue < mOldValue) {
+        //when the size is reduced, some wang assignments can be lost.
+        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetEdgeColors(mNewValue);
 
-                if (!changedTiles.isEmpty()) {
-                    QList <ChangeTileWangId::WangIdChange> changes;
+        if (!changedTiles.isEmpty()) {
+            QVector<ChangeTileWangId::WangIdChange> changes;
 
-                    for (Tile *tile : changedTiles)
-                        changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
+            for (Tile *tile : changedTiles)
+                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
 
-                    mClearTiles = new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
-                }
-            }
+            new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
         }
     }
 }
@@ -105,25 +102,24 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
     , mNewValue(newValue)
 {
     //when corner size changes, all tiles with wangIds need to be updated.
-    if (Tileset *tileset = mTilesetDocument->tileset().data()) {
-        if (WangSet *wangSet = tileset->wangSet(index)) {
-            mAffectedTiles = wangSet->tilesWithWangId();
+    WangSet *wangSet = mTilesetDocument->tileset()->wangSet(index);
+    Q_ASSERT(wangSet);
+    mAffectedTiles = wangSet->tilesWithWangId();
 
-            if (mNewValue < mOldValue) {
-                //when the size is reduced, some wang assignments can be lost.
-                const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetCornerColors(mNewValue);
+    if (mNewValue < mOldValue) {
+        //when the size is reduced, some wang assignments can be lost.
+        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetCornerColors(mNewValue);
 
-                if (!changedTiles.isEmpty()) {
-                    QList <ChangeTileWangId::WangIdChange> changes;
+        if (!changedTiles.isEmpty()) {
+            QVector <ChangeTileWangId::WangIdChange> changes;
 
-                    for (Tile *tile : changedTiles)
-                        changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
+            for (Tile *tile : changedTiles)
+                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
 
-                    mClearTiles = new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
-                }
-            }
+            new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
         }
     }
+
 }
 
 void ChangeWangSetCorners::undo()

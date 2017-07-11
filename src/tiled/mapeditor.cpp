@@ -211,7 +211,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
     mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
+    mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.

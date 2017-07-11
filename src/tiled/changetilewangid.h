@@ -34,10 +34,16 @@ class ChangeTileWangId : public QUndoCommand
 {
 public:
     struct WangIdChange {
-        WangIdChange (WangId from, WangId to, Tile *tile)
+        WangIdChange(WangId from, WangId to, Tile *tile)
             : from(from)
             , to(to)
             , tile(tile)
+        {}
+
+        WangIdChange()
+            :from(0)
+            , to(0)
+            , tile(nullptr)
         {}
 
         WangId from;
@@ -51,7 +57,7 @@ public:
 
     ChangeTileWangId(TilesetDocument *tilesetDocument,
                      WangSet *wangSet,
-                     const QList<WangIdChange> &changes,
+                     const QVector<WangIdChange> &changes,
                      QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -62,7 +68,7 @@ public:
 private:
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
-    QList<WangIdChange> mChanges;
+    QVector<WangIdChange> mChanges;
     bool mMergeable;
 };
 

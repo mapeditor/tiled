@@ -132,7 +132,7 @@ private:
      */
     void randomFill(TileLayer &tileLayer, const QRegion &region) const;
 
-    void wangFill(TileLayer &tileLayerToFill, const TileLayer &backgroundtileLayer, const QRegion &region) const;
+    void wangFill(TileLayer &tileLayerToFill, const TileLayer &backgroundTileLayer, const QRegion &region) const;
 
     StampActions *mStampActions;
 };

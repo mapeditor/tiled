@@ -590,11 +590,11 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt();
+                    unsigned wangId = tileAtts.value(QLatin1String("wangid")).toUInt(nullptr, 16);
 
                     if (!wangSet->wangIdIsValid(wangId)) {
-                        xml.skipCurrentElement();
-                        continue;
+                        xml.raiseError(QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId));
+                        return;
                     }
 
                     bool fH = tileAtts.value(QLatin1String("hflip")).toInt();
