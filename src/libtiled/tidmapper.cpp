@@ -47,13 +47,12 @@ TemplateRef TidMapper::tidToTemplateRef(unsigned tid, bool &ok) const
         unsigned id = tid - i.key();
         TemplateGroup *templateGroup = i.value();
 
-        if (templateGroup->loaded())
+        if (templateGroup->loaded()) {
             ok = id < templateGroup->nextTemplateId();
-        else // We can't be sure if the id is invalid if the template group is not loaded
+        } else { // We can't be sure if the id is invalid if the template group is not loaded
             ok = true;
-
-        if (!templateGroup->loaded())
             templateGroup->updateMaxId(id);
+        }
 
         return {templateGroup, id};
     }
@@ -69,9 +68,9 @@ unsigned TidMapper::templateRefToTid(TemplateRef templateRef) const
     QMapIterator<unsigned, TemplateGroup*> it(mFirstTidToTemplateGroup);
 
     while (it.hasNext()) {
-      it.next();
-      if (it.value() == templateRef.templateGroup)
-          return templateRef.templateId + it.key();
+        it.next();
+        if (it.value() == templateRef.templateGroup)
+            return templateRef.templateId + it.key();
     }
 
     return 0;

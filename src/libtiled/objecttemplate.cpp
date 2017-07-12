@@ -49,10 +49,4 @@ ObjectTemplate::ObjectTemplate(unsigned id, QString name):
 {
 }
 
-ObjectTemplate *blankObjectTemplate()
-{
-    ObjectTemplate *objectTemplate = new ObjectTemplate;
-    return objectTemplate;
-}
-
 } // namespace Tiled

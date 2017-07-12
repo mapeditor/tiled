@@ -32,8 +32,8 @@
 
 #include "map.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
-#include "templatemanager.h"
 
 #include <QFontMetricsF>
 #include <qmath.h>

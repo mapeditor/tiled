@@ -39,6 +39,12 @@ TemplateManager *TemplateManager::instance()
     return mInstance;
 }
 
+void TemplateManager::deleteInstance()
+{
+    delete mInstance;
+    mInstance = nullptr;
+}
+
 TemplateGroup *TemplateManager::findTemplateGroup(const QString &fileName)
 {
     for (auto *group : mTemplateGroups) {

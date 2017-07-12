@@ -159,7 +159,7 @@ bool ObjectTemplateModel::addTemplateGroup(TemplateGroup *templateGroup)
         if (templateDocument->fileName() == templateGroup->fileName())
             return false;
 
-    auto document = new TemplateGroupDocument(templateGroup, templateGroup->fileName());
+    auto document = new TemplateGroupDocument(templateGroup);
 
     beginInsertRows(QModelIndex(), mTemplateDocuments.size(), mTemplateDocuments.size());
     mTemplateDocuments.append(document);

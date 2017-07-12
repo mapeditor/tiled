@@ -34,6 +34,7 @@ class TILEDSHARED_EXPORT TemplateManager : public QObject
 
 public:
     static TemplateManager *instance();
+    static void deleteInstance();
 
     TemplateGroup *findTemplateGroup(const QString &fileName);
     TemplateGroup *loadTemplateGroup(const QString &fileName, QString *error);

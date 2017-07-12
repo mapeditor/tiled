@@ -963,29 +963,16 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    MapObject *object = new MapObject;
+    MapObject *object = new MapObject(name, type, pos, size);
 
     if (tid) // This object is a template instance
         object->setTemplateRef(templateRefForTid(tid));
 
     object->setId(id);
 
-    if (!name.isEmpty()) {
-        object->setName(name);
-        object->setPropertyChanged(MapObject::NameProperty);
-    }
-
-    if (!type.isEmpty()) {
-        object->setType(type);
-        object->setPropertyChanged(MapObject::TypeProperty);
-    }
-
-    object->setPosition(pos);
-
-    if (!size.isEmpty()) {
-        object->setSize(size);
-        object->setPropertyChanged(MapObject::SizeProperty);
-    }
+    object->setPropertyChanged(MapObject::NameProperty, !name.isEmpty());
+    object->setPropertyChanged(MapObject::TypeProperty, !type.isEmpty());
+    object->setPropertyChanged(MapObject::SizeProperty, !size.isEmpty());
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toDouble(&ok);

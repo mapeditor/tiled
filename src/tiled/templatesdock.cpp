@@ -108,7 +108,7 @@ void TemplatesDock::newTemplateGroup()
     templateGroup->setName(QFileInfo(fileName).baseName());
     templateGroup->setFileName(fileName);
     QScopedPointer<TemplateGroupDocument>
-        templateGroupDocument(new TemplateGroupDocument(templateGroup, fileName));
+        templateGroupDocument(new TemplateGroupDocument(templateGroup));
 
     QString error;
     if (!templateGroupDocument->save(fileName, &error)) {

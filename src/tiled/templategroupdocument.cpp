@@ -41,8 +41,8 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TemplateGroupDocument::TemplateGroupDocument(TemplateGroup *templateGroup, const QString &fileName)
-    : Document(TemplateGroupDocumentType, fileName)
+TemplateGroupDocument::TemplateGroupDocument(TemplateGroup *templateGroup)
+    : Document(TemplateGroupDocumentType, templateGroup->fileName())
     , mTemplateGroup(templateGroup)
 {
     mFileName = mTemplateGroup->fileName();
@@ -80,7 +80,7 @@ TemplateGroupDocument *TemplateGroupDocument::load(const QString &fileName,
 
     templateGroup->setFormat(format);
 
-    return new TemplateGroupDocument(templateGroup, fileName);
+    return new TemplateGroupDocument(templateGroup);
 }
 
 FileFormat *TemplateGroupDocument::writerFormat() const

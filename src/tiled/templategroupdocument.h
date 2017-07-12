@@ -45,7 +45,7 @@ class TemplateGroupDocument : public Document
     Q_OBJECT
 
 public:
-    TemplateGroupDocument(TemplateGroup *templateGroup, const QString &fileName = QString());
+    TemplateGroupDocument(TemplateGroup *templateGroup);
     ~TemplateGroupDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;

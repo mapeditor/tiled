@@ -61,8 +61,6 @@ private:
     TemplateGroup *mTemplateGroup;
 };
 
-TILEDSHARED_EXPORT ObjectTemplate *blankObjectTemplate();
-
 inline const MapObject *ObjectTemplate::object() const
 { return mObject; }
 
