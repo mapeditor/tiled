@@ -31,6 +31,7 @@
 #include "mapdocument.h"
 #include "painttilelayer.h"
 #include "stampactions.h"
+#include "wangset.h"
 
 #include <QAction>
 #include <QApplication>
@@ -48,10 +49,13 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mIsActive(false)
     , mLastShiftStatus(false)
     , mIsRandom(false)
+    , mIsWangFill(false)
+    , mWangSet(nullptr)
     , mLastRandomStatus(false)
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &BucketFillTool::randomChanged);
+    connect(mStampActions->wangFill(), &QAction::toggled, this, &BucketFillTool::wangFillChanged);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered,
             [this]() { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
@@ -104,8 +108,8 @@ static void fillWithStamp(TileLayer &layer,
 
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
-    // Skip filling if the stamp is empty
-    if (mStamp.isEmpty())
+    // Skip filling if the stamp is empty and not in wangFill mode
+    if (mStamp.isEmpty() && !mIsWangFill)
         return;
 
     // Make sure that a tile layer is selected
@@ -119,7 +123,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     TilePainter regionComputer(mapDocument(), tileLayer);
 
     // If the stamp is a single tile, ignore it when making the region
-    if (!shiftPressed && mStamp.variations().size() == 1) {
+    if (!shiftPressed && !mIsWangFill && mStamp.variations().size() == 1) {
         const TileStampVariation &variation = mStamp.variations().first();
         TileLayer *stampLayer = variation.tileLayer();
         if (stampLayer->size() == QSize(1, 1) &&
@@ -180,15 +184,18 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     }
 
     // Paint the new overlay
-    if (!mIsRandom) {
+    if (mIsRandom) {
+        randomFill(*mFillOverlay, mFillRegion);
+        fillRegionChanged = true;
+    } else if (mIsWangFill) {
+        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
+        fillRegionChanged = true;
+    } else {
         if (fillRegionChanged || mStamp.variations().size() > 1) {
             fillWithStamp(*mFillOverlay, mStamp,
                           mFillRegion.translated(-mFillOverlay->position()));
             fillRegionChanged = true;
         }
-    } else {
-        randomFill(*mFillOverlay, mFillRegion);
-        fillRegionChanged = true;
     }
 
     if (fillRegionChanged) {
@@ -282,7 +289,7 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
 void BucketFillTool::populateToolBar(QToolBar *toolBar)
 {
-    mStampActions->populateToolBar(toolBar, mIsRandom);
+    mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill);
 }
 
 void BucketFillTool::clearOverlay()
@@ -338,7 +345,30 @@ void BucketFillTool::setRandom(bool value)
     mIsRandom = value;
     updateRandomListAndMissingTilesets();
 
+    if (mIsRandom) {
+        mIsWangFill = false;
+        mStampActions->wangFill()->setChecked(false);
+    }
+
     // Don't need to recalculate fill region if there was no fill region
+    if (!mFillOverlay)
+        return;
+
+    tilePositionChanged(tilePosition());
+}
+
+void BucketFillTool::setWangFill(bool value)
+{
+    if (mIsWangFill == value)
+        return;
+
+    mIsWangFill = value;
+
+    if (mIsWangFill) {
+        mIsRandom = false;
+        mStampActions->random()->setChecked(false);
+    }
+
     if (!mFillOverlay)
         return;
 
@@ -351,10 +381,62 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
         return;
 
     for (const QRect &rect : region.translated(-tileLayer.position()).rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                tileLayer.setCell(_x, _y,
+        for (int y = rect.top(); y <= rect.bottom(); ++y) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                tileLayer.setCell(x, y,
                                   mRandomCellPicker.pick());
+            }
+        }
+    }
+}
+
+//Helper function which gets a cell from the front or background tilelayer based on x and y
+//All positions are given relative to the front (and assumes back.pos = 0,0)
+//If outside fillRegion, then a cell is given from back (if it has one)
+static const Cell &adjacentCell(const TileLayer &back, const TileLayer &front, const QRegion &fillRegion, int x, int y)
+{
+    if (!fillRegion.contains(QPoint(x + front.x(), y + front.y())) && back.contains(x + front.x(), y + front.y())) {
+        return back.cellAt(x + front.x(), y + front.y());
+    } else if (front.contains(x, y)) {
+        return front.cellAt(x, y);
+    } else {
+        static const Cell cell;
+        return cell;
+    }
+}
+
+void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
+                              const TileLayer &backgroundTileLayer,
+                              const QRegion &region) const
+{
+    if (region.isEmpty() || !mWangSet)
+        return;
+
+    for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
+        for (int y = rect.top(); y <= rect.bottom(); ++y) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                tileLayerToFill.setCell(x, y, Cell());
+            }
+        }
+    }
+
+    Cell surroundingCells[8];
+
+    for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
+        for (int y = rect.top(); y <= rect.bottom(); ++y) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                //gathering the Cells around the current point.
+                surroundingCells[0] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x    , y - 1);
+                surroundingCells[1] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y - 1);
+                surroundingCells[2] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y    );
+                surroundingCells[3] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y + 1);
+                surroundingCells[4] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x    , y + 1);
+                surroundingCells[5] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y + 1);
+                surroundingCells[6] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y    );
+                surroundingCells[7] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y - 1);
+
+                WangId wangId = mWangSet->wangIdFromSurrounding(surroundingCells);
+                tileLayerToFill.setCell(x, y, mWangSet->findMatchingCell(wangId));
             }
         }
     }

@@ -38,7 +38,7 @@
 
 namespace Tiled {
 
-class WangId
+class TILEDSHARED_EXPORT WangId
 {
 public:
 
@@ -53,6 +53,16 @@ public:
      * */
     int edgeColor(int index) const;
     int cornerColor(int index) const;
+
+    void setEdgeColor(int index, unsigned value);
+    void setCornerColor(int index, unsigned value);
+
+    /* Returns true if one or more edges are zero
+     * */
+    bool hasEdgeWildCards() const;
+    /* Returns true if one or more corners are zero
+     * */
+    bool hasCornerWildCards() const;
 
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
@@ -71,37 +81,6 @@ public:
 private:
     unsigned mId;
 };
-
-inline int WangId::edgeColor(int index) const
-{
-    int shift = (index * 8);
-
-    int color = (mId >> shift) & 0xf;
-
-    return color;
-}
-
-inline int WangId::cornerColor(int index) const
-{
-    int shift = (index * 8) + 4;
-
-    int color = (mId >> shift) & 0xf;
-
-    return color;
-}
-
-inline void WangId::rotate(int rotations)
-{
-    if (rotations < 0)
-        rotations = 4 + (rotations % 4);
-    else
-        rotations %= 4;
-
-    unsigned rotated = mId << rotations*8;
-    rotated = rotated | (mId >> ((4 - rotations) * 8));
-
-    mId = rotated;
-}
 
 //Class for holding info about rotation and flipping.
 class TILEDSHARED_EXPORT WangTile
@@ -135,6 +114,7 @@ public:
     Tile *tile() const { return mTile; }
 
     WangId wangId() const { return mWangId; }
+    void setWangId(WangId wangId) { mWangId = wangId; }
 
     bool flippedHorizontally() const { return mFlippedHorizontally; }
     bool flippedVertically() const { return mFlippedVertically; }
@@ -150,6 +130,13 @@ public:
     void flipVertically();
 
     Cell makeCell() const;
+
+    bool operator== (const WangTile &other) const
+    { return mTile == other.mTile
+                && mWangId == other.mWangId
+                && mFlippedHorizontally == other.mFlippedHorizontally
+                && mFlippedVertically == other.mFlippedVertically
+                && mFlippedAntiDiagonally == other.flippedAntiDiagonally(); }
 
 private:
     //performs a translation (either flipping or rotating) based on a one to one
@@ -188,16 +175,30 @@ public:
 
     int edgeColors() const { return mEdgeColors; }
     int cornerColors() const { return mCornerColors; }
+
+    /* Sets the edge/corner color count
+     * This can make wangIds already in the set invalid, so should only be used from
+     * ChangeWangSet(Edges/Corners)
+     * */
     void setEdgeColors(int n) { mEdgeColors = n; }
     void setCornerColors(int n) { mCornerColors = n; }
 
-    /* Adds a tile to the wang set with a given wangId
+    QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
+    QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);
+
+    /* Adds a wangtile to the wang set with a given wangId
+     * If the given WangTile is already in the set with a
+     * different wangId, then that reference is removed, and
+     * replaced with the new wangId. If the wangId provided is zero
+     * then the wangTile is removed if already in the set.
      * */
     void addTile(Tile *tile, WangId wangId);
-
     void addCell(const Cell &cell, WangId wangId);
-
     void addWangTile(const WangTile &wangTile);
+
+    void removeTile(Tile *tile);
+    void removeCell(const Cell &cell);
+    void removeWangTile(const WangTile &wangTile);
 
     /* Finds a tile whos WangId matches with the one provided,
      * where zeros in the id are treated as wild cards, and can be
@@ -234,6 +235,10 @@ public:
      * */
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
+    /* Returns a list of all the tiles with a wangId.
+     * */
+    QList<Tile *> tilesWithWangId() const;
+
     /* Returns the wangId of a given Tile.
      * */
     WangId wangIdOfTile(const Tile *tile) const;
@@ -243,6 +248,21 @@ public:
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */
     bool wangIdIsValid(WangId wangId) const;
+
+    /* Returns whether the given wangId is assigned to a WangTile.
+     * If edge count of this set is <= 1, then edges are ignored
+     * Same for corners.
+     * */
+    bool wangIdIsUsed(WangId wangId) const;
+
+    /* Returns the nth wangId starting at 0x11111111
+     * and, when C is the number of corners,
+     * and E is the number of edges,
+     * ending at 0xCECECECE
+     *
+     * Note this does NOT include wildcards (no zeros)
+     * */
+    WangId templateWangIdAt(unsigned n) const;
 
     /* Returns a clone of this wangset
      * */
@@ -264,3 +284,4 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::WangSet*)
+Q_DECLARE_METATYPE(Tiled::WangId)

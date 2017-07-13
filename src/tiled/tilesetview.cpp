@@ -21,6 +21,7 @@
 #include "tilesetview.h"
 
 #include "changetileterrain.h"
+#include "changetilewangid.h"
 #include "map.h"
 #include "preferences.h"
 #include "stylehelper.h"
@@ -30,7 +31,6 @@
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
-#include "wangset.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -241,6 +241,286 @@ static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter
     return transform;
 }
 
+static void setWangStyle(QPainter *painter, int index, int max)
+{
+    float hue = (float) (index-1) / max;
+    QColor c = QColor::fromHsvF(hue, 1, 1);
+
+    painter->setBrush(QColor(c.red(), c.green(), c.blue(), 200));
+    setCosmeticPen(painter, c, 2);
+}
+
+static void paintWangOverlay(QPainter *painter,
+                             WangId wangId,
+                             int edges,
+                             int corners,
+                             const QRect &rect)
+{
+    painter->save();
+    painter->setClipRect(rect);
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    //arbitrary fraction, could be made constant.
+    int thicknessW = rect.width()/6;
+    int thicknessH = rect.height()/6;
+
+    if (edges > 1) {
+        if (corners > 1) {
+            QRect wRect;
+            int edge;
+
+            //top
+            edge = wangId.edgeColor(0);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.top()),
+                              QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH));
+                painter->drawRect(wRect);
+            }
+
+            //right
+            edge = wangId.edgeColor(1);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                wRect = QRect(QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
+                              QPoint(rect.right(), rect.bottom() - rect.height()/3));
+                painter->drawRect(wRect);
+            }
+
+            //bottom
+            edge = wangId.edgeColor(2);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
+                              QPoint(rect.right() - rect.width()/3, rect.bottom()));
+                painter->drawRect(wRect);
+            }
+
+            //left
+            edge = wangId.edgeColor(3);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                wRect = QRect(QPoint(rect.left(), rect.top() + rect.height()/3),
+                              QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3));
+                painter->drawRect(wRect);
+            }
+        } else {
+            int edge;
+
+            //top
+            edge = wangId.edgeColor(0);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    rect.topRight(),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH)
+                };
+
+                painter->drawPolygon(points, 4);
+            }
+
+            //right
+            edge = wangId.edgeColor(1);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                const QPoint points[] = {
+                    rect.topRight(),
+                    rect.bottomRight(),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH)
+                };
+
+                painter->drawPolygon(points, 4);
+            }
+
+            //bottom
+            edge = wangId.edgeColor(2);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    rect.bottomLeft(),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH)
+                };
+
+                painter->drawPolygon(points, 4);
+            }
+
+            //left
+            edge = wangId.edgeColor(3);
+            if (edge > 0) {
+                setWangStyle(painter, edge, edges);
+
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    rect.bottomLeft(),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH)
+                };
+
+                painter->drawPolygon(points, 4);
+            }
+        }
+    }
+
+    if (corners > 1) {
+        if (edges > 1) {
+            int corner;
+
+            //top right
+            corner = wangId.cornerColor(0);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.topRight(),
+                    QPoint(rect.right(), rect.top() + rect.height()/3),
+                    QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.top())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //bottom right
+            corner = wangId.cornerColor(1);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    QPoint(rect.right(), rect.bottom() - rect.height()/3),
+                    QPoint(rect.right() - thicknessW, rect.bottom() - rect.height()/3),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.bottom() - thicknessH),
+                    QPoint(rect.right() - rect.width()/3, rect.bottom())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //bottom left
+            corner = wangId.cornerColor(2);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.bottomLeft(),
+                    QPoint(rect.left(), rect.bottom() - rect.height()/3),
+                    QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.bottom()),
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //top left
+            corner = wangId.cornerColor(3);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    QPoint(rect.left(), rect.top() + rect.height()/3),
+                    QPoint(rect.left() + thicknessW, rect.top() + rect.height()/3),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.top() + thicknessH),
+                    QPoint(rect.left() + rect.width()/3, rect.top())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+        } else {
+            QPolygon qPoly;
+            int corner;
+
+            //top right
+            corner = wangId.cornerColor(0);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.topRight(),
+                    QPoint(rect.right(), rect.center().y()),
+                    QPoint(rect.right() - thicknessW, rect.center().y()),
+                    rect.topRight() + QPoint(-thicknessW, thicknessH),
+                    QPoint(rect.center().x(), rect.top() + thicknessH),
+                    QPoint(rect.center().x(), rect.top())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //bottom right
+            corner = wangId.cornerColor(1);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.bottomRight(),
+                    QPoint(rect.right(), rect.center().y()),
+                    QPoint(rect.right() - thicknessW, rect.center().y()),
+                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
+                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
+                    QPoint(rect.center().x(), rect.bottom()),
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //top left
+            corner = wangId.cornerColor(3);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.topLeft(),
+                    QPoint(rect.left(), rect.center().y()),
+                    QPoint(rect.left() + thicknessW, rect.center().y()),
+                    rect.topLeft() + QPoint(thicknessW, thicknessH),
+                    QPoint(rect.center().x(), rect.top() + thicknessH),
+                    QPoint(rect.center().x(), rect.top())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+
+            //bottom left
+            corner = wangId.cornerColor(2);
+            if (corner > 0) {
+                setWangStyle(painter, corner, corners);
+
+                const QPoint points[] = {
+                    rect.bottomLeft(),
+                    QPoint(rect.left(), rect.center().y()),
+                    QPoint(rect.left() + thicknessW, rect.center().y()),
+                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
+                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
+                    QPoint(rect.center().x(), rect.bottom())
+                };
+
+                painter->drawPolygon(points, 6);
+            }
+        }
+    }
+
+    painter->restore();
+}
+
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
@@ -360,6 +640,25 @@ void TileDelegate::paint(QPainter *painter,
 
         painter->restore();
     }
+
+    if (mTilesetView->isEditWangSet()) {
+        if (const WangSet *wangSet = mTilesetView->wangSet()) {
+            paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+                             wangSet->edgeColors(),
+                             wangSet->cornerColors(),
+                             targetRect);
+
+            if (mTilesetView->hoveredIndex() == index) {
+                qreal opacity = painter->opacity();
+                painter->setOpacity(0.9);
+                paintWangOverlay(painter, mTilesetView->wangId(),
+                                 wangSet->edgeColors(),
+                                 wangSet->cornerColors(),
+                                 targetRect);
+                painter->setOpacity(opacity);
+            }
+        }
+    }
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
@@ -399,10 +698,14 @@ TilesetView::TilesetView(QWidget *parent)
     , mTilesetDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
+    , mEditWangSet(false)
     , mEraseTerrain(false)
     , mTerrain(nullptr)
+    , mWangSet(nullptr)
+    , mWangId(0)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
+    , mWangIdChanged(false)
     , mHandScrolling(false)
     , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
 {
@@ -528,6 +831,38 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         mZoomable->resetZoom();
         return;
     }
+
+    if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+
+        if (event->key() == Qt::Key_Z) {
+            if (event->modifiers() & Qt::ShiftModifier)
+                mWangId.rotate(-1);
+            else
+                mWangId.rotate(1);
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+        if (event->key() == Qt::Key_X) {
+            mWangId.flipHorizontally();
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+        if (event->key() == Qt::Key_Y) {
+            mWangId.flipVertically();
+
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+
+            return;
+        }
+    }
+
     return QTableView::keyPressEvent(event);
 }
 
@@ -543,7 +878,12 @@ void TilesetView::setEditTerrain(bool enabled)
 
 void TilesetView::setEditWangSet(bool enabled)
 {
+    if (mEditWangSet == enabled)
+        return;
+
     mEditWangSet = enabled;
+    setMouseTracking(true);
+    viewport()->update();
 }
 
 /**
@@ -565,9 +905,28 @@ void TilesetView::setTerrain(const Terrain *terrain)
         viewport()->update();
 }
 
-void TilesetView::setWangSet(const WangSet *wangSet)
+void TilesetView::setWangSet(WangSet *wangSet)
 {
+    if (mWangSet == wangSet)
+        return;
+
     mWangSet = wangSet;
+
+    if (mEditWangSet)
+        viewport()->update();
+}
+
+void TilesetView::setWangId(WangId wangId)
+{
+    if (!mWangSet || wangId == mWangId)
+        return;
+
+    Q_ASSERT(mWangSet->wangIdIsValid(wangId));
+
+    mWangId = wangId;
+
+    if (mEditWangSet && hoveredIndex().isValid())
+        update(hoveredIndex());
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -583,13 +942,21 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    if (!mEditTerrain) {
-        QTableView::mousePressEvent(event);
+    if (mEditTerrain) {
+        if (event->button() == Qt::LeftButton)
+            applyTerrain();
+
         return;
     }
 
-    if (event->button() == Qt::LeftButton)
-        applyTerrain();
+    if (mEditWangSet) {
+        if (event->button() == Qt::LeftButton)
+            applyWangId();
+
+        return;
+    }
+
+    QTableView::mousePressEvent(event);
 }
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
@@ -609,40 +976,55 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (!mEditTerrain) {
-        QTableView::mouseMoveEvent(event);
+    if (mEditTerrain || mEditWangSet) {
+        if (mEditWangSet && mWangSet) {
+            if (!mWangSet->wangIdIsValid(mWangId))
+                emit activeWangIdChanged(0);
+        }
+
+        const QPoint pos = event->pos();
+        const QModelIndex hoveredIndex = indexAt(pos);
+        const QModelIndex previousHoveredIndex = mHoveredIndex;
+        mHoveredIndex = hoveredIndex;
+        int previousHoverCorner = mHoveredCorner;
+
+        if (mEditTerrain) {
+            int hoveredCorner = 0;
+
+            if (mHoveredIndex.isValid()) {
+                const QPoint center = visualRect(hoveredIndex).center();
+
+                const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
+                const auto mappedPos = t.inverted().map(pos);
+
+                if (mappedPos.x() > center.x())
+                    hoveredCorner += 1;
+                if (mappedPos.y() > center.y())
+                    hoveredCorner += 2;
+
+                mHoveredCorner = hoveredCorner;
+            }
+        }
+
+        if (previousHoveredIndex != mHoveredIndex) {
+            if (previousHoveredIndex.isValid())
+                update(previousHoveredIndex);
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        } else if (previousHoverCorner != mHoveredCorner) {
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        }
+
+        if (mEditTerrain && (event->buttons() & Qt::LeftButton))
+            applyTerrain();
+        if (mEditWangSet && (event->buttons() & Qt::LeftButton))
+            applyWangId();
+
         return;
     }
 
-    const QPoint pos = event->pos();
-    const QModelIndex hoveredIndex = indexAt(pos);
-    int hoveredCorner = 0;
-
-    if (hoveredIndex.isValid()) {
-        const QPoint center = visualRect(hoveredIndex).center();
-
-        const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
-        const auto mappedPos = t.inverted().map(pos);
-
-        if (mappedPos.x() > center.x())
-            hoveredCorner += 1;
-        if (mappedPos.y() > center.y())
-            hoveredCorner += 2;
-    }
-
-    if (mHoveredIndex != hoveredIndex || mHoveredCorner != hoveredCorner) {
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
-        mHoveredCorner = hoveredCorner;
-
-        if (previousHoveredIndex.isValid())
-            update(previousHoveredIndex);
-        if (previousHoveredIndex != mHoveredIndex && mHoveredIndex.isValid())
-            update(mHoveredIndex);
-    }
-
-    if (event->buttons() & Qt::LeftButton)
-        applyTerrain();
+    QTableView::mouseMoveEvent(event);
 }
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
@@ -652,13 +1034,30 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
         return;
     }
 
-    if (!mEditTerrain) {
-        QTableView::mouseReleaseEvent(event);
+    if (mEditTerrain) {
+        if (event->button() == Qt::LeftButton)
+            finishTerrainChange();
+
         return;
     }
 
-    if (event->button() == Qt::LeftButton)
-        finishTerrainChange();
+    if (mEditWangSet) {
+        if (event->button() == Qt::LeftButton)
+            finishWangIdChange();
+
+        return;
+    }
+
+    QTableView::mouseReleaseEvent(event);
+    return;
+}
+
+void TilesetView::enterEvent(QEvent *event)
+{
+    if (mEditWangSet)
+        setFocus();
+
+    QTableView::enterEvent(event);
 }
 
 void TilesetView::leaveEvent(QEvent *event)
@@ -867,6 +1266,42 @@ void TilesetView::finishTerrainChange()
     // Prevent further merging since mouse was released
     mTilesetDocument->undoStack()->push(new ChangeTileTerrain);
     mTerrainChanged = false;
+}
+
+void TilesetView::applyWangId()
+{
+    if (!mHoveredIndex.isValid() || !mWangSet)
+        return;
+
+    Tile *tile = tilesetModel()->tileAt(mHoveredIndex);
+    if (!tile)
+        return;
+
+    WangId previousWangId = mWangSet->wangIdOfTile(tile);
+
+    if (previousWangId == mWangId)
+        return;
+
+    bool wasUnused = !mWangSet->wangIdIsUsed(mWangId);
+
+    QUndoCommand *command = new ChangeTileWangId(mTilesetDocument, mWangSet, tile, mWangId);
+    mTilesetDocument->undoStack()->push(command);
+    mWangIdChanged = true;
+
+    if (!mWangSet->wangIdIsUsed(previousWangId))
+        emit wangIdUsedChanged(previousWangId);
+
+    if (wasUnused)
+        emit wangIdUsedChanged(mWangId);
+}
+
+void TilesetView::finishWangIdChange()
+{
+    if (!mWangIdChanged)
+        return;
+
+    mTilesetDocument->undoStack()->push(new ChangeTileWangId);
+    mWangIdChanged = false;
 }
 
 Tile *TilesetView::currentTile() const

@@ -31,6 +31,7 @@
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetwangsetmodel.h"
+#include "changetilewangid.h"
 
 #include <QCoreApplication>
 
@@ -42,21 +43,51 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
                                        int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set edge count"))
+
+    , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
     , mOldValue(tilesetDocument->tileset()->wangSet(index)->edgeColors())
     , mNewValue(newValue)
 {
+    //when edge size changes, all tiles with wangIds need to be updated.
+    WangSet *wangSet = mTilesetDocument->tileset()->wangSet(index);
+    Q_ASSERT(wangSet);
+    mAffectedTiles = wangSet->tilesWithWangId();
+
+    if (mNewValue < mOldValue) {
+        //when the size is reduced, some wang assignments can be lost.
+        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetEdgeColors(mNewValue);
+
+        if (!changedTiles.isEmpty()) {
+            QVector<ChangeTileWangId::WangIdChange> changes;
+
+            for (Tile *tile : changedTiles)
+                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
+
+            new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
+        }
+    }
 }
 
 void ChangeWangSetEdges::undo()
 {
     mWangSetModel->setWangSetEdges(mIndex, mOldValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
+
+    QUndoCommand::undo();
 }
 
 void ChangeWangSetEdges::redo()
 {
     mWangSetModel->setWangSetEdges(mIndex, mNewValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
+
+    QUndoCommand::redo();
 }
 
 ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
@@ -64,21 +95,51 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
                                            int newValue)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Wang Set corner count"))
+    , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
     , mOldValue(tilesetDocument->tileset()->wangSet(index)->cornerColors())
     , mNewValue(newValue)
 {
+    //when corner size changes, all tiles with wangIds need to be updated.
+    WangSet *wangSet = mTilesetDocument->tileset()->wangSet(index);
+    Q_ASSERT(wangSet);
+    mAffectedTiles = wangSet->tilesWithWangId();
+
+    if (mNewValue < mOldValue) {
+        //when the size is reduced, some wang assignments can be lost.
+        const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetCornerColors(mNewValue);
+
+        if (!changedTiles.isEmpty()) {
+            QVector <ChangeTileWangId::WangIdChange> changes;
+
+            for (Tile *tile : changedTiles)
+                changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));
+
+            new ChangeTileWangId(mTilesetDocument, wangSet, changes, this);
+        }
+    }
+
 }
 
 void ChangeWangSetCorners::undo()
 {
     mWangSetModel->setWangSetCorners(mIndex, mOldValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
+
+    QUndoCommand::undo();
 }
 
 void ChangeWangSetCorners::redo()
 {
     mWangSetModel->setWangSetCorners(mIndex, mNewValue);
+
+    if (!mAffectedTiles.isEmpty())
+        emit mTilesetDocument->tileWangSetChanged(mAffectedTiles);
+
+    QUndoCommand::redo();
 }
 
 SetWangSetImage::SetWangSetImage(TilesetDocument *tilesetDocument, int index, int tileId)

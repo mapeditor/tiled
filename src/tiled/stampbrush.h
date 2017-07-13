@@ -29,6 +29,7 @@
 namespace Tiled {
 
 class Tile;
+class WangSet;
 
 namespace Internal {
 
@@ -69,6 +70,8 @@ public:
 
 public slots:
     void setRandom(bool value);
+    void setWangFill(bool value);
+    void setWangSet(const WangSet *wangSet) { mWangSet = wangSet; }
 
 signals:
     /**
@@ -79,6 +82,8 @@ signals:
     void stampChanged(const TileStamp &stamp);
 
     void randomChanged(bool value);
+
+    void wangFillChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -141,6 +146,9 @@ private:
 
     bool mIsRandom;
     RandomPicker<Cell> mRandomCellPicker;
+
+    bool mIsWangFill;
+    const WangSet *mWangSet;
 
     void updateRandomList();
 

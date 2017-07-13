@@ -63,6 +63,7 @@ class ToolManager;
 class TreeViewComboBox;
 class UncheckableItemsModel;
 class UndoDock;
+class WangDock;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -109,6 +110,7 @@ public slots:
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
     void setRandom(bool value);
+    void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
@@ -148,6 +150,7 @@ private:
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
+    WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
     QDockWidget *mTileStampsDock;
 

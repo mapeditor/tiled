@@ -47,7 +47,6 @@
 #include "undodock.h"
 #include "utils.h"
 #include "wangdock.h"
-#include "wangset.h"
 #include "zoomable.h"
 
 #include <QAction>
@@ -204,7 +203,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editTerrain->setIconVisibleInMenu(false);
     editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
     editCollision->setIconVisibleInMenu(false);
-    editWang->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
+    editWang->setIcon(QIcon(QLatin1String(":images/24x24/wangtile.png")));
     editWang->setIconVisibleInMenu(false);
 
     Utils::setThemeIcon(mAddTiles, "add");
@@ -237,6 +236,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mTerrainDock, &TerrainDock::removeTerrainTypeRequested, this, &TilesetEditor::removeTerrainType);
 
     connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::currentWangSetChanged);
+    connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
 
@@ -301,6 +301,8 @@ void TilesetEditor::addDocument(Document *document)
 
     connect(tilesetDocument, &TilesetDocument::tileTerrainChanged,
             tilesetModel, &TilesetModel::tilesChanged);
+    connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
+            tilesetModel, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
             tilesetModel, &TilesetModel::tileChanged);
     connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
@@ -313,6 +315,8 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
 
     connect(view, &TilesetView::wangSetImageSelected, this, &TilesetEditor::setWangSetImage);
+    connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
+    connect(view, &TilesetView::activeWangIdChanged, mWangDock, &WangDock::onActiveWangIdChanged);
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
@@ -861,14 +865,22 @@ void TilesetEditor::removeTerrainType()
         undoStack->endMacro();
 }
 
-void TilesetEditor::currentWangSetChanged(const WangSet *wangSet)
+void TilesetEditor::currentWangSetChanged(WangSet *wangSet)
 {
     TilesetView *view = currentTilesetView();
     if (!view)
         return;
 
-    if (wangSet)
-        view->setWangSet(wangSet);
+    view->setWangSet(wangSet);
+}
+
+void TilesetEditor::currentWangIdChanged(WangId wangId)
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    view->setWangId(wangId);
 }
 
 void TilesetEditor::addWangSet()
@@ -877,8 +889,8 @@ void TilesetEditor::addWangSet()
     if (!tileset)
         return;
 
-    //2 and 0 are default values for number of edges and corners TODO define this some where better?
-    WangSet *wangSet = new WangSet(tileset, 2, 0, QString(), -1);
+    //2 and 1 are default values for number of edges and corners TODO define this some where better?
+    WangSet *wangSet = new WangSet(tileset, 2, 1, QString(), -1);
     wangSet->setName(tr("New Wang Set"));
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,

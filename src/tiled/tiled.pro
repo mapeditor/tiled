@@ -110,6 +110,7 @@ SOURCES += aboutdialog.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changetileterrain.cpp \
+    changetilewangid.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
     clipboardmanager.cpp \
@@ -249,6 +250,8 @@ SOURCES += aboutdialog.cpp \
     wangsetview.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
+    wangtemplateview.cpp \
+    wangtemplatemodel.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -288,6 +291,7 @@ HEADERS += aboutdialog.h \
     changetileobjectgroup.h \
     changetileprobability.h \
     changetileterrain.h \
+    changetilewangid.h \
     changewangsetdata.h \
     clickablelabel.h \
     clipboardmanager.h \
@@ -432,6 +436,8 @@ HEADERS += aboutdialog.h \
     wangsetview.h \
     wangsetmodel.h \
     wangdock.h \
+    wangtemplateview.h \
+    wangtemplatemodel.h \
     zoomable.h
 
 FORMS += aboutdialog.ui \

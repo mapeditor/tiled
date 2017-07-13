@@ -1,6 +1,6 @@
 /*
- * stampactions.h
- * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * wangtemplatemodel.h
+ * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
  *
  * This file is part of Tiled.
  *
@@ -20,40 +20,46 @@
 
 #pragma once
 
-#include <QObject>
+#include "wangset.h"
 
-class QAction;
-class QToolBar;
+#include <QAbstractListModel>
 
 namespace Tiled {
+
 namespace Internal {
 
-class StampActions : public QObject
+/**
+ * A model for getting the info for a wang set template of a given WangSet
+ */
+class WangTemplateModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    StampActions(QObject *parent = nullptr);
-    ~StampActions();
+    enum UserRoles {
+        WangIdRole = Qt::UserRole
+    };
 
-    void languageChanged();
+    WangTemplateModel(WangSet *wangSet, QObject *parent = nullptr);
 
-    void populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QAction *random() const { return mRandom; }
-    QAction *wangFill() const { return mWangFill; }
-    QAction *flipHorizontal() const { return mFlipHorizontal; }
-    QAction *flipVertical() const { return mFlipVertical; }
-    QAction *rotateLeft() const { return mRotateLeft; }
-    QAction *rotateRight() const { return mRotateRight; }
+    QVariant data(const QModelIndex &index, int role) const override;
+
+    WangId wangIdAt(const QModelIndex &index) const;
+
+    QModelIndex wangIdIndex(WangId wangId) const;
+
+    WangSet *wangSet() const { return mWangSet; }
+    void setWangSet(WangSet *wangSet);
+
+    void resetModel();
+
+public slots:
+    void wangSetChanged();
 
 private:
-    QAction *mRandom;
-    QAction *mWangFill;
-    QAction *mFlipHorizontal;
-    QAction *mFlipVertical;
-    QAction *mRotateLeft;
-    QAction *mRotateRight;
+    WangSet *mWangSet;
 };
 
 } // namespace Internal

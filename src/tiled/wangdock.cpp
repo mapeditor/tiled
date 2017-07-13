@@ -18,10 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wangset.h"
 #include "wangdock.h"
+
 #include "wangsetview.h"
 #include "wangsetmodel.h"
+#include "wangtemplateview.h"
+#include "wangtemplatemodel.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -99,9 +101,11 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveWangSet(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
+    , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new WangSetFilterModel(this))
+    , mWangTemplateModel(new WangTemplateModel(nullptr, this))
     , mInitializing(false)
 {
     setObjectName(QLatin1String("WangSetDock"));
@@ -131,13 +135,32 @@ WangDock::WangDock(QWidget *parent)
     mToolBar->addAction(mAddWangSet);
     mToolBar->addAction(mRemoveWangSet);
 
+    mWangTemplateView = new WangTemplateView(w);
+    mWangTemplateView->setModel(mWangTemplateModel);
+    mWangTemplateView->setVisible(false);
+
+    connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &WangDock::refreshCurrentWangId);
+
+    mEraseWangIdsButton = new QPushButton(this);
+    mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
+    mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")));
+    mEraseWangIdsButton->setCheckable(true);
+    mEraseWangIdsButton->setAutoExclusive(true);
+    mEraseWangIdsButton->setChecked(mCurrentWangId == 0);
+
+    connect(mEraseWangIdsButton, &QPushButton::clicked,
+            this, &WangDock::eraseWangIdsButtonClicked);
+
     QHBoxLayout *horizontal = new QHBoxLayout;
+    horizontal->addWidget(mEraseWangIdsButton);
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setMargin(0);
     vertical->addWidget(mWangSetView);
+    vertical->addWidget(mWangTemplateView);
     vertical->addLayout(horizontal);
 
     connect(mAddWangSet, &QAction::triggered,
@@ -174,7 +197,9 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet((firstWangSet(mapDocument)));
 
+        mWangTemplateView->setVisible(false);
         mToolBar->setVisible(false);
+        mEraseWangIdsButton->setVisible(false);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
@@ -185,10 +210,15 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet(firstWangSet(tilesetDocument));
 
+        connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
+                mWangTemplateModel, &WangTemplateModel::wangSetChanged);
+
+        mWangTemplateView->setVisible(true);
         mToolBar->setVisible(true);
+        mEraseWangIdsButton->setVisible(true);
 
         /*
-         * Removing a wangset usually changes the selected terrain without the
+         * Removing a wangset usually changes the selected wangset without the
          * selection changing rows, so we can't rely on the currentRowChanged
          * signal.
          */
@@ -228,11 +258,35 @@ void WangDock::changeEvent(QEvent *event)
     }
 }
 
+void WangDock::eraseWangIdsButtonClicked()
+{
+    mCurrentWangId = 0;
+    mEraseWangIdsButton->setChecked(true);
+    mWangTemplateView->selectionModel()->clearCurrentIndex();
+    mWangTemplateView->selectionModel()->clearSelection();
+    emit currentWangIdChanged(mCurrentWangId);
+}
+
 void WangDock::refreshCurrentWangSet()
 {
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     WangSet *wangSet = mWangSetView->wangSetAt(selectionModel->currentIndex());
     setCurrentWangSet(wangSet);
+}
+
+void WangDock::refreshCurrentWangId()
+{
+    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
+    WangId wangId = mWangTemplateModel->wangIdAt(selectionModel->currentIndex());
+
+    if (mCurrentWangId == wangId)
+        return;
+
+    mCurrentWangId = wangId;
+
+    mEraseWangIdsButton->setChecked(!mCurrentWangId);
+
+    emit currentWangIdChanged(mCurrentWangId);
 }
 
 void WangDock::indexPressed(const QModelIndex &index)
@@ -257,8 +311,14 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mCurrentWangSet = wangSet;
 
+    //start off with no wangId selected
+    mCurrentWangId = 0;
+    mEraseWangIdsButton->setChecked(true);
+    mWangTemplateView->selectionModel()->clearSelection();
+
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
+        mWangTemplateModel->setWangSet(wangSet);
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();
@@ -277,6 +337,7 @@ void WangDock::retranslateUi()
 {
     setWindowTitle(tr("Wang Sets"));
 
+    mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
 }
@@ -291,4 +352,26 @@ QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
         sourceIndex = tilesetDocument->wangSetModel()->index(wangSet);
 
     return mProxyModel->mapFromSource(sourceIndex);
+}
+
+void WangDock::onWangIdUsedChanged(WangId wangId)
+{
+    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+
+    if (index.isValid())
+        mWangTemplateView->update(index);
+}
+
+void WangDock::onActiveWangIdChanged(WangId wangId)
+{
+    const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
+    if (!index.isValid()) {
+        eraseWangIdsButtonClicked();
+        return;
+    }
+
+    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
+
+    //this emits current changed, and thus updates the wangId and such.
+    selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 }

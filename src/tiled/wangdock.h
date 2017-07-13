@@ -23,20 +23,21 @@
 #include <QDockWidget>
 #include <QMap>
 
+#include "wangset.h"
+
 class QModelIndex;
 class QPushButton;
 class QToolBar;
 
 namespace Tiled {
-
-class WangSet;
-
 namespace Internal {
 
 class Document;
 class WangSetFilterModel;
 class WangSetView;
 class WangSetModel;
+class WangTemplateView;
+class WangTemplateModel;
 class TilesetDocument;
 class TilesetDocumentsFilterModel;
 
@@ -51,23 +52,29 @@ public:
     void setDocument(Document *document);
 
     WangSet *currentWangSet() const { return mCurrentWangSet; }
+    WangId currentWangId() const { return mCurrentWangId; }
 
     void editWangSetName(WangSet *wangSet);
 
 signals:
-    void currentWangSetChanged(const WangSet *WangSet);
+    void currentWangSetChanged(WangSet *wangSet);
+    void currentWangIdChanged(WangId wangId);
 
     void addWangSetRequested();
     void removeWangSetRequested();
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
+    void onActiveWangIdChanged(WangId wangId);
+    void onWangIdUsedChanged(WangId wangId);
 
 protected:
     void changeEvent(QEvent *event) override;
 
 private slots:
+    void eraseWangIdsButtonClicked();
     void refreshCurrentWangSet();
+    void refreshCurrentWangId();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
 
@@ -82,10 +89,14 @@ private:
 
     Document *mDocument;
     WangSetView *mWangSetView;
+    QPushButton *mEraseWangIdsButton;
     WangSet *mCurrentWangSet;
+    WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangSetModel *mWangSetModel;
     WangSetFilterModel *mProxyModel;
+    WangTemplateView *mWangTemplateView;
+    WangTemplateModel *mWangTemplateModel;
 
     bool mInitializing;
 };

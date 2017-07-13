@@ -78,7 +78,8 @@ signals:
     void wangSetRemoved(WangSet *wangSet);
 
     /**
-     * Emitted when either the name or the image of a terrain changed.
+     * Emitted when either the name, image, edgeCount, or corner count
+     * of a wangSet changed.
      */
     void wangSetChanged(Tileset *tileset, int index);
 
