@@ -428,6 +428,8 @@ QtGuiApplication {
         "variantpropertymanager.h",
         "wangdock.cpp",
         "wangdock.h",
+        "wangfiller.cpp",
+        "wangfiller.h",
         "wangsetmodel.cpp",
         "wangsetmodel.h",
         "wangsetview.cpp",

@@ -64,6 +64,11 @@ public:
      * */
     bool hasCornerWildCards() const;
 
+    /* Gives a list of wangId variations of this one
+     * where every 0 is a wildCard (can be 0 - edgeColors or cornerColors)
+     * */
+    QVector<WangId> variations(int edgeColors, int cornerColors) const;
+
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
      * and the top right corner, becomes the top bottom.
@@ -136,7 +141,7 @@ public:
                 && mWangId == other.mWangId
                 && mFlippedHorizontally == other.mFlippedHorizontally
                 && mFlippedVertically == other.mFlippedVertically
-                && mFlippedAntiDiagonally == other.flippedAntiDiagonally(); }
+                && mFlippedAntiDiagonally == other.mFlippedAntiDiagonally; }
 
 private:
     //performs a translation (either flipping or rotating) based on a one to one
@@ -212,11 +217,6 @@ public:
      * */
     QList<WangTile> findMatchingWangTiles(WangId wangId) const;
 
-    /* Finds a wangTile mathcing the provided wangId, and creates,
-     * and returns a Cell matching the WangTile.
-     * */
-    Cell findMatchingCell(WangId wangId) const;
-
     QList<WangTile> wangTiles() const { return mWangIdToWangTile.values(); }
 
     /* Returns a wangId matching that of the provided surrounding wangIds.
@@ -250,10 +250,21 @@ public:
     bool wangIdIsValid(WangId wangId) const;
 
     /* Returns whether the given wangId is assigned to a WangTile.
-     * If edge count of this set is <= 1, then edges are ignored
-     * Same for corners.
      * */
     bool wangIdIsUsed(WangId wangId) const;
+
+    /* Returns true if the given wangId is assigned to a tile,
+     * or any variations of the 0 spots are.
+     * */
+    bool wildWangIdIsUsed(WangId wangId) const;
+
+    bool isEmpty() const { return mWangIdToWangTile.isEmpty(); }
+
+    //Is every template wangTile filled
+    bool isComplete() const;
+
+    // How many tiles would be in a complete tileset
+    unsigned completeSetSize() const;
 
     /* Returns the nth wangId starting at 0x11111111
      * and, when C is the number of corners,

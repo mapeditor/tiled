@@ -35,6 +35,7 @@ namespace Internal {
 
 class MapDocument;
 class StampActions;
+class WangFiller;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
@@ -73,7 +74,7 @@ public:
 public slots:
     void setRandom(bool value);
     void setWangFill(bool value);
-    void setWangSet(const WangSet *wangSet) { mWangSet = wangSet; }
+    void setWangSet(WangSet *wangSet);
 
 signals:
     void stampChanged(const TileStamp &stamp);
@@ -109,7 +110,7 @@ private:
     bool mIsRandom;
 
     bool mIsWangFill;
-    const WangSet *mWangSet;
+    WangFiller *mWangFiller;
 
     /**
      * Contains the value of mIsRandom at that time, when the latest call of

@@ -32,6 +32,7 @@
 #include "painttilelayer.h"
 #include "stampactions.h"
 #include "wangset.h"
+#include "wangfiller.h"
 
 #include <QAction>
 #include <QApplication>
@@ -50,7 +51,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mLastShiftStatus(false)
     , mIsRandom(false)
     , mIsWangFill(false)
-    , mWangSet(nullptr)
+    , mWangFiller(new WangFiller(nullptr))
     , mLastRandomStatus(false)
     , mStampActions(new StampActions(this))
 {
@@ -390,26 +391,16 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
     }
 }
 
-//Helper function which gets a cell from the front or background tilelayer based on x and y
-//All positions are given relative to the front (and assumes back.pos = 0,0)
-//If outside fillRegion, then a cell is given from back (if it has one)
-static const Cell &adjacentCell(const TileLayer &back, const TileLayer &front, const QRegion &fillRegion, int x, int y)
+void BucketFillTool::setWangSet(WangSet *wangSet)
 {
-    if (!fillRegion.contains(QPoint(x + front.x(), y + front.y())) && back.contains(x + front.x(), y + front.y())) {
-        return back.cellAt(x + front.x(), y + front.y());
-    } else if (front.contains(x, y)) {
-        return front.cellAt(x, y);
-    } else {
-        static const Cell cell;
-        return cell;
-    }
+    mWangFiller->setWangSet(wangSet);
 }
 
 void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
                               const TileLayer &backgroundTileLayer,
                               const QRegion &region) const
 {
-    if (region.isEmpty() || !mWangSet)
+    if (region.isEmpty() || !mWangFiller->wangSet())
         return;
 
     for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
@@ -420,24 +411,14 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
         }
     }
 
-    Cell surroundingCells[8];
-
     for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                //gathering the Cells around the current point.
-                surroundingCells[0] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x    , y - 1);
-                surroundingCells[1] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y - 1);
-                surroundingCells[2] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y    );
-                surroundingCells[3] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x + 1, y + 1);
-                surroundingCells[4] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x    , y + 1);
-                surroundingCells[5] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y + 1);
-                surroundingCells[6] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y    );
-                surroundingCells[7] = adjacentCell(backgroundTileLayer, tileLayerToFill, region, x - 1, y - 1);
-
-                WangId wangId = mWangSet->wangIdFromSurrounding(surroundingCells);
-                tileLayerToFill.setCell(x, y, mWangSet->findMatchingCell(wangId));
-            }
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                tileLayerToFill.setCell(x, y, mWangFiller->findFittingCell(backgroundTileLayer,
+                                                                           tileLayerToFill,
+                                                                           region,
+                                                                           QPoint(x, y),
+                                                                           !mWangFiller->wangSet()->isComplete()));
         }
     }
 }

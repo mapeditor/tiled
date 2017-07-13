@@ -35,6 +35,7 @@ namespace Internal {
 
 class MapDocument;
 class StampActions;
+class WangFiller;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -71,7 +72,7 @@ public:
 public slots:
     void setRandom(bool value);
     void setWangFill(bool value);
-    void setWangSet(const WangSet *wangSet) { mWangSet = wangSet; }
+    void setWangSet(WangSet *wangSet);
 
 signals:
     /**
@@ -148,7 +149,7 @@ private:
     RandomPicker<Cell> mRandomCellPicker;
 
     bool mIsWangFill;
-    const WangSet *mWangSet;
+    WangFiller *mWangFiller;
 
     void updateRandomList();
 

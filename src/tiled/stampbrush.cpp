@@ -32,6 +32,7 @@
 #include "tile.h"
 #include "tilestamp.h"
 #include "wangset.h"
+#include "wangfiller.h"
 
 #include <math.h>
 #include <QAction>
@@ -50,7 +51,7 @@ StampBrush::StampBrush(QObject *parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
     , mIsWangFill(false)
-    , mWangSet(nullptr)
+    , mWangFiller(new WangFiller(nullptr))
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
@@ -242,6 +243,11 @@ void StampBrush::populateToolBar(QToolBar *toolBar)
     mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill);
 }
 
+void StampBrush::setWangSet(WangSet *wangSet)
+{
+    mWangFiller->setWangSet(wangSet);
+}
+
 void StampBrush::beginPaint()
 {
     if (mBrushBehavior != Free)
@@ -376,29 +382,6 @@ struct PaintOperation {
     TileLayer *stamp;
 };
 
-//Helper function which gets a cell from the front or background tilelayer based on x and y
-//All positions are given relative to the front (and assumes back.pos = 0,0)
-//If outside fillRegion, then a cell is given from back (if it has one)
-static const Cell &adjacentCell(const TileLayer &back, const TileLayer &front, const QRegion &fillRegion, int x, int y)
-{
-    if (!fillRegion.contains(QPoint(x + front.x(), y + front.y())) && back.contains(x + front.x(), y + front.y())) {
-        return back.cellAt(x + front.x(), y + front.y());
-    } else if (front.contains(x, y)) {
-        return front.cellAt(x, y);
-    } else {
-        static const Cell cell;
-        return cell;
-    }
-}
-
-/**
- * Draws the preview layer.
- * It tries to put at all given points a stamp of the current stamp at the
- * corresponding position.
- * It also takes care, that no overlaps appear.
- * So it will check for every point if it can place a stamp there without
- * overlap.
- */
 void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 {
     mPreviewLayer.clear();
@@ -428,7 +411,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         mPreviewLayer = preview;
     } else if (mIsWangFill) {
-        if (!mWangSet)
+        if (!mWangFiller->wangSet())
             return;
 
         const TileLayer *tileLayer = currentTileLayer();
@@ -444,39 +427,15 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        Cell surroundingCells[8];
-
         for (const QPoint p : list) {
-            surroundingCells[0] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left(),
-                                               p.y() - bounds.top()  - 1);
-            surroundingCells[1] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() + 1,
-                                               p.y() - bounds.top()  - 1);
-            surroundingCells[2] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() + 1,
-                                               p.y() - bounds.top());
-            surroundingCells[3] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() + 1,
-                                               p.y() - bounds.top()  + 1);
-            surroundingCells[4] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left(),
-                                               p.y() - bounds.top()  + 1);
-            surroundingCells[5] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() - 1,
-                                               p.y() - bounds.top()  + 1);
-            surroundingCells[6] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() - 1,
-                                               p.y() - bounds.top());
-            surroundingCells[7] = adjacentCell(*tileLayer, *preview.data(), paintedRegion,
-                                               p.x() - bounds.left() - 1,
-                                               p.y() - bounds.top()  - 1);
-
-            WangId wangId = mWangSet->wangIdFromSurrounding(surroundingCells);
-
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
-                             mWangSet->findMatchingCell(wangId));
+                             mWangFiller->findFittingCell(*tileLayer,
+                                                          *preview.data(),
+                                                          paintedRegion,
+                                                          QPoint(p.x() - bounds.left(),
+                                                                 p.y() - bounds.top()),
+                                                          !mWangFiller->wangSet()->isComplete()));
         }
 
         mPreviewLayer = preview;
