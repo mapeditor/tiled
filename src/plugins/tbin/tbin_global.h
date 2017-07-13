@@ -1,6 +1,6 @@
 /*
- * selectsametiletool.h
- * Copyright 2015, Mamed Ibrahimov <ibramlab@gmail.com>
+ * Tbin Tiled Plugin
+ * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,34 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #pragma once
 
+#include <QtCore/qglobal.h>
 
-#include "abstracttileselectiontool.h"
-
-#include "tilelayer.h"
-
-namespace Tiled {
-namespace Internal {
-
-class MapDocument;
-
-/**
- * Implements a tool that selects a region with all similar tiles on the layer.
- */
-class SelectSameTileTool : public AbstractTileSelectionTool
-{
-    Q_OBJECT
-
-public:
-    SelectSameTileTool(QObject *parent = nullptr);
-
-    void languageChanged() override;
-
-protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
-};
-
-} // namespace Internal
-} // namespace Tiled
+#if defined(TBIN_LIBRARY)
+#  define TBINSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define TBINSHARED_EXPORT Q_DECL_IMPORT
+#endif

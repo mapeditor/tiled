@@ -61,6 +61,8 @@ QtGuiApplication {
         "aboutdialog.ui",
         "abstractobjecttool.cpp",
         "abstractobjecttool.h",
+        "abstracttileselectiontool.cpp",
+        "abstracttileselectiontool.h",
         "abstracttiletool.cpp",
         "abstracttiletool.h",
         "abstracttool.cpp",
