@@ -33,12 +33,11 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 TileSelectionTool::TileSelectionTool(QObject *parent)
-    : AbstractTileTool(tr("Rectangular Select"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-rect-select.png")),
-                       QKeySequence(tr("R")),
-                       parent)
-    , mSelectionMode(Replace)
+    : AbstractTileSelectionTool(tr("Rectangular Select"),
+                                QIcon(QLatin1String(
+                                      ":images/22x22/stock-tool-rect-select.png")),
+                                QKeySequence(tr("R")),
+                                parent)
     , mMouseDown(false)
     , mSelecting(false)
 {
@@ -84,19 +83,8 @@ void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
-    const Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if (button == Qt::LeftButton) {
-        if (modifiers == Qt::ControlModifier) {
-            mSelectionMode = Subtract;
-        } else if (modifiers == Qt::ShiftModifier) {
-            mSelectionMode = Add;
-        } else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier)) {
-            mSelectionMode = Intersect;
-        } else {
-            mSelectionMode = Replace;
-        }
-
         mMouseDown = true;
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
@@ -127,7 +115,7 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         QRegion selection = document->selectedArea();
         const QRect area = selectedArea();
 
-        switch (mSelectionMode) {
+        switch (selectionMode()) {
         case Replace:   selection = area; break;
         case Add:       selection += area; break;
         case Subtract:  selection -= area; break;
@@ -153,6 +141,8 @@ void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
     setShortcut(QKeySequence(tr("R")));
+
+    AbstractTileSelectionTool::languageChanged();
 }
 
 QRect TileSelectionTool::selectedArea() const

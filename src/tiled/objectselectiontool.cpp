@@ -1038,7 +1038,7 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
     const QList<QGraphicsItem *> &items = mapScene()->items(rect);
     for (QGraphicsItem *item : items) {
         MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
-        if (mapObjectItem)
+        if (mapObjectItem && mapObjectItem->mapObject()->objectGroup()->isUnlocked())
             selectedItems.insert(mapObjectItem);
     }
 

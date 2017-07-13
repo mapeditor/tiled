@@ -1,5 +1,5 @@
 /*
- * eyevisibilitydelegate.h
+ * iconcheckdelegate.h
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
  * This file is part of Tiled.
@@ -29,18 +29,23 @@ namespace Internal {
 /**
  * Delegate for drawing an eye icon in LayerView when the layer is visible.
  */
-class EyeVisibilityDelegate: public QItemDelegate
+class IconCheckDelegate: public QItemDelegate
 {
 public:
-    explicit EyeVisibilityDelegate(QObject *parent = nullptr);
+    enum IconType {
+        VisibilityIcon,
+        LockedIcon
+    };
+
+    explicit IconCheckDelegate(IconType icon, QObject *parent = nullptr);
 
 protected:
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option,
                    const QRect &rect, Qt::CheckState state) const override;
 
 private:
-    QIcon mVisibleIcon;
-    QIcon mHiddenIcon;
+    QIcon mCheckedIcon;
+    QIcon mUncheckedIcon;
 };
 
 } // namespace Internal

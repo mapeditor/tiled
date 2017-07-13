@@ -31,11 +31,12 @@
 #include "objectgroup.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
-#include "eyevisibilitydelegate.h"
+#include "iconcheckdelegate.h"
 
 #include <QBoxLayout>
 #include <QApplication>
 #include <QContextMenuEvent>
+#include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
 #include <QSlider>
@@ -103,6 +104,8 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
+
+    mLayerView->header()->setStretchLastSection(false);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -125,6 +128,14 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     }
 
     mLayerView->setMapDocument(mapDocument);
+    if (mapDocument) {
+        mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+        mLayerView->header()->setSectionResizeMode(1, QHeaderView::Fixed);
+        mLayerView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
+        mLayerView->header()->resizeSection(1, Utils::dpiScaled(22));
+        mLayerView->header()->resizeSection(2, Utils::dpiScaled(22));
+    }
+
     updateOpacitySlider();
 }
 
@@ -222,7 +233,8 @@ LayerView::LayerView(QWidget *parent)
     setHeaderHidden(true);
     setUniformRowHeights(true);
     setModel(mProxyModel);
-    setItemDelegate(new EyeVisibilityDelegate(this));
+    setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, this));
     setDragDropMode(QAbstractItemView::InternalMove);
 
     connect(this, SIGNAL(pressed(QModelIndex)),

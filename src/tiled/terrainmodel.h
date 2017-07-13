@@ -32,7 +32,7 @@ class Terrain;
 
 namespace Internal {
 
-class MapDocument;
+class TilesetDocument;
 
 /**
  * A model providing a tree view on the terrain types available on a map.
@@ -49,9 +49,9 @@ public:
     /**
      * Constructor.
      *
-     * @param mapDocument the map to manage terrains for
+     * @param tilesetDocumentsModel a model of a list of tileset documents
      */
-    TerrainModel(MapDocument *mapDocument,
+    TerrainModel(QAbstractItemModel *tilesetDocumentsModel,
                  QObject *parent = nullptr);
 
     ~TerrainModel();
@@ -71,17 +71,12 @@ public:
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /**
-     * Returns the number of columns.
-     */
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    /**
-     * Returns the data stored under the given <i>role</i> for the item
-     * referred to by the <i>index</i>.
-     */
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /**
      * Returns the tileset at the given \a index, or 0 if there is no tileset.
@@ -94,19 +89,20 @@ public:
     Terrain *terrainAt(const QModelIndex &index) const;
 
 private slots:
-    void tilesetAboutToBeAdded(int index);
-    void tilesetAdded();
-    void tilesetAboutToBeRemoved(int index);
-    void tilesetRemoved();
-    void tilesetChanged(Tileset *tileset);
+    void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
+    void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
+    void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
-    void terrainAboutToBeAdded(Tileset *tileset, int terrainId);
-    void terrainAdded(Tileset *tileset);
-    void terrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);
-    void terrainRemoved(Tileset *tileset);
+    void onTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
+    void onTerrainAdded(Tileset *tileset);
+    void onTerrainAboutToBeRemoved(Terrain *terrain);
+    void onTerrainRemoved(Terrain *terrain);
 
 private:
-    MapDocument *mMapDocument;
+    QAbstractItemModel *mTilesetDocumentsModel;
+    QList<TilesetDocument*> mTilesetDocuments;
 };
 
 } // namespace Internal

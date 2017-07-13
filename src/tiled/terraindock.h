@@ -38,8 +38,10 @@ namespace Internal {
 
 class Document;
 class TerrainFilterModel;
+class TerrainModel;
 class TerrainView;
 class TilesetDocument;
+class TilesetDocumentsFilterModel;
 
 /**
  * The dock widget that displays the terrains. Also keeps track of the
@@ -50,11 +52,7 @@ class TerrainDock : public QDockWidget
     Q_OBJECT
 
 public:
-    /**
-     * Constructor.
-     */
     TerrainDock(QWidget *parent = nullptr);
-
     ~TerrainDock();
 
     /**
@@ -109,6 +107,8 @@ private:
     TerrainView *mTerrainView;
     QPushButton *mEraseTerrainButton;
     Terrain *mCurrentTerrain;
+    TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+    TerrainModel *mTerrainModel;
     TerrainFilterModel *mProxyModel;
 
     bool mInitializing;

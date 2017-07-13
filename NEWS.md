@@ -1,3 +1,16 @@
+### 1.0.2 (27 June 2017)
+
+* Added read-only tile and terrain properties in map editor
+* Fixed Terrains view to display all tilesets with terrain
+* Fixed hang when trying to fill with a pasted stamp (#1617, #1624)
+* Fixed crash when editing collision when tile image wasn't loaded
+* Fixed rendering of tile objects when the image couldn't be loaded
+* Fixed rendering of tile object outlines for resized objects
+* Fixed labels shown on objects hidden via a group layer
+* Fixed updating of label positions when moving a group layer
+* GmxPlugin: Fixed tile type inheritance for tile objects
+* Restored Ctrl+N shortcut on "New Map" action
+
 ### 1.0.1 (13 June 2017)
 
 * Made the zoom level used in Tilesets view persistent

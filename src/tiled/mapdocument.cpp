@@ -57,7 +57,6 @@
 #include "templategroup.h"
 #include "templategroupdocument.h"
 #include "terrain.h"
-#include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -77,7 +76,6 @@ MapDocument::MapDocument(Map *map, const QString &fileName)
     , mLayerModel(new LayerModel(this))
     , mRenderer(nullptr)
     , mMapObjectModel(new MapObjectModel(this))
-    , mTerrainModel(new TerrainModel(this, this))
 {
     mCurrentObject = map;
 

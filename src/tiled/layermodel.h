@@ -75,7 +75,7 @@ public:
                       int row, int column,
                       const QModelIndex &parent) override;
 
-    QModelIndex index(Layer *layer) const;
+    QModelIndex index(Layer *layer, int column = 0) const;
     Layer *toLayer(const QModelIndex &index) const;
 
     MapDocument *mapDocument() const;
@@ -86,6 +86,7 @@ public:
     void replaceLayer(Layer *layer, Layer *replacement);
 
     void setLayerVisible(Layer *layer, bool visible);
+    void setLayerLocked(Layer *layer, bool locked);
     void setLayerOpacity(Layer *layer, float opacity);
     void setLayerOffset(Layer *layer, const QPointF &offset);
 

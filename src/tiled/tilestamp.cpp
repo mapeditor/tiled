@@ -150,8 +150,9 @@ QSize TileStamp::maxSize() const
 {
     QSize size;
     for (const TileStampVariation &variation : d->variations) {
-        size.setWidth(qMax(size.width(), variation.map->width()));
-        size.setHeight(qMax(size.height(), variation.map->height()));
+        const QSize variationSize = variation.tileLayer()->size();
+        size.setWidth(qMax(size.width(), variationSize.width()));
+        size.setHeight(qMax(size.height(), variationSize.height()));
     }
     return size;
 }

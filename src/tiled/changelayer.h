@@ -55,6 +55,28 @@ private:
 };
 
 /**
+ * Used for changing layer lock.
+ */
+class SetLayerLocked : public QUndoCommand
+{
+public:
+    SetLayerLocked(MapDocument *mapDocument,
+                   Layer *layer,
+                   bool locked);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    bool mLocked;
+};
+
+
+/**
  * Used for changing layer opacity.
  */
 class SetLayerOpacity : public QUndoCommand

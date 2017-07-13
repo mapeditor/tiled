@@ -121,6 +121,7 @@ private:
         HeightProperty,
         RotationProperty,
         VisibleProperty,
+        LockedProperty,
         OpacityProperty,
         TextProperty,
         TextAlignmentProperty,

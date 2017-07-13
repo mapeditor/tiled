@@ -149,6 +149,9 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
+    if (!objectGroup->isUnlocked())
+        return false;
+
     MapObject *newMapObject = createNewMapObject();
     if (!newMapObject)
         return false;

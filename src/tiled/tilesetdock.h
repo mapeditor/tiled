@@ -24,6 +24,7 @@
 
 #include "tileset.h"
 
+#include <QAbstractItemModel>
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
@@ -51,6 +52,7 @@ namespace Internal {
 class Document;
 class MapDocument;
 class TilesetDocument;
+class TilesetDocumentsFilterModel;
 class TilesetView;
 class TileStamp;
 class Zoomable;
@@ -112,9 +114,9 @@ private slots:
 
     void updateActions();
     void updateCurrentTiles();
+    void indexPressed(const QModelIndex &index);
 
     void tilesetChanged(Tileset *tileset);
-    void tilesetNameChanged(Tileset *tileset);
     void tilesetFileNameChanged(const QString &fileName);
 
     void tileImageSourceChanged(Tile *tile);
@@ -138,7 +140,13 @@ private:
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
-    void updateTilesets();
+    void onTilesetRowsInserted(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
+    void onTilesetRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
+    void onTilesetLayoutChanged(const QList<QPersistentModelIndex> &parents, QAbstractItemModel::LayoutChangeHint hint);
+    void onTilesetDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
+    void onTabMoved(int from, int to);
 
     Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
@@ -154,6 +162,7 @@ private:
     // Shared tileset references because the dock wants to add new tiles
     QVector<SharedTileset> mTilesets;
     QList<TilesetDocument *> mTilesetDocuments;
+    TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
 
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;

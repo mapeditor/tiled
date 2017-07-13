@@ -152,7 +152,11 @@ CellRenderer::CellRenderer(QPainter *painter, const CellType cellType)
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin)
 {
     const Tile *tile = cell.tile();
-    if (!tile) {
+
+    if (tile)
+        tile = tile->currentFrameTile();
+
+    if (!tile || tile->image().isNull()) {
         QRectF target { pos - QPointF(0, size.height()), size };
         if (origin == BottomCenter)
             target.moveLeft(target.left() - size.width() / 2);
@@ -160,15 +164,14 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &si
         return;
     }
 
-    tile = tile->currentFrameTile();
-    if (!tile)
-        return;
-
     if (mTile != tile)
         flush();
 
     const QPixmap &image = tile->image();
     const QSizeF imageSize = image.size();
+    if (imageSize.isEmpty())
+        return;
+
     const QSizeF scale(size.width() / imageSize.width(), size.height() / imageSize.height());
     const QPoint offset = tile->offset();
     const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);

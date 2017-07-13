@@ -37,6 +37,7 @@
 #include "noeditorwidget.h"
 #include "preferences.h"
 #include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
@@ -115,6 +116,7 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
+    , mTilesetDocumentsModel(new TilesetDocumentsModel(this))
     , mWidget(new QWidget)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
@@ -172,7 +174,7 @@ DocumentManager::~DocumentManager()
 {
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
-    Q_ASSERT(mTilesetDocuments.isEmpty());
+    Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
     Q_ASSERT(mTilesetToDocument.isEmpty());
     delete mWidget;
 }
@@ -335,9 +337,9 @@ void DocumentManager::addDocument(Document *document)
             addToTilesetDocument(tileset, mapDocument);
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         // We may have opened a bare tileset that wasn't seen before
-        if (!mTilesetDocuments.contains(tilesetDocument)) {
+        if (!mTilesetDocumentsModel->contains(tilesetDocument)) {
             mTilesetToDocument.insert(tilesetDocument->tileset(), tilesetDocument);
-            mTilesetDocuments.append(tilesetDocument);
+            mTilesetDocumentsModel->append(tilesetDocument);
             emit tilesetDocumentAdded(tilesetDocument);
         }
     }
@@ -546,7 +548,7 @@ void DocumentManager::closeDocumentAt(int index)
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetToDocument.remove(tilesetDocument->tileset());
-            mTilesetDocuments.removeOne(tilesetDocument);
+            mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
             delete document;
         } else {
@@ -802,32 +804,13 @@ TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) c
     if (canonicalFilePath.isEmpty()) // file doesn't exist
         return nullptr;
 
-    for (auto tilesetDocument : mTilesetDocuments) {
+    for (auto tilesetDocument : mTilesetDocumentsModel->tilesetDocuments()) {
         QString name = tilesetDocument->fileName();
         if (!name.isEmpty() && QFileInfo(name).canonicalFilePath() == canonicalFilePath)
             return tilesetDocument;
     }
 
     return nullptr;
-}
-
-/**
- * Searches for a document for the given tileset, creating it if it does not
- * exist already.
- */
-TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTileset &tileset)
-{
-    auto tilesetDocument = findTilesetDocument(tileset);
-
-    // Create TilesetDocument instance when it doesn't exist yet
-    if (!tilesetDocument) {
-        tilesetDocument = new TilesetDocument(tileset);
-        mTilesetToDocument.insert(tileset, tilesetDocument);
-        mTilesetDocuments.append(tilesetDocument);
-        emit tilesetDocumentAdded(tilesetDocument);
-    }
-
-    return tilesetDocument;
 }
 
 void DocumentManager::openTileset(const SharedTileset &tileset)
@@ -841,8 +824,19 @@ void DocumentManager::openTileset(const SharedTileset &tileset)
 
 void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    auto tilesetDocument = findOrCreateTilesetDocument(tileset);
-    tilesetDocument->addMapDocument(mapDocument);
+    auto tilesetDocument = findTilesetDocument(tileset);
+
+    // Create TilesetDocument instance when it doesn't exist yet
+    if (!tilesetDocument) {
+        tilesetDocument = new TilesetDocument(tileset);
+        tilesetDocument->addMapDocument(mapDocument);
+
+        mTilesetToDocument.insert(tileset, tilesetDocument);
+        mTilesetDocumentsModel->append(tilesetDocument);
+        emit tilesetDocumentAdded(tilesetDocument);
+    } else {
+        tilesetDocument->addMapDocument(mapDocument);
+    }
 }
 
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
@@ -862,7 +856,7 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
             closeDocumentAt(index);
         } else {
             mTilesetToDocument.remove(tileset);
-            mTilesetDocuments.removeOne(tilesetDocument);
+            mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
             delete tilesetDocument;
         }

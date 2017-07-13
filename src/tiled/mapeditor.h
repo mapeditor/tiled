@@ -109,6 +109,7 @@ public slots:
 
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
+    void setRandom(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
@@ -142,8 +143,6 @@ private:
     QHash<MapDocument*, MapView*> mWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
-    QToolButton *mRandomButton;
-
     PropertiesDock *mPropertiesDock;
     MapsDock *mMapsDock;
     UndoDock *mUndoDock;
@@ -168,6 +167,7 @@ private:
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
+    QToolBar *mToolSpecificToolBar;
     ToolManager *mToolManager;
     AbstractTool *mSelectedTool;
     MapView *mViewWithTool;

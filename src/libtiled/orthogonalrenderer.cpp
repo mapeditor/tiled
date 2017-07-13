@@ -69,8 +69,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
         if (const Tile *tile = object->cell().tile()) {
             QSize imgSize = tile->size();
-            scale = QSizeF(objectSize.width() / imgSize.width(),
-                           objectSize.height() / imgSize.height());
+            if (!imgSize.isNull()) {
+                scale = QSizeF(objectSize.width() / imgSize.width(),
+                               objectSize.height() / imgSize.height());
+            }
             tileOffset = tile->offset();
         }
 
@@ -217,6 +219,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
+
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
@@ -325,23 +330,19 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        CellRenderer(painter).render(cell, QPointF(), object->size(),
+        const QSizeF size = object->size();
+        CellRenderer(painter).render(cell, QPointF(), size,
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
-            QSizeF imgSize;
             QPointF tileOffset;
 
-            if (const Tile *tile = cell.tile()) {
-                imgSize = tile->size();
+            if (const Tile *tile = cell.tile())
                 tileOffset = tile->offset();
-            } else {
-                imgSize = object->size();
-            }
 
             QRectF rect(QPointF(tileOffset.x(),
-                                tileOffset.y() - imgSize.height()),
-                        imgSize);
+                                tileOffset.y() - size.height()),
+                        size);
 
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);

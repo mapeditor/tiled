@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include "abstracttiletool.h"
+#include "abstracttileselectiontool.h"
 
 namespace Tiled {
 namespace Internal {
 
-class TileSelectionTool : public AbstractTileTool
+class TileSelectionTool : public AbstractTileSelectionTool
 {
     Q_OBJECT
 
@@ -44,20 +44,12 @@ protected:
     void updateStatusInfo() override;
 
 private:
-    enum SelectionMode {
-        Replace,
-        Add,
-        Subtract,
-        Intersect
-    };
-
     QRect selectedArea() const;
 
     void clearSelection();
 
     QPoint mMouseScreenStart;
     QPoint mSelectionStart;
-    SelectionMode mSelectionMode;
     bool mMouseDown;
     bool mSelecting;
 };

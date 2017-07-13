@@ -37,12 +37,21 @@
 #include "tile.h"
 #include "tileset.h"
 
+#include <QHash>
 #include <QMargins>
+#include <QPoint>
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
 
 #include <functional>
+
+inline uint qHash(const QPoint &key, uint seed = 0) Q_DECL_NOTHROW
+{
+    uint h1 = qHash(key.x(), seed);
+    uint h2 = qHash(key.y(), seed);
+    return ((h1 << 16) | (h1 >> 16)) ^ h2 ^ seed;
+}
 
 namespace Tiled {
 
@@ -150,6 +159,50 @@ inline bool Cell::refersTile(const Tile *tile) const
 
 
 /**
+ * A Chunk is a grid of cells of size CHUNK_SIZExCHUNK_SIZE.
+ */
+class Chunk
+{
+public:
+    Chunk() :
+        mGrid(CHUNK_SIZE * CHUNK_SIZE)
+    {}
+
+    QRegion region(std::function<bool (const Cell &)> condition) const;
+
+    const Cell &cellAt(int x, int y) const;
+    const Cell &cellAt(const QPoint &point) const;
+
+    void setCell(int x, int y, const Cell &cell);
+
+    bool isEmpty() const;
+
+    bool hasCell(std::function<bool (const Cell &)> condition) const;
+
+    void removeReferencesToTileset(Tileset *tileset);
+
+    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+
+    QVector<Cell>::iterator begin() { return mGrid.begin(); }
+    QVector<Cell>::iterator end() { return mGrid.end(); }
+    QVector<Cell>::const_iterator begin() const { return mGrid.begin(); }
+    QVector<Cell>::const_iterator end() const { return mGrid.end(); }
+
+private:
+    QVector<Cell> mGrid;
+};
+
+inline const Cell &Chunk::cellAt(int x, int y) const
+{
+    return mGrid.at(x + y * CHUNK_SIZE);
+}
+
+inline const Cell &Chunk::cellAt(const QPoint &point) const
+{
+    return cellAt(point.x(), point.y());
+}
+
+/**
  * A tile layer is a grid of cells. Each cell refers to a specific tile, and
  * stores how the tile is flipped.
  *
@@ -159,6 +212,118 @@ inline bool Cell::refersTile(const Tile *tile) const
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
+    class iterator
+    {
+    public:
+        iterator(QHash<QPoint, Chunk>::iterator it, QHash<QPoint, Chunk>::iterator end)
+            : mChunkPointer(it)
+            , mChunkEndPointer(end)
+        {
+            if (it != end)
+                mCellPointer = it.value().begin();
+        }
+
+        iterator operator++(int)
+        {
+            iterator it = *this;
+            advance();
+            return it;
+        }
+
+        iterator &operator++()
+        {
+            advance();
+            return *this;
+        }
+
+        Cell &operator*() { return *mCellPointer; }
+
+        QVector<Cell>::iterator operator->() const { return mCellPointer; }
+
+        friend bool operator==(const iterator& lhs, const iterator& rhs)
+        {
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer == rhs.mChunkPointer;
+            else
+                return lhs.mCellPointer == rhs.mCellPointer;
+        }
+
+        friend bool operator!=(const iterator& lhs, const iterator& rhs)
+        {
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer != rhs.mChunkPointer;
+            else
+                return lhs.mCellPointer != rhs.mCellPointer;
+        }
+
+        Cell &value() const { return *mCellPointer; }
+
+        QPoint key() const;
+
+    private:
+        void advance();
+
+        QHash<QPoint, Chunk>::iterator mChunkPointer;
+        QHash<QPoint, Chunk>::iterator mChunkEndPointer;
+        QVector<Cell>::iterator mCellPointer;
+    };
+
+    class const_iterator
+    {
+    public:
+        const_iterator(QHash<QPoint, Chunk>::const_iterator it, QHash<QPoint, Chunk>::const_iterator end)
+            : mChunkPointer(it)
+            , mChunkEndPointer(end)
+        {
+            if (it != end)
+                mCellPointer = it.value().begin();
+        }
+
+        const_iterator operator++(int)
+        {
+            const_iterator it = *this;
+            advance();
+            return it;
+        }
+
+        const_iterator &operator++()
+        {
+            advance();
+            return *this;
+        }
+
+        const Cell &operator*() { return *mCellPointer; }
+
+        QVector<Cell>::const_iterator operator->() const { return mCellPointer; }
+
+        friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
+        {
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer == rhs.mChunkPointer;
+            else
+                return lhs.mCellPointer == rhs.mCellPointer;
+        }
+
+        friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
+        {
+            if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
+                return lhs.mChunkPointer != rhs.mChunkPointer;
+            else
+                return lhs.mCellPointer != rhs.mCellPointer;
+        }
+
+        const Cell &value() const { return *mCellPointer; }
+
+        QPoint key() const;
+
+    private:
+        void advance();
+
+        QHash<QPoint, Chunk>::const_iterator mChunkPointer;
+        QHash<QPoint, Chunk>::const_iterator mChunkEndPointer;
+        QVector<Cell>::const_iterator mCellPointer;
+    };
+
     /**
      * Constructor.
      */
@@ -190,6 +355,10 @@ public:
 
     bool contains(int x, int y) const;
     bool contains(const QPoint &point) const;
+
+    Chunk &chunk(int x, int y);
+
+    const Chunk *findChunk(int x, int y) const;
 
     /**
      * Calculates the region of cells in this tile layer for which the given
@@ -331,11 +500,10 @@ public:
 
     TileLayer *clone() const override;
 
-    // Enable easy iteration over cells with range-based for
-    QVector<Cell>::iterator begin() { return mGrid.begin(); }
-    QVector<Cell>::iterator end() { return mGrid.end(); }
-    QVector<Cell>::const_iterator begin() const { return mGrid.begin(); }
-    QVector<Cell>::const_iterator end() const { return mGrid.end(); }
+    iterator begin() { return iterator(mChunks.begin(), mChunks.end()); }
+    iterator end() { return iterator(mChunks.end(), mChunks.end()); }
+    const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
+    const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
@@ -343,11 +511,53 @@ protected:
 private:
     int mWidth;
     int mHeight;
-    QVector<Cell> mGrid;
+    Cell mEmptyCell;
+    QHash<QPoint, Chunk> mChunks;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
 
+inline QPoint TileLayer::iterator::key() const
+{
+    QPoint chunkStart = mChunkPointer.key();
+
+    int index = mCellPointer - mChunkPointer.value().begin();
+    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+    return chunkStart;
+}
+
+inline void TileLayer::iterator::advance()
+{
+    if (mChunkPointer != mChunkEndPointer) {
+        if (++mCellPointer == mChunkPointer.value().end()) {
+            mChunkPointer++;
+            if (mChunkPointer != mChunkEndPointer)
+                mCellPointer = mChunkPointer.value().begin();
+        }
+    }
+}
+
+inline QPoint TileLayer::const_iterator::key() const
+{
+    QPoint chunkStart = mChunkPointer.key();
+
+    int index = mCellPointer - mChunkPointer.value().begin();
+    chunkStart += QPoint(index & CHUNK_MASK, index / CHUNK_SIZE);
+
+    return chunkStart;
+}
+
+inline void TileLayer::const_iterator::advance()
+{
+    if (mChunkPointer != mChunkEndPointer) {
+        if (++mCellPointer == mChunkPointer.value().end()) {
+            mChunkPointer++;
+            if (mChunkPointer != mChunkEndPointer)
+                mCellPointer = mChunkPointer.value().begin();
+        }
+    }
+}
 
 /**
  * Sets the size of this layer.
@@ -371,6 +581,21 @@ inline bool TileLayer::contains(const QPoint &point) const
     return contains(point.x(), point.y());
 }
 
+inline Chunk& TileLayer::chunk(int x, int y)
+{
+    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
+                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    return mChunks[chunkCoordinates];
+}
+
+inline const Chunk* TileLayer::findChunk(int x, int y) const
+{
+    QPoint chunkCoordinates(x < 0 ? (x + 1) / CHUNK_SIZE - 1 : x / CHUNK_SIZE,
+                            y < 0 ? (y + 1) / CHUNK_SIZE - 1 : y / CHUNK_SIZE);
+    auto it = mChunks.find(chunkCoordinates);
+    return it != mChunks.end() ? &it.value() : nullptr;
+}
+
 inline QRegion TileLayer::region() const
 {
     return region([] (const Cell &cell) { return !cell.isEmpty(); });
@@ -383,7 +608,10 @@ inline QRegion TileLayer::region() const
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
-    return mGrid.at(x + y * mWidth);
+    if (const Chunk *chunk = findChunk(x, y))
+        return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
+    else
+        return mEmptyCell;
 }
 
 inline const Cell &TileLayer::cellAt(const QPoint &point) const
