@@ -843,6 +843,8 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
             if (mHoveredIndex.isValid())
                 update(mHoveredIndex);
 
+            emit currentWangIdChanged(mWangId);
+
             return;
         }
         if (event->key() == Qt::Key_X) {
@@ -851,6 +853,8 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
             if (mHoveredIndex.isValid())
                 update(mHoveredIndex);
 
+            emit currentWangIdChanged(mWangId);
+
             return;
         }
         if (event->key() == Qt::Key_Y) {
@@ -858,6 +862,8 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
 
             if (mHoveredIndex.isValid())
                 update(mHoveredIndex);
+
+            emit currentWangIdChanged(mWangId);
 
             return;
         }
@@ -979,7 +985,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     if (mEditTerrain || mEditWangSet) {
         if (mEditWangSet && mWangSet) {
             if (!mWangSet->wangIdIsValid(mWangId))
-                emit activeWangIdChanged(0);
+                mWangId = 0;
         }
 
         const QPoint pos = event->pos();

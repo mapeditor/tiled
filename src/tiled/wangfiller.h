@@ -48,18 +48,26 @@ public:
      * If lookForward is true, this will only choose a cell
      * which allows all empty adjacent cells to also
      * be filled. If non exist, then no cell will be choosen.
-     * If lookForward is true, it will save information
-     * about the adjacent cells to be used later.
      * */
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
                          const QRegion &fillRegion,
                          QPoint point,
-                         bool lookForward = true);
+                         bool lookForward = true) const;
+
+    /* Returns a tilelayer which has fillRegion filled with wang methods.
+     * If lookForward is true, this will only choose a cell
+     * which allows all empty adjacent cells to also
+     * be filled. If non exist, then no cell will be choosen.
+     * */
+    TileLayer *fillRegion(const TileLayer &back,
+                    const QRegion &fillRegion,
+                    bool lookForward = true) const;
 
 private:
     //gets a cell from either the back or front, based on
-    //the fill region. point is relative to the front tile layer
+    //the fill region. Point, front, and fillRegion
+    //are relative to back.
     const Cell &getCell(const TileLayer &back,
                         const TileLayer &front,
                         const QRegion &fillRegion,
@@ -69,6 +77,12 @@ private:
     //adjacent cells are gotten from getCell()
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const TileLayer &front,
+                                  const QRegion &fillRegion,
+                                  QPoint point) const;
+
+    //gets a wangId based on cells from back which are not in the fillRegion
+    //point and fillRegion is relative to back.
+    WangId wangIdFromSurroundings(const TileLayer &back,
                                   const QRegion &fillRegion,
                                   QPoint point) const;
 

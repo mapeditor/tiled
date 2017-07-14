@@ -403,24 +403,8 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
     if (region.isEmpty() || !mWangFiller->wangSet())
         return;
 
-    for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                tileLayerToFill.setCell(x, y, Cell());
-            }
-        }
-    }
-
-    for (const QRect &rect : region.translated(-tileLayerToFill.position()).rects()) {
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x)
-                tileLayerToFill.setCell(x, y, mWangFiller->findFittingCell(backgroundTileLayer,
-                                                                           tileLayerToFill,
-                                                                           region,
-                                                                           QPoint(x, y),
-                                                                           !mWangFiller->wangSet()->isComplete()));
-        }
-    }
+    tileLayerToFill.setCells(0, 0,
+                             mWangFiller->fillRegion(backgroundTileLayer, region, !mWangFiller->wangSet()->isComplete()));
 }
 
 void BucketFillTool::updateRandomListAndMissingTilesets()

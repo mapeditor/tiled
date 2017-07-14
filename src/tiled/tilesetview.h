@@ -126,8 +126,8 @@ signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
     void wangSetImageSelected(Tile *tile);
-    void activeWangIdChanged(WangId wangId);
     void wangIdUsedChanged(WangId wangId);
+    void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
     void changeSelectedMapObjectsTileRequested(Tile *tile);
 

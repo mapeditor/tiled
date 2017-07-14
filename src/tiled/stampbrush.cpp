@@ -428,14 +428,15 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.width(), bounds.height()));
 
         for (const QPoint p : list) {
+            Cell cell = mWangFiller->findFittingCell(*tileLayer,
+                                                     *preview.data(),
+                                                     paintedRegion,
+                                                     p,
+                                                     !mWangFiller->wangSet()->isComplete());
+
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
-                             mWangFiller->findFittingCell(*tileLayer,
-                                                          *preview.data(),
-                                                          paintedRegion,
-                                                          QPoint(p.x() - bounds.left(),
-                                                                 p.y() - bounds.top()),
-                                                          !mWangFiller->wangSet()->isComplete()));
+                             cell);
         }
 
         mPreviewLayer = preview;

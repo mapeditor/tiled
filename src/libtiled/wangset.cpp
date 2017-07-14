@@ -81,6 +81,20 @@ void WangId::setCornerColor(int index, unsigned value)
     mId |= value << (index * 8 + 4);
 }
 
+void WangId::updateToAdjacent(WangId adjacent, int position)
+{
+    int index = position / 2;
+    bool isCorner = position & 1;
+
+    if (isCorner) {
+        setCornerColor(index, adjacent.cornerColor((index + 2) % 4));
+    } else {
+        setEdgeColor(index, adjacent.edgeColor((index + 2) % 4));
+        setCornerColor(index, adjacent.cornerColor((index + 1) % 4));
+        setCornerColor((index + 3) % 4, adjacent.cornerColor((index + 2) % 4));
+    }
+}
+
 bool WangId::hasEdgeWildCards() const
 {
     for (int i = 0; i < 4; ++i) {

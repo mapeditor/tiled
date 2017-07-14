@@ -111,7 +111,7 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
         const QList<Tile *> &changedTiles = wangSet->tilesChangedOnSetCornerColors(mNewValue);
 
         if (!changedTiles.isEmpty()) {
-            QVector <ChangeTileWangId::WangIdChange> changes;
+            QVector<ChangeTileWangId::WangIdChange> changes;
 
             for (Tile *tile : changedTiles)
                 changes.append(ChangeTileWangId::WangIdChange(wangSet->wangIdOfTile(tile), 0, tile));

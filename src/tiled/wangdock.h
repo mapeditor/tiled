@@ -65,7 +65,7 @@ signals:
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
-    void onActiveWangIdChanged(WangId wangId);
+    void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
 
 protected:

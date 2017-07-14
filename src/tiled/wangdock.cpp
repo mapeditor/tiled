@@ -212,6 +212,8 @@ void WangDock::setDocument(Document *document)
 
         connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
                 mWangTemplateModel, &WangTemplateModel::wangSetChanged);
+        connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
+                this, &WangDock::refreshCurrentWangId);
 
         mWangTemplateView->setVisible(true);
         mToolBar->setVisible(true);
@@ -272,6 +274,7 @@ void WangDock::refreshCurrentWangSet()
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     WangSet *wangSet = mWangSetView->wangSetAt(selectionModel->currentIndex());
     setCurrentWangSet(wangSet);
+    refreshCurrentWangId();
 }
 
 void WangDock::refreshCurrentWangId()
@@ -315,10 +318,10 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mCurrentWangId = 0;
     mEraseWangIdsButton->setChecked(true);
     mWangTemplateView->selectionModel()->clearSelection();
+    mWangTemplateModel->setWangSet(wangSet);
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
-        mWangTemplateModel->setWangSet(wangSet);
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();
@@ -362,7 +365,7 @@ void WangDock::onWangIdUsedChanged(WangId wangId)
         mWangTemplateView->update(index);
 }
 
-void WangDock::onActiveWangIdChanged(WangId wangId)
+void WangDock::onCurrentWangIdChanged(WangId wangId)
 {
     const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
     if (!index.isValid()) {

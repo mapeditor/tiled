@@ -57,6 +57,14 @@ public:
     void setEdgeColor(int index, unsigned value);
     void setCornerColor(int index, unsigned value);
 
+    /* Matches this wangId's edges/corners with an adjacent one.
+     * Where position is 0-7 with 0 being top, and 7 being top left:
+     * 7|0|1
+     * 6|X|2
+     * 5|4|3
+     * */
+    void updateToAdjacent(WangId adjacent, int position);
+
     /* Returns true if one or more edges are zero
      * */
     bool hasEdgeWildCards() const;
