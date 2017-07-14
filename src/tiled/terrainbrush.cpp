@@ -231,7 +231,7 @@ void TerrainBrush::doPaint(bool mergeable)
     if (!tileLayer->isUnlocked())
         return;
 
-    if (!tileLayer->bounds().intersects(stamp->bounds()))
+    if (!tileLayer->rect().intersects(stamp->bounds()))
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,

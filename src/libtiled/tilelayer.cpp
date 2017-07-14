@@ -170,8 +170,16 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    if (cell == mEmptyCell && !findChunk(x, y))
-        return;
+    if (!findChunk(x, y)) {
+        if (cell == mEmptyCell) {
+            return;
+        } else {
+            mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
+                                           y - (y & CHUNK_MASK),
+                                           CHUNK_SIZE,
+                                           CHUNK_SIZE));
+        }
+    }
 
     Chunk &_chunk = chunk(x, y);
 
@@ -684,6 +692,7 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
     clone->mChunks = mChunks;
+    clone->mBounds = mBounds;
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;

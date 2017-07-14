@@ -342,7 +342,9 @@ public:
     /**
      * Returns the bounds of this layer.
      */
-    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
+    QRect bounds() const { return mBounds.translated(mX, mY); }
+
+    QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
     QMargins drawMargins() const;
 
@@ -506,6 +508,7 @@ private:
     int mHeight;
     Cell mEmptyCell;
     QHash<QPoint, Chunk> mChunks;
+    QRect mBounds;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };

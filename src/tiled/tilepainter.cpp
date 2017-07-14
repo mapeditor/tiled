@@ -31,20 +31,21 @@ using namespace Tiled::Internal;
 
 namespace {
 
-class DrawMarginsWatcher
+class TileLayerChangeWatcher
 {
 public:
-    DrawMarginsWatcher(MapDocument *mapDocument, TileLayer *layer)
+    TileLayerChangeWatcher(MapDocument *mapDocument, TileLayer *layer)
         : mMapDocument(mapDocument)
         , mTileLayer(layer)
         , mDrawMargins(layer->drawMargins())
+        , mBounds(layer->bounds())
     {
     }
 
-    ~DrawMarginsWatcher()
+    ~TileLayerChangeWatcher()
     {
         if (mTileLayer->map() == mMapDocument->map())
-            if (mTileLayer->drawMargins() != mDrawMargins)
+            if (mTileLayer->drawMargins() != mDrawMargins || mTileLayer->bounds() != mBounds)
                 emit mMapDocument->tileLayerDrawMarginsChanged(mTileLayer);
     }
 
@@ -52,6 +53,7 @@ private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
     const QMargins mDrawMargins;
+    const QRect mBounds;
 };
 
 } // anonymous namespace
@@ -86,7 +88,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     if (!mTileLayer->contains(layerX, layerY))
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCell(layerX, layerY, cell);
     emit mMapDocument->regionChanged(QRegion(x, y, 1, 1), mTileLayer);
 }
@@ -103,7 +105,7 @@ void TilePainter::setCells(int x, int y,
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCells(x - mTileLayer->x(),
                          y - mTileLayer->y(),
                          tileLayer,
@@ -120,7 +122,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
     for (const QRect &rect : region.rects()) {
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
@@ -150,7 +152,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
     const int w = stamp->width();
     const int h = stamp->height();
@@ -344,7 +346,7 @@ bool TilePainter::isDrawable(int x, int y) const
 
 QRegion TilePainter::paintableRegion(const QRegion &region) const
 {
-    const QRegion bounds = QRegion(mTileLayer->bounds());
+    const QRegion bounds = QRegion(mTileLayer->rect());
     QRegion intersection = bounds.intersected(region);
 
     const QRegion &selection = mMapDocument->selectedArea();

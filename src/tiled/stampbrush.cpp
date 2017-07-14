@@ -339,10 +339,10 @@ QRegion StampBrush::doPaint(int flags)
     if (!tileLayer->isUnlocked())
         return QRegion();
 
-    if (!tileLayer->bounds().intersects(QRect(preview->x(),
-                                              preview->y(),
-                                              preview->width(),
-                                              preview->height())))
+    if (!tileLayer->rect().intersects(QRect(preview->x(),
+                                            preview->y(),
+                                            preview->width(),
+                                            preview->height())))
         return QRegion();
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(),

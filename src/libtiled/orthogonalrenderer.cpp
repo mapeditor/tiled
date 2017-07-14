@@ -225,10 +225,11 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
 
-    int startX = 0;
-    int startY = 0;
-    int endX = layer->width() - 1;
-    int endY = layer->height() - 1;
+    QRect bounds = layer->bounds().translated(-layer->position());
+    int startX = bounds.left();
+    int startY = bounds.top();
+    int endX = bounds.right();
+    int endY = bounds.bottom();
 
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
@@ -242,8 +243,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
         rect.translate(-layerPos);
 
-        startX = qMax(qFloor(rect.x() / tileWidth), 0);
-        startY = qMax(qFloor(rect.y() / tileHeight), 0);
+        startX = qMax(qFloor(rect.x() / tileWidth), startX);
+        startY = qMax(qFloor(rect.y() / tileHeight), startY);
         endX = qMin(qCeil(rect.right()) / tileWidth, endX);
         endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
     }
