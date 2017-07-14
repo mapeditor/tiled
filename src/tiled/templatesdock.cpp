@@ -141,6 +141,10 @@ TemplatesView::TemplatesView(QWidget *parent)
     connect(this, &QAbstractItemView::pressed, this, &TemplatesView::onPressed);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragOnly);
 }
 
 void TemplatesView::applyTemplateGroups()

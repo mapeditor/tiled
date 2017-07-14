@@ -55,6 +55,10 @@ public:
     bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+
 private:
     ObjectTemplateModel(QObject *parent = nullptr);
     ~ObjectTemplateModel();

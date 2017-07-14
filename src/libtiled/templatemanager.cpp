@@ -69,3 +69,11 @@ TemplateGroup *TemplateManager::loadTemplateGroup(const QString &fileName, QStri
     return templateGroup;
 }
 
+const ObjectTemplate *TemplateManager::findTemplate(const QString &fileName, unsigned templateId)
+{
+    TemplateGroup *group = findTemplateGroup(fileName);
+    if (!group)
+        return nullptr;
+    return group->findTemplate(templateId);;
+}
+

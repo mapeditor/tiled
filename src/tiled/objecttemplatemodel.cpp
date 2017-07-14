@@ -218,5 +218,40 @@ TemplateGroup *ObjectTemplateModel::toTemplateGroup(const QModelIndex &index) co
     return nullptr;
 }
 
+Qt::ItemFlags ObjectTemplateModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+   ObjectTemplate *objectTemplate = toObjectTemplate(index);
+   if (objectTemplate)
+       return Qt::ItemIsDragEnabled | defaultFlags;
+   else
+       return defaultFlags;
+}
+
+QStringList ObjectTemplateModel::mimeTypes() const
+{
+    return QStringList {
+        QLatin1String(TEMPLATES_MIMETYPE)
+    };
+}
+
+QMimeData *ObjectTemplateModel::mimeData(const QModelIndexList &indexes) const
+{
+    if (indexes.isEmpty())
+        return nullptr;
+
+    QMimeData *mimeData = new QMimeData;
+    QByteArray encodedData;
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    for (const QModelIndex &index : indexes)
+        if (ObjectTemplate *objectTemplate = toObjectTemplate(index))
+            stream << objectTemplate->templateGroup()->fileName() << objectTemplate->id();
+
+    mimeData->setData(QLatin1String(TEMPLATES_MIMETYPE), encodedData);
+    return mimeData;
+}
+
 } // namespace Internal
 } // namespace Tiled
