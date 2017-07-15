@@ -67,6 +67,14 @@ int WangId::cornerColor(int index) const
     return color;
 }
 
+int WangId::indexColor(int index) const
+{
+    if (index & 1)
+        return cornerColor(index / 2);
+    else
+        return edgeColor(index / 2);
+}
+
 void WangId::setEdgeColor(int index, unsigned value)
 {
     value = value & 0xf;
@@ -79,6 +87,14 @@ void WangId::setCornerColor(int index, unsigned value)
     value = value & 0xf;
     mId &= ~(0xf << (index * 8 + 4));
     mId |= value << (index * 8 + 4);
+}
+
+void WangId::setIndexColor(int index, unsigned value)
+{
+    if (index & 1)
+        setCornerColor(index / 2, value);
+    else
+        setEdgeColor(index / 2, value);
 }
 
 void WangId::updateToAdjacent(WangId adjacent, int position)
@@ -115,70 +131,23 @@ bool WangId::hasCornerWildCards() const
     return false;
 }
 
-struct WangWildCard
-{
-    int index, colorCount;
-};
-
 QVector<WangId> WangId::variations(int edgeColors, int cornerColors) const
 {
     QVector<WangId> wangIds;
-    QVector<WangWildCard> wildCards;
 
-    if (edgeColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!edgeColor(i)) {
-                WangWildCard w;
-                w.colorCount = edgeColors;
-                w.index = i * 8;
-                wildCards.append(w);
-            }
-        }
-    }
+    auto i = variationsBegin(edgeColors, cornerColors);
+    auto end = variationsEnd(edgeColors, cornerColors);
 
-    if (cornerColors > 1) {
-        for (int i = 0; i < 4; ++i) {
-            if (!cornerColor(i)) {
-                WangWildCard w;
-                w.colorCount = cornerColors;
-                w.index = (i * 8) + 4;
-                wildCards.append(w);
-            }
-        }
-    }
-
-    if (wildCards.isEmpty()) {
+    if (i == end) {
         wangIds.append(mId);
-    } else {
-        QStack<WangWildCard> stack;
+        return wangIds;
+    }
+    while (true) {
+        wangIds.append(*i);
 
-        stack += wildCards;
-
-        int max = wildCards.size();
-
-        while (!stack.isEmpty()) {
-            if (stack.size() == max) {
-                unsigned idVariation = 0;
-
-                for (int i = 0; i < max; ++i)
-                    idVariation |= stack[i].colorCount << stack[i].index;
-
-                wangIds.append(idVariation | mId);
-
-                WangWildCard top = stack.pop();
-                top.colorCount -= 1;
-                if (top.colorCount >= 0)
-                    stack.push(top);
-            } else {
-                WangWildCard top = stack.pop();
-                top.colorCount -= 1;
-                if (top.colorCount >= 0) {
-                    stack.push(top);
-
-                    for (int i = stack.size(); i < max; ++i)
-                        stack.push(wildCards[i]);
-                }
-            }
+        if (++i == end) {
+            wangIds.append(*i);
+            break;
         }
     }
 
@@ -216,6 +185,71 @@ void WangId::flipVertically()
 {
     flipHorizontally();
     rotate(2);
+}
+
+WangIdVariationIterator::WangIdVariationIterator(int edgeColors, int cornerColors, WangId wangId)
+    : mCurrent(wangId)
+    , mEdgeColors(edgeColors)
+    , mCornerColors(cornerColors)
+{
+    if (mEdgeColors > 1) {
+        for (int i = 0; i < 4; ++i)
+            if (!wangId.edgeColor(i))
+                mZeroSpots.append(i*2);
+    }
+
+    if (mCornerColors > 1) {
+        for (int i = 0; i < 4; ++i)
+            if (!wangId.cornerColor(i))
+                mZeroSpots.append(i*2 + 1);
+    }
+}
+
+WangIdVariationIterator &WangIdVariationIterator::operator ++()
+{
+    if (mZeroSpots.isEmpty())
+        return *this;
+
+    int index = 0;
+    int currentSpot = mZeroSpots[0];
+    while (true) {
+        mCurrent.setIndexColor(currentSpot, mCurrent.indexColor(currentSpot) + 1);
+
+        if (mCurrent.indexColor(currentSpot) > (currentSpot & 1? mCornerColors : mEdgeColors)) {
+            mCurrent.setIndexColor(currentSpot, 0);
+            if (++index >= mZeroSpots.size())
+                break;
+            currentSpot = mZeroSpots[index];
+        } else {
+            break;
+        }
+    }
+
+    return *this;
+}
+
+WangIdVariationIterator WangId::variationsBegin(int edgeColors, int cornerColors) const
+{
+    return WangIdVariationIterator(edgeColors, cornerColors, mId);
+}
+
+WangIdVariationIterator WangId::variationsEnd(int edgeColors, int cornerColors) const
+{
+    WangId end = mId;
+
+    if (edgeColors > 1) {
+        for (int i = 0; i < 4; ++i)
+            if (!edgeColor(i))
+                end.setEdgeColor(i, edgeColors);
+    }
+
+    if (cornerColors > 1) {
+        for (int i = 0; i < 4; ++i)
+            if (!cornerColor(i))
+                end.setCornerColor(i, cornerColors);
+    }
+
+    return WangIdVariationIterator(edgeColors, cornerColors, end);
 }
 
 void WangTile::translate(int map[])
@@ -494,11 +528,18 @@ bool WangSet::wildWangIdIsUsed(WangId wangId) const
     if (!wangId)
         return true;
 
-    QVector<WangId> wangIds = wangId.variations(mEdgeColors, mCornerColors);
+    auto i = wangId.variationsBegin(mEdgeColors, mCornerColors);
+    auto end = wangId.variationsEnd(mEdgeColors, mCornerColors);
 
-    for (WangId id : wangIds) {
-        if (wangIdIsUsed(id))
+    while (true) {
+        if (wangIdIsUsed(*i))
             return true;
+
+        if (++i == end) {
+            if (wangIdIsUsed(*i))
+                return true;
+            break;
+        }
     }
 
     return false;
@@ -508,7 +549,7 @@ bool WangSet::isComplete() const
 {
     if (isEmpty())
         return false;
-    return mWangIdToWangTile.uniqueKeys().size() == completeSetSize();
+    return (unsigned) mWangIdToWangTile.uniqueKeys().size() == completeSetSize();
 }
 
 unsigned WangSet::completeSetSize() const

@@ -38,10 +38,11 @@
 
 namespace Tiled {
 
+class WangIdVariationIterator;
+
 class TILEDSHARED_EXPORT WangId
 {
 public:
-
     WangId() : mId(0) {}
     WangId(unsigned id) : mId(id) {}
 
@@ -54,8 +55,22 @@ public:
     int edgeColor(int index) const;
     int cornerColor(int index) const;
 
+    /* Returns the color of a certain index 0 - 7.
+     * 7|0|1
+     * 6|X|2
+     * 5|4|3
+     * */
+    int indexColor(int index) const;
+
     void setEdgeColor(int index, unsigned value);
     void setCornerColor(int index, unsigned value);
+
+    /* Sets the color of a certain index 0 - 7.
+     * 7|0|1
+     * 6|X|2
+     * 5|4|3
+     * */
+    void setIndexColor(int index, unsigned value);
 
     /* Matches this wangId's edges/corners with an adjacent one.
      * Where position is 0-7 with 0 being top, and 7 being top left:
@@ -91,8 +106,32 @@ public:
      * */
     void flipVertically();
 
+
+    WangIdVariationIterator variationsBegin(int edgeColors, int cornerColors) const;
+    //This will actually return the last wangId, as aposed to the last++
+    WangIdVariationIterator variationsEnd(int edgeColors, int cornerColors) const;
+
 private:
     unsigned mId;
+};
+
+class TILEDSHARED_EXPORT WangIdVariationIterator
+{
+public:
+    explicit WangIdVariationIterator(int edgeColors, int cornerColors, WangId wangId = 0);
+    WangIdVariationIterator &operator++();
+    WangIdVariationIterator operator++(int)
+    { WangIdVariationIterator vI = *this; ++(*this); return vI; }
+    bool operator==(WangIdVariationIterator other) { return mCurrent == other.mCurrent; }
+    bool operator!=(WangIdVariationIterator other) { return mCurrent != other.mCurrent; }
+    const WangId operator*() const { return mCurrent; }
+    const WangId operator->() const { return mCurrent; }
+
+private:
+    WangId mCurrent;
+    QList<int> mZeroSpots;
+    int mEdgeColors;
+    int mCornerColors;
 };
 
 //Class for holding info about rotation and flipping.
