@@ -31,7 +31,6 @@
 
 #include "tiled_global.h"
 
-#include "map.h"
 #include "layer.h"
 #include "tiled.h"
 #include "tile.h"
