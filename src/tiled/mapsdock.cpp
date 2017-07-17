@@ -90,12 +90,13 @@ MapsDock::MapsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    connect(button, SIGNAL(clicked()), this, SLOT(browse()));
+    connect(button, &QAbstractButton::clicked, this, &MapsDock::browse);
 
     Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(mapsDirectoryChanged()), this, SLOT(onMapsDirectoryChanged()));
+    connect(prefs, &Preferences::mapsDirectoryChanged, this, &MapsDock::onMapsDirectoryChanged);
+
     mDirectoryEdit->setText(prefs->mapsDirectory());
-    connect(mDirectoryEdit, SIGNAL(returnPressed()), this, SLOT(editedMapsDirectory()));
+    connect(mDirectoryEdit, &QLineEdit::returnPressed, this, &MapsDock::editedMapsDirectory);
 }
 
 void MapsDock::browse()
@@ -112,7 +113,14 @@ void MapsDock::browse()
 void MapsDock::editedMapsDirectory()
 {
     Preferences *prefs = Preferences::instance();
-    prefs->setMapsDirectory(mDirectoryEdit->text());
+
+    const QFileInfo fileInfo(mDirectoryEdit->text());
+    if (fileInfo.isDir()) {
+        prefs->setMapsDirectory(fileInfo.filePath());
+    } else if (fileInfo.isFile()) {
+        mDirectoryEdit->setText(fileInfo.path());
+        prefs->setMapsDirectory(fileInfo.path());
+    }
 }
 
 void MapsDock::onMapsDirectoryChanged()
@@ -151,8 +159,8 @@ MapsView::MapsView(QWidget *parent)
     setDefaultDropAction(Qt::MoveAction);
 
     Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(mapsDirectoryChanged()),
-            SLOT(onMapsDirectoryChanged()));
+    connect(prefs, &Preferences::mapsDirectoryChanged,
+            this, &MapsView::onMapsDirectoryChanged);
 
     QDir mapsDir(prefs->mapsDirectory());
     if (!mapsDir.exists())
@@ -187,8 +195,8 @@ MapsView::MapsView(QWidget *parent)
     header()->setStretchLastSection(false);
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
-    connect(this, SIGNAL(activated(QModelIndex)),
-            SLOT(onActivated(QModelIndex)));
+    connect(this, &QAbstractItemView::activated,
+            this, &MapsView::onActivated);
 }
 
 QSize MapsView::sizeHint() const
