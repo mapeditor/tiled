@@ -426,6 +426,8 @@ QtGuiApplication {
         "varianteditorfactory.h",
         "variantpropertymanager.cpp",
         "variantpropertymanager.h",
+        "wangcolormodel.cpp",
+        "wangcolormodel.h",
         "wangdock.cpp",
         "wangdock.h",
         "wangfiller.cpp",

@@ -28,6 +28,7 @@
 class QModelIndex;
 class QPushButton;
 class QToolBar;
+class QTreeView;
 
 namespace Tiled {
 namespace Internal {
@@ -36,6 +37,7 @@ class Document;
 class WangSetFilterModel;
 class WangSetView;
 class WangSetModel;
+class WangColorModel;
 class WangTemplateView;
 class WangTemplateModel;
 class TilesetDocument;
@@ -93,6 +95,8 @@ private:
     WangSet *mCurrentWangSet;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
+    QTreeView *mWangColorView;
+    WangColorModel *mWangColorModel;
     WangSetModel *mWangSetModel;
     WangSetFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;

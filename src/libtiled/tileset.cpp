@@ -485,7 +485,7 @@ void Tileset::recalculateTerrainDistances()
                     if (d0 == -1 || d1 == -1)
                         continue;
 
-                    // We have cound a common connection
+                    // We have found a common connection
                     int d = t0->transitionDistance(j);
                     Q_ASSERT(t1->transitionDistance(i) == d);
 

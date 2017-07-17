@@ -119,7 +119,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                                                 point);
     }
 
-    for (const QRect &rect : fillRegion) {
+    for (const QRect &rect : fillRegion.rects()) {
         for (int y = rect.top(); y <= rect.bottom(); ++y) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 QPoint currentPoint(x, y);
@@ -133,7 +133,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                     if (lookForward) {
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
-                            if (!fillRegion.contains(p))
+                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - QPoint(tileLayer->x(), tileLayer->y())).isEmpty())
                                 continue;
                             p -= QPoint(tileLayer->x(), tileLayer->y());
                             int index = p.y() * tileLayer->width() + p.x();
@@ -142,7 +142,11 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                             adjacentWangId.updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
 
                             if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
-                                fill = false;
+                                if (wangTiles.isEmpty())
+                                    fill = true;
+                                else
+                                    fill = false;
+
                                 break;
                             }
                         }
@@ -155,7 +159,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
 
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
-                            if (!fillRegion.contains(p))
+                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - QPoint(tileLayer->x(), tileLayer->y())).isEmpty())
                                 continue;
                             p -= QPoint(tileLayer->x(), tileLayer->y());
                             int index = p.y() * tileLayer->width() + p.x();

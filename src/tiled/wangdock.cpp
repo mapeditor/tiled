@@ -20,6 +20,7 @@
 
 #include "wangdock.h"
 
+#include "wangcolormodel.h"
 #include "wangsetview.h"
 #include "wangsetmodel.h"
 #include "wangtemplateview.h"
@@ -37,9 +38,9 @@
 #include <QBoxLayout>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QSplitter>
 #include <QToolBar>
 #include <QTreeView>
-#include <QListView>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -103,6 +104,7 @@ WangDock::WangDock(QWidget *parent)
     , mCurrentWangSet(nullptr)
     , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
+    , mWangColorModel(new WangColorModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new WangSetFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
@@ -139,6 +141,14 @@ WangDock::WangDock(QWidget *parent)
     mWangTemplateView->setModel(mWangTemplateModel);
     mWangTemplateView->setVisible(false);
 
+    mWangColorView = new QTreeView(w);
+    mWangColorView->setModel(mWangColorModel);
+    mWangColorView->setVisible(false);
+    mWangColorView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    mWangColorView->setHeaderHidden(true);
+    mWangColorView->setItemsExpandable(false);
+    mWangColorView->setIndentation(3);
+
     connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &WangDock::refreshCurrentWangId);
 
@@ -157,10 +167,15 @@ WangDock::WangDock(QWidget *parent)
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
 
+    QSplitter *wangViews = new QSplitter;
+    wangViews->setOrientation(Qt::Vertical);
+    wangViews->addWidget(mWangSetView);
+    wangViews->addWidget(mWangTemplateView);
+    wangViews->addWidget(mWangColorView);
+
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setMargin(0);
-    vertical->addWidget(mWangSetView);
-    vertical->addWidget(mWangTemplateView);
+    vertical->addWidget(wangViews);
     vertical->addLayout(horizontal);
 
     connect(mAddWangSet, &QAction::triggered,
@@ -319,9 +334,12 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mEraseWangIdsButton->setChecked(true);
     mWangTemplateView->selectionModel()->clearSelection();
     mWangTemplateModel->setWangSet(wangSet);
+    mWangColorModel->setWangSet(wangSet);
+    mWangColorView->setVisible(wangSet);
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
+        mWangColorView->expandAll();
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();

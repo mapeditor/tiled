@@ -245,6 +245,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
+    wangcolormodel.cpp \
     wangsetview.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
@@ -433,6 +434,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
+    wangcolormodel.h \
     wangsetview.h \
     wangsetmodel.h \
     wangdock.h \
