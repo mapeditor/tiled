@@ -38,7 +38,7 @@
 
 namespace Tiled {
 
-class WangIdVariationIterator;
+class WangIdVariations;
 
 class TILEDSHARED_EXPORT WangId
 {
@@ -90,7 +90,7 @@ public:
     /* Gives a list of wangId variations of this one
      * where every 0 is a wildCard (can be 0 - edgeColors or cornerColors)
      * */
-    QVector<WangId> variations(int edgeColors, int cornerColors) const;
+    WangIdVariations variations(int edgeColors, int cornerColors) const;
 
     /* Rotates the wang Id clockwise by (90 * rotations) degrees.
      * Meaning with one rotation, the top edge becomes the right edge,
@@ -106,30 +106,43 @@ public:
      * */
     void flipVertically();
 
-
-    WangIdVariationIterator variationsBegin(int edgeColors, int cornerColors) const;
-    //This will actually return the last wangId, as aposed to the last++
-    WangIdVariationIterator variationsEnd(int edgeColors, int cornerColors) const;
-
 private:
     unsigned mId;
 };
 
-class TILEDSHARED_EXPORT WangIdVariationIterator
+class TILEDSHARED_EXPORT WangIdVariations
 {
 public:
-    explicit WangIdVariationIterator(int edgeColors, int cornerColors, WangId wangId = 0);
-    WangIdVariationIterator &operator++();
-    WangIdVariationIterator operator++(int)
-    { WangIdVariationIterator vI = *this; ++(*this); return vI; }
-    bool operator==(WangIdVariationIterator other) { return mCurrent == other.mCurrent; }
-    bool operator!=(WangIdVariationIterator other) { return mCurrent != other.mCurrent; }
-    const WangId operator*() const { return mCurrent; }
-    const WangId operator->() const { return mCurrent; }
+    class iterator
+    {
+    public:
+        iterator(int edgeColors, int cornerColors, WangId wangId = 0);
+        iterator &operator++();
+        iterator operator++(int)
+        { iterator vI = *this; ++(*this); return vI; }
+        bool operator==(iterator other) { return mCurrent == other.mCurrent; }
+        bool operator!=(iterator other) { return mCurrent != other.mCurrent; }
+        const WangId operator*() const { return mCurrent; }
+        const WangId operator->() const { return mCurrent; }
+
+    private:
+        WangId mCurrent;
+        WangId mMax;
+        QList<int> mZeroSpots;
+        int mEdgeColors;
+        int mCornerColors;
+    };
+
+    WangIdVariations(int edgeColors, int cornerColors, WangId wangId = 0)
+        : mWangId(wangId)
+        , mEdgeColors(edgeColors)
+        , mCornerColors(cornerColors) {}
+
+    iterator begin() const { return iterator(mEdgeColors, mCornerColors, mWangId); }
+    iterator end() const;
 
 private:
-    WangId mCurrent;
-    QList<int> mZeroSpots;
+    WangId mWangId;
     int mEdgeColors;
     int mCornerColors;
 };
@@ -243,14 +256,11 @@ public:
      * different wangId, then that reference is removed, and
      * replaced with the new wangId. If the wangId provided is zero
      * then the wangTile is removed if already in the set.
+     * Updates the UniqueFullWangIdCount
      * */
     void addTile(Tile *tile, WangId wangId);
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
-
-    void removeTile(Tile *tile);
-    void removeCell(const Cell &cell);
-    void removeWangTile(const WangTile &wangTile);
 
     /* Finds a tile whos WangId matches with the one provided,
      * where zeros in the id are treated as wild cards, and can be
@@ -307,11 +317,15 @@ public:
 
     bool isEmpty() const { return mWangIdToWangTile.isEmpty(); }
 
-    //Is every template wangTile filled
+    // Is every template wangTile filled
     bool isComplete() const;
 
     // How many tiles would be in a complete tileset
     unsigned completeSetSize() const;
+
+    // How many unique, full wangIds are active in this set.
+    // Where full means the id has no wildcards
+    unsigned uniqueFullWangIdCount() const { return mUniqueFullWangIdCount; }
 
     /* Returns the nth wangId starting at 0x11111111
      * and, when C is the number of corners,
@@ -327,11 +341,14 @@ public:
     WangSet *clone(Tileset *tileset) const;
 
 private:
+    void removeWangTile(const WangTile &wangTile);
+
     Tileset *mTileset;
     QString mName;
     int mImageTileId;
     int mEdgeColors;
     int mCornerColors;
+    unsigned mUniqueFullWangIdCount;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 
     //Tile info being the tileId, with the last three bits (32, 31, 30)

@@ -103,20 +103,27 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
     QRect boundingRect = fillRegion.boundingRect();
 
     TileLayer *tileLayer = new TileLayer(QString(),
-                                        boundingRect.x(),
-                                        boundingRect.y(),
-                                        boundingRect.width(),
-                                        boundingRect.height());
+                                         boundingRect.x(),
+                                         boundingRect.y(),
+                                         boundingRect.width(),
+                                         boundingRect.height());
 
-    QVector<WangId> wangIds;
-    wangIds.resize(tileLayer->width() * tileLayer->height());
-    for (int i = 0; i < wangIds.size(); ++i) {
-        QPoint point(i % tileLayer->width() + tileLayer->x(),
-                     i / tileLayer->width() + tileLayer->y());
-        if (fillRegion.contains(point))
-            wangIds[i] = wangIdFromSurroundings(back,
-                                                fillRegion,
-                                                point);
+    QVector<WangId> wangIds(tileLayer->width() * tileLayer->height(), 0);
+    for (const QRect &rect : fillRegion.rects()) {
+        for (int x = rect.left(); x <= rect.right(); ++x) {
+            int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
+            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.top()));
+
+            index = x - tileLayer->x() + (rect.bottom() - tileLayer->y())*tileLayer->width();
+            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.bottom()));
+        }
+        for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
+            int index = rect.left() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
+            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(rect.left(), y));
+
+            index = rect.right() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
+            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(rect.right(), y));
+        }
     }
 
     for (const QRect &rect : fillRegion.rects()) {
@@ -126,26 +133,24 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                 int currentIndex = (currentPoint.y() - tileLayer->y()) * tileLayer->width() + (currentPoint.x() - tileLayer->x());
                 QList<WangTile> wangTiles = mWangSet->findMatchingWangTiles(wangIds[currentIndex]);
 
-                while(!wangTiles.isEmpty()) {
+                while (!wangTiles.isEmpty()) {
                     WangTile wangTile = wangTiles.takeAt(qrand() % wangTiles.size());
 
                     bool fill = true;
                     if (lookForward) {
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
-                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - QPoint(tileLayer->x(), tileLayer->y())).isEmpty())
+                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
-                            p -= QPoint(tileLayer->x(), tileLayer->y());
+                            p -= tileLayer->position();
                             int index = p.y() * tileLayer->width() + p.x();
 
                             WangId adjacentWangId = wangIds[index];
                             adjacentWangId.updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
 
                             if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
+                                fill = wangTiles.isEmpty();
                                 if (wangTiles.isEmpty())
-                                    fill = true;
-                                else
-                                    fill = false;
 
                                 break;
                             }
@@ -159,9 +164,9 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
 
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
-                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - QPoint(tileLayer->x(), tileLayer->y())).isEmpty())
+                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
-                            p -= QPoint(tileLayer->x(), tileLayer->y());
+                            p -= tileLayer->position();
                             int index = p.y() * tileLayer->width() + p.x();
                             wangIds[index].updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
                         }
