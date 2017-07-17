@@ -3389,7 +3389,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Object Layer</source>
-        <translation>오브젝트 레이어(O)(&amp;O)</translation>
+        <translation>오브젝트 레이어(&amp;O)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3437,7 +3437,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation>레이어 내리기(L)(&amp;L)</translation>
+        <translation>레이어 내리기(&amp;L)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3447,7 +3447,7 @@ Please select specific format.</source>
     <message>
         <location line="+36"/>
         <source>&amp;New</source>
-        <translation>새로운 레이어(N)(&amp;N)</translation>
+        <translation>새로운 레이어(&amp;N)</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -3506,7 +3506,7 @@ Please select specific format.</source>
     <message>
         <location line="+88"/>
         <source>&amp;Merge Layer Down</source>
-        <translation>아래 레이어와 병합(M)(&amp;M)</translation>
+        <translation>아래 레이어와 병합(&amp;M)</translation>
     </message>
     <message>
         <location line="+1"/>

@@ -453,7 +453,7 @@
     <message>
         <location line="+26"/>
         <source>Lua files (*.lua)</source>
-        <translation>Arquivos LUA (*.lua)</translation>
+        <translation>Arquivos Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -3007,7 +3007,7 @@ Deseja substituí-lo?</translation>
         <location line="+17"/>
         <location line="+1358"/>
         <source>&amp;Layer</source>
-        <translation>&amp;Camada</translation>
+        <translation>Cama&amp;da</translation>
     </message>
     <message>
         <location line="+1"/>
