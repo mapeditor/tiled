@@ -161,19 +161,14 @@ MapsView::MapsView(QWidget *parent)
     mFileSystemModel = new FileSystemModel(this);
     mFileSystemModel->setRootPath(mapsDir.absolutePath());
 
-    QStringList nameFilters(QLatin1String("*.tmx"));
-
-    // The file system model name filters are plain, whereas the plugins expose
-    // a filter as part of the file description
-    QRegExp filterFinder(QLatin1String("\\((\\*\\.[^\\)\\s]*)"));
+    QStringList nameFilters;
 
     for (MapFormat *format : PluginManager::objects<MapFormat>()) {
         if (!(format->capabilities() & MapFormat::Read))
             continue;
 
         const QString filter = format->nameFilter();
-        if (filterFinder.indexIn(filter) != -1)
-            nameFilters.append(filterFinder.cap(1));
+        nameFilters.append(Utils::cleanFilterList(filter));
     }
 
     mFileSystemModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);

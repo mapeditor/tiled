@@ -51,24 +51,6 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
     return filter;
 }
 
-// Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
-//
-// Copied from qplatformdialoghelper.cpp in Qt, used under the terms of the GPL
-// version 2.0.
-static QStringList cleanFilterList(const QString &filter)
-{
-    const char filterRegExp[] =
-    "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
-
-    QRegExp regexp(QString::fromLatin1(filterRegExp));
-    Q_ASSERT(regexp.isValid());
-    QString f = filter;
-    int i = regexp.indexIn(f);
-    if (i >= 0)
-        f = regexp.cap(2);
-    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
-}
-
 namespace Tiled {
 namespace Utils {
 
@@ -86,6 +68,24 @@ QString readableImageFormatsFilter()
 QString writableImageFormatsFilter()
 {
     return toImageFileFilter(QImageWriter::supportedImageFormats());
+}
+
+// Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
+//
+// Copied from qplatformdialoghelper.cpp in Qt, used under the terms of the GPL
+// version 2.0.
+QStringList cleanFilterList(const QString &filter)
+{
+    const char filterRegExp[] =
+    "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
+
+    QRegExp regexp(QString::fromLatin1(filterRegExp));
+    Q_ASSERT(regexp.isValid());
+    QString f = filter;
+    int i = regexp.indexIn(f);
+    if (i >= 0)
+        f = regexp.cap(2);
+    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
 }
 
 /**

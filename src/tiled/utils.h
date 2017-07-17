@@ -33,6 +33,7 @@ namespace Utils {
 QString readableImageFormatsFilter();
 QString writableImageFormatsFilter();
 
+QStringList cleanFilterList(const QString &filter);
 bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
 
