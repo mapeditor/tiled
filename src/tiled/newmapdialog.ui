@@ -234,6 +234,13 @@
       <item row="2" column="1">
        <widget class="QComboBox" name="renderOrder"/>
       </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="mapInfinite">
+        <property name="text">
+         <string>Automatically Resize Map</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

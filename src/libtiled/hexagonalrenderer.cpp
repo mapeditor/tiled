@@ -254,7 +254,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     QRect rect = exposed.toAlignedRect();
 
     if (rect.isNull())
-        rect = boundingRect(layer->rect());
+        rect = boundingRect(layer->bounds());
 
     QMargins drawMargins = layer->drawMargins();
     drawMargins.setBottom(drawMargins.bottom() + p.tileHeight);

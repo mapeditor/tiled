@@ -56,7 +56,7 @@ void test_StaggeredRenderer::mapSize()
     QSize mapSize = renderer.mapSize();
 
     QCOMPARE(mapSize, QSize(10 * 64 + 32, 10 * 16 + 16));
-    QCOMPARE(renderer.boundingRect(tileLayer->bounds()),
+    QCOMPARE(renderer.boundingRect(tileLayer->rect()),
              QRect(QPoint(), mapSize));
 }
 

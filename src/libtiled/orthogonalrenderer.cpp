@@ -188,12 +188,19 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
-    const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
-    const int endX = qMin(qCeil(rect.right()),
-                          map()->width() * tileWidth + 1);
-    const int endY = qMin(qCeil(rect.bottom()),
-                          map()->height() * tileHeight + 1);
+    int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
+    int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
+    int endX = qMin(qCeil(rect.right()),
+                    map()->width() * tileWidth + 1);
+    int endY = qMin(qCeil(rect.bottom()),
+                    map()->height() * tileHeight + 1);
+
+    if (map()->infinite()) {
+        startX = ((int) (rect.x() / tileWidth - 1)) * tileWidth;
+        startY = ((int) (rect.y() / tileHeight - 1)) * tileHeight;
+        endX = qCeil(rect.right());
+        endY = qCeil(rect.bottom());
+    }
 
     QPen gridPen = makeGridPen(painter->device(), gridColor);
 

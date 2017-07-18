@@ -152,11 +152,24 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    QByteArray tileData;
-    tileData.reserve(tileLayer.height() * tileLayer.width() * 4);
+    int startX = 0;
+    int startY = 0;
+    int endX = tileLayer.width() - 1;
+    int endY = tileLayer.height() - 1;
 
-    for (int y = 0; y < tileLayer.height(); ++y) {
-        for (int x = 0; x < tileLayer.width(); ++x) {
+    if (tileLayer.map()->infinite()) {
+        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
+        startX = bounds.left();
+        startY = bounds.top();
+        endX = bounds.right();
+        endY = bounds.bottom();
+    }
+
+    QByteArray tileData;
+    tileData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
+
+    for (int y = startY; y <= endY; ++y) {
+        for (int x = startX; x <= endX; ++x) {
             const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
             tileData.append((char) (gid));
             tileData.append((char) (gid >> 8));
@@ -175,7 +188,8 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
 
 GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
                                                   const QByteArray &layerData,
-                                                  Map::LayerDataFormat format) const
+                                                  Map::LayerDataFormat format,
+                                                  int startX, int startY) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
@@ -206,7 +220,7 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
             return isEmpty() ? TileButNoTilesets : InvalidTile;
         }
 
-        tileLayer.setCell(x, y, result);
+        tileLayer.setCell(x + startX, y + startY, result);
 
         x++;
         if (x == tileLayer.width()) {

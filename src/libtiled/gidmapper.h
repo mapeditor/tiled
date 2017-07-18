@@ -63,7 +63,8 @@ public:
 
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
-                                Map::LayerDataFormat format) const;
+                                Map::LayerDataFormat format,
+                                int startX, int startY) const;
 
     unsigned invalidTile() const;
 

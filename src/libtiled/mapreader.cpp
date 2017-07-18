@@ -129,6 +129,9 @@ private:
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
+
+    int startX;
+    int startY;
 };
 
 } // namespace Internal
@@ -212,6 +215,7 @@ Map *MapReaderPrivate::readMap()
     const int mapHeight = atts.value(QLatin1String("height")).toInt();
     const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
     const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+    const int infinite = atts.value(QLatin1String("infinite")).toInt();
     const int hexSideLength = atts.value(QLatin1String("hexsidelength")).toInt();
 
     const QString orientationString =
@@ -242,7 +246,7 @@ Map *MapReaderPrivate::readMap()
     const int nextObjectId =
             atts.value(QLatin1String("nextobjectid")).toInt();
 
-    mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight));
+    mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite));
     mMap->setHexSideLength(hexSideLength);
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
@@ -600,6 +604,8 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
+    startX = atts.value(QLatin1String("startx")).toInt();
+    startY = atts.value(QLatin1String("starty")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
@@ -663,7 +669,7 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
                 const QXmlStreamAttributes atts = xml.attributes();
                 unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-                tileLayer.setCell(x, y, cellForGid(gid));
+                tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
 
                 x++;
                 if (x >= tileLayer.width()) {
@@ -691,7 +697,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
                                              const QByteArray &data,
                                              Map::LayerDataFormat format)
 {
-    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format);
+    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format, startX, startY);
 
     switch (error) {
     case GidMapper::CorruptLayerData:
@@ -730,7 +736,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer, QStringRef text)
                                .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
                 return;
             }
-            tileLayer.setCell(x, y, cellForGid(gid));
+            tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
         }
     }
 }

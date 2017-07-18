@@ -85,7 +85,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
+    if (!mTileLayer->contains(layerX, layerY) && !mTileLayer->map()->infinite())
         return;
 
     TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
@@ -347,7 +347,12 @@ bool TilePainter::isDrawable(int x, int y) const
 QRegion TilePainter::paintableRegion(const QRegion &region) const
 {
     const QRegion bounds = QRegion(mTileLayer->rect());
-    QRegion intersection = bounds.intersected(region);
+    QRegion intersection;
+
+    if (mTileLayer->map()->infinite())
+        intersection = region;
+    else
+        intersection = bounds.intersected(region);;
 
     const QRegion &selection = mMapDocument->selectedArea();
     if (!selection.isEmpty())

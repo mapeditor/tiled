@@ -144,6 +144,11 @@ void BrushItem::paint(QPainter *painter,
     QRegion insideMapRegion = mRegion.intersected(mapRegion);
     QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
 
+    if (mMapDocument->map()->infinite()) {
+        insideMapRegion = mRegion;
+        outsideMapRegion = QRegion();
+    }
+
     const MapRenderer *renderer = mMapDocument->renderer();
     if (mTileLayer) {
         const qreal opacity = painter->opacity();

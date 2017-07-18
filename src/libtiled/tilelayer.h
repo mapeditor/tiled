@@ -564,14 +564,6 @@ inline void TileLayer::setSize(const QSize &size)
     mHeight = size.height();
 }
 
-/**
- * Returns whether (x, y) is inside this map layer.
- */
-inline bool TileLayer::contains(int x, int y) const
-{
-    return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
-}
-
 inline bool TileLayer::contains(const QPoint &point) const
 {
     return contains(point.x(), point.y());

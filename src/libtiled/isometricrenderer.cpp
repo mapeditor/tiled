@@ -191,7 +191,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 
     QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
-        rect = boundingRect(layer->rect());
+        rect = boundingRect(layer->bounds());
 
     QMargins drawMargins = layer->drawMargins();
     drawMargins.setTop(drawMargins.top() - tileHeight);

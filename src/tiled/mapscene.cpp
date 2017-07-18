@@ -201,6 +201,9 @@ void MapScene::refreshScene()
 
     const Map *map = mMapDocument->map();
 
+    if (map->infinite())
+        removeItem(mDarkRectangle);
+
     if (map->backgroundColor().isValid())
         setBackgroundBrush(map->backgroundColor());
     else

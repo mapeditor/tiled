@@ -149,6 +149,14 @@ QMargins TileLayer::drawMargins() const
     return computeDrawMargins(usedTilesets());
 }
 
+bool TileLayer::contains(int x, int y) const
+{
+    if (!map() || !map()->infinite())
+        return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
+    else
+        return true;
+}
+
 QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
@@ -240,7 +248,9 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
 {
     // Determine the overlapping area
     QRegion area = QRect(x, y, layer->width(), layer->height());
-    area &= QRect(0, 0, width(), height());
+
+    if (!map() || !map()->infinite())
+        area &= QRect(0, 0, width(), height());
 
     if (!mask.isEmpty())
         area &= mask;
@@ -634,12 +644,12 @@ Layer *TileLayer::mergedWith(Layer *other) const
     Q_ASSERT(canMergeWith(other));
 
     const TileLayer *o = static_cast<TileLayer*>(other);
-    const QRect unitedBounds = bounds().united(o->bounds());
-    const QPoint offset = position() - unitedBounds.topLeft();
+    const QRect unitedRect = rect().united(o->rect());
+    const QPoint offset = position() - unitedRect.topLeft();
 
     TileLayer *merged = clone();
-    merged->resize(unitedBounds.size(), offset);
-    merged->merge(o->position() - unitedBounds.topLeft(), o);
+    merged->resize(unitedRect.size(), offset);
+    merged->merge(o->position() - unitedRect.topLeft(), o);
     return merged;
 }
 

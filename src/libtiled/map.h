@@ -113,7 +113,8 @@ public:
      */
     Map(Orientation orientation,
         int width, int height,
-        int tileWidth, int tileHeight);
+        int tileWidth, int tileHeight,
+        bool infinite = false);
 
     /**
      * Copy constructor. Makes sure that a deep-copy of the layers is created.
@@ -191,6 +192,10 @@ public:
      * Sets the height of one tile.
      */
     void setTileHeight(int height) { mTileHeight = height; }
+
+    bool infinite() const { return mInfinite; }
+
+    void setInfinite(bool infinite) { mInfinite = infinite; }
 
     /**
      * Returns the size of one tile. Provided for convenience.
@@ -387,6 +392,7 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
+    bool mInfinite;
     int mHexSideLength;
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;

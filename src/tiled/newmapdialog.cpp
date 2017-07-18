@@ -133,6 +133,7 @@ MapDocument *NewMapDialog::createMap()
     const int mapHeight = mUi->mapHeight->value();
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
+    const bool mapInfinite = mUi->mapInfinite->isChecked();
 
     const auto orientation = comboBoxValue<Map::Orientation>(mUi->orientation);
     const auto layerFormat = comboBoxValue<Map::LayerDataFormat>(mUi->layerFormat);
@@ -140,7 +141,8 @@ MapDocument *NewMapDialog::createMap()
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
-                       tileWidth, tileHeight);
+                       tileWidth, tileHeight,
+                       mapInfinite);
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
