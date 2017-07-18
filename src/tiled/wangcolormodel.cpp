@@ -20,6 +20,7 @@
 
 #include "wangcolormodel.h"
 
+#include "tileset.h"
 #include "wangset.h"
 
 #include <QApplication>

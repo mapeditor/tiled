@@ -162,8 +162,16 @@ WangDock::WangDock(QWidget *parent)
     connect(mEraseWangIdsButton, &QPushButton::clicked,
             this, &WangDock::eraseWangIdsButtonClicked);
 
+    mSwitchTemplateViewButton = new QPushButton(this);
+    mSwitchTemplateViewButton->setIconSize(Utils::smallIconSize());
+    mSwitchTemplateViewButton->setCheckable(false);
+
+    connect(mSwitchTemplateViewButton, &QPushButton::clicked,
+            this, &WangDock::switchTemplateViewButtonClicked);
+
     QHBoxLayout *horizontal = new QHBoxLayout;
     horizontal->addWidget(mEraseWangIdsButton);
+    horizontal->addWidget(mSwitchTemplateViewButton);
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
 
@@ -212,9 +220,10 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet((firstWangSet(mapDocument)));
 
-        mWangTemplateView->setVisible(false);
+        setColorView(true);
         mToolBar->setVisible(false);
         mEraseWangIdsButton->setVisible(false);
+        mSwitchTemplateViewButton->setVisible(false);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
@@ -228,11 +237,12 @@ void WangDock::setDocument(Document *document)
         connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
                 mWangTemplateModel, &WangTemplateModel::wangSetChanged);
         connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
-                this, &WangDock::refreshCurrentWangId);
+                this, &WangDock::wangSetChanged);
 
-        mWangTemplateView->setVisible(true);
         mToolBar->setVisible(true);
         mEraseWangIdsButton->setVisible(true);
+        mSwitchTemplateViewButton->setVisible(true);
+        setTemplateView(true);
 
         /*
          * Removing a wangset usually changes the selected wangset without the
@@ -284,6 +294,14 @@ void WangDock::eraseWangIdsButtonClicked()
     emit currentWangIdChanged(mCurrentWangId);
 }
 
+void WangDock::switchTemplateViewButtonClicked()
+{
+    if (mWangTemplateView->isVisible())
+        setColorView(true);
+    else
+        setTemplateView(true);
+}
+
 void WangDock::refreshCurrentWangSet()
 {
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
@@ -305,6 +323,14 @@ void WangDock::refreshCurrentWangId()
     mEraseWangIdsButton->setChecked(!mCurrentWangId);
 
     emit currentWangIdChanged(mCurrentWangId);
+}
+
+void WangDock::wangSetChanged()
+{
+    refreshCurrentWangId();
+
+    mWangColorView->reset();
+    mWangColorView->expandAll();
 }
 
 void WangDock::indexPressed(const QModelIndex &index)
@@ -335,15 +361,25 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mWangTemplateView->selectionModel()->clearSelection();
     mWangTemplateModel->setWangSet(wangSet);
     mWangColorModel->setWangSet(wangSet);
-    mWangColorView->setVisible(wangSet);
+    mWangColorView->expandAll();
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
-        mWangColorView->expandAll();
+
+        if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible()) {
+            if (mDocument->type() == Document::TilesetDocumentType)
+                setTemplateView(true);
+            else
+                setColorView(true);
+        }
+
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();
         mCurrentWangSet = nullptr;
+
+        setColorView(false);
+        setTemplateView(false);
     }
 
     if (wangSet && !mInitializing)
@@ -361,6 +397,11 @@ void WangDock::retranslateUi()
     mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
+
+    if (mWangColorView->isVisible())
+        mSwitchTemplateViewButton->setText(tr("Switch to Template View"));
+    else
+        mSwitchTemplateViewButton->setText(tr("Switch to Color View"));
 }
 
 QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
@@ -395,4 +436,38 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
 
     //this emits current changed, and thus updates the wangId and such.
     selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+}
+
+void WangDock::setTemplateView(bool enabled)
+{
+    if (enabled == mWangTemplateView->isVisible())
+        return;
+
+    mWangTemplateView->setVisible(enabled);
+
+    if (enabled) {
+        mWangColorView->setVisible(false);
+        mSwitchTemplateViewButton->setEnabled(true);
+    } else if (!mWangColorView->isVisible()) {
+        mSwitchTemplateViewButton->setEnabled(false);
+    }
+
+    retranslateUi();
+}
+
+void WangDock::setColorView(bool enabled)
+{
+    if (enabled == mWangColorView->isVisible())
+        return;
+
+    mWangColorView->setVisible(enabled);
+
+    if (enabled) {
+        mWangTemplateView->setVisible(false);
+        mSwitchTemplateViewButton->setEnabled(true);
+    } else if (!mWangTemplateView->isVisible()) {
+        mSwitchTemplateViewButton->setEnabled(false);
+    }
+
+    retranslateUi();
 }

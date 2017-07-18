@@ -58,6 +58,10 @@ public:
 
     void editWangSetName(WangSet *wangSet);
 
+    //if one is set to enabled, the other is disabled.
+    void setTemplateView(bool enabled);
+    void setColorView(bool enabled);
+
 signals:
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
@@ -75,8 +79,10 @@ protected:
 
 private slots:
     void eraseWangIdsButtonClicked();
+    void switchTemplateViewButtonClicked();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
+    void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
 
@@ -92,6 +98,7 @@ private:
     Document *mDocument;
     WangSetView *mWangSetView;
     QPushButton *mEraseWangIdsButton;
+    QPushButton *mSwitchTemplateViewButton;
     WangSet *mCurrentWangSet;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;

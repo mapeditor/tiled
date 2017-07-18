@@ -24,6 +24,7 @@
 
 namespace Tiled {
 
+class Tileset;
 class WangSet;
 
 namespace Internal {
