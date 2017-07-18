@@ -193,6 +193,8 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
+    void setChangedProperties(const ChangedProperties &changedProperties);
+
     void setPropertyChanged(Property property, bool state = true);
     bool propertyChanged(Property property) const;
 
@@ -456,6 +458,9 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline void MapObject::setChangedProperties(const ChangedProperties &changedProperties)
+{ mChangedProperties = changedProperties; }
 
 inline void MapObject::setPropertyChanged(Property property, bool state)
 {

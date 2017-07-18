@@ -257,6 +257,8 @@ MapObject *MapObject::clone() const
     o->setCell(mCell);
     o->setRotation(mRotation);
     o->setVisible(mVisible);
+    o->setChangedProperties(mChangedProperties);
+    o->setTemplateRef(templateRef());
     return o;
 }
 
