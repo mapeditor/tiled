@@ -369,8 +369,8 @@ void WangSet::addWangTile(const WangTile &wangTile)
     if (wangTile.wangId() == 0)
         return;
 
-    if (((mEdgeColors > 1 && !wangTile.wangId().hasEdgeWildCards())
-            || (mCornerColors > 1 && !wangTile.wangId().hasCornerWildCards()))
+    if ((mEdgeColors <= 1 || !wangTile.wangId().hasEdgeWildCards())
+            && (mCornerColors <= 1 || !wangTile.wangId().hasCornerWildCards())
             && !mWangIdToWangTile.contains(wangTile.wangId()))
         ++mUniqueFullWangIdCount;
 

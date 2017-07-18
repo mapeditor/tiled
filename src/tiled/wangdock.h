@@ -29,6 +29,7 @@ class QModelIndex;
 class QPushButton;
 class QToolBar;
 class QTreeView;
+class QStackedWidget;
 
 namespace Tiled {
 namespace Internal {
@@ -58,9 +59,9 @@ public:
 
     void editWangSetName(WangSet *wangSet);
 
-    //if one is set to enabled, the other is disabled.
-    void setTemplateView(bool enabled);
-    void setColorView(bool enabled);
+    void setTemplateView();
+    void setColorView();
+    void hideTemplateColorView();
 
 signals:
     void currentWangSetChanged(WangSet *wangSet);
@@ -108,6 +109,7 @@ private:
     WangSetFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
+    QStackedWidget *mTemplateAndColorView;
 
     bool mInitializing;
 };

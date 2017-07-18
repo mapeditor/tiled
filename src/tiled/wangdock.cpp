@@ -39,6 +39,7 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
+#include <QStackedWidget>
 #include <QToolBar>
 #include <QTreeView>
 
@@ -92,6 +93,26 @@ protected:
     bool mEnabled;
 };
 
+class WangColorFilterModel : public QSortFilterProxyModel
+{
+public:
+    WangColorFilterModel(QObject *parent = nullptr)
+        :QSortFilterProxyModel(parent)
+    {
+    }
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
+    {
+        if (source_parent.isValid())
+            return true;
+
+        const QAbstractItemModel *model = sourceModel();
+        const QModelIndex index = model->index(source_row, 0, source_parent);
+        return index.isValid() && model->hasChildren(index);
+    }
+};
+
 } // namespace Internal
 } // namespace Tiled
 
@@ -139,11 +160,14 @@ WangDock::WangDock(QWidget *parent)
 
     mWangTemplateView = new WangTemplateView(w);
     mWangTemplateView->setModel(mWangTemplateModel);
-    mWangTemplateView->setVisible(false);
+    mWangTemplateView->setVisible(true);
+
+    WangColorFilterModel *wangColorFilterModel = new WangColorFilterModel(this);
+    wangColorFilterModel->setSourceModel(mWangColorModel);
 
     mWangColorView = new QTreeView(w);
-    mWangColorView->setModel(mWangColorModel);
-    mWangColorView->setVisible(false);
+    mWangColorView->setModel(wangColorFilterModel);
+    mWangColorView->setVisible(true);
     mWangColorView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     mWangColorView->setHeaderHidden(true);
     mWangColorView->setItemsExpandable(false);
@@ -175,11 +199,14 @@ WangDock::WangDock(QWidget *parent)
     horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
     horizontal->addWidget(mToolBar);
 
+    mTemplateAndColorView = new QStackedWidget();
+    mTemplateAndColorView->addWidget(mWangTemplateView);
+    mTemplateAndColorView->addWidget(mWangColorView);
+
     QSplitter *wangViews = new QSplitter;
     wangViews->setOrientation(Qt::Vertical);
     wangViews->addWidget(mWangSetView);
-    wangViews->addWidget(mWangTemplateView);
-    wangViews->addWidget(mWangColorView);
+    wangViews->addWidget(mTemplateAndColorView);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setMargin(0);
@@ -220,7 +247,7 @@ void WangDock::setDocument(Document *document)
 
         setCurrentWangSet((firstWangSet(mapDocument)));
 
-        setColorView(true);
+        setColorView();
         mToolBar->setVisible(false);
         mEraseWangIdsButton->setVisible(false);
         mSwitchTemplateViewButton->setVisible(false);
@@ -242,7 +269,7 @@ void WangDock::setDocument(Document *document)
         mToolBar->setVisible(true);
         mEraseWangIdsButton->setVisible(true);
         mSwitchTemplateViewButton->setVisible(true);
-        setTemplateView(true);
+        setTemplateView();
 
         /*
          * Removing a wangset usually changes the selected wangset without the
@@ -296,10 +323,10 @@ void WangDock::eraseWangIdsButtonClicked()
 
 void WangDock::switchTemplateViewButtonClicked()
 {
-    if (mWangTemplateView->isVisible())
-        setColorView(true);
+    if (mTemplateAndColorView->currentWidget() == mWangTemplateView)
+        setColorView();
     else
-        setTemplateView(true);
+        setTemplateView();
 }
 
 void WangDock::refreshCurrentWangSet()
@@ -329,7 +356,7 @@ void WangDock::wangSetChanged()
 {
     refreshCurrentWangId();
 
-    mWangColorView->reset();
+    mWangColorModel->resetModel();
     mWangColorView->expandAll();
 }
 
@@ -368,9 +395,9 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
         if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible()) {
             if (mDocument->type() == Document::TilesetDocumentType)
-                setTemplateView(true);
+                setTemplateView();
             else
-                setColorView(true);
+                setColorView();
         }
 
     } else {
@@ -378,8 +405,7 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
         mWangSetView->selectionModel()->clearSelection();
         mCurrentWangSet = nullptr;
 
-        setColorView(false);
-        setTemplateView(false);
+        hideTemplateColorView();
     }
 
     if (wangSet && !mInitializing)
@@ -438,36 +464,35 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
     selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
 }
 
-void WangDock::setTemplateView(bool enabled)
+void WangDock::setTemplateView()
 {
-    if (enabled == mWangTemplateView->isVisible())
-        return;
-
-    mWangTemplateView->setVisible(enabled);
-
-    if (enabled) {
-        mWangColorView->setVisible(false);
+    if (!mTemplateAndColorView->isVisible()) {
         mSwitchTemplateViewButton->setEnabled(true);
-    } else if (!mWangColorView->isVisible()) {
-        mSwitchTemplateViewButton->setEnabled(false);
+        mTemplateAndColorView->setVisible(true);
     }
+
+    mTemplateAndColorView->setCurrentWidget(mWangTemplateView);
 
     retranslateUi();
 }
 
-void WangDock::setColorView(bool enabled)
+void WangDock::setColorView()
 {
-    if (enabled == mWangColorView->isVisible())
-        return;
-
-    mWangColorView->setVisible(enabled);
-
-    if (enabled) {
-        mWangTemplateView->setVisible(false);
+    if (!mTemplateAndColorView->isVisible()) {
         mSwitchTemplateViewButton->setEnabled(true);
-    } else if (!mWangTemplateView->isVisible()) {
-        mSwitchTemplateViewButton->setEnabled(false);
+        mTemplateAndColorView->setVisible(true);
     }
 
+    mTemplateAndColorView->setCurrentWidget(mWangColorView);
+
     retranslateUi();
+}
+
+void WangDock::hideTemplateColorView()
+{
+    if (!mTemplateAndColorView->isVisible())
+        return;
+
+    mTemplateAndColorView->setVisible(false);
+    mSwitchTemplateViewButton->setEnabled(false);
 }

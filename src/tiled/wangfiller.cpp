@@ -150,7 +150,6 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
 
                             if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
                                 fill = wangTiles.isEmpty();
-                                if (wangTiles.isEmpty())
 
                                 break;
                             }

@@ -61,6 +61,8 @@ public:
 
     void setWangSet(WangSet *wangSet);
 
+    void resetModel();
+
 private:
     WangSet *mWangSet;
     QString *mEdgeText;

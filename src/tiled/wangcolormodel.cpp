@@ -183,3 +183,9 @@ void WangColorModel::setWangSet(WangSet *wangSet)
     mWangSet = wangSet;
     endResetModel();
 }
+
+void WangColorModel::resetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
