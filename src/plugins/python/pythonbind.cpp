@@ -2416,7 +2416,7 @@ Tiled::ObjectGroup* objectGroupAt(Tiled::Map *map, int idx) {
 }
 
 
-bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
+static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 {
     QImage img(file);
     return ts->loadFromImage(img, file);

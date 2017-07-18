@@ -24,6 +24,8 @@
 #include "editor.h"
 
 #include <QHash>
+#include <QList>
+#include <QUrl>
 
 class QAction;
 class QComboBox;
@@ -98,7 +100,7 @@ private slots:
     void updateTilesetView(Tileset *tileset);
 
     void openAddTilesDialog();
-    void addTiles(const QStringList &files);
+    void addTiles(const QList<QUrl> &urls);
     void removeTiles();
 
     void setEditTerrain(bool editTerrain);

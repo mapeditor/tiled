@@ -25,6 +25,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/staggeredrenderer.cpp \
     $$PWD/tile.cpp \
     $$PWD/tileanimationdriver.cpp \
+    $$PWD/tiled.cpp \
     $$PWD/tilelayer.cpp \
     $$PWD/tileset.cpp \
     $$PWD/tilesetformat.cpp \

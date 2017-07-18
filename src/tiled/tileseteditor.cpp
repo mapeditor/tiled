@@ -119,7 +119,7 @@ public:
     }
 
 signals:
-    void localFilesDropped(const QStringList &files);
+    void urlsDropped(const QList<QUrl> &urls);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *) override;
@@ -142,14 +142,9 @@ void TilesetEditorWindow::dragEnterEvent(QDragEnterEvent *e)
 
 void TilesetEditorWindow::dropEvent(QDropEvent *e)
 {
-    QStringList paths;
-    for (const QUrl &url : e->mimeData()->urls()) {
-        const QString localFile = url.toLocalFile();
-        if (!localFile.isEmpty())
-            paths.append(localFile);
-    }
-    if (!paths.isEmpty()) {
-        emit localFilesDropped(paths);
+    const auto urls = e->mimeData()->urls();
+    if (!urls.isEmpty()) {
+        emit urlsDropped(urls);
         e->acceptProposedAction();
     }
 }
@@ -210,7 +205,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
-    connect(mMainWindow, &TilesetEditorWindow::localFilesDropped, this, &TilesetEditor::addTiles);
+    connect(mMainWindow, &TilesetEditorWindow::urlsDropped, this, &TilesetEditor::addTiles);
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &TilesetEditor::currentWidgetChanged);
 
@@ -547,7 +542,7 @@ void TilesetEditor::retranslateUi()
     mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::Internal::MainWindow", "Ctrl+Shift+O"));
 }
 
-static bool hasTileInTileset(QString imageSource, const Tileset &tileset)
+static bool hasTileInTileset(const QUrl &imageSource, const Tileset &tileset)
 {
     for (auto tile : tileset.tiles()) {
         if (tile->imageSource() == imageSource)
@@ -561,16 +556,16 @@ void TilesetEditor::openAddTilesDialog()
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
-    const QStringList files = QFileDialog::getOpenFileNames(mMainWindow->window(),
-                                                            tr("Add Tiles"),
-                                                            startLocation,
-                                                            filter);
+    const auto urls = QFileDialog::getOpenFileUrls(mMainWindow->window(),
+                                                   tr("Add Tiles"),
+                                                   QUrl::fromLocalFile(startLocation),
+                                                   filter);
 
-    if (!files.isEmpty())
-        addTiles(files);
+    if (!urls.isEmpty())
+        addTiles(urls);
 }
 
-void TilesetEditor::addTiles(const QStringList &files)
+void TilesetEditor::addTiles(const QList<QUrl> &urls)
 {
     Tileset *tileset = currentTileset();
     if (!tileset)
@@ -579,7 +574,7 @@ void TilesetEditor::addTiles(const QStringList &files)
     Preferences *prefs = Preferences::instance();
 
     struct LoadedFile {
-        QString imageSource;
+        QUrl imageSource;
         QPixmap image;
     };
     QVector<LoadedFile> loadedFiles;
@@ -587,14 +582,14 @@ void TilesetEditor::addTiles(const QStringList &files)
     // If the tile is already in the tileset, warn user and confirm addition
     bool dontAskAgain = false;
     bool rememberOption = true;
-    for (const QString &file : files) {
-        if (!(dontAskAgain && rememberOption) && hasTileInTileset(file, *tileset)) {
+    for (const QUrl &url : urls) {
+        if (!(dontAskAgain && rememberOption) && hasTileInTileset(url, *tileset)) {
             if (dontAskAgain)
                 continue;
             QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
             QMessageBox warning(QMessageBox::Warning,
                         tr("Add Tiles"),
-                        tr("Tile \"%1\" already exists in the tileset!").arg(file),
+                        tr("Tile \"%1\" already exists in the tileset!").arg(url.toString()),
                         QMessageBox::Yes | QMessageBox::No,
                         mMainWindow->window());
             warning.setDefaultButton(QMessageBox::Yes);
@@ -606,13 +601,14 @@ void TilesetEditor::addTiles(const QStringList &files)
             if (!rememberOption)
                 continue;
         }
-        const QPixmap image(file);
+        const QPixmap image(url.toLocalFile());
         if (!image.isNull()) {
-            loadedFiles.append(LoadedFile { file, image });
+            loadedFiles.append(LoadedFile { url, image });
         } else {
+            // todo: support lazy loading of selected remote files
             QMessageBox warning(QMessageBox::Warning,
                                 tr("Add Tiles"),
-                                tr("Could not load \"%1\"!").arg(file),
+                                tr("Could not load \"%1\"!").arg(url.toString()),
                                 QMessageBox::Ignore | QMessageBox::Cancel,
                                 mMainWindow->window());
             warning.setDefaultButton(QMessageBox::Ignore);
@@ -625,7 +621,9 @@ void TilesetEditor::addTiles(const QStringList &files)
     if (loadedFiles.isEmpty())
         return;
 
-    prefs->setLastPath(Preferences::ImageFile, files.last());
+    const QString lastLocalFile = urls.last().toLocalFile();
+    if (!lastLocalFile.isEmpty())
+        prefs->setLastPath(Preferences::ImageFile, lastLocalFile);
 
     QList<Tile*> tiles;
     tiles.reserve(loadedFiles.size());

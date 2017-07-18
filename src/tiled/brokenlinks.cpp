@@ -55,11 +55,11 @@ QString BrokenLink::filePath() const
 {
     switch (type) {
     case TilesetImageSource:
-        return _tileset->imageSource();
+        return _tileset->imageSource().toString(QUrl::PreferLocalFile);
     case MapTilesetReference:
         return _tileset->fileName();
     case TilesetTileImageSource:
-        return _tile->imageSource();
+        return _tile->imageSource().toString(QUrl::PreferLocalFile);
     }
 
     return QString();
@@ -492,25 +492,28 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         startLocation += QLatin1Char('/');
         startLocation += QFileInfo(link.filePath()).fileName();
 
-        QString newFileName = QFileDialog::getOpenFileName(window(),
-                                                           tr("Locate File"),
-                                                           startLocation,
-                                                           Utils::readableImageFormatsFilter());
+        QUrl newFileUrl = QFileDialog::getOpenFileUrl(window(),
+                                                      tr("Locate File"),
+                                                      QUrl::fromLocalFile(startLocation),
+                                                      Utils::readableImageFormatsFilter());
 
-        if (newFileName.isEmpty())
+        if (newFileUrl.isEmpty())
             return;
 
-        QImageReader reader(newFileName);
-        QImage image = reader.read();
+        // For local images, check if they can be loaded
+        if (newFileUrl.isLocalFile()) {
+            QImageReader reader(newFileUrl.toLocalFile());
+            QImage image = reader.read();
 
-        if (image.isNull()) {
-            QMessageBox::critical(this, tr("Error Loading Image"), reader.errorString());
-            return;
+            if (image.isNull()) {
+                QMessageBox::critical(this, tr("Error Loading Image"), reader.errorString());
+                return;
+            }
         }
 
         if (link.type == TilesetImageSource) {
             TilesetParameters parameters(*link._tileset);
-            parameters.imageSource = newFileName;
+            parameters.imageSource = newFileUrl;
 
             auto command = new ChangeTilesetParameters(tilesetDocument,
                                                        parameters);
@@ -519,12 +522,13 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         } else {
             auto command = new ChangeTileImageSource(tilesetDocument,
                                                      link._tile,
-                                                     newFileName);
+                                                     newFileUrl);
 
             tilesetDocument->undoStack()->push(command);
         }
 
-        prefs->setLastPath(Preferences::ImageFile, newFileName);
+        if (newFileUrl.isLocalFile())
+            prefs->setLastPath(Preferences::ImageFile, newFileUrl.toLocalFile());
 
     } else if (link.type == MapTilesetReference) {
         const QString allFilesFilter = tr("All Files (*)");
@@ -585,9 +589,11 @@ bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFil
             return false;
         }
 
+        const QUrl newSource(QUrl::fromLocalFile(newFilePath));
+
         if (link.type == TilesetImageSource) {
             TilesetParameters parameters(*link._tileset);
-            parameters.imageSource = newFilePath;
+            parameters.imageSource = newSource;
 
             auto command = new ChangeTilesetParameters(tilesetDocument,
                                                        parameters);
@@ -596,7 +602,7 @@ bool BrokenLinksWidget::tryFixLink(const BrokenLink &link, const QString &newFil
         } else {
             auto command = new ChangeTileImageSource(tilesetDocument,
                                                      link._tile,
-                                                     newFilePath);
+                                                     newSource);
 
             tilesetDocument->undoStack()->push(command);
         }

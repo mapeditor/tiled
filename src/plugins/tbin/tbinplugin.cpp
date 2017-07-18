@@ -21,11 +21,13 @@
 #include "tbinplugin.h"
 
 #include "tbin/Map.hpp"
+
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "savefile.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tilelayer.h"
 
 #include <cmath>
@@ -116,6 +118,8 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
         map = new Tiled::Map(Tiled::Map::Orthogonal, tmap.layers[0].layerSize.x, tmap.layers[0].layerSize.y, tmap.layers[0].tileSize.x, tmap.layers[0].tileSize.y);
         tbinToTiledProperties(tmap.props, map);
 
+        const QDir fileDir(QFileInfo(fileName).dir());
+
         std::map< std::string, int > tmapTilesheetMapping;
         for (std::size_t i = 0; i < tmap.tilesheets.size(); ++i) {
             const tbin::TileSheet& ttilesheet = tmap.tilesheets[i];
@@ -127,9 +131,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
                 throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
             auto tilesheet = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
-            QDir dir(fileName);
-            dir.cdUp();
-            tilesheet->setImageSource(QDir::cleanPath(dir.filePath(QString::fromStdString(ttilesheet.image))));
+            tilesheet->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image), fileDir));
             if (!tilesheet->loadImage()) {
                 QList<Tiled::Tile*> tiles;
                 for (int i = 0; i < ttilesheet.sheetSize.x * ttilesheet.sheetSize.y; ++i) {
@@ -220,10 +222,12 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
         //tmap.id = map->name();
         tiledToTbinProperties(map, tmap.props);
 
+        const QDir fileDir(QFileInfo(fileName).dir());
+
         for (const Tiled::SharedTileset& tilesheet : map->tilesets()) {
             tbin::TileSheet ttilesheet;
             ttilesheet.id = tilesheet->name().toStdString();
-            ttilesheet.image = QFileInfo( fileName ).dir().relativeFilePath( tilesheet->imageSource() ).replace( "/", "\\" ).toStdString();
+            ttilesheet.image = Tiled::toFileReference(tilesheet->imageSource(), fileDir).replace("/", "\\").toStdString();
             ttilesheet.margin.x = ttilesheet.margin.y = tilesheet->margin();
             ttilesheet.spacing.x = ttilesheet.spacing.y = tilesheet->tileSpacing();
             ttilesheet.sheetSize.x = tilesheet->columnCount();

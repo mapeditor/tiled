@@ -36,13 +36,6 @@
 namespace Tiled {
 namespace Internal {
 
-static QString resolveReference(const QString &reference, const QString &filePath)
-{
-    if (!reference.isEmpty() && QDir::isRelativePath(reference))
-        return QDir::cleanPath(filePath + QLatin1Char('/') + reference);
-    return reference;
-}
-
 static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
 {
     const QString NAME = QStringLiteral("name");
@@ -66,15 +59,12 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
         int type = it.value().userType();
 
         const QString typeName = typeToName(type);
-        QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
-
-        if (type == filePathTypeId())
-            value = fileDir.relativeFilePath(value.toString());
+        const QVariant exportValue = toExportValue(it.value(), fileDir);
 
         QJsonObject propertyJson;
         propertyJson.insert(NAME, it.key());
         propertyJson.insert(TYPE, typeName);
-        propertyJson.insert(VALUE, value);
+        propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue));
 
         propertiesJson.append(propertyJson);
     }
@@ -92,7 +82,7 @@ static QJsonArray toJson(const ObjectTypes &objectTypes, const QDir &fileDir)
     return json;
 }
 
-static void fromJson(const QJsonObject &object, ObjectType &objectType, const QString &filePath)
+static void fromJson(const QJsonObject &object, ObjectType &objectType, const QDir &fileDir)
 {
     objectType.name = object.value(QLatin1String("name")).toString();
 
@@ -109,22 +99,18 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const QS
 
         if (!typeName.isEmpty()) {
             int type = nameToType(typeName);
-
-            if (type == filePathTypeId())
-                value = resolveReference(value.toString(), filePath);
-
-            value = fromExportValue(value, type);
+            value = fromExportValue(value, type, fileDir);
         }
 
         objectType.defaultProperties.insert(name, value);
     }
 }
 
-static void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const QString &filePath)
+static void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const QDir &fileDir)
 {
     for (const QJsonValue &value : array) {
         objectTypes.append(ObjectType());
-        fromJson(value.toObject(), objectTypes.last(), filePath);
+        fromJson(value.toObject(), objectTypes.last(), fileDir);
     }
 }
 
@@ -156,11 +142,7 @@ static void writeObjectTypesXml(QFileDevice *device,
             writer.writeAttribute(QLatin1String("type"), typeToName(type));
 
             if (!it.value().isNull()) {
-                QString value = toExportValue(it.value()).toString();
-
-                if (type == filePathTypeId())
-                    value = fileDir.relativeFilePath(value);
-
+                const QString value = toExportValue(it.value(), fileDir).toString();
                 writer.writeAttribute(QLatin1String("default"), value);
             }
 
@@ -176,7 +158,7 @@ static void writeObjectTypesXml(QFileDevice *device,
 
 static void readObjectTypePropertyXml(QXmlStreamReader &xml,
                                       Properties &props,
-                                      const QString &filePath)
+                                      const QDir &fileDir)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
@@ -187,11 +169,7 @@ static void readObjectTypePropertyXml(QXmlStreamReader &xml,
 
     if (!typeName.isEmpty()) {
         int type = nameToType(typeName);
-
-        if (type == filePathTypeId())
-            defaultValue = resolveReference(defaultValue.toString(), filePath);
-
-        defaultValue = fromExportValue(defaultValue, type);
+        defaultValue = fromExportValue(defaultValue, type, fileDir);
     }
 
     props.insert(name, defaultValue);
@@ -200,7 +178,7 @@ static void readObjectTypePropertyXml(QXmlStreamReader &xml,
 }
 
 static void readObjectTypesXml(QFileDevice *device,
-                               const QString &filePath,
+                               const QDir &fileDir,
                                ObjectTypes &objectTypes,
                                QString &error)
 {
@@ -223,7 +201,7 @@ static void readObjectTypesXml(QFileDevice *device,
             Properties props;
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("property")){
-                    readObjectTypePropertyXml(reader, props, filePath);
+                    readObjectTypePropertyXml(reader, props, fileDir);
                 } else {
                     reader.skipCurrentElement();
                 }
@@ -301,14 +279,14 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         return false;
     }
 
-    const QString filePath(QFileInfo(fileName).path());
+    const QDir fileDir(QFileInfo(fileName).path());
 
     Format format = mFormat;
     if (format == Autodetect)
         format = detectFormat(fileName);
 
     if (format == Xml) {
-        readObjectTypesXml(&file, filePath, objectTypes, mError);
+        readObjectTypesXml(&file, fileDir, objectTypes, mError);
     } else {
         QJsonParseError jsonError;
         const QByteArray json = file.readAll();
@@ -316,7 +294,7 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         if (document.isNull())
             mError = jsonError.errorString();
         else
-            fromJson(document.array(), objectTypes, filePath);
+            fromJson(document.array(), objectTypes, fileDir);
     }
 
     return mError.isEmpty();

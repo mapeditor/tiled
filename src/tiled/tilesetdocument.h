@@ -87,7 +87,7 @@ public:
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
 
     void setTileType(Tile *tile, const QString &type);
-    void setTileImage(Tile *tile, const QPixmap &image, const QString &source);
+    void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
 
 signals:
     /**

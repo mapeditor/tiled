@@ -51,5 +51,7 @@ TiledPlugin {
         "pythonplugin.cpp",
         "pythonplugin.h",
         "pythonbind.cpp",
+        "qtbinding.py",
+        "tiledbinding.py",
     ]
 }

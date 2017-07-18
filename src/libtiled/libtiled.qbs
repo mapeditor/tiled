@@ -18,7 +18,8 @@ DynamicLibrary {
         var defs = [
             "TILED_LIBRARY",
             "QT_NO_CAST_FROM_ASCII",
-            "QT_NO_CAST_TO_ASCII"
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING"
         ];
         if (project.linuxArchive)
             defs.push("TILED_LINUX_ARCHIVE");
@@ -86,6 +87,7 @@ DynamicLibrary {
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
+        "tiled.cpp",
         "tiled_global.h",
         "tiled.h",
         "tile.h",

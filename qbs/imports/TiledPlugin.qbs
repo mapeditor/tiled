@@ -16,6 +16,9 @@ DynamicLibrary {
         else
             return ["$ORIGIN/../.."];
     }
+    cpp.defines: [
+        "QT_NO_URL_CAST_FROM_STRING"
+    ]
     bundle.isBundle: false
 
     Properties {

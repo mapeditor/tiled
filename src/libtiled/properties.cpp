@@ -28,6 +28,8 @@
 
 #include "properties.h"
 
+#include "tiled.h"
+
 #include <QColor>
 #include <QJsonObject>
 
@@ -104,6 +106,11 @@ void AggregatedProperties::aggregate(const Properties &properties)
     ++mAggregatedCount;
 }
 
+int filePathTypeId()
+{
+    return qMetaTypeId<FilePath>();
+}
+
 QString typeToName(int type)
 {
     switch (type) {
@@ -148,15 +155,13 @@ QVariant toExportValue(const QVariant &value)
 
     if (type == QVariant::Color)
         return colorToString(value.value<QColor>());
-    if (type == filePathTypeId())
-        return value.value<FilePath>().absolutePath;
+
+    if (type == filePathTypeId()) {
+        const FilePath filePath = value.value<FilePath>();
+        return filePath.url.toString(QUrl::PreferLocalFile);
+    }
 
     return value;
-}
-
-int filePathTypeId()
-{
-    return qMetaTypeId<FilePath>();
 }
 
 QVariant fromExportValue(const QVariant &value, int type)
@@ -167,12 +172,36 @@ QVariant fromExportValue(const QVariant &value, int type)
     if (value.userType() == type)
         return value;
 
-    if (type == filePathTypeId())
-        return QVariant::fromValue(FilePath { value.toString() });
+    if (type == filePathTypeId()) {
+        QUrl url(value.toString());
+        if (url.isRelative())
+            url = QUrl::fromLocalFile(value.toString());
+        return QVariant::fromValue(FilePath { url });
+    }
 
     QVariant variant(value);
     variant.convert(type);
     return variant;
+}
+
+QVariant toExportValue(const QVariant &value, const QDir &dir)
+{
+    if (value.userType() == filePathTypeId()) {
+        const FilePath filePath = value.value<FilePath>();
+        return toFileReference(filePath.url, dir);
+    }
+
+    return toExportValue(value);
+}
+
+QVariant fromExportValue(const QVariant &value, int type, const QDir &dir)
+{
+    if (type == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), dir);
+        return QVariant::fromValue(FilePath { url });
+    }
+
+    return fromExportValue(value, type);
 }
 
 } // namespace Tiled

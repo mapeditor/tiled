@@ -29,7 +29,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
-#include <QFileInfo>
 
 namespace Tiled {
 namespace Internal {
@@ -62,7 +61,7 @@ void TilesetParametersEdit::setTilesetDocument(TilesetDocument *tilesetDocument)
     mTilesetDocument = tilesetDocument;
 
     if (tilesetDocument)
-        mLabel->setText(QFileInfo(tilesetDocument->tileset()->imageSource()).fileName());
+        mLabel->setText(tilesetDocument->tileset()->imageSource().fileName());
     else
         mLabel->clear();
 }

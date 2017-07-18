@@ -132,8 +132,8 @@ void TilesetManager::addReference(const SharedTileset &tileset)
         mTilesets[tileset]++;
     } else {
         mTilesets.insert(tileset, 1);
-        if (!tileset->imageSource().isEmpty())
-            mWatcher->addPath(tileset->imageSource());
+        if (tileset->imageSource().isLocalFile())
+            mWatcher->addPath(tileset->imageSource().toLocalFile());
     }
 }
 
@@ -148,8 +148,8 @@ void TilesetManager::removeReference(const SharedTileset &tileset)
 
     if (mTilesets.value(tileset) == 0) {
         mTilesets.remove(tileset);
-        if (!tileset->imageSource().isEmpty())
-            mWatcher->removePath(tileset->imageSource());
+        if (tileset->imageSource().isLocalFile())
+            mWatcher->removePath(tileset->imageSource().toLocalFile());
     }
 }
 
@@ -182,8 +182,11 @@ void TilesetManager::reloadImages(const SharedTileset &tileset)
         return;
 
     if (tileset->isCollection()) {
-        for (Tile *tile : tileset->tiles())
-            tile->setImage(QPixmap(tile->imageSource()));
+        for (Tile *tile : tileset->tiles()) {
+            // todo: trigger reload of remote files
+            if (tile->imageSource().isLocalFile())
+                tile->setImage(QPixmap(tile->imageSource().toLocalFile()));
+        }
         emit tilesetImagesChanged(tileset.data());
     } else {
         if (tileset->loadImage())
@@ -219,14 +222,17 @@ bool TilesetManager::animateTiles() const
 }
 
 void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
-                                               const QString &oldImageSource)
+                                               const QUrl &oldImageSource)
 {
     Q_ASSERT(mTilesets.contains(tileset.sharedPointer()));
     Q_ASSERT(!oldImageSource.isEmpty());
     Q_ASSERT(!tileset.imageSource().isEmpty());
 
-    mWatcher->removePath(oldImageSource);
-    mWatcher->addPath(tileset.imageSource());
+    if (oldImageSource.isLocalFile())
+        mWatcher->removePath(oldImageSource.toLocalFile());
+
+    if (tileset.imageSource().isLocalFile())
+        mWatcher->addPath(tileset.imageSource().toLocalFile());
 }
 
 void TilesetManager::fileChanged(const QString &path)
@@ -250,7 +256,7 @@ void TilesetManager::fileChangedTimeout()
     while (it.hasNext()) {
         const SharedTileset &tileset = it.next().key();
 
-        QString fileName = tileset->imageSource();
+        const QString fileName = tileset->imageSource().toLocalFile();
         if (mChangedFiles.contains(fileName))
             if (tileset->loadFromImage(fileName))
                 emit tilesetImagesChanged(tileset.data());

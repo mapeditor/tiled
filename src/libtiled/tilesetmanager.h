@@ -75,7 +75,7 @@ public:
     void resetTileAnimations();
 
     void tilesetImageSourceChanged(const Tileset &tileset,
-                                   const QString &oldImageSource);
+                                   const QUrl &oldImageSource);
 
 signals:
     /**

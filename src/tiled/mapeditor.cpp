@@ -798,7 +798,7 @@ SharedTileset MapEditor::newTileset(const QString &path, const QImage &image)
 
     // Try to do something sensible when the user chooses to make a collection
     if (tileset->isCollection())
-        tileset->addTile(QPixmap::fromImage(image), path);
+        tileset->addTile(QPixmap::fromImage(image), QUrl::fromLocalFile(path));
 
     if (!newTileset.isEmbedded()) {
         // Save new external tileset

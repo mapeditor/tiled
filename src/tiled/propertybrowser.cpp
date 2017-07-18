@@ -770,7 +770,7 @@ void PropertyBrowser::addTilesetProperties()
 
         parametersProperty->setEnabled(mTilesetDocument);
 
-        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
+        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty, QVariant::Url, tr("Source"), parametersProperty);
         QtVariantProperty *tileWidthProperty = addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
         QtVariantProperty *tileHeightProperty = addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parametersProperty);
         QtVariantProperty *marginProperty = addProperty(MarginProperty, QVariant::Int, tr("Margin"), parametersProperty);
@@ -815,7 +815,7 @@ void PropertyBrowser::addTileProperties()
         QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
                                                              filePathTypeId(),
                                                              tr("Image"), groupProperty);
-
+        // todo: find a new way to enable this file filter
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
         imageSourceProperty->setEnabled(mTilesetDocument);
@@ -1076,12 +1076,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource.absolutePath));
+                                                       imageSource.url));
         break;
     }
     case ColorProperty: {
         const QColor color = val.value<QColor>();
-        const QString &imageSource = imageLayer->imageSource();
+        const QUrl &imageSource = imageLayer->imageSource();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
@@ -1108,7 +1108,7 @@ void PropertyBrowser::applyTilesetValue(PropertyId id, const QVariant &val)
     case FileNameProperty: {
         FilePath filePath = val.value<FilePath>();
         QString error;
-        SharedTileset newTileset = TilesetManager::instance()->loadTileset(filePath.absolutePath, &error);
+        SharedTileset newTileset = TilesetManager::instance()->loadTileset(filePath.url.toLocalFile(), &error);
         if (!newTileset) {
             QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
             return;
@@ -1188,7 +1188,7 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
     case ImageSourceProperty: {
         const FilePath filePath = val.value<FilePath>();
         undoStack->push(new ChangeTileImageSource(mTilesetDocument,
-                                                  tile, filePath.absolutePath));
+                                                  tile, filePath.url));
         break;
     }
     default:
@@ -1465,7 +1465,7 @@ void PropertyBrowser::updateProperties()
         Tileset *tileset = static_cast<Tileset*>(mObject);
 
         if (QtVariantProperty *fileNameProperty = mIdToProperty.value(FileNameProperty))
-            fileNameProperty->setValue(QVariant::fromValue(FilePath { tileset->fileName() }));
+            fileNameProperty->setValue(QVariant::fromValue(FilePath { QUrl::fromLocalFile(tileset->fileName()) }));
 
         mIdToProperty[BackgroundColorProperty]->setValue(tileset->backgroundColor());
 
@@ -1479,7 +1479,7 @@ void PropertyBrowser::updateProperties()
 
         if (!tileset->isCollection()) {
             mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(mTilesetDocument));
-            mIdToProperty[ImageSourceProperty]->setValue(QVariant::fromValue(FilePath { tileset->imageSource() }));
+            mIdToProperty[ImageSourceProperty]->setValue(tileset->imageSource().toString(QUrl::PreferLocalFile));
             mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
             mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());
             mIdToProperty[MarginProperty]->setValue(tileset->margin());

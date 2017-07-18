@@ -24,7 +24,7 @@
 
 #include <QColor>
 #include <QImage>
-#include <QString>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -33,7 +33,7 @@ class ImageReference
 public:
     ImageReference() : status(LoadingPending) {}
 
-    QString source;
+    QUrl source;
     QColor transparentColor;
     QSize size;
     QByteArray format;

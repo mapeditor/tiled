@@ -167,8 +167,9 @@ bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
 {
     setMode(EditTilesetParameters);
 
-    mPath = parameters.imageSource;
-    mUi->image->setText(parameters.imageSource);
+    // todo: support remote files
+    mPath = parameters.imageSource.toLocalFile();
+    mUi->image->setText(parameters.imageSource.toString(QUrl::PreferLocalFile));
 
     QColor transparentColor = parameters.transparentColor;
     mUi->useTransparentColor->setChecked(transparentColor.isValid());

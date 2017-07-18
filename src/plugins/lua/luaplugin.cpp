@@ -171,11 +171,7 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        QVariant value = toExportValue(it.value());
-
-        if (it.value().userType() == filePathTypeId())
-            value = mMapDir.relativeFilePath(value.toString());
-
+        const QVariant value = toExportValue(it.value(), mMapDir);
         writer.writeQuotedKeyAndValue(it.key(), value);
     }
 
@@ -224,7 +220,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeKeyAndValue("margin", tileset->margin());
 
     if (!tileset->imageSource().isEmpty()) {
-        const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
+        const QString rel = toFileReference(tileset->imageSource(), mMapDir);
         writer.writeKeyAndValue("image", rel);
         writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
         writer.writeKeyAndValue("imageheight", tileset->imageHeight());
@@ -285,7 +281,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writeProperties(writer, tile->properties());
 
         if (!tile->imageSource().isEmpty()) {
-            const QString src = mMapDir.relativeFilePath(tile->imageSource());
+            const QString src = toFileReference(tile->imageSource(), mMapDir);
             const QSize tileSize = tile->size();
             writer.writeKeyAndValue("image", src);
             if (!tileSize.isNull()) {
@@ -453,7 +449,7 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("offsetx", offset.x());
     writer.writeKeyAndValue("offsety", offset.y());
 
-    const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
+    const QString rel = toFileReference(imageLayer->imageSource(), mMapDir);
     writer.writeKeyAndValue("image", rel);
 
     if (imageLayer->transparentColor().isValid()) {

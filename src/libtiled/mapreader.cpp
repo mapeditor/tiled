@@ -123,7 +123,7 @@ private:
     MapReader *p;
 
     QString mError;
-    QString mPath;
+    QDir mPath;
     QScopedPointer<Map> mMap;
     GidMapper mGidMapper;
     bool mReadingExternalTileset;
@@ -137,7 +137,7 @@ private:
 Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 {
     mError.clear();
-    mPath = path;
+    mPath.setPath(path);
     Map *map = nullptr;
 
     xml.setDevice(device);
@@ -155,7 +155,7 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
 {
     mError.clear();
-    mPath = path;
+    mPath.setPath(path);
     SharedTileset tileset;
     mReadingExternalTileset = true;
 
@@ -488,9 +488,10 @@ ImageReference MapReaderPrivate::readImage()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
     const QXmlStreamAttributes atts = xml.attributes();
+    const QString source = atts.value(QLatin1String("source")).toString();
 
     ImageReference image;
-    image.source = atts.value(QLatin1String("source")).toString();
+    image.source = toUrl(source, mPath);
     image.format = atts.value(QLatin1String("format")).toLatin1();
     image.size = QSize(atts.value(QLatin1String("width")).toInt(),
                        atts.value(QLatin1String("height")).toInt());
@@ -517,7 +518,6 @@ ImageReference MapReaderPrivate::readImage()
             }
         }
     } else {
-        image.source = p->resolveReference(image.source, mPath);
         xml.skipCurrentElement();
     }
 
@@ -832,9 +832,9 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
         imageLayer.setTransparentColor(QColor(trans));
     }
 
-    source = p->resolveReference(source, mPath);
+    QUrl sourceUrl = toUrl(source, mPath);
 
-    imageLayer.loadFromImage(source);
+    imageLayer.loadFromImage(QImage(sourceUrl.toLocalFile()), sourceUrl);
 
     xml.skipCurrentElement();
 }
@@ -1077,11 +1077,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
 
     if (!propertyType.isEmpty()) {
         int type = nameToType(propertyType);
-
-        if (type == filePathTypeId())
-            variant = p->resolveReference(variant.toString(), mPath);
-
-        variant = fromExportValue(variant, type);
+        variant = fromExportValue(variant, type, mPath);
     }
 
     properties->insert(propertyName, variant);
@@ -1140,10 +1136,10 @@ QString MapReader::errorString() const
 }
 
 QString MapReader::resolveReference(const QString &reference,
-                                    const QString &mapPath)
+                                    const QDir &mapDir)
 {
-    if (!reference.isEmpty() && QDir::isRelativePath(reference))
-        return QDir::cleanPath(mapPath + QLatin1Char('/') + reference);
+    if (!reference.isEmpty())
+        return QDir::cleanPath(mapDir.filePath(reference));
     return reference;
 }
 

@@ -34,6 +34,7 @@
 
 #include <QPixmap>
 #include <QSharedPointer>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -107,8 +108,8 @@ public:
 
     const Tile *currentFrameTile() const;
 
-    const QString &imageSource() const;
-    void setImageSource(const QString &imageSource);
+    const QUrl &imageSource() const;
+    void setImageSource(const QUrl &imageSource);
 
     int width() const;
     int height() const;
@@ -150,7 +151,7 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    QString mImageSource;
+    QUrl mImageSource;
     LoadingStatus mImageStatus;
     QString mType;
     unsigned mTerrain;
@@ -198,16 +199,16 @@ inline void Tile::setImage(const QPixmap &image)
 }
 
 /**
- * Returns the file name of the external image that represents this tile.
- * When this tile doesn't refer to an external image, an empty string is
+ * Returns the URL of the external image that represents this tile.
+ * When this tile doesn't refer to an external image, an empty URL is
  * returned.
  */
-inline const QString &Tile::imageSource() const
+inline const QUrl &Tile::imageSource() const
 {
     return mImageSource;
 }
 
-inline void Tile::setImageSource(const QString &imageSource)
+inline void Tile::setImageSource(const QUrl &imageSource)
 {
     mImageSource = imageSource;
 }

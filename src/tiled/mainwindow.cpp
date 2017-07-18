@@ -1102,7 +1102,8 @@ bool MainWindow::newTileset(const QString &path)
     if (!tileset)
         return false;
 
-    prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
+    if (tileset->imageSource().isLocalFile())
+        prefs->setLastPath(Preferences::ImageFile, tileset->imageSource().toLocalFile());
 
     auto mapDocument = qobject_cast<MapDocument*>(mDocument);
 

@@ -161,14 +161,15 @@ public:
 
     void setImageReference(const ImageReference &reference);
 
-    bool loadFromImage(const QImage &image, const QString &fileName);
+    bool loadFromImage(const QImage &image, const QUrl &source);
+    bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
-    const QString &imageSource() const;
-    void setImageSource(const QString &imageSource);
+    const QUrl &imageSource() const;
+    void setImageSource(const QUrl &imageSource);
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
@@ -184,7 +185,7 @@ public:
 
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
-    Tile *addTile(const QPixmap &image, const QString &source = QString());
+    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
@@ -195,7 +196,7 @@ public:
 
     void setTileImage(Tile *tile,
                       const QPixmap &image,
-                      const QString &source = QString());
+                      const QUrl &source = QUrl());
 
     void markTerrainDistancesDirty();
 
@@ -508,15 +509,15 @@ inline void Tileset::setBackgroundColor(QColor color)
  */
 inline bool Tileset::loadFromImage(const QString &fileName)
 {
-    return loadFromImage(QImage(fileName), fileName);
+    return loadFromImage(QImage(fileName), QUrl::fromLocalFile(fileName));
 }
 
 /**
- * Returns the file name of the external image that contains the tiles in
+ * Returns the URL of the external image that contains the tiles in
  * this tileset. Is an empty string when this tileset doesn't have a
  * tileset image.
  */
-inline const QString &Tileset::imageSource() const
+inline const QUrl &Tileset::imageSource() const
 {
     return mImageReference.source;
 }

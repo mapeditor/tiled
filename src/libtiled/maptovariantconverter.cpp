@@ -151,9 +151,9 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     }
 
     // Write the image element
-    const QString &imageSource = tileset.imageSource();
+    const QUrl &imageSource = tileset.imageSource();
     if (!imageSource.isEmpty()) {
-        const QString rel = mMapDir.relativeFilePath(tileset.imageSource());
+        const QString rel = toFileReference(imageSource, mMapDir);
 
         tilesetVariant[QLatin1String("image")] = rel;
 
@@ -188,7 +188,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
         if (tile->probability() != 1.f)
             tileVariant[QLatin1String("probability")] = tile->probability();
         if (!tile->imageSource().isEmpty()) {
-            const QString rel = mMapDir.relativeFilePath(tile->imageSource());
+            const QString rel = toFileReference(tile->imageSource(), mMapDir);
             tileVariant[QLatin1String("image")] = rel;
 
             const QSize tileSize = tile->size();
@@ -245,11 +245,7 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        QVariant value = toExportValue(it.value());
-
-        if (it.value().userType() == filePathTypeId())
-            value = mMapDir.relativeFilePath(value.toString());
-
+        const QVariant value = toExportValue(it.value(), mMapDir);
         variantMap[it.key()] = value;
     }
 
@@ -457,7 +453,7 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
 
     addLayerAttributes(imageLayerVariant, imageLayer);
 
-    const QString rel = mMapDir.relativeFilePath(imageLayer.imageSource());
+    const QString rel = toFileReference(imageLayer.imageSource(), mMapDir);
     imageLayerVariant[QLatin1String("image")] = rel;
 
     const QColor transColor = imageLayer.transparentColor();
@@ -512,10 +508,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         int type = it.value().userType();
-        QVariant value = toExportValue(it.value());
-
-        if (type == filePathTypeId())
-            value = mMapDir.relativeFilePath(value.toString());
+        const QVariant value = toExportValue(it.value(), mMapDir);
 
         propertiesMap[it.key()] = value;
         propertyTypesMap[it.key()] = typeToName(type);

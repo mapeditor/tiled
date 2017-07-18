@@ -49,9 +49,9 @@ void ImageLayer::resetImage()
     mImageSource.clear();
 }
 
-bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
+bool ImageLayer::loadFromImage(const QImage &image, const QUrl &source)
 {
-    mImageSource = fileName;
+    mImageSource = source;
 
     if (image.isNull()) {
         mImage = QPixmap();
@@ -66,6 +66,17 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
     }
 
     return true;
+}
+
+/**
+ * Exists only because the Python plugin interface does not handle QUrl (would
+ * be nice to add this). Assumes \a source is a local file when it would
+ * otherwise be a relative URL (without scheme).
+ */
+bool ImageLayer::loadFromImage(const QImage &image, const QString &source)
+{
+    const QUrl url(source);
+    return loadFromImage(image, url.isRelative() ? QUrl::fromLocalFile(source) : url);
 }
 
 bool ImageLayer::isEmpty() const

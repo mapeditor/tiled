@@ -273,7 +273,7 @@ mod.add_function('loadTilesetFromFile', 'bool',
     [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
 
 mod.body.writeln("""
-bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
+static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 {
     QImage img(file);
     return ts->loadFromImage(img, file);

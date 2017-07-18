@@ -162,15 +162,14 @@ void Tileset::setImageReference(const ImageReference &reference)
  * The tile width and height of this tileset must be higher than 0.
  *
  * @param image    the image to load the tiles from
- * @param fileName the file name of the image, which will be remembered
- *                 as the image source of this tileset.
+ * @param source   the url to the image, which will be remembered as the
+ *                 image source of this tileset.
  * @return <code>true</code> if loading was successful, otherwise
  *         returns <code>false</code>
  */
-bool Tileset::loadFromImage(const QImage &image,
-                            const QString &fileName)
+bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
 {
-    mImageReference.source = fileName;
+    mImageReference.source = source;
 
     if (image.isNull()) {
         mImageReference.status = LoadingError;
@@ -225,6 +224,17 @@ bool Tileset::loadFromImage(const QImage &image,
     mImageReference.status = LoadingReady;
 
     return true;
+}
+
+/**
+ * Exists only because the Python plugin interface does not handle QUrl (would
+ * be nice to add this). Assumes \a source is a local file when it would
+ * otherwise be a relative URL (without scheme).
+ */
+bool Tileset::loadFromImage(const QImage &image, const QString &source)
+{
+    const QUrl url(source);
+    return loadFromImage(image, url.isRelative() ? QUrl::fromLocalFile(source) : url);
 }
 
 /**
@@ -294,7 +304,7 @@ SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets
  *
  * Only takes affect when loadImage is called.
  */
-void Tileset::setImageSource(const QString &imageSource)
+void Tileset::setImageSource(const QUrl &imageSource)
 {
     mImageReference.source = imageSource;
 }
@@ -508,7 +518,7 @@ void Tileset::recalculateTerrainDistances()
 /**
  * Adds a new tile to the end of the tileset.
  */
-Tile *Tileset::addTile(const QPixmap &image, const QString &source)
+Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
 {
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
@@ -569,7 +579,7 @@ void Tileset::deleteTile(int id)
  */
 void Tileset::setTileImage(Tile *tile,
                            const QPixmap &image,
-                           const QString &source)
+                           const QUrl &source)
 {
     Q_ASSERT(isCollection());
     Q_ASSERT(mTiles.value(tile->id()) == tile);

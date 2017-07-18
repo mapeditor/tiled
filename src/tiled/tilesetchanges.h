@@ -83,7 +83,7 @@ struct TilesetParameters
 
     bool operator != (const TilesetParameters &other) const;
 
-    QString imageSource;
+    QUrl imageSource;
     QColor transparentColor;
     QSize tileSize;
     int tileSpacing;

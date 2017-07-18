@@ -23,8 +23,8 @@
 #pragma once
 
 #include <QColor>
-#include <QString>
 #include <QUndoCommand>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -43,12 +43,12 @@ public:
      * @param mapDocument   the map document of the layer's map
      * @param imageLayer    the image layer to modify
      * @param newColor      the new transparent color to apply
-     * @param newPath       the new image source to apply
+     * @param newSource     the new image source to apply
      */
     ChangeImageLayerProperties(MapDocument *mapDocument,
                                ImageLayer *imageLayer,
                                const QColor &newColor,
-                               const QString &newPath);
+                               const QUrl &newSource);
 
     void undo() override;
     void redo() override;
@@ -58,8 +58,8 @@ private:
     ImageLayer *mImageLayer;
     const QColor mUndoColor;
     const QColor mRedoColor;
-    const QString mUndoPath;
-    const QString mRedoPath;
+    const QUrl mUndoSource;
+    const QUrl mRedoSource;
 };
 
 } // namespace Internal

@@ -99,6 +99,7 @@ signals:
     /**
      * Emitted when files are dropped at the tileset dock.
      */
+    // todo: change to QList<QUrl>
     void localFilesDropped(const QStringList &paths);
 
 protected:
