@@ -149,6 +149,14 @@ QMargins TileLayer::drawMargins() const
     return computeDrawMargins(usedTilesets());
 }
 
+QRect TileLayer::bounds() const
+{
+    if (map() && map()->infinite())
+        return mBounds.translated(mX, mY);
+    else
+        return mBounds.translated(mX, mY).intersected(rect());
+}
+
 bool TileLayer::contains(int x, int y) const
 {
     if (!map() || !map()->infinite())
@@ -176,8 +184,6 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
  */
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
-    Q_ASSERT(contains(x, y));
-
     if (!findChunk(x, y)) {
         if (cell == mEmptyCell) {
             return;
@@ -207,7 +213,12 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    const QRegion area = region.intersected(QRect(0, 0, width(), height()));
+    QRegion area = region.intersected(QRect(0, 0, width(), height()));
+    if (map()) {
+        if (map()->infinite())
+            area = region;
+    }
+
     const QRect bounds = region.boundingRect();
     const QRect areaBounds = area.boundingRect();
     const int offsetX = qMax(0, areaBounds.x() - bounds.x());
@@ -624,7 +635,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
             }
 
             // Set the new tile
-            if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
+            if (bounds.contains(oldX, oldY))
                 newLayer->setCell(x, y, cellAt(oldX, oldY));
             else
                 newLayer->setCell(x, y, Cell());

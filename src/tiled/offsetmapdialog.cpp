@@ -80,6 +80,30 @@ QRect OffsetMapDialog::affectedBoundingRect() const
     switch (boundsSelection()) {
     case WholeMap:
         boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+
+        if (mMapDocument->map()->infinite()) {
+            LayerIterator iterator(mMapDocument->map());
+
+            switch (layerSelection()) {
+            case AllVisibleLayers:
+                while (Layer *layer = iterator.next())
+                    if (!layer->isGroupLayer() && layer->isVisible())
+                        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                            boundingRect = boundingRect.united(tileLayer->bounds());
+                break;
+            case AllLayers:
+                while (Layer *layer = iterator.next())
+                    if (!layer->isGroupLayer())
+                        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                            boundingRect = boundingRect.united(tileLayer->bounds());
+                break;
+            case SelectedLayer:
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer()))
+                            boundingRect = boundingRect.united(tileLayer->bounds());
+                break;
+            }
+
+        }
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();

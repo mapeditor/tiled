@@ -201,9 +201,6 @@ void MapScene::refreshScene()
 
     const Map *map = mMapDocument->map();
 
-    if (map->infinite())
-        removeItem(mDarkRectangle);
-
     if (map->backgroundColor().isValid())
         setBackgroundBrush(map->backgroundColor());
     else
@@ -308,7 +305,11 @@ void MapScene::updateSceneRect()
                      margins.bottom());
 
     setSceneRect(sceneRect);
-    mDarkRectangle->setRect(sceneRect);
+
+    if (mMapDocument->map()->infinite())
+        mDarkRectangle->setRect(QRect());
+    else
+        mDarkRectangle->setRect(sceneRect);
 }
 
 void MapScene::updateCurrentLayerHighlight()

@@ -152,7 +152,8 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        CustomProperty
+        CustomProperty,
+        InfiniteProperty
     };
 
     void addMapProperties();

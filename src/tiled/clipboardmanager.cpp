@@ -159,7 +159,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     // Create a temporary map to write to the clipboard
     Map copyMap(map->orientation(),
                 0, 0,
-                map->tileWidth(), map->tileHeight());
+                map->tileWidth(), map->tileHeight(), map->infinite());
 
     copyMap.setRenderOrder(map->renderOrder());
 

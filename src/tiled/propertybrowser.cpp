@@ -564,6 +564,7 @@ void PropertyBrowser::addMapProperties()
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
     addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
     addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
+    addProperty(InfiniteProperty, QVariant::Bool, tr("Automatically Resize Map"), groupProperty)->setEnabled(false);
 
     addProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
@@ -1380,6 +1381,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HeightProperty]->setValue(map->height());
         mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
+        mIdToProperty[InfiniteProperty]->setValue(map->infinite());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());

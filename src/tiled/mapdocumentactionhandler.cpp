@@ -336,8 +336,9 @@ void MapDocumentActionHandler::selectAll()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRect all(tileLayer->x(), tileLayer->y(),
-                  tileLayer->width(), tileLayer->height());
+        QRect all = tileLayer->rect();
+        if (mMapDocument->map()->infinite())
+            all = tileLayer->bounds();
 
         if (mMapDocument->selectedArea() == all)
             return;

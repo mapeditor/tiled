@@ -342,7 +342,7 @@ public:
     /**
      * Returns the bounds of this layer.
      */
-    QRect bounds() const { return mBounds.translated(mX, mY); }
+    QRect bounds() const;
 
     QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
