@@ -68,6 +68,7 @@
 #include "toolmanager.h"
 #include "treeviewcombobox.h"
 #include "undodock.h"
+#include "wangbrush.h"
 #include "wangdock.h"
 #include "wangset.h"
 #include "zoomable.h"
@@ -162,6 +163,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
+    mWangBrush = new WangBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
@@ -172,6 +174,7 @@ MapEditor::MapEditor(QObject *parent)
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
+    mToolsToolBar->addAction(mToolManager->registerTool(mWangBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
@@ -254,6 +257,12 @@ MapEditor::MapEditor(QObject *parent)
             mBucketFillTool, &BucketFillTool::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mStampBrush, &StampBrush::setWangSet);
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            mWangBrush, &WangBrush::wangSetChanged);
+    connect(mWangDock, &WangDock::selectWangBrush,
+            this, &MapEditor::selectWangBrush);
+    connect(mWangDock, &WangDock::wangColorChanged,
+            mWangBrush, &WangBrush::wangColorChanged);
 
     connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
@@ -662,6 +671,11 @@ void MapEditor::setStamp(const TileStamp &stamp)
 void MapEditor::selectTerrainBrush()
 {
     mToolManager->selectTool(mTerrainBrush);
+}
+
+void MapEditor::selectWangBrush()
+{
+    mToolManager->selectTool(mWangBrush);
 }
 
 void MapEditor::currentWidgetChanged()

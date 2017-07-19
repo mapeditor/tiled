@@ -162,6 +162,9 @@ WangDock::WangDock(QWidget *parent)
     mWangTemplateView->setModel(mWangTemplateModel);
     mWangTemplateView->setVisible(true);
 
+    connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &WangDock::refreshCurrentWangId);
+
     WangColorFilterModel *wangColorFilterModel = new WangColorFilterModel(this);
     wangColorFilterModel->setSourceModel(mWangColorModel);
 
@@ -173,8 +176,8 @@ WangDock::WangDock(QWidget *parent)
     mWangColorView->setItemsExpandable(false);
     mWangColorView->setIndentation(3);
 
-    connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &WangDock::refreshCurrentWangId);
+    connect(mWangColorView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+            this, &WangDock::refreshCurrentWangColor);
 
     mEraseWangIdsButton = new QPushButton(this);
     mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
@@ -350,6 +353,28 @@ void WangDock::refreshCurrentWangId()
     mEraseWangIdsButton->setChecked(!mCurrentWangId);
 
     emit currentWangIdChanged(mCurrentWangId);
+}
+
+void WangDock::refreshCurrentWangColor()
+{
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+
+    if (!selectionModel->currentIndex().isValid()) {
+        emit wangColorChanged(0, true);
+        return;
+    }
+
+    bool edgeColor;
+    //If not using edges, then corners becomes the first row, and isEdgeColorAt becomes invalid.
+    if (mCurrentWangSet->edgeColors() > 1)
+        edgeColor = mWangColorModel->isEdgeColorAt(selectionModel->currentIndex());
+    else
+        edgeColor = false;
+
+    int color = mWangColorModel->colorAt(selectionModel->currentIndex());
+
+    emit wangColorChanged(color, edgeColor);
+    emit selectWangBrush();
 }
 
 void WangDock::wangSetChanged()

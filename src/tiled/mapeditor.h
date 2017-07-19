@@ -63,6 +63,7 @@ class ToolManager;
 class TreeViewComboBox;
 class UncheckableItemsModel;
 class UndoDock;
+class WangBrush;
 class WangDock;
 class Zoomable;
 
@@ -115,6 +116,8 @@ public slots:
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
 
+    void selectWangBrush();
+
     void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
@@ -165,6 +168,7 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
+    WangBrush *mWangBrush;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

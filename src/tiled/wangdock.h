@@ -70,6 +70,11 @@ signals:
     void addWangSetRequested();
     void removeWangSetRequested();
 
+    void selectWangBrush();
+    //When the color view selection changes.
+    //edges is false if this is a corner color.
+    void wangColorChanged(int color, bool edge);
+
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
@@ -83,6 +88,7 @@ private slots:
     void switchTemplateViewButtonClicked();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
+    void refreshCurrentWangColor();
     void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);

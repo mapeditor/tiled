@@ -1,0 +1,101 @@
+/*
+ * wangbrush.h
+ * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include "abstracttiletool.h"
+
+namespace Tiled {
+
+class WangSet;
+
+namespace Internal {
+
+class WangBrush : public AbstractTileTool
+{
+    Q_OBJECT
+
+public:
+    enum BrushMode {
+        PaintVertex,
+        PaintEdge,
+        Idle //no valid color selected
+    };
+
+    WangBrush(QObject *parent = nullptr);
+    ~WangBrush();
+
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
+
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
+
+    void languageChanged() override;
+
+    //Sets to edge mode, with color
+    void setEdgeColor(int color);
+    //Sets to color mode, with color
+    void setCornerColor(int color);
+
+protected:
+    void tilePositionChanged(const QPoint &tilePos) override;
+    void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
+
+public slots:
+    void wangColorChanged(int color, bool edge);
+    void wangSetChanged(WangSet *wangSet);
+
+private:
+    enum BrushBehavior {
+        Free,
+        Paint
+    };
+
+    //called when something has changed which requires an update.
+    void stateChanged();
+
+    void beginPaint();
+
+    void doPaint(bool mergeable);
+
+    void updateBrush();
+
+    //The point painting happens around
+    //In tile mode, this is that tile
+    //In vertex mode, this is that vertex
+    //In edge mode, this is a tile with that edge
+    //With mEdge being the direction of the edge (0 being top 3 being left)
+    QPoint mPaintPoint;
+    int mEdgeDir;
+
+    bool mIsActive;
+    WangSet *mWangSet;
+    int mCurrentColor;
+    BrushMode mBrushMode;
+    bool mIsTileMode;
+    BrushBehavior mBrushBehavior;
+};
+
+} // namespace Internal
+} // namespace Tiled

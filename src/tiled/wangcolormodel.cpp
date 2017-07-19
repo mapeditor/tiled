@@ -189,3 +189,19 @@ void WangColorModel::resetModel()
     beginResetModel();
     endResetModel();
 }
+
+bool WangColorModel::isEdgeColorAt(const QModelIndex &index)
+{
+    //Shouldn't use on invalid index
+    Q_ASSERT(index.isValid());
+
+    return index.parent().row() == 0;
+}
+
+int WangColorModel::colorAt(const QModelIndex &index)
+{
+    //Shouldn't use on invalid index
+    Q_ASSERT(index.isValid());
+
+    return index.row() + 1;
+}

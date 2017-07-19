@@ -63,6 +63,9 @@ public:
 
     void resetModel();
 
+    bool isEdgeColorAt(const QModelIndex &index);
+    int colorAt(const QModelIndex &index);
+
 private:
     WangSet *mWangSet;
     QString *mEdgeText;
