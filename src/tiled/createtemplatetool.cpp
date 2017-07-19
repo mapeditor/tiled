@@ -36,10 +36,10 @@ CreateTemplateTool::CreateTemplateTool(QObject *parent)
     : CreateObjectTool(parent)
     , mObjectTemplate(nullptr)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-image.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-image.png"));
+    QIcon icon(QLatin1String(":images/24x24/insert-template.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-template.png"));
     setIcon(icon);
-    Utils::setThemeIcon(this, "insert-image");
+    Utils::setThemeIcon(this, "insert-template");
     languageChanged();
 }
 
