@@ -66,11 +66,14 @@ void ChangeTileWangId::undo()
 
     QList<Tile *> changedTiles;
 
-    const auto& changes = mChanges;
-    for (auto i = changes.crbegin(); i != changes.crend(); ++i) {
-        changedTiles.append(i->tile);
+    QVectorIterator<WangIdChange> changes(mChanges);
+    changes.toBack();
 
-        mWangSet->addTile(i->tile, i->from);
+    while (changes.hasPrevious()) {
+        const WangIdChange &wangIdChange = changes.previous();
+
+        changedTiles.append(wangIdChange.tile);
+        mWangSet->addTile(wangIdChange.tile, wangIdChange.from);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);
