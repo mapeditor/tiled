@@ -29,6 +29,8 @@
 #include "tilelayer.h"
 #include "wangset.h"
 
+#include <cmath>
+
 using namespace Tiled;
 using namespace Internal;
 
