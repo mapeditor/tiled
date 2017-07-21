@@ -934,6 +934,7 @@ void TilesetView::setWangId(WangId wangId)
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
     mWangId = wangId;
+    mWangColor = 0;
 
     if (mEditWangSet && hoveredIndex().isValid())
         update(hoveredIndex());

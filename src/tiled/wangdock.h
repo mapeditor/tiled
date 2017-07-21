@@ -84,7 +84,7 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private slots:
-    void eraseWangIdsButtonClicked();
+    void activateErase();
     void switchTemplateViewButtonClicked();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();

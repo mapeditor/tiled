@@ -67,10 +67,10 @@ void ChangeTileWangId::undo()
     QList<Tile *> changedTiles;
 
     const auto& changes = mChanges;
-    for (const WangIdChange &wangIdChange : changes) {
-        changedTiles.append(wangIdChange.tile);
+    for (auto i = changes.crbegin(); i != changes.crend(); ++i) {
+        changedTiles.append(i->tile);
 
-        mWangSet->addTile(wangIdChange.tile, wangIdChange.from);
+        mWangSet->addTile(i->tile, i->from);
     }
 
     emit mTilesetDocument->tileWangSetChanged(changedTiles);

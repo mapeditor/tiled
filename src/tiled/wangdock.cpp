@@ -187,7 +187,7 @@ WangDock::WangDock(QWidget *parent)
     mEraseWangIdsButton->setChecked(mCurrentWangId == 0);
 
     connect(mEraseWangIdsButton, &QPushButton::clicked,
-            this, &WangDock::eraseWangIdsButtonClicked);
+            this, &WangDock::activateErase);
 
     mSwitchTemplateViewButton = new QPushButton(this);
     mSwitchTemplateViewButton->setIconSize(Utils::smallIconSize());
@@ -315,15 +315,6 @@ void WangDock::changeEvent(QEvent *event)
     }
 }
 
-void WangDock::eraseWangIdsButtonClicked()
-{
-    mCurrentWangId = 0;
-    mEraseWangIdsButton->setChecked(true);
-    mWangTemplateView->selectionModel()->clearCurrentIndex();
-    mWangTemplateView->selectionModel()->clearSelection();
-    emit currentWangIdChanged(mCurrentWangId);
-}
-
 void WangDock::switchTemplateViewButtonClicked()
 {
     if (mTemplateAndColorView->currentWidget() == mWangTemplateView)
@@ -337,7 +328,6 @@ void WangDock::refreshCurrentWangSet()
     QItemSelectionModel *selectionModel = mWangSetView->selectionModel();
     WangSet *wangSet = mWangSetView->wangSetAt(selectionModel->currentIndex());
     setCurrentWangSet(wangSet);
-    refreshCurrentWangId();
 }
 
 void WangDock::refreshCurrentWangId()
@@ -373,6 +363,8 @@ void WangDock::refreshCurrentWangColor()
 
     int color = mWangColorModel->colorAt(selectionModel->currentIndex());
 
+    mEraseWangIdsButton->setChecked(!color);
+
     emit wangColorChanged(color, edgeColor);
     emit selectWangBrush();
 }
@@ -407,13 +399,11 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mCurrentWangSet = wangSet;
 
-    //start off with no wangId selected
-    mCurrentWangId = 0;
-    mEraseWangIdsButton->setChecked(true);
-    mWangTemplateView->selectionModel()->clearSelection();
     mWangTemplateModel->setWangSet(wangSet);
     mWangColorModel->setWangSet(wangSet);
     mWangColorView->expandAll();
+
+    activateErase();
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
@@ -439,6 +429,19 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mRemoveWangSet->setEnabled(wangSet);
 
     emit currentWangSetChanged(mCurrentWangSet);
+}
+
+void WangDock::activateErase()
+{
+    mEraseWangIdsButton->setChecked(true);
+
+    mCurrentWangId = 0;
+
+    mWangTemplateView->selectionModel()->clearCurrentIndex();
+    mWangTemplateView->selectionModel()->clearSelection();
+    mWangColorView->selectionModel()->clearCurrentIndex();
+    mWangColorView->selectionModel()->clearSelection();
+    emit currentWangIdChanged(mCurrentWangId);
 }
 
 void WangDock::retranslateUi()
@@ -479,7 +482,7 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
 {
     const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
     if (!index.isValid()) {
-        eraseWangIdsButtonClicked();
+        activateErase();
         return;
     }
 
