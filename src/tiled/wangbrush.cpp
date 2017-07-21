@@ -40,7 +40,7 @@ WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool(tr("Wang Brush"),
                       QIcon(QLatin1String(
                                 ":images/24x24/terrain-edit.png")),
-                      QKeySequence(tr("J")),
+                      QKeySequence(tr("G")),
                       parent)
     , mEdgeDir(0)
     , mIsActive(false)
@@ -106,7 +106,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void WangBrush::languageChanged()
 {
     setName(tr("Wang Brush"));
-    setShortcut(QKeySequence(tr("J")));
+    setShortcut(QKeySequence(tr("G")));
 }
 
 void WangBrush::setEdgeColor(int color)

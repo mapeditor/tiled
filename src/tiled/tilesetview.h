@@ -113,7 +113,12 @@ public:
     void setWangSet(WangSet *wangSet);
 
     WangId wangId() const { return mWangId; }
+    //sets the WangId and changes WangBehavior to WholeId
     void setWangId(WangId  wangId);
+
+    //Sets the wangColor, and changes WangBehavior to edges/corners
+    void setWangEdgeColor(int color);
+    void setWangCornerColor(int color);
 
     QModelIndex hoveredIndex() const { return mHoveredIndex; }
     int hoveredCorner() const { return mHoveredCorner; }
@@ -156,10 +161,16 @@ private slots:
 private:
     void applyTerrain();
     void finishTerrainChange();
-    void applyWangId();
+    void applyWangId(bool merge);
     void finishWangIdChange();
     Tile *currentTile() const;
     void setHandScrolling(bool handScrolling);
+
+    enum WangBehvior {
+        WholeId, //Assigning templates
+        Corner,  //Assigning color to corners
+        Edge     //Assigning color to edges
+    };
 
     Zoomable *mZoomable;
     TilesetDocument *mTilesetDocument;
@@ -168,10 +179,12 @@ private:
     bool mMarkAnimatedTiles;
     bool mEditTerrain;
     bool mEditWangSet;
+    WangBehvior mWangBehavior;
     bool mEraseTerrain;
     const Terrain *mTerrain;
     WangSet *mWangSet;
     WangId mWangId;
+    int mWangColor;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;
     bool mTerrainChanged;

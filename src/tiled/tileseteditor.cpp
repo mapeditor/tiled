@@ -237,6 +237,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::currentWangSetChanged);
     connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
+    connect(mWangDock, &WangDock::wangColorChanged, this, &TilesetEditor::wangColorChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
 
@@ -881,6 +882,18 @@ void TilesetEditor::currentWangIdChanged(WangId wangId)
         return;
 
     view->setWangId(wangId);
+}
+
+void TilesetEditor::wangColorChanged(int color, bool edge)
+{
+    TilesetView *view = currentTilesetView();
+    if (!view)
+        return;
+
+    if (edge)
+        view->setWangEdgeColor(color);
+    else
+        view->setWangCornerColor(color);
 }
 
 void TilesetEditor::addWangSet()

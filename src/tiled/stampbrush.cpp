@@ -411,6 +411,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         mPreviewLayer = preview;
     } else if (mIsWangFill) {
+        mMissingTilesets.clear();
+
         if (!mWangFiller->wangSet())
             return;
 
@@ -441,8 +443,6 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         mPreviewLayer = preview;
     } else {
-        mMissingTilesets.clear();
-
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;

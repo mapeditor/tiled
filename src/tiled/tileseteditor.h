@@ -118,6 +118,7 @@ private slots:
 
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
+    void wangColorChanged(int color, bool edge);
     void addWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
