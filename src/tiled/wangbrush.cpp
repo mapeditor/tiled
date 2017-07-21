@@ -39,7 +39,7 @@ static const float EDGE_DEAD_ZONE = 0.2f;
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool(tr("Wang Brush"),
                       QIcon(QLatin1String(
-                                ":images/24x24/terrain-edit.png")),
+                                ":images/24x24/wangtile-edit.png")),
                       QKeySequence(tr("G")),
                       parent)
     , mEdgeDir(0)
@@ -148,16 +148,16 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
             stateChanged();
         }
     } else {
-        tilePos.setX(std::floor(tilePosF.x()));
-        tilePos.setY(std::floor(tilePosF.y()));
+        tilePos.setX(floor(tilePosF.x()));
+        tilePos.setY(floor(tilePosF.y()));
 
-        QPointF tileLocalPoint(std::modf(tilePosF.x(), nullptr),
-                              std::modf(tilePosF.y(), nullptr));
+        QPointF tileLocalPoint(modf(tilePosF.x(), nullptr),
+                              modf(tilePosF.y(), nullptr));
 
         //Checks when painting which would avoid change.
         if (mBrushBehavior == Paint && tilePos == mPaintPoint) {
-            if (std::abs(tileLocalPoint.x() - 0.5f) < MIDDLE_DEAD_ZONE
-                    && std::abs(tileLocalPoint.y() - 0.5f) < MIDDLE_DEAD_ZONE)
+            if (abs(tileLocalPoint.x() - 0.5f) < MIDDLE_DEAD_ZONE
+                    && abs(tileLocalPoint.y() - 0.5f) < MIDDLE_DEAD_ZONE)
                 return;
 
             switch (mEdgeDir) {
