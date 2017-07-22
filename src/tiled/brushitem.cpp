@@ -148,6 +148,11 @@ void BrushItem::paint(QPainter *painter,
         painter->setOpacity(opacity);
     }
 
+    if (!mMapDocument->currentLayer()->isUnlocked()) {
+        insideMapRegion = QRegion();
+        outsideMapRegion = mRegion;
+    }
+
     renderer->drawTileSelection(painter, insideMapRegion,
                                 insideMapHighlight,
                                 option->exposedRect);
