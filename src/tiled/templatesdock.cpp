@@ -21,13 +21,22 @@
 
 #include "templatesdock.h"
 
+#include "editpolygontool.h"
+#include "mapdocument.h"
+#include "mapscene.h"
+#include "mapview.h"
+#include "objectgroup.h"
 #include "objecttemplatemodel.h"
+#include "objectselectiontool.h"
 #include "preferences.h"
+#include "propertiesdock.h"
 #include "templatemanager.h"
 #include "tmxmapformat.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QSplitter>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QToolBar>
@@ -39,25 +48,31 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     QDockWidget(parent),
     mTemplatesView(new TemplatesView),
     mNewTemplateGroup(new QAction(this)),
-    mOpenTemplateGroup(new QAction(this))
+    mOpenTemplateGroup(new QAction(this)),
+    mDummyMapDocument(nullptr),
+    mMapScene(new MapScene(this)),
+    mMapView(new MapView(this, MapView::NoStaticContents)),
+    mToolManager(new ToolManager(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
     QWidget *widget = new QWidget(this);
 
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    layout->addWidget(mTemplatesView);
+    // Prevent dropping a template into the editing view
+    mMapView->setAcceptDrops(false);
+    mMapView->setScene(mMapScene);
 
-    mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
-    Utils::setThemeIcon(mNewTemplateGroup, "document-new");
-    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
+    mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
+
+    mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    Utils::setThemeIcon(mNewTemplateGroup, "document-new");
+    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
 
     mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
@@ -66,7 +81,41 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     toolBar->addAction(mNewTemplateGroup);
     toolBar->addAction(mOpenTemplateGroup);
 
+    QToolBar *editingToolBar = new QToolBar;
+    editingToolBar->setFloatable(false);
+    editingToolBar->setMovable(false);
+    editingToolBar->setIconSize(Utils::smallIconSize());
+
+    auto objectSelectionTool = new ObjectSelectionTool(this);
+    auto editPolygonTool = new EditPolygonTool(this);
+
+    // Assign empty shortcuts to avoid collision with the map editor
+    objectSelectionTool->setShortcut(QKeySequence());
+    editPolygonTool->setShortcut(QKeySequence());
+
+    editingToolBar->addAction(mToolManager->registerTool(objectSelectionTool));
+    editingToolBar->addAction(mToolManager->registerTool(editPolygonTool));
+
+    // Construct the UI
+    QVBoxLayout *editorLayout = new QVBoxLayout;
+    editorLayout->addWidget(editingToolBar);
+    editorLayout->addWidget(mMapView);
+    editorLayout->setMargin(0);
+    editorLayout->setSpacing(0);
+
+    QWidget *editorWidget = new QWidget;
+    editorWidget->setLayout(editorLayout);
+
+    QSplitter *splitter = new QSplitter;
+    splitter->addWidget(mTemplatesView);
+    splitter->addWidget(editorWidget);
+
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(splitter);
     layout->addWidget(toolBar);
+
     setWidget(widget);
     retranslateUi();
 
@@ -84,18 +133,36 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     mTemplatesView->setModel(model);
 
+    mMapScene->setSelectedTool(mToolManager->selectedTool());
+
+    connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
+            this, &TemplatesDock::setTemplate);
+
     connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
             this, &TemplatesDock::currentTemplateChanged);
 
     connect(mTemplatesView->model(), &ObjectTemplateModel::dataChanged,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
+
     connect(mTemplatesView->model(), &ObjectTemplateModel::rowsInserted,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
+
+    connect(mToolManager, &ToolManager::selectedToolChanged,
+            this, &TemplatesDock::setSelectedTool);
 }
 
 TemplatesDock::~TemplatesDock()
 {
+    mMapScene->disableSelectedTool();
+    delete mDummyMapDocument;
     ObjectTemplateModel::deleteInstance();
+}
+
+void TemplatesDock::setSelectedTool(AbstractTool *tool)
+{
+    mMapScene->disableSelectedTool();
+    mMapScene->setSelectedTool(tool);
+    mMapScene->enableSelectedTool();
 }
 
 void TemplatesDock::newTemplateGroup()
@@ -175,6 +242,58 @@ void TemplatesDock::openTemplateGroup()
                        QFileInfo(fileName).path());
 }
 
+void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
+{
+    if (mObjectTemplate == objectTemplate)
+        return;
+
+    mObjectTemplate = objectTemplate;
+
+    mMapScene->disableSelectedTool();
+    MapDocument *previousDocument = mDummyMapDocument;
+
+    mMapView->setEnabled(objectTemplate);
+
+    if (objectTemplate) {
+        Map::Orientation orientation = Map::Orthogonal;
+
+        Map *map = new Map(orientation, 1, 1, 1, 1);
+
+        mObject = objectTemplate->object()->clone();
+
+        if (Tile *tile = mObject->cell().tile()) {
+            map->addTileset(tile->sharedTileset());
+            mObject->setPosition({-mObject->width() / 2, mObject->height() / 2});
+        } else {
+            mObject->setPosition({-mObject->width() / 2, -mObject->height()  /2});
+        }
+
+        ObjectGroup *objectGroup = new ObjectGroup;
+        objectGroup->addObject(mObject);
+
+        map->addLayer(objectGroup);
+
+        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument->setCurrentLayer(objectGroup);
+
+        mMapScene->setMapDocument(mDummyMapDocument);
+
+        mMapScene->enableSelectedTool();
+        mToolManager->setMapDocument(mDummyMapDocument);
+
+        mPropertiesDock->setDocument(mDummyMapDocument);
+        mDummyMapDocument->setCurrentObject(mObject);
+    } else {
+        mPropertiesDock->setDocument(nullptr);
+        mDummyMapDocument = nullptr;
+        mMapScene->setMapDocument(nullptr);
+        mToolManager->setMapDocument(nullptr);
+    }
+
+    if (previousDocument)
+        delete previousDocument;
+}
+
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Templates"));
@@ -228,6 +347,7 @@ void TemplatesView::onPressed(const QModelIndex &index)
 {
     auto model = ObjectTemplateModel::instance();
 
-    if (ObjectTemplate *objectTemplate = model->toObjectTemplate(index))
-        emit currentTemplateChanged(objectTemplate);
+    ObjectTemplate *objectTemplate = model->toObjectTemplate(index);
+
+    emit currentTemplateChanged(objectTemplate);
 }

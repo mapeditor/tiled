@@ -30,12 +30,18 @@ class QAbstractProxyModel;
 namespace Tiled {
 
 class ObjectTemplate;
+class MapObject;
 
 namespace Internal {
 
+class AbstractTool;
+class MapDocument;
+class MapScene;
+class MapView;
 class ObjectTemplateModel;
-
+class PropertiesDock;
 class TemplatesView;
+class ToolManager;
 
 class TemplatesDock : public QDockWidget
 {
@@ -45,12 +51,16 @@ public:
     TemplatesDock(QWidget *parent = nullptr);
     ~TemplatesDock();
 
+    void setPropertiesDock(PropertiesDock *propertiesDock);
+
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
 
 private slots:
+    void setSelectedTool(AbstractTool*tool);
     void newTemplateGroup();
     void openTemplateGroup();
+    void setTemplate(ObjectTemplate *objectTemplate);
 
 private:
     void retranslateUi();
@@ -59,6 +69,14 @@ private:
 
     QAction *mNewTemplateGroup;
     QAction *mOpenTemplateGroup;
+
+    MapDocument *mDummyMapDocument;
+    MapScene *mMapScene;
+    MapView *mMapView;
+    ObjectTemplate *mObjectTemplate;
+    MapObject *mObject;
+    PropertiesDock *mPropertiesDock;
+    ToolManager *mToolManager;
 };
 
 class TemplatesView : public QTreeView
@@ -77,6 +95,9 @@ signals:
 private slots:
     void onPressed(const QModelIndex &index);
 };
+
+inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
+{ mPropertiesDock = propertiesDock; }
 
 } // namespace Internal
 } // namespace Tiled

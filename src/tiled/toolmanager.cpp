@@ -77,9 +77,14 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    toolAction->setToolTip(
-            QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                  tool->shortcut().toString()));
+    if (!tool->shortcut().isEmpty()) {
+        toolAction->setToolTip(
+                QString(QLatin1String("%1 (%2)")).arg(tool->name(),
+                                                      tool->shortcut().toString()));
+    } else {
+        toolAction->setToolTip(tool->name());
+    }
+
     toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
 

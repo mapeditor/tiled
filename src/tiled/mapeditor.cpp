@@ -203,6 +203,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
+    mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
@@ -399,6 +400,9 @@ void MapEditor::setCurrentDocument(Document *document)
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {
+        connect(mapDocument, &MapDocument::currentObjectChanged,
+                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+
         connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
 //        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
