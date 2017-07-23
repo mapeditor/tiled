@@ -62,6 +62,10 @@ private slots:
     void openTemplateGroup();
     void setTemplate(ObjectTemplate *objectTemplate);
 
+    void undo();
+    void redo();
+    void applyChanges();
+
 private:
     void retranslateUi();
 
@@ -69,6 +73,8 @@ private:
 
     QAction *mNewTemplateGroup;
     QAction *mOpenTemplateGroup;
+    QAction *mUndoAction;
+    QAction *mRedoAction;
 
     MapDocument *mDummyMapDocument;
     MapScene *mMapScene;

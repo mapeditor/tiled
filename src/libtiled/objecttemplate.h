@@ -43,7 +43,7 @@ public:
     ObjectTemplate(unsigned id, QString name);
 
     const MapObject *object() const;
-    void setObject(MapObject *object);
+    void setObject(const MapObject *object);
 
     unsigned id() const;
     void setId(unsigned id);
@@ -64,8 +64,9 @@ private:
 inline const MapObject *ObjectTemplate::object() const
 { return mObject; }
 
-inline void ObjectTemplate::setObject(MapObject *object)
+inline void ObjectTemplate::setObject(const MapObject *object)
 {
+    delete mObject;
     mObject = object->clone();
     mObject->setId(0);
 }

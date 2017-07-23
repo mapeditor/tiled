@@ -227,6 +227,16 @@ ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) 
     return nullptr;
 }
 
+void ObjectTemplateModel::save(const TemplateGroup *templateGroup) const
+{
+    for (auto document : mTemplateDocuments) {
+        if (document->templateGroup() == templateGroup) {
+            document->save(document->fileName());
+            break;
+        }
+    }
+}
+
 TemplateGroup *ObjectTemplateModel::toTemplateGroup(const QModelIndex &index) const
 {
     if (!index.isValid())

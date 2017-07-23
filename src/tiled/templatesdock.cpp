@@ -40,6 +40,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -49,6 +50,8 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     mTemplatesView(new TemplatesView),
     mNewTemplateGroup(new QAction(this)),
     mOpenTemplateGroup(new QAction(this)),
+    mUndoAction(new QAction(this)),
+    mRedoAction(new QAction(this)),
     mDummyMapDocument(nullptr),
     mMapScene(new MapScene(this)),
     mMapView(new MapView(this, MapView::NoStaticContents)),
@@ -80,6 +83,20 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     toolBar->addAction(mNewTemplateGroup);
     toolBar->addAction(mOpenTemplateGroup);
+
+    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-undo.png")));
+    Utils::setThemeIcon(mUndoAction, "edit-undo");
+    connect(mUndoAction, &QAction::triggered, this, &TemplatesDock::undo);
+    toolBar->addAction(mUndoAction);
+
+    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-redo.png")));
+    Utils::setThemeIcon(mRedoAction, "edit-redo");
+    connect(mRedoAction, &QAction::triggered, this, &TemplatesDock::redo);
+    toolBar->addAction(mRedoAction);
+
+    // Initially disabled until a change happens
+    mUndoAction->setDisabled(true);
+    mRedoAction->setDisabled(true);
 
     QToolBar *editingToolBar = new QToolBar;
     editingToolBar->setFloatable(false);
@@ -154,7 +171,14 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 TemplatesDock::~TemplatesDock()
 {
     mMapScene->disableSelectedTool();
+
+    if (mDummyMapDocument) {
+        disconnect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
+                   this, &TemplatesDock::applyChanges);
+    }
+
     delete mDummyMapDocument;
+
     ObjectTemplateModel::deleteInstance();
 }
 
@@ -283,6 +307,12 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
 
         mPropertiesDock->setDocument(mDummyMapDocument);
         mDummyMapDocument->setCurrentObject(mObject);
+
+        mUndoAction->setDisabled(true);
+        mRedoAction->setDisabled(true);
+
+        connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
+                this, &TemplatesDock::applyChanges);
     } else {
         mPropertiesDock->setDocument(nullptr);
         mDummyMapDocument = nullptr;
@@ -290,8 +320,38 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         mToolManager->setMapDocument(nullptr);
     }
 
-    if (previousDocument)
+    if (previousDocument) {
+        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
+                   this, &TemplatesDock::applyChanges);
+
         delete previousDocument;
+    }
+}
+
+void TemplatesDock::undo()
+{
+    if (mDummyMapDocument) {
+        mDummyMapDocument->undoStack()->undo();
+        emit mDummyMapDocument->selectedObjectsChanged();
+    }
+}
+
+void TemplatesDock::redo()
+{
+    if (mDummyMapDocument) {
+        mDummyMapDocument->undoStack()->redo();
+        emit mDummyMapDocument->selectedObjectsChanged();
+    }
+}
+
+void TemplatesDock::applyChanges()
+{
+    mObjectTemplate->setObject(mObject);
+    ObjectTemplateModel::instance()->save(mObjectTemplate->templateGroup());
+
+    mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
+    mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
+    emit templateEdited(mObjectTemplate->object());
 }
 
 void TemplatesDock::retranslateUi()

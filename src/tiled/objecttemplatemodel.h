@@ -55,6 +55,7 @@ public:
     bool addTemplateGroup(TemplateGroup *templateGroup);
     bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
+    void save(const TemplateGroup *templateGroup) const;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QStringList mimeTypes() const override;
