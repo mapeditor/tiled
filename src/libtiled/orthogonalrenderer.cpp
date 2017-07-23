@@ -40,8 +40,46 @@ using namespace Tiled;
 
 QSize OrthogonalRenderer::mapSize() const
 {
-    return QSize(map()->width() * map()->tileWidth(),
-                 map()->height() * map()->tileHeight());
+    QSize size(0, 0);
+
+    LayerIterator iterator(map());
+    while (Layer *layer = iterator.next()) {
+        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+            QRect bounds = tileLayer->bounds();
+            QSize layerSize(bounds.width(), bounds.height());
+
+            size = size.expandedTo(layerSize);
+        }
+    }
+
+    if (size == QSize(0, 0) || !map()->infinite())
+        return QSize(map()->width() * map()->tileWidth(),
+                     map()->height() * map()->tileHeight());
+    else
+        return QSize(size.width() * map()->tileWidth(),
+                     size.height() * map()->tileHeight());
+}
+
+QPoint OrthogonalRenderer::mapStart() const
+{
+    if (!map()->infinite())
+        return QPoint(0, 0);
+
+    QPoint start(0, 0);
+
+    LayerIterator iterator(map());
+    while (Layer *layer = iterator.next()) {
+        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+            QRect bounds = tileLayer->bounds();
+            QPoint layerStart = bounds.topLeft();
+
+            start.setX(std::min(start.x(), layerStart.x()));
+            start.setY(std::min(start.y(), layerStart.y()));
+        }
+    }
+
+    return QPoint(start.x() * map()->tileWidth(),
+                  start.y() * map()->tileHeight());
 }
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const

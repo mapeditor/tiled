@@ -46,6 +46,11 @@ QSize IsometricRenderer::mapSize() const
                  side * map()->tileHeight() / 2);
 }
 
+QPoint IsometricRenderer::mapStart()  const
+{
+    return QPoint(0, 0);
+}
+
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();

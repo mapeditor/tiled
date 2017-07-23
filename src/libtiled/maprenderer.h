@@ -75,6 +75,8 @@ public:
      */
     virtual QSize mapSize() const = 0;
 
+    virtual QPoint mapStart() const = 0;
+
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in
      * tile coordinates.

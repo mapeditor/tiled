@@ -676,7 +676,9 @@ void MapDocumentActionHandler::updateActions()
 
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
-    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer());
+
+    if (map)
+        mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer() && !map->infinite());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);

@@ -88,6 +88,11 @@ QSize HexagonalRenderer::mapSize() const
     }
 }
 
+QPoint HexagonalRenderer::mapStart() const
+{
+    return QPoint(0, 0);
+}
+
 QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 {
     const RenderParams p(map());

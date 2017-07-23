@@ -1178,8 +1178,23 @@ void MainWindow::resizeMap()
 
     Map *map = mapDocument->map();
 
+    QSize mapSize(0, 0);
+
+    LayerIterator iterator(map);
+    while (Layer *layer = iterator.next()) {
+        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+            QRect bounds = tileLayer->bounds();
+            QSize layerSize(bounds.width(), bounds.height());
+
+            mapSize = mapSize.expandedTo(layerSize);
+        }
+    }
+
+    if (mapSize == QSize(0, 0) || !map->infinite())
+        mapSize = map->size();
+
     ResizeDialog resizeDialog(this);
-    resizeDialog.setOldSize(map->size());
+    resizeDialog.setOldSize(mapSize);
 
     // TODO: Look into fixing up the preview for maps that do not use square
     // tiles, and possibly also staggered maps.
@@ -1197,7 +1212,7 @@ void MainWindow::resizeMap()
     if (resizeDialog.exec()) {
         const QSize &newSize = resizeDialog.newSize();
         const QPoint &offset = resizeDialog.offset();
-        if (newSize != map->size() || !offset.isNull())
+        if (newSize != mapSize || !offset.isNull())
             mapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
     }
 }

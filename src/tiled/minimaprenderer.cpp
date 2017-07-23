@@ -77,6 +77,9 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     painter.setRenderHints(QPainter::SmoothPixmapTransform);
     painter.setTransform(QTransform::fromScale(scale, scale));
     painter.translate(margins.left(), margins.top());
+    if (mMapDocument->map()->infinite())
+        painter.translate(-renderer->mapStart());
+
     renderer->setPainterScale(scale);
 
     LayerIterator iterator(mMapDocument->map());
