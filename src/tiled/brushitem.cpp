@@ -137,6 +137,10 @@ void BrushItem::paint(QPainter *painter,
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
     QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+
+    if (!mMapDocument->currentLayer()->isUnlocked())
+        mapRegion = QRegion();
+
     QRegion insideMapRegion = mRegion.intersected(mapRegion);
     QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
 
@@ -146,11 +150,6 @@ void BrushItem::paint(QPainter *painter,
         painter->setOpacity(0.75);
         renderer->drawTileLayer(painter, mTileLayer.data(), option->exposedRect);
         painter->setOpacity(opacity);
-    }
-
-    if (!mMapDocument->currentLayer()->isUnlocked()) {
-        insideMapRegion = QRegion();
-        outsideMapRegion = mRegion;
     }
 
     renderer->drawTileSelection(painter, insideMapRegion,
