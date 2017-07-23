@@ -167,6 +167,9 @@ Following entries are integrated solutions for specific game engines. They are t
 ### PySDL2
 * [PyTMX](https://github.com/bitcraft/PyTMX) by Leif Theden (bitcraft)
 
+### RPG Maker MV
+* [Tiled Plugin](https://forums.rpgmakerweb.com/index.php?threads/tiled-plugin-version-1-3-0-released.50752/) by [Dr.Yami](http://yami.moe/) & Archeia, from [RPG Maker Web](https://forums.rpgmakerweb.com)
+
 ### SDL
 * [C++/TinyXML/SDL based loader](http://usefulgamedev.weebly.com/c-tiled-map-loader.html) example by Rohin Knight (limited functionality)
 
