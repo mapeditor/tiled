@@ -257,7 +257,7 @@ A `polyline` follows the same placement definition as a `polygon` object.
 
 ### &lt;text> ##
 
-* **fontfamily:** The font family used (default: "sand-serif")
+* **fontfamily:** The font family used (default: "sans-serif")
 * **pixelsize:** The size of the font in pixels (not using points, because other sizes in the TMX format are also using pixels) (default: 16)
 * **wrap:** Whether word wrapping is enabled (1) or disabled (0). Defaults to 0.
 * **color:** Color of the text in `#AARRGGBB` or `#RRGGBB` format (default: #000000)
