@@ -39,7 +39,8 @@ man/*.1.html
 
 # Doxygen and Sphinx
 html/
-docs/_build/
+docs/_build/html
+docs/_build/gettext/.doctrees
 *.mo
 
 # Work-in-progress worktrees

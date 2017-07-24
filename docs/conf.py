@@ -66,6 +66,10 @@ release = '1.0'
 # Usually you set "language" from the command line for these cases.
 language = None
 
+# Options for localization
+locale_dirs = ['locale/']
+gettext_compact = False
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
