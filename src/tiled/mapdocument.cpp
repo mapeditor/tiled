@@ -924,6 +924,20 @@ void MapDocument::onLayerRemoved(Layer *layer)
     emit layerRemoved(layer);
 }
 
+void MapDocument::updateTemplateInstances(const MapObject *mapObject)
+{
+    QList<MapObject*> objectList;
+    for (ObjectGroup *group : mMap->objectGroups()) {
+        for (auto object : group->objects()) {
+            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+                object->syncWithTemplate();
+                objectList.append(object);
+            }
+        }
+    }
+    emit objectsChanged(objectList);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
     // Unset the current object when it was part of this list of objects

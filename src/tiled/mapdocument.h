@@ -303,6 +303,9 @@ private slots:
     void onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index);
     void onLayerRemoved(Layer *layer);
 
+public slots:
+    void updateTemplateInstances(const MapObject *mapObject);
+
 private:
     void deselectObjects(const QList<MapObject*> &objects);
     void moveObjectIndex(const MapObject *object, int count);

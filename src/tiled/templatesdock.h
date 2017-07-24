@@ -55,6 +55,7 @@ public:
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
+    void templateEdited(const MapObject *mapObject);
 
 private slots:
     void setSelectedTool(AbstractTool*tool);
