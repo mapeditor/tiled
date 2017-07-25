@@ -150,11 +150,12 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
             stateChanged();
         }
     } else {
-        tilePos.setX(floor(tilePosF.x()));
-        tilePos.setY(floor(tilePosF.y()));
+        double x, y;
+        QPointF tileLocalPoint(modf(tilePosF.x(), &x),
+                               modf(tilePosF.y(), &y));
 
-        QPointF tileLocalPoint(modf(tilePosF.x(), nullptr),
-                              modf(tilePosF.y(), nullptr));
+        tilePos.setX(x);
+        tilePos.setY(y);
 
         //Checks when painting which would avoid change.
         if (mBrushBehavior == Paint && tilePos == mPaintPoint) {
@@ -166,15 +167,19 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
             case 0:
                 if (tileLocalPoint.y() < EDGE_DEAD_ZONE)
                     return;
+                break;
             case 1:
                 if (tileLocalPoint.x() > 1 - EDGE_DEAD_ZONE)
                     return;
+                break;
             case 2:
                 if (tileLocalPoint.y() > 1 - EDGE_DEAD_ZONE)
                     return;
+                break;
             case 3:
                 if (tileLocalPoint.x() < EDGE_DEAD_ZONE)
                     return;
+                break;
             }
         }
 
@@ -259,7 +264,7 @@ void WangBrush::doPaint(bool mergeable)
 {
     TileLayer *stamp = brushItem()->tileLayer().data();
 
-    if (!stamp)
+    if (!stamp || stamp->isEmpty())
         return;
 
     // This method shouldn't be called when current layer is not a tile layer
@@ -323,8 +328,7 @@ void WangBrush::updateBrush()
                                                   3,
                                                   3));
 
-        if (currentLayer->contains(mPaintPoint)
-                && mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint))) {
+        if (currentLayer->contains(mPaintPoint)) {
             WangId centerWangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
 
             for (int i = 0; i < 4; ++i) {
@@ -411,8 +415,9 @@ void WangBrush::updateBrush()
 
             QPoint p = mPaintPoint;
 
-            if (currentLayer->contains(p) && !currentLayer->cellAt(p).isEmpty()) {
-                if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p))) {
+            if (currentLayer->contains(p)) {
+                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
+                if (wangId && !currentLayer->cellAt(p).isEmpty()) {
                     wangId.setEdgeColor(mEdgeDir, mCurrentColor);
 
                     const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
@@ -427,8 +432,9 @@ void WangBrush::updateBrush()
 
             p = mPaintPoint + aroundTilePoints[mEdgeDir*2];
 
-            if (currentLayer->contains(p) && !currentLayer->cellAt(p).isEmpty()) {
-                if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p))) {
+            if (currentLayer->contains(p)) {
+                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
+                if (wangId && !currentLayer->cellAt(p).isEmpty()) {
                     wangId.setEdgeColor((mEdgeDir + 2) % 4, mCurrentColor);
 
                     const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();

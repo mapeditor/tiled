@@ -246,6 +246,13 @@ void StampBrush::populateToolBar(QToolBar *toolBar)
 void StampBrush::setWangSet(WangSet *wangSet)
 {
     mWangFiller->setWangSet(wangSet);
+
+    mMissingTilesets.clear();
+
+    const SharedTileset &tileset = wangSet->tileset()->sharedPointer();
+    if (!mMissingTilesets.contains(tileset)
+           && !mapDocument()->map()->tilesets().contains(tileset))
+       mMissingTilesets.append(tileset);
 }
 
 void StampBrush::beginPaint()
@@ -411,8 +418,6 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         mPreviewLayer = preview;
     } else if (mIsWangFill) {
-        mMissingTilesets.clear();
-
         if (!mWangFiller->wangSet())
             return;
 

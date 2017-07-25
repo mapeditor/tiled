@@ -38,7 +38,7 @@ namespace Internal {
 class WangFiller
 {
 public:
-    explicit WangFiller(WangSet *wangSet);
+    explicit WangFiller(WangSet *wangSet = nullptr);
 
     WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);

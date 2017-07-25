@@ -605,6 +605,9 @@ void MapDocument::toggleOtherLayers(Layer *layer)
  */
 void MapDocument::insertTileset(int index, const SharedTileset &tileset)
 {
+    if (mMap->tilesets().contains(tileset))
+        return;
+
     emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();

@@ -344,11 +344,12 @@ void BucketFillTool::setRandom(bool value)
         return;
 
     mIsRandom = value;
-    updateRandomListAndMissingTilesets();
 
     if (mIsRandom) {
         mIsWangFill = false;
         mStampActions->wangFill()->setChecked(false);
+
+        updateRandomListAndMissingTilesets();
     }
 
     // Don't need to recalculate fill region if there was no fill region
@@ -368,6 +369,8 @@ void BucketFillTool::setWangFill(bool value)
     if (mIsWangFill) {
         mIsRandom = false;
         mStampActions->random()->setChecked(false);
+
+        updateRandomListAndMissingTilesets();
     }
 
     if (!mFillOverlay)
@@ -394,6 +397,8 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
 void BucketFillTool::setWangSet(WangSet *wangSet)
 {
     mWangFiller->setWangSet(wangSet);
+
+    updateRandomListAndMissingTilesets();
 }
 
 void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
@@ -412,14 +417,21 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
     mRandomCellPicker.clear();
     mMissingTilesets.clear();
 
-    for (const TileStampVariation &variation : mStamp.variations()) {
-        mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+    if (mIsWangFill && mWangFiller->wangSet()) {
+        const SharedTileset &tileset = mWangFiller->wangSet()->tileset()->sharedPointer();
+        if (!mMissingTilesets.contains(tileset)
+                && !mapDocument()->map()->tilesets().contains(tileset))
+            mMissingTilesets.append(tileset);
+    } else {
+        for (const TileStampVariation &variation : mStamp.variations()) {
+            mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
-        if (mIsRandom) {
-            const TileLayer &tileLayer = *variation.tileLayer();
-            for (const Cell &cell : tileLayer) {
-                if (const Tile *tile = cell.tile())
-                    mRandomCellPicker.add(cell, tile->probability());
+            if (mIsRandom) {
+                const TileLayer &tileLayer = *variation.tileLayer();
+                for (const Cell &cell : tileLayer) {
+                    if (const Tile *tile = cell.tile())
+                        mRandomCellPicker.add(cell, tile->probability());
+                }
             }
         }
     }
