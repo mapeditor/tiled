@@ -28,7 +28,7 @@ namespace Tiled {
 
 class TemplateGroup;
 class ObjectTemplate;
-class TemplateRef;
+struct TemplateRef;
 
 class TILEDSHARED_EXPORT TidMapper
 {

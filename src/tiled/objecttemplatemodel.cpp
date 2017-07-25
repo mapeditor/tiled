@@ -243,11 +243,11 @@ Qt::ItemFlags ObjectTemplateModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
 
-   ObjectTemplate *objectTemplate = toObjectTemplate(index);
-   if (objectTemplate)
-       return Qt::ItemIsDragEnabled | defaultFlags;
-   else
-       return defaultFlags;
+    ObjectTemplate *objectTemplate = toObjectTemplate(index);
+    if (objectTemplate)
+        return Qt::ItemIsDragEnabled | defaultFlags;
+    else
+        return defaultFlags;
 }
 
 QStringList ObjectTemplateModel::mimeTypes() const

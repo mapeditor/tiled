@@ -349,6 +349,8 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::MapType:
     case Object::TerrainType:
     case Object::TilesetType:
+    case Object::TemplateGroupType:
+    case Object::ObjectTemplateType:
         break;
     }
 
@@ -526,12 +528,14 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     }
 
     switch (mObject->typeId()) {
-    case Object::MapType:       applyMapValue(id, val); break;
-    case Object::MapObjectType: applyMapObjectValue(id, val); break;
-    case Object::LayerType:     applyLayerValue(id, val); break;
-    case Object::TilesetType:   applyTilesetValue(id, val); break;
-    case Object::TileType:      applyTileValue(id, val); break;
-    case Object::TerrainType:   applyTerrainValue(id, val); break;
+    case Object::MapType:               applyMapValue(id, val); break;
+    case Object::MapObjectType:         applyMapObjectValue(id, val); break;
+    case Object::LayerType:             applyLayerValue(id, val); break;
+    case Object::TilesetType:           applyTilesetValue(id, val); break;
+    case Object::TileType:              applyTileValue(id, val); break;
+    case Object::TerrainType:           applyTerrainValue(id, val); break;
+    case Object::TemplateGroupType:     break;
+    case Object::ObjectTemplateType:    break;
     }
 }
 
@@ -1337,6 +1341,8 @@ void PropertyBrowser::addProperties()
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
+    case Object::TemplateGroupType:     break;
+    case Object::ObjectTemplateType:    break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1505,6 +1511,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(terrain->name());
         break;
     }
+    case Object::TemplateGroupType: break;
+    case Object::ObjectTemplateType: break;
     }
 
     mUpdating = false;
@@ -1564,6 +1572,8 @@ void PropertyBrowser::updateCustomProperties()
     case Object::MapType:
     case Object::TerrainType:
     case Object::TilesetType:
+    case Object::TemplateGroupType:
+    case Object::ObjectTemplateType:
         break;
     }
 
