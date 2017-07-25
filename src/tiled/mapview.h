@@ -79,9 +79,14 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void focusInEvent(QFocusEvent *event) override;
+
     void handlePinchGesture(QPinchGesture *pinch);
 
     void adjustCenterFromMousePosition(QPoint &mousePos);
+
+signals:
+    void focused();
 
 private slots:
     void adjustScale(qreal scale);

@@ -166,6 +166,10 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &TemplatesDock::setSelectedTool);
+
+    setFocusPolicy(Qt::ClickFocus);
+    mTemplatesView->setFocusProxy(this);
+    mMapView->setFocusProxy(this);
 }
 
 TemplatesDock::~TemplatesDock()
@@ -352,6 +356,12 @@ void TemplatesDock::applyChanges()
     mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
     mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
     emit templateEdited(mObjectTemplate->object());
+}
+
+void TemplatesDock::focusInEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+    mPropertiesDock->setDocument(mDummyMapDocument);
 }
 
 void TemplatesDock::retranslateUi()

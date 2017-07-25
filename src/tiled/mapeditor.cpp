@@ -403,9 +403,6 @@ void MapEditor::setCurrentDocument(Document *document)
     mMiniMapDock->setMapDocument(mapDocument);
 
     if (mapDocument) {
-        connect(mapDocument, &MapDocument::currentObjectChanged,
-                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
-
         connect(mapDocument, &MapDocument::currentLayerChanged,
                 this, &MapEditor::updateLayerComboIndex);
 //        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
@@ -417,6 +414,12 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable = mapView->zoomable();
             mZoomable->setComboBox(mZoomComboBox);
         }
+
+        connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
+                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+
+        connect(mapView, &MapView::focused,
+                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {

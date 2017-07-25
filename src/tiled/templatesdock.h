@@ -67,6 +67,9 @@ private slots:
     void redo();
     void applyChanges();
 
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+
 private:
     void retranslateUi();
 
