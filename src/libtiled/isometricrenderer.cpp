@@ -38,17 +38,11 @@
 
 using namespace Tiled;
 
-QSize IsometricRenderer::mapSize() const
+QRect IsometricRenderer::mapBoundingRect() const
 {
-    // Map width and height contribute equally in both directions
     const int side = map()->height() + map()->width();
-    return QSize(side * map()->tileWidth() / 2,
+    return QRect(0, 0, side * map()->tileWidth() / 2,
                  side * map()->tileHeight() / 2);
-}
-
-QPoint IsometricRenderer::mapStart()  const
-{
-    return QPoint(0, 0);
 }
 
 QRect IsometricRenderer::boundingRect(const QRect &rect) const

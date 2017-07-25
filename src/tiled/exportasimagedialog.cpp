@@ -157,7 +157,7 @@ void ExportAsImageDialog::accept()
 
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-    QSize mapSize = renderer->mapSize();
+    QSize mapSize = renderer->mapBoundingRect().size();
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -276,7 +276,7 @@ void ExportAsImageDialog::accept()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapBoundingRect().size()),
                            prefs->gridColor());
     }
 

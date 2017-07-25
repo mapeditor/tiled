@@ -342,7 +342,7 @@ public:
     /**
      * Returns the bounds of this layer.
      */
-    QRect bounds() const;
+    QRect bounds() const { return mBounds.translated(mX, mY); }
 
     QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
@@ -595,7 +595,6 @@ inline QRegion TileLayer::region() const
  */
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
-    Q_ASSERT(contains(x, y));
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
     else

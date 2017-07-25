@@ -98,7 +98,7 @@ static QRectF cellRect(const MapRenderer &renderer,
 static QRect computeMapRect(const MapRenderer &renderer)
 {
     // Start with the basic map size
-    QRectF rect(QPointF(0, 0), renderer.mapSize());
+    QRectF rect(QPointF(0, 0), renderer.mapBoundingRect().size());
 
     // Take into account large tiles extending beyond their cell
     for (const Layer *layer : renderer.map()->layers()) {

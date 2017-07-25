@@ -149,14 +149,6 @@ QMargins TileLayer::drawMargins() const
     return computeDrawMargins(usedTilesets());
 }
 
-QRect TileLayer::bounds() const
-{
-    if (map() && map()->infinite())
-        return mBounds.translated(mX, mY);
-    else
-        return mBounds.translated(mX, mY).intersected(rect());
-}
-
 bool TileLayer::contains(int x, int y) const
 {
     if (!map() || !map()->infinite())
@@ -591,16 +583,10 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
 
     // Copy over the preserved part
-    const int startX = qMax(0, -offset.x());
-    const int startY = qMax(0, -offset.y());
-    const int endX = qMin(mWidth, size.width() - offset.x());
-    const int endY = qMin(mHeight, size.height() - offset.y());
-
-    for (int y = startY; y < endY; ++y) {
-        for (int x = startX; x < endX; ++x) {
-            newLayer->setCell(x + offset.x(), y + offset.y(), cellAt(x, y));
-        }
-    }
+    QRect area = mBounds.translated(offset).intersected(newLayer->rect());
+    for (int y = area.top(); y <= area.bottom(); ++y)
+        for (int x = area.left(); x <= area.right(); ++x)
+            newLayer->setCell(x, y, cellAt(x - offset.x(), y - offset.y()));
 
     mChunks = newLayer->mChunks;
     setSize(size);

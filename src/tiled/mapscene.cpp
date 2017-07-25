@@ -295,9 +295,7 @@ void MapScene::updateDefaultBackgroundColor()
 
 void MapScene::updateSceneRect()
 {
-    const QSize mapSize = mMapDocument->renderer()->mapSize();
-    const QPoint mapStart = mMapDocument->renderer()->mapStart();
-    QRectF sceneRect(mapStart.x(), mapStart.y(), mapSize.width(), mapSize.height());
+    QRectF sceneRect = mMapDocument->renderer()->mapBoundingRect();
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     sceneRect.adjust(-margins.left(),

@@ -69,9 +69,7 @@ protected:
 public:
     HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
 
-    QSize mapSize() const override;
-
-    QPoint mapStart() const override;
+    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 

@@ -41,9 +41,7 @@ class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 public:
     OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
-    QSize mapSize() const override;
-
-    QPoint mapStart() const override;
+    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 

@@ -173,7 +173,7 @@ void MiniMap::renderMapToImage()
 #else
     const QSize viewSize = contentsRect().size() * devicePixelRatio();
 #endif
-    QSize mapSize = renderer->mapSize();
+    QSize mapSize = renderer->mapBoundingRect().size();
 
     if (mapSize.isEmpty()) {
         mMapImage = QImage();

@@ -38,48 +38,33 @@
 
 using namespace Tiled;
 
-QSize OrthogonalRenderer::mapSize() const
-{
-    QSize size(0, 0);
-
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
-            QRect bounds = tileLayer->bounds();
-            QSize layerSize(bounds.width(), bounds.height());
-
-            size = size.expandedTo(layerSize);
-        }
-    }
-
-    if (size == QSize(0, 0) || !map()->infinite())
-        return QSize(map()->width() * map()->tileWidth(),
-                     map()->height() * map()->tileHeight());
-    else
-        return QSize(size.width() * map()->tileWidth(),
-                     size.height() * map()->tileHeight());
-}
-
-QPoint OrthogonalRenderer::mapStart() const
+QRect OrthogonalRenderer::mapBoundingRect() const
 {
     if (!map()->infinite())
-        return QPoint(0, 0);
+        return QRect(0, 0, map()->width() * map()->tileWidth(),
+                     map()->height() * map()->tileHeight());
 
+    QSize size(0, 0);
     QPoint start(0, 0);
 
     LayerIterator iterator(map());
     while (Layer *layer = iterator.next()) {
         if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
             QRect bounds = tileLayer->bounds();
+            QSize layerSize(bounds.width(), bounds.height());
             QPoint layerStart = bounds.topLeft();
+
+            size = size.expandedTo(layerSize);
 
             start.setX(std::min(start.x(), layerStart.x()));
             start.setY(std::min(start.y(), layerStart.y()));
         }
     }
 
-    return QPoint(start.x() * map()->tileWidth(),
-                  start.y() * map()->tileHeight());
+    return QRect(start.x() * map()->tileWidth(),
+                 start.y() * map()->tileHeight(),
+                 size.width() * map()->tileWidth(),
+                 size.height() * map()->tileHeight());
 }
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const

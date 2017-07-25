@@ -63,8 +63,7 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map)
     rowHeight = sideOffsetY + sideLengthY;
 }
 
-
-QSize HexagonalRenderer::mapSize() const
+QRect HexagonalRenderer::mapBoundingRect() const
 {
     const RenderParams p(map());
 
@@ -76,7 +75,7 @@ QSize HexagonalRenderer::mapSize() const
         if (map()->width() > 1)
             size.rheight() += p.rowHeight;
 
-        return size;
+        return QRect(0, 0, size.width(), size.height());
     } else {
         QSize size(map()->width() * (p.tileWidth + p.sideLengthX),
                    map()->height() * p.rowHeight + p.sideOffsetY);
@@ -84,13 +83,8 @@ QSize HexagonalRenderer::mapSize() const
         if (map()->height() > 1)
             size.rwidth() += p.columnWidth;
 
-        return size;
+        return QRect(0, 0, size.width(), size.height());
     }
-}
-
-QPoint HexagonalRenderer::mapStart() const
-{
-    return QPoint(0, 0);
 }
 
 QRect HexagonalRenderer::boundingRect(const QRect &rect) const

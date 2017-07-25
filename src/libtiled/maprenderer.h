@@ -70,12 +70,7 @@ public:
      */
     const Map *map() const;
 
-    /**
-     * Returns the size in pixels of the map associated with this renderer.
-     */
-    virtual QSize mapSize() const = 0;
-
-    virtual QPoint mapStart() const = 0;
+    virtual QRect mapBoundingRect() const = 0;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in

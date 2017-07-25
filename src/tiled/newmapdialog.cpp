@@ -116,6 +116,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->mapInfinite, SIGNAL(toggled(bool)), SLOT(updateWidgets(bool)));
     refreshPixelSize();
 }
 
@@ -188,20 +189,27 @@ void NewMapDialog::refreshPixelSize()
 
     switch (map.orientation()) {
     case Map::Isometric:
-        size = IsometricRenderer(&map).mapSize();
+        size = IsometricRenderer(&map).mapBoundingRect().size();
         break;
     case Map::Staggered:
-        size = StaggeredRenderer(&map).mapSize();
+        size = StaggeredRenderer(&map).mapBoundingRect().size();
         break;
     case Map::Hexagonal:
-        size = HexagonalRenderer(&map).mapSize();
+        size = HexagonalRenderer(&map).mapBoundingRect().size();
         break;
     default:
-        size = OrthogonalRenderer(&map).mapSize();
+        size = OrthogonalRenderer(&map).mapBoundingRect().size();
         break;
     }
 
     mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
                                  .arg(size.width())
                                  .arg(size.height()));
+}
+
+void NewMapDialog::updateWidgets(bool checked)
+{
+    mUi->mapHeight->setDisabled(checked);
+    mUi->mapWidth->setDisabled(checked);
+    mUi->pixelSizeLabel->setVisible(!checked);
 }
