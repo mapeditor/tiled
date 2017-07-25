@@ -418,7 +418,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     QRect bounds;
     for (ConsiderationPoint point : transitionList)
         bounds |= QRect(point, point);
-    int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 0;
+    int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 3;
     bounds.adjust(-margin, -margin, margin, margin);
     bounds = bounds.intersected(QRect(0, 0, stamp->width(), stamp->height()));
 

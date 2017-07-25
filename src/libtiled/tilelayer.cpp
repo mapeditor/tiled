@@ -170,7 +170,7 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    if (cell.isEmpty() && !findChunk(x, y))
+    if (cell == mEmptyCell && !findChunk(x, y))
         return;
 
     Chunk &_chunk = chunk(x, y);
