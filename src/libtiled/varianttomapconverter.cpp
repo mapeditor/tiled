@@ -187,7 +187,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QVariantMap grid = variantMap[QLatin1String("grid")].toMap();
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
-    const int columns = tileOffset[QLatin1String("columns")].toInt();
+    const int columns = variantMap[QLatin1String("columns")].toInt();
     const QString bgColor = variantMap[QLatin1String("backgroundcolor")].toString();
 
     if (tileWidth <= 0 || tileHeight <= 0 ||

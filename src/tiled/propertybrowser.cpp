@@ -770,7 +770,7 @@ void PropertyBrowser::addTilesetProperties()
 
         parametersProperty->setEnabled(mTilesetDocument);
 
-        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty, QVariant::Url, tr("Source"), parametersProperty);
+        QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
         QtVariantProperty *tileWidthProperty = addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
         QtVariantProperty *tileHeightProperty = addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parametersProperty);
         QtVariantProperty *marginProperty = addProperty(MarginProperty, QVariant::Int, tr("Margin"), parametersProperty);
@@ -815,7 +815,7 @@ void PropertyBrowser::addTileProperties()
         QtVariantProperty *imageSourceProperty = addProperty(ImageSourceProperty,
                                                              filePathTypeId(),
                                                              tr("Image"), groupProperty);
-        // todo: find a new way to enable this file filter
+
         imageSourceProperty->setAttribute(QLatin1String("filter"),
                                           Utils::readableImageFormatsFilter());
         imageSourceProperty->setEnabled(mTilesetDocument);
