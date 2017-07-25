@@ -184,6 +184,7 @@ public:
     Terrain *takeTerrainAt(int index);
 
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
+    int maximumTerrainDistance() const;
 
     Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
     void addTiles(const QList<Tile*> &tiles);
@@ -248,6 +249,7 @@ private:
     QMap<int, Tile*> mTiles;
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
+    int mMaximumTerrainDistance;
     bool mTerrainDistancesDirty;
     LoadingStatus mStatus;
     QColor mBackgroundColor;

@@ -51,6 +51,7 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     mExpectedColumnCount(0),
     mExpectedRowCount(0),
     mNextTileId(0),
+    mMaximumTerrainDistance(0),
     mTerrainDistancesDirty(false),
     mStatus(LoadingReady)
 {
@@ -413,10 +414,8 @@ Terrain *Tileset::takeTerrainAt(int index)
  */
 int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1) const
 {
-    if (mTerrainDistancesDirty) {
+    if (mTerrainDistancesDirty)
         const_cast<Tileset*>(this)->recalculateTerrainDistances();
-        const_cast<Tileset*>(this)->mTerrainDistancesDirty = false;
-    }
 
     terrainType0 = terrainType0 == 255 ? -1 : terrainType0;
     terrainType1 = terrainType1 == 255 ? -1 : terrainType1;
@@ -427,6 +426,14 @@ int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1) const
     if (terrainType0 == -1)
         return mTerrainTypes.at(terrainType1)->transitionDistance(terrainType0);
     return mTerrainTypes.at(terrainType0)->transitionDistance(terrainType1);
+}
+
+int Tileset::maximumTerrainDistance() const
+{
+    if (mTerrainDistancesDirty)
+        const_cast<Tileset*>(this)->recalculateTerrainDistances();
+
+    return mMaximumTerrainDistance;
 }
 
 /**
@@ -440,6 +447,7 @@ void Tileset::recalculateTerrainDistances()
 
     // Terrain distances are the number of transitions required before one terrain may meet another
     // Terrains that have no transition path have a distance of -1
+    int maximumDistance = 1;
 
     for (int i = 0; i < terrainCount(); ++i) {
         Terrain *type = terrain(i);
@@ -493,7 +501,7 @@ void Tileset::recalculateTerrainDistances()
                     if (d0 == -1 || d1 == -1)
                         continue;
 
-                    // We have cound a common connection
+                    // We have found a common connection
                     int d = t0->transitionDistance(j);
                     Q_ASSERT(t1->transitionDistance(i) == d);
 
@@ -502,6 +510,7 @@ void Tileset::recalculateTerrainDistances()
                         d = d0 + d1;
                         t0->setTransitionDistance(j, d);
                         t1->setTransitionDistance(i, d);
+                        maximumDistance = qMax(maximumDistance, d);
 
                         // We're making progress, flag for another iteration...
                         bNewConnections = true;
@@ -513,6 +522,9 @@ void Tileset::recalculateTerrainDistances()
         // Repeat while we are still making new connections (could take a
         // number of iterations for distant terrain types to connect)
     } while (bNewConnections);
+
+    mMaximumTerrainDistance = maximumDistance;
+    mTerrainDistancesDirty = false;
 }
 
 /**
