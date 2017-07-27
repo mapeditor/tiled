@@ -50,6 +50,7 @@ signals:
 
 private slots:
     void newTemplateGroup();
+    void openTemplateGroup();
 
 private:
     void retranslateUi();
@@ -57,6 +58,7 @@ private:
     TemplatesView *mTemplatesView;
 
     QAction *mNewTemplateGroup;
+    QAction *mOpenTemplateGroup;
 };
 
 class TemplatesView : public QTreeView

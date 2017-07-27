@@ -38,7 +38,8 @@ using namespace Tiled::Internal;
 TemplatesDock::TemplatesDock(QWidget *parent):
     QDockWidget(parent),
     mTemplatesView(new TemplatesView),
-    mNewTemplateGroup(new QAction(this))
+    mNewTemplateGroup(new QAction(this)),
+    mOpenTemplateGroup(new QAction(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
@@ -58,7 +59,12 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
 
+    mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
+    Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
+    connect(mOpenTemplateGroup, &QAction::triggered, this, &TemplatesDock::openTemplateGroup);
+
     toolBar->addAction(mNewTemplateGroup);
+    toolBar->addAction(mOpenTemplateGroup);
 
     layout->addWidget(toolBar);
     setWidget(widget);
@@ -126,10 +132,46 @@ void TemplatesDock::newTemplateGroup()
                        QFileInfo(fileName).path());
 }
 
+void TemplatesDock::openTemplateGroup()
+{
+    QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
+
+    Preferences *prefs = Preferences::instance();
+    QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Template Group"),
+                                                    suggestedFileName,
+                                                    filter);
+
+    if (fileName.isEmpty())
+        return;
+
+    if (TemplateManager::instance()->findTemplateGroup(fileName)) {
+        QMessageBox::information(this, tr("Open Template Group"),
+                                 tr("This template group has been already opened."));
+        return;
+    }
+
+    auto templateGroupFormat = TtxTemplateGroupFormat::instance();
+    auto document = TemplateGroupDocument::load(fileName, templateGroupFormat);
+
+    if (!document) {
+        QMessageBox::warning(this, tr("Open Template Group"),
+                             tr("Couldn't open this template group."));
+        return;
+    }
+
+    ObjectTemplateModel::instance()->addDocument(document);
+
+    prefs->setLastPath(Preferences::TemplateDocumentsFile,
+                       QFileInfo(fileName).path());
+}
+
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Templates"));
     mNewTemplateGroup->setText(tr("New Template Group"));
+    mOpenTemplateGroup->setText(tr("Open Template Group"));
 }
 
 TemplatesView::TemplatesView(QWidget *parent)
