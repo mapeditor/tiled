@@ -112,7 +112,13 @@ void NewTemplateDialog::newTemplateGroup()
     prefs->setLastPath(Preferences::TemplateDocumentsFile,
                        QFileInfo(fileName).path());
 
-    mUi->groupsComboBox->addItem(name);
+    QList<QString> names;
+
+    for (auto *doc : model->templateDocuments())
+        names.append(doc->templateGroup()->name());
+
+    mUi->groupsComboBox->clear();
+    mUi->groupsComboBox->addItems(names);
     mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
 
     updateOkButton();

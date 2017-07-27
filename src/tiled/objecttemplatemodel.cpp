@@ -148,7 +148,11 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
     mTemplateDocuments.append(document);
     endInsertRows();
 
-    TemplateManager::instance()->addTemplateGroup(document->templateGroup());
+    QList<TemplateGroup*> groups;
+    for (TemplateGroupDocument *doc : mTemplateDocuments)
+        groups.append(doc->templateGroup());
+
+    TemplateManager::instance()->setTemplateGroups(groups);
 
     return true;
 }
