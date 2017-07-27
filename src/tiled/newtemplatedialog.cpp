@@ -27,13 +27,17 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-NewTemplateDialog::NewTemplateDialog(QList<QString> groupNames, QWidget *parent) :
+NewTemplateDialog::NewTemplateDialog(const QList<QString> &groupNames, const QString &objectName, QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewTemplateDialog)
 {
     mUi->setupUi(this);
+
+    mUi->templateName->setText(objectName);
+
     mUi->groupsComboBox->addItems(groupNames);
-    connect(mUi->templateName, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+    connect(mUi->templateName, &QLineEdit::textChanged,
+            this, &NewTemplateDialog::updateOkButton);
     updateOkButton();
 }
 

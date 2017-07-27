@@ -204,7 +204,9 @@ void AbstractObjectTool::saveSelectedObject()
     QString name;
     int groupIndex;
 
-    NewTemplateDialog newTemplateDialog(names);
+    auto object = mapDocument()->selectedObjects().first();
+
+    NewTemplateDialog newTemplateDialog(names, object->name());
     newTemplateDialog.createTemplate(name, groupIndex);
 
     if (!name.isEmpty())

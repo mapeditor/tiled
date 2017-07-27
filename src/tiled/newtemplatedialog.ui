@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>349</width>
-    <height>212</height>
+    <width>352</width>
+    <height>214</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,24 +19,24 @@
      <property name="title">
       <string>Template</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="templateName">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>Template Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="1" column="0">
        <widget class="QLabel" name="templateNameLabel">
         <property name="text">
          <string>&amp;Name:</string>
         </property>
         <property name="buddy">
          <cstring>templateName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="templateName">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Template Name</string>
         </property>
        </widget>
       </item>
@@ -66,6 +66,22 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="newGroupRadioButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Save to a new group</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="groupName">
         <property name="enabled">
@@ -78,22 +94,6 @@
          <string>New Group Name</string>
         </property>
         <property name="clearButtonEnabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="newGroupRadioButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Save to a new group</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
@@ -114,7 +114,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>templateName</tabstop>
   <tabstop>ExistingGroupRadioButton</tabstop>
   <tabstop>groupsComboBox</tabstop>
   <tabstop>newGroupRadioButton</tabstop>
