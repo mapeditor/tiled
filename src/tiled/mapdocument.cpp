@@ -128,7 +128,7 @@ MapDocument::~MapDocument()
     delete mMap;
 }
 
-void MapDocument::saveSelectedObject(QString name, int groupIndex)
+void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
 {
     if (mSelectedObjects.size() != 1)
         return;

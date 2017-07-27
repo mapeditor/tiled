@@ -44,6 +44,7 @@ public:
 
 private slots:
     void updateOkButton();
+    void newTemplateGroup();
 
 private:
     Ui::NewTemplateDialog *mUi;

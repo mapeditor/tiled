@@ -20,8 +20,14 @@
  */
 
 #include "newtemplatedialog.h"
+#include "objecttemplatemodel.h"
+#include "preferences.h"
+#include "templatemanager.h"
+#include "tmxmapformat.h"
 #include "ui_newtemplatedialog.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QPushButton>
 
 using namespace Tiled;
@@ -34,6 +40,9 @@ NewTemplateDialog::NewTemplateDialog(const QList<QString> &groupNames, const QSt
     mUi->setupUi(this);
 
     mUi->templateName->setText(objectName);
+
+    connect(mUi->createGroupButton, &QPushButton::pressed,
+            this, &NewTemplateDialog::newTemplateGroup);
 
     mUi->groupsComboBox->addItems(groupNames);
     connect(mUi->templateName, &QLineEdit::textChanged,
@@ -59,9 +68,52 @@ void NewTemplateDialog::createTemplate(QString &name, int &index)
 void NewTemplateDialog::updateOkButton()
 {
     QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
-    QString templateName = mUi->templateName->text();
 
+    bool noTemplateName = mUi->templateName->text().isEmpty();
     int index = mUi->groupsComboBox->currentIndex();
 
-    okButton->setEnabled(!templateName.isEmpty() && index != -1);
+    okButton->setDisabled(noTemplateName || index == -1);
+}
+
+/**
+ * This code is duplicated from the templates dock.
+ */
+void NewTemplateDialog::newTemplateGroup()
+{
+    QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
+
+    Preferences *prefs = Preferences::instance();
+    QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
+    suggestedFileName += tr("/untitled.ttx");
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                                    suggestedFileName,
+                                                    filter);
+
+    if (fileName.isEmpty())
+        return;
+
+    auto templateGroup = new TemplateGroup();
+    auto name = QFileInfo(fileName).baseName();
+    templateGroup->setName(name);
+    templateGroup->setFileName(fileName);
+    QScopedPointer<TemplateGroupDocument>
+        templateGroupDocument(new TemplateGroupDocument(templateGroup));
+
+    QString error;
+    if (!templateGroupDocument->save(fileName, &error)) {
+        QMessageBox::critical(this, tr("Error Creating Template Group"), error);
+        return;
+    }
+
+    auto model = ObjectTemplateModel::instance();
+    model->addNewDocument(templateGroupDocument.take());
+
+    prefs->setLastPath(Preferences::TemplateDocumentsFile,
+                       QFileInfo(fileName).path());
+
+    mUi->groupsComboBox->addItem(name);
+    mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
+
+    updateOkButton();
 }

@@ -104,7 +104,7 @@ void TemplatesDock::newTemplateGroup()
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    suggestedFileName += QLatin1String("/untitled.ttx");
+    suggestedFileName += tr("/untitled.ttx");
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                     suggestedFileName,

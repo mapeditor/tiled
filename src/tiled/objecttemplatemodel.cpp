@@ -155,8 +155,7 @@ bool ObjectTemplateModel::addNewDocument(TemplateGroupDocument *document)
 
 bool ObjectTemplateModel::addDocument(TemplateGroupDocument *document)
 {
-    if (!document)
-        return false;
+    Q_ASSERT(document);
 
     for (auto templateDocument : mTemplateDocuments)
         if (document->fileName() == templateDocument->fileName())
