@@ -22,6 +22,7 @@
 #pragma once
 
 #include "gidmapper.h"
+#include "tidmapper.h"
 #include "mapobject.h"
 
 #include <QCoreApplication>
@@ -80,6 +81,7 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
+    TemplateGroup *toTemplateGroup(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
@@ -95,6 +97,7 @@ private:
     QDir mMapDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
+    TidMapper mTidMapper;
     QString mError;
 };
 
