@@ -757,7 +757,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                         mapObject.propertyChanged(MapObject::TextFontProperty) ||
                         mapObject.propertyChanged(MapObject::TextAlignmentProperty) ||
                         mapObject.propertyChanged(MapObject::TextWordWrapProperty) ||
-                        mapObject.propertyChanged(MapObject::TextColorProperty)  ))
+                        mapObject.propertyChanged(MapObject::TextColorProperty)))
             writeObjectText(w, mapObject.textData());
         break;
     }

@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
+#include "templategroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -85,6 +86,30 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
         firstGid += tileset->nextTileId();
     }
     mapVariant[QLatin1String("tilesets")] = tilesetVariants;
+
+    mTidMapper.clear();
+    unsigned firstTid = 1;
+
+    QSet<TemplateGroup*> templateGroups;
+    for (ObjectGroup *group : map.objectGroups())
+        for (MapObject *object : group->objects())
+            if (object->isTemplateInstance())
+                templateGroups.insert(object->templateGroup());
+
+    QVariantList templateGroupVariants;
+
+    for (TemplateGroup *templateGroup : templateGroups) {
+        templateGroupVariants << toVariant(*templateGroup, firstTid);
+        mTidMapper.insert(firstTid, templateGroup);
+
+        // When a template group is not loaded, reserve enough space
+        // to enable loading when the templateGroup is fixed
+        if (templateGroup->loaded())
+            firstTid += templateGroup->nextTemplateId();
+        else
+            firstTid += templateGroup->maxId() + 1;
+    }
+    mapVariant[QLatin1String("templategroups")] = templateGroupVariants;
 
     mapVariant[QLatin1String("layers")] = toVariant(map.layers(),
                                                     map.layerDataFormat());
@@ -238,6 +263,19 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     return tilesetVariant;
 }
 
+QVariant MapToVariantConverter::toVariant(const TemplateGroup &templateGroup, int firstTid) const
+{
+    QVariantMap templateGroupVariant;
+
+    templateGroupVariant[QLatin1String("firsttid")] = firstTid;
+
+    const QString &fileName = templateGroup.fileName();
+    QString source = mMapDir.relativeFilePath(fileName);
+    templateGroupVariant[QLatin1String("source")] = source;
+
+    return templateGroupVariant;
+}
+
 QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
@@ -352,19 +390,39 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup &objectGroup) const
 
         addProperties(objectVariant, object->properties());
 
+        bool notTemplateInstance = !object->isTemplateInstance();
+
+        if (object->isTemplateInstance()) {
+            unsigned tid = mTidMapper.templateRefToTid(object->templateRef());
+            objectVariant[QLatin1String("tid")] = tid;
+        }
+
         objectVariant[QLatin1String("id")] = object->id();
-        objectVariant[QLatin1String("name")] = name;
-        objectVariant[QLatin1String("type")] = type;
-        if (!object->cell().isEmpty())
-            objectVariant[QLatin1String("gid")] = mGidMapper.cellToGid(object->cell());
+
+        if (notTemplateInstance || object->propertyChanged(MapObject::NameProperty))
+            objectVariant[QLatin1String("name")] = name;
+
+        if (notTemplateInstance || object->propertyChanged(MapObject::TypeProperty))
+            objectVariant[QLatin1String("type")] = type;
+
+
+        if (notTemplateInstance || object->propertyChanged(MapObject::CellProperty))
+            if (!object->cell().isEmpty())
+                objectVariant[QLatin1String("gid")] = mGidMapper.cellToGid(object->cell());
 
         objectVariant[QLatin1String("x")] = object->x();
         objectVariant[QLatin1String("y")] = object->y();
-        objectVariant[QLatin1String("width")] = object->width();
-        objectVariant[QLatin1String("height")] = object->height();
-        objectVariant[QLatin1String("rotation")] = object->rotation();
 
-        objectVariant[QLatin1String("visible")] = object->isVisible();
+        if (notTemplateInstance || object->propertyChanged(MapObject::SizeProperty)) {
+            objectVariant[QLatin1String("width")] = object->width();
+            objectVariant[QLatin1String("height")] = object->height();
+        }
+
+        if (notTemplateInstance || object->propertyChanged(MapObject::RotationProperty))
+            objectVariant[QLatin1String("rotation")] = object->rotation();
+
+        if (notTemplateInstance || object->propertyChanged(MapObject::VisibleProperty))
+            objectVariant[QLatin1String("visible")] = object->isVisible();
 
         /* Polygons are stored in this format:
          *
@@ -379,25 +437,33 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup &objectGroup) const
             break;
         case MapObject::Polygon:
         case MapObject::Polyline: {
-            QVariantList pointVariants;
-            for (const QPointF &point : object->polygon()) {
-                QVariantMap pointVariant;
-                pointVariant[QLatin1String("x")] = point.x();
-                pointVariant[QLatin1String("y")] = point.y();
-                pointVariants.append(pointVariant);
-            }
+            if (notTemplateInstance || object->propertyChanged(MapObject::ShapeProperty)) {
+                QVariantList pointVariants;
+                for (const QPointF &point : object->polygon()) {
+                    QVariantMap pointVariant;
+                    pointVariant[QLatin1String("x")] = point.x();
+                    pointVariant[QLatin1String("y")] = point.y();
+                    pointVariants.append(pointVariant);
+                }
 
-            if (object->shape() == MapObject::Polygon)
-                objectVariant[QLatin1String("polygon")] = pointVariants;
-            else
-                objectVariant[QLatin1String("polyline")] = pointVariants;
+                if (object->shape() == MapObject::Polygon)
+                    objectVariant[QLatin1String("polygon")] = pointVariants;
+                else
+                    objectVariant[QLatin1String("polyline")] = pointVariants;
+            }
             break;
         }
         case MapObject::Ellipse:
-            objectVariant[QLatin1String("ellipse")] = true;
+            if (notTemplateInstance || object->propertyChanged(MapObject::ShapeProperty))
+                objectVariant[QLatin1String("ellipse")] = true;
             break;
         case MapObject::Text:
-            objectVariant[QLatin1String("text")] = toVariant(object->textData());
+            if (notTemplateInstance || (object->propertyChanged(MapObject::TextProperty) ||
+                                        object->propertyChanged(MapObject::TextFontProperty) ||
+                                        object->propertyChanged(MapObject::TextAlignmentProperty) ||
+                                        object->propertyChanged(MapObject::TextWordWrapProperty) ||
+                                        object->propertyChanged(MapObject::TextColorProperty)))
+                objectVariant[QLatin1String("text")] = toVariant(object->textData());
             break;
         }
 
