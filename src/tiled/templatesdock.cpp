@@ -100,7 +100,9 @@ TemplatesDock::~TemplatesDock()
 
 void TemplatesDock::newTemplateGroup()
 {
-    QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
+    FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
+    QString filter = helper.filter();
+    QString selectedFilter = TtxTemplateGroupFormat::instance()->nameFilter();
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
@@ -108,7 +110,8 @@ void TemplatesDock::newTemplateGroup()
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                     suggestedFileName,
-                                                    filter);
+                                                    filter,
+                                                    &selectedFilter);
 
     if (fileName.isEmpty())
         return;
@@ -118,6 +121,9 @@ void TemplatesDock::newTemplateGroup()
     templateGroup->setFileName(fileName);
     QScopedPointer<TemplateGroupDocument>
         templateGroupDocument(new TemplateGroupDocument(templateGroup));
+
+    TemplateGroupFormat *format = helper.formatByNameFilter(selectedFilter);
+    templateGroup->setFormat(format);
 
     QString error;
     if (!templateGroupDocument->save(fileName, &error)) {

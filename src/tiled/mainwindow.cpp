@@ -117,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     PluginManager::addObject(mTmxMapFormat);
     PluginManager::addObject(mTsxTilesetFormat);
+    PluginManager::addObject(TtxTemplateGroupFormat::instance());
 
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");

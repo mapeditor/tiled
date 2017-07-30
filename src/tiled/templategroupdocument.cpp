@@ -55,7 +55,7 @@ TemplateGroupDocument::~TemplateGroupDocument()
 
 bool TemplateGroupDocument::save(const QString &fileName, QString *error)
 {
-    auto format = TtxTemplateGroupFormat::instance();
+    auto format = mTemplateGroup->format();
 
     if (!format->write(mTemplateGroup, fileName)) {
         if (error)
