@@ -47,6 +47,8 @@ QRect OrthogonalRenderer::mapBoundingRect() const
     QSize size(0, 0);
     QPoint start(0, 0);
 
+    bool startFlag = false;
+
     LayerIterator iterator(map());
     while (Layer *layer = iterator.next()) {
         if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
@@ -56,8 +58,13 @@ QRect OrthogonalRenderer::mapBoundingRect() const
 
             size = size.expandedTo(layerSize);
 
-            start.setX(std::min(start.x(), layerStart.x()));
-            start.setY(std::min(start.y(), layerStart.y()));
+            if (startFlag) {
+                start.setX(std::min(start.x(), layerStart.x()));
+                start.setY(std::min(start.y(), layerStart.y()));
+            } else {
+                start = layerStart;
+                startFlag = true;
+            }
         }
     }
 

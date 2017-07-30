@@ -298,7 +298,6 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
     }
 }
 
-
 QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
     switch (staggerAxis) {

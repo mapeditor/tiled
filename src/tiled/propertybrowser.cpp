@@ -564,7 +564,7 @@ void PropertyBrowser::addMapProperties()
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
     addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
     addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
-    addProperty(InfiniteProperty, QVariant::Bool, tr("Automatically Resize Map"), groupProperty)->setEnabled(false);
+    addProperty(InfiniteProperty, QVariant::Bool, tr("Automatically Resize Map"), groupProperty);
 
     addProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
@@ -844,6 +844,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         break;
     case TileHeightProperty:
         command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileHeight,
+                                        val.toInt());
+        break;
+    case InfiniteProperty:
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::Infinite,
                                         val.toInt());
         break;
     case OrientationProperty: {

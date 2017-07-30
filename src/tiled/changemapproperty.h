@@ -36,6 +36,7 @@ public:
     enum Property {
         TileWidth,
         TileHeight,
+        Infinite,
         HexSideLength,
         StaggerAxis,
         StaggerIndex,

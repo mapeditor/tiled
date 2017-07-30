@@ -589,6 +589,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
             newLayer->setCell(x, y, cellAt(x - offset.x(), y - offset.y()));
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
     setSize(size);
 }
 
@@ -629,6 +630,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
