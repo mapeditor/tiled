@@ -71,6 +71,7 @@ public:
      * errorString().
      */
     SharedTileset toTileset(const QVariant &variant, const QDir &directory);
+    TemplateGroup *toTemplateGroup(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -85,6 +86,8 @@ private:
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    MapObject *toMapObject(const QVariantMap &variantMap);
+    ObjectTemplate *toObjectTemplate(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
     GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 

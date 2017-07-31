@@ -50,6 +50,8 @@ public:
 TILEDSHARED_EXPORT TemplateGroup *readTemplateGroup(const QString &fileName,
                                                     QString *error = nullptr);
 
+TILEDSHARED_EXPORT TemplateGroupFormat *findSupportingGroupFormat(const QString &fileName);
+
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::TemplateGroupFormat, "org.mapeditor.TemplateGroupFormat")

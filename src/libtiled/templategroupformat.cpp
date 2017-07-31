@@ -27,6 +27,22 @@ namespace Tiled {
 
 TemplateGroup *readTemplateGroup(const QString &fileName, QString *error)
 {
+    if (TemplateGroupFormat *format = findSupportingGroupFormat(fileName)) {
+        TemplateGroup *templateGroup = format->read(fileName);
+
+        if (error) {
+            if (!templateGroup)
+                *error = format->errorString();
+            else
+                *error = QString();
+        }
+
+        if (templateGroup)
+            templateGroup->setFormat(format);
+
+        return templateGroup;
+    }
+
     MapReader reader;
     TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
 
@@ -38,6 +54,14 @@ TemplateGroup *readTemplateGroup(const QString &fileName, QString *error)
     }
 
     return templateGroup;
+}
+
+TemplateGroupFormat *findSupportingGroupFormat(const QString &fileName)
+{
+    for (TemplateGroupFormat *format : PluginManager::objects<TemplateGroupFormat>())
+        if (format->supportsFile(fileName))
+            return format;
+    return nullptr;
 }
 
 } // namespace Tiled

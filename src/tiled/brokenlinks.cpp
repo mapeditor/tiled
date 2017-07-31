@@ -603,14 +603,14 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         prefs->setLastPath(Preferences::ExternalTileset,
                            QFileInfo(fileName).path());
     } else if (link.type == TemplateGroupReference) {
-        QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
+        const QString allFilesFilter = tr("All Files (*)");
 
         Preferences *prefs = Preferences::instance();
         QString start = prefs->lastPath(Preferences::TemplateDocumentsFile);
 
         QString fileName = QFileDialog::getOpenFileName(this, tr("Locate Template Group"),
                                                         start,
-                                                        filter);
+                                                        allFilesFilter);
 
         if (fileName.isEmpty())
             return;

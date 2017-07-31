@@ -326,8 +326,35 @@ JsonTemplateGroupFormat::JsonTemplateGroupFormat(QObject *parent)
 
 Tiled::TemplateGroup *JsonTemplateGroupFormat::read(const QString &fileName)
 {
-    Q_UNUSED(fileName);
-    return nullptr;
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for reading.");
+        return nullptr;
+    }
+
+    JsonReader reader;
+    QByteArray contents = file.readAll();
+
+    reader.parse(contents);
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return nullptr;
+    }
+
+    Tiled::VariantToMapConverter converter;
+    Tiled::TemplateGroup *templateGroup = converter.toTemplateGroup(variant,
+                                                                    QFileInfo(fileName).dir());
+
+    if (!templateGroup)
+        mError = converter.errorString();
+    else
+        templateGroup->setFileName(fileName);
+
+    return templateGroup;
 }
 
 bool JsonTemplateGroupFormat::supportsFile(const QString &fileName) const

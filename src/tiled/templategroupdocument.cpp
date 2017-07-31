@@ -67,18 +67,12 @@ bool TemplateGroupDocument::save(const QString &fileName, QString *error)
 }
 
 TemplateGroupDocument *TemplateGroupDocument::load(const QString &fileName,
-                                                   TemplateGroupFormat *format,
                                                    QString *error)
 {
-    TemplateGroup *templateGroup = format->read(fileName);
+    TemplateGroup *templateGroup = readTemplateGroup(fileName, error);
 
-    if (!templateGroup) {
-        if (error)
-            *error = format->errorString();
+    if (!templateGroup)
         return nullptr;
-    }
-
-    templateGroup->setFormat(format);
 
     return new TemplateGroupDocument(templateGroup);
 }
@@ -151,8 +145,6 @@ static void readTemplateDocumentsXml(QFileDevice *device,
     // Saves the paths of loaded template groups to prevent loading duplicates
     QSet<QString> loadedPaths;
 
-    auto templateGroupFormat = TtxTemplateGroupFormat::instance();
-
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("templategroup")) {
             const QXmlStreamAttributes atts = reader.attributes();
@@ -165,7 +157,7 @@ static void readTemplateDocumentsXml(QFileDevice *device,
 
                 // TODO: handle errors that might happen while loading
                 QScopedPointer<TemplateGroupDocument>
-                    templateGroupDocument(TemplateGroupDocument::load(path, templateGroupFormat));
+                    templateGroupDocument(TemplateGroupDocument::load(path));
 
                 if (templateGroupDocument)
                     templateDocuments.append(templateGroupDocument.take());

@@ -51,7 +51,6 @@ public:
     bool save(const QString &fileName, QString *error = nullptr) override;
 
     static TemplateGroupDocument *load(const QString &fileName,
-                                       TemplateGroupFormat *format,
                                        QString *error = nullptr);
 
     FileFormat *writerFormat() const override;
