@@ -927,6 +927,7 @@ void TilesetView::setWangSet(WangSet *wangSet)
 void TilesetView::setWangId(WangId wangId)
 {
     mWangBehavior = WholeId;
+    mWangColor = 0;
 
     if (!mWangSet || wangId == mWangId)
         return;
@@ -934,7 +935,6 @@ void TilesetView::setWangId(WangId wangId)
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
     mWangId = wangId;
-    mWangColor = 0;
 
     if (mEditWangSet && hoveredIndex().isValid())
         update(hoveredIndex());
@@ -942,6 +942,9 @@ void TilesetView::setWangId(WangId wangId)
 
 void TilesetView::setWangEdgeColor(int color)
 {
+    if (!color)
+        setWangId(0);
+
     mWangBehavior = Edge;
 
     Q_ASSERT(color <= mWangSet->edgeColors());
@@ -951,6 +954,9 @@ void TilesetView::setWangEdgeColor(int color)
 
 void TilesetView::setWangCornerColor(int color)
 {
+    if (!color)
+        setWangId(0);
+
     mWangBehavior = Corner;
 
     Q_ASSERT(color <= mWangSet->cornerColors());
@@ -980,7 +986,7 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
-            applyWangId(mWangBehavior != WholeId);
+            applyWangId();
 
         return;
     }
@@ -1063,7 +1069,7 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         }
 
         if (event->buttons() & Qt::LeftButton)
-            applyWangId(mWangBehavior != WholeId);
+            applyWangId();
 
         return;
     }
@@ -1350,7 +1356,7 @@ void TilesetView::finishTerrainChange()
     mTerrainChanged = false;
 }
 
-void TilesetView::applyWangId(bool merge)
+void TilesetView::applyWangId()
 {
     if (!mHoveredIndex.isValid() || !mWangSet)
         return;
@@ -1362,7 +1368,7 @@ void TilesetView::applyWangId(bool merge)
     WangId previousWangId = mWangSet->wangIdOfTile(tile);
     WangId newWangId = mWangId;
 
-    if (merge) {
+    if (mWangBehavior != WholeId) {
         for (int i = 0; i < 8; ++i) {
             if (!newWangId.indexColor(i))
                 newWangId.setIndexColor(i, previousWangId.indexColor(i));

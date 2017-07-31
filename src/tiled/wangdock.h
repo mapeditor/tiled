@@ -35,7 +35,7 @@ namespace Tiled {
 namespace Internal {
 
 class Document;
-class WangSetFilterModel;
+class HasChildrenFilterModel;
 class WangSetView;
 class WangSetModel;
 class WangColorModel;
@@ -112,7 +112,7 @@ private:
     QTreeView *mWangColorView;
     WangColorModel *mWangColorModel;
     WangSetModel *mWangSetModel;
-    WangSetFilterModel *mProxyModel;
+    HasChildrenFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QStackedWidget *mTemplateAndColorView;

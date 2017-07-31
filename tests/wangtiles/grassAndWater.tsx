@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="GrassAndWater" tilewidth="64" tileheight="64" tilecount="24" columns="4">
- <image source="C:/Users/topha/Desktop/grass_and_water.png" width="256" height="384"/>
+ <image source="grass_and_water.png" width="256" height="384"/>
  <wangsets>
   <wangset name="New Wang Set" edges="1" corners="2" tile="5">
    <wangtile tileid="4" wangid="0x10102010"/>

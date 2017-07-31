@@ -67,10 +67,10 @@ static WangSet *firstWangSet(TilesetDocument *tilesetDocument)
     return nullptr;
 }
 
-class WangSetFilterModel : public QSortFilterProxyModel
+class HasChildrenFilterModel : public QSortFilterProxyModel
 {
 public:
-    WangSetFilterModel(QObject *parent = nullptr)
+    HasChildrenFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
     }
@@ -93,26 +93,6 @@ protected:
     bool mEnabled;
 };
 
-class WangColorFilterModel : public QSortFilterProxyModel
-{
-public:
-    WangColorFilterModel(QObject *parent = nullptr)
-        :QSortFilterProxyModel(parent)
-    {
-    }
-
-protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
-    {
-        if (source_parent.isValid())
-            return true;
-
-        const QAbstractItemModel *model = sourceModel();
-        const QModelIndex index = model->index(source_row, 0, source_parent);
-        return index.isValid() && model->hasChildren(index);
-    }
-};
-
 } // namespace Internal
 } // namespace Tiled
 
@@ -127,7 +107,7 @@ WangDock::WangDock(QWidget *parent)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangColorModel(new WangColorModel(this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
-    , mProxyModel(new WangSetFilterModel(this))
+    , mProxyModel(new HasChildrenFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
     , mInitializing(false)
 {
@@ -165,8 +145,9 @@ WangDock::WangDock(QWidget *parent)
     connect(mWangTemplateView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &WangDock::refreshCurrentWangId);
 
-    WangColorFilterModel *wangColorFilterModel = new WangColorFilterModel(this);
+    HasChildrenFilterModel *wangColorFilterModel = new HasChildrenFilterModel(this);
     wangColorFilterModel->setSourceModel(mWangColorModel);
+    wangColorFilterModel->setEnabled(true);
 
     mWangColorView = new QTreeView(w);
     mWangColorView->setModel(wangColorFilterModel);
@@ -350,20 +331,17 @@ void WangDock::refreshCurrentWangColor()
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
 
     if (!selectionModel->currentIndex().isValid()) {
+        mEraseWangIdsButton->setChecked(true);
         emit wangColorChanged(0, true);
         return;
     }
 
-    bool edgeColor;
-    //If not using edges, then corners becomes the first row, and isEdgeColorAt becomes invalid.
-    if (mCurrentWangSet->edgeColors() > 1)
-        edgeColor = mWangColorModel->isEdgeColorAt(selectionModel->currentIndex());
-    else
-        edgeColor = false;
+    QModelIndex index = static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
 
-    int color = mWangColorModel->colorAt(selectionModel->currentIndex());
+    bool edgeColor = mWangColorModel->isEdgeColorAt(index);
+    int color = mWangColorModel->colorAt(index);
 
-    mEraseWangIdsButton->setChecked(!color);
+    mEraseWangIdsButton->setChecked(false);
 
     emit wangColorChanged(color, edgeColor);
     emit selectWangBrush();
@@ -371,10 +349,11 @@ void WangDock::refreshCurrentWangColor()
 
 void WangDock::wangSetChanged()
 {
-    refreshCurrentWangId();
-
     mWangColorModel->resetModel();
     mWangColorView->expandAll();
+
+    refreshCurrentWangColor();
+    refreshCurrentWangId();
 }
 
 void WangDock::indexPressed(const QModelIndex &index)

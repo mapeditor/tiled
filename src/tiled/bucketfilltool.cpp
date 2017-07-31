@@ -230,8 +230,10 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     paint->setText(QCoreApplication::translate("Undo Commands", "Fill Area"));
 
     if (!mMissingTilesets.isEmpty()) {
-        for (const SharedTileset &tileset : mMissingTilesets)
-            new AddTileset(mapDocument(), tileset, paint);
+        for (const SharedTileset &tileset : mMissingTilesets) {
+            if (!mapDocument()->map()->tilesets().contains(tileset))
+                new AddTileset(mapDocument(), tileset, paint);
+        }
 
         mMissingTilesets.clear();
     }
@@ -408,8 +410,11 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
     if (region.isEmpty() || !mWangFiller->wangSet())
         return;
 
-    tileLayerToFill.setCells(0, 0,
-                             mWangFiller->fillRegion(backgroundTileLayer, region, !mWangFiller->wangSet()->isComplete()));
+    TileLayer *stamp = mWangFiller->fillRegion(backgroundTileLayer,
+                                               region);
+
+    tileLayerToFill.setCells(0, 0, stamp);
+    delete stamp;
 }
 
 void BucketFillTool::updateRandomListAndMissingTilesets()
@@ -419,8 +424,7 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
 
     if (mIsWangFill && mWangFiller->wangSet()) {
         const SharedTileset &tileset = mWangFiller->wangSet()->tileset()->sharedPointer();
-        if (!mMissingTilesets.contains(tileset)
-                && !mapDocument()->map()->tilesets().contains(tileset))
+        if (!mapDocument()->map()->tilesets().contains(tileset))
             mMissingTilesets.append(tileset);
     } else {
         for (const TileStampVariation &variation : mStamp.variations()) {

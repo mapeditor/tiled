@@ -35,8 +35,8 @@ using namespace Tiled;
 using namespace Internal;
 
 //value between 0 and 0.5 to control the dead zone with edge mode.
-static const float MIDDLE_DEAD_ZONE = 0.25f;
-static const float EDGE_DEAD_ZONE = 0.2f;
+static const double MIDDLE_DEAD_ZONE = 0.25;
+static const double EDGE_DEAD_ZONE = 0.2;
 
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool(tr("Wang Brush"),
@@ -45,7 +45,6 @@ WangBrush::WangBrush(QObject *parent)
                       QKeySequence(tr("G")),
                       parent)
     , mEdgeDir(0)
-    , mIsActive(false)
     , mWangSet(nullptr)
     , mCurrentColor(0)
     , mBrushMode(Idle)
@@ -56,18 +55,6 @@ WangBrush::WangBrush(QObject *parent)
 
 WangBrush::~WangBrush()
 {
-}
-
-void WangBrush::activate(MapScene *scene)
-{
-    mIsActive = true;
-    AbstractTileTool::activate(scene);
-}
-
-void WangBrush::deactivate(MapScene *scene)
-{
-    mIsActive = false;
-    AbstractTileTool::deactivate(scene);
 }
 
 void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -92,6 +79,7 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Paint:
         if (event->button() == Qt::LeftButton)
             mBrushBehavior = Free;
+        break;
     default:
         break;
     }
@@ -159,8 +147,8 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 
         //Checks when painting which would avoid change.
         if (mBrushBehavior == Paint && tilePos == mPaintPoint) {
-            if (abs(tileLocalPoint.x() - 0.5f) < MIDDLE_DEAD_ZONE
-                    && abs(tileLocalPoint.y() - 0.5f) < MIDDLE_DEAD_ZONE)
+            if (std::abs(tileLocalPoint.x() - 0.5f) < MIDDLE_DEAD_ZONE
+                    && std::abs(tileLocalPoint.y() - 0.5f) < MIDDLE_DEAD_ZONE)
                 return;
 
             switch (mEdgeDir) {

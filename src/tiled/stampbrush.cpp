@@ -249,9 +249,11 @@ void StampBrush::setWangSet(WangSet *wangSet)
 
     mMissingTilesets.clear();
 
+    if (!wangSet)
+        return;
+
     const SharedTileset &tileset = wangSet->tileset()->sharedPointer();
-    if (!mMissingTilesets.contains(tileset)
-           && !mapDocument()->map()->tilesets().contains(tileset))
+    if (!mapDocument()->map()->tilesets().contains(tileset))
        mMissingTilesets.append(tileset);
 }
 
@@ -369,8 +371,10 @@ QRegion StampBrush::doPaint(int flags)
                                                preview);
 
     if (!mMissingTilesets.isEmpty()) {
-        for (const SharedTileset &tileset : mMissingTilesets)
-            new AddTileset(mapDocument(), tileset, paint);
+        for (const SharedTileset &tileset : mMissingTilesets) {
+            if (!mapDocument()->map()->tilesets().contains(tileset))
+                new AddTileset(mapDocument(), tileset, paint);
+        }
 
         mMissingTilesets.clear();
     }
@@ -438,8 +442,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             Cell cell = mWangFiller->findFittingCell(*tileLayer,
                                                      *preview.data(),
                                                      paintedRegion,
-                                                     p,
-                                                     !mWangFiller->wangSet()->isComplete());
+                                                     p);
 
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),

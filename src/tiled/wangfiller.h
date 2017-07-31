@@ -52,8 +52,7 @@ public:
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
                          const QRegion &fillRegion,
-                         QPoint point,
-                         bool lookForward = true) const;
+                         QPoint point) const;
 
     /* Returns a tilelayer which has fillRegion filled with wang methods.
      * If lookForward is true, this will only choose a cell
@@ -61,8 +60,7 @@ public:
      * be filled. If non exist, then no cell will be choosen.
      * */
     TileLayer *fillRegion(const TileLayer &back,
-                    const QRegion &fillRegion,
-                    bool lookForward = true) const;
+                          const QRegion &fillRegion) const;
 
 private:
     //gets a cell from either the back or front, based on

@@ -50,15 +50,14 @@ void WangFiller::setWangSet(WangSet *wangSet)
 Cell WangFiller::findFittingCell(const TileLayer &back,
                                  const TileLayer &front,
                                  const QRegion &fillRegion,
-                                 QPoint point,
-                                 bool lookForward) const
+                                 QPoint point) const
 {
     Q_ASSERT(mWangSet);
 
     QList<WangTile> wangTiles = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back, front, fillRegion, point));
 
     WangTile wangTile;
-    if (lookForward) {
+    if (!mWangSet->isComplete()) {
         //goes through all adjacent, empty tiles and sees if the current wangTile
         //allows them to have at least one fill option.
         while (!wangTiles.isEmpty()) {
@@ -97,8 +96,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
 }
 
 TileLayer *WangFiller::fillRegion(const TileLayer &back,
-                            const QRegion &fillRegion,
-                            bool lookForward) const
+                                  const QRegion &fillRegion) const
 {
     QRect boundingRect = fillRegion.boundingRect();
 
@@ -137,7 +135,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                     WangTile wangTile = wangTiles.takeAt(qrand() % wangTiles.size());
 
                     bool fill = true;
-                    if (lookForward) {
+                    if (!mWangSet->isComplete()) {
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
                             if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
@@ -158,8 +156,8 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
 
                     if (fill) {
                         tileLayer->setCell(currentPoint.x() - tileLayer->x(),
-                                          currentPoint.y() - tileLayer->y(),
-                                          wangTile.makeCell());
+                                           currentPoint.y() - tileLayer->y(),
+                                           wangTile.makeCell());
 
                         for (int i = 0; i < 8; ++i) {
                             QPoint p = currentPoint + adjacentPoints[i];
@@ -219,8 +217,6 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
         QPoint adjacentPoint = point + adjacentPoints[i];
         if (!fillRegion.contains(adjacentPoint) && back.contains(adjacentPoint))
             surroundingCells[i] = back.cellAt(adjacentPoint);
-        else
-            surroundingCells[i] = Cell();
     }
 
     return mWangSet->wangIdFromSurrounding(surroundingCells);

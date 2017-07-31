@@ -389,8 +389,8 @@ void WangSet::removeWangTile(const WangTile &wangTile)
 
     if (wangId
             && !mWangIdToWangTile.contains(wangId)
-            && ((mEdgeColors > 1 && !wangId.hasEdgeWildCards())
-                || (mCornerColors > 1 && !wangId.hasCornerWildCards())))
+            && (mEdgeColors <= 1 || !wangId.hasEdgeWildCards())
+            && (mCornerColors <= 1 || !wangId.hasCornerWildCards()))
         --mUniqueFullWangIdCount;
 }
 
@@ -411,9 +411,13 @@ QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 
     QList<WangTile> list;
 
-
-    for (WangId id : wangId.variations(mEdgeColors, mCornerColors))
-        list.append(mWangIdToWangTile.values(id));
+    for (WangId id : wangId.variations(mEdgeColors, mCornerColors)) {
+        auto i = mWangIdToWangTile.find(id);
+        while (i != mWangIdToWangTile.end() && i.key() == id) {
+            list.append(i.value());
+            ++i;
+        }
+    }
 
     return list;
 }

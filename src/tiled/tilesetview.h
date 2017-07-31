@@ -161,12 +161,12 @@ private slots:
 private:
     void applyTerrain();
     void finishTerrainChange();
-    void applyWangId(bool merge);
+    void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
     void setHandScrolling(bool handScrolling);
 
-    enum WangBehvior {
+    enum WangBehavior {
         WholeId, //Assigning templates
         Corner,  //Assigning color to corners
         Edge     //Assigning color to edges
@@ -179,7 +179,7 @@ private:
     bool mMarkAnimatedTiles;
     bool mEditTerrain;
     bool mEditWangSet;
-    WangBehvior mWangBehavior;
+    WangBehavior mWangBehavior;
     bool mEraseTerrain;
     const Terrain *mTerrain;
     WangSet *mWangSet;
