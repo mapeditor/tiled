@@ -45,3 +45,6 @@ docs/_build/gettext/.doctrees
 
 # Work-in-progress worktrees
 wip/
+util/java/tmxviewer-java/target
+util/java/libtiled-java/target
+/util/java/target/
