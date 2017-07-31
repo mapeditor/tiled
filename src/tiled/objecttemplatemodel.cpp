@@ -75,10 +75,10 @@ QModelIndex ObjectTemplateModel::index(int row, int column,
                                        const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        if (row < mTemplateDocuments.size())
+        if (row < mTemplateDocuments.size() && row >= 0)
             return createIndex(row, column, mTemplateDocuments.at(row)->templateGroup());
     } else if (TemplateGroup *templateGroup = toTemplateGroup(parent)) {
-        if (row < templateGroup->templateCount())
+        if (row < templateGroup->templateCount() && row >= 0)
             return createIndex(row, column, templateGroup->templateAt(row));
     }
 

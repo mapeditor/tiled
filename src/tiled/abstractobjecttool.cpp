@@ -195,18 +195,12 @@ void AbstractObjectTool::resetTileSize()
 
 void AbstractObjectTool::saveSelectedObject()
 {
-    QList<QString> names;
-    auto model = ObjectTemplateModel::instance();
-
-    for (auto *doc : model->templateDocuments())
-        names.append(doc->templateGroup()->name());
-
     QString name;
     int groupIndex;
 
     auto object = mapDocument()->selectedObjects().first();
 
-    NewTemplateDialog newTemplateDialog(names, object->name());
+    NewTemplateDialog newTemplateDialog(object->name());
     newTemplateDialog.createTemplate(name, groupIndex);
 
     if (!name.isEmpty())

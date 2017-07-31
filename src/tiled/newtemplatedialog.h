@@ -37,7 +37,7 @@ class NewTemplateDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewTemplateDialog(const QList<QString> &groupNames, const QString &objectName, QWidget *parent = 0);
+    explicit NewTemplateDialog(const QString &objectName, QWidget *parent = nullptr);
     ~NewTemplateDialog();
 
     void createTemplate(QString &name, int &index);

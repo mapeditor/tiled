@@ -33,7 +33,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-NewTemplateDialog::NewTemplateDialog(const QList<QString> &groupNames, const QString &objectName, QWidget *parent) :
+NewTemplateDialog::NewTemplateDialog(const QString &objectName, QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::NewTemplateDialog)
 {
@@ -44,9 +44,12 @@ NewTemplateDialog::NewTemplateDialog(const QList<QString> &groupNames, const QSt
     connect(mUi->createGroupButton, &QPushButton::pressed,
             this, &NewTemplateDialog::newTemplateGroup);
 
-    mUi->groupsComboBox->addItems(groupNames);
+    auto model = ObjectTemplateModel::instance();
+    mUi->groupsComboBox->setModel(model);
+
     connect(mUi->templateName, &QLineEdit::textChanged,
             this, &NewTemplateDialog::updateOkButton);
+
     updateOkButton();
 }
 
@@ -117,8 +120,6 @@ void NewTemplateDialog::newTemplateGroup()
     for (auto *doc : model->templateDocuments())
         names.append(doc->templateGroup()->name());
 
-    mUi->groupsComboBox->clear();
-    mUi->groupsComboBox->addItems(names);
     mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
 
     updateOkButton();
