@@ -31,6 +31,7 @@
 #include "changetileimagesource.h"
 #include "changetileprobability.h"
 #include "changewangsetdata.h"
+#include "changewangcolordata.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"
@@ -58,6 +59,7 @@
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 #include "wangset.h"
+#include "wangcolormodel.h"
 
 #include <QtGroupPropertyManager>
 
@@ -366,6 +368,7 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
+    case Object::WangColorType:
         break;
     }
 
@@ -550,6 +553,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:      applyTileValue(id, val); break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
     case Object::WangSetType:   applyWangSetValue(id, val); break;
+    case Object::WangColorType: applyWangColorValue(id, val); break;
     }
 }
 
@@ -865,6 +869,31 @@ void PropertyBrowser::addWangSetProperties()
     nameProperty->setEnabled(mTilesetDocument);
     edgeProperty->setEnabled(mTilesetDocument);
     cornerProperty->setEnabled(mTilesetDocument);
+
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addWangColorProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Wang Color"));
+    QtVariantProperty *nameProperty = addProperty(NameProperty,
+                                                  QVariant::String,
+                                                  tr("Name"),
+                                                  groupProperty);
+    QtVariantProperty *colorProperty = addProperty(ColorProperty,
+                                                   QVariant::Color,
+                                                   tr("Color"),
+                                                   groupProperty);
+    QtVariantProperty *probabilityProperty = addProperty(WangColorProbabilityProperty,
+                                                         QVariant::Double,
+                                                         tr("Probability"),
+                                                         groupProperty);
+
+    probabilityProperty->setAttribute(QLatin1String("minimum"), 0.01);
+
+    nameProperty->setEnabled(mTilesetDocument);
+    colorProperty->setEnabled(mTilesetDocument);
+    probabilityProperty->setEnabled(mTilesetDocument);
 
     addProperty(groupProperty);
 }
@@ -1273,6 +1302,38 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
     }
 }
 
+void PropertyBrowser::applyWangColorValue(PropertyId id, const QVariant &val)
+{
+    Q_ASSERT(mTilesetDocument);
+
+    WangColor *wangColor = static_cast<WangColor*>(mObject);
+    WangColorModel *wangColorModel = mTilesetDocument->wangColorModel();
+    Q_ASSERT(wangColorModel);
+
+    switch (id) {
+    case NameProperty:
+        mDocument->undoStack()->push(new ChangeWangColorName(val.toString(),
+                                                             wangColor->colorIndex(),
+                                                             wangColor->isEdge(),
+                                                             wangColorModel));
+        break;
+    case ColorProperty:
+        mDocument->undoStack()->push(new ChangeWangColorColor(val.value<QColor>(),
+                                                              wangColor->colorIndex(),
+                                                              wangColor->isEdge(),
+                                                              wangColorModel));
+        break;
+    case WangColorProbabilityProperty:
+        mDocument->undoStack()->push(new ChangeWangColorProbability(val.toDouble(),
+                                                                    wangColor->colorIndex(),
+                                                                    wangColor->isEdge(),
+                                                                    wangColorModel));
+        break;
+    default:
+        break;
+    }
+}
+
 /**
  * @warning This function does not add the property to the view.
  */
@@ -1401,6 +1462,7 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
+    case Object::WangColorType:         addWangColorProperties(); break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1574,6 +1636,14 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(wangSet->name());
         mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColors());
         mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColors());
+        break;
+    }
+    case Object::WangColorType: {
+        const WangColor *wangColor = static_cast<const WangColor*>(mObject);
+        mIdToProperty[NameProperty]->setValue(wangColor->name());
+        mIdToProperty[ColorProperty]->setValue(wangColor->color());
+        mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
+        break;
     }
     }
 
@@ -1635,6 +1705,7 @@ void PropertyBrowser::updateCustomProperties()
     case Object::TerrainType:
     case Object::TilesetType:
     case Object::WangSetType:
+    case Object::WangColorType:
         break;
     }
 

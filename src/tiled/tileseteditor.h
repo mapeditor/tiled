@@ -122,6 +122,8 @@ private slots:
     void addWangSet();
     void removeWangSet();
     void setWangSetImage(Tile *tile);
+    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorColor(QColor color, bool isEdge, int index);
 
 private:
     void setCurrentTile(Tile *tile);

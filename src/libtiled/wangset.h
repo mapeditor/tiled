@@ -147,7 +147,7 @@ private:
     int mCornerColors;
 };
 
-//Class for holding info about rotation and flipping.
+//Class for holding info about rotation and flipping
 class TILEDSHARED_EXPORT WangTile
 {
 public:
@@ -203,6 +203,9 @@ public:
                 && mFlippedVertically == other.mFlippedVertically
                 && mFlippedAntiDiagonally == other.mFlippedAntiDiagonally; }
 
+    bool operator< (const WangTile &other) const
+    { return mTile->id() < other.mTile->id(); }
+
 private:
     //performs a translation (either flipping or rotating) based on a one to one
     //map of size 8 (from 0 - 7)
@@ -213,6 +216,50 @@ private:
     bool mFlippedHorizontally;
     bool mFlippedVertically;
     bool mFlippedAntiDiagonally;
+};
+
+class WangColor : public Object
+{
+public:
+    WangColor()
+        : Object(Object::WangColorType)
+        , mColorIndex(0)
+        , mIsEdge(true)
+        , mName(QString())
+        , mColor(Qt::red)
+        , mImageId(-1)
+        , mProbability(1) {}
+
+    WangColor(int colorIndex, bool isEdge, QString name, QColor color, int imageId, float probability = 1)
+        : Object(WangColorType)
+        , mColorIndex(colorIndex)
+        , mIsEdge(isEdge)
+        , mName(name)
+        , mColor(color)
+        , mImageId(imageId)
+        , mProbability(probability) {}
+
+    int colorIndex() const { return mColorIndex; }
+    bool isEdge() const { return mIsEdge; }
+    QString name() const { return mName; }
+    QColor color() const { return mColor; }
+    int imageId() const { return mImageId; }
+    float probability() const { return mProbability; }
+
+    void setColorIndex(int colorIndex) { mColorIndex = colorIndex; }
+    void setIsEdge(bool isEdge) { mIsEdge = isEdge; }
+    void setName(QString name) { mName = name; }
+    void setColor(QColor color) { mColor = color; }
+    void setImageId(int imageId) { mImageId = imageId; }
+    void setProbability(float probability) { mProbability = probability; }
+
+private:
+    int mColorIndex;
+    bool mIsEdge;
+    QString mName;
+    QColor mColor;
+    int mImageId;
+    float mProbability;
 };
 
 /**
@@ -245,8 +292,11 @@ public:
      * This can make wangIds already in the set invalid, so should only be used from
      * ChangeWangSet(Edges/Corners)
      * */
-    void setEdgeColors(int n) { mEdgeColors = n; }
-    void setCornerColors(int n) { mCornerColors = n; }
+    void setEdgeColors(int n);
+    void setCornerColors(int n);
+
+    WangColor *wangColorOfEdge(int index) const;
+    WangColor *wangColorOfCorner(int index) const;
 
     QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
     QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);
@@ -274,7 +324,10 @@ public:
      * */
     QList<WangTile> findMatchingWangTiles(WangId wangId) const;
 
-    QList<WangTile> wangTiles() const { return mWangIdToWangTile.values(); }
+    /* Returns a sorted list of the wangTiles in this set.
+     * Sorted by tileId.
+     * */
+    QList<WangTile> wangTiles() const;
 
     /* Returns a wangId matching that of the provided surrounding wangIds.
      * This is based off a provided array, {a, b, c, d, e, f, g, h},
@@ -301,6 +354,10 @@ public:
     WangId wangIdOfTile(const Tile *tile) const;
 
     WangId wangIdOfCell(const Cell &cell) const;
+
+    /* The probability of a given wangId of being selected
+     * */
+    float wangIdProbability(WangId wangId) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */
@@ -348,12 +405,32 @@ private:
     int mImageTileId;
     int mEdgeColors;
     int mCornerColors;
+    QList<WangColor *> mEdges;
+    QList<WangColor *> mCorners;
     unsigned mUniqueFullWangIdCount;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 
     //Tile info being the tileId, with the last three bits (32, 31, 30)
     //being info on flip (horizontal, vertical, and antidiagonal)
     QHash<unsigned, WangId> mTileInfoToWangId;
+};
+
+static const QColor defaultWangColors[] =  {
+    QColor(255, 0, 0),
+    QColor(0, 255, 0),
+    QColor(0, 0, 255),
+    QColor(255, 119, 0),
+    QColor(0, 233, 255),
+    QColor(255, 0, 216),
+    QColor(255, 255, 0),
+    QColor(160, 0, 255),
+    QColor(0, 255, 161),
+    QColor(255, 168, 168),
+    QColor(180, 168, 255),
+    QColor(150, 255, 167),
+    QColor(142, 120, 72),
+    QColor(90, 90, 90),
+    QColor(14, 122, 70)
 };
 
 } // namespace Tiled

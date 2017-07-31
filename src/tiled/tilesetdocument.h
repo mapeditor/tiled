@@ -34,6 +34,7 @@ namespace Internal {
 class MapDocument;
 class TilesetTerrainModel;
 class TilesetWangSetModel;
+class WangColorModel;
 
 /**
  * Represents an editable tileset.
@@ -87,6 +88,9 @@ public:
 
     TilesetTerrainModel *terrainModel() const { return mTerrainModel; }
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
+
+    WangColorModel *wangColorModel() const { return mWangColorModel; }
+    void setWangColorModel(WangColorModel *wangColorModel) { mWangColorModel = wangColorModel; }
 
     void setTileType(Tile *tile, const QString &type);
     void setTileImage(Tile *tile, const QPixmap &image, const QString &source);
@@ -150,6 +154,7 @@ private:
 
     TilesetTerrainModel *mTerrainModel;
     TilesetWangSetModel *mWangSetModel;
+    WangColorModel *mWangColorModel;
 
     QList<Tile*> mSelectedTiles;
 };

@@ -109,7 +109,7 @@ public:
      */
     void setTerrain(const Terrain *terrain);
 
-    const WangSet *wangSet() const { return mWangSet; }
+    WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);
 
     WangId wangId() const { return mWangId; }
@@ -131,6 +131,7 @@ signals:
     void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
     void wangSetImageSelected(Tile *tile);
+    void wangColorImageSelected(Tile *tile, bool isEdge, int index);
     void wangIdUsedChanged(WangId wangId);
     void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
@@ -151,6 +152,7 @@ private slots:
     void addTerrainType();
     void selectTerrainImage();
     void selectWangSetImage();
+    void selectWangColorImage();
     void editTileProperties();
     void swapTiles();
     void changeSelectedMapObjectsTile();

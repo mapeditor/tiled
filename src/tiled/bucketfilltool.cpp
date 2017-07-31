@@ -422,6 +422,9 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
     mRandomCellPicker.clear();
     mMissingTilesets.clear();
 
+    if (!mapDocument())
+        return;
+
     if (mIsWangFill && mWangFiller->wangSet()) {
         const SharedTileset &tileset = mWangFiller->wangSet()->tileset()->sharedPointer();
         if (!mapDocument()->map()->tilesets().contains(tileset))

@@ -253,7 +253,8 @@ void StampBrush::setWangSet(WangSet *wangSet)
         return;
 
     const SharedTileset &tileset = wangSet->tileset()->sharedPointer();
-    if (!mapDocument()->map()->tilesets().contains(tileset))
+
+    if (!mapDocument() || !mapDocument()->map()->tilesets().contains(tileset))
        mMissingTilesets.append(tileset);
 }
 

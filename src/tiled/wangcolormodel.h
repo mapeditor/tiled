@@ -20,14 +20,17 @@
 
 #pragma once
 
+#include "wangset.h"
+
 #include <QAbstractItemModel>
 
 namespace Tiled {
 
 class Tileset;
-class WangSet;
 
 namespace Internal {
+
+class TilesetDocument;
 
 class WangColorModel : public QAbstractItemModel
 {
@@ -40,7 +43,8 @@ public:
         EdgeOrCornerRole = Qt::UserRole + 1
     };
 
-    WangColorModel(QObject *parent = nullptr);
+    WangColorModel(TilesetDocument *tilesetDocument,
+                   QObject *parent = nullptr);
     ~WangColorModel() {}
 
     QModelIndex index(int row, int column,
@@ -57,16 +61,34 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
 
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
+
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     void setWangSet(WangSet *wangSet);
+    void setTilesetDocument(TilesetDocument *tilesetDocument) { mTilesetDocument = tilesetDocument; }
 
     void resetModel();
 
-    bool isEdgeColorAt(const QModelIndex &index);
-    int colorAt(const QModelIndex &index);
+    bool isEdgeColorAt(const QModelIndex &index) const;
+    int colorAt(const QModelIndex &index) const;
+
+    WangColor *wangColorAt(const QModelIndex &index) const;
+
+    WangSet *wangSet() const { return mWangSet; }
+
+    bool hasTilesetDocument() const { return mTilesetDocument != 0; }
+
+    void setName(QString name, bool isEdge, int index);
+
+    void setImage(int imageId, bool isEdge, int index);
+
+    void setColor(QColor color, bool isEdge, int index);
+
+    void setProbability(float probability, bool isEdge, int index);
 
 private:
+    TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
     QString *mEdgeText;
     QString *mCornerText;

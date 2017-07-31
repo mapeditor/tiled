@@ -44,9 +44,10 @@ public:
         MapObjectType,
         MapType,
         TerrainType,
-        WangSetType,
         TilesetType,
-        TileType
+        TileType,
+        WangSetType,
+        WangColorType
     };
 
     Object(TypeId typeId) : mTypeId(typeId) {}

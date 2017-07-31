@@ -301,6 +301,99 @@ WangSet::WangSet(Tileset *tileset,
     mCornerColors(cornerColors),
     mUniqueFullWangIdCount(0)
 {
+    Q_ASSERT(mEdgeColors <= 15 && mCornerColors <= 15);
+
+    if (mEdgeColors > 1) {
+        mEdges.reserve(mEdgeColors + 1);
+        mEdges.append(new WangColor());
+        for (int i = 1; i <= mEdgeColors; ++i)
+            mEdges.append(new WangColor(i,
+                                        true,
+                                        QString(),
+                                        defaultWangColors[i - 1],
+                                        -1));
+    }
+
+    if (mCornerColors > 1) {
+        mCorners.reserve(mCornerColors + 1);
+        mCorners.append(new WangColor());
+        for (int i = 1; i <= mCornerColors; ++i)
+            mCorners.append(new WangColor(i,
+                                          false,
+                                          QString(),
+                                          defaultWangColors[i - 1],
+                                          -1));
+    }
+}
+
+void WangSet::setEdgeColors(int n)
+{
+    Q_ASSERT(n <= 15);
+
+    if (n == mEdgeColors)
+        return;
+
+    if (n == 1) {
+        mEdgeColors = 1;
+        mEdges.clear();
+        return;
+    }
+
+    if (n < mEdgeColors) {
+        while (mEdges.size() != n + 1)
+            mEdges.removeLast();
+    } else {
+        while (mEdges.size() != n + 1)
+            mEdges.append(new WangColor(mEdges.size(),
+                                        true,
+                                        QString(),
+                                        defaultWangColors[mEdges.size() - 1],
+                                        -1));
+    }
+
+    mEdgeColors = n;
+}
+
+void WangSet::setCornerColors(int n)
+{
+    Q_ASSERT(n <= 15);
+
+    if (n == mCornerColors)
+        return;
+
+    if (n == 1) {
+        mCornerColors = 1;
+        mCorners.clear();
+        return;
+    }
+
+    if (n < mCornerColors) {
+        while (mCorners.size() != n + 1)
+            mCorners.removeLast();
+    } else {
+        while (mCorners.size() != n + 1)
+            mCorners.append(new WangColor(mCorners.size(),
+                                          false,
+                                          QString(),
+                                          defaultWangColors[mCorners.size() - 1],
+                                          -1));
+    }
+
+    mCornerColors = n;
+}
+
+WangColor *WangSet::wangColorOfEdge(int index) const
+{
+    Q_ASSERT(index <= mEdgeColors);
+
+    return mEdges.at(index);
+}
+
+WangColor *WangSet::wangColorOfCorner(int index) const
+{
+    Q_ASSERT(index <= mCornerColors);
+
+    return mCorners.at(index);
 }
 
 QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors)
@@ -404,6 +497,14 @@ WangTile WangSet::findMatchingWangTile(WangId wangId) const
         return WangTile();
 }
 
+QList<WangTile> WangSet::wangTiles() const
+{
+    QList<WangTile> wangTiles = mWangIdToWangTile.values();
+
+    qStableSort(wangTiles.begin(), wangTiles.end());
+    return wangTiles;
+}
+
 QList<WangTile> WangSet::findMatchingWangTiles(WangId wangId) const
 {
     if (wangId == 0)
@@ -479,6 +580,27 @@ WangId WangSet::wangIdOfTile(const Tile *tile) const
 WangId WangSet::wangIdOfCell(const Cell &cell) const
 {
     return mTileInfoToWangId.value(cellToTileInfo(cell));
+}
+
+float WangSet::wangIdProbability(WangId wangId) const
+{
+    float probability = 1;
+
+    if (mEdgeColors > 1) {
+        for (int i = 0; i < 4; ++i) {
+            if (int color = wangId.edgeColor(i))
+                probability *= mEdges[color]->probability();
+        }
+    }
+
+    if (mCornerColors > 1) {
+        for (int i = 0; i < 4; ++i) {
+            if (int color = wangId.cornerColor(i))
+                probability *= mCorners[color]->probability();
+        }
+    }
+
+    return probability;
 }
 
 bool WangSet::wangIdIsValid(WangId wangId) const

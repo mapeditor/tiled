@@ -39,6 +39,7 @@ class HasChildrenFilterModel;
 class WangSetView;
 class WangSetModel;
 class WangColorModel;
+class WangColorView;
 class WangTemplateView;
 class WangTemplateModel;
 class TilesetDocument;
@@ -62,6 +63,9 @@ public:
     void setTemplateView();
     void setColorView();
     void hideTemplateColorView();
+
+    WangColorView *wangColorView() const { return mWangColorView; }
+    WangColorModel *wangColorModel() const { return mWangColorModel; }
 
 signals:
     void currentWangSetChanged(WangSet *wangSet);
@@ -109,7 +113,7 @@ private:
     WangSet *mCurrentWangSet;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
-    QTreeView *mWangColorView;
+    WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
     WangSetModel *mWangSetModel;
     HasChildrenFilterModel *mProxyModel;

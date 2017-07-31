@@ -109,6 +109,7 @@ SOURCES += aboutdialog.cpp \
     changetileprobability.cpp \
     changetileterrain.cpp \
     changetilewangid.cpp \
+    changewangcolordata.cpp \
     changewangsetdata.cpp \
     clickablelabel.cpp \
     clipboardmanager.cpp \
@@ -247,6 +248,7 @@ SOURCES += aboutdialog.cpp \
     variantpropertymanager.cpp \
     wangbrush.cpp \
     wangcolormodel.cpp \
+    wangcolorview.cpp \
     wangsetview.cpp \
     wangsetmodel.cpp \
     wangdock.cpp \
@@ -294,6 +296,7 @@ HEADERS += aboutdialog.h \
     changetileprobability.h \
     changetileterrain.h \
     changetilewangid.h \
+    changewangcolordata.h \
     changewangsetdata.h \
     clickablelabel.h \
     clipboardmanager.h \
@@ -437,6 +440,7 @@ HEADERS += aboutdialog.h \
     variantpropertymanager.h \
     wangbrush.h \
     wangcolormodel.h \
+    wangcolorview.h \
     wangsetview.h \
     wangsetmodel.h \
     wangdock.h \

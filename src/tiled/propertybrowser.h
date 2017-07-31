@@ -155,6 +155,7 @@ private:
         IdProperty,
         EdgeCountProperty,
         CornerCountProperty,
+        WangColorProbabilityProperty,
         CustomProperty
     };
 
@@ -169,6 +170,7 @@ private:
     void addTileProperties();
     void addTerrainProperties();
     void addWangSetProperties();
+    void addWangColorProperties();
 
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);
@@ -182,6 +184,7 @@ private:
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);
+    void applyWangColorValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,

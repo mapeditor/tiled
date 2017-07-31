@@ -61,6 +61,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     , mTileset(tileset)
     , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
+    , mWangColorModel(nullptr)
 {
     mCurrentObject = tileset.data();
 

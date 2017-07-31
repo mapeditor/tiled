@@ -1,3 +1,4 @@
+
 /*
  * wangdock.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
@@ -21,6 +22,7 @@
 #include "wangdock.h"
 
 #include "wangcolormodel.h"
+#include "wangcolorview.h"
 #include "wangsetview.h"
 #include "wangsetmodel.h"
 #include "wangtemplateview.h"
@@ -105,7 +107,7 @@ WangDock::WangDock(QWidget *parent)
     , mCurrentWangSet(nullptr)
     , mCurrentWangId(0)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
-    , mWangColorModel(new WangColorModel(this))
+    , mWangColorModel(new WangColorModel(nullptr, this))
     , mWangSetModel(new WangSetModel(mTilesetDocumentFilterModel, this))
     , mProxyModel(new HasChildrenFilterModel(this))
     , mWangTemplateModel(new WangTemplateModel(nullptr, this))
@@ -149,13 +151,9 @@ WangDock::WangDock(QWidget *parent)
     wangColorFilterModel->setSourceModel(mWangColorModel);
     wangColorFilterModel->setEnabled(true);
 
-    mWangColorView = new QTreeView(w);
+    mWangColorView = new WangColorView(w);
     mWangColorView->setModel(wangColorFilterModel);
     mWangColorView->setVisible(true);
-    mWangColorView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    mWangColorView->setHeaderHidden(true);
-    mWangColorView->setItemsExpandable(false);
-    mWangColorView->setIndentation(3);
 
     connect(mWangColorView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &WangDock::refreshCurrentWangColor);
@@ -225,6 +223,8 @@ void WangDock::setDocument(Document *document)
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
         mTilesetDocumentFilterModel->setMapDocument(mapDocument);
 
+        mWangColorModel->setTilesetDocument(nullptr);
+
         mProxyModel->setEnabled(true);
         mProxyModel->setSourceModel(mWangSetModel);
         mWangSetView->expandAll();
@@ -238,6 +238,9 @@ void WangDock::setDocument(Document *document)
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
+
+        mWangColorModel->setTilesetDocument(tilesetDocument);
+        tilesetDocument->setWangColorModel(mWangColorModel);
 
         mWangSetView->setTilesetDocument(tilesetDocument);
         mProxyModel->setEnabled(false);
@@ -343,6 +346,14 @@ void WangDock::refreshCurrentWangColor()
 
     mEraseWangIdsButton->setChecked(false);
 
+    WangColor *currentWangColor;
+    if (edgeColor)
+        currentWangColor = mCurrentWangSet->wangColorOfEdge(color);
+    else
+        currentWangColor = mCurrentWangSet->wangColorOfCorner(color);
+
+    mDocument->setCurrentObject(currentWangColor);
+
     emit wangColorChanged(color, edgeColor);
     emit selectWangBrush();
 }
@@ -397,7 +408,6 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();
-        mCurrentWangSet = nullptr;
 
         hideTemplateColorView();
     }
@@ -420,7 +430,8 @@ void WangDock::activateErase()
     mWangTemplateView->selectionModel()->clearSelection();
     mWangColorView->selectionModel()->clearCurrentIndex();
     mWangColorView->selectionModel()->clearSelection();
-    emit currentWangIdChanged(mCurrentWangId);
+
+    emit currentWangIdChanged(0);
 }
 
 void WangDock::retranslateUi()

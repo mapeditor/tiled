@@ -20,6 +20,7 @@
 
 #include "wangfiller.h"
 
+#include "randompicker.h"
 #include "tilelayer.h"
 #include "wangset.h"
 
@@ -54,14 +55,18 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
 {
     Q_ASSERT(mWangSet);
 
-    QList<WangTile> wangTiles = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back, front, fillRegion, point));
+    QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back, front, fillRegion, point));
+    RandomPicker<WangTile> wangTiles;
+
+    for (const WangTile &wangTile : wangTilesList)
+        wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
 
     WangTile wangTile;
     if (!mWangSet->isComplete()) {
         //goes through all adjacent, empty tiles and sees if the current wangTile
         //allows them to have at least one fill option.
         while (!wangTiles.isEmpty()) {
-            wangTile = wangTiles.takeAt(qrand() % wangTiles.size());
+            wangTile = wangTiles.take();
 
             bool continueFlag = false;
             //now goes through and checks adjacents, continuing if any can't be filled
@@ -89,7 +94,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
                 break;
         }
     } else if (!wangTiles.isEmpty()) {
-        wangTile = wangTiles.at(qrand() % wangTiles.size());
+        wangTile = wangTiles.pick();
     }
 
     return wangTile.makeCell();
@@ -129,10 +134,15 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
             for (int x = rect.left(); x <= rect.right(); ++x) {
                 QPoint currentPoint(x, y);
                 int currentIndex = (currentPoint.y() - tileLayer->y()) * tileLayer->width() + (currentPoint.x() - tileLayer->x());
-                QList<WangTile> wangTiles = mWangSet->findMatchingWangTiles(wangIds[currentIndex]);
+
+                QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIds[currentIndex]);
+                RandomPicker<WangTile> wangTiles;
+
+                for (const WangTile &wangTile : wangTilesList)
+                    wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
 
                 while (!wangTiles.isEmpty()) {
-                    WangTile wangTile = wangTiles.takeAt(qrand() % wangTiles.size());
+                    WangTile wangTile = wangTiles.take();
 
                     bool fill = true;
                     if (!mWangSet->isComplete()) {

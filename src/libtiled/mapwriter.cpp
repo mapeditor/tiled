@@ -437,6 +437,42 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QLatin1String("corners"), QString::number(ws->cornerColors()));
             w.writeAttribute(QLatin1String("tile"), QString::number(ws->imageTileId()));
 
+            if (ws->edgeColors() > 1) {
+                for (int i = 1; i <= ws->edgeColors(); ++i) {
+                    if (WangColor *wc = ws->wangColorOfEdge(i)) {
+                        w.writeStartElement(QLatin1String("wangedgecolor"));
+
+                        w.writeAttribute(QLatin1String("name"), wc->name());
+                        w.writeAttribute(QLatin1String("index"), QString::number(i));
+                        w.writeAttribute(QLatin1String("r"), QString::number(wc->color().red()));
+                        w.writeAttribute(QLatin1String("g"), QString::number(wc->color().green()));
+                        w.writeAttribute(QLatin1String("b"), QString::number(wc->color().blue()));
+                        w.writeAttribute(QLatin1String("imageTile"), QString::number(wc->imageId()));
+                        w.writeAttribute(QLatin1String("probability"), QString::number(wc->probability()));
+
+                        w.writeEndElement();
+                    }
+                }
+            }
+
+            if (ws->cornerColors() > 1) {
+                for (int i = 1; i <= ws->cornerColors(); ++i) {
+                    if (WangColor *wc = ws->wangColorOfCorner(i)) {
+                        w.writeStartElement(QLatin1String("wangcornercolor"));
+
+                        w.writeAttribute(QLatin1String("name"), wc->name());
+                        w.writeAttribute(QLatin1String("index"), QString::number(i));
+                        w.writeAttribute(QLatin1String("r"), QString::number(wc->color().red()));
+                        w.writeAttribute(QLatin1String("g"), QString::number(wc->color().green()));
+                        w.writeAttribute(QLatin1String("b"), QString::number(wc->color().blue()));
+                        w.writeAttribute(QLatin1String("imageTile"), QString::number(wc->imageId()));
+                        w.writeAttribute(QLatin1String("probability"), QString::number(wc->probability()));
+
+                        w.writeEndElement();
+                    }
+                }
+            }
+
             for (const WangTile &wangTile : ws->wangTiles()) {
                 w.writeStartElement(QLatin1String("wangtile"));
                 w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));

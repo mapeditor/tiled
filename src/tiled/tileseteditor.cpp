@@ -26,6 +26,7 @@
 #include "addremovewangset.h"
 #include "changetileterrain.h"
 #include "changewangsetdata.h"
+#include "changewangcolordata.h"
 #include "erasetiles.h"
 #include "maintoolbar.h"
 #include "mapdocument.h"
@@ -46,6 +47,7 @@
 #include "tilesetview.h"
 #include "undodock.h"
 #include "utils.h"
+#include "wangcolorview.h"
 #include "wangdock.h"
 #include "zoomable.h"
 
@@ -240,6 +242,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mWangDock, &WangDock::wangColorChanged, this, &TilesetEditor::wangColorChanged);
     connect(mWangDock, &WangDock::addWangSetRequested, this, &TilesetEditor::addWangSet);
     connect(mWangDock, &WangDock::removeWangSetRequested, this, &TilesetEditor::removeWangSet);
+    connect(mWangDock->wangColorView(), &WangColorView::wangColorColorPicked,
+            this, &TilesetEditor::setWangColorColor);
 
     connect(this, &TilesetEditor::currentTileChanged,
             mTileAnimationEditor, &TileAnimationEditor::setTile);
@@ -316,6 +320,7 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::terrainImageSelected, this, &TilesetEditor::setTerrainImage);
 
     connect(view, &TilesetView::wangSetImageSelected, this, &TilesetEditor::setWangSetImage);
+    connect(view, &TilesetView::wangColorImageSelected, this, &TilesetEditor::setWangColorImage);
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
 
@@ -942,6 +947,22 @@ void TilesetEditor::setWangSetImage(Tile *tile)
     mCurrentTilesetDocument->undoStack()->push(new SetWangSetImage(mCurrentTilesetDocument,
                                                                    mCurrentTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                                    tile->id()));
+}
+
+void TilesetEditor::setWangColorImage(Tile *tile, bool isEdge, int index)
+{
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorImage(tile->id(),
+                                                                        index,
+                                                                        isEdge,
+                                                                        mWangDock->wangColorModel()));
+}
+
+void TilesetEditor::setWangColorColor(QColor color, bool isEdge, int index)
+{
+    mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(color,
+                                                                        index,
+                                                                        isEdge,
+                                                                        mWangDock->wangColorModel()));
 }
 
 void TilesetEditor::updateAddRemoveActions()
