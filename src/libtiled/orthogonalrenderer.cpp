@@ -40,38 +40,26 @@ using namespace Tiled;
 
 QRect OrthogonalRenderer::mapBoundingRect() const
 {
-    if (!map()->infinite())
+    if (!map()->infinite()) {
         return QRect(0, 0, map()->width() * map()->tileWidth(),
                      map()->height() * map()->tileHeight());
+    }
 
-    QSize size(0, 0);
-    QPoint start(0, 0);
-
-    bool startFlag = false;
+    QRect mapBounds;
 
     LayerIterator iterator(map());
     while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
-            QRect bounds = tileLayer->bounds();
-            QSize layerSize(bounds.width(), bounds.height());
-            QPoint layerStart = bounds.topLeft();
-
-            size = size.expandedTo(layerSize);
-
-            if (startFlag) {
-                start.setX(std::min(start.x(), layerStart.x()));
-                start.setY(std::min(start.y(), layerStart.y()));
-            } else {
-                start = layerStart;
-                startFlag = true;
-            }
-        }
+        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+            mapBounds = mapBounds.united(tileLayer->bounds());
     }
 
-    return QRect(start.x() * map()->tileWidth(),
-                 start.y() * map()->tileHeight(),
-                 size.width() * map()->tileWidth(),
-                 size.height() * map()->tileHeight());
+    if (mapBounds.size() == QSize(0, 0))
+        mapBounds.setSize(QSize(1, 1));
+
+    return QRect(mapBounds.x() * map()->tileWidth(),
+                 mapBounds.y() * map()->tileHeight(),
+                 mapBounds.width() * map()->tileWidth(),
+                 mapBounds.height() * map()->tileHeight());
 }
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
@@ -218,18 +206,16 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
-    int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
-    int endX = qMin(qCeil(rect.right()),
-                    map()->width() * tileWidth + 1);
-    int endY = qMin(qCeil(rect.bottom()),
-                    map()->height() * tileHeight + 1);
+    int startX = ((int) (rect.x() / tileWidth - 1)) * tileWidth;
+    int startY = ((int) (rect.y() / tileHeight - 1)) * tileHeight;
+    int endX = qCeil(rect.right());
+    int endY = qCeil(rect.bottom());
 
-    if (map()->infinite()) {
-        startX = ((int) (rect.x() / tileWidth - 1)) * tileWidth;
-        startY = ((int) (rect.y() / tileHeight - 1)) * tileHeight;
-        endX = qCeil(rect.right());
-        endY = qCeil(rect.bottom());
+    if (!map()->infinite()) {
+        startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
+        startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
+        endX = qMin(endX, map()->width() * tileWidth + 1);
+        endY = qMin(endY, map()->height() * tileHeight + 1);
     }
 
     QPen gridPen = makeGridPen(painter->device(), gridColor);

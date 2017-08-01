@@ -1178,20 +1178,23 @@ void MainWindow::resizeMap()
 
     Map *map = mapDocument->map();
 
-    QSize mapSize(0, 0);
+    QSize mapSize(map->size());
+    QPoint mapStart(0, 0);
 
-    LayerIterator iterator(map);
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
-            QRect bounds = tileLayer->bounds();
-            QSize layerSize(bounds.width(), bounds.height());
+    if (map->infinite()) {
+        QRect mapBounds;
 
-            mapSize = mapSize.expandedTo(layerSize);
+        LayerIterator iterator(map);
+        while (Layer *layer = iterator.next()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                mapBounds = mapBounds.united(tileLayer->bounds());
+        }
+
+        if (!mapBounds.isEmpty()) {
+            mapSize = mapBounds.size();
+            mapStart = mapBounds.topLeft();
         }
     }
-
-    if (mapSize == QSize(0, 0) || !map->infinite())
-        mapSize = map->size();
 
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(mapSize);
@@ -1211,7 +1214,7 @@ void MainWindow::resizeMap()
 
     if (resizeDialog.exec()) {
         const QSize &newSize = resizeDialog.newSize();
-        const QPoint &offset = resizeDialog.offset();
+        const QPoint &offset = resizeDialog.offset() - mapStart;
         if (newSize != mapSize || !offset.isNull())
             mapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
     }

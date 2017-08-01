@@ -70,7 +70,7 @@ Cell TilePainter::cellAt(int x, int y) const
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
+    if (!mTileLayer->contains(layerX, layerY) && !mMapDocument->map()->infinite())
         return Cell();
 
     return mTileLayer->cellAt(layerX, layerY);
@@ -196,7 +196,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
     QRegion fillRegion;
 
     // Silently quit if parameters are unsatisfactory
-    if (!layer->contains(fillOrigin))
+    if (!layer->contains(fillOrigin) && !layer->map()->infinite())
         return fillRegion;
 
     if (layer->map()->infinite() && !layer->bounds().contains(fillOrigin))
@@ -208,7 +208,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
     // Grab layer dimensions for later use.
     QRect bounds = layer->bounds().translated(-layer->position());
     if (!layer->map()->infinite())
-        bounds = layer->rect();
+        bounds = layer->rect().translated(-layer->position());
 
     int startX = bounds.left();
     int startY = bounds.top();
@@ -352,7 +352,7 @@ bool TilePainter::isDrawable(int x, int y) const
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
+    if (!mTileLayer->contains(layerX, layerY) && !mMapDocument->map()->infinite())
         return false;
 
     return true;

@@ -270,7 +270,7 @@ void StampBrush::endCapture()
     Q_ASSERT(tileLayer);
 
     // Intersect with the layer and translate to layer coordinates
-    QRect captured = capturedArea();
+    QRect captured = capturedArea().intersected(tileLayer->bounds());
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());

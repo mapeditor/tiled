@@ -53,11 +53,9 @@ void test_StaggeredRenderer::mapSize()
     StaggeredRenderer renderer(mMap);
 
     TileLayer *tileLayer = static_cast<TileLayer*>(mMap->layerAt(0));
-    QSize mapSize = renderer.mapBoundingRect().size();
+    QSize mapBoundingRect = renderer.mapBoundingRect();
 
-    QCOMPARE(mapSize, QSize(10 * 64 + 32, 10 * 16 + 16));
-    QCOMPARE(renderer.boundingRect(tileLayer->rect()),
-             QRect(QPoint(), mapSize));
+    QCOMPARE(mapBoundingRect, QRect(0, 0, 10 * 64 + 32, 10 * 16 + 16));
 }
 
 void test_StaggeredRenderer::boundingRect_data()

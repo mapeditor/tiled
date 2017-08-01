@@ -158,6 +158,7 @@ void ExportAsImageDialog::accept()
     renderer->setFlag(ShowTileObjectOutlines, false);
 
     QSize mapSize = renderer->mapBoundingRect().size();
+    QPoint mapOffset = renderer->mapBoundingRect().topLeft();
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -216,6 +217,7 @@ void ExportAsImageDialog::accept()
     }
 
     painter.translate(margins.left(), margins.top());
+    painter.translate(-mapOffset);
 
     LayerIterator iterator(mMapDocument->map());
     while (Layer *layer = iterator.next()) {

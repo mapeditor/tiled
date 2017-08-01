@@ -305,8 +305,6 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     } else {
         tileLayerVariant[QLatin1String("width")] = tileLayer.width();
         tileLayerVariant[QLatin1String("height")] = tileLayer.height();
-        tileLayerVariant[QLatin1String("startx")] = 0;
-        tileLayerVariant[QLatin1String("starty")] = 0;
     }
 
     addLayerAttributes(tileLayerVariant, tileLayer);

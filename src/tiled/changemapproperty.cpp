@@ -48,7 +48,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
         break;
     case Infinite:
         setText(QCoreApplication::translate("Undo Commands",
-                                            "Change Automatic Resize Property"));
+                                            "Change Infinite Property"));
         break;
     case HexSideLength:
         setText(QCoreApplication::translate("Undo Commands",
@@ -148,22 +148,6 @@ void ChangeMapProperty::swap()
     }
     case Infinite: {
         const int infinite = map->infinite();
-
-        if (!mIntValue) {
-            QRect mapBounds;
-
-            LayerIterator iterator(map);
-            while (Layer *layer = iterator.next()) {
-                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                    mapBounds = mapBounds.united(tileLayer->bounds());
-            }
-
-            if (mapBounds.size() == QSize(0, 0))
-                mapBounds.setSize(QSize(1, 1));
-
-            mMapDocument->resizeMap(mapBounds.size(), -mapBounds.topLeft(), false);
-        }
-
         map->setInfinite(mIntValue);
         mIntValue = infinite;
         break;

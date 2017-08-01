@@ -41,6 +41,11 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
         disableBoundsSelectionCurrentArea();
     else
         mUi->boundsSelection->setCurrentIndex(1);
+
+    if (mMapDocument->map()->infinite()) {
+        mUi->wrapX->setEnabled(false);
+        mUi->wrapY->setEnabled(false);
+    }
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -84,24 +89,9 @@ QRect OffsetMapDialog::affectedBoundingRect() const
         if (mMapDocument->map()->infinite()) {
             LayerIterator iterator(mMapDocument->map());
 
-            switch (layerSelection()) {
-            case AllVisibleLayers:
-                while (Layer *layer = iterator.next())
-                    if (!layer->isGroupLayer() && layer->isVisible())
-                        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                            boundingRect = boundingRect.united(tileLayer->bounds());
-                break;
-            case AllLayers:
-                while (Layer *layer = iterator.next())
-                    if (!layer->isGroupLayer())
-                        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-                            boundingRect = boundingRect.united(tileLayer->bounds());
-                break;
-            case SelectedLayer:
-                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer()))
-                            boundingRect = boundingRect.united(tileLayer->bounds());
-                break;
-            }
+            while (Layer *layer = iterator.next())
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    boundingRect = boundingRect.united(tileLayer->bounds());
 
         }
         break;

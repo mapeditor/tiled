@@ -108,7 +108,9 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePosition();
 
-    if (!tileLayer->bounds().intersects(eraseRegion.boundingRect()))
+    eraseRegion = eraseRegion.intersected(tileLayer->bounds());
+
+    if (eraseRegion.isEmpty())
         return;
 
     EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);

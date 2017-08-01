@@ -204,7 +204,7 @@ void TerrainBrush::capture()
 
     const QPoint position = tilePosition() - tileLayer->position();
 
-    if (!tileLayer->contains(position))
+    if (!tileLayer->contains(position) && !mapDocument()->map()->infinite())
         return;
 
     Terrain *terrain = nullptr;
@@ -231,9 +231,7 @@ void TerrainBrush::doPaint(bool mergeable)
     if (!tileLayer->isUnlocked())
         return;
 
-    QRect layerRect = (mapDocument()->map()->infinite()) ? tileLayer->bounds() : tileLayer->rect();
-
-    if (!layerRect.intersects(stamp->bounds()))
+    if (!tileLayer->rect().intersects(stamp->bounds()) && !mapDocument()->map()->infinite())
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
@@ -375,7 +373,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // if the cursor is outside of the map, bail out
-    if (!currentLayer->contains(cursorPos)) {
+    if (!currentLayer->contains(cursorPos) && !mapDocument()->map()->infinite()) {
         brushItem()->clear();
         return;
     }
@@ -397,7 +395,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         transitionList.reserve(list->size());
         for (QPoint p : *list) {
             p -= layerPosition;
-            if (currentLayer->contains(p))
+            if (currentLayer->contains(p) || mapDocument()->map()->infinite())
                 transitionList.append(p);
         }
     } else {

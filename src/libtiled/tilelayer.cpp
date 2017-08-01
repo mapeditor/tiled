@@ -149,14 +149,6 @@ QMargins TileLayer::drawMargins() const
     return computeDrawMargins(usedTilesets());
 }
 
-bool TileLayer::contains(int x, int y) const
-{
-    if (!map() || !map()->infinite())
-        return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
-    else
-        return true;
-}
-
 QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
 {
     QRegion region;
@@ -205,14 +197,8 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    QRegion area = region.intersected(QRect(0, 0, width(), height()));
-    if (map()) {
-        if (map()->infinite())
-            area = region;
-    }
-
     const QRect bounds = region.boundingRect();
-    const QRect areaBounds = area.boundingRect();
+    const QRect areaBounds = region.boundingRect();
     const int offsetX = qMax(0, areaBounds.x() - bounds.x());
     const int offsetY = qMax(0, areaBounds.y() - bounds.y());
 
@@ -220,7 +206,7 @@ TileLayer *TileLayer::copy(const QRegion &region) const
                                       0, 0,
                                       bounds.width(), bounds.height());
 
-    for (const QRect &rect : area.rects())
+    for (const QRect &rect : region.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
                 copied->setCell(x - areaBounds.x() + offsetX,
@@ -251,9 +237,6 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
 {
     // Determine the overlapping area
     QRegion area = QRect(x, y, layer->width(), layer->height());
-
-    if (!map() || !map()->infinite())
-        area &= QRect(0, 0, width(), height());
 
     if (!mask.isEmpty())
         area &= mask;

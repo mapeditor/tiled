@@ -48,8 +48,6 @@
 #include <QDir>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -559,7 +557,9 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
 
         QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
 
-        if (tileLayer.map()->infinite()) {
+        bool infinite = tileLayer.map()->infinite();
+
+        if (infinite) {
             width = bounds.width();
             height = bounds.height();
         }
@@ -568,10 +568,13 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                          QString::number(width));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(height));
-        w.writeAttribute(QLatin1String("startx"),
-                         QString::number(bounds.left()));
-        w.writeAttribute(QLatin1String("starty"),
-                         QString::number(bounds.top()));
+
+        if (infinite) {
+            w.writeAttribute(QLatin1String("startx"),
+                             QString::number(bounds.left()));
+            w.writeAttribute(QLatin1String("starty"),
+                             QString::number(bounds.top()));
+        }
     }
 
     if (!layer.isVisible())

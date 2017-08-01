@@ -89,11 +89,16 @@ private:
     Layer *tryReadLayer();
 
     TileLayer *readTileLayer();
-    void readTileLayerData(TileLayer &tileLayer);
+    void readTileLayerData(TileLayer &tileLayer, const int startX, const int startY);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
-                               Map::LayerDataFormat format);
-    void decodeCSVLayerData(TileLayer &tileLayer, QStringRef text);
+                               Map::LayerDataFormat format,
+                               const int startX,
+                               const int startY);
+    void decodeCSVLayerData(TileLayer &tileLayer,
+                            QStringRef text,
+                            const int startX,
+                            const int startY);
 
     /**
      * Returns the cell for the given global tile ID. Errors are raised with
@@ -129,9 +134,6 @@ private:
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
-
-    int startX;
-    int startY;
 };
 
 } // namespace Internal
@@ -604,8 +606,8 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
-    startX = atts.value(QLatin1String("startx")).toInt();
-    startY = atts.value(QLatin1String("starty")).toInt();
+    const int startX = atts.value(QLatin1String("startx")).toInt();
+    const int startY = atts.value(QLatin1String("starty")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
@@ -614,7 +616,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
-            readTileLayerData(*tileLayer);
+            readTileLayerData(*tileLayer, startX, startY);
         else
             readUnknownElement();
     }
@@ -622,7 +624,9 @@ TileLayer *MapReaderPrivate::readTileLayer()
     return tileLayer;
 }
 
-void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
+void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
+                                         const int startX,
+                                         const int startY)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
@@ -685,9 +689,11 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
             if (encoding == QLatin1String("base64")) {
                 decodeBinaryLayerData(tileLayer,
                                       xml.text().toLatin1(),
-                                      layerDataFormat);
+                                      layerDataFormat,
+                                      startX,
+                                      startY);
             } else if (encoding == QLatin1String("csv")) {
-                decodeCSVLayerData(tileLayer, xml.text());
+                decodeCSVLayerData(tileLayer, xml.text(), startX, startY);
             }
         }
     }
@@ -695,7 +701,9 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
 void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
                                              const QByteArray &data,
-                                             Map::LayerDataFormat format)
+                                             Map::LayerDataFormat format,
+                                             const int startX,
+                                             const int startY)
 {
     GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format, startX, startY);
 
@@ -714,7 +722,10 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
     }
 }
 
-void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer, QStringRef text)
+void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
+                                          QStringRef text,
+                                          const int startX,
+                                          const int startY)
 {
     QString trimText = text.trimmed().toString();
     QStringList tiles = trimText.split(QLatin1Char(','));
