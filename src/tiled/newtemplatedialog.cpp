@@ -83,7 +83,9 @@ void NewTemplateDialog::updateOkButton()
  */
 void NewTemplateDialog::newTemplateGroup()
 {
-    QString filter = TtxTemplateGroupFormat::instance()->nameFilter();
+    FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
+    QString filter = helper.filter();
+    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
@@ -91,17 +93,20 @@ void NewTemplateDialog::newTemplateGroup()
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                     suggestedFileName,
-                                                    filter);
+                                                    filter,
+                                                    &selectedFilter);
 
     if (fileName.isEmpty())
         return;
 
     auto templateGroup = new TemplateGroup();
-    auto name = QFileInfo(fileName).baseName();
-    templateGroup->setName(name);
+    templateGroup->setName(QFileInfo(fileName).baseName());
     templateGroup->setFileName(fileName);
     QScopedPointer<TemplateGroupDocument>
         templateGroupDocument(new TemplateGroupDocument(templateGroup));
+
+    TemplateGroupFormat *format = helper.formatByNameFilter(selectedFilter);
+    templateGroup->setFormat(format);
 
     QString error;
     if (!templateGroupDocument->save(fileName, &error)) {
@@ -114,11 +119,6 @@ void NewTemplateDialog::newTemplateGroup()
 
     prefs->setLastPath(Preferences::TemplateDocumentsFile,
                        QFileInfo(fileName).path());
-
-    QList<QString> names;
-
-    for (auto *doc : model->templateDocuments())
-        names.append(doc->templateGroup()->name());
 
     mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
 

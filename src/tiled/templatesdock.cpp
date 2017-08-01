@@ -102,7 +102,7 @@ void TemplatesDock::newTemplateGroup()
 {
     FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
     QString filter = helper.filter();
-    QString selectedFilter = TtxTemplateGroupFormat::instance()->nameFilter();
+    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
@@ -145,7 +145,7 @@ void TemplatesDock::openTemplateGroup()
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    QString selectedFilter = TtxTemplateGroupFormat::instance()->nameFilter();
+    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Template Group"),
                                                     suggestedFileName,

@@ -172,12 +172,6 @@ TtxTemplateGroupFormat::TtxTemplateGroupFormat(QObject *parent)
 {
 }
 
-TtxTemplateGroupFormat *TtxTemplateGroupFormat::instance()
-{
-    static TtxTemplateGroupFormat format;
-    return &format;
-}
-
 TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
 {
     mError.clear();
