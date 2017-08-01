@@ -613,9 +613,27 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
     Document *document = nullptr;
 
     if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
-        MapDocument *mapDocument =  MapDocument::load(fileName, mapFormat, &error);
-        document = mapDocument;
+        document = MapDocument::load(fileName, mapFormat, &error);
+    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
+        // It could be, that we have already loaded this tileset while loading some map.
+        if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
+            document = tilesetDocument;
+        } else {
+            document = TilesetDocument::load(fileName, tilesetFormat, &error);
+        }
+    }
 
+    if (!document) {
+        QMessageBox::critical(this, tr("Error Opening File"), error);
+        return false;
+    }
+
+    mDocumentManager->addDocument(document);
+
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+        mDocumentManager->checkTilesetColumns(mapDocument);
+
+        // When opening a map using new template groups, ask whether to load it into Tiled or not.
         bool embedTemplateGroups = false;
         for (auto templateGroup : mapDocument->map()->templateGroups()) {
             if (!templateGroup->embedded()) {
@@ -640,24 +658,7 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
                 }
             }
         }
-    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        // It could be, that we have already loaded this tileset while loading some map.
-        if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
-            document = tilesetDocument;
-        } else {
-            document = TilesetDocument::load(fileName, tilesetFormat, &error);
-        }
     }
-
-    if (!document) {
-        QMessageBox::critical(this, tr("Error Opening File"), error);
-        return false;
-    }
-
-    mDocumentManager->addDocument(document);
-
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
-        mDocumentManager->checkTilesetColumns(mapDocument);
 
     Preferences::instance()->addRecentFile(fileName);
     return true;
