@@ -206,14 +206,14 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
-    int startX = ((int) (rect.x() / tileWidth - 1)) * tileWidth;
-    int startY = ((int) (rect.y() / tileHeight - 1)) * tileHeight;
+    int startX = qFloor(rect.x() / tileWidth) * tileWidth;
+    int startY = qFloor(rect.y() / tileHeight) * tileHeight;
     int endX = qCeil(rect.right());
     int endY = qCeil(rect.bottom());
 
     if (!map()->infinite()) {
-        startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
-        startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
+        startX = qMax(0, startX);
+        startY = qMax(0, startY);
         endX = qMin(endX, map()->width() * tileWidth + 1);
         endY = qMin(endY, map()->height() * tileHeight + 1);
     }
