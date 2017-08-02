@@ -83,6 +83,7 @@ public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
+    void onColorCaptured(int color, bool isEdge);
 
 protected:
     void changeEvent(QEvent *event) override;
@@ -96,15 +97,22 @@ private slots:
     void wangSetChanged();
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
+    void addEdgeColor();
+    void addCornerColor();
+    void removeColor();
 
 private:
     void retranslateUi();
 
     QModelIndex wangSetIndex(WangSet *wangSet) const;
 
-    QToolBar *mToolBar;
+    QToolBar *mWangSetToolBar;
+    QToolBar *mWangColorToolBar;
     QAction *mAddWangSet;
     QAction *mRemoveWangSet;
+    QAction *mAddEdgeColor;
+    QAction *mAddCornerColor;
+    QAction *mRemoveColor;
 
     Document *mDocument;
     WangSetView *mWangSetView;
@@ -120,6 +128,7 @@ private:
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QStackedWidget *mTemplateAndColorView;
+    QWidget *mTemplateAndColorWidget;
 
     bool mInitializing;
 };

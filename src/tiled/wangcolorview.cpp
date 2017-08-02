@@ -178,11 +178,8 @@ void WangColorView::contextMenuEvent(QContextMenuEvent *event)
     connect(pickColor, &QAction::triggered,
             this, &WangColorView::pickColor);
 
-    if (wangColorModel->wangSet()->edgeColors() > 1)
-        mLastPickedForColorWasEdge = wangColorModel->isEdgeColorAt(index);
-    else
-        mLastPickedForColorWasEdge = false;
-    mLastPickedForColorIndex = wangColorModel->colorAt(index);
+    mLastPickedForColorWasEdge = wangColorModel->isEdgeColorAt(filterModel->mapToSource(index));
+    mLastPickedForColorIndex = wangColorModel->colorAt(filterModel->mapToSource(index));
 
     menu.exec(event->globalPos());
 }

@@ -2,12 +2,9 @@
 <tileset name="GrassAndWater" tilewidth="64" tileheight="64" tilecount="24" columns="4">
  <image source="grass_and_water.png" width="256" height="384"/>
  <wangsets>
-  <wangset name="Grass and Water" edges="1" corners="5" tile="6">
-   <wangcornercolor name="asdasdqwe" index="1" r="0" g="170" b="0" imageTile="15"/>
-   <wangcornercolor name="asdas]\" index="2" r="0" g="85" b="255" imageTile="0"/>
-   <wangcornercolor name="Name" index="3" r="82" g="255" b="229" imageTile="22"/>
-   <wangcornercolor name="NeatO reno" index="4" r="255" g="0" b="127" imageTile="2"/>
-   <wangcornercolor name="Hello" index="5" r="0" g="233" b="255" imageTile="-1"/>
+  <wangset name="Grass and Water" edges="1" corners="2" tile="6">
+   <wangcornercolor name="grass" index="1" r="0" g="170" b="0" imageTile="3" probability="1"/>
+   <wangcornercolor name="water" index="2" r="0" g="85" b="255" imageTile="23" probability="0.2"/>
    <wangtile tileid="0" wangid="0x10101010"/>
    <wangtile tileid="1" wangid="0x10101010"/>
    <wangtile tileid="2" wangid="0x10101010"/>

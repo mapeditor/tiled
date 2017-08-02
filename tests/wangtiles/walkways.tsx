@@ -5,7 +5,7 @@
   <wangset name="WalkwaysAndPaths" edges="3" corners="1" tile="39">
    <wangedgecolor name="Path" index="1" r="255" g="0" b="0" imageTile="60" probability="1"/>
    <wangedgecolor name="Grass" index="2" r="0" g="255" b="0" imageTile="80" probability="1"/>
-   <wangedgecolor name="WalkWay" index="3" r="0" g="0" b="255" imageTile="10" probability="5"/>
+   <wangedgecolor name="WalkWay" index="3" r="0" g="0" b="255" imageTile="10" probability="1"/>
    <wangtile tileid="0" wangid="0x2030302"/>
    <wangtile tileid="1" wangid="0x3030302"/>
    <wangtile tileid="2" wangid="0x3030102"/>

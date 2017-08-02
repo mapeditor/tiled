@@ -263,6 +263,8 @@ MapEditor::MapEditor(QObject *parent)
             this, &MapEditor::selectWangBrush);
     connect(mWangDock, &WangDock::wangColorChanged,
             mWangBrush, &WangBrush::wangColorChanged);
+    connect(mWangBrush, &WangBrush::colorCaptured,
+            mWangDock, &WangDock::onColorCaptured);
 
     connect(mTileStampsDock, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));

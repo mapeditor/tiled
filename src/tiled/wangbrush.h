@@ -59,6 +59,9 @@ protected:
     void tilePositionChanged(const QPoint &tilePos) override;
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
 
+signals:
+    void colorCaptured(int color, bool isEdge);
+
 public slots:
     void wangColorChanged(int color, bool edge);
     void wangSetChanged(WangSet *wangSet);
@@ -69,13 +72,14 @@ private:
         Paint
     };
 
+    //sets the current wang color to the corner/edge currently hovered
+    void captureHoverColor();
+
     //called when something has changed which requires an update.
     void stateChanged();
 
     void beginPaint();
-
     void doPaint(bool mergeable);
-
     void updateBrush();
 
     //The point painting happens around

@@ -70,6 +70,14 @@ void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
         default:
             break;
         }
+    } else if (event->button() == Qt::RightButton) {
+        switch (mBrushBehavior) {
+        case Free:
+            captureHoverColor();
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -230,6 +238,34 @@ void WangBrush::wangColorChanged(int color, bool edge)
 void WangBrush::wangSetChanged(WangSet *wangSet)
 {
     mWangSet = wangSet;
+}
+
+void WangBrush::captureHoverColor()
+{
+    TileLayer *tileLayer = currentTileLayer();
+    Q_ASSERT(tileLayer);
+
+    QPoint mousePoint = mPaintPoint - tileLayer->position();
+
+    if (!tileLayer->contains(mousePoint))
+        return;
+
+    const Cell &cell = tileLayer->cellAt(mousePoint);
+
+    if (WangId wangId = mWangSet->wangIdOfCell(cell)) {
+        int newColor = 0;
+
+        if (mBrushMode == PaintVertex)
+            newColor = wangId.cornerColor(3);
+        else if (mBrushMode == PaintEdge)
+            newColor = wangId.edgeColor(mEdgeDir);
+
+        if (newColor && newColor != mCurrentColor) {
+            mCurrentColor = newColor;
+            emit colorCaptured(newColor, mBrushMode == PaintEdge);
+            updateBrush();
+        }
+    }
 }
 
 void WangBrush::stateChanged()

@@ -295,11 +295,25 @@ public:
     void setEdgeColors(int n);
     void setCornerColors(int n);
 
+    /* Inserts a given wangColor into the wangSet.
+     * If the color is greater than current count, it must only be one greater.
+     * For use in an undo command
+     * Does not adjust currently assigned tiles.
+     * */
+    void insertWangColor(WangColor *wangColor);
+
+    /* Removes a given color.
+     * This can make wangIds invalid, so should only be used from
+     * changewangsetdata.h
+     * */
+    void removeWangColorAt(int color, bool isEdge);
+
     WangColor *wangColorOfEdge(int index) const;
     WangColor *wangColorOfCorner(int index) const;
 
     QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
     QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);
+    QList<Tile *> tilesChangedOnRemoveColor(int color, bool isEdge) const;
 
     /* Adds a wangtile to the wang set with a given wangId
      * If the given WangTile is already in the set with a
@@ -413,24 +427,6 @@ private:
     //Tile info being the tileId, with the last three bits (32, 31, 30)
     //being info on flip (horizontal, vertical, and antidiagonal)
     QHash<unsigned, WangId> mTileInfoToWangId;
-};
-
-static const QColor defaultWangColors[] =  {
-    QColor(255, 0, 0),
-    QColor(0, 255, 0),
-    QColor(0, 0, 255),
-    QColor(255, 119, 0),
-    QColor(0, 233, 255),
-    QColor(255, 0, 216),
-    QColor(255, 255, 0),
-    QColor(160, 0, 255),
-    QColor(0, 255, 161),
-    QColor(255, 168, 168),
-    QColor(180, 168, 255),
-    QColor(150, 255, 167),
-    QColor(142, 120, 72),
-    QColor(90, 90, 90),
-    QColor(14, 122, 70)
 };
 
 } // namespace Tiled

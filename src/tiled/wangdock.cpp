@@ -21,6 +21,7 @@
 
 #include "wangdock.h"
 
+#include "changewangsetdata.h"
 #include "wangcolormodel.h"
 #include "wangcolorview.h"
 #include "wangsetview.h"
@@ -44,6 +45,7 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QTreeView>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -100,9 +102,13 @@ protected:
 
 WangDock::WangDock(QWidget *parent)
     : QDockWidget(parent)
-    , mToolBar(new QToolBar(this))
+    , mWangSetToolBar(new QToolBar(this))
+    , mWangColorToolBar(new QToolBar(this))
     , mAddWangSet(new QAction(this))
     , mRemoveWangSet(new QAction(this))
+    , mAddEdgeColor(new QAction(this))
+    , mAddCornerColor(new QAction(this))
+    , mRemoveColor(new QAction(this))
     , mDocument(nullptr)
     , mCurrentWangSet(nullptr)
     , mCurrentWangId(0)
@@ -130,15 +136,39 @@ WangDock::WangDock(QWidget *parent)
     mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
 
+    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
+    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
+    mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+
     Utils::setThemeIcon(mAddWangSet, "add");
     Utils::setThemeIcon(mRemoveWangSet, "remove");
 
-    mToolBar->setFloatable(false);
-    mToolBar->setMovable(false);
-    mToolBar->setIconSize(Utils::smallIconSize());
+    mWangSetToolBar->setFloatable(false);
+    mWangSetToolBar->setMovable(false);
+    mWangSetToolBar->setIconSize(Utils::smallIconSize());
 
-    mToolBar->addAction(mAddWangSet);
-    mToolBar->addAction(mRemoveWangSet);
+    mWangSetToolBar->addAction(mAddWangSet);
+    mWangSetToolBar->addAction(mRemoveWangSet);
+
+    connect(mAddWangSet, &QAction::triggered,
+            this, &WangDock::addWangSetRequested);
+    connect(mRemoveWangSet, &QAction::triggered,
+            this, &WangDock::removeWangSetRequested);
+
+    mWangColorToolBar->setFloatable(false);
+    mWangColorToolBar->setMovable(false);
+    mWangColorToolBar->setIconSize(Utils::smallIconSize());
+
+    mWangColorToolBar->addAction(mAddEdgeColor);
+    mWangColorToolBar->addAction(mAddCornerColor);
+    mWangColorToolBar->addAction(mRemoveColor);
+
+    connect(mAddEdgeColor, &QAction::triggered,
+            this, &WangDock::addEdgeColor);
+    connect(mAddCornerColor, &QAction::triggered,
+            this, &WangDock::addCornerColor);
+    connect(mRemoveColor, &QAction::triggered,
+            this, &WangDock::removeColor);
 
     mWangTemplateView = new WangTemplateView(w);
     mWangTemplateView->setModel(mWangTemplateModel);
@@ -175,30 +205,55 @@ WangDock::WangDock(QWidget *parent)
     connect(mSwitchTemplateViewButton, &QPushButton::clicked,
             this, &WangDock::switchTemplateViewButtonClicked);
 
-    QHBoxLayout *horizontal = new QHBoxLayout;
-    horizontal->addWidget(mEraseWangIdsButton);
-    horizontal->addWidget(mSwitchTemplateViewButton);
-    horizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
-    horizontal->addWidget(mToolBar);
+    //WangSetView widget:
+    QWidget *wangSetWidget = new QWidget;
+
+    QHBoxLayout *wangSetHorizontal = new QHBoxLayout;
+    wangSetHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
+    wangSetHorizontal->addWidget(mWangSetToolBar);
+
+    QVBoxLayout *wangSetVertical = new QVBoxLayout(wangSetWidget);
+    wangSetVertical->setMargin(0);
+    wangSetVertical->addWidget(mWangSetView);
+    wangSetVertical->addLayout(wangSetHorizontal);
+
+    //WangColorView widget:
+    QWidget *wangColorWidget = new QWidget;
+
+    QHBoxLayout *colorViewHorizontal = new QHBoxLayout;
+    colorViewHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
+    colorViewHorizontal->addWidget(mWangColorToolBar);
+
+    QVBoxLayout *colorViewVertical = new QVBoxLayout(wangColorWidget);
+    colorViewVertical->setMargin(0);
+    colorViewVertical->addWidget(mWangColorView);
+    colorViewVertical->addLayout(colorViewHorizontal);
 
     mTemplateAndColorView = new QStackedWidget();
     mTemplateAndColorView->addWidget(mWangTemplateView);
-    mTemplateAndColorView->addWidget(mWangColorView);
+    mTemplateAndColorView->addWidget(wangColorWidget);
 
+    //Template and color widget.
+    mTemplateAndColorWidget = new QWidget;
+
+    QHBoxLayout *templateAndColorHorizontal = new QHBoxLayout;
+    templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
+    templateAndColorHorizontal->addWidget(mSwitchTemplateViewButton);
+
+    QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
+    templateAndColorVertical->setMargin(0);
+    templateAndColorVertical->addWidget(mTemplateAndColorView);
+    templateAndColorVertical->addLayout(templateAndColorHorizontal);
+
+    //all together
     QSplitter *wangViews = new QSplitter;
     wangViews->setOrientation(Qt::Vertical);
-    wangViews->addWidget(mWangSetView);
-    wangViews->addWidget(mTemplateAndColorView);
+    wangViews->addWidget(wangSetWidget);
+    wangViews->addWidget(mTemplateAndColorWidget);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setMargin(0);
     vertical->addWidget(wangViews);
-    vertical->addLayout(horizontal);
-
-    connect(mAddWangSet, &QAction::triggered,
-            this, &WangDock::addWangSetRequested);
-    connect(mRemoveWangSet, &QAction::triggered,
-            this, &WangDock::removeWangSetRequested);
 
     setWidget(w);
     retranslateUi();
@@ -232,7 +287,8 @@ void WangDock::setDocument(Document *document)
         setCurrentWangSet((firstWangSet(mapDocument)));
 
         setColorView();
-        mToolBar->setVisible(false);
+        mWangSetToolBar->setVisible(false);
+        mWangColorToolBar->setVisible(false);
         mEraseWangIdsButton->setVisible(false);
         mSwitchTemplateViewButton->setVisible(false);
 
@@ -253,7 +309,8 @@ void WangDock::setDocument(Document *document)
         connect(wangSetModel, &TilesetWangSetModel::wangSetChanged,
                 this, &WangDock::wangSetChanged);
 
-        mToolBar->setVisible(true);
+        mWangSetToolBar->setVisible(true);
+        mWangColorToolBar->setVisible(true);
         mEraseWangIdsButton->setVisible(true);
         mSwitchTemplateViewButton->setVisible(true);
         setTemplateView();
@@ -269,7 +326,8 @@ void WangDock::setDocument(Document *document)
     } else {
         mProxyModel->setSourceModel(nullptr);
         setCurrentWangSet(nullptr);
-        mToolBar->setVisible(false);
+        mWangSetToolBar->setVisible(false);
+        mWangColorToolBar->setVisible(false);
     }
 
     mInitializing = false;
@@ -301,7 +359,7 @@ void WangDock::changeEvent(QEvent *event)
 
 void WangDock::switchTemplateViewButtonClicked()
 {
-    if (mTemplateAndColorView->currentWidget() == mWangTemplateView)
+    if (mTemplateAndColorView->currentIndex() == 0)
         setColorView();
     else
         setTemplateView();
@@ -333,9 +391,11 @@ void WangDock::refreshCurrentWangColor()
 {
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
 
-    if (!selectionModel->currentIndex().isValid()) {
+    if (!selectionModel->currentIndex().isValid()
+            || !selectionModel->currentIndex().parent().isValid()) {
         mEraseWangIdsButton->setChecked(true);
         emit wangColorChanged(0, true);
+        mRemoveColor->setEnabled(false);
         return;
     }
 
@@ -353,6 +413,7 @@ void WangDock::refreshCurrentWangColor()
         currentWangColor = mCurrentWangSet->wangColorOfCorner(color);
 
     mDocument->setCurrentObject(currentWangColor);
+    mRemoveColor->setEnabled(true);
 
     emit wangColorChanged(color, edgeColor);
     emit selectWangBrush();
@@ -365,6 +426,16 @@ void WangDock::wangSetChanged()
 
     refreshCurrentWangColor();
     refreshCurrentWangId();
+
+    if (mCurrentWangSet->edgeColors() == 15)
+        mAddEdgeColor->setEnabled(false);
+    else
+        mAddEdgeColor->setEnabled(true);
+
+    if (mCurrentWangSet->cornerColors() == 15)
+        mAddCornerColor->setEnabled(false);
+    else
+        mAddCornerColor->setEnabled(true);
 }
 
 void WangDock::indexPressed(const QModelIndex &index)
@@ -382,6 +453,46 @@ void WangDock::expandRows(const QModelIndex &parent, int first, int last)
         mWangSetView->expand(mProxyModel->index(row, 0, parent));
 }
 
+void WangDock::addEdgeColor()
+{
+    Q_ASSERT(mCurrentWangSet);
+
+    if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        tilesetDocument->undoStack()->push(new ChangeWangSetEdges(tilesetDocument,
+                                                                  tilesetDocument->wangSetModel()->index(mCurrentWangSet).row(),
+                                                                  mCurrentWangSet->edgeColors() + 1));
+    }
+}
+
+void WangDock::addCornerColor()
+{
+    Q_ASSERT(mCurrentWangSet);
+
+    if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        tilesetDocument->undoStack()->push(new ChangeWangSetCorners(tilesetDocument,
+                                                                    tilesetDocument->wangSetModel()->index(mCurrentWangSet).row(),
+                                                                    mCurrentWangSet->cornerColors() + 1));
+    }
+}
+
+void WangDock::removeColor()
+{
+    Q_ASSERT(mCurrentWangSet);
+
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+
+    QModelIndex index = static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+
+    int color = mWangColorModel->colorAt(index);
+    bool isEdge = mWangColorModel->isEdgeColorAt(index);
+
+    if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument))
+        tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
+                                                                  tilesetDocument->wangSetModel()->index(mCurrentWangSet).row(),
+                                                                  color,
+                                                                  isEdge));
+}
+
 void WangDock::setCurrentWangSet(WangSet *wangSet)
 {
     if (mCurrentWangSet == wangSet)
@@ -392,6 +503,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mWangTemplateModel->setWangSet(wangSet);
     mWangColorModel->setWangSet(wangSet);
     mWangColorView->expandAll();
+
+    mRemoveColor->setEnabled(false);
 
     activateErase();
 
@@ -405,11 +518,23 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
                 setColorView();
         }
 
+        if (mCurrentWangSet->edgeColors() == 15)
+            mAddEdgeColor->setEnabled(false);
+        else
+            mAddEdgeColor->setEnabled(true);
+
+        if (mCurrentWangSet->cornerColors() == 15)
+            mAddCornerColor->setEnabled(false);
+        else
+            mAddCornerColor->setEnabled(true);
     } else {
         mWangSetView->selectionModel()->clearCurrentIndex();
         mWangSetView->selectionModel()->clearSelection();
 
         hideTemplateColorView();
+
+        mAddEdgeColor->setEnabled(false);
+        mAddCornerColor->setEnabled(false);
     }
 
     if (wangSet && !mInitializing)
@@ -441,6 +566,9 @@ void WangDock::retranslateUi()
     mEraseWangIdsButton->setText(tr("Erase WangIds"));
     mAddWangSet->setText(tr("Add Wang Set"));
     mRemoveWangSet->setText(tr("Remove Wang Set"));
+    mAddEdgeColor->setText(tr("Add Edge Color"));
+    mAddCornerColor->setText(tr("Add Corner Color"));
+    mRemoveColor->setText(tr("Remove Color"));
 
     if (mWangColorView->isVisible())
         mSwitchTemplateViewButton->setText(tr("Switch to Template View"));
@@ -468,6 +596,23 @@ void WangDock::onWangIdUsedChanged(WangId wangId)
         mWangTemplateView->update(index);
 }
 
+void WangDock::onColorCaptured(int color, bool isEdge)
+{
+    QModelIndex index;
+
+    if (isEdge)
+        index = mWangColorModel->edgeIndex(color);
+    else
+        index = mWangColorModel->cornerIndex(color);
+
+    if (index.isValid()) {
+        mWangColorView->setCurrentIndex(static_cast<HasChildrenFilterModel*>(mWangColorView->model())->mapFromSource(index));
+    } else {
+        mWangColorView->selectionModel()->clearCurrentIndex();
+        mWangColorView->selectionModel()->clearSelection();
+    }
+}
+
 void WangDock::onCurrentWangIdChanged(WangId wangId)
 {
     const QModelIndex &index = mWangTemplateModel->wangIdIndex(wangId);
@@ -484,33 +629,29 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
 
 void WangDock::setTemplateView()
 {
-    if (!mTemplateAndColorView->isVisible()) {
-        mSwitchTemplateViewButton->setEnabled(true);
-        mTemplateAndColorView->setVisible(true);
+    if (!mTemplateAndColorWidget->isVisible()) {
+        mTemplateAndColorWidget->setVisible(true);
     }
 
-    mTemplateAndColorView->setCurrentWidget(mWangTemplateView);
-
+    mTemplateAndColorView->setCurrentIndex(0);
     retranslateUi();
 }
 
 void WangDock::setColorView()
 {
-    if (!mTemplateAndColorView->isVisible()) {
-        mSwitchTemplateViewButton->setEnabled(true);
-        mTemplateAndColorView->setVisible(true);
+    if (!mTemplateAndColorWidget->isVisible()) {
+        mTemplateAndColorWidget->setVisible(true);
     }
 
-    mTemplateAndColorView->setCurrentWidget(mWangColorView);
+    mTemplateAndColorView->setCurrentIndex(1);
 
     retranslateUi();
 }
 
 void WangDock::hideTemplateColorView()
 {
-    if (!mTemplateAndColorView->isVisible())
+    if (!mTemplateAndColorWidget->isVisible())
         return;
 
-    mTemplateAndColorView->setVisible(false);
-    mSwitchTemplateViewButton->setEnabled(false);
+    mTemplateAndColorWidget->setVisible(false);
 }

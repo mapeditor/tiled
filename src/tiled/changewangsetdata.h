@@ -55,7 +55,6 @@ private:
     int mIndex;
     int mOldValue;
     int mNewValue;
-    QList<Tile *> mAffectedTiles;
     QList<WangColorChange> mRemovedWangColors;
 };
 
@@ -80,8 +79,30 @@ private:
     int mIndex;
     int mOldValue;
     int mNewValue;
-    QList<Tile *> mAffectedTiles;
     QList<WangColorChange> mRemovedWangColors;
+};
+
+class RemoveWangSetColor : public QUndoCommand
+{
+public:
+    RemoveWangSetColor(TilesetDocument *tilesetDocumnet,
+                       int index,
+                       int color,
+                       bool isEdge);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    TilesetWangSetModel *mWangSetModel;
+    int mIndex;
+    int mColor;
+    bool mIsEdge;
+    WangColor *mRemovedWangColor;
+    //When removing a color when there are two, both are actually removed,
+    //this stores the extra if needed, and is null otherwise.
+    WangColor *mExtraWangColor;
 };
 
 class SetWangSetImage : public QUndoCommand
