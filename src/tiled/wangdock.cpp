@@ -136,8 +136,8 @@ WangDock::WangDock(QWidget *parent)
     mAddWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
     mRemoveWangSet->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
 
-    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
-    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
+    mAddEdgeColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-edge.png")));
+    mAddCornerColor->setIcon(QIcon(QStringLiteral(":/images/22x22/add-corner.png")));
     mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
 
     Utils::setThemeIcon(mAddWangSet, "add");
