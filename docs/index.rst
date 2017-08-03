@@ -1,5 +1,5 @@
-Tiled Manual
-============
+Tiled Documentation
+===================
 
 .. note::
    If you're not finding what you're looking for in these pages, please don't
@@ -11,8 +11,8 @@ Tiled Manual
    documentation for specific Tiled features. Over time, this should become the
    place to refer to for any details about using Tiled.
 
-Contents
---------
+Manual
+------
 
 .. toctree::
    :maxdepth: 2
@@ -25,6 +25,13 @@ Contents
    manual/using-the-terrain-tool
    manual/using-commands
    manual/keyboard-shortcuts
+
+Reference
+---------
+
+.. toctree::
+   :maxdepth: 2
+
    reference/support-for-tmx-maps
    reference/tmx-map-format
    reference/tmx-changelog

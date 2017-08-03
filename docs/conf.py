@@ -68,7 +68,7 @@ language = None
 
 # Options for localization
 locale_dirs = ['locale/']
-gettext_compact = False
+gettext_compact = True
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

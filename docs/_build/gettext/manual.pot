@@ -1,0 +1,1330 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, Thorbjørn Lindeijer
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-03 17:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../manual/custom-properties.rst:2
+msgid "Custom Properties"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:4
+msgid "One of the major strengths of Tiled is that it allows setting custom properties on all of its basic data structures. This way it is possible to include many forms of custom information, which can later be used by your game or by the framework you're using to integrate Tiled maps."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:9
+msgid "Custom properties are displayed in the Properties view. This view is context-sensitive, usually displaying the properties of the last selected object. For tiles in a tileset or objects on an object layer, it also supports multi-selection."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:17
+msgid "Properties View"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:20
+msgid "Adding Properties"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:22
+msgid "When you add a property (using the '+' button at the bottom of the Properties view), you are prompted for its name and its type. Currently Tiled supports the following basic property types:"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:26
+msgid "**string** (any text, including multi-line text)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:27
+msgid "**float** (a floating point number)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:28
+msgid "**int** (a whole number)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:29
+msgid "**bool** (true or false)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:30
+msgid "**file** (a relative path referencing a file)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:31
+msgid "**color** (a 32-bit color value)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:36
+msgid "Add Property Dialog"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:38
+msgid "The property type is used to choose a custom editor in the Properties view. Choosing a number or boolean type also avoids that the value will get quoted in JSON and Lua exports."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:46
+#: ../../manual/custom-properties.rst:106
+#: ../../manual/editing-tile-layers.rst:59
+#: ../../manual/layers.rst:99
+#: ../../manual/objects.rst:101
+#: ../../manual/objects.rst:116
+#: ../../manual/objects.rst:156
+msgid "New in Tiled 1.0"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:55
+msgid "Tile Property Inheritance"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:57
+msgid "When custom properties are added to a tile, these properties will also be visible when an object instance of that tile is selected. This enables easy per-object overriding of certain default properties associated with a tile. This becomes especially useful when combined with :ref:`typed-tiles`."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:63
+msgid "Inherited properties will be displayed in gray (disabled text color), whereas overridden properties will be displayed in black (usual text color)."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:70
+msgid "Predefining Properties"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:73
+msgid "General Setup"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:75
+msgid "Usually you only use a limited set of object types in your game, and each type of object has a fixed set of possible properties, with specific types and default values. To save you time, Tiled allows predefining these properties based on the \"Type\" field for objects. You can set this up using the Object Types Editor, available from the *View* menu."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:85
+msgid "Object Types Editor"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:87
+msgid "By default, Tiled stores these object types in the user settings. However, since you'll often want to share them with other people in your project, you can export your object types or change the storage location of the object types file. A simple XML or JSON file with self-explanatory contents is used to store your object types."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:93
+msgid "The color not only affects the rendering of the various shapes of objects, but is also the color of the label which will show up if you give your object a name."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:97
+msgid "To make the predefined properties show up in the Properties view, all you need to do is to enter the name of the type in the built-in \"Type\" property. Usually this is what you're doing already anyway to tell your engine what kind of object it is dealing with."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:115
+msgid "Typed Tiles"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:117
+msgid "If you're using tile objects, you can set the type on the tile to avoid having to set it on each object instance. Setting the type on the tile makes the predefined properties visible when having the tile selected, allowing to override the values. It also makes those possibly overriden values visible when having a tile object instance selected, again allowing you to override them."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:124
+msgid "An example use-case for this would be to define custom types like \"NPC\", \"Enemy\" or \"Item\" with properties like \"name\", \"health\" or \"weight\". You can then specify values for these on the tiles representing these entities. And when placing those tiles as objects, you can override those values if you need to."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:135
+#: ../../manual/layers.rst:124
+#: ../../manual/objects.rst:257
+msgid "Future Extensions"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:137
+msgid "There are several types of custom properties I'd like to add:"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:139
+msgid "**Enumerations**, where you can predefine all possible values and it forms a combo box (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__)."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:142
+msgid "**Object references**, which would allow easily linking objects together and Tiled could display such connections (`#707 <https://github.com/bjorn/tiled/issues/707>`__)."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:145
+msgid "**Array properties**, which would be properties having a list of values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:147
+msgid "**Dictionary properties**, which would be properties that can contain any number of other properties as children (`#489 <https://github.com/bjorn/tiled/issues/489>`__)."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:151
+msgid "It would also be nice to add support for **limiting property values**, like the length of string properties or a minimum/maximum on number values."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:155
+msgid "Apart from predefining properties based on object type, I'd like to add support for **predefining the properties for each data type**. So defining which custom properties are valid for maps, tilesets, layers, etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)"
+msgstr ""
+
+#: ../../manual/custom-properties.rst:160
+msgid "Finally, the predefined properties would work very well together with explicit **support for projects**. Then you could switch between different projects or get started on an existing project, without needing to configure Tiled to use the right object type definitions."
+msgstr ""
+
+#: ../../manual/custom-properties.rst:165
+#: ../../manual/layers.rst:139
+#: ../../manual/objects.rst:270
+msgid "If you like any of these plans, please help me getting around to it faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The more support I receive the more time I can afford to spend improving Tiled!"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:2
+msgid "Editing Tile Layers"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:4
+msgid ":ref:`tile-layer-introduction` are what makes Tiled a *tile map editor*. Although not as flexible as :ref:`object-layer-introduction`, they provide efficient data storage and good rendering performance as well as efficient content creation. Every new map gets one by default, though feel free to delete it when you're not going to use it."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:11
+msgid "Stamp Brush"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:13
+msgid "Shortcut: ``B``"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:15
+msgid "The primary tool for editing tile layers is the Stamp Brush. It can be used to paint single tiles as well as larger \"stamps\", which is where it gets its name from. Using the right mouse button, it can also quickly capture tile stamps from the currently active layer. A tile stamp is commonly created by selecting one or more tiles in the Tilesets view."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:21
+msgid "The Stamp Brush has some extra features:"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:23
+msgid "While holding ``Shift``, click any two points to draw a line between them."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:26
+msgid "While holding ``Ctrl+Shift``, click any two points two draw a circle or ellipse centered on the first point."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:29
+msgid "Activate the *Random Mode* using the dice button on the tool bar to have the Stamp Brush paint with random tiles from the tile stamp. The probability of each tile depends on how often it occurred on the tile stamp, as well as the probability set on each tile in the *Tileset Editor*."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:35
+msgid "In combination with the *Tile Stamps* view, it can also place randomly from a set of predefined tile stamps. This can be more useful than the *Random Mode*, which randomly places individual tiles."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:41
+msgid "Terrain Brush"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:43
+#: ../../manual/objects.rst:83
+msgid "Shortcut: ``T``"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:45
+msgid "The Terrain Brush allows for efficient editing with a certain type of corner-based terrain transitions. Setting it up requires associating terrain information with your tiles, which is described in detail in :doc:`Using the Terrain Tool <using-the-terrain-tool>`."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:50
+msgid "Similarly to the `Stamp Brush <#stamp-brush>`__, you can draw lines by holding ``Shift``. When holding ``Ctrl``, the size of the editing area is reduced to one corner (this currently doesn't work well in combination with drawing lines)."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:65
+msgid "When holding ``Alt``, the editing operations are also applied at a 180 degree rotation. This is especially useful when editing strategic maps where two sides need to have equal opportunities. The modifier works well in combination with either ``Shift`` for drawing lines or ``Ctrl`` for reducing the edited area."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:72
+msgid "Bucket Fill Tool"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:74
+msgid "Shortcut: ``F``"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:76
+msgid "The Bucket Fill Tool provides a quick way of filling empty areas or areas covered with the same tiles. The currently active tile stamp will be repeated in the filled area. It can also be used in combination with the *Random Mode*."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:81
+msgid "When holding ``Shift``, the tool fills the currently selected area regardless of its contents. This is useful for filling custom areas that have been selected previously using one or more `Selection Tools <#selection-tools>`__."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:87
+msgid "Eraser"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:89
+#: ../../manual/objects.rst:234
+msgid "Shortcut: ``E``"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:91
+msgid "A simple eraser tool. Left click erases single tiles and right click can be used to quickly erase rectangular areas."
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:95
+msgid "Selection Tools"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:97
+msgid "There are various tile selection tools that all work in similar fashion:"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:99
+msgid "**Rectangular Select** allows selection of rectangular areas (shortcut: ``R``)"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:102
+msgid "**Magic Wand** allows selection of connected areas filled with the same tile (shortcut: ``W``)"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:105
+msgid "**Select Same Tile** allows selection of same-tiles across the entire layer (shortcut: ``S``)"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:108
+msgid "By default, each of these tools replaces the currently selected area. The following modifiers can be used to change this behavior:"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:111
+msgid "Holding ``Shift`` expands the current selection with the new area"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:112
+msgid "Holding ``Ctrl`` subtracts the new area from the current selection"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:113
+msgid "Holding ``Ctrl`` and ``Shift`` selects the intersection of the new area with the current selection"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:117
+msgid "Managing Tile Stamps"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:119
+msgid "It can often be useful to store the current tile stamp somewhere to use it again later. The following shortcuts work for this purpose:"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:122
+msgid "``Ctrl + 1-9`` - Store current tile stamp (similar to ``Ctrl + C``)"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:123
+msgid "``1-9`` - Recall the stamp stored at this location (similar to ``Ctrl + V``)"
+msgstr ""
+
+#: ../../manual/editing-tile-layers.rst:126
+msgid "Tile stamps can also be stored by name and extended with variations using the *Tile Stamps* view."
+msgstr ""
+
+#: ../../manual/introduction.rst:2
+msgid "Introduction"
+msgstr ""
+
+#: ../../manual/introduction.rst:5
+msgid "About Tiled"
+msgstr ""
+
+#: ../../manual/introduction.rst:7
+msgid "**Tiled is a 2D level editor that helps you develop the content of your game. Its primary feature is to edit tile maps of various forms, but it also supports free image placement as well as powerful ways to annotate your level with extra information used by the game. Tiled focuses on general flexibility while trying to stay intuitive.**"
+msgstr ""
+
+#: ../../manual/introduction.rst:13
+msgid "In terms of tile maps, it supports straight rectangular tile layers, but also projected isometric, staggered isometric and staggered hexagonal layers. A tileset can be either a single image containing many tiles, or it can be a collection of individual images. In order to support certain depth faking techniques, tiles and layers can be offset by a custom distance and their rendering order can be configured."
+msgstr ""
+
+#: ../../manual/introduction.rst:20
+msgid "The primary tool for editing tile layers is a stamp brush that allows efficient painting and copying of tile areas. It also supports drawing lines and circles. In addition, there are several selection tools and a tool that does :doc:`automatic terrain transitions <using-the-terrain-tool>`. Finally, it can apply changes based on `pattern-matching`_ to automate parts of your work."
+msgstr ""
+
+#: ../../manual/introduction.rst:27
+msgid "Tiled also supports object layers, which traditionally were only for annotating your map with information but more recently they can also be used to place images. You can add rectangle, ellipse, polygon, polyline and tile objects. Object placement is not limited to the tile grid and objects can also be scaled or rotated. Object layers offer a lot of flexibility to add almost any information to your level that your game needs."
+msgstr ""
+
+#: ../../manual/introduction.rst:35
+msgid "Other things worth mentioning are the support for adding custom map or tileset formats through plugins, the tile stamp memory, tile animation support and the tile collision editor."
+msgstr ""
+
+#: ../../manual/introduction.rst:40
+msgid "Getting Started"
+msgstr ""
+
+#: ../../manual/introduction.rst:43
+msgid "Creating a New Map"
+msgstr ""
+
+#: ../../manual/introduction.rst:45
+msgid "When launching Tiled for the first time, we are greeted with the following default window layout:"
+msgstr ""
+
+#: ../../manual/introduction.rst:51
+msgid "Tiled Window"
+msgstr ""
+
+#: ../../manual/introduction.rst:53
+msgid "There is a large gray area in the middle because no map is open yet. The first thing we’ll do is to start a new map with *File -> New…* (``Ctrl+N``). The following dialog will pop up:"
+msgstr ""
+
+#: ../../manual/introduction.rst:60
+msgid "New Map"
+msgstr ""
+
+#: ../../manual/introduction.rst:62
+msgid "Here, we choose the initial map size, tile size, orientation, tile layer format and tile render order (only supported for *Orthogonal* maps). All of these things can be changed later as needed, so it’s not important to get it all right the first time."
+msgstr ""
+
+#: ../../manual/introduction.rst:67
+msgid "After pressing *OK*, we’ll see the tile grid and an initial tile layer will be added to the map. However, before we can start using any tiles we need to add a tileset. Choose *Map -> New Tileset…* to open the New Tileset dialog:"
+msgstr ""
+
+#: ../../manual/introduction.rst:75
+msgid "New Tileset"
+msgstr ""
+
+#: ../../manual/introduction.rst:77
+msgid "Click the *Browse…* button and select the ``tmw_desert_spacing.png`` tileset from the examples shipping with Tiled (or use one of your own if you wish). This example tileset uses a tile size of 32x32. It also has a one pixel *margin* around the tiles and a one pixel *spacing* in between the tiles (this is pretty rare actually, usually you should leave these values on 0)."
+msgstr ""
+
+#: ../../manual/introduction.rst:84
+msgid "After pressing *OK*, Tiled should look as follows:"
+msgstr ""
+
+#: ../../manual/introduction.rst:89
+msgid "Tileset Added"
+msgstr ""
+
+#: ../../manual/introduction.rst:91
+msgid "We’re ready to select some tiles and :doc:`start painting <editing-tile-layers>`! But first, let’s have a quick look at the :doc:`various layer types <layers>` supported by Tiled."
+msgstr ""
+
+#: ../../manual/introduction.rst:96
+msgid "Most of the manual still needs to be written. Fortunately, there is a very nice `Tiled Map Editor Tutorial Series`_ on GamesFromScratch.com. In addition, the support for Tiled in various :doc:`engines and frameworks </reference/support-for-tmx-maps>` often comes with some usage information."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:2
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:4
+msgid "Try out these keyboard shortcuts to help save you time."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:6
+msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:9
+msgid "General"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:11
+msgid "``Right Click on Tile`` - Captures the tile under the mouse (drag to capture larger areas)."
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:13
+msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:14
+msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:15
+msgid "``Ctrl + 0`` - Reset zoom on map"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:16
+msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:17
+msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:18
+msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:19
+msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:20
+msgid "``F5`` - Run the :doc:`first custom command <using-commands>`"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:21
+msgid "``Ctrl + X`` - Cut (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:22
+msgid "``Ctrl + C`` - Copy (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:23
+msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:24
+msgid "``Del`` - Delete (tiles or objects)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:25
+msgid "``H`` - Toggle highlighting of the current layer"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:26
+msgid "``A`` - Invokes `Automapping <https://github.com/bjorn/tiled/wiki/Automapping>`__"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:28
+msgid "``Alt + C`` - Copy current position of mouse cursor to clipboard (in tile coordinates)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:30
+msgid "``Ctrl + D`` - Duplicate selected objects (since Tiled 1.0, before it was Delete)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:32
+msgid "``Ctrl + Shift + D`` - Duplicate active layer"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:33
+msgid "``F2`` - Rename (if applicable in context)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:34
+msgid "``Tab`` - Hide docks and tool bars (since Tiled 1.0)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:35
+msgid "``Ctrl + PgUp`` - Select previous layer (above current layer)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:36
+msgid "``Ctrl + PgDown`` - Select next layer (below current layer)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:37
+msgid "``Ctrl + Shift + Up`` - Move current layer up"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:38
+msgid "``Ctrl + Shift + Down`` - Move current layer down"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:39
+msgid "``Ctrl + Shift + H`` - Show/Hide all other layers (only active layer visible / all layers visible)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:41
+msgid "``Ctrl + Tab`` - Switch to left document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:42
+msgid "``Ctrl + Shift + Tab`` - Switch to right document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:43
+msgid "``Alt + Left`` - Switch to left document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:44
+msgid "``Alt + Right`` - Switch to right document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:45
+msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:46
+msgid "``Ctrl + W`` - Close current document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:47
+msgid "``Ctrl + Shift + W`` - Close all documents"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:48
+msgid "``Ctrl + E`` - Export current document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:49
+msgid "``Ctrl + Shift + E`` - Export current document to another file"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:50
+msgid "``Ctrl + R`` - Reload current document"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:51
+msgid "``Ctrl + T`` - Force-reload all tilesets used by the current map (mainly useful when not using the automatic reloading)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:55
+msgid "When a tile layer is selected"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:57
+msgid "``B`` - Activate Stamp Brush tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:58
+msgid "``T`` - Activate :doc:`Terrain Brush <using-the-terrain-tool>` tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:59
+msgid "``F`` - Activate Bucket Fill tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:60
+msgid "``E`` - Activate Eraser tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:61
+msgid "``R`` - Activate Rectangular Select tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:62
+msgid "``W`` - Activate Magic Wand tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:63
+msgid "``S`` - Activate Select Same Tile tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:64
+msgid "``Ctrl + 1-9`` - Store current tile selection (similar to ``Ctrl + C``)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:66
+msgid "``1-9`` recall the previous selection (similar to ``Ctrl + V``)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:69
+msgid "When an object layer is selected"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:71
+msgid "``S`` - Activate Select Objects tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:73
+msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:75
+msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:77
+msgid "``Home`` - Move selected objects to Top (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:79
+msgid "``End`` - Move selected objects to Bottom (with Manual object drawing order)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:82
+msgid "``O`` - Activate Edit Polygons tool (was ``E`` until Tiled 1.0)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:83
+msgid "``R`` - Activate Insert Rectangle tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:84
+msgid "``C`` - Activate Insert Ellipse tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:85
+msgid "``P`` - Activate Insert Polygon tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:86
+msgid "``L`` - Activate Insert Polyline tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:88
+msgid "``Enter`` - Finish creating object"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:89
+msgid "``Escape`` - Cancel creating object"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:91
+msgid "``T`` - Activate Insert Tile tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:92
+msgid "``E`` - Activate Insert Text tool (since Tiled 1.0)"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:95
+msgid "When using the brush tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:97
+msgid "``Shift + Click`` - Line Tool, auto place tiles between two cells"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:98
+msgid "``Ctrl + Shift + Click`` - Circle Tool, auto place tiles around a radius"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:100
+msgid "``X`` - Flip selection horizontally"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:101
+msgid "``Y`` - Flip selection vertically"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:102
+msgid "``Z`` - Rotate selection clockwise"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:103
+msgid "``Shift + Z`` - Rotate selection counterclockwise"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:106
+msgid "When using the Rectangular Select tool"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:108
+msgid "``Ctrl + A`` - Select the whole layer"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:109
+msgid "``Ctrl + Shift + A`` - Select nothing"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:112
+msgid "In the properties dialog"
+msgstr ""
+
+#: ../../manual/keyboard-shortcuts.rst:114
+msgid "``Del`` or ``Backspace`` - Deletes a property"
+msgstr ""
+
+#: ../../manual/layers.rst:2
+msgid "Working with Layers"
+msgstr ""
+
+#: ../../manual/layers.rst:4
+msgid "A Tiled map supports various sorts of content, and this content is organized into various different layers. The most common layers are the `Tile Layer <#tile-layers>`__ and the `Object Layer <#object-layers>`__. There is also an `Image Layer <#image-layers>`__ for including simple foreground or background graphics. The order of the layers determines the rendering order of your content."
+msgstr ""
+
+#: ../../manual/layers.rst:11
+msgid "Layers can be hidden or made only partially visible. Layers also have an offset, which can be used to position them independently of each other, for example to fake depth."
+msgstr ""
+
+#: ../../manual/layers.rst:15
+msgid "You use `Group Layers <#group-layers>`__ to organize the layers into a hierarchy. This makes it more comfortable to work with a large amount of layers."
+msgstr ""
+
+#: ../../manual/layers.rst:22
+msgid "Tile Layers"
+msgstr ""
+
+#: ../../manual/layers.rst:24
+msgid "Tile layers provide an efficient way of storing a large area filled with tile data. The data is a simple array of tile references and as such no additional information can be stored for each location. The only extra information stored are a few flags, that allow tile graphics to be flipped vertically, horizontally or anti-diagonally (to support rotation in 90-degree increments)."
+msgstr ""
+
+#: ../../manual/layers.rst:31
+msgid "The information needed to render each tile layer is stored with the map, which specifies the position and rendering order of the tiles based on the orientation and various other properties."
+msgstr ""
+
+#: ../../manual/layers.rst:35
+msgid "Despite only being able to refer to tiles, tile layers can also be useful for defining various bits of non-graphical information in your level. Collision information can often be conveyed using a special tileset, and any kind of object that does not need custom properties and is always aligned to the grid can also be placed on a tile layer."
+msgstr ""
+
+#: ../../manual/layers.rst:44
+msgid "Object Layers"
+msgstr ""
+
+#: ../../manual/layers.rst:46
+msgid "Object layers are useful because they can store many kinds of information that would not fit in a tile layer. Objects can be freely positioned, resized and rotated. They can also have individual custom properties. There are many kinds of objects:"
+msgstr ""
+
+#: ../../manual/layers.rst:51
+msgid "**Rectangle** - for marking custom rectangular areas"
+msgstr ""
+
+#: ../../manual/layers.rst:52
+msgid "**Ellipse** - for marking custom ellipse or circular areas"
+msgstr ""
+
+#: ../../manual/layers.rst:53
+msgid "**Polygon** - for when a rectangle or ellipse doesn't cut it (often a collision area)"
+msgstr ""
+
+#: ../../manual/layers.rst:55
+msgid "**Polyline** - can be a path to follow or a wall to collide with"
+msgstr ""
+
+#: ../../manual/layers.rst:56
+msgid "**Tile** - for freely placing, scaling and rotating your tile graphics"
+msgstr ""
+
+#: ../../manual/layers.rst:58
+msgid "**Text** - for custom text or notes (since Tiled 1.0)"
+msgstr ""
+
+#: ../../manual/layers.rst:60
+msgid "All objects can be named, in which case their name will show up in a label above them (by default only for selected objects). Objects can also be given a *type*, which is useful since it can be used to customize the color of their label and the available :ref:`custom properties <predefining-properties>` for this object type. For tile objects, the type can be :ref:`inherited from their tile <tile-property-inheritance>`."
+msgstr ""
+
+#: ../../manual/layers.rst:68
+msgid "For most map types, objects are positioned in plain pixels. The only exception to this are isometric maps (not isometric staggered). For isometric maps, it was deemed useful to store their positions in a projected coordinate space. For this, the isometric tiles are assumed to represent projected squares with both sides equal to the *tile height*. If you're using a different coordinate space for objects in your isometric game, you'll need to convert these coordinates accordingly."
+msgstr ""
+
+#: ../../manual/layers.rst:76
+msgid "The object width and height is also mostly stored in pixels. For isometric maps, all shape objects (rectangle, ellipse, polygon and polyline) are projected into the same coordinate space described above. This is based on the assumption that these objects are generally used to mark areas on the map."
+msgstr ""
+
+#: ../../manual/layers.rst:83
+msgid "Image Layers"
+msgstr ""
+
+#: ../../manual/layers.rst:85
+msgid "Image layers provide a way to quickly include a single image as foreground or background of your map. They are currently not so useful, because if you instead add the image as a Tileset and place it as a Tile Object, you gain the ability to freely scale and rotate the image."
+msgstr ""
+
+#: ../../manual/layers.rst:90
+msgid "The only advantage of using an image layer is that it avoids selecting / dragging the image while using the Select Objects tool, which is mainly due to the lack of layer locking (`#734 <https://github.com/bjorn/tiled/issues/734>`__)."
+msgstr ""
+
+#: ../../manual/layers.rst:106
+msgid "Group Layers"
+msgstr ""
+
+#: ../../manual/layers.rst:108
+msgid "Group layers work like folders and can be used for organizing the layers into a hierarchy. This is mainly useful when your map contains a large amount of layers."
+msgstr ""
+
+#: ../../manual/layers.rst:112
+msgid "The visibility, opacity and offset of a group layer affects all child layers."
+msgstr ""
+
+#: ../../manual/layers.rst:115
+msgid "Layers can be easily dragged in and out of groups with the mouse. The Raise Layer / Lower Layer actions also allow moving layers in and out of groups."
+msgstr ""
+
+#: ../../manual/layers.rst:126
+msgid "There are many ways in which the layers can be made more powerful:"
+msgstr ""
+
+#: ../../manual/layers.rst:128
+msgid "Ability to lock layers (`#734 <https://github.com/bjorn/tiled/issues/734>`__) or even individual objects (`#828 <https://github.com/bjorn/tiled/issues/828>`__)."
+msgstr ""
+
+#: ../../manual/layers.rst:132
+msgid "Moving certain map-global properties to the Tile Layer (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be useful if one map could accommodate layers of different tile sizes and maybe even of different orientation."
+msgstr ""
+
+#: ../../manual/layers.rst:136
+msgid "\"Infinite\" tile layers that grow automatically (`#260 <https://github.com/bjorn/tiled/issues/260>`__)."
+msgstr ""
+
+#: ../../manual/objects.rst:2
+msgid "Working with Objects"
+msgstr ""
+
+#: ../../manual/objects.rst:4
+msgid "Using objects you can add a great deal of information to your map for use in your game. They can replace tedious alternatives like hardcoding coordinates (like spawn points) in your source code or maintaining additional data files for storing gameplay elements. With the addition of *tile objects*, they also became useful for graphical purposes and can in some cases replace tile layers entirely, as demonstrated by the \"Sticker Knight\" example shipping with Tiled."
+msgstr ""
+
+#: ../../manual/objects.rst:12
+msgid "To start using objects, add an :ref:`Object Layer <object-layer-introduction>` to your map."
+msgstr ""
+
+#: ../../manual/objects.rst:16
+msgid "Placement Tools"
+msgstr ""
+
+#: ../../manual/objects.rst:18
+msgid "Each type of object has its own placement tool."
+msgstr ""
+
+#: ../../manual/objects.rst:21
+msgid "Insert Rectangle"
+msgstr ""
+
+#: ../../manual/objects.rst:23
+msgid "Shortcut: ``R``"
+msgstr ""
+
+#: ../../manual/objects.rst:25
+msgid "The rectangle was the first type of object supported by Tiled, which is why objects are rectangles by default in the :doc:`/reference/tmx-map-format`. They are useful for marking rectangular areas and assigning custom properties to them. They are also often used for specifying collision boxes."
+msgstr ""
+
+#: ../../manual/objects.rst:30
+msgid "Place a rectangle by clicking-and-dragging in any direction. Holding ``Shift`` makes it square and holding ``Ctrl`` snaps its size to the tile size."
+msgstr ""
+
+#: ../../manual/objects.rst:34
+msgid "If the rectangle is empty (width and height are both 0), it is rendered as a small square around its position. This is mainly to keep it visible and selectable. Empty rectangles can be used for placing point objects, at least as long as no explicit support for point objects is available (`#1325 <https://github.com/bjorn/tiled/issues/1325>`__)."
+msgstr ""
+
+#: ../../manual/objects.rst:41
+msgid "Insert Ellipse"
+msgstr ""
+
+#: ../../manual/objects.rst:43
+msgid "Shortcut: ``C``"
+msgstr ""
+
+#: ../../manual/objects.rst:45
+msgid "Ellipses work the same way as `rectangles <#insert-rectangle>`__, except that they are rendered as an ellipse. Useful for when your area or collision shape needs to represent a circle or ellipse."
+msgstr ""
+
+#: ../../manual/objects.rst:50
+msgid "Insert Polygon"
+msgstr ""
+
+#: ../../manual/objects.rst:52
+msgid "Shortcut: ``P``"
+msgstr ""
+
+#: ../../manual/objects.rst:54
+msgid "Polygons are the most flexible way of defining the shape of an area. They are most commonly used for defining collision shapes."
+msgstr ""
+
+#: ../../manual/objects.rst:57
+msgid "When placing a polygon, the first click determines the location of the object as well as the location of the first point of the polygon. Subsequent clicks are used to add additional points to the polygon. Right click or press ``Enter`` to finish creating the polygon. Polygons needs to have at least three points. You can press ``Escape`` to cancel the creation of the polygon."
+msgstr ""
+
+#: ../../manual/objects.rst:64
+msgid "When you want to change a polygon after it has been placed, you need to use the `Edit Polygons <#edit-polygons>`__ tool."
+msgstr ""
+
+#: ../../manual/objects.rst:68
+msgid "Insert Polyline"
+msgstr ""
+
+#: ../../manual/objects.rst:70
+msgid "Shortcut: ``L``"
+msgstr ""
+
+#: ../../manual/objects.rst:72
+msgid "Polylines work very similar to `polygons <#insert-polygon>`__, except that they are rendered as a line and require only two points. While they can represent collision walls, they are also often used to represent paths to be followed."
+msgstr ""
+
+#: ../../manual/objects.rst:77
+msgid "Despite its name, the `Edit Polygons <#edit-polygons>`__ tool is also used to edit polylines."
+msgstr ""
+
+#: ../../manual/objects.rst:81
+msgid "Insert Tile"
+msgstr ""
+
+#: ../../manual/objects.rst:85
+msgid "Tiles can be inserted as objects to have full flexibility in placing, scaling and rotating the tile image on your map. Like all objects, tile objects can also have custom properties associated with them. This makes them useful for placement of recognizable interactive objects that need special information, like a chest with defined contents or an NPC with defined script."
+msgstr ""
+
+#: ../../manual/objects.rst:92
+msgid "To place a tile object, first select the tile you want to place in the Tilesets view. Then use the Left mouse button on the map to start placing the object, move to position it based on the preview and release to finish placing the object."
+msgstr ""
+
+#: ../../manual/objects.rst:107
+msgid "To change the tile used by existing tile objects, select all the objects you want to change using the `Select Objects <#select-objects>`__ tool and then right-click on a tile in the Tilesets view, and choose *Replace Tile of Selected Objects*."
+msgstr ""
+
+#: ../../manual/objects.rst:123
+msgid "Insert Text"
+msgstr ""
+
+#: ../../manual/objects.rst:125
+msgid "Shortcut: ``X``"
+msgstr ""
+
+#: ../../manual/objects.rst:127
+msgid "Text objects can be used to add arbitrary multi-line text to your maps. You can configure various font properties and the wrapping / clipping area, making them useful for both quick notes as well as text used in the game."
+msgstr ""
+
+#: ../../manual/objects.rst:133
+msgid "Select Objects"
+msgstr ""
+
+#: ../../manual/objects.rst:135
+msgid "Shortcut: ``S``"
+msgstr ""
+
+#: ../../manual/objects.rst:137
+msgid "When you're not inserting new objects, you're generally using the Select Objects tool. It packs a lot of functionality, which is outlined below."
+msgstr ""
+
+#: ../../manual/objects.rst:141
+msgid "Selecting and Deselecting"
+msgstr ""
+
+#: ../../manual/objects.rst:143
+msgid "You can select objects by clicking them or by dragging a rectangular lasso, selecting any object that intersect with its area. By holding ``Shift`` or ``Ctrl`` while clicking, you can add/remove single objects to/from the selection."
+msgstr ""
+
+#: ../../manual/objects.rst:148
+msgid "When pressing and dragging on an object, this object is selected and moved. When this prevents you from starting a rectangular selection, you can hold ``Shift`` to force the selection rectangle."
+msgstr ""
+
+#: ../../manual/objects.rst:162
+msgid "By default you interact with the top-most object. When you need to select an object below another object, first select the higher object and then hold ``Alt`` while clicking at the same location to select lower objects. You can also hold ``Alt`` while opening the context menu to get a list of all objects at the clicked location, so you may directly select the desired object."
+msgstr ""
+
+#: ../../manual/objects.rst:170
+msgid "Moving"
+msgstr ""
+
+#: ../../manual/objects.rst:172
+msgid "You can simply drag any single object, or drag already selected objects by dragging any one of them. Hold ``Ctrl`` to toggle snapping to the tile grid."
+msgstr ""
+
+#: ../../manual/objects.rst:176
+msgid "Hold ``Alt`` to force a move operation on the currently selected objects, regardless of where you click on the map. This is useful when the selected objects are small or covered by other objects."
+msgstr ""
+
+#: ../../manual/objects.rst:180
+msgid "The selected objects can also be moved with the arrow keys. By default this moves the objects pixel by pixel. Hold ``Shift`` while using the arrow keys to move the objects by distance of one tile."
+msgstr ""
+
+#: ../../manual/objects.rst:185
+msgid "Resizing"
+msgstr ""
+
+#: ../../manual/objects.rst:187
+msgid "You can use the resize handles to resize one or more selected objects. Hold ``Ctrl`` to keep the aspect ratio of the object and/or ``Shift`` to place the resize origin in the center."
+msgstr ""
+
+#: ../../manual/objects.rst:191
+msgid "Note that you can only change width and height independently when resizing a single object. When having multiple objects selected, the aspect ratio is constant because there would be no way to make that work for rotated objects without full support for transformations."
+msgstr ""
+
+#: ../../manual/objects.rst:197
+msgid "Rotating"
+msgstr ""
+
+#: ../../manual/objects.rst:199
+msgid "To rotate, click any selected object to change the resize handles into rotation handles. Before rotating, you can drag the rotation origin to another position if necessary. Hold ``Shift`` to rotate in 15-degree increments. Click any selected object again to go back to resize mode."
+msgstr ""
+
+#: ../../manual/objects.rst:204
+msgid "You can also rotate the selected objects in 90-degree steps by pressing ``Z`` or ``Shift + Z``."
+msgstr ""
+
+#: ../../manual/objects.rst:208
+msgid "Changing Stacking Order"
+msgstr ""
+
+#: ../../manual/objects.rst:210
+msgid "If the active :ref:`Object Layer <object-layer-introduction>` has its Drawing Order property set to Manual (the default is Top Down), you can control the stacking order of the selected objects within their object layer using the following keys:"
+msgstr ""
+
+#: ../../manual/objects.rst:215
+msgid "``PgUp`` - Raise selected objects"
+msgstr ""
+
+#: ../../manual/objects.rst:216
+msgid "``PgDown`` - Lower selected objects"
+msgstr ""
+
+#: ../../manual/objects.rst:217
+msgid "``Home`` - Move selected objects to Top"
+msgstr ""
+
+#: ../../manual/objects.rst:218
+msgid "``End`` - Move selected objects to Bottom"
+msgstr ""
+
+#: ../../manual/objects.rst:220
+msgid "You can also find these actions in the context menu. When you have multiple Object Layers, the context menu also contains actions to move the selected objects to another layer."
+msgstr ""
+
+#: ../../manual/objects.rst:225
+msgid "Flipping Objects"
+msgstr ""
+
+#: ../../manual/objects.rst:227
+msgid "You can flip the selected objects horizontally by pressing ``X`` or vertically by pressing ``Y``. For tile objects, this also flips their images."
+msgstr ""
+
+#: ../../manual/objects.rst:232
+msgid "Edit Polygons"
+msgstr ""
+
+#: ../../manual/objects.rst:236
+msgid "Polygons and polylines have their own editing needs and as such are covered by a separate tool, which allows selecting and moving around their nodes. You can select and move the nodes of multiple polygons at the same time."
+msgstr ""
+
+#: ../../manual/objects.rst:241
+msgid "Nodes can be deleted by selecting them and choosing \"Delete Nodes\" from the context menu. Careful with the ``Delete`` key, because that will delete the entire polygon (`#1555 <https://github.com/bjorn/tiled/issues/1555>`__)."
+msgstr ""
+
+#: ../../manual/objects.rst:246
+msgid "When you have selected multiple consecutive nodes of the same polygon, you can join them together by choosing \"Join Nodes\" from the context menu. You can also split the segments in between the nodes by choosing \"Split Segments\", which is currently the only way to extend an existing polygon."
+msgstr ""
+
+#: ../../manual/objects.rst:259
+msgid "Here are some ideas about improvements that could be made to the above tools:"
+msgstr ""
+
+#: ../../manual/objects.rst:262
+msgid "For the `Insert Tile <#insert-tile>`__ tool, show the preview already before pressing the left mouse button (`#537 <https://github.com/bjorn/tiled/issues/537>`__)"
+msgstr ""
+
+#: ../../manual/objects.rst:266
+msgid "Many improvements could be made to the support for editing polygons and polylines, like allowing to rotate and scale the selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
+msgstr ""
+
+#: ../../manual/using-commands.rst:2
+msgid "Using Commands"
+msgstr ""
+
+#: ../../manual/using-commands.rst:4
+msgid "The Command Button allows you to create and run shell commands (other programs) from Tiled."
+msgstr ""
+
+#: ../../manual/using-commands.rst:7
+msgid "You may setup as many commands as you like. This is useful if you edit maps for multiple games and you want to set up a command for each game. Or you could setup multiple commands for the same game that load different checkpoints or configurations."
+msgstr ""
+
+#: ../../manual/using-commands.rst:13
+msgid "The Command Button"
+msgstr ""
+
+#: ../../manual/using-commands.rst:15
+msgid "It is located on the main toolbar to the right of the redo button. Clicking on it will run the default command (the first command in the command list). Clicking the arrow next to it will bring down a menu that allows you to run any command you have set up, as well as an option to open the Edit Commands dialog."
+msgstr ""
+
+#: ../../manual/using-commands.rst:21
+msgid "You can press F5 as a shortcut to clicking the button to run the default command."
+msgstr ""
+
+#: ../../manual/using-commands.rst:25
+msgid "Editing Commands"
+msgstr ""
+
+#: ../../manual/using-commands.rst:27
+msgid "The 'Edit Commands' dialog contains a list of commands. Each command has several properties:"
+msgstr ""
+
+#: ../../manual/using-commands.rst:30
+msgid "**Name**: The name of the command as it will be shown in the drop down list, so you can easily identify it."
+msgstr ""
+
+#: ../../manual/using-commands.rst:32
+msgid "**Command**: The actual shell command to execute. This usually starts with an executable program followed by arguments. You can use the following variables:"
+msgstr ""
+
+#: ../../manual/using-commands.rst:36
+msgid "``%mapfile`` is replaced with the current maps full path."
+msgstr ""
+
+#: ../../manual/using-commands.rst:37
+msgid "``%mappath`` is replaced with the full folder path in which the map is located. (since Tiled 0.18)"
+msgstr ""
+
+#: ../../manual/using-commands.rst:39
+msgid "``%objecttype`` is replaced with the type of the currently selected object, if any. (since Tiled 0.12)"
+msgstr ""
+
+#: ../../manual/using-commands.rst:41
+msgid "``%objectid`` is replaced with the ID of the currently selected object, if any. (since Tiled 0.17)"
+msgstr ""
+
+#: ../../manual/using-commands.rst:43
+msgid "``%layername`` is replaced with the name of the currently selected layer. (since Tiled 0.17)"
+msgstr ""
+
+#: ../../manual/using-commands.rst:46
+msgid "**Enabled**: A quick way to disable commands and remove them from the drop down list."
+msgstr ""
+
+#: ../../manual/using-commands.rst:49
+msgid "The default command is the first enabled command."
+msgstr ""
+
+#: ../../manual/using-commands.rst:51
+msgid "You can also change whether or not it should save the current map before running commands."
+msgstr ""
+
+#: ../../manual/using-commands.rst:54
+msgid "Note that if the program or any of its arguments contain spaces, these parts need to be quoted."
+msgstr ""
+
+#: ../../manual/using-commands.rst:58
+msgid "Example Commands"
+msgstr ""
+
+#: ../../manual/using-commands.rst:60
+msgid "Launching a custom game called \"mygame\" with a -loadmap parameter and the mapfile:"
+msgstr ""
+
+#: ../../manual/using-commands.rst:67
+msgid "On Mac, remember that Apps are folders, so you need to run the actual executable from within the ``Contents/MacOS`` folder:"
+msgstr ""
+
+#: ../../manual/using-commands.rst:74
+msgid "Or use ``open`` (and note the quotes since one of the arguments contains spaces):"
+msgstr ""
+
+#: ../../manual/using-commands.rst:81
+msgid "Some systems also have a command to open files in the appropriate program:"
+msgstr ""
+
+#: ../../manual/using-commands.rst:84
+msgid "OSX: ``open %mapfile``"
+msgstr ""
+
+#: ../../manual/using-commands.rst:85
+msgid "GNOME systems like Ubuntu: ``gnome-open %mapfile``"
+msgstr ""
+
+#: ../../manual/using-commands.rst:86
+msgid "FreeDesktop.org standard: ``xdg-open %mapfile``"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:2
+msgid "Using the Terrain Tool"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:4
+msgid "Starting with Tiled 0.9.0, a new tool was added specifically to make editing tile maps easier when using terrain transitions. There are of course multiple ways to do transitions between tiles. The Terrain tool in Tiled supports transition tiles that have a well-defined terrain type at each of their 4 corners, which seems to be the most common method."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:10
+msgid "To demonstrate how to use this tool I will describe the steps necessary to reproduce the ``desert.tmx`` example map, which now also includes terrain information in its tileset."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:15
+msgid "Create a New Map and Add a Tileset"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:17
+msgid "First of all create a new orthogonal map with a tile size of 32x32 pixels."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:23
+msgid "Create Map Dialog"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:25
+msgid "Then, add the ``tmw_desert_spacing.png`` example tileset. This tileset uses a margin and spacing of 1 pixel (which is only to test if this functionality works, not because I'd recommend doing that)."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:32
+msgid "Add Tileset Dialog"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:34
+msgid "This tileset has 4 different terrain types. Traditionally editing a map with these tiles meant that you had to carefully connect the right transitions to avoid broken edges. Now we will define the terrain information for this tileset, which the Terrain tool will use to automatically place the right transitions."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:41
+msgid "Define the Terrain Information"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:43
+msgid "Click the small \"Edit Terrain Information\" button."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:48
+msgid "Edit Terrain Information button"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:50
+msgid "This dialog displays the list of terrain types in the tileset and allows you to mark corners of the tiles in your tileset as belonging to a certain terrain type. To start with, add each of the 4 terrain types. The fastest way is by right-clicking on a tile representing a certain terrain and choosing \"Add Terrain Type\". This automatically sets the tile as the image representing the terrain."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:60
+msgid "Edit Terrain Dialog"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:62
+msgid "Give each of the terrains an appropriate name. Once you're done, select the sand terrain and mark all corners in the tileset with this type of terrain. When you're done it should look like this:"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:69
+msgid "Mark Sand Terrain"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:71
+msgid "If you make a mistake, just use Undo (or press ``Ctrl+Z``). Or if you notice a mistake later, either use the eraser to clear a terrain type from a corner or select the correct terrain type and paint over it."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:75
+msgid "Do the same for each of the other terrain types. Eventually you'll have marked all tiles apart from the special objects."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:81
+msgid "Done Marking Terrain"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:83
+msgid "Now close the dialog so we can start trying out the Terrain tool."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:86
+msgid "Editing with the Terrain Tool"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:88
+msgid "Switch from the Tilesets to the Terrains window. You should see the 4 terrain types represented in a list. Click on the sand terrain and start painting. You may immediately notice that nothing special is happening. This is because there are no other tiles on the map yet so the terrain tool doesn't really know how to help (because we have no transitions to \"nothing\" in our tileset). Assuming we're out to create a desert map, it's better to start by filling your entire map with sand. Just switch back to the Tilesets window for a moment, select the sand tile and then use the Fill tool."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:98
+msgid "Let's switch back to the Terrains window and draw some cobblestones. Now you can see the tool in action!"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:104
+msgid "Drawing Cobblestone"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:106
+msgid "Try holding ``Control`` (``Command`` on a Mac) while drawing. This reduces the modified area to just the closest corner to the mouse, allowing for precision work."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:110
+msgid "Finally, see what happens when you try drawing some dirt on the cobblestone. Because there are no transitions from dirt directly to cobblestone, the Terrain tool first inserts transitions to sand and from there to cobblestone. Neat!"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:118
+msgid "Drawing Dirt"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:121
+msgid "Final Words"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:123
+msgid "Now you should have a pretty good idea about how to use this tool in your own project. A few things to keep in mind:"
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:126
+msgid "Currently the tool requires all terrain types to be part of the same tileset. You can have multiple tilesets with terrain in your map, but the tool can't perform automatic transitions from a terrain from one tileset to a terrain in another tileset. This usually means you may have to combine several tiles into one image."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:132
+msgid "Since defining the terrain information can be somewhat laboursome, you'll want to use the external tilesets feature of Tiled to share not only the image but also the terrain information among several maps. Note however, that it is not possible to edit the terrain information while the tileset is external. To work around this problem just temporarily import the tileset and then export it again."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:139
+msgid "The Terrain tool works fine with isometric maps as well (though not with the new \"staggered\" isometric maps). However, the Edit Terrain Information dialog is currently not able to render the overlay correctly for isometric tiles. When defining terrain for isometric tiles, imagine the top-left corner applies to the top of your isometric tile, the top-right corner applies to the right corner of your tile, etc. Check out the ``isometric_grass_and_water.tmx`` example when in doubt."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:148
+msgid "The tool will handle any number of terrain types and each corner of a tile can have a different type of terrain. Still, there are other ways of dealing with transitions that this tool can't handle. Also, it is not able to edit multiple layers at the same time. For a more flexible, but also more complicated way of automatic tile placement, check out [[Automapping]]."
+msgstr ""
+
+#: ../../manual/using-the-terrain-tool.rst:155
+msgid "I'm maintaining a `collection of tilesets <http://opengameart.org/content/terrain-transitions>`__ that contain transitions that are compatible with this tool on `OpenGameArt.org <http://opengameart.org/>`__."
+msgstr ""
+

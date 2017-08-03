@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-24 18:04+0200\n"
+"POT-Creation-Date: 2017-08-03 17:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../../index.rst:2
-msgid "Tiled Manual"
+msgid "Tiled Documentation"
 msgstr ""
 
 #: ../../index.rst:5
@@ -29,6 +29,10 @@ msgid "This documentation is currently work-in-progress. Initially the relevant 
 msgstr ""
 
 #: ../../index.rst:15
-msgid "Contents"
+msgid "Manual"
+msgstr ""
+
+#: ../../index.rst:30
+msgid "Reference"
 msgstr ""
 
