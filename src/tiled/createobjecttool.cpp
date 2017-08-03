@@ -204,6 +204,7 @@ void CreateObjectTool::finishNewMapObject()
     }
 
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    newMapObject->setComplete(true);
     clearNewMapObjectItem();
 
     auto addObjectCommand = new AddMapObject(mapDocument(),

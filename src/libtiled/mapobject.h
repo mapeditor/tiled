@@ -176,6 +176,9 @@ public:
     bool isVisible() const;
     void setVisible(bool visible);
 
+    bool isComplete() const;
+    void setComplete(bool complete);
+
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
@@ -200,6 +203,7 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    bool mComplete;
 };
 
 /**
@@ -423,6 +427,12 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline bool MapObject::isComplete() const
+{ return mComplete; }
+
+inline void MapObject::setComplete(bool complete)
+{ mComplete = complete; }
 
 } // namespace Tiled
 

@@ -398,19 +398,36 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         case MapObject::Polyline: {
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
+            QPolygonF completePolyline(screenPolygon);
+            if (!object->isComplete())
+                completePolyline.pop_back();
+
+            QPolygonF previewPolyline(2);
+            previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
+            previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+
             QPen thickShadowPen(shadowPen);
             QPen thickLinePen(linePen);
             thickShadowPen.setWidthF(thickShadowPen.widthF() * 4);
             thickLinePen.setWidthF(thickLinePen.widthF() * 4);
 
             painter->setPen(shadowPen);
-            painter->drawPolyline(screenPolygon.translated(shadowOffset));
+            painter->drawPolyline(completePolyline.translated(shadowOffset));
             painter->setPen(thickShadowPen);
             painter->drawPoint(screenPolygon.first() + shadowOffset);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
-            painter->drawPolyline(screenPolygon);
+            painter->drawPolyline(completePolyline);
+
+            if (!object->isComplete()) {
+                QColor previewColor(color);
+                previewColor.setAlpha(color.alpha() / 3);
+                linePen.setColor(previewColor);
+                painter->setPen(linePen);
+                painter->drawPolyline(previewPolyline);
+            }
+
             painter->setPen(thickLinePen);
             painter->drawPoint(screenPolygon.first());
             break;
