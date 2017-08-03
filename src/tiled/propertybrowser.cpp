@@ -1554,6 +1554,16 @@ void PropertyBrowser::updateCustomProperties()
         auto mapObject = static_cast<MapObject*>(mObject);
         objectType = mapObject->type();
 
+        // Inherit properties from the template
+        if (const MapObject *templateObject = mapObject->templateObject()) {
+            QMapIterator<QString,QVariant> it(templateObject->properties());
+            while (it.hasNext()) {
+                it.next();
+                if (!mCombinedProperties.contains(it.key()))
+                    mCombinedProperties.insert(it.key(), it.value());
+            }
+        }
+
         if (Tile *tile = mapObject->cell().tile()) {
             if (objectType.isEmpty())
                 objectType = tile->type();
