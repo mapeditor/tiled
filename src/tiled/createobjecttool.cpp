@@ -50,7 +50,6 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
     , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
     , mNewMapObjectItem(nullptr)
     , mOverlayPolygonItem(nullptr)
-    , mTile(nullptr)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }

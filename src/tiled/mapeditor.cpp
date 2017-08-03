@@ -243,7 +243,8 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
     connect(mToolManager, &ToolManager::statusInfoChanged, this, &MapEditor::updateStatusInfoLabel);
-    connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged, mToolManager, &ToolManager::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
     connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, templatesTool, &CreateTemplateTool::setTemplate);

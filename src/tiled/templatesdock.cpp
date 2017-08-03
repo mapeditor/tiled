@@ -80,6 +80,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
     connect(mOpenTemplateGroup, &QAction::triggered, this, &TemplatesDock::openTemplateGroup);
+    connect(this, &TemplatesDock::setTile, mToolManager, &ToolManager::setTile);
 
     toolBar->addAction(mNewTemplateGroup);
     toolBar->addAction(mOpenTemplateGroup);
@@ -350,8 +351,15 @@ void TemplatesDock::redo()
 
 void TemplatesDock::applyChanges()
 {
+    TemplateGroup *templateGroup = mObjectTemplate->templateGroup();
+
+    // Add the tileset of the new tile in case the operation was change tile
+    // TODO: only save used tilesets
+    if (auto tileset = mObject->cell().tileset())
+        templateGroup->addTileset(tileset->sharedPointer());
+
     mObjectTemplate->setObject(mObject);
-    ObjectTemplateModel::instance()->save(mObjectTemplate->templateGroup());
+    ObjectTemplateModel::instance()->save(templateGroup);
 
     mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
     mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());

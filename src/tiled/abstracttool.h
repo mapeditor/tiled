@@ -36,6 +36,7 @@ class QToolBar;
 namespace Tiled {
 
 class Layer;
+class Tile;
 
 namespace Internal {
 
@@ -90,6 +91,8 @@ public:
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
+
+    Tile *tile() const;
 
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
@@ -148,6 +151,7 @@ public:
 
 public slots:
     void setMapDocument(MapDocument *mapDocument);
+    void setTile(Tile *tile);
 
 protected:
     /**
@@ -186,6 +190,7 @@ private:
     QString mStatusInfo;
     QCursor mCursor;
     bool mEnabled;
+    Tile *mTile;
 
     MapDocument *mMapDocument;
 };
@@ -234,6 +239,16 @@ inline QCursor AbstractTool::cursor() const
 inline bool AbstractTool::isEnabled() const
 {
     return mEnabled;
+}
+
+inline Tile *AbstractTool::tile() const
+{
+    return mTile;
+}
+
+inline void AbstractTool::setTile(Tile *tile)
+{
+    mTile = tile;
 }
 
 } // namespace Internal

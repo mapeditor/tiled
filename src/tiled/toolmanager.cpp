@@ -35,6 +35,7 @@ ToolManager::ToolManager(QObject *parent)
     , mDisabledTool(nullptr)
     , mPreviouslyDisabledTool(nullptr)
     , mMapDocument(nullptr)
+    , mTile(nullptr)
     , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
@@ -146,6 +147,13 @@ void ToolManager::retranslateTools()
     }
 }
 
+void ToolManager::setTile(Tile *tile)
+{
+    mTile = tile;
+    if (mSelectedTool)
+        mSelectedTool->setTile(mTile);
+}
+
 void ToolManager::toolEnabledChanged(bool enabled)
 {
     AbstractTool *tool = qobject_cast<AbstractTool*>(sender());
@@ -220,5 +228,6 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         emit statusInfoChanged(mSelectedTool->statusInfo());
         connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
                 this, SIGNAL(statusInfoChanged(QString)));
+        tool->setTile(mTile);
     }
 }

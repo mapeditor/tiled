@@ -31,6 +31,7 @@ namespace Tiled {
 
 class ObjectTemplate;
 class MapObject;
+class Tile;
 
 namespace Internal {
 
@@ -56,6 +57,7 @@ public:
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
     void templateEdited(const MapObject *mapObject);
+    void setTile(Tile *tile);
 
 private slots:
     void setSelectedTool(AbstractTool*tool);

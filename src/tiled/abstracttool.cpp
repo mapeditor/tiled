@@ -35,6 +35,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mIcon(icon)
     , mShortcut(shortcut)
     , mEnabled(false)
+    , mTile(nullptr)
     , mMapDocument(nullptr)
 {
 }
