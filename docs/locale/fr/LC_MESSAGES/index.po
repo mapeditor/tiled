@@ -3,23 +3,27 @@
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-03 17:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2017-08-04 14:06+0000\n"
+"Last-Translator: Dieppedalle David <dieppedalle.david@yahoo.fr>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled"
+"/documentation-index/fr/>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.16-dev\n"
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../index.rst:2
+#, fuzzy
 msgid "Tiled Manual"
-msgstr ""
+msgstr "Manuel d'utilisation de Tiled"
 
 #: ../../index.rst:5
 msgid ""
@@ -27,16 +31,25 @@ msgid ""
 "don't hesitate to ask questions on the `Tiled Forum "
 "<http://discourse.mapeditor.org>`_."
 msgstr ""
+"Si vous ne trouvez pas ce que vous cherchez dans ces pages, n'hésitez pas à "
+"poser des questions sur \"le Forum Tiled <http://discourse.mapeditor.org >\" "
+"_."
 
 #: ../../index.rst:9
+#, fuzzy
 msgid ""
 "This documentation is currently work-in-progress. Initially the relevant "
 "pages from the wiki have been ported over, providing a limited amount of "
 "documentation for specific Tiled features. Over time, this should become "
 "the place to refer to for any details about using Tiled."
 msgstr ""
+"Cette documentation est actuellement en cours d'édition. Initialement les "
+"pages pertinentes du wiki ont été portées, fournissant un montant limité de "
+"documentation pour des caractéristiques Tiled spécifiques. Au fil du temps, "
+"ceci devrait devenir l'endroit pour se référer à pour n'importe quels "
+"détails d'utiliser Tiled."
 
 #: ../../index.rst:15
+#, fuzzy
 msgid "Contents"
-msgstr ""
-
+msgstr "Table des matières"

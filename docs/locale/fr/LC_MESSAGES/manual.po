@@ -3,102 +3,137 @@
 # This file is distributed under the same license as the Tiled package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-03 17:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2017-08-05 16:20+0000\n"
+"Last-Translator: Dieppedalle David <dieppedalle.david@yahoo.fr>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
+"\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.16-dev\n"
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../manual/custom-properties.rst:2
 msgid "Custom Properties"
-msgstr ""
+msgstr "Propriétés personnalisées"
 
 #: ../../manual/custom-properties.rst:4
+#, fuzzy
 msgid ""
 "One of the major strengths of Tiled is that it allows setting custom "
 "properties on all of its basic data structures. This way it is possible "
 "to include many forms of custom information, which can later be used by "
 "your game or by the framework you're using to integrate Tiled maps."
 msgstr ""
+"Une des grandes forces de Tiled, est qu'il permet de définir des propriétés "
+"personnalisées sur l'ensemble de ses structures de base de données. De cette "
+"manière, il est possible d'inclure de nombreuses formes d'information "
+"personnalisée, qui peuvent être ensuite utilisé par votre jeu ou par le "
+"framework que vous utilisez pour intégrer une carte de Tiled."
 
 #: ../../manual/custom-properties.rst:9
+#, fuzzy
 msgid ""
 "Custom properties are displayed in the Properties view. This view is "
 "context-sensitive, usually displaying the properties of the last selected"
 " object. For tiles in a tileset or objects on an object layer, it also "
 "supports multi-selection."
 msgstr ""
+"Les propriétés personnalisées sont affichées dans la vue Propriétés. Ce "
+"point de vue est sensible au contexte, généralement en affichant les "
+"propriétés du dernier objet sélectionné. Pour les tuiles dans un tileset ou "
+"des objets sur un calque d'objet, il prend également en charge le multi-"
+"sélection."
 
 #: ../../manual/custom-properties.rst:17
+#, fuzzy
 msgid "Properties View"
-msgstr ""
+msgstr "Propriétés De La Vue"
 
 #: ../../manual/custom-properties.rst:20
+#, fuzzy
 msgid "Adding Properties"
-msgstr ""
+msgstr "Ajout de propriétés"
 
 #: ../../manual/custom-properties.rst:22
+#, fuzzy
 msgid ""
 "When you add a property (using the '+' button at the bottom of the "
 "Properties view), you are prompted for its name and its type. Currently "
 "Tiled supports the following basic property types:"
 msgstr ""
+"Lorsque vous ajoutez une propriété (en utilisant le bouton \" + \" en bas de "
+"la Propriétés \"vue\"), vous êtes invité à entrer son nom et son type. "
+"Actuellement Tiled prend en charge la base suivant les types de propriétés:"
 
 #: ../../manual/custom-properties.rst:26
 msgid "**string** (any text, including multi-line text)"
-msgstr ""
+msgstr "**string** (n’importe quel texte, y compris le texte multi-ligne)"
 
 #: ../../manual/custom-properties.rst:27
+#, fuzzy
 msgid "**float** (a floating point number)"
-msgstr ""
+msgstr "**float** (un nombre à virgule flottante)"
 
 #: ../../manual/custom-properties.rst:28
+#, fuzzy
 msgid "**int** (a whole number)"
-msgstr ""
+msgstr "**int** (un nombre entier)"
 
 #: ../../manual/custom-properties.rst:29
+#, fuzzy
 msgid "**bool** (true or false)"
-msgstr ""
+msgstr "**bool** (vrai ou faux)"
 
 #: ../../manual/custom-properties.rst:30
+#, fuzzy
 msgid "**file** (a relative path referencing a file)"
-msgstr ""
+msgstr "**file** (un chemin d’accès relatif qui référence un fichier)"
 
 #: ../../manual/custom-properties.rst:31
+#, fuzzy
 msgid "**color** (a 32-bit color value)"
-msgstr ""
+msgstr "**color** (une valeur de couleur 32 bits)"
 
 #: ../../manual/custom-properties.rst:36
+#, fuzzy
 msgid "Add Property Dialog"
-msgstr ""
+msgstr "Ajouter La Boîte De Dialogue De Propriété"
 
 #: ../../manual/custom-properties.rst:38
+#, fuzzy
 msgid ""
 "The property type is used to choose a custom editor in the Properties "
 "view. Choosing a number or boolean type also avoids that the value will "
 "get quoted in JSON and Lua exports."
 msgstr ""
+"Le type de propriété est utilisée pour choisir un éditeur personnalisé dans "
+"la Propriétés \"vue\". Le choix d'un nombre ou le type booléen permet "
+"également d'éviter que la valeur obtenu en JSON et Lua soit cité dans "
+"l'exportations."
 
 #: ../../manual/custom-properties.rst:46 ../../manual/custom-properties.rst:106
 #: ../../manual/editing-tile-layers.rst:59 ../../manual/layers.rst:99
 #: ../../manual/objects.rst:101 ../../manual/objects.rst:116
 #: ../../manual/objects.rst:156
+#, fuzzy
 msgid "New in Tiled 1.0"
-msgstr ""
+msgstr "Nouveau dans Tiled 1.0"
 
 #: ../../manual/custom-properties.rst:55
+#, fuzzy
 msgid "Tile Property Inheritance"
-msgstr ""
+msgstr "Héritage de propriété de tuile"
 
 #: ../../manual/custom-properties.rst:57
+#, fuzzy
 msgid ""
 "When custom properties are added to a tile, these properties will also be"
 " visible when an object instance of that tile is selected. This enables "
@@ -106,6 +141,11 @@ msgid ""
 "a tile. This becomes especially useful when combined with :ref:`typed-"
 "tiles`."
 msgstr ""
+"Lorsque les propriétés personnalisées sont ajoutées à une tuile, ces "
+"propriétés seront également visibles lorsqu’une instance de l’objet de cette "
+"tuile est sélectionnée. Cela permet facile par objet, la substitution de "
+"certaines propriétés par défaut associées à un carreau. Cela devient "
+"particulièrement utile lorsqu’il est combiné avec :ref:`typed-tiles`."
 
 #: ../../manual/custom-properties.rst:63
 msgid ""
@@ -1844,4 +1884,3 @@ msgid ""
 "/terrain-transitions>`__ that contain transitions that are compatible "
 "with this tool on `OpenGameArt.org <http://opengameart.org/>`__."
 msgstr ""
-
