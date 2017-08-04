@@ -39,6 +39,7 @@
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
@@ -181,6 +182,20 @@ void EditPolygonTool::deactivate(MapScene *scene)
     AbstractObjectTool::deactivate(scene);
 }
 
+void EditPolygonTool::keyPressed(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Escape:
+        if (mMode == Extending) {
+            cancelAddingNode();
+            return;
+        }
+        break;
+    }
+
+    AbstractObjectTool::keyPressed(event);
+}
+
 void EditPolygonTool::mouseEntered()
 {
 }
@@ -208,6 +223,9 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     case Moving:
         updateMovingItems(pos, modifiers);
         break;
+    case Extending:
+        addNode(pos, modifiers);
+        break;
     case NoMode:
         break;
     }
@@ -233,11 +251,16 @@ static QTransform viewTransform(QGraphicsSceneMouseEvent *event)
 
 void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mMode != NoMode) // Ignore additional presses during select/move
+    if (mMode != NoMode && mMode != Extending) // Ignore additional presses during select/move
         return;
 
     switch (event->button()) {
     case Qt::LeftButton: {
+        if (mMode == Extending) {
+            finishAddingNode();
+            break;
+        }
+
         mMousePressed = true;
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
@@ -260,6 +283,11 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         break;
     }
     case Qt::RightButton: {
+        if (mMode == Extending) {
+            cancelAddingNode();
+            break;
+        }
+
         const QList<QGraphicsItem *> items = mapScene()->items(event->scenePos(),
                                                                Qt::IntersectsItemShape,
                                                                Qt::DescendingOrder,
@@ -330,6 +358,8 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         break;
     case Moving:
         finishMoving(event->scenePos());
+        break;
+    case Extending:
         break;
     }
 
@@ -566,6 +596,68 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     }
 }
 
+void EditPolygonTool::addNode(const QPointF &pos,
+                              Qt::KeyboardModifiers modifiers)
+{
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
+
+    const auto &selectedHandle = *mSelectedHandles.begin();
+    const MapObjectItem *item = selectedHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    pixelCoords -= mapObject->position();
+
+    QPolygonF polygon = mapObject->polygon();
+    qreal distance = (polygon.last() - polygon.first()).manhattanLength();
+
+    if (selectedHandle->pointIndex() == 0)
+        polygon.first() = pixelCoords;
+    else
+        polygon.last() = pixelCoords;
+
+    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, polygon);
+}
+
+void EditPolygonTool::finishAddingNode()
+{
+    mMode = NoMode;
+
+    const auto &selectedHandle = *mSelectedHandles.begin();
+    const MapObjectItem *item = selectedHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    mapObject->setComplete(true);
+
+    QMapIterator<MapObject*, QPolygonF> i(mOldPolygons);
+    while (i.hasNext()) {
+        i.next();
+        mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), i.key(), i.value()));
+    }
+}
+
+void EditPolygonTool::cancelAddingNode()
+{
+    mMode = NoMode;
+
+    const auto &selectedHandle = *mSelectedHandles.begin();
+    const MapObjectItem *item = selectedHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    mapObject->setComplete(true);
+
+    QPolygonF polygon = mapObject->polygon();
+
+    if (selectedHandle->pointIndex() == 0)
+        polygon.removeFirst();
+    else
+        polygon.removeLast();
+
+    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, polygon);
+}
+
 void EditPolygonTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mMode == Moving);
@@ -617,6 +709,19 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(deleteNodesAction, SIGNAL(triggered()), SLOT(deleteNodes()));
     connect(joinNodesAction, SIGNAL(triggered()), SLOT(joinNodes()));
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
+
+    const auto firstHandle = *mSelectedHandles.begin();
+    MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
+
+    if (mapObject->shape() == MapObject::Polyline) {
+        QAction *extendPolyline = menu.addAction(tr("Extend Polyline"));
+
+        bool handleCanBeExtended = (firstHandle->pointIndex() == mapObject->polygon().size() - 1) ||
+                                   (firstHandle->pointIndex() == 0);
+
+        extendPolyline->setEnabled(n == 1 && handleCanBeExtended);
+        connect(extendPolyline, SIGNAL(triggered()), SLOT(extendPolyline()));
+    }
 
     menu.exec(screenPos);
 }
@@ -869,4 +974,32 @@ void EditPolygonTool::splitSegments()
 
     if (macroStarted)
         undoStack->endMacro();
+}
+
+void EditPolygonTool::extendPolyline()
+{
+    if (mSelectedHandles.size() != 1)
+        return;
+
+    mMode = Extending;
+
+    const auto &selectedHandle = *mSelectedHandles.begin();
+    const MapObjectItem *item = selectedHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    QPolygonF polygon = mapObject->polygon();
+
+    mOldPolygons.clear();
+    if (!mOldPolygons.contains(mapObject))
+        mOldPolygons.insert(mapObject, polygon);
+
+    if (selectedHandle->pointIndex() == 0)
+        polygon.prepend(polygon.first());
+    else
+        polygon.append(polygon.last());
+
+    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, polygon);
+
+    mapObject->setComplete(false);
+    mapObject->setLastEdgeIncomplete(selectedHandle->pointIndex());
 }

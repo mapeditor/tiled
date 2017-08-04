@@ -179,6 +179,9 @@ public:
     bool isComplete() const;
     void setComplete(bool complete);
 
+    bool lastEdgeIncomplete() const;
+    void setLastEdgeIncomplete(bool lastEdgeIncomplete);
+
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
@@ -204,6 +207,7 @@ private:
     qreal mRotation;
     bool mVisible;
     bool mComplete;
+    bool mLastEdgeIncomplete;
 };
 
 /**
@@ -433,6 +437,12 @@ inline bool MapObject::isComplete() const
 
 inline void MapObject::setComplete(bool complete)
 { mComplete = complete; }
+
+inline bool MapObject::lastEdgeIncomplete() const
+{ return mLastEdgeIncomplete; }
+
+inline void MapObject::setLastEdgeIncomplete(bool lastEdgeIncomplete)
+{ mLastEdgeIncomplete = lastEdgeIncomplete; }
 
 } // namespace Tiled
 

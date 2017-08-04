@@ -399,12 +399,22 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
             QPolygonF completePolyline(screenPolygon);
-            if (!object->isComplete())
-                completePolyline.pop_back();
+            if (!object->isComplete()) {
+                if (object->lastEdgeIncomplete())
+                    completePolyline.removeLast();
+                else
+                    completePolyline.removeFirst();
+            }
 
             QPolygonF previewPolyline(2);
-            previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
-            previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+
+            if (object->lastEdgeIncomplete()) {
+                previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
+                previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+            } else {
+                previewPolyline[0] = screenPolygon[0];
+                previewPolyline[1] = screenPolygon[1];
+            }
 
             QPen thickShadowPen(shadowPen);
             QPen thickLinePen(linePen);

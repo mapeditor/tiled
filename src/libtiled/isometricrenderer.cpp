@@ -442,15 +442,25 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
             if (screenPolygon.size() == 1)
-                screenPolygon.push_back(screenPolygon[0]);
+                screenPolygon.append(screenPolygon[0]);
 
             QPolygonF completePolyline(screenPolygon);
-            if (!object->isComplete())
-                completePolyline.pop_back();
+            if (!object->isComplete()) {
+                if (object->lastEdgeIncomplete())
+                    completePolyline.removeLast();
+                else
+                    completePolyline.removeFirst();
+            }
 
             QPolygonF previewPolyline(2);
-            previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
-            previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+
+            if (object->lastEdgeIncomplete()) {
+                previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
+                previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+            } else {
+                previewPolyline[0] = screenPolygon[0];
+                previewPolyline[1] = screenPolygon[1];
+            }
 
             QPen thickPen(pen);
             QPen thickColorPen(colorPen);

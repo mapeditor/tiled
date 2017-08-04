@@ -48,6 +48,7 @@ public:
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
+    void keyPressed(QKeyEvent *event) override;
     void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
@@ -64,12 +65,14 @@ private slots:
     void deleteNodes();
     void joinNodes();
     void splitSegments();
+    void extendPolyline();
 
 private:
     enum Mode {
         NoMode,
         Selecting,
-        Moving
+        Moving,
+        Extending
     };
 
     void setSelectedHandles(const QSet<PointHandle*> &handles);
@@ -83,9 +86,17 @@ private:
     void startMoving();
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
+
+    void addNode(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+
+    void finishAddingNode();
+
+    void cancelAddingNode();
+
     void finishMoving(const QPointF &pos);
 
     void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
+
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;

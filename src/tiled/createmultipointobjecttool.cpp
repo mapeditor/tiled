@@ -40,6 +40,9 @@ CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     , mOverlayPolygonObject(new MapObject)
     , mOverlayObjectGroup(new ObjectGroup)
 {
+    mOverlayPolygonObject->setLastEdgeIncomplete(true);
+    mOverlayPolygonObject->setComplete(false);
+
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 
     QColor highlight = QApplication::palette().highlight().color();

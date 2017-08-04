@@ -47,6 +47,7 @@ MapObject *CreatePolylineObjectTool::createNewMapObject()
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Polyline);
     newMapObject->setComplete(false);
+    newMapObject->setLastEdgeIncomplete(true);
     return newMapObject;
 }
 
