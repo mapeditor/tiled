@@ -20,14 +20,16 @@
 
 #include "wangfiller.h"
 
+#include "map.h"
 #include "randompicker.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "wangset.h"
 
 using namespace Tiled;
 using namespace Internal;
 
-static const QPoint adjacentPoints[] = {
+static const QPoint aroundTilePoints[] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -48,14 +50,49 @@ void WangFiller::setWangSet(WangSet *wangSet)
     mWangSet = wangSet;
 }
 
+static QPoint *getSurroundingPoints(QPoint point, StaggeredRenderer *staggeredRenderer, Map::StaggerAxis staggerAxis)
+{
+    QPoint *adjacentPoints = (QPoint*)malloc(sizeof(QPoint) * 8);
+    if (staggeredRenderer) {
+        adjacentPoints[0] = staggeredRenderer->topRight(point.x(), point.y());
+        adjacentPoints[2] = staggeredRenderer->bottomRight(point.x(), point.y());
+        adjacentPoints[4] = staggeredRenderer->bottomLeft(point.x(), point.y());
+        adjacentPoints[6] = staggeredRenderer->topLeft(point.x(), point.y());
+
+        if (staggerAxis == Map::StaggerX) {
+            adjacentPoints[1] = point + QPoint(2, 0);
+            adjacentPoints[3] = point + QPoint(0, 1);
+            adjacentPoints[5] = point + QPoint(-2, 0);
+            adjacentPoints[7] = point + QPoint(0, -1);
+        } else {
+            adjacentPoints[1] = point + QPoint(1, 0);
+            adjacentPoints[3] = point + QPoint(0, 2);
+            adjacentPoints[5] = point + QPoint(-1, 0);
+            adjacentPoints[7] = point + QPoint(0, -2);
+        }
+    } else {
+        for (int i = 0; i < 8; ++i)
+            adjacentPoints[i] = point + aroundTilePoints[i];
+    }
+
+    return adjacentPoints;
+}
+
 Cell WangFiller::findFittingCell(const TileLayer &back,
                                  const TileLayer &front,
                                  const QRegion &fillRegion,
-                                 QPoint point) const
+                                 QPoint point,
+                                 StaggeredRenderer *staggeredRenderer,
+                                 Map::StaggerAxis staggerAxis) const
 {
     Q_ASSERT(mWangSet);
 
-    QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back, front, fillRegion, point));
+    QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back,
+                                                                                           front,
+                                                                                           fillRegion,
+                                                                                           point,
+                                                                                           staggeredRenderer,
+                                                                                           staggerAxis));
     RandomPicker<WangTile> wangTiles;
 
     for (const WangTile &wangTile : wangTilesList)
@@ -69,9 +106,12 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
             wangTile = wangTiles.take();
 
             bool continueFlag = false;
+
+            QPoint *adjacentPoints = getSurroundingPoints(point, staggeredRenderer, staggerAxis);
+
             //now goes through and checks adjacents, continuing if any can't be filled
             for (int i = 0; i < 8; ++i) {
-                QPoint adjacentPoint = point + adjacentPoints[i];
+                QPoint adjacentPoint = adjacentPoints[i];
 
                 //check if the point is empty, otherwise, continue.
                 if (!getCell(back, front, fillRegion, adjacentPoint).isEmpty())
@@ -80,7 +120,9 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
                 WangId adjacentWangId = wangIdFromSurroundings(back,
                                                                front,
                                                                fillRegion,
-                                                               adjacentPoint);
+                                                               adjacentPoint,
+                                                               staggeredRenderer,
+                                                               staggerAxis);
                 WangId wangId = wangTile.wangId();
                 adjacentWangId.updateToAdjacent(wangId, (i + 4) % 8);
 
@@ -89,6 +131,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
                     break;
                 }
             }
+            delete adjacentPoints;
 
             if (!continueFlag)
                 break;
@@ -101,8 +144,12 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
 }
 
 TileLayer *WangFiller::fillRegion(const TileLayer &back,
-                                  const QRegion &fillRegion) const
+                                  const QRegion &fillRegion,
+                                  StaggeredRenderer *staggeredRenderer,
+                                  Map::StaggerAxis staggerAxis) const
 {
+    Q_ASSERT(mWangSet);
+
     QRect boundingRect = fillRegion.boundingRect();
 
     TileLayer *tileLayer = new TileLayer(QString(),
@@ -115,17 +162,33 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
     for (const QRect &rect : fillRegion.rects()) {
         for (int x = rect.left(); x <= rect.right(); ++x) {
             int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.top()));
+            wangIds[index] = wangIdFromSurroundings(back,
+                                                    fillRegion,
+                                                    QPoint(x, rect.top()),
+                                                    staggeredRenderer,
+                                                    staggerAxis);
 
             index = x - tileLayer->x() + (rect.bottom() - tileLayer->y())*tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(x, rect.bottom()));
+            wangIds[index] = wangIdFromSurroundings(back,
+                                                    fillRegion,
+                                                    QPoint(x, rect.bottom()),
+                                                    staggeredRenderer,
+                                                    staggerAxis);
         }
         for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
             int index = rect.left() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(rect.left(), y));
+            wangIds[index] = wangIdFromSurroundings(back,
+                                                    fillRegion,
+                                                    QPoint(rect.left(), y),
+                                                    staggeredRenderer,
+                                                    staggerAxis);
 
             index = rect.right() - tileLayer->x() + (y - tileLayer->y())*tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back, fillRegion, QPoint(rect.right(), y));
+            wangIds[index] = wangIdFromSurroundings(back,
+                                                    fillRegion,
+                                                    QPoint(rect.right(), y),
+                                                    staggeredRenderer,
+                                                    staggerAxis );
         }
     }
 
@@ -146,8 +209,11 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
 
                     bool fill = true;
                     if (!mWangSet->isComplete()) {
+
+                        QPoint *adjacentPoints = getSurroundingPoints(currentPoint, staggeredRenderer, staggerAxis);
+
                         for (int i = 0; i < 8; ++i) {
-                            QPoint p = currentPoint + adjacentPoints[i];
+                            QPoint p = adjacentPoints[i];
                             if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
                             p -= tileLayer->position();
@@ -162,6 +228,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                                 break;
                             }
                         }
+                        delete adjacentPoints;
                     }
 
                     if (fill) {
@@ -169,14 +236,16 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                                            currentPoint.y() - tileLayer->y(),
                                            wangTile.makeCell());
 
+                        QPoint *adjacentPoints = getSurroundingPoints(currentPoint, staggeredRenderer, staggerAxis);
                         for (int i = 0; i < 8; ++i) {
-                            QPoint p = currentPoint + adjacentPoints[i];
+                            QPoint p = adjacentPoints[i];
                             if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
                                 continue;
                             p -= tileLayer->position();
                             int index = p.y() * tileLayer->width() + p.x();
                             wangIds[index].updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
                         }
+                        delete adjacentPoints;
 
                         break;
                     }
@@ -207,27 +276,36 @@ const Cell &WangFiller::getCell(const TileLayer &back,
 WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
                                           const TileLayer &front,
                                           const QRegion &fillRegion,
-                                          QPoint point) const
+                                          QPoint point,
+                                          StaggeredRenderer *staggeredRenderer,
+                                          Map::StaggerAxis staggerAxis) const
 {
     Cell surroundingCells[8];
 
+    QPoint *adjacentPoints = getSurroundingPoints(point, staggeredRenderer, staggerAxis);
+
     for (int i = 0; i < 8; ++i)
-        surroundingCells[i] = getCell(back, front, fillRegion, point + adjacentPoints[i]);
+        surroundingCells[i] = getCell(back, front, fillRegion, adjacentPoints[i]);
+    delete adjacentPoints;
 
     return mWangSet->wangIdFromSurrounding(surroundingCells);
 }
 
 WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
                                           const QRegion &fillRegion,
-                                          QPoint point) const
+                                          QPoint point,
+                                          StaggeredRenderer *staggeredRenderer,
+                                          Map::StaggerAxis staggerAxis) const
 {
     Cell surroundingCells[8];
 
+    QPoint *adjacentPoints = getSurroundingPoints(point, staggeredRenderer, staggerAxis);
+
     for (int i = 0; i < 8; ++i) {
-        QPoint adjacentPoint = point + adjacentPoints[i];
-        if (!fillRegion.contains(adjacentPoint) && back.contains(adjacentPoint))
-            surroundingCells[i] = back.cellAt(adjacentPoint);
+        if (!fillRegion.contains(adjacentPoints[i]) && back.contains(adjacentPoints[i]))
+            surroundingCells[i] = back.cellAt(adjacentPoints[i]);
     }
+    delete adjacentPoints;
 
     return mWangSet->wangIdFromSurrounding(surroundingCells);
 }

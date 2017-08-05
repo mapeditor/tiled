@@ -27,6 +27,9 @@
 #include <QPoint>
 
 namespace Tiled {
+
+class StaggeredRenderer;
+
 namespace Internal {
 
 /**
@@ -52,7 +55,9 @@ public:
     Cell findFittingCell(const TileLayer &back,
                          const TileLayer &front,
                          const QRegion &fillRegion,
-                         QPoint point) const;
+                         QPoint point,
+                         StaggeredRenderer *staggeredRenderer = nullptr,
+                         Map::StaggerAxis staggerAxis = Map::StaggerX) const;
 
     /* Returns a tilelayer which has fillRegion filled with wang methods.
      * If lookForward is true, this will only choose a cell
@@ -60,7 +65,9 @@ public:
      * be filled. If non exist, then no cell will be choosen.
      * */
     TileLayer *fillRegion(const TileLayer &back,
-                          const QRegion &fillRegion) const;
+                          const QRegion &fillRegion,
+                          StaggeredRenderer *staggeredRenderer = nullptr,
+                          Map::StaggerAxis staggerAxis = Map::StaggerX) const;
 
 private:
     //gets a cell from either the back or front, based on
@@ -76,13 +83,17 @@ private:
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const TileLayer &front,
                                   const QRegion &fillRegion,
-                                  QPoint point) const;
+                                  QPoint point,
+                                  StaggeredRenderer *staggeredRenderer = nullptr,
+                                  Map::StaggerAxis staggerAxis = Map::StaggerX) const;
 
     //gets a wangId based on cells from back which are not in the fillRegion
     //point and fillRegion is relative to back.
     WangId wangIdFromSurroundings(const TileLayer &back,
                                   const QRegion &fillRegion,
-                                  QPoint point) const;
+                                  QPoint point,
+                                  StaggeredRenderer *staggeredRenderer = nullptr,
+                                  Map::StaggerAxis staggerAxis = Map::StaggerX) const;
 
     WangSet *mWangSet;
 };

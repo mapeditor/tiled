@@ -30,6 +30,7 @@
 #include "mapscene.h"
 #include "mapdocument.h"
 #include "painttilelayer.h"
+#include "staggeredrenderer.h"
 #include "stampactions.h"
 #include "wangset.h"
 #include "wangfiller.h"
@@ -411,7 +412,9 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
         return;
 
     TileLayer *stamp = mWangFiller->fillRegion(backgroundTileLayer,
-                                               region);
+                                               region,
+                                               dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer()),
+                                               mapDocument()->map()->staggerAxis());
 
     tileLayerToFill.setCells(0, 0, stamp);
     delete stamp;
