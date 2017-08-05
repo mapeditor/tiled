@@ -53,6 +53,7 @@ public:
                QWidget *widget) override;
 
     void setInvalidTiles(const QRegion &region = QRegion());
+    bool isValid() const { return mIsValid; }
 
 private:
     //there is a current brush
@@ -106,7 +107,8 @@ WangBrush::WangBrush(QObject *parent)
                       QIcon(QLatin1String(
                                 ":images/24x24/wangtile-edit.png")),
                       QKeySequence(tr("G")),
-                      parent)
+                      parent,
+                      new WangBrushItem)
     , mEdgeDir(0)
     , mWangSet(nullptr)
     , mCurrentColor(0)
@@ -114,11 +116,6 @@ WangBrush::WangBrush(QObject *parent)
     , mIsTileMode(false)
     , mBrushBehavior(Free)
 {
-    BrushItem *brushItem = new WangBrushItem;
-    brushItem->setVisible(false);
-    brushItem->setZValue(10000);
-
-    setBrushItem(brushItem);
 }
 
 WangBrush::~WangBrush()
@@ -212,6 +209,7 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         if (tilePos != mPaintPoint) {
             mPaintPoint = tilePos;
             stateChanged();
+            updateStatusInfo();
         }
     } else {
         double x, y;
@@ -266,6 +264,7 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
             mEdgeDir = dir;
             mPaintPoint = tilePos;
             stateChanged();
+            updateStatusInfo();
         }
     }
 }
@@ -288,6 +287,35 @@ void WangBrush::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDoc
     brushItem()->clear();
 
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
+}
+
+void WangBrush::updateStatusInfo()
+{
+    if (brushItem()->isVisible()) {
+        QString wangColor;
+        if (mWangSet) {
+            if (mBrushMode == PaintEdge)
+                wangColor = mWangSet->wangColorOfEdge(mCurrentColor)->name();
+            else if (mBrushMode == PaintVertex)
+                wangColor = mWangSet->wangColorOfCorner(mCurrentColor)->name();
+        }
+
+        if (!wangColor.isEmpty())
+            wangColor = QString(QLatin1String(" [%1]")).arg(wangColor);
+
+        QString extraInfo;
+        if (!static_cast<WangBrushItem*>(brushItem())->isValid())
+            extraInfo = QLatin1String(" (Missing wang tile transition)");
+
+        setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
+                      .arg(mPaintPoint.x())
+                      .arg(mPaintPoint.y())
+                      .arg(wangColor)
+                      .arg(extraInfo));
+
+    } else {
+        setStatusInfo(QString());
+    }
 }
 
 void WangBrush::wangColorChanged(int color, bool edge)
@@ -434,7 +462,7 @@ void WangBrush::updateBrush()
             if (cell.isEmpty()) {
                 QRegion r = stamp->bounds();
                 if (mBrushMode == PaintEdge) {
-                    QRect rect = *r.begin();
+                    QRect rect = stamp->bounds();
                     r -= rect.adjusted(0, 0, -2, -2);
                     r -= rect.adjusted(2, 2, 0, 0);
                     r -= rect.adjusted(2, 0, 0, -2);
@@ -477,7 +505,7 @@ void WangBrush::updateBrush()
             if (cell.isEmpty()) {
                 QRegion r = stamp->bounds();
                 if (mBrushMode == PaintEdge) {
-                    QRect rect = *r.begin();
+                    QRect rect = stamp->bounds();
                     r -= rect.adjusted(0, 0, -2, -2);
                     r -= rect.adjusted(2, 2, 0, 0);
                     r -= rect.adjusted(2, 0, 0, -2);

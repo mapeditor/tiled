@@ -36,12 +36,15 @@ using namespace Tiled::Internal;
 AbstractTileTool::AbstractTileTool(const QString &name,
                                    const QIcon &icon,
                                    const QKeySequence &shortcut,
-                                   QObject *parent)
+                                   QObject *parent,
+                                   BrushItem *brushItem)
     : AbstractTool(name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
-    , mBrushItem(new BrushItem)
+    , mBrushItem(brushItem)
     , mBrushVisible(false)
 {
+    if (!mBrushItem)
+        mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
     mBrushItem->setZValue(10000);
 }

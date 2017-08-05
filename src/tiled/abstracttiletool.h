@@ -45,7 +45,8 @@ public:
     AbstractTileTool(const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
-                     QObject *parent = nullptr);
+                     QObject *parent = nullptr,
+                     BrushItem *brushItem = nullptr);
 
     ~AbstractTileTool();
 
@@ -107,7 +108,6 @@ protected:
      * currently selected layer is a tile layer.
      */
     BrushItem *brushItem() const { return mBrushItem; }
-    void setBrushItem(BrushItem *brushItem) { mBrushItem = brushItem; }
 
     /**
      * Returns the current tile layer, or null if no tile layer is currently

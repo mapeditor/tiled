@@ -58,6 +58,7 @@ public:
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
+    void updateStatusInfo() override;
 
 signals:
     void colorCaptured(int color, bool isEdge);
