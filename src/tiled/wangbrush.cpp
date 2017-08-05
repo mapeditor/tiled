@@ -29,6 +29,7 @@
 #include "tilelayer.h"
 #include "wangset.h"
 
+#include <QStyleOptionGraphicsItem>
 #include <cmath>
 
 using namespace Tiled;
@@ -37,6 +38,68 @@ using namespace Internal;
 //value between 0 and 0.5 to control the dead zone with edge mode.
 static const double MIDDLE_DEAD_ZONE = 0.25;
 static const double EDGE_DEAD_ZONE = 0.2;
+
+class WangBrushItem : public BrushItem
+{
+public:
+    WangBrushItem()
+        : BrushItem()
+        , mIsValid(true) {}
+
+    QRectF boundingRect() const override;
+
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
+    void setInvalidTiles(const QRegion &region = QRegion());
+
+private:
+    //there is a current brush
+    bool mIsValid;
+    //The tiles which can't be painted.
+    QRegion mInvalidTiles;
+};
+
+QRectF WangBrushItem::boundingRect() const
+{
+    if (mIsValid) {
+        return BrushItem::boundingRect();
+    } else {
+        QRect bounds = mInvalidTiles.boundingRect();
+        QRectF bounding = mapDocument()->renderer()->boundingRect(bounds);
+        return bounding;
+    }
+}
+
+void WangBrushItem::paint(QPainter *painter,
+                          const QStyleOptionGraphicsItem *option,
+                          QWidget *widget)
+{
+    if (mIsValid) {
+        BrushItem::paint(painter, option, widget);
+    } else {
+        const MapRenderer *renderer = mapDocument()->renderer();
+        QColor invalid(255, 0, 0, 64);
+
+        renderer->drawTileSelection(painter,
+                                    mInvalidTiles,
+                                    invalid,
+                                    option->exposedRect);
+    }
+}
+
+void WangBrushItem::setInvalidTiles(const QRegion &region)
+{
+    if (region.isEmpty()) {
+        mIsValid = true;
+    } else {
+        mIsValid = false;
+        mInvalidTiles = region;
+
+        update();
+    }
+}
 
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool(tr("Wang Brush"),
@@ -51,6 +114,11 @@ WangBrush::WangBrush(QObject *parent)
     , mIsTileMode(false)
     , mBrushBehavior(Free)
 {
+    BrushItem *brushItem = new WangBrushItem;
+    brushItem->setVisible(false);
+    brushItem->setZValue(10000);
+
+    setBrushItem(brushItem);
 }
 
 WangBrush::~WangBrush()
@@ -363,8 +431,19 @@ void WangBrush::updateBrush()
             }
 
             const Cell &cell = mWangSet->findMatchingWangTile(centerWangId).makeCell();
-            if (cell.isEmpty())
+            if (cell.isEmpty()) {
+                QRegion r = stamp->bounds();
+                if (mBrushMode == PaintEdge) {
+                    QRect rect = *r.begin();
+                    r -= rect.adjusted(0, 0, -2, -2);
+                    r -= rect.adjusted(2, 2, 0, 0);
+                    r -= rect.adjusted(2, 0, 0, -2);
+                    r -= rect.adjusted(0, 2, -2, 0);
+                }
+
+                static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
                 return;
+            }
 
             stamp->setCell(1, 1, cell);
         }
@@ -395,8 +474,19 @@ void WangBrush::updateBrush()
 
             const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-            if (cell.isEmpty())
+            if (cell.isEmpty()) {
+                QRegion r = stamp->bounds();
+                if (mBrushMode == PaintEdge) {
+                    QRect rect = *r.begin();
+                    r -= rect.adjusted(0, 0, -2, -2);
+                    r -= rect.adjusted(2, 2, 0, 0);
+                    r -= rect.adjusted(2, 0, 0, -2);
+                    r -= rect.adjusted(0, 2, -2, 0);
+                }
+
+                static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
                 return;
+            }
 
             p += QPoint(1, 1) - mPaintPoint;
             stamp->setCell(p.x(), p.y(), cell);
@@ -424,8 +514,10 @@ void WangBrush::updateBrush()
 
                 const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-                if (cell.isEmpty())
+                if (cell.isEmpty()) {
+                    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(stamp->bounds());
                     return;
+                }
 
                 p += QPoint(1, 1) - mPaintPoint;
                 stamp->setCell(p.x(), p.y(), cell);
@@ -446,8 +538,10 @@ void WangBrush::updateBrush()
 
                     const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-                    if (cell.isEmpty())
+                    if (cell.isEmpty()) {
+                        static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(stamp->bounds());
                         return;
+                    }
 
                     p -= stamp->position();
                     stamp->setCell(p.x(), p.y(), cell);
@@ -463,8 +557,10 @@ void WangBrush::updateBrush()
 
                     const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-                    if (cell.isEmpty())
+                    if (cell.isEmpty()) {
+                        static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(stamp->bounds());
                         return;
+                    }
 
                     p -= stamp->position();
                     stamp->setCell(p.x(), p.y(), cell);
@@ -473,5 +569,6 @@ void WangBrush::updateBrush()
         }
     }
 
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
     brushItem()->setTileLayer(stamp);
 }

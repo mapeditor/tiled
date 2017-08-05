@@ -107,6 +107,7 @@ protected:
      * currently selected layer is a tile layer.
      */
     BrushItem *brushItem() const { return mBrushItem; }
+    void setBrushItem(BrushItem *brushItem) { mBrushItem = brushItem; }
 
     /**
      * Returns the current tile layer, or null if no tile layer is currently
