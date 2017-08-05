@@ -45,6 +45,8 @@
 #include <QPalette>
 #include <QUndoStack>
 
+#include <cstdlib>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -613,6 +615,11 @@ void EditPolygonTool::addNode(const QPointF &pos,
     QPolygonF polygon = mapObject->polygon();
     qreal distance = (polygon.last() - polygon.first()).manhattanLength();
 
+    if (distance < QApplication::startDragDistance() * 1.0)
+        mapObject->setShape(MapObject::Polygon);
+    else
+        mapObject->setShape(MapObject::Polyline);
+
     if (selectedHandle->pointIndex() == 0)
         polygon.first() = pixelCoords;
     else
@@ -631,11 +638,27 @@ void EditPolygonTool::finishAddingNode()
 
     mapObject->setComplete(true);
 
-    QMapIterator<MapObject*, QPolygonF> i(mOldPolygons);
-    while (i.hasNext()) {
-        i.next();
-        mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), i.key(), i.value()));
+    QPolygonF polygon = mapObject->polygon();
+    qreal distance = (polygon.last() - polygon.first()).manhattanLength();
+
+    if (distance < QApplication::startDragDistance() * 1.0) {
+        if (selectedHandle->pointIndex() == 0)
+            polygon.removeFirst();
+        else
+            polygon.removeLast();
+
+        mapObject->setShape(MapObject::Polyline);
+        mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, polygon);
+
+        mapDocument()->undoStack()->beginMacro(tr("Toggle Polygon/Polyline"));
+        mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
+        mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, mOldPolygons[mapObject]));
+        mapDocument()->undoStack()->endMacro();
+
+        return;
     }
+
+    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, mOldPolygons[mapObject]));
 }
 
 void EditPolygonTool::cancelAddingNode()
@@ -649,6 +672,9 @@ void EditPolygonTool::cancelAddingNode()
     mapObject->setComplete(true);
 
     QPolygonF polygon = mapObject->polygon();
+
+    if (mapObject->shape() == MapObject::Polygon)
+        mapObject->setShape(MapObject::Polyline);
 
     if (selectedHandle->pointIndex() == 0)
         polygon.removeFirst();
@@ -721,6 +747,22 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
 
         extendPolyline->setEnabled(n == 1 && handleCanBeExtended);
         connect(extendPolyline, SIGNAL(triggered()), SLOT(extendPolyline()));
+    }
+
+    if (mapObject->shape() == MapObject::Polygon) {
+        QAction *deleteEdge = menu.addAction(tr("Delete Edge"));
+
+        bool enabled = false;
+        if (mSelectedHandles.size() == 2) {
+            const auto secondHandle = *(mSelectedHandles.begin() + 1);
+            int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+
+            if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1)
+                enabled = true;
+        }
+
+        deleteEdge->setEnabled(enabled);
+        connect(deleteEdge, SIGNAL(triggered()), SLOT(deleteEdge()));
     }
 
     menu.exec(screenPos);
@@ -1002,4 +1044,39 @@ void EditPolygonTool::extendPolyline()
 
     mapObject->setComplete(false);
     mapObject->setLastEdgeIncomplete(selectedHandle->pointIndex());
+}
+
+void EditPolygonTool::deleteEdge()
+{
+    if (mSelectedHandles.size() != 2)
+        return;
+
+    const auto &firstHandle = *mSelectedHandles.begin();
+    const auto &secondHandle = *(mSelectedHandles.begin() + 1);
+
+    const MapObjectItem *item = firstHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    QPolygonF polygon = mapObject->polygon();
+    QPolygonF newPolygon(polygon);
+
+    int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+
+    if (indexDifference != polygon.size() - 1) {
+        int maxIndex = std::max(firstHandle->pointIndex(), secondHandle->pointIndex());
+        for (int i = maxIndex; i < polygon.size(); ++i)
+            newPolygon[i - maxIndex] = polygon[i];
+
+        for (int i = 0; i < maxIndex; ++i)
+            newPolygon[polygon.size() - maxIndex + i] = polygon[i];
+    }
+
+    setSelectedHandles(QSet<PointHandle*>());
+
+    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, newPolygon);
+
+    mapDocument()->undoStack()->beginMacro(tr("Delete Edge"));
+    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, polygon));
+    mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
+    mapDocument()->undoStack()->endMacro();
 }
