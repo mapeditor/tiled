@@ -54,6 +54,7 @@ General
 When a tile layer is selected
 -----------------------------
 
+-  ``D`` - Toggle Random Mode
 -  ``B`` - Activate Stamp Brush tool
 -  ``T`` - Activate :doc:`Terrain Brush <using-the-terrain-tool>` tool
 -  ``F`` - Activate Bucket Fill tool
