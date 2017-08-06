@@ -44,6 +44,7 @@ namespace Internal {
 
 class AbstractTool;
 class BucketFillTool;
+class EditPolygonTool;
 class LayerDock;
 class MapDocument;
 class MapDocumentActionHandler;
@@ -162,6 +163,7 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
+    EditPolygonTool *mEditPolygonTool;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
