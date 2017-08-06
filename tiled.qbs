@@ -11,7 +11,6 @@ Project {
     property bool sparkleEnabled: Environment.getEnv("TILED_SPARKLE")
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT")
     property bool release: Environment.getEnv("TILED_RELEASE")
-    property bool linuxArchive: Environment.getEnv("TILED_LINUX_ARCHIVE")
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false

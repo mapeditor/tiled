@@ -194,7 +194,7 @@ void PluginManager::loadPlugins()
     QString pluginPath = QCoreApplication::applicationDirPath();
 #endif
 
-#if defined(Q_OS_WIN32) || defined(TILED_LINUX_ARCHIVE)
+#if defined(Q_OS_WIN32)
     pluginPath += QLatin1String("/plugins/tiled");
 #elif defined(Q_OS_MAC)
     pluginPath += QLatin1String("/../PlugIns");

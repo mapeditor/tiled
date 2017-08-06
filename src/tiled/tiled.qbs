@@ -45,8 +45,6 @@ QtGuiApplication {
             defs.push("TILED_SNAPSHOT");
         if (project.sparkleEnabled)
             defs.push("TILED_SPARKLE");
-        if (project.linuxArchive)
-            defs.push("TILED_LINUX_ARCHIVE");
         return defs;
     }
 

@@ -14,17 +14,12 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
-    cpp.defines: {
-        var defs = [
-            "TILED_LIBRARY",
-            "QT_NO_CAST_FROM_ASCII",
-            "QT_NO_CAST_TO_ASCII",
-            "QT_NO_URL_CAST_FROM_STRING"
-        ];
-        if (project.linuxArchive)
-            defs.push("TILED_LINUX_ARCHIVE");
-        return defs;
-    }
+    cpp.defines: [
+        "TILED_LIBRARY",
+        "QT_NO_CAST_FROM_ASCII",
+        "QT_NO_CAST_TO_ASCII",
+        "QT_NO_URL_CAST_FROM_STRING"
+    ]
 
     Properties {
         condition: qbs.targetOS.contains("macos")

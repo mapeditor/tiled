@@ -7,7 +7,7 @@ TEMPLATE = app
 TARGET = tiled
 target.path = $${PREFIX}/bin
 INSTALLS += target
-win32|!isEmpty(TILED_LINUX_ARCHIVE) {
+win32 {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin
@@ -23,8 +23,6 @@ DEFINES += TILED_VERSION=$${TILED_VERSION}
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
-
-!isEmpty(TILED_LINUX_ARCHIVE):DEFINES += TILED_LINUX_ARCHIVE
 
 macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
