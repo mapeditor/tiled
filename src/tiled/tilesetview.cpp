@@ -643,7 +643,11 @@ void TileDelegate::paint(QPainter *painter,
     }
 
     if (mTilesetView->isEditWangSet()) {
+        painter->save();
+        painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
+
         if (WangSet *wangSet = mTilesetView->wangSet()) {
+
             paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
                              wangSet,
                              targetRect);
@@ -657,6 +661,8 @@ void TileDelegate::paint(QPainter *painter,
                 painter->setOpacity(opacity);
             }
         }
+
+        painter->restore();
     }
 }
 
@@ -1023,7 +1029,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
         if (mWangBehavior != WholeId) {
             QRect tileRect = visualRect(mHoveredIndex);
-            QPoint tileLocalPos = pos - tileRect.topLeft();
+            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), tileRect.center());
+            const auto mappedPos = t.inverted().map(pos);
+            QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((float) tileLocalPos.x() / tileRect.width(),
                                   (float) tileLocalPos.y() / tileRect.height());
             tileLocalPosF -= QPointF(0.5f, 0.5f);
