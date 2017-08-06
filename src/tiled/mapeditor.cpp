@@ -160,6 +160,7 @@ MapEditor::MapEditor(QObject *parent)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
+    mEditPolygonTool = new EditPolygonTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
@@ -176,7 +177,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    mToolsToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
@@ -479,7 +480,10 @@ void MapEditor::performStandardAction(StandardAction action)
         paste(ClipboardManager::PasteInPlace);
         break;
     case DeleteAction:
-        MapDocumentActionHandler::instance()->delete_();
+        if (mEditPolygonTool->hasSelectedHandles())
+            mEditPolygonTool->deleteNodes();
+        else
+            MapDocumentActionHandler::instance()->delete_();
         break;
     }
 }

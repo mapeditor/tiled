@@ -57,11 +57,15 @@ public:
 
     void languageChanged() override;
 
+    bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
+
+public slots:
+    void deleteNodes();
+
 private slots:
     void updateHandles();
     void objectsRemoved(const QList<MapObject *> &objects);
 
-    void deleteNodes();
     void joinNodes();
     void splitSegments();
 
