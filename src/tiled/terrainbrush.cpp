@@ -204,7 +204,7 @@ void TerrainBrush::capture()
 
     const QPoint position = tilePosition() - tileLayer->position();
 
-    if (!tileLayer->contains(position) && !mapDocument()->map()->infinite())
+    if (!tileLayer->contains(position))
         return;
 
     Terrain *terrain = nullptr;
@@ -372,12 +372,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         }
     }
 
-    // if the cursor is outside of the map, bail out
-    if (!currentLayer->contains(cursorPos) && !mapDocument()->map()->infinite()) {
-        brushItem()->clear();
-        return;
-    }
-
     Tileset *terrainTileset = nullptr;
     int terrainId = -1;
     if (mTerrain) {
@@ -395,8 +389,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         transitionList.reserve(list->size());
         for (QPoint p : *list) {
             p -= layerPosition;
-            if (currentLayer->contains(p) || mapDocument()->map()->infinite())
-                transitionList.append(p);
+            transitionList.append(p);
         }
     } else {
         transitionList.append(ConsiderationPoint(cursorPos, paintCorner));

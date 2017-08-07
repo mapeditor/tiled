@@ -70,9 +70,6 @@ Cell TilePainter::cellAt(int x, int y) const
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY) && !mMapDocument->map()->infinite())
-        return Cell();
-
     return mTileLayer->cellAt(layerX, layerY);
 }
 
@@ -194,21 +191,16 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
 {
     // Create that region that will hold the fill
     QRegion fillRegion;
+    QRect bounds = layer->map()->infinite() ? layer->bounds() : layer->rect();
 
     // Silently quit if parameters are unsatisfactory
-    if (!layer->contains(fillOrigin) && !layer->map()->infinite())
+    if (!bounds.contains(fillOrigin))
         return fillRegion;
 
-    if (layer->map()->infinite() && !layer->bounds().contains(fillOrigin))
-        return fillRegion;
+    bounds.translate(-layer->position());
 
     // Cache cell that we will match other cells against
     const Cell matchCell = layer->cellAt(fillOrigin);
-
-    // Grab layer dimensions for later use.
-    QRect bounds = layer->bounds().translated(-layer->position());
-    if (!layer->map()->infinite())
-        bounds = layer->rect().translated(-layer->position());
 
     int startX = bounds.left();
     int startY = bounds.top();

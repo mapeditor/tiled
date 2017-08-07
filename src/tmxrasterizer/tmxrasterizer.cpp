@@ -101,8 +101,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
-    QSize mapSize = renderer->mapBoundingRect().size();
-    QPoint mapOffset = renderer->mapBoundingRect().topLeft();
+    QRect mapBoundingRect = renderer->mapBoundingRect();
+    QSize mapSize = mapBoundingRect.size();
+    QPoint mapOffset = mapBoundingRect.topLeft();
     qreal xScale, yScale;
 
     if (mSize > 0) {
