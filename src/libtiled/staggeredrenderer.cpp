@@ -33,8 +33,7 @@
 using namespace Tiled;
 
 /**
- * Converts screen to tile coordinates. Sub-tile return values are not
- * supported by this renderer.
+ * Converts screen to tile coordinates.
  *
  * This override exists because the method used by the HexagonalRenderer
  * does not produce nice results for isometric shapes in the tile corners.
@@ -66,13 +65,31 @@ QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
 
     // Check whether the cursor is in any of the corners (neighboring tiles)
     if (p.sideOffsetY - y_pos > rel.y())
-        return topLeft(referencePoint.x(), referencePoint.y());
+        referencePoint = topLeft(referencePoint.x(), referencePoint.y());
     if (-p.sideOffsetY + y_pos > rel.y())
-        return topRight(referencePoint.x(), referencePoint.y());
+        referencePoint = topRight(referencePoint.x(), referencePoint.y());
     if (p.sideOffsetY + y_pos < rel.y())
-        return bottomLeft(referencePoint.x(), referencePoint.y());
+        referencePoint = bottomLeft(referencePoint.x(), referencePoint.y());
     if (p.sideOffsetY * 3 - y_pos < rel.y())
-        return bottomRight(referencePoint.x(), referencePoint.y());
+        referencePoint = bottomRight(referencePoint.x(), referencePoint.y());
 
-    return referencePoint;
+    QPointF newRel = HexagonalRenderer::tileToScreenCoords(referencePoint.x(), referencePoint.y());
+    newRel = QPointF(x - newRel.x(), y - newRel.y());
+    QPointF tileLocal = newRel - QPointF(p.tileWidth / 2, 0);
+
+    //Undose the adjustment done above.
+    if (p.staggerEven) {
+        if (p.staggerX)
+            tileLocal += QPointF(p.tileWidth / 2, 0);
+        else
+            tileLocal += QPointF(0, p.tileHeight / 2);
+    }
+
+    tileLocal.ry() *= (qreal) p.tileWidth / p.tileHeight;
+    QTransform t;
+    t.rotate(-45);
+    tileLocal = t.map(tileLocal);
+    tileLocal /= p.tileWidth/sqrt(2);
+
+    return tileLocal + referencePoint;
 }
