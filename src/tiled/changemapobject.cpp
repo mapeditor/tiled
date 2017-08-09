@@ -158,3 +158,48 @@ void ChangeMapObjectsTile::changeTiles()
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
+
+DetachObjects::DetachObjects(MapDocument *mapDocument,
+                             QList<MapObject *> mapObjects,
+                             QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                                "Detach %n Template Instance(s)",
+                                                 nullptr, mapObjects.size()), parent)
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+{
+    for (const MapObject *object : mapObjects) {
+        mTemplateRefs.append(object->templateRef());
+        mProperties.append(object->properties());
+    }
+}
+
+void DetachObjects::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        // Merge the instance properties into the template properties
+        MapObject *object = mMapObjects.at(i);
+        Properties newProperties = object->templateObject()->properties();
+        newProperties.merge(object->properties());
+        object->setProperties(newProperties);
+        object->setTemplateRef({nullptr, 0});
+    }
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
+
+void DetachObjects::undo()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        MapObject *object = mMapObjects.at(i);
+        object->setTemplateRef(mTemplateRefs.at(i));
+        object->setProperties(mProperties.at(i));
+        object->syncWithTemplate();
+    }
+
+    QUndoCommand::undo(); // undo child commands
+
+    emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
+}
