@@ -441,22 +441,52 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
+            if (screenPolygon.size() == 1)
+                screenPolygon.append(screenPolygon[0]);
+
+            QPolygonF completePolyline(screenPolygon);
+            if (!object->isComplete()) {
+                if (object->lastEdgeIncomplete())
+                    completePolyline.removeLast();
+                else
+                    completePolyline.removeFirst();
+            }
+
+            QPolygonF previewPolyline(2);
+
+            if (object->lastEdgeIncomplete()) {
+                previewPolyline[0] = screenPolygon[screenPolygon.size() - 1];
+                previewPolyline[1] = screenPolygon[screenPolygon.size() - 2];
+            } else {
+                previewPolyline[0] = screenPolygon[0];
+                previewPolyline[1] = screenPolygon[1];
+            }
+
             QPen thickPen(pen);
             QPen thickColorPen(colorPen);
             thickPen.setWidthF(thickPen.widthF() * 4);
             thickColorPen.setWidthF(thickColorPen.widthF() * 4);
 
-            painter->drawPolyline(screenPolygon);
+            painter->drawPolyline(completePolyline);
+
+            if (!object->isComplete()) {
+                QColor previewColor(color);
+                previewColor.setAlpha(color.alpha() / 3);
+                pen.setColor(previewColor);
+                painter->setPen(pen);
+                painter->drawPolyline(previewPolyline);
+            }
+
             painter->setPen(thickPen);
-            painter->drawPoint(screenPolygon.first());
+            painter->drawPoint(completePolyline.first());
 
             pen.setColor(color);
             painter->setPen(pen);
-            screenPolygon.translate(0, -shadowOffset);
+            completePolyline.translate(0, -shadowOffset);
 
-            painter->drawPolyline(screenPolygon);
+            painter->drawPolyline(completePolyline);
             painter->setPen(thickColorPen);
-            painter->drawPoint(screenPolygon.first());
+            painter->drawPoint(completePolyline.first());
             break;
         }
         case MapObject::Text:
