@@ -21,11 +21,9 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "wangset.h"
 
 namespace Tiled {
-
-class WangSet;
-
 namespace Internal {
 
 class WangBrush : public AbstractTileTool
@@ -89,7 +87,7 @@ private:
     //In edge mode, this is a tile with that edge
     //With mEdge being the direction of the edge (0 being top 3 being left)
     QPoint mPaintPoint;
-    int mEdgeDir;
+    WangId::Edges mEdgeDir;
 
     WangSet *mWangSet;
     int mCurrentColor;

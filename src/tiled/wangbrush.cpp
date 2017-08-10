@@ -28,7 +28,6 @@
 #include "painttilelayer.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
-#include "wangset.h"
 
 #include <QStyleOptionGraphicsItem>
 #include <cmath>
@@ -110,7 +109,7 @@ WangBrush::WangBrush(QObject *parent)
                       QKeySequence(tr("G")),
                       parent,
                       new WangBrushItem)
-    , mEdgeDir(0)
+    , mEdgeDir(WangId::Top)
     , mWangSet(nullptr)
     , mCurrentColor(0)
     , mBrushMode(Idle)
@@ -245,19 +244,19 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
                 return;
 
             switch (mEdgeDir) {
-            case 0:
+            case WangId::Top:
                 if (tileLocalPoint.y() < EDGE_DEAD_ZONE)
                     return;
                 break;
-            case 1:
+            case WangId::Right:
                 if (tileLocalPoint.x() > 1 - EDGE_DEAD_ZONE)
                     return;
                 break;
-            case 2:
+            case WangId::Bottom:
                 if (tileLocalPoint.y() > 1 - EDGE_DEAD_ZONE)
                     return;
                 break;
-            case 3:
+            case WangId::Left:
                 if (tileLocalPoint.x() < EDGE_DEAD_ZONE)
                     return;
                 break;
@@ -265,18 +264,18 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         }
 
         //calculate new edge
-        int dir;
+        WangId::Edges dir;
 
         if (tileLocalPoint.y() > tileLocalPoint.x()) {
             if (tileLocalPoint.y() > 1 - tileLocalPoint.x())
-                dir = 2;
+                dir = WangId::Bottom;
             else
-                dir = 3;
+                dir = WangId::Left;
         } else {
             if (tileLocalPoint.y() > 1 - tileLocalPoint.x())
-                dir = 1;
+                dir = WangId::Right;
             else
-                dir = 0;
+                dir = WangId::Top;
         }
 
         if (dir != mEdgeDir || tilePos != mPaintPoint) {
@@ -314,9 +313,9 @@ void WangBrush::updateStatusInfo()
         QString wangColor;
         if (mWangSet) {
             if (mBrushMode == PaintEdge)
-                wangColor = mWangSet->wangColorOfEdge(mCurrentColor)->name();
+                wangColor = mWangSet->edgeColorAt(mCurrentColor)->name();
             else if (mBrushMode == PaintVertex)
-                wangColor = mWangSet->wangColorOfCorner(mCurrentColor)->name();
+                wangColor = mWangSet->cornerColorAt(mCurrentColor)->name();
         }
 
         if (!wangColor.isEmpty())
@@ -324,7 +323,8 @@ void WangBrush::updateStatusInfo()
 
         QString extraInfo;
         if (!static_cast<WangBrushItem*>(brushItem())->isValid())
-            extraInfo = QLatin1String(" (Missing wang tile transition)");
+            extraInfo = QString(QLatin1String(" (%1)"))
+                        .arg(tr("Missing wang tile transition"));
 
         setStatusInfo(QString(QLatin1String("%1, %2%3%4"))
                       .arg(mPaintPoint.x())
@@ -373,7 +373,7 @@ void WangBrush::captureHoverColor()
         int newColor = 0;
 
         if (mBrushMode == PaintVertex)
-            newColor = wangId.cornerColor(3);
+            newColor = wangId.cornerColor(WangId::TopLeft);
         else if (mBrushMode == PaintEdge)
             newColor = wangId.edgeColor(mEdgeDir);
 
@@ -511,11 +511,7 @@ void WangBrush::updateBrush()
         }
 
         if (currentLayer->contains(mPaintPoint)) {
-            WangId centerWangId;
-            if (currentLayer->cellAt(mPaintPoint).tileset() == mWangSet->tileset())
-                centerWangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
-            else
-                centerWangId = 0;
+            WangId centerWangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
 
             for (int i = 0; i < 4; ++i) {
                 if (mBrushMode == PaintVertex)
@@ -550,11 +546,7 @@ void WangBrush::updateBrush()
             if (!currentLayer->contains(p) || currentLayer->cellAt(p).isEmpty())
                 continue;
 
-            WangId wangId;
-            if (currentLayer->cellAt(p).tileset() == mWangSet->tileset())
-                wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
-            else
-                wangId = 0;
+            WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
 
             if (!wangId)
                 continue;
@@ -632,11 +624,7 @@ void WangBrush::updateBrush()
                 if (!currentLayer->contains(p) || currentLayer->cellAt(p).isEmpty())
                     continue;
 
-                WangId wangId;
-                if (currentLayer->cellAt(p).tileset() == mWangSet->tileset())
-                    wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
-                else
-                    wangId = 0;
+                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
 
                 if (!wangId)
                     continue;
@@ -693,11 +681,7 @@ void WangBrush::updateBrush()
             }
 
             if (currentLayer->contains(mPaintPoint)) {
-                WangId wangId;
-                if (currentLayer->cellAt(mPaintPoint).tileset() == mWangSet->tileset())
-                    wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
-                else
-                    wangId = 0;
+                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
 
                 if (wangId && !currentLayer->cellAt(mPaintPoint).isEmpty()) {
                     wangId.setEdgeColor(mEdgeDir, mCurrentColor);
@@ -717,11 +701,7 @@ void WangBrush::updateBrush()
             }
 
             if (currentLayer->contains(dirPoint)) {
-                WangId wangId;
-                if (currentLayer->cellAt(dirPoint).tileset() == mWangSet->tileset())
-                    wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
-                else
-                    wangId = 0;
+                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
 
                 if (wangId && !currentLayer->cellAt(dirPoint).isEmpty()) {
                     wangId.setEdgeColor((mEdgeDir + 2) % 4, mCurrentColor);

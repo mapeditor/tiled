@@ -35,9 +35,9 @@ ChangeWangColorName::ChangeWangColorName(QString newName,
     , mNewName(newName)
 {
     if (isEdge)
-        mOldName = mWangColorModel->wangSet()->wangColorOfEdge(mIndex)->name();
+        mOldName = mWangColorModel->wangSet()->edgeColorAt(mIndex)->name();
     else
-        mOldName = mWangColorModel->wangSet()->wangColorOfCorner(mIndex)->name();
+        mOldName = mWangColorModel->wangSet()->cornerColorAt(mIndex)->name();
 }
 
 void ChangeWangColorName::undo()
@@ -60,9 +60,9 @@ ChangeWangColorImage::ChangeWangColorImage(int newImageId,
     , mNewImageId(newImageId)
 {
     if (isEdge)
-        mOldImageId = mWangColorModel->wangSet()->wangColorOfEdge(mIndex)->imageId();
+        mOldImageId = mWangColorModel->wangSet()->edgeColorAt(mIndex)->imageId();
     else
-        mOldImageId = mWangColorModel->wangSet()->wangColorOfCorner(mIndex)->imageId();
+        mOldImageId = mWangColorModel->wangSet()->cornerColorAt(mIndex)->imageId();
 }
 
 void ChangeWangColorImage::undo()
@@ -85,9 +85,9 @@ ChangeWangColorColor::ChangeWangColorColor(QColor newColor,
     , mNewColor(newColor)
 {
     if (isEdge)
-        mOldColor = mWangColorModel->wangSet()->wangColorOfEdge(mIndex)->color();
+        mOldColor = mWangColorModel->wangSet()->edgeColorAt(mIndex)->color();
     else
-        mOldColor = mWangColorModel->wangSet()->wangColorOfCorner(mIndex)->color();
+        mOldColor = mWangColorModel->wangSet()->cornerColorAt(mIndex)->color();
 }
 
 void ChangeWangColorColor::undo()
@@ -110,9 +110,9 @@ ChangeWangColorProbability::ChangeWangColorProbability(float newProbability,
     , mNewProbability(newProbability)
 {
     if (mIsEdge)
-        mOldProbability = mWangColorModel->wangSet()->wangColorOfEdge(mIndex)->probability();
+        mOldProbability = mWangColorModel->wangSet()->edgeColorAt(mIndex)->probability();
     else
-        mOldProbability = mWangColorModel->wangSet()->wangColorOfCorner(mIndex)->probability();
+        mOldProbability = mWangColorModel->wangSet()->cornerColorAt(mIndex)->probability();
 }
 
 void ChangeWangColorProbability::undo()

@@ -46,7 +46,7 @@ public:
 
 private:
     struct WangColorChange {
-        WangColor *wangColor;
+        QSharedPointer<WangColor> wangColor;
         int index;
     };
 
@@ -70,7 +70,7 @@ public:
 
 private:
     struct WangColorChange {
-        WangColor *wangColor;
+        QSharedPointer<WangColor> wangColor;
         int index;
     };
 
@@ -99,10 +99,10 @@ private:
     int mIndex;
     int mColor;
     bool mIsEdge;
-    WangColor *mRemovedWangColor;
+    QSharedPointer<WangColor> mRemovedWangColor;
     //When removing a color when there are two, both are actually removed,
     //this stores the extra if needed, and is null otherwise.
-    WangColor *mExtraWangColor;
+    QSharedPointer<WangColor> mExtraWangColor;
 };
 
 class SetWangSetImage : public QUndoCommand

@@ -616,19 +616,15 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
                     QString name = wangColorAtts.value(QLatin1String("name")).toString();
                     int index = wangColorAtts.value(QLatin1String("index")).toInt();
-                    int r = wangColorAtts.value(QLatin1String("r")).toInt();
-                    int g = wangColorAtts.value(QLatin1String("g")).toInt();
-                    int b = wangColorAtts.value(QLatin1String("b")).toInt();
-                    int imageId = wangColorAtts.value(QLatin1String("imageTile")).toInt();
+                    QColor color = wangColorAtts.value(QLatin1String("color")).toString();
+                    int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
                     float probability = wangColorAtts.value(QLatin1String("probability")).toFloat();
-
-                    QColor color(r, g, b);
 
                     WangColor *wc;
                     if (xml.name() == QLatin1String("wangedgecolor"))
-                        wc = wangSet->wangColorOfEdge(index);
+                        wc = wangSet->edgeColorAt(index).data();
                     else
-                        wc = wangSet->wangColorOfCorner(index);
+                        wc = wangSet->cornerColorAt(index).data();
 
                     wc->setName(name);
                     wc->setColor(color);

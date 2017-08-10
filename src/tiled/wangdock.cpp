@@ -408,9 +408,9 @@ void WangDock::refreshCurrentWangColor()
 
     WangColor *currentWangColor;
     if (edgeColor)
-        currentWangColor = mCurrentWangSet->wangColorOfEdge(color);
+        currentWangColor = mCurrentWangSet->edgeColorAt(color).data();
     else
-        currentWangColor = mCurrentWangSet->wangColorOfCorner(color);
+        currentWangColor = mCurrentWangSet->cornerColorAt(color).data();
 
     mDocument->setCurrentObject(currentWangColor);
     mRemoveColor->setEnabled(true);
@@ -427,12 +427,12 @@ void WangDock::wangSetChanged()
     refreshCurrentWangColor();
     refreshCurrentWangId();
 
-    if (mCurrentWangSet->edgeColors() == 15)
+    if (mCurrentWangSet->edgeColorCount() == 15)
         mAddEdgeColor->setEnabled(false);
     else
         mAddEdgeColor->setEnabled(true);
 
-    if (mCurrentWangSet->cornerColors() == 15)
+    if (mCurrentWangSet->cornerColorCount() == 15)
         mAddCornerColor->setEnabled(false);
     else
         mAddCornerColor->setEnabled(true);
@@ -460,7 +460,7 @@ void WangDock::addEdgeColor()
     if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
         tilesetDocument->undoStack()->push(new ChangeWangSetEdges(tilesetDocument,
                                                                   tilesetDocument->wangSetModel()->index(mCurrentWangSet).row(),
-                                                                  mCurrentWangSet->edgeColors() + 1));
+                                                                  mCurrentWangSet->edgeColorCount() + 1));
     }
 }
 
@@ -471,7 +471,7 @@ void WangDock::addCornerColor()
     if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
         tilesetDocument->undoStack()->push(new ChangeWangSetCorners(tilesetDocument,
                                                                     tilesetDocument->wangSetModel()->index(mCurrentWangSet).row(),
-                                                                    mCurrentWangSet->cornerColors() + 1));
+                                                                    mCurrentWangSet->cornerColorCount() + 1));
     }
 }
 
@@ -518,12 +518,12 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
                 setColorView();
         }
 
-        if (mCurrentWangSet->edgeColors() == 15)
+        if (mCurrentWangSet->edgeColorCount() == 15)
             mAddEdgeColor->setEnabled(false);
         else
             mAddEdgeColor->setEnabled(true);
 
-        if (mCurrentWangSet->cornerColors() == 15)
+        if (mCurrentWangSet->cornerColorCount() == 15)
             mAddCornerColor->setEnabled(false);
         else
             mAddCornerColor->setEnabled(true);

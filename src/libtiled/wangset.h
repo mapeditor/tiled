@@ -43,6 +43,19 @@ class WangIdVariations;
 class TILEDSHARED_EXPORT WangId
 {
 public:
+    enum Corners {
+        TopRight = 0,
+        BottomRight = 1,
+        BottomLeft = 2,
+        TopLeft = 3
+    };
+    enum Edges {
+        Top = 0,
+        Right = 1,
+        Bottom = 2,
+        Left = 3
+    };
+
     WangId() : mId(0) {}
     WangId(unsigned id) : mId(id) {}
 
@@ -285,8 +298,8 @@ public:
 
     Tile *imageTile() const { return mTileset->findTile(mImageTileId); }
 
-    int edgeColors() const { return mEdgeColors; }
-    int cornerColors() const { return mCornerColors; }
+    int edgeColorCount() const;
+    int cornerColorCount() const;
 
     /* Sets the edge/corner color count
      * This can make wangIds already in the set invalid, so should only be used from
@@ -300,7 +313,7 @@ public:
      * For use in an undo command
      * Does not adjust currently assigned tiles.
      * */
-    void insertWangColor(WangColor *wangColor);
+    void insertWangColor(QSharedPointer<WangColor> wangColor);
 
     /* Removes a given color.
      * This can make wangIds invalid, so should only be used from
@@ -308,11 +321,11 @@ public:
      * */
     void removeWangColorAt(int color, bool isEdge);
 
-    WangColor *wangColorOfEdge(int index) const;
-    WangColor *wangColorOfCorner(int index) const;
+    QSharedPointer<WangColor> edgeColorAt(int index) const;
+    QSharedPointer<WangColor> cornerColorAt(int index) const;
 
-    QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors);
-    QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors);
+    QList<Tile *> tilesChangedOnSetEdgeColors(int newEdgeColors) const;
+    QList<Tile *> tilesChangedOnSetCornerColors(int newCornerColors) const;
     QList<Tile *> tilesChangedOnRemoveColor(int color, bool isEdge) const;
 
     /* Adds a wangtile to the wang set with a given wangId
@@ -377,6 +390,8 @@ public:
      * */
     bool wangIdIsValid(WangId wangId) const;
 
+    static bool wangIdIsValid(WangId wangId, int edgeCount, int cornerCount);
+
     /* Returns whether the given wangId is assigned to a WangTile.
      * */
     bool wangIdIsUsed(WangId wangId) const;
@@ -414,13 +429,17 @@ public:
 private:
     void removeWangTile(const WangTile &wangTile);
 
+    void insertEdgeWangColor(QSharedPointer<WangColor> wangColor);
+    void insertCornerWangColor(QSharedPointer<WangColor> wangColor);
+
+    void removeEdgeWangColor(int color);
+    void removeCornerWangColor(int color);
+
     Tileset *mTileset;
     QString mName;
     int mImageTileId;
-    int mEdgeColors;
-    int mCornerColors;
-    QList<WangColor *> mEdges;
-    QList<WangColor *> mCorners;
+    QList<QSharedPointer<WangColor>> mEdgeColors;
+    QList<QSharedPointer<WangColor>> mCornerColors;
     unsigned mUniqueFullWangIdCount;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 

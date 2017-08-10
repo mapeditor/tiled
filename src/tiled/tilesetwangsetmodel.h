@@ -71,7 +71,7 @@ public:
     void setWangSetEdges(int index, int value);
     void setWangSetCorners(int index, int value);
     void setWangSetImage(int index, int tileId);
-    void insertWangColor(int index, WangColor *wangColor);
+    void insertWangColor(int index, QSharedPointer<WangColor> wangColor);
     void removeWangColorAt(int index, int color, bool isEdge);
 
 signals:

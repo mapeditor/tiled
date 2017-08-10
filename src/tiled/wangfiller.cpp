@@ -305,7 +305,7 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
         if (!fillRegion.contains(adjacentPoints[i]) && back.contains(adjacentPoints[i]))
             surroundingCells[i] = back.cellAt(adjacentPoints[i]);
     }
-    delete adjacentPoints;
+    free(adjacentPoints);
 
     return mWangSet->wangIdFromSurrounding(surroundingCells);
 }

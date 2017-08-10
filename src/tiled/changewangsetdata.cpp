@@ -39,7 +39,7 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
     , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
-    , mOldValue(tilesetDocument->tileset()->wangSet(index)->edgeColors())
+    , mOldValue(tilesetDocument->tileset()->wangSet(index)->edgeColorCount())
     , mNewValue(newValue)
 {
     //when edge size changes, all tiles with wangIds need to be updated.
@@ -62,7 +62,7 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
         for (int i = mOldValue; i > mNewValue; --i) {
             WangColorChange w;
             w.index = i;
-            w.wangColor = wangSet->wangColorOfEdge(i);
+            w.wangColor = wangSet->edgeColorAt(i);
 
             mRemovedWangColors.append(w);
         }
@@ -70,7 +70,7 @@ ChangeWangSetEdges::ChangeWangSetEdges(TilesetDocument *tilesetDocument,
         if (mNewValue == 1) {
             WangColorChange w;
             w.index = 1;
-            w.wangColor = wangSet->wangColorOfEdge(1);
+            w.wangColor = wangSet->edgeColorAt(1);
 
             mRemovedWangColors.append(w);
         }
@@ -84,7 +84,7 @@ void ChangeWangSetEdges::undo()
     WangSet *wangSet = mTilesetDocument->tileset()->wangSet(mIndex);
 
     for (WangColorChange w : mRemovedWangColors) {
-        WangColor *wangColor = wangSet->wangColorOfEdge(w.index);
+        WangColor *wangColor = wangSet->edgeColorAt(w.index).data();
         wangColor->setName(w.wangColor->name());
         wangColor->setImageId(w.wangColor->imageId());
         wangColor->setColor(w.wangColor->color());
@@ -109,7 +109,7 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
     , mTilesetDocument(tilesetDocument)
     , mWangSetModel(tilesetDocument->wangSetModel())
     , mIndex(index)
-    , mOldValue(tilesetDocument->tileset()->wangSet(index)->cornerColors())
+    , mOldValue(tilesetDocument->tileset()->wangSet(index)->cornerColorCount())
     , mNewValue(newValue)
 {
     //when corner size changes, all tiles with wangIds need to be updated.
@@ -132,7 +132,7 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
         for (int i = mOldValue; i > mNewValue; --i) {
             WangColorChange w;
             w.index = i;
-            w.wangColor = wangSet->wangColorOfCorner(i);
+            w.wangColor = wangSet->cornerColorAt(i);
 
             mRemovedWangColors.append(w);
         }
@@ -140,7 +140,7 @@ ChangeWangSetCorners::ChangeWangSetCorners(TilesetDocument *tilesetDocument,
         if (mNewValue == 1) {
             WangColorChange w;
             w.index = 1;
-            w.wangColor = wangSet->wangColorOfCorner(1);
+            w.wangColor = wangSet->cornerColorAt(1);
 
             mRemovedWangColors.append(w);
         }
@@ -154,7 +154,7 @@ void ChangeWangSetCorners::undo()
     WangSet *wangSet = mTilesetDocument->tileset()->wangSet(mIndex);
 
     for (WangColorChange w : mRemovedWangColors) {
-        WangColor *wangColor = wangSet->wangColorOfCorner(w.index);
+        WangColor *wangColor = wangSet->cornerColorAt(w.index).data();
         wangColor->setName(w.wangColor->name());
         wangColor->setImageId(w.wangColor->imageId());
         wangColor->setColor(w.wangColor->color());
@@ -185,19 +185,19 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, int ind
     Q_ASSERT(wangSet);
 
     if (mIsEdge) {
-        mRemovedWangColor = wangSet->wangColorOfEdge(mColor);
+        mRemovedWangColor = wangSet->edgeColorAt(mColor);
 
-        if (wangSet->edgeColors() == 2)
-            mExtraWangColor = wangSet->wangColorOfEdge((mColor << 1) % 3);
+        if (wangSet->edgeColorCount() == 2)
+            mExtraWangColor = wangSet->edgeColorAt((mColor << 1) % 3);
         else
-            mExtraWangColor = nullptr;
+            mExtraWangColor = QSharedPointer<WangColor>();
     } else {
-        mRemovedWangColor = wangSet->wangColorOfCorner(mColor);
+        mRemovedWangColor = wangSet->cornerColorAt(mColor);
 
-        if (wangSet->cornerColors() == 2)
-            mExtraWangColor = wangSet->wangColorOfCorner((mColor << 1) % 3);
+        if (wangSet->cornerColorCount() == 2)
+            mExtraWangColor = wangSet->cornerColorAt((mColor << 1) % 3);
         else
-            mExtraWangColor = nullptr;
+            mExtraWangColor = QSharedPointer<WangColor>();
     }
 
     QList<Tile *> changedTiles = wangSet->tilesChangedOnRemoveColor(mColor, mIsEdge);
@@ -212,7 +212,7 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, int ind
             if (mIsEdge) {
                 for (int i = 0; i < 4; ++i) {
                     int edgeColor = changedWangId.edgeColor(i);
-                    if (edgeColor && (edgeColor == mColor || wangSet->edgeColors() == 2))
+                    if (edgeColor && (edgeColor == mColor || wangSet->edgeColorCount() == 2))
                         changedWangId.setEdgeColor(i, 0);
                     else if (edgeColor > mColor)
                         changedWangId.setEdgeColor(i, edgeColor - 1);
@@ -220,7 +220,7 @@ RemoveWangSetColor::RemoveWangSetColor(TilesetDocument *tilesetDocumnet, int ind
             } else {
                 for (int i = 0; i < 4; ++i) {
                     int cornerColor = changedWangId.cornerColor(i);
-                    if (cornerColor && (cornerColor == mColor || wangSet->cornerColors() == 2))
+                    if (cornerColor && (cornerColor == mColor || wangSet->cornerColorCount() == 2))
                         changedWangId.setCornerColor(i, 0);
                     else if (cornerColor > mColor)
                         changedWangId.setCornerColor(i, cornerColor - 1);

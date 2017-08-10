@@ -42,18 +42,19 @@ QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
 {
     const RenderParams p(map());
 
+    qreal alignedX = x, alignedY = y;
     if (p.staggerX)
-        x -= p.staggerEven ? p.sideOffsetX : 0;
+        alignedX -= p.staggerEven ? p.sideOffsetX : 0;
     else
-        y -= p.staggerEven ? p.sideOffsetY : 0;
+        alignedY -= p.staggerEven ? p.sideOffsetY : 0;
 
     // Start with the coordinates of a grid-aligned tile
-    QPoint referencePoint = QPoint(qFloor(x / p.tileWidth),
-                                   qFloor(y / p.tileHeight));
+    QPoint referencePoint = QPoint(qFloor(alignedX / p.tileWidth),
+                                   qFloor(alignedY / p.tileHeight));
 
     // Relative x and y position on the base square of the grid-aligned tile
-    const QPointF rel(x - referencePoint.x() * p.tileWidth,
-                      y - referencePoint.y() * p.tileHeight);
+    const QPointF rel(alignedX - referencePoint.x() * p.tileWidth,
+                      alignedY - referencePoint.y() * p.tileHeight);
 
     // Adjust the reference point to the correct tile coordinates
     int &staggerAxisIndex = p.staggerX ? referencePoint.rx() : referencePoint.ry();
@@ -73,17 +74,9 @@ QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
     if (p.sideOffsetY * 3 - y_pos < rel.y())
         referencePoint = bottomRight(referencePoint.x(), referencePoint.y());
 
-    QPointF newRel = HexagonalRenderer::tileToScreenCoords(referencePoint.x(), referencePoint.y());
+    QPointF newRel = tileToScreenCoords(referencePoint.x(), referencePoint.y());
     newRel = QPointF(x - newRel.x(), y - newRel.y());
     QPointF tileLocal = newRel - QPointF(p.tileWidth / 2, 0);
-
-    //Undose the adjustment done above.
-    if (p.staggerEven) {
-        if (p.staggerX)
-            tileLocal += QPointF(p.tileWidth / 2, 0);
-        else
-            tileLocal += QPointF(0, p.tileHeight / 2);
-    }
 
     tileLocal.ry() *= (qreal) p.tileWidth / p.tileHeight;
     QTransform t;

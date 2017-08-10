@@ -37,7 +37,7 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     if (mWangSet) {
-        int rows = mWangSet->edgeColors() * mWangSet->cornerColors();
+        int rows = mWangSet->edgeColorCount() * mWangSet->cornerColorCount();
         rows *= rows;
         rows *= rows;
         rows &= ~(1<<31);
@@ -79,8 +79,8 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
-    int edges = mWangSet->edgeColors();
-    int corners = mWangSet->cornerColors();
+    int edges = mWangSet->edgeColorCount();
+    int corners = mWangSet->cornerColorCount();
 
     //as this is a model of template tiles, a valid wangId can't have wildcards
     if (edges > 1) {

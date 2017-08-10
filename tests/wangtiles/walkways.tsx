@@ -3,9 +3,9 @@
  <image source="walkways.png" width="288" height="288"/>
  <wangsets>
   <wangset name="WalkwaysAndPaths" edges="3" corners="1" tile="39">
-   <wangedgecolor name="Path" index="1" r="255" g="0" b="0" imageTile="60" probability="1"/>
-   <wangedgecolor name="Grass" index="2" r="0" g="255" b="0" imageTile="80" probability="1"/>
-   <wangedgecolor name="WalkWay" index="3" r="0" g="0" b="255" imageTile="10" probability="1"/>
+   <wangedgecolor name="Path" index="1" color="#ff8820" tile="60" probability="1"/>
+   <wangedgecolor name="Grass" index="2" color="#97ff67" tile="80" probability="1"/>
+   <wangedgecolor name="WalkWay" index="3" color="#5efffa" tile="0" probability="1"/>
    <wangtile tileid="0" wangid="0x2030302"/>
    <wangtile tileid="1" wangid="0x3030302"/>
    <wangtile tileid="2" wangid="0x3030102"/>
@@ -75,7 +75,6 @@
    <wangtile tileid="66" wangid="0x1020301"/>
    <wangtile tileid="67" wangid="0x3020201"/>
    <wangtile tileid="68" wangid="0x2020101"/>
-   <wangtile tileid="69" wangid="0x1020101"/>
    <wangtile tileid="70" wangid="0x1020201"/>
    <wangtile tileid="71" wangid="0x2020201"/>
    <wangtile tileid="72" wangid="0x2020302"/>
@@ -83,26 +82,6 @@
    <wangtile tileid="74" wangid="0x3020102"/>
    <wangtile tileid="75" wangid="0x1020302"/>
    <wangtile tileid="76" wangid="0x3020202"/>
-   <wangtile tileid="77" wangid="0x2020102"/>
-   <wangtile tileid="78" wangid="0x1020102"/>
-   <wangtile tileid="79" wangid="0x1020202"/>
-   <wangtile tileid="80" wangid="0x2020202"/>
-  </wangset>
-  <wangset name="Paths" edges="2" corners="1" tile="60">
-   <wangedgecolor name="" index="1" r="255" g="0" b="0" imageTile="-1" probability="0"/>
-   <wangedgecolor name="" index="2" r="0" g="255" b="0" imageTile="-1" probability="0"/>
-   <wangtile tileid="50" wangid="0x2010102"/>
-   <wangtile tileid="51" wangid="0x1010102"/>
-   <wangtile tileid="52" wangid="0x1010202"/>
-   <wangtile tileid="53" wangid="0x2010202"/>
-   <wangtile tileid="59" wangid="0x2010101"/>
-   <wangtile tileid="60" wangid="0x1010101"/>
-   <wangtile tileid="61" wangid="0x1010201"/>
-   <wangtile tileid="62" wangid="0x2010201"/>
-   <wangtile tileid="68" wangid="0x2020101"/>
-   <wangtile tileid="69" wangid="0x1020101"/>
-   <wangtile tileid="70" wangid="0x1020201"/>
-   <wangtile tileid="71" wangid="0x2020201"/>
    <wangtile tileid="77" wangid="0x2020102"/>
    <wangtile tileid="78" wangid="0x1020102"/>
    <wangtile tileid="79" wangid="0x1020202"/>

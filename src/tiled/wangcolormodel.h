@@ -61,7 +61,7 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
 
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
@@ -73,7 +73,7 @@ public:
     bool isEdgeColorAt(const QModelIndex &index) const;
     int colorAt(const QModelIndex &index) const;
 
-    WangColor *wangColorAt(const QModelIndex &index) const;
+    QSharedPointer<WangColor> wangColorAt(const QModelIndex &index) const;
 
     WangSet *wangSet() const { return mWangSet; }
 

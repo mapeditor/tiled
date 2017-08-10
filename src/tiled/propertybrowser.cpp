@@ -1634,8 +1634,8 @@ void PropertyBrowser::updateProperties()
     case Object::WangSetType: {
         const WangSet *wangSet = static_cast<const WangSet*>(mObject);
         mIdToProperty[NameProperty]->setValue(wangSet->name());
-        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColors());
-        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColors());
+        mIdToProperty[EdgeCountProperty]->setValue(wangSet->edgeColorCount());
+        mIdToProperty[CornerCountProperty]->setValue(wangSet->cornerColorCount());
         break;
     }
     case Object::WangColorType: {

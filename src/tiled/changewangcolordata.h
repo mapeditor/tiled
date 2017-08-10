@@ -89,20 +89,20 @@ private:
 class ChangeWangColorProbability : public QUndoCommand
 {
 public:
-        ChangeWangColorProbability(float newProbability,
-                                   int colorIndex,
-                                   bool isEdge,
-                                   WangColorModel *wangColorModel);
+    ChangeWangColorProbability(float newProbability,
+                               int colorIndex,
+                               bool isEdge,
+                               WangColorModel *wangColorModel);
 
-        void undo() override;
-        void redo() override;
+    void undo() override;
+    void redo() override;
 
 private:
-        WangColorModel *mWangColorModel;
-        int mIndex;
-        bool mIsEdge;
-        float mOldProbability;
-        float mNewProbability;
+    WangColorModel *mWangColorModel;
+    int mIndex;
+    bool mIsEdge;
+    float mOldProbability;
+    float mNewProbability;
 };
 
 }

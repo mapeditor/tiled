@@ -245,9 +245,9 @@ static void setWangStyle(QPainter *painter, WangSet *wangSet, int index, bool ed
 {
     QColor c;
     if (edge)
-        c = wangSet->wangColorOfEdge(index)->color();
+        c = wangSet->edgeColorAt(index)->color();
     else
-        c = wangSet->wangColorOfCorner(index)->color();
+        c = wangSet->cornerColorAt(index)->color();
 
     painter->setBrush(QColor(c.red(), c.green(), c.blue(), 200));
     setCosmeticPen(painter, c, 2);
@@ -266,8 +266,8 @@ static void paintWangOverlay(QPainter *painter,
     int thicknessW = rect.width()/6;
     int thicknessH = rect.height()/6;
 
-    if (wangSet->edgeColors() > 1) {
-        if (wangSet->cornerColors() > 1) {
+    if (wangSet->edgeColorCount() > 1) {
+        if (wangSet->cornerColorCount() > 1) {
             QRect wRect;
             int edge;
 
@@ -375,8 +375,8 @@ static void paintWangOverlay(QPainter *painter,
         }
     }
 
-    if (wangSet->cornerColors() > 1) {
-        if (wangSet->edgeColors() > 1) {
+    if (wangSet->cornerColorCount() > 1) {
+        if (wangSet->edgeColorCount() > 1) {
             int corner;
 
             //top right
@@ -952,7 +952,7 @@ void TilesetView::setWangEdgeColor(int color)
 
     mWangBehavior = Edge;
 
-    Q_ASSERT(color <= mWangSet->edgeColors());
+    Q_ASSERT(color <= mWangSet->edgeColorCount());
 
     mWangColor = color;
 }
@@ -964,7 +964,7 @@ void TilesetView::setWangCornerColor(int color)
 
     mWangBehavior = Corner;
 
-    Q_ASSERT(color <= mWangSet->cornerColors());
+    Q_ASSERT(color <= mWangSet->cornerColorCount());
 
     mWangColor = color;
 }
