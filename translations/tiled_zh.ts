@@ -813,7 +813,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>参数(&amp;f)...</translation>
+        <translation>首选项(&amp;F)...</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1295,7 +1295,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation>设置</translation>
+        <translation>首选项</translation>
     </message>
     <message>
         <location line="+13"/>
