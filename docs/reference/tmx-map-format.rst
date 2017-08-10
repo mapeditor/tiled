@@ -31,33 +31,33 @@ might be useful for XML-namespacing anyway.*
 <map>
 -----
 
--  version: The TMX format version. Was "1.0" so far, and will be
+-  **version:** The TMX format version. Was "1.0" so far, and will be
    incremented to match minor Tiled releases.
--  tiledversion: The Tiled version used to save the file (since Tiled
+-  **tiledversion:** The Tiled version used to save the file (since Tiled
    1.0.1). May be a date (for snapshot builds).
--  orientation: Map orientation. Tiled supports "orthogonal",
+-  **orientation:** Map orientation. Tiled supports "orthogonal",
    "isometric", "staggered" (since 0.9) and "hexagonal" (since 0.11).
--  renderorder: The order in which tiles on tile layers are rendered.
+-  **renderorder:** The order in which tiles on tile layers are rendered.
    Valid values are ``right-down`` (the default), ``right-up``,
    ``left-down`` and ``left-up``. In all cases, the map is drawn
    row-by-row. (since 0.10, but only supported for orthogonal maps at
    the moment)
--  width: The map width in tiles.
--  height: The map height in tiles.
--  tilewidth: The width of a tile.
--  tileheight: The height of a tile.
--  hexsidelength: Only for hexagonal maps. Determines the width or
+-  **width:** The map width in tiles.
+-  **height:** The map height in tiles.
+-  **tilewidth:** The width of a tile.
+-  **tileheight:** The height of a tile.
+-  **hexsidelength:** Only for hexagonal maps. Determines the width or
    height (depending on the staggered axis) of the tile's edge, in
    pixels.
--  staggeraxis: For staggered and hexagonal maps, determines which axis
+-  **staggeraxis:** For staggered and hexagonal maps, determines which axis
    ("x" or "y") is staggered. (since 0.11)
--  staggerindex: For staggered and hexagonal maps, determines whether
+-  **staggerindex:** For staggered and hexagonal maps, determines whether
    the "even" or "odd" indexes along the staggered axis are shifted.
    (since 0.11)
--  backgroundcolor: The background color of the map. (since 0.9,
+-  **backgroundcolor:** The background color of the map. (since 0.9,
    optional, may include alpha value since 0.15 in the form
    ``#AARRGGBB``)
--  nextobjectid: Stores the next available ID for new objects. This
+-  **nextobjectid:** Stores the next available ID for new objects. This
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11)
 
@@ -81,23 +81,23 @@ Can contain: `properties <#properties>`__, `tileset <#tileset>`__,
 <tileset>
 ---------
 
--  firstgid: The first global tile ID of this tileset (this global ID
+-  **firstgid:** The first global tile ID of this tileset (this global ID
    maps to the first tile in this tileset).
--  source: If this tileset is stored in an external TSX (Tile Set XML)
+-  **source:** If this tileset is stored in an external TSX (Tile Set XML)
    file, this attribute refers to that file. That TSX file has the same
    structure as the ``<tileset>`` element described here. (There is the
    firstgid attribute missing and this source attribute is also not
    there. These two attributes are kept in the TMX map, since they are
    map specific.)
--  name: The name of this tileset.
--  tilewidth: The (maximum) width of the tiles in this tileset.
--  tileheight: The (maximum) height of the tiles in this tileset.
--  spacing: The spacing in pixels between the tiles in this tileset
+-  **name:** The name of this tileset.
+-  **tilewidth:** The (maximum) width of the tiles in this tileset.
+-  **tileheight:** The (maximum) height of the tiles in this tileset.
+-  **spacing:** The spacing in pixels between the tiles in this tileset
    (applies to the tileset image).
--  margin: The margin around the tiles in this tileset (applies to the
+-  **margin:** The margin around the tiles in this tileset (applies to the
    tileset image).
--  tilecount: The number of tiles in this tileset (since 0.13)
--  columns: The number of tile columns in the tileset. For image
+-  **tilecount:** The number of tiles in this tileset (since 0.13)
+-  **columns:** The number of tile columns in the tileset. For image
    collection tilesets it is editable and is used when displaying the
    tileset. (since 0.15)
 
@@ -114,8 +114,8 @@ Can contain: `tileoffset <#tileoffset>`__ (since 0.8),
 <tileoffset>
 ~~~~~~~~~~~~
 
--  x: Horizontal offset in pixels
--  y: Vertical offset in pixels (positive is down)
+-  **x:** Horizontal offset in pixels
+-  **y:** Vertical offset in pixels (positive is down)
 
 This element is used to specify an offset in pixels, to be applied when
 drawing a tile from the related tileset. When not present, no offset is
@@ -124,19 +124,19 @@ applied.
 <image>
 ~~~~~~~
 
--  format: Used for embedded images, in combination with a ``data``
+-  **format:** Used for embedded images, in combination with a ``data``
    child element. Valid values are file extensions like ``png``,
    ``gif``, ``jpg``, ``bmp``, etc. (since 0.9)
--  id: Used by some versions of Tiled Java. Deprecated and unsupported
+-  *id:* Used by some versions of Tiled Java. Deprecated and unsupported
    by Tiled Qt.
--  source: The reference to the tileset image file (Tiled supports most
+-  **source:** The reference to the tileset image file (Tiled supports most
    common image formats).
--  trans: Defines a specific color that is treated as transparent
+-  **trans:** Defines a specific color that is treated as transparent
    (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this
    value is written out without a ``#`` but this is planned to change.
--  width: The image width in pixels (optional, used for tile index
+-  **width:** The image width in pixels (optional, used for tile index
    correction when the image changes)
--  height: The image height in pixels (optional)
+-  **height:** The image height in pixels (optional)
 
 Note that it is not currently possible to use Tiled to create maps with
 embedded image data, even though the TMX format supports this. It is
@@ -156,8 +156,8 @@ Can contain: `terrain <#terrain>`__
 <terrain>
 ^^^^^^^^^
 
--  name: The name of the terrain type.
--  tile: The local tile-id of the tile that represents the terrain
+-  **name:** The name of the terrain type.
+-  **tile:** The local tile-id of the tile that represents the terrain
    visually.
 
 Can contain: `properties <#properties>`__
@@ -196,9 +196,9 @@ Can contain: `frame <#frame>`__
 <frame>
 '''''''
 
--  tileid: The local ID of a tile within the parent
+-  **tileid:** The local ID of a tile within the parent
    `tileset <#tileset>`__.
--  duration: How long (in milliseconds) this frame should be displayed
+-  **duration:** How long (in milliseconds) this frame should be displayed
    before advancing to the next frame.
 
 <layer>
@@ -208,21 +208,19 @@ All ``<tileset>`` tags shall occur before the first ``<layer>`` tag so
 that parsers may rely on having the tilesets before needing to resolve
 tiles.
 
--  name: The name of the layer.
--  x: The x coordinate of the layer in tiles. Defaults to 0 and can no
-   longer be changed in Tiled Qt.
--  y: The y coordinate of the layer in tiles. Defaults to 0 and can no
-   longer be changed in Tiled Qt.
--  width: The width of the layer in tiles. Traditionally required, but
+-  **name:** The name of the layer.
+-  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled Qt.
+-  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled Qt.
+-  **width:** The width of the layer in tiles. Required, but
    as of Tiled Qt always the same as the map width.
--  height: The height of the layer in tiles. Traditionally required, but
+-  **height:** The height of the layer in tiles. Required, but
    as of Tiled Qt always the same as the map height.
--  opacity: The opacity of the layer as a value from 0 to 1. Defaults to
+-  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
    1.
--  visible: Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  offsetx: Rendering offset for this layer in pixels. Defaults to 0.
+-  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **offsetx:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
--  offsety: Rendering offset for this layer in pixels. Defaults to 0.
+-  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 
 Can contain: `properties <#properties>`__, `data <#data>`__
@@ -230,9 +228,9 @@ Can contain: `properties <#properties>`__, `data <#data>`__
 <data>
 ~~~~~~
 
--  encoding: The encoding used to encode the tile layer data. When used,
+-  **encoding:** The encoding used to encode the tile layer data. When used,
    it can be "base64" and "csv" at the moment.
--  compression: The compression used to compress the tile layer data.
+-  **compression:** The compression used to compress the tile layer data.
    Tiled Qt supports "gzip" and "zlib".
 
 When no encoding or compression is given, the tiles are stored as
@@ -326,7 +324,7 @@ when basing your parsing code on it, thanks.)
 <tile>
 ~~~~~~
 
--  gid: The global tile ID.
+-  **gid:** The global tile ID.
 
 Not to be confused with the ``tile`` element inside a ``tileset``, this
 element defines the value of a single tile on a tile layer. This is
@@ -336,22 +334,22 @@ should generally be avoided.
 <objectgroup>
 -------------
 
--  name: The name of the object group.
--  color: The color used to display the objects in this group.
--  x: The x coordinate of the object group in tiles. Defaults to 0 and
+-  **name:** The name of the object group.
+-  **color:** The color used to display the objects in this group.
+-  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled Qt.
--  y: The y coordinate of the object group in tiles. Defaults to 0 and
+-  *y:* The y coordinate of the object group in tiles. Defaults to 0 and
    can no longer be changed in Tiled Qt.
--  width: The width of the object group in tiles. Meaningless.
--  height: The height of the object group in tiles. Meaningless.
--  opacity: The opacity of the layer as a value from 0 to 1. Defaults to
+-  *width:* The width of the object group in tiles. Meaningless.
+-  *height:* The height of the object group in tiles. Meaningless.
+-  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
    1.
--  visible: Whether the layer is shown (1) or hidden (0). Defaults to 1.
--  offsetx: Rendering offset for this object group in pixels. Defaults
+-  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **offsetx:** Rendering offset for this object group in pixels. Defaults
    to 0. (since 0.14)
--  offsety: Rendering offset for this object group in pixels. Defaults
+-  **offsety:** Rendering offset for this object group in pixels. Defaults
    to 0. (since 0.14)
--  draworder: Whether the objects are drawn according to the order of
+-  **draworder:** Whether the objects are drawn according to the order of
    appearance ("index") or sorted by their y-coordinate ("topdown").
    Defaults to "topdown".
 
@@ -365,19 +363,19 @@ Can contain: `properties <#properties>`__, `object <#object>`__
 <object>
 ~~~~~~~~
 
--  id: Unique ID of the object. Each object that is placed on a map gets
+-  **id:** Unique ID of the object. Each object that is placed on a map gets
    a unique id. Even if an object was deleted, no object gets the same
    ID. Can not be changed in Tiled Qt. (since Tiled 0.11)
--  name: The name of the object. An arbitrary string.
--  type: The type of the object. An arbitrary string.
--  x: The x coordinate of the object in pixels.
--  y: The y coordinate of the object in pixels.
--  width: The width of the object in pixels (defaults to 0).
--  height: The height of the object in pixels (defaults to 0).
--  rotation: The rotation of the object in degrees clockwise (defaults
+-  **name:** The name of the object. An arbitrary string.
+-  **type:** The type of the object. An arbitrary string.
+-  **x:** The x coordinate of the object in pixels.
+-  **y:** The y coordinate of the object in pixels.
+-  **width:** The width of the object in pixels (defaults to 0).
+-  **height:** The height of the object in pixels (defaults to 0).
+-  **rotation:** The rotation of the object in degrees clockwise (defaults
    to 0). (since 0.10)
--  gid: An reference to a tile (optional).
--  visible: Whether the object is shown (1) or hidden (0). Defaults to
+-  **gid:** An reference to a tile (optional).
+-  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
    1. (since 0.9)
 
 While tile layers are very suitable for anything repetitive aligned to
@@ -408,7 +406,7 @@ the ellipse.
 <polygon>
 ~~~~~~~~~
 
--  points: A list of x,y coordinates in pixels.
+-  **points:** A list of x,y coordinates in pixels.
 
 Each ``polygon`` object is made up of a space-delimited list of x,y
 coordinates. The origin for these coordinates is the location of the
@@ -419,7 +417,7 @@ placed.
 <polyline>
 ~~~~~~~~~~
 
--  points: A list of x,y coordinates in pixels.
+-  **points:** A list of x,y coordinates in pixels.
 
 A ``polyline`` follows the same placement definition as a ``polygon``
 object.
@@ -458,18 +456,18 @@ character data.
 <imagelayer>
 ------------
 
--  name: The name of the image layer.
--  offsetx: Rendering offset of the image layer in pixels. Defaults to
+-  **name:** The name of the image layer.
+-  **offsetx:** Rendering offset of the image layer in pixels. Defaults to
    0. (since 0.15)
--  offsety: Rendering offset of the image layer in pixels. Defaults to
+-  **offsety:** Rendering offset of the image layer in pixels. Defaults to
    0. (since 0.15)
--  x: The x position of the image layer in pixels. (deprecated since
+-  *x:* The x position of the image layer in pixels. (deprecated since
    0.15)
--  y: The y position of the image layer in pixels. (deprecated since
+-  *y:* The y position of the image layer in pixels. (deprecated since
    0.15)
--  opacity: The opacity of the layer as a value from 0 to 1. Defaults to
+-  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
    1.
--  visible: Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
 
 A layer consisting of a single image.
 
@@ -480,18 +478,14 @@ Can contain: `properties <#properties>`__, `image <#image>`__
 <group>
 -------
 
--  name: The name of the group layer.
--  offsetx: Rendering offset of the group layer in pixels. Defaults to
+-  **name:** The name of the group layer.
+-  **offsetx:** Rendering offset of the group layer in pixels. Defaults to
    0.
--  offsety: Rendering offset of the group layer in pixels. Defaults to
+-  **offsety:** Rendering offset of the group layer in pixels. Defaults to
    0.
--  x: The x position of the group layer in pixels. (deprecated since
-   0.15)
--  y: The y position of the group layer in pixels. (deprecated since
-   0.15)
--  opacity: The opacity of the layer as a value from 0 to 1. Defaults to
+-  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
    1.
--  visible: Whether the layer is shown (1) or hidden (0). Defaults to 1.
+-  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
 
 A group layer, used to organize the layers of the map in a hierarchy.
 Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
@@ -516,11 +510,11 @@ Wraps any number of custom properties. Can be used as a child of the
 <property>
 ~~~~~~~~~~
 
--  name: The name of the property.
--  type: The type of the property. Can be ``string`` (default), ``int``,
+-  **name:** The name of the property.
+-  **type:** The type of the property. Can be ``string`` (default), ``int``,
    ``float``, ``bool``, ``color`` or ``file`` (since 0.16, with
    ``color`` and ``file`` added in 0.17).
--  value: The value of the property.
+-  **value:** The value of the property.
 
 Boolean properties have a value of either "true" or "false".
 
