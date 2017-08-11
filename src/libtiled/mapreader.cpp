@@ -576,11 +576,9 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
         if (xml.name() == QLatin1String("wangset")) {
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
-            int edges = atts.value(QLatin1String("edges")).toInt();
-            int corners = atts.value(QLatin1String("corners")).toInt();
             int tile = atts.value(QLatin1String("tile")).toInt();
 
-            WangSet *wangSet = new WangSet(&tileset, edges, corners, name, tile);
+            WangSet *wangSet = new WangSet(&tileset, name, tile);
 
             tileset.addWangSet(wangSet);
 
@@ -614,22 +612,18 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangedgecolor")
                            || xml.name() == QLatin1String("wangcornercolor")) {
                     const QXmlStreamAttributes wangColorAtts = xml.attributes();
-                    QString name = wangColorAtts.value(QLatin1String("name")).toString();
-                    int index = wangColorAtts.value(QLatin1String("index")).toInt();
+                    QString name = wangColorAtts.value(QLatin1String("name")).toString();\
                     QColor color = wangColorAtts.value(QLatin1String("color")).toString();
                     int imageId = wangColorAtts.value(QLatin1String("tile")).toInt();
                     float probability = wangColorAtts.value(QLatin1String("probability")).toFloat();
 
-                    WangColor *wc;
-                    if (xml.name() == QLatin1String("wangedgecolor"))
-                        wc = wangSet->edgeColorAt(index).data();
-                    else
-                        wc = wangSet->cornerColorAt(index).data();
-
-                    wc->setName(name);
-                    wc->setColor(color);
-                    wc->setImageId(imageId);
-                    wc->setProbability(probability);
+                    QSharedPointer<WangColor> wc(new WangColor(0,
+                                                               xml.name() == QLatin1String("wangedgecolor"),
+                                                               name,
+                                                               color,
+                                                               imageId,
+                                                               probability));
+                    wangSet->addWangColor(wc);
 
                     xml.skipCurrentElement();
                 } else {

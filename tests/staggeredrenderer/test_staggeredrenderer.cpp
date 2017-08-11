@@ -89,11 +89,11 @@ void test_StaggeredRenderer::screenToTileCoords_data()
     QTest::addColumn<QPointF>("screenCoords");
     QTest::addColumn<QPointF>("tileCoords");
 
-    QTest::newRow("10,16") << QPointF(10, 16) << QPointF(0, 1);
-    QTest::newRow("5,5")   << QPointF(5, 5)   << QPointF(0, 0);
+    QTest::newRow("10,16") << QPointF(10, 16) << QPointF(0, 0);
+    QTest::newRow("5,5")   << QPointF(5, 5)   << QPointF(-1, -1);
     QTest::newRow("1,20")  << QPointF(1, 20)  << QPointF(-1, 1);
-    QTest::newRow("64,32") << QPointF(64, 32) << QPointF(1, 2);
-    QTest::newRow("32,-16") << QPointF(32, -16) << QPointF(1, -2);
+    QTest::newRow("64,32") << QPointF(64, 32) << QPointF(0, 1);
+    QTest::newRow("32,-16") << QPointF(32, -16) << QPointF(0, -2);
 }
 
 void test_StaggeredRenderer::screenToTileCoords()
@@ -102,7 +102,8 @@ void test_StaggeredRenderer::screenToTileCoords()
     QFETCH(QPointF, tileCoords);
 
     StaggeredRenderer renderer(mMap);
-    QCOMPARE(renderer.screenToTileCoords(screenCoords).toPoint(), tileCoords.toPoint());
+    QCOMPARE(renderer.screenToTileCoords(screenCoords).toPoint(), QPoint(qFloor(tileCoords.x()),
+                                                                         qFloor(tileCoords.y())));
 }
 
 void test_StaggeredRenderer::tileToScreenCoords_data()

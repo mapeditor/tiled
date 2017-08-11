@@ -187,6 +187,7 @@ void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 void WangColorView::pickColor()
 {
     QColorDialog *colorPicker = new QColorDialog(this);
+    colorPicker->setAttribute(Qt::WA_DeleteOnClose);
     connect(colorPicker, &QColorDialog::colorSelected,
             this, &WangColorView::colorPicked);
 

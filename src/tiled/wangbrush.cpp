@@ -107,8 +107,8 @@ WangBrush::WangBrush(QObject *parent)
                       QIcon(QLatin1String(
                                 ":images/24x24/wangtile-edit.png")),
                       QKeySequence(tr("G")),
-                      parent,
-                      new WangBrushItem)
+                      new WangBrushItem,
+                      parent)
     , mEdgeDir(WangId::Top)
     , mWangSet(nullptr)
     , mCurrentColor(0)
@@ -264,7 +264,7 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         }
 
         //calculate new edge
-        WangId::Edges dir;
+        WangId::Edge dir;
 
         if (tileLocalPoint.y() > tileLocalPoint.x()) {
             if (tileLocalPoint.y() > 1 - tileLocalPoint.x())

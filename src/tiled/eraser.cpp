@@ -36,6 +36,7 @@ Eraser::Eraser(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-eraser.png")),
                        QKeySequence(tr("E")),
+                       nullptr,
                        parent)
     , mMode(Nothing)
 {

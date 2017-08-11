@@ -149,7 +149,7 @@ private:
     RandomPicker<Cell> mRandomCellPicker;
 
     bool mIsWangFill;
-    WangFiller *mWangFiller;
+    WangSet *mWangSet;
 
     void updateRandomList();
 

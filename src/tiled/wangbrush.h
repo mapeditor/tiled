@@ -87,7 +87,7 @@ private:
     //In edge mode, this is a tile with that edge
     //With mEdge being the direction of the edge (0 being top 3 being left)
     QPoint mPaintPoint;
-    WangId::Edges mEdgeDir;
+    WangId::Edge mEdgeDir;
 
     WangSet *mWangSet;
     int mCurrentColor;

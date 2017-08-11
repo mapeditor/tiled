@@ -2,10 +2,10 @@
 <tileset name="walkways" tilewidth="32" tileheight="32" tilecount="81" columns="9">
  <image source="walkways.png" width="288" height="288"/>
  <wangsets>
-  <wangset name="WalkwaysAndPaths" edges="3" corners="1" tile="39">
-   <wangedgecolor name="Path" index="1" color="#ff8820" tile="60" probability="1"/>
-   <wangedgecolor name="Grass" index="2" color="#97ff67" tile="80" probability="1"/>
-   <wangedgecolor name="WalkWay" index="3" color="#5efffa" tile="0" probability="1"/>
+  <wangset name="WalkwaysAndPaths" tile="39">
+   <wangedgecolor name="Path" color="#ff8820" tile="60" probability="1"/>
+   <wangedgecolor name="Grass" color="#97ff67" tile="80" probability="1"/>
+   <wangedgecolor name="WalkWay" color="#5efffa" tile="0" probability="1"/>
    <wangtile tileid="0" wangid="0x2030302"/>
    <wangtile tileid="1" wangid="0x3030302"/>
    <wangtile tileid="2" wangid="0x3030102"/>
@@ -75,6 +75,7 @@
    <wangtile tileid="66" wangid="0x1020301"/>
    <wangtile tileid="67" wangid="0x3020201"/>
    <wangtile tileid="68" wangid="0x2020101"/>
+   <wangtile tileid="69" wangid="0x1020101"/>
    <wangtile tileid="70" wangid="0x1020201"/>
    <wangtile tileid="71" wangid="0x2020201"/>
    <wangtile tileid="72" wangid="0x2020302"/>

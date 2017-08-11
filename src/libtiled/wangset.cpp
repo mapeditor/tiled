@@ -307,8 +307,6 @@ static const QColor defaultWangColors[] =  {
 };
 
 WangSet::WangSet(Tileset *tileset,
-                 int edgeColors,
-                 int cornerColors,
                  QString name,
                  int imageTileId):
     Object(Object::WangSetType),
@@ -317,26 +315,6 @@ WangSet::WangSet(Tileset *tileset,
     mImageTileId(imageTileId),
     mUniqueFullWangIdCount(0)
 {
-    Q_ASSERT(edgeColors <= 15 && cornerColors <= 15);
-
-    mEdgeColors.append(QSharedPointer<WangColor>());
-    for (int i = 1; i <= edgeColors; ++i) {
-        mEdgeColors.append(QSharedPointer<WangColor>(new WangColor(i,
-                                                true,
-                                                QString(),
-                                                defaultWangColors[i - 1],
-                                                -1)));
-    }
-
-    mCornerColors.append(QSharedPointer<WangColor>());
-    for (int i = 1; i <= cornerColors; ++i) {
-        mCornerColors.append(QSharedPointer<WangColor>(new WangColor(i,
-                                                  false,
-                                                  QString(),
-                                                  defaultWangColors[i - 1],
-                                                  -1)));
-    }
-
 }
 
 int WangSet::edgeColorCount() const
@@ -344,7 +322,7 @@ int WangSet::edgeColorCount() const
     int size = mEdgeColors.size();
 
     if (size > 1)
-        return size - 1;
+        return size;
     else
         return 1;
 }
@@ -354,61 +332,57 @@ int WangSet::cornerColorCount() const
     int size = mCornerColors.size();
 
     if (size > 1)
-        return size - 1;
+        return size;
     else
         return 1;
 }
 
-void WangSet::setEdgeColors(int n)
+void WangSet::setEdgeColorCount(int n)
 {
-    Q_ASSERT(n <= 15);
+    Q_ASSERT(n > 0 && n <= 15);
 
     if (n == edgeColorCount())
         return;
 
     if (n == 1) {
         mEdgeColors.clear();
-        mEdgeColors.append(QSharedPointer<WangColor>());
         return;
     }
 
     if (n < edgeColorCount()) {
-        while (mEdgeColors.size() != n + 1)
-            mEdgeColors.removeLast();
+        mEdgeColors.resize(n);
     } else {
-        while (mEdgeColors.size() != n + 1) {
-            mEdgeColors.append(QSharedPointer<WangColor>(new WangColor(mEdgeColors.size(),
-                                                    true,
-                                                    QString(),
-                                                    defaultWangColors[mEdgeColors.size() - 1],
-                                                    -1)));
+        while (mEdgeColors.size() != n) {
+            mEdgeColors.append(QSharedPointer<WangColor>(new WangColor(mEdgeColors.size() + 1,
+                                                                       true,
+                                                                       QString(),
+                                                                       defaultWangColors[mEdgeColors.size()],
+                                                                       -1)));
         }
     }
 }
 
-void WangSet::setCornerColors(int n)
+void WangSet::setCornerColorCount(int n)
 {
-    Q_ASSERT(n <= 15);
+    Q_ASSERT(n > 0 && n <= 15);
 
     if (n == cornerColorCount())
         return;
 
     if (n == 1) {
         mCornerColors.clear();
-        mCornerColors.append(QSharedPointer<WangColor>());
         return;
     }
 
     if (n < cornerColorCount()) {
-        while (mCornerColors.size() != n + 1)
-            mCornerColors.removeLast();
+        mCornerColors.resize(n);
     } else {
-        while (mCornerColors.size() != n + 1) {
-            mCornerColors.append(QSharedPointer<WangColor>(new WangColor(mCornerColors.size(),
-                                                      false,
-                                                      QString(),
-                                                      defaultWangColors[mCornerColors.size() - 1],
-                                                      -1)));
+        while (mCornerColors.size() != n) {
+            mCornerColors.append(QSharedPointer<WangColor>(new WangColor(mCornerColors.size() + 1,
+                                                                         true,
+                                                                         QString(),
+                                                                         defaultWangColors[mCornerColors.size()],
+                                                                         -1)));
         }
     }
 }
@@ -421,24 +395,36 @@ void WangSet::insertWangColor(QSharedPointer<WangColor> wangColor)
         insertCornerWangColor(wangColor);
 }
 
+
+void WangSet::addWangColor(QSharedPointer<WangColor> wangColor)
+{
+    if (wangColor->isEdge()) {
+        wangColor->setColorIndex(mEdgeColors.size() + 1);
+        insertEdgeWangColor(wangColor);
+    } else {
+        wangColor->setColorIndex(mCornerColors.size() + 1);
+        insertCornerWangColor(wangColor);
+    }
+}
+
 void WangSet::insertEdgeWangColor(QSharedPointer<WangColor> wangColor)
 {
     Q_ASSERT(edgeColorCount() + 1 >= wangColor->colorIndex());
 
-    mEdgeColors.insert(wangColor->colorIndex(), wangColor);
+    mEdgeColors.insert(wangColor->colorIndex() - 1, wangColor);
 
-    for (int i = wangColor->colorIndex() + 1; i <= edgeColorCount(); ++i)
-        mEdgeColors.at(i)->setColorIndex(i);
+    for (int i = wangColor->colorIndex(); i < edgeColorCount(); ++i)
+        mEdgeColors.at(i)->setColorIndex(i + 1);
 }
 
 void WangSet::insertCornerWangColor(QSharedPointer<WangColor> wangColor)
 {
     Q_ASSERT(cornerColorCount() + 1 >= wangColor->colorIndex());
 
-    mCornerColors.insert(wangColor->colorIndex(), wangColor);
+    mCornerColors.insert(wangColor->colorIndex() - 1, wangColor);
 
-    for (int i = wangColor->colorIndex() + 1; i <= cornerColorCount(); ++i)
-        mCornerColors.at(i)->setColorIndex(i);
+    for (int i = wangColor->colorIndex(); i < cornerColorCount(); ++i)
+        mCornerColors.at(i)->setColorIndex(i + 1);
 }
 
 void WangSet::removeWangColorAt(int color, bool isEdge)
@@ -453,34 +439,34 @@ void WangSet::removeEdgeWangColor(int color)
 {
     Q_ASSERT(edgeColorCount() > 1 && color <= edgeColorCount() - 1);
 
-    mEdgeColors.removeAt(color);
+    mEdgeColors.removeAt(color - 1);
 
-    for (int i = color; i <= edgeColorCount(); ++i)
-        mEdgeColors.at(i)->setColorIndex(i);
+    for (int i = color - 1; i < edgeColorCount(); ++i)
+        mEdgeColors.at(i)->setColorIndex(i + 1);
 }
 
 void WangSet::removeCornerWangColor(int color)
 {
     Q_ASSERT(cornerColorCount() > 1 && color <= cornerColorCount() - 1);
 
-    mCornerColors.removeAt(color);
+    mCornerColors.removeAt(color - 1);
 
-    for (int i = color; i <= cornerColorCount(); ++i)
-        mCornerColors.at(i)->setColorIndex(i);
+    for (int i = color - 1; i < cornerColorCount(); ++i)
+        mCornerColors.at(i)->setColorIndex(i + 1);
 }
 
 QSharedPointer<WangColor> WangSet::edgeColorAt(int index) const
 {
-    Q_ASSERT(index <= edgeColorCount());
+    Q_ASSERT(index > 0 && index <= edgeColorCount());
 
-    return mEdgeColors.at(index);
+    return mEdgeColors.at(index - 1);
 }
 
 QSharedPointer<WangColor> WangSet::cornerColorAt(int index) const
 {
-    Q_ASSERT(index <= cornerColorCount());
+    Q_ASSERT(index > 0 && index <= cornerColorCount());
 
-    return mCornerColors.at(index);
+    return mCornerColors.at(index - 1);
 }
 
 QList<Tile *> WangSet::tilesChangedOnSetEdgeColors(int newEdgeColors) const
@@ -701,14 +687,14 @@ float WangSet::wangIdProbability(WangId wangId) const
     if (edgeColorCount() > 1) {
         for (int i = 0; i < 4; ++i) {
             if (int color = wangId.edgeColor(i))
-                probability *= mEdgeColors[color]->probability();
+                probability *= edgeColorAt(color)->probability();
         }
     }
 
     if (cornerColorCount() > 1) {
         for (int i = 0; i < 4; ++i) {
             if (int color = wangId.cornerColor(i))
-                probability *= mCornerColors[color]->probability();
+                probability *= cornerColorAt(color)->probability();
         }
     }
 
@@ -797,7 +783,7 @@ WangId WangSet::templateWangIdAt(unsigned n) const
 
 WangSet *WangSet::clone(Tileset *tileset) const
 {
-    WangSet *c = new WangSet(tileset, edgeColorCount(), cornerColorCount(), mName, mImageTileId);
+    WangSet *c = new WangSet(tileset, mName, mImageTileId);
 
     c->mWangIdToWangTile = mWangIdToWangTile;
     c->mTileInfoToWangId = mTileInfoToWangId;

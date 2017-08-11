@@ -3,9 +3,9 @@
  <grid orientation="isometric" width="64" height="32"/>
  <image source="grass_and_water.png" width="256" height="384"/>
  <wangsets>
-  <wangset name="Grass and Water" edges="1" corners="2" tile="6">
-   <wangcornercolor name="grass" index="1" color="#aa55ff" tile="0" probability="1"/>
-   <wangcornercolor name="water" index="2" color="#aaaaff" tile="0" probability="1"/>
+  <wangset name="Grass and Water" tile="6">
+   <wangcornercolor name="grass" color="#72ff62" tile="0" probability="1"/>
+   <wangcornercolor name="water" color="#52c9ff" tile="23" probability="1"/>
    <wangtile tileid="0" wangid="0x10101010"/>
    <wangtile tileid="1" wangid="0x10101010"/>
    <wangtile tileid="2" wangid="0x10101010"/>

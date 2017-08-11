@@ -102,6 +102,7 @@ private slots:
     void removeColor();
 
 private:
+    void updateAddColorStatus();
     void retranslateUi();
 
     QModelIndex wangSetIndex(WangSet *wangSet) const;

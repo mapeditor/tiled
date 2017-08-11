@@ -47,12 +47,12 @@ BucketFillTool::BucketFillTool(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
+                       nullptr,
                        parent)
     , mIsActive(false)
     , mLastShiftStatus(false)
     , mIsRandom(false)
     , mIsWangFill(false)
-    , mWangFiller(new WangFiller(nullptr))
     , mLastRandomStatus(false)
     , mStampActions(new StampActions(this))
 {
@@ -399,7 +399,7 @@ void BucketFillTool::randomFill(TileLayer &tileLayer, const QRegion &region) con
 
 void BucketFillTool::setWangSet(WangSet *wangSet)
 {
-    mWangFiller->setWangSet(wangSet);
+    mWangSet = wangSet;
 
     updateRandomListAndMissingTilesets();
 }
@@ -408,13 +408,15 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
                               const TileLayer &backgroundTileLayer,
                               const QRegion &region) const
 {
-    if (region.isEmpty() || !mWangFiller->wangSet())
+    if (region.isEmpty() || !mWangSet)
         return;
 
-    TileLayer *stamp = mWangFiller->fillRegion(backgroundTileLayer,
-                                               region,
-                                               dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer()),
-                                               mapDocument()->map()->staggerAxis());
+    WangFiller wangFiller(mWangSet,
+                          dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
+                          mapDocument()->map()->staggerAxis());
+
+    TileLayer *stamp = wangFiller.fillRegion(backgroundTileLayer,
+                                               region);
 
     tileLayerToFill.setCells(0, 0, stamp);
     delete stamp;
@@ -428,8 +430,8 @@ void BucketFillTool::updateRandomListAndMissingTilesets()
     if (!mapDocument())
         return;
 
-    if (mIsWangFill && mWangFiller->wangSet()) {
-        const SharedTileset &tileset = mWangFiller->wangSet()->tileset()->sharedPointer();
+    if (mWangSet) {
+        const SharedTileset &tileset = mWangSet->tileset()->sharedPointer();
         if (!mapDocument()->map()->tilesets().contains(tileset))
             mMissingTilesets.append(tileset);
     } else {

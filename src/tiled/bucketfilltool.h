@@ -110,7 +110,7 @@ private:
     bool mIsRandom;
 
     bool mIsWangFill;
-    WangFiller *mWangFiller;
+    WangSet *mWangSet;
 
     /**
      * Contains the value of mIsRandom at that time, when the latest call of

@@ -48,6 +48,7 @@ TerrainBrush::TerrainBrush(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/24x24/terrain-edit.png")),
                        QKeySequence(tr("T")),
+                       nullptr,
                        parent)
     , mTerrain(nullptr)
     , mPaintX(0), mPaintY(0)

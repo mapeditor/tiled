@@ -48,11 +48,11 @@ StampBrush::StampBrush(QObject *parent)
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-clone.png")),
                        QKeySequence(tr("B")),
+                       nullptr,
                        parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
     , mIsWangFill(false)
-    , mWangFiller(new WangFiller(nullptr))
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
@@ -246,7 +246,7 @@ void StampBrush::populateToolBar(QToolBar *toolBar)
 
 void StampBrush::setWangSet(WangSet *wangSet)
 {
-    mWangFiller->setWangSet(wangSet);
+    mWangSet = wangSet;
 
     mMissingTilesets.clear();
 
@@ -424,7 +424,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 
         mPreviewLayer = preview;
     } else if (mIsWangFill) {
-        if (!mWangFiller->wangSet())
+        if (!mWangSet)
             return;
 
         const TileLayer *tileLayer = currentTileLayer();
@@ -441,12 +441,14 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.width(), bounds.height()));
 
         for (const QPoint p : list) {
-            Cell cell = mWangFiller->findFittingCell(*tileLayer,
-                                                     *preview.data(),
-                                                     paintedRegion,
-                                                     p,
-                                                     dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer()),
-                                                     mapDocument()->map()->staggerAxis());
+            WangFiller wangFiller(mWangSet,
+                                  dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
+                                  mapDocument()->map()->staggerAxis());
+
+            Cell cell = wangFiller.findFittingCell(*tileLayer,
+                                                    *preview.data(),
+                                                    paintedRegion,
+                                                    p);
 
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),

@@ -907,8 +907,7 @@ void TilesetEditor::addWangSet()
     if (!tileset)
         return;
 
-    //2 and 1 are default values for number of edges and corners TODO define this some where better?
-    WangSet *wangSet = new WangSet(tileset, 2, 1, QString(), -1);
+    WangSet *wangSet = new WangSet(tileset, QString(), -1);
     wangSet->setName(tr("New Wang Set"));
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,

@@ -43,13 +43,13 @@ class WangIdVariations;
 class TILEDSHARED_EXPORT WangId
 {
 public:
-    enum Corners {
+    enum Corner {
         TopRight = 0,
         BottomRight = 1,
         BottomLeft = 2,
         TopLeft = 3
     };
-    enum Edges {
+    enum Edge {
         Top = 0,
         Right = 1,
         Bottom = 2,
@@ -282,8 +282,6 @@ class TILEDSHARED_EXPORT WangSet : public Object
 {
 public:
     WangSet(Tileset *tileset,
-            int edgeColors,
-            int cornerColors,
             QString name,
             int imageTileId);
 
@@ -305,8 +303,8 @@ public:
      * This can make wangIds already in the set invalid, so should only be used from
      * ChangeWangSet(Edges/Corners)
      * */
-    void setEdgeColors(int n);
-    void setCornerColors(int n);
+    void setEdgeColorCount(int n);
+    void setCornerColorCount(int n);
 
     /* Inserts a given wangColor into the wangSet.
      * If the color is greater than current count, it must only be one greater.
@@ -314,6 +312,10 @@ public:
      * Does not adjust currently assigned tiles.
      * */
     void insertWangColor(QSharedPointer<WangColor> wangColor);
+
+    // Adds a wangcolor to the set. The wangcolors color index may
+    // be changed
+    void addWangColor(QSharedPointer<WangColor> wangColor);
 
     /* Removes a given color.
      * This can make wangIds invalid, so should only be used from
@@ -438,8 +440,8 @@ private:
     Tileset *mTileset;
     QString mName;
     int mImageTileId;
-    QList<QSharedPointer<WangColor>> mEdgeColors;
-    QList<QSharedPointer<WangColor>> mCornerColors;
+    QVector<QSharedPointer<WangColor>> mEdgeColors;
+    QVector<QSharedPointer<WangColor>> mCornerColors;
     unsigned mUniqueFullWangIdCount;
     QMultiHash<WangId, WangTile> mWangIdToWangTile;
 

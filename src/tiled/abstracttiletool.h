@@ -45,8 +45,8 @@ public:
     AbstractTileTool(const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
-                     QObject *parent = nullptr,
-                     BrushItem *brushItem = nullptr);
+                     BrushItem *brushItem = nullptr,
+                     QObject *parent = nullptr);
 
     ~AbstractTileTool();
 

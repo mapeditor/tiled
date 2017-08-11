@@ -158,7 +158,7 @@ void TilesetWangSetModel::setWangSetEdges(int index, int value)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
     WangSet *wangSet = tileset->wangSet(index);
-    wangSet->setEdgeColors(value);
+    wangSet->setEdgeColorCount(value);
     emitWangSetChange(wangSet);
 }
 
@@ -166,7 +166,7 @@ void TilesetWangSetModel::setWangSetCorners(int index, int value)
 {
     Tileset *tileset = mTilesetDocument->tileset().data();
     WangSet *wangSet = tileset->wangSet(index);
-    wangSet->setCornerColors(value);
+    wangSet->setCornerColorCount(value);
     emitWangSetChange(wangSet);
 }
 
@@ -192,9 +192,9 @@ void TilesetWangSetModel::removeWangColorAt(int index, int color, bool isEdge)
     WangSet *wangSet = tileset->wangSet(index);
 
     if (isEdge && wangSet->edgeColorCount() == 2)
-        wangSet->setEdgeColors(1);
+        wangSet->setEdgeColorCount(1);
     else if (!isEdge && wangSet->cornerColorCount() == 2)
-        wangSet->setCornerColors(1);
+        wangSet->setCornerColorCount(1);
     else
         wangSet->removeWangColorAt(color, isEdge);
 

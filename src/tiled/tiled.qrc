@@ -52,8 +52,8 @@
         <file>images/16x16/selection-subtract.png</file>
         <file>images/16x16/selection-intersect.png</file>
         <file>images/22x22/add.png</file>
-	    <file>images/22x22/add-corner.png</file>
-	    <file>images/22x22/add-edge.png</file>
+        <file>images/22x22/add-corner.png</file>
+        <file>images/22x22/add-edge.png</file>
         <file>images/22x22/remove.png</file>
         <file>images/22x22/stock-tool-clone.png</file>
         <file>images/22x22/stock-tool-eraser.png</file>
