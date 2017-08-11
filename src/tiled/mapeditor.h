@@ -45,10 +45,12 @@ namespace Internal {
 
 class AbstractTool;
 class BucketFillTool;
+class CreatePolylineObjectTool;
 class EditPolygonTool;
 class LayerDock;
 class MapDocument;
 class MapDocumentActionHandler;
+class MapObjectItem;
 class MapsDock;
 class MapView;
 class MiniMapDock;
@@ -126,6 +128,9 @@ public slots:
 
     void updateTemplateInstances(const MapObject *mapObject);
 
+    void extend(MapObjectItem *mapObjectItem, bool extendingFirst);
+    void extendingFinished();
+
 private slots:
     void currentWidgetChanged();
 
@@ -176,6 +181,7 @@ private:
     TerrainBrush *mTerrainBrush;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
+    CreatePolylineObjectTool *mPolylineObjectsTool;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

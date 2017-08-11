@@ -20,6 +20,7 @@
 
 #include "createmultipointobjecttool.h"
 
+#include "changepolygon.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
@@ -31,6 +32,7 @@
 
 #include <QApplication>
 #include <QPalette>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -62,7 +64,12 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 
     QPolygonF polygon = mOverlayPolygonObject->polygon();
-    polygon.last() = pixelCoords;
+
+    if (mExtendingFirst)
+        polygon.first() = pixelCoords;
+    else
+        polygon.last() = pixelCoords;
+
     mOverlayPolygonItem->setPolygon(polygon);
 }
 
@@ -75,15 +82,24 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
         QPolygonF next = mOverlayPolygonObject->polygon();
 
         // If the last position is still the same, ignore the click
-        if (next.last() == current.last())
+        if (next.last() == current.last() && !mExtending)
             return;
 
         // Assign current overlay polygon to the new object
         mNewMapObjectItem->setPolygon(next);
 
         // Add a new editable point to the overlay
-        next.append(next.last());
+        if (mExtendingFirst)
+            next.prepend(next.first());
+        else
+            next.append(next.last());
+
         mOverlayPolygonItem->setPolygon(next);
+
+        if (mExtending)
+            mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                               mNewMapObjectItem->mapObject(),
+                                                               current));
     }
 }
 

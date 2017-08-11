@@ -20,6 +20,7 @@
 
 #include "createpolylineobjecttool.h"
 
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "utils.h"
@@ -40,6 +41,29 @@ void CreatePolylineObjectTool::languageChanged()
 {
     setName(tr("Insert Polyline"));
     setShortcut(QKeySequence(tr("L")));
+}
+
+void CreatePolylineObjectTool::extend(MapObjectItem *mapObjectItem, bool extendingFirst)
+{
+    mExtending = true;
+    mExtendingFirst = extendingFirst;
+
+    mNewMapObjectItem = mapObjectItem;
+    mOverlayPolygonObject = mapObjectItem->mapObject()->clone();
+    mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
+                                            mapDocument(),
+                                            mObjectGroupItem);
+
+    QPolygonF next = mOverlayPolygonObject->polygon();
+
+    if (extendingFirst)
+        next.prepend(next.first());
+    else
+        next.append(next.last());
+
+    mOverlayPolygonItem->setPolygon(next);
+
+    mapDocument()->setSelectedObjects(QList<MapObject*>());
 }
 
 MapObject *CreatePolylineObjectTool::createNewMapObject()

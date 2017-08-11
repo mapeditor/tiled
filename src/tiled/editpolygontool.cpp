@@ -39,6 +39,7 @@
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
@@ -620,8 +621,8 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(joinNodesAction, SIGNAL(triggered()), SLOT(joinNodes()));
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
 
-    const PointHandle *firstHandle = *mSelectedHandles.begin();
-    const MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
+    const auto firstHandle = *mSelectedHandles.begin();
+    MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
 
     QAction *deleteSegment = menu.addAction(tr("Delete Segment"));
 
@@ -640,6 +641,16 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
 
     deleteSegment->setEnabled(enabled);
     connect(deleteSegment, SIGNAL(triggered()), SLOT(deleteSegment()));
+
+    if (mapObject->shape() == MapObject::Polyline) {
+        QAction *extendPolyline = menu.addAction(tr("Extend Polyline"));
+
+        bool handleCanBeExtended = (firstHandle->pointIndex() == 0)
+                                   || (firstHandle->pointIndex() == mapObject->polygon().size() - 1);
+
+        extendPolyline->setEnabled(n == 1 && handleCanBeExtended);
+        connect(extendPolyline, SIGNAL(triggered()), SLOT(extendPolyline()));
+    }
 
     menu.exec(screenPos);
 }
@@ -892,6 +903,14 @@ void EditPolygonTool::splitSegments()
 
     if (macroStarted)
         undoStack->endMacro();
+}
+
+void EditPolygonTool::extendPolyline()
+{
+    auto &selectedHandle = *mSelectedHandles.begin();
+    MapObjectItem *item = selectedHandle->mapObjectItem();
+
+    emit extend(item, (selectedHandle->pointIndex() == 0));
 }
 
 void EditPolygonTool::deleteSegment()

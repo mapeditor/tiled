@@ -41,8 +41,9 @@ protected:
                                        Qt::KeyboardModifiers modifiers) override;
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-private:
     MapObject *mOverlayPolygonObject;
+
+private:
     ObjectGroup *mOverlayObjectGroup;
 };
 

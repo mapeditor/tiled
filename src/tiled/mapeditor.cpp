@@ -41,6 +41,7 @@
 #include "magicwandtool.h"
 #include "maintoolbar.h"
 #include "mapdocumentactionhandler.h"
+#include "mapobjectitem.h"
 #include "mapscene.h"
 #include "mapsdock.h"
 #include "mapview.h"
@@ -174,7 +175,7 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
-    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
+    mPolylineObjectsTool = new CreatePolylineObjectTool(this);
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
     mToolsToolBar->addAction(mToolManager->registerTool(mStampBrush));
@@ -191,7 +192,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
-    mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(mPolylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
@@ -255,6 +256,9 @@ MapEditor::MapEditor(QObject *parent)
     connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
+
+    connect(mEditPolygonTool, &EditPolygonTool::extend, this, &MapEditor::extend);
+    connect(mPolylineObjectsTool, &CreatePolylineObjectTool::extendingFinished, this, &MapEditor::extendingFinished);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -671,6 +675,17 @@ void MapEditor::setWangFill(bool value)
 {
     mStampBrush->setWangFill(value);
     mBucketFillTool->setWangFill(value);
+}
+
+void MapEditor::extend(MapObjectItem *mapObjectItem, bool extendingFirst)
+{
+    setSelectedTool(mPolylineObjectsTool);
+    mPolylineObjectsTool->extend(mapObjectItem, extendingFirst);
+}
+
+void MapEditor::extendingFinished()
+{
+    setSelectedTool(mEditPolygonTool);
 }
 
 /**

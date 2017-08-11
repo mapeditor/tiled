@@ -59,6 +59,9 @@ public:
 
     bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
 
+signals:
+    void extend(MapObjectItem *mapObjectItem, bool extendingFirst);
+
 public slots:
     void deleteNodes();
 
@@ -69,6 +72,7 @@ private slots:
     void joinNodes();
     void splitSegments();
     void deleteSegment();
+    void extendPolyline();
 
 private:
     enum Mode {
@@ -88,6 +92,7 @@ private:
     void startMoving();
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
+
     void finishMoving(const QPointF &pos);
 
     void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
