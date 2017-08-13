@@ -68,6 +68,7 @@ private slots:
 
     void joinNodes();
     void splitSegments();
+    void deleteEdge();
 
 private:
     enum Mode {

@@ -618,6 +618,24 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(joinNodesAction, SIGNAL(triggered()), SLOT(joinNodes()));
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
 
+    const auto firstHandle = *mSelectedHandles.begin();
+    const auto secondHandle = *(mSelectedHandles.begin() + 1);
+    MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
+
+    if (mapObject->shape() == MapObject::Polygon) {
+        QAction *deleteEdge = menu.addAction(tr("Delete Edge"));
+
+        bool enabled = false;
+        if (mSelectedHandles.size() == 2) {
+            int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+            if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1)
+                enabled = true;
+        }
+
+        deleteEdge->setEnabled(enabled);
+        connect(deleteEdge, SIGNAL(triggered()), SLOT(deleteEdge()));
+    }
+
     menu.exec(screenPos);
 }
 
@@ -869,4 +887,39 @@ void EditPolygonTool::splitSegments()
 
     if (macroStarted)
         undoStack->endMacro();
+}
+
+void EditPolygonTool::deleteEdge()
+{
+    if (mSelectedHandles.size() != 2)
+        return;
+
+    const auto &firstHandle = *mSelectedHandles.begin();
+    const auto &secondHandle = *(mSelectedHandles.begin() + 1);
+
+    const MapObjectItem *item = firstHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    QPolygonF polygon = mapObject->polygon();
+    QPolygonF newPolygon(polygon);
+
+    int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+
+    if (indexDifference != polygon.size() - 1) {
+        int maxIndex = std::max(firstHandle->pointIndex(), secondHandle->pointIndex());
+        for (int i = maxIndex; i < polygon.size(); ++i)
+            newPolygon[i - maxIndex] = polygon[i];
+
+        for (int i = 0; i < maxIndex; ++i)
+            newPolygon[polygon.size() - maxIndex + i] = polygon[i];
+    }
+
+    setSelectedHandles(QSet<PointHandle*>());
+
+    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, newPolygon);
+
+    mapDocument()->undoStack()->beginMacro(tr("Delete Edge"));
+    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, polygon));
+    mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
+    mapDocument()->undoStack()->endMacro();
 }
