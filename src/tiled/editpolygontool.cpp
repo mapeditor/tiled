@@ -44,6 +44,8 @@
 #include <QPalette>
 #include <QUndoStack>
 
+#include <cstdlib>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
