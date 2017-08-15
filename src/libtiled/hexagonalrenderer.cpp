@@ -309,8 +309,8 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
     CellRenderer renderer(painter, CellRenderer::HexagonalCells);
 
-    const int endX = map()->infinite() ? layer->bounds().width() : layer->width();
-    const int endY = map()->infinite() ? layer->bounds().height() : layer->height();
+    const int endX = map()->infinite() ? layer->bounds().right() - layer->x() + 1 : layer->width();
+    const int endY = map()->infinite() ? layer->bounds().bottom() - layer->y() + 1 : layer->height();
 
     if (p.staggerX) {
         if (!map()->infinite()) {
@@ -365,7 +365,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
         if (p.doStaggerY(startTile.y() + layer->y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() < rect.bottom() && endY; startTile.ry()++) {
+        for (; startPos.y() < rect.bottom() && startTile.y() < endY; startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
