@@ -53,6 +53,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mLastShiftStatus(false)
     , mIsRandom(false)
     , mIsWangFill(false)
+    , mWangSet(nullptr)
     , mLastRandomStatus(false)
     , mStampActions(new StampActions(this))
 {

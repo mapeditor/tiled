@@ -53,6 +53,7 @@ StampBrush::StampBrush(QObject *parent)
     , mBrushBehavior(Free)
     , mIsRandom(false)
     , mIsWangFill(false)
+    , mWangSet(nullptr)
     , mStampActions(new StampActions(this))
 {
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);

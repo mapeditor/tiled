@@ -315,6 +315,7 @@ WangSet::WangSet(Tileset *tileset,
     mImageTileId(imageTileId),
     mUniqueFullWangIdCount(0)
 {
+    Q_ASSERT(tileset);
 }
 
 int WangSet::edgeColorCount() const
