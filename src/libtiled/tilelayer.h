@@ -342,7 +342,9 @@ public:
     /**
      * Returns the bounds of this layer.
      */
-    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
+    QRect bounds() const { return mBounds.translated(mX, mY); }
+
+    QRect rect() const { return QRect(mX, mY, mWidth, mHeight); }
 
     QMargins drawMargins() const;
 
@@ -506,6 +508,7 @@ private:
     int mHeight;
     Cell mEmptyCell;
     QHash<QPoint, Chunk> mChunks;
+    QRect mBounds;
     mutable QSet<SharedTileset> mUsedTilesets;
     mutable bool mUsedTilesetsDirty;
 };
@@ -561,9 +564,6 @@ inline void TileLayer::setSize(const QSize &size)
     mHeight = size.height();
 }
 
-/**
- * Returns whether (x, y) is inside this map layer.
- */
 inline bool TileLayer::contains(int x, int y) const
 {
     return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
@@ -600,7 +600,6 @@ inline QRegion TileLayer::region() const
  */
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
-    Q_ASSERT(contains(x, y));
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
     else

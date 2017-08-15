@@ -231,7 +231,7 @@ void TerrainBrush::doPaint(bool mergeable)
     if (!tileLayer->isUnlocked())
         return;
 
-    if (!tileLayer->bounds().intersects(stamp->bounds()))
+    if (!tileLayer->rect().intersects(stamp->bounds()) && !mapDocument()->map()->infinite())
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
@@ -372,12 +372,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         }
     }
 
-    // if the cursor is outside of the map, bail out
-    if (!currentLayer->contains(cursorPos)) {
-        brushItem()->clear();
-        return;
-    }
-
     Tileset *terrainTileset = nullptr;
     int terrainId = -1;
     if (mTerrain) {
@@ -395,8 +389,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         transitionList.reserve(list->size());
         for (QPoint p : *list) {
             p -= layerPosition;
-            if (currentLayer->contains(p))
-                transitionList.append(p);
+            transitionList.append(p);
         }
     } else {
         transitionList.append(ConsiderationPoint(cursorPos, paintCorner));

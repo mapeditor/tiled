@@ -117,8 +117,7 @@ void AbstractTileTool::updateStatusInfo()
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
             const QPoint pos = tilePosition() - tileLayer->position();
-            if (tileLayer->contains(pos))
-                tileId = tileLayer->cellAt(pos).tileId();
+            tileId = tileLayer->cellAt(pos).tileId();
         }
 
         QString tileIdString = tileId >= 0 ? QString::number(tileId) : tr("empty");

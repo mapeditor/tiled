@@ -168,10 +168,16 @@ QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
  */
 void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
-    Q_ASSERT(contains(x, y));
-
-    if (cell == mEmptyCell && !findChunk(x, y))
-        return;
+    if (!findChunk(x, y)) {
+        if (cell == mEmptyCell) {
+            return;
+        } else {
+            mBounds = mBounds.united(QRect(x - (x & CHUNK_MASK),
+                                           y - (y & CHUNK_MASK),
+                                           CHUNK_SIZE,
+                                           CHUNK_SIZE));
+        }
+    }
 
     Chunk &_chunk = chunk(x, y);
 
@@ -191,9 +197,8 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    const QRegion area = region.intersected(QRect(0, 0, width(), height()));
     const QRect bounds = region.boundingRect();
-    const QRect areaBounds = area.boundingRect();
+    const QRect areaBounds = region.boundingRect();
     const int offsetX = qMax(0, areaBounds.x() - bounds.x());
     const int offsetY = qMax(0, areaBounds.y() - bounds.y());
 
@@ -201,7 +206,7 @@ TileLayer *TileLayer::copy(const QRegion &region) const
                                       0, 0,
                                       bounds.width(), bounds.height());
 
-    for (const QRect &rect : area.rects())
+    for (const QRect &rect : region.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
                 copied->setCell(x - areaBounds.x() + offsetX,
@@ -232,7 +237,6 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
 {
     // Determine the overlapping area
     QRegion area = QRect(x, y, layer->width(), layer->height());
-    area &= QRect(0, 0, width(), height());
 
     if (!mask.isEmpty())
         area &= mask;
@@ -562,18 +566,13 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
 
     // Copy over the preserved part
-    const int startX = qMax(0, -offset.x());
-    const int startY = qMax(0, -offset.y());
-    const int endX = qMin(mWidth, size.width() - offset.x());
-    const int endY = qMin(mHeight, size.height() - offset.y());
-
-    for (int y = startY; y < endY; ++y) {
-        for (int x = startX; x < endX; ++x) {
-            newLayer->setCell(x + offset.x(), y + offset.y(), cellAt(x, y));
-        }
-    }
+    QRect area = mBounds.translated(offset).intersected(newLayer->rect());
+    for (int y = area.top(); y <= area.bottom(); ++y)
+        for (int x = area.left(); x <= area.right(); ++x)
+            newLayer->setCell(x, y, cellAt(x - offset.x(), y - offset.y()));
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
     setSize(size);
 }
 
@@ -606,7 +605,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
             }
 
             // Set the new tile
-            if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
+            if (bounds.contains(oldX, oldY))
                 newLayer->setCell(x, y, cellAt(oldX, oldY));
             else
                 newLayer->setCell(x, y, Cell());
@@ -614,6 +613,7 @@ void TileLayer::offsetTiles(const QPoint &offset,
     }
 
     mChunks = newLayer->mChunks;
+    mBounds = newLayer->mBounds;
 }
 
 bool TileLayer::canMergeWith(Layer *other) const
@@ -626,12 +626,12 @@ Layer *TileLayer::mergedWith(Layer *other) const
     Q_ASSERT(canMergeWith(other));
 
     const TileLayer *o = static_cast<TileLayer*>(other);
-    const QRect unitedBounds = bounds().united(o->bounds());
-    const QPoint offset = position() - unitedBounds.topLeft();
+    const QRect unitedRect = rect().united(o->rect());
+    const QPoint offset = position() - unitedRect.topLeft();
 
     TileLayer *merged = clone();
-    merged->resize(unitedBounds.size(), offset);
-    merged->merge(o->position() - unitedBounds.topLeft(), o);
+    merged->resize(unitedRect.size(), offset);
+    merged->merge(o->position() - unitedRect.topLeft(), o);
     return merged;
 }
 
@@ -684,6 +684,7 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
     clone->mChunks = mChunks;
+    clone->mBounds = mBounds;
     clone->mUsedTilesets = mUsedTilesets;
     clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;

@@ -21,6 +21,8 @@
 #include "selectsametiletool.h"
 
 #include "brushitem.h"
+#include "map.h"
+#include "mapdocument.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -42,7 +44,7 @@ void SelectSameTileTool::tilePositionChanged(const QPoint &tilePos)
         return;
 
     QRegion resultRegion;
-    if (tileLayer->contains(tilePos)) {
+    if (mapDocument()->map()->infinite() || tileLayer->contains(tilePos)) {
         const Cell &matchCell = tileLayer->cellAt(tilePos);
         resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
     }

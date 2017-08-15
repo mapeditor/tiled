@@ -31,20 +31,21 @@ using namespace Tiled::Internal;
 
 namespace {
 
-class DrawMarginsWatcher
+class TileLayerChangeWatcher
 {
 public:
-    DrawMarginsWatcher(MapDocument *mapDocument, TileLayer *layer)
+    TileLayerChangeWatcher(MapDocument *mapDocument, TileLayer *layer)
         : mMapDocument(mapDocument)
         , mTileLayer(layer)
         , mDrawMargins(layer->drawMargins())
+        , mBounds(layer->bounds())
     {
     }
 
-    ~DrawMarginsWatcher()
+    ~TileLayerChangeWatcher()
     {
         if (mTileLayer->map() == mMapDocument->map())
-            if (mTileLayer->drawMargins() != mDrawMargins)
+            if (mTileLayer->drawMargins() != mDrawMargins || mTileLayer->bounds() != mBounds)
                 emit mMapDocument->tileLayerDrawMarginsChanged(mTileLayer);
     }
 
@@ -52,6 +53,7 @@ private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
     const QMargins mDrawMargins;
+    const QRect mBounds;
 };
 
 } // anonymous namespace
@@ -68,9 +70,6 @@ Cell TilePainter::cellAt(int x, int y) const
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
-        return Cell();
-
     return mTileLayer->cellAt(layerX, layerY);
 }
 
@@ -83,10 +82,10 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
+    if (!mTileLayer->contains(layerX, layerY) && !mMapDocument->map()->infinite())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCell(layerX, layerY, cell);
     emit mMapDocument->regionChanged(QRegion(x, y, 1, 1), mTileLayer);
 }
@@ -103,7 +102,7 @@ void TilePainter::setCells(int x, int y,
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCells(x - mTileLayer->x(),
                          y - mTileLayer->y(),
                          tileLayer,
@@ -120,7 +119,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
     for (const QRect &rect : region.rects()) {
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
@@ -150,7 +149,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     if (region.isEmpty())
         return;
 
-    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+    TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
     const int w = stamp->width();
     const int h = stamp->height();
@@ -192,17 +191,26 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
 {
     // Create that region that will hold the fill
     QRegion fillRegion;
+    QRect bounds = layer->map()->infinite() ? layer->bounds() : layer->rect();
 
     // Silently quit if parameters are unsatisfactory
-    if (!layer->contains(fillOrigin))
+    if (!bounds.contains(fillOrigin))
         return fillRegion;
+
+    bounds.translate(-layer->position());
 
     // Cache cell that we will match other cells against
     const Cell matchCell = layer->cellAt(fillOrigin);
 
-    // Grab layer dimensions for later use.
-    const int layerWidth = layer->width();
-    const int layerHeight = layer->height();
+    int startX = bounds.left();
+    int startY = bounds.top();
+    int endX = bounds.right() + 1;
+    int endY = bounds.bottom() + 1;
+    int layerWidth = endX - startX;
+    int layerHeight = endY - startY;
+
+    int indexOffset = -(startX + startY * layerWidth);
+
     const bool isStaggered = orientation == Map::Hexagonal || orientation == Map::Staggered;
 
     // Create a queue to hold cells that need filling
@@ -222,16 +230,16 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (left > 0 && layer->cellAt(left - 1, currentPoint.y()) == matchCell) {
+        while (left > startX && layer->cellAt(left - 1, currentPoint.y()) == matchCell) {
             --left;
-            processedCells[startOfLine + left] = true;
+            processedCells[indexOffset + startOfLine + left] = true;
         }
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (right + 1 < layerWidth && layer->cellAt(right + 1, currentPoint.y()) == matchCell) {
+        while (right + 1 < endX && layer->cellAt(right + 1, currentPoint.y()) == matchCell) {
             ++right;
-            processedCells[startOfLine + right] = true;
+            processedCells[indexOffset + startOfLine + right] = true;
         }
 
         // Add cells between left and right to the region
@@ -245,9 +253,9 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             if (staggerAxis == Map::StaggerY) {
                 bool rowIsStaggered = ((layer->y() + currentPoint.y()) & 1) ^ staggerIndex;
                 if (rowIsStaggered)
-                    right = qMin(right + 1, layerWidth - 1);
+                    right = qMin(right + 1, endX - 1);
                 else
-                    left = qMax(left - 1, 0);
+                    left = qMax(left - 1, startX);
             } else {
                 leftColumnIsStaggered = ((layer->x() + left) & 1) ^ staggerIndex;
                 rightColumnIsStaggered = ((layer->x() + right) & 1) ^ staggerIndex;
@@ -262,7 +270,7 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
             for (int x = left; x <= right; ++x) {
                 const int index = y * layerWidth + x;
 
-                if (!processedCells[index] && layer->cellAt(x, y) == matchCell) {
+                if (!processedCells[indexOffset + index] && layer->cellAt(x, y) == matchCell) {
                     // Do not add the cell to the queue if an adjacent cell was added.
                     if (!adjacentCellAdded) {
                         fillPositions.enqueue(QPoint(x, y));
@@ -272,33 +280,33 @@ static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin,
                     adjacentCellAdded = false;
                 }
 
-                processedCells[index] = true;
+                processedCells[indexOffset + index] = true;
             }
         };
 
-        if (currentPoint.y() > 0) {
+        if (currentPoint.y() > startY) {
             int _left = left;
             int _right = right;
 
             if (isStaggered && staggerAxis == Map::StaggerX) {
                 if (!leftColumnIsStaggered)
-                    _left = qMax(left - 1, 0);
+                    _left = qMax(left - 1, startX);
                 if (!rightColumnIsStaggered)
-                    _right = qMin(right + 1, layerWidth - 1);
+                    _right = qMin(right + 1, endX - 1);
             }
 
             findFillPositions(_left, _right, currentPoint.y() - 1);
         }
 
-        if (currentPoint.y() + 1 < layerHeight) {
+        if (currentPoint.y() + 1 < endY) {
             int _left = left;
             int _right = right;
 
             if (isStaggered && staggerAxis == Map::StaggerX) {
                 if (leftColumnIsStaggered)
-                    _left = qMax(left - 1, 0);
+                    _left = qMax(left - 1, startX);
                 if (rightColumnIsStaggered)
-                    _right = qMin(right + 1, layerWidth - 1);
+                    _right = qMin(right + 1, endX - 1);
             }
 
             findFillPositions(_left, _right, currentPoint.y() + 1);
@@ -336,7 +344,7 @@ bool TilePainter::isDrawable(int x, int y) const
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (!mTileLayer->contains(layerX, layerY))
+    if (!mTileLayer->contains(layerX, layerY) && !mMapDocument->map()->infinite())
         return false;
 
     return true;
@@ -344,8 +352,9 @@ bool TilePainter::isDrawable(int x, int y) const
 
 QRegion TilePainter::paintableRegion(const QRegion &region) const
 {
-    const QRegion bounds = QRegion(mTileLayer->bounds());
-    QRegion intersection = bounds.intersected(region);
+    QRegion intersection = region;
+    if (!mMapDocument->map()->infinite())
+        intersection &= QRegion(mTileLayer->rect());
 
     const QRegion &selection = mMapDocument->selectedArea();
     if (!selection.isEmpty())

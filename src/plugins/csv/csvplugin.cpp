@@ -57,10 +57,13 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
 
         auto device = file.device();
 
+        QRect bounds = map->infinite() ? tileLayer->bounds() : tileLayer->rect();
+        bounds.translate(-layer->position());
+
         // Write out tiles either by ID or their name, if given. -1 is "empty"
-        for (int y = 0; y < tileLayer->height(); ++y) {
-            for (int x = 0; x < tileLayer->width(); ++x) {
-                if (x > 0)
+        for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+            for (int x = bounds.left(); x <= bounds.right(); ++x) {
+                if (x > bounds.left())
                     device->write(",", 1);
     
                 const Cell &cell = tileLayer->cellAt(x, y);

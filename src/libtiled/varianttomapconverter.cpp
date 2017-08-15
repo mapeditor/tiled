@@ -76,7 +76,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                             variantMap[QLatin1String("width")].toInt(),
                             variantMap[QLatin1String("height")].toInt(),
                             variantMap[QLatin1String("tilewidth")].toInt(),
-                            variantMap[QLatin1String("tileheight")].toInt()));
+                            variantMap[QLatin1String("tileheight")].toInt(),
+                            variantMap[QLatin1String("infinite")].toInt()));
     map->setHexSideLength(variantMap[QLatin1String("hexsidelength")].toInt());
     map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
@@ -344,6 +345,8 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     const QString name = variantMap[QLatin1String("name")].toString();
     const int width = variantMap[QLatin1String("width")].toInt();
     const int height = variantMap[QLatin1String("height")].toInt();
+    const int startX = variantMap[QLatin1String("startx")].toInt();
+    const int startY = variantMap[QLatin1String("starty")].toInt();
     const QVariant dataVariant = variantMap[QLatin1String("data")];
 
     typedef QScopedPointer<TileLayer> TileLayerPtr;
@@ -405,7 +408,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 
             const Cell cell = mGidMapper.gidToCell(gid, ok);
 
-            tileLayer->setCell(x, y, cell);
+            tileLayer->setCell(x + startX, y + startY, cell);
 
             x++;
             if (x >= tileLayer->width()) {
@@ -422,7 +425,9 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
         const QByteArray data = dataVariant.toByteArray();
         GidMapper::DecodeError error = mGidMapper.decodeLayerData(*tileLayer,
                                                                   data,
-                                                                  layerDataFormat);
+                                                                  layerDataFormat,
+                                                                  startX,
+                                                                  startY);
 
         switch (error) {
         case GidMapper::CorruptLayerData:

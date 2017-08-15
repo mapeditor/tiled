@@ -336,8 +336,9 @@ void MapDocumentActionHandler::selectAll()
         return;
 
     if (TileLayer *tileLayer = layer->asTileLayer()) {
-        QRect all(tileLayer->x(), tileLayer->y(),
-                  tileLayer->width(), tileLayer->height());
+        QRect all = tileLayer->rect();
+        if (mMapDocument->map()->infinite())
+            all = tileLayer->bounds();
 
         if (mMapDocument->selectedArea() == all)
             return;
@@ -675,7 +676,8 @@ void MapDocumentActionHandler::updateActions()
 
 
     mActionCropToSelection->setEnabled(!selection.isEmpty());
-    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer());
+
+    mActionAutocrop->setEnabled(currentLayer && currentLayer->isTileLayer() && !map->infinite());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);

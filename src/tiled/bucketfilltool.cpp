@@ -151,7 +151,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
             // Fill region is the whole map if there is no selection
             if (mFillRegion.isEmpty())
-                mFillRegion = tileLayer->bounds();
+                mFillRegion = tileLayer->rect();
 
             // The mouse needs to be in the region
             if (!mFillRegion.contains(tilePos))

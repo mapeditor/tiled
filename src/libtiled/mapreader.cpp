@@ -89,11 +89,16 @@ private:
     Layer *tryReadLayer();
 
     TileLayer *readTileLayer();
-    void readTileLayerData(TileLayer &tileLayer);
+    void readTileLayerData(TileLayer &tileLayer, const int startX, const int startY);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
-                               Map::LayerDataFormat format);
-    void decodeCSVLayerData(TileLayer &tileLayer, QStringRef text);
+                               Map::LayerDataFormat format,
+                               const int startX,
+                               const int startY);
+    void decodeCSVLayerData(TileLayer &tileLayer,
+                            QStringRef text,
+                            const int startX,
+                            const int startY);
 
     /**
      * Returns the cell for the given global tile ID. Errors are raised with
@@ -212,6 +217,7 @@ Map *MapReaderPrivate::readMap()
     const int mapHeight = atts.value(QLatin1String("height")).toInt();
     const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
     const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+    const int infinite = atts.value(QLatin1String("infinite")).toInt();
     const int hexSideLength = atts.value(QLatin1String("hexsidelength")).toInt();
 
     const QString orientationString =
@@ -242,7 +248,7 @@ Map *MapReaderPrivate::readMap()
     const int nextObjectId =
             atts.value(QLatin1String("nextobjectid")).toInt();
 
-    mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight));
+    mMap.reset(new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight, infinite));
     mMap->setHexSideLength(hexSideLength);
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
@@ -600,6 +606,8 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
+    const int startX = atts.value(QLatin1String("startx")).toInt();
+    const int startY = atts.value(QLatin1String("starty")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
@@ -608,7 +616,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
-            readTileLayerData(*tileLayer);
+            readTileLayerData(*tileLayer, startX, startY);
         else
             readUnknownElement();
     }
@@ -616,7 +624,9 @@ TileLayer *MapReaderPrivate::readTileLayer()
     return tileLayer;
 }
 
-void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
+void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
+                                         const int startX,
+                                         const int startY)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
@@ -663,7 +673,7 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
                 const QXmlStreamAttributes atts = xml.attributes();
                 unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-                tileLayer.setCell(x, y, cellForGid(gid));
+                tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
 
                 x++;
                 if (x >= tileLayer.width()) {
@@ -679,9 +689,11 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
             if (encoding == QLatin1String("base64")) {
                 decodeBinaryLayerData(tileLayer,
                                       xml.text().toLatin1(),
-                                      layerDataFormat);
+                                      layerDataFormat,
+                                      startX,
+                                      startY);
             } else if (encoding == QLatin1String("csv")) {
-                decodeCSVLayerData(tileLayer, xml.text());
+                decodeCSVLayerData(tileLayer, xml.text(), startX, startY);
             }
         }
     }
@@ -689,9 +701,11 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
 void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
                                              const QByteArray &data,
-                                             Map::LayerDataFormat format)
+                                             Map::LayerDataFormat format,
+                                             const int startX,
+                                             const int startY)
 {
-    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format);
+    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format, startX, startY);
 
     switch (error) {
     case GidMapper::CorruptLayerData:
@@ -708,7 +722,10 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
     }
 }
 
-void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer, QStringRef text)
+void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
+                                          QStringRef text,
+                                          const int startX,
+                                          const int startY)
 {
     QString trimText = text.trimmed().toString();
     QStringList tiles = trimText.split(QLatin1Char(','));
@@ -730,7 +747,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer, QStringRef text)
                                .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
                 return;
             }
-            tileLayer.setCell(x, y, cellForGid(gid));
+            tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
         }
     }
 }

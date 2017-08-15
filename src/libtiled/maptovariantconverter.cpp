@@ -59,6 +59,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QLatin1String("height")] = map.height();
     mapVariant[QLatin1String("tilewidth")] = map.tileWidth();
     mapVariant[QLatin1String("tileheight")] = map.tileHeight();
+    mapVariant[QLatin1String("infinite")] = map.infinite();
     mapVariant[QLatin1String("nextobjectid")] = map.nextObjectId();
 
     addProperties(mapVariant, map.properties());
@@ -294,17 +295,38 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
 
-    tileLayerVariant[QLatin1String("width")] = tileLayer.width();
-    tileLayerVariant[QLatin1String("height")] = tileLayer.height();
+    QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
+
+    if (tileLayer.map()->infinite()) {
+        tileLayerVariant[QLatin1String("width")] = bounds.width();
+        tileLayerVariant[QLatin1String("height")] = bounds.height();
+        tileLayerVariant[QLatin1String("startx")] = bounds.left();
+        tileLayerVariant[QLatin1String("starty")] = bounds.top();
+    } else {
+        tileLayerVariant[QLatin1String("width")] = tileLayer.width();
+        tileLayerVariant[QLatin1String("height")] = tileLayer.height();
+    }
 
     addLayerAttributes(tileLayerVariant, tileLayer);
 
     switch (format) {
     case Map::XML:
     case Map::CSV: {
+        int startX = 0;
+        int startY = 0;
+        int endX = tileLayer.width() - 1;
+        int endY = tileLayer.height() - 1;
+
+        if (tileLayer.map()->infinite()) {
+            startX = bounds.left();
+            startY = bounds.top();
+            endX = bounds.right();
+            endY = bounds.bottom();
+        }
+
         QVariantList tileVariants;
-        for (int y = 0; y < tileLayer.height(); ++y)
-            for (int x = 0; x < tileLayer.width(); ++x)
+        for (int y = startY; y <= endY; ++y)
+            for (int x = startX; x <= endX; ++x)
                 tileVariants << mGidMapper.cellToGid(tileLayer.cellAt(x, y));
 
         tileLayerVariant[QLatin1String("data")] = tileVariants;

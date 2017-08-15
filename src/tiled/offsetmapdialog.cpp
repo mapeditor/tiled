@@ -41,6 +41,11 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
         disableBoundsSelectionCurrentArea();
     else
         mUi->boundsSelection->setCurrentIndex(1);
+
+    if (mMapDocument->map()->infinite()) {
+        mUi->wrapX->setEnabled(false);
+        mUi->wrapY->setEnabled(false);
+    }
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -80,6 +85,15 @@ QRect OffsetMapDialog::affectedBoundingRect() const
     switch (boundsSelection()) {
     case WholeMap:
         boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+
+        if (mMapDocument->map()->infinite()) {
+            LayerIterator iterator(mMapDocument->map());
+
+            while (Layer *layer = iterator.next())
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    boundingRect = boundingRect.united(tileLayer->bounds());
+
+        }
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();

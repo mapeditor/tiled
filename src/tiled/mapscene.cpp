@@ -295,8 +295,7 @@ void MapScene::updateDefaultBackgroundColor()
 
 void MapScene::updateSceneRect()
 {
-    const QSize mapSize = mMapDocument->renderer()->mapSize();
-    QRectF sceneRect(0, 0, mapSize.width(), mapSize.height());
+    QRectF sceneRect = mMapDocument->renderer()->mapBoundingRect();
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     sceneRect.adjust(-margins.left(),
@@ -305,7 +304,11 @@ void MapScene::updateSceneRect()
                      margins.bottom());
 
     setSceneRect(sceneRect);
-    mDarkRectangle->setRect(sceneRect);
+
+    if (mMapDocument->map()->infinite())
+        mDarkRectangle->setRect(QRect());
+    else
+        mDarkRectangle->setRect(sceneRect);
 }
 
 void MapScene::updateCurrentLayerHighlight()

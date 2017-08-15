@@ -63,7 +63,9 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     const Tiled::RenderFlags rendererFlags = renderer->flags();
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-    QSize mapSize = renderer->mapSize();
+    QRect mapBoundingRect = renderer->mapBoundingRect();
+
+    QSize mapSize = mapBoundingRect.size();
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
@@ -77,6 +79,9 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     painter.setRenderHints(QPainter::SmoothPixmapTransform);
     painter.setTransform(QTransform::fromScale(scale, scale));
     painter.translate(margins.left(), margins.top());
+    if (mMapDocument->map()->infinite())
+        painter.translate(-mapBoundingRect.topLeft());
+
     renderer->setPainterScale(scale);
 
     LayerIterator iterator(mMapDocument->map());
@@ -127,8 +132,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
+        renderer->drawGrid(&painter, mapBoundingRect, prefs->gridColor());
     }
 
     renderer->setFlags(rendererFlags);

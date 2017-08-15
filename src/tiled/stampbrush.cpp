@@ -270,9 +270,7 @@ void StampBrush::endCapture()
     Q_ASSERT(tileLayer);
 
     // Intersect with the layer and translate to layer coordinates
-    QRect captured = capturedArea();
-    captured &= QRect(tileLayer->x(), tileLayer->y(),
-                      tileLayer->width(), tileLayer->height());
+    QRect captured = capturedArea().intersected(tileLayer->bounds());
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
@@ -339,10 +337,7 @@ QRegion StampBrush::doPaint(int flags)
     if (!tileLayer->isUnlocked())
         return QRegion();
 
-    if (!tileLayer->bounds().intersects(QRect(preview->x(),
-                                              preview->y(),
-                                              preview->width(),
-                                              preview->height())))
+    if (!tileLayer->rect().intersects(preview->bounds()) && !tileLayer->map()->infinite())
         return QRegion();
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(),

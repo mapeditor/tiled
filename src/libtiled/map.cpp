@@ -41,7 +41,7 @@
 using namespace Tiled;
 
 Map::Map(Orientation orientation,
-         int width, int height, int tileWidth, int tileHeight):
+         int width, int height, int tileWidth, int tileHeight, bool infinite):
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
@@ -49,6 +49,7 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
+    mInfinite(infinite),
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
@@ -66,6 +67,7 @@ Map::Map(const Map &map):
     mHeight(map.mHeight),
     mTileWidth(map.mTileWidth),
     mTileHeight(map.mTileHeight),
+    mInfinite(map.mInfinite),
     mHexSideLength(map.mHexSideLength),
     mStaggerAxis(map.mStaggerAxis),
     mStaggerIndex(map.mStaggerIndex),
@@ -295,7 +297,6 @@ void Map::initializeObjectIds(ObjectGroup &objectGroup)
             o->setId(takeNextObjectId());
     }
 }
-
 
 QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {

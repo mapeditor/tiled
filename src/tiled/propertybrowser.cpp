@@ -564,6 +564,7 @@ void PropertyBrowser::addMapProperties()
     addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
     addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
     addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
+    addProperty(InfiniteProperty, QVariant::Bool, tr("Infinite"), groupProperty);
 
     addProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
@@ -845,6 +846,32 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileHeight,
                                         val.toInt());
         break;
+    case InfiniteProperty: {
+        bool infinite = val.toInt();
+
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->beginMacro(tr("Change Infinite Property"));
+
+        if (!infinite) {
+            QRect mapBounds;
+
+            LayerIterator iterator(mMapDocument->map());
+            while (Layer *layer = iterator.next()) {
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    mapBounds = mapBounds.united(tileLayer->bounds());
+            }
+
+            if (mapBounds.size() == QSize(0, 0))
+                mapBounds.setSize(QSize(1, 1));
+
+            mMapDocument->resizeMap(mapBounds.size(), -mapBounds.topLeft(), false);
+        }
+
+        undoStack->push(new ChangeMapProperty(mMapDocument, ChangeMapProperty::Infinite,
+                                              val.toInt()));
+        undoStack->endMacro();
+        break;
+    }
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
         command = new ChangeMapProperty(mMapDocument, orientation);
@@ -1380,6 +1407,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[HeightProperty]->setValue(map->height());
         mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
+        mIdToProperty[InfiniteProperty]->setValue(map->infinite());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());

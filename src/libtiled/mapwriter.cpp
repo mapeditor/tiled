@@ -192,6 +192,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                      QString::number(map.tileWidth()));
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(map.tileHeight()));
+    w.writeAttribute(QLatin1String("infinite"),
+                     QString::number(map.infinite()));
 
     if (map.orientation() == Map::Hexagonal) {
         w.writeAttribute(QLatin1String("hexsidelength"),
@@ -483,9 +485,22 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 
+    int startX = 0;
+    int startY = 0;
+    int endX = tileLayer.width() - 1;
+    int endY = tileLayer.height() - 1;
+
+    if (tileLayer.map()->infinite()) {
+        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
+        startX = bounds.left();
+        startY = bounds.top();
+        endX = bounds.right();
+        endY = bounds.bottom();
+    }
+
     if (mLayerDataFormat == Map::XML) {
-        for (int y = 0; y < tileLayer.height(); ++y) {
-            for (int x = 0; x < tileLayer.width(); ++x) {
+        for (int y = startY; y <= endY; ++y) {
+            for (int x = startX; x <= endX; ++x) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
                 w.writeStartElement(QLatin1String("tile"));
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
@@ -495,12 +510,11 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     } else if (mLayerDataFormat == Map::CSV) {
         QString tileData;
 
-        for (int y = 0; y < tileLayer.height(); ++y) {
-            for (int x = 0; x < tileLayer.width(); ++x) {
+        for (int y = startY; y <= endY; ++y) {
+            for (int x = startX; x <= endX; ++x) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
                 tileData.append(QString::number(gid));
-                if (x != tileLayer.width() - 1
-                    || y != tileLayer.height() - 1)
+                if (x != endX || y != endY)
                     tileData.append(QLatin1String(","));
             }
             tileData.append(QLatin1String("\n"));
@@ -537,10 +551,30 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
 
     if (layer.layerType() == Layer::TileLayerType) {
         auto &tileLayer = static_cast<const TileLayer&>(layer);
+        int width = tileLayer.width();
+        int height = tileLayer.height();
+
+
+        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
+
+        bool infinite = tileLayer.map()->infinite();
+
+        if (infinite) {
+            width = bounds.width();
+            height = bounds.height();
+        }
+
         w.writeAttribute(QLatin1String("width"),
-                         QString::number(tileLayer.width()));
+                         QString::number(width));
         w.writeAttribute(QLatin1String("height"),
-                         QString::number(tileLayer.height()));
+                         QString::number(height));
+
+        if (infinite) {
+            w.writeAttribute(QLatin1String("startx"),
+                             QString::number(bounds.left()));
+            w.writeAttribute(QLatin1String("starty"),
+                             QString::number(bounds.top()));
+        }
     }
 
     if (!layer.isVisible())

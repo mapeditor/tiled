@@ -101,7 +101,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
-    QSize mapSize = renderer->mapSize();
+    QRect mapBoundingRect = renderer->mapBoundingRect();
+    QSize mapSize = mapBoundingRect.size();
+    QPoint mapOffset = mapBoundingRect.topLeft();
     qreal xScale, yScale;
 
     if (mSize > 0) {
@@ -131,6 +133,7 @@ int TmxRasterizer::render(const QString &mapFileName,
     painter.setTransform(QTransform::fromScale(xScale, yScale));
 
     painter.translate(margins.left(), margins.top());
+    painter.translate(-mapOffset);
 
     // Perform a similar rendering than found in exportasimagedialog.cpp
     LayerIterator iterator(map);
