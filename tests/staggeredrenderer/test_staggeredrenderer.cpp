@@ -102,7 +102,8 @@ void test_StaggeredRenderer::screenToTileCoords()
     QFETCH(QPointF, tileCoords);
 
     StaggeredRenderer renderer(mMap);
-    QCOMPARE(renderer.screenToTileCoords(screenCoords), tileCoords);
+    QCOMPARE(renderer.screenToTileCoords(screenCoords).toPoint(), QPoint(qFloor(tileCoords.x()),
+                                                                         qFloor(tileCoords.y())));
 }
 
 void test_StaggeredRenderer::tileToScreenCoords_data()

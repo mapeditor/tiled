@@ -29,12 +29,14 @@ using namespace Tiled::Internal;
 StampActions::StampActions(QObject *parent) : QObject(parent)
 {
     QIcon diceIcon(QLatin1String(":images/24x24/dice.png"));
+    QIcon wangIcon(QLatin1String(":images/24x24/wangtile.png"));
     QIcon flipHorizontalIcon(QLatin1String(":images/24x24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24x24/flip-vertical.png"));
     QIcon rotateLeftIcon(QLatin1String(":images/24x24/rotate-left.png"));
     QIcon rotateRightIcon(QLatin1String(":images/24x24/rotate-right.png"));
 
     diceIcon.addFile(QLatin1String(":images/32x32/dice.png"));
+    wangIcon.addFile(QLatin1String(":images/32x32/wangtile.png"));
     flipHorizontalIcon.addFile(QLatin1String(":images/32x32/flip-horizontal.png"));
     flipVerticalIcon.addFile(QLatin1String(":images/32x32/flip-vertical.png"));
     rotateLeftIcon.addFile(QLatin1String(":images/32x32/rotate-left.png"));
@@ -45,6 +47,11 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     mRandom->setCheckable(true);
     mRandom->setToolTip(tr("Random Mode"));
     mRandom->setShortcut(QKeySequence(tr("D")));
+
+    mWangFill = new QAction(this);
+    mWangFill->setIcon(wangIcon);
+    mWangFill->setCheckable(true);
+    mWangFill->setToolTip(tr("Wang Fill Mode"));
 
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
@@ -68,6 +75,7 @@ StampActions::~StampActions()
 void StampActions::languageChanged()
 {
     mRandom->setToolTip(tr("Random Mode"));
+    mWangFill->setToolTip(tr("Wang Fill Mode"));
     mFlipHorizontal->setToolTip(tr("Flip Horizontally"));
     mFlipVertical->setToolTip(tr("Flip Vertically"));
     mRotateLeft->setToolTip(tr("Rotate Left"));
@@ -80,10 +88,12 @@ void StampActions::languageChanged()
     mRotateRight->setShortcut(QKeySequence(tr("Z")));
 }
 
-void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom)
+void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill)
 {
     mRandom->setChecked(isRandom);
+    mWangFill->setChecked(isWangFill);
     toolBar->addAction(mRandom);
+    toolBar->addAction(mWangFill);
     toolBar->addAction(mFlipHorizontal);
     toolBar->addAction(mFlipVertical);
     toolBar->addAction(mRotateLeft);

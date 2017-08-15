@@ -29,11 +29,13 @@
 namespace Tiled {
 
 class Tile;
+class WangSet;
 
 namespace Internal {
 
 class MapDocument;
 class StampActions;
+class WangFiller;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -69,6 +71,8 @@ public:
 
 public slots:
     void setRandom(bool value);
+    void setWangFill(bool value);
+    void setWangSet(WangSet *wangSet);
 
 signals:
     /**
@@ -79,6 +83,8 @@ signals:
     void stampChanged(const TileStamp &stamp);
 
     void randomChanged(bool value);
+
+    void wangFillChanged(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
@@ -141,6 +147,9 @@ private:
 
     bool mIsRandom;
     RandomPicker<Cell> mRandomCellPicker;
+
+    bool mIsWangFill;
+    WangSet *mWangSet;
 
     void updateRandomList();
 

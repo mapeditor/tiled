@@ -60,6 +60,9 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
+protected:
+    MapDocument *mapDocument() const  { return mMapDocument; }
+
 private:
     void updateBoundingRect();
 

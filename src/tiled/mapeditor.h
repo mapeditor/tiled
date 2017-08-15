@@ -64,6 +64,8 @@ class ToolManager;
 class TreeViewComboBox;
 class UncheckableItemsModel;
 class UndoDock;
+class WangBrush;
+class WangDock;
 class Zoomable;
 
 class MapEditor : public Editor
@@ -110,9 +112,12 @@ public slots:
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
     void setRandom(bool value);
+    void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
     void selectTerrainBrush();
+
+    void selectWangBrush();
 
     void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
@@ -149,6 +154,7 @@ private:
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
+    WangDock *mWangDock;
     MiniMapDock* mMiniMapDock;
     QDockWidget *mTileStampsDock;
 
@@ -163,6 +169,7 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
+    WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
 
     QToolBar *mMainToolBar;

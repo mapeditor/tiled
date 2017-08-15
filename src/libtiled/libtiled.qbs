@@ -96,6 +96,8 @@ DynamicLibrary {
         "tilesetmanager.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
+        "wangset.cpp",
+        "wangset.h",
     ]
 
     Group {

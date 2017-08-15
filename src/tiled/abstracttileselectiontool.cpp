@@ -35,7 +35,7 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
                                                      const QIcon &icon,
                                                      const QKeySequence &shortcut,
                                                      QObject *parent)
-    : AbstractTileTool(name, icon, shortcut, parent)
+    : AbstractTileTool(name, icon, shortcut, nullptr, parent)
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {

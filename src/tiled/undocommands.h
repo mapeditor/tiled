@@ -30,5 +30,6 @@ enum UndoCommands {
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
     Cmd_ChangeTileTerrain,
+    Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetTileOffset
 };

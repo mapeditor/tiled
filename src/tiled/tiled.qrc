@@ -52,6 +52,8 @@
         <file>images/16x16/selection-subtract.png</file>
         <file>images/16x16/selection-intersect.png</file>
         <file>images/22x22/add.png</file>
+        <file>images/22x22/add-corner.png</file>
+        <file>images/22x22/add-edge.png</file>
         <file>images/22x22/remove.png</file>
         <file>images/22x22/stock-tool-clone.png</file>
         <file>images/22x22/stock-tool-eraser.png</file>
@@ -132,5 +134,8 @@
         <file>images/48x48/tile-collision-editor.png</file>
         <file>images/48x48/insert-text.png</file>
         <file>images/48x48/insert-image.png</file>
+        <file>images/24x24/wangtile.png</file>
+        <file>images/32x32/wangtile.png</file>
+        <file>images/24x24/wangtile-edit.png</file>
     </qresource>
 </RCC>

@@ -45,6 +45,7 @@ class MapRenderer;
 class MapFormat;
 class Terrain;
 class Tile;
+class WangSet;
 
 namespace Internal {
 

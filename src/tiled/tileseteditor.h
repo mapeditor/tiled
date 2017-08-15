@@ -22,6 +22,7 @@
 
 #include "clipboardmanager.h"
 #include "editor.h"
+#include "wangset.h"
 
 #include <QHash>
 #include <QList>
@@ -49,6 +50,7 @@ class TilesetDocument;
 class TilesetEditorWindow;
 class TilesetView;
 class UndoDock;
+class WangDock;
 class Zoomable;
 
 class TilesetEditor : public Editor
@@ -108,11 +110,22 @@ private slots:
 
     void setEditCollision(bool editCollision);
 
+    void setEditWang(bool editWang);
+
     void updateAddRemoveActions();
 
     void addTerrainType();
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
+
+    void currentWangSetChanged(WangSet *wangSet);
+    void currentWangIdChanged(WangId wangId);
+    void wangColorChanged(int color, bool edge);
+    void addWangSet();
+    void removeWangSet();
+    void setWangSetImage(Tile *tile);
+    void setWangColorImage(Tile *tile, bool isEdge, int index);
+    void setWangColorColor(QColor color, bool isEdge, int index);
 
 private:
     void setCurrentTile(Tile *tile);
@@ -131,6 +144,7 @@ private:
     UndoDock *mUndoDock;
     TerrainDock *mTerrainDock;
     TileCollisionDock *mTileCollisionDock;
+    WangDock *mWangDock;
     QComboBox *mZoomComboBox;
     TileAnimationEditor *mTileAnimationEditor;
 

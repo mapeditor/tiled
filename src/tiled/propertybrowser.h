@@ -97,6 +97,7 @@ private slots:
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
     void terrainChanged(Tileset *tileset, int index);
+    void wangSetChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
     void propertyRemoved(Object *object, const QString &name);
@@ -152,6 +153,9 @@ private:
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
+        EdgeCountProperty,
+        CornerCountProperty,
+        WangColorProbabilityProperty,
         CustomProperty,
         InfiniteProperty
     };
@@ -166,6 +170,8 @@ private:
     void addTilesetProperties();
     void addTileProperties();
     void addTerrainProperties();
+    void addWangSetProperties();
+    void addWangColorProperties();
 
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);
@@ -178,6 +184,8 @@ private:
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);
+    void applyWangSetValue(PropertyId id, const QVariant &val);
+    void applyWangColorValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,

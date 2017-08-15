@@ -42,6 +42,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "terrain.h"
+#include "wangset.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -427,9 +428,72 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 }
                 w.writeEndElement(); // </animation>
             }
-
             w.writeEndElement(); // </tile>
         }
+    }
+
+    // Write the wangsets
+    if (tileset.wangSetCount() > 0) {
+        w.writeStartElement(QLatin1String("wangsets"));
+        for (const WangSet *ws : tileset.wangSets()) {
+            w.writeStartElement(QLatin1String("wangset"));
+
+            w.writeAttribute(QLatin1String("name"), ws->name());
+            w.writeAttribute(QLatin1String("tile"), QString::number(ws->imageTileId()));
+
+            if (ws->edgeColorCount() > 1) {
+                for (int i = 1; i <= ws->edgeColorCount(); ++i) {
+                    if (WangColor *wc = ws->edgeColorAt(i).data()) {
+                        w.writeStartElement(QLatin1String("wangedgecolor"));
+
+                        w.writeAttribute(QLatin1String("name"), wc->name());
+                        w.writeAttribute(QLatin1String("color"), colorToString(wc->color()));
+                        w.writeAttribute(QLatin1String("tile"), QString::number(wc->imageId()));
+                        w.writeAttribute(QLatin1String("probability"), QString::number(wc->probability()));
+
+                        w.writeEndElement();
+                    }
+                }
+            }
+
+            if (ws->cornerColorCount() > 1) {
+                for (int i = 1; i <= ws->cornerColorCount(); ++i) {
+                    if (WangColor *wc = ws->cornerColorAt(i).data()) {
+                        w.writeStartElement(QLatin1String("wangcornercolor"));
+
+                        w.writeAttribute(QLatin1String("name"), wc->name());
+                        w.writeAttribute(QLatin1String("color"), colorToString(wc->color()));
+                        w.writeAttribute(QLatin1String("tile"), QString::number(wc->imageId()));
+                        w.writeAttribute(QLatin1String("probability"), QString::number(wc->probability()));
+
+                        w.writeEndElement();
+                    }
+                }
+            }
+
+            for (const WangTile &wangTile : ws->wangTiles()) {
+                w.writeStartElement(QLatin1String("wangtile"));
+                w.writeAttribute(QLatin1String("tileid"), QString::number(wangTile.tile()->id()));
+                w.writeAttribute(QLatin1String("wangid"),
+                                 QLatin1String("0x") + QString::number(wangTile.wangId(), 16));
+
+                if (wangTile.flippedHorizontally())
+                    w.writeAttribute(QLatin1String("hflip"), QString::number(1));
+
+                if (wangTile.flippedVertically())
+                    w.writeAttribute(QLatin1String("vflip"), QString::number(1));
+
+                if (wangTile.flippedAntiDiagonally())
+                    w.writeAttribute(QLatin1String("dflip"), QString::number(1));
+
+                w.writeEndElement(); // </wangtile>
+            }
+
+            writeProperties(w, ws->properties());
+
+            w.writeEndElement(); // </wangset>
+        }
+        w.writeEndElement(); // </wangsets>
     }
 
     w.writeEndElement();

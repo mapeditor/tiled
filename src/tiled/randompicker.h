@@ -62,6 +62,20 @@ public:
             return (mThresholds.end() - 1).value();
     }
 
+    //same as pick, but removes the selected element.
+    T take()
+    {
+        Q_ASSERT(!isEmpty());
+
+        const qreal random = ((qreal)rand() / RAND_MAX) * mSum;
+        const auto it = mThresholds.lowerBound(random);
+
+        if (it != mThresholds.end())
+            return mThresholds.take(it.key());
+        else
+            return mThresholds.take((it - 1).key());
+    }
+
     void clear()
     {
         mSum = 0.0;
