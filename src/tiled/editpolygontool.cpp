@@ -621,14 +621,15 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
 
     const auto firstHandle = *mSelectedHandles.begin();
-    const auto secondHandle = *(mSelectedHandles.begin() + 1);
+    const auto secondHandle = (n > 1) ? *(mSelectedHandles.begin() + 1) : nullptr;
     MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
+    MapObject *secondMapObject = (n > 1) ? secondHandle->mapObjectItem()->mapObject(): nullptr;
 
     if (mapObject->shape() == MapObject::Polygon) {
         QAction *deleteEdge = menu.addAction(tr("Delete Edge"));
 
         bool enabled = false;
-        if (mSelectedHandles.size() == 2) {
+        if (mSelectedHandles.size() == 2 && mapObject == secondMapObject) {
             int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
             if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1)
                 enabled = true;
@@ -918,10 +919,8 @@ void EditPolygonTool::deleteEdge()
 
     setSelectedHandles(QSet<PointHandle*>());
 
-    mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, newPolygon);
-
     mapDocument()->undoStack()->beginMacro(tr("Delete Edge"));
-    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, polygon));
+    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
     mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
     mapDocument()->undoStack()->endMacro();
 }
