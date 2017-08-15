@@ -268,14 +268,12 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
         QPoint columnItr = rowItr;
 
         for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
-            if (map()->infinite() || layer->contains(columnItr)) {
-                const Cell &cell = layer->cellAt(columnItr);
-                if (!cell.isEmpty()) {
-                    Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
-                    renderer.render(cell, QPointF(x, (float)y / 2), size,
-                                    CellRenderer::BottomLeft);
-                }
+            const Cell &cell = layer->cellAt(columnItr);
+            if (!cell.isEmpty()) {
+                Tile *tile = cell.tile();
+                QSize size = tile ? tile->size() : map()->tileSize();
+                renderer.render(cell, QPointF(x, (float)y / 2), size,
+                                CellRenderer::BottomLeft);
             }
 
             // Advance to the next column
