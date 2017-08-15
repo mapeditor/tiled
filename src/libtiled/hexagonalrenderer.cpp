@@ -143,8 +143,10 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     if (inLeftHalf)
         startTile.rx()--;
 
-    startTile.setX(qMax(0, startTile.x()));
-    startTile.setY(qMax(0, startTile.y()));
+    if (!map()->infinite()) {
+        startTile.setX(qMax(0, startTile.x()));
+        startTile.setY(qMax(0, startTile.y()));
+    }
 
     startPos = tileToScreenCoords(startTile).toPoint();
 
@@ -170,14 +172,14 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
         if (p.doStaggerX(startTile.x()))
             startPos.ry() -= p.rowHeight;
 
-        for (; startPos.x() <= rect.right() && startTile.x() < map()->width(); startTile.rx()++) {
+        for (; startPos.x() <= rect.right() && (startTile.x() < map()->width() || map()->infinite()); startTile.rx()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
             if (p.doStaggerX(startTile.x()))
                 rowPos.ry() += p.rowHeight;
 
-            for (; rowPos.y() <= rect.bottom() && rowTile.y() < map()->height(); rowTile.ry()++) {
+            for (; rowPos.y() <= rect.bottom() && (rowTile.y() < map()->height() || map()->infinite()); rowTile.ry()++) {
                 lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
                 lines.append(QLine(rowPos + oct[2], rowPos + oct[3]));
                 lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
@@ -208,14 +210,14 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
         if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() <= rect.bottom() && startTile.y() < map()->height(); startTile.ry()++) {
+        for (; startPos.y() <= rect.bottom() && (startTile.y() < map()->height() || map()->infinite()); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
             if (p.doStaggerY(startTile.y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() <= rect.right() && rowTile.x() < map()->width(); rowTile.rx()++) {
+            for (; rowPos.x() <= rect.right() && (rowTile.x() < map()->width() || map()->infinite()); rowTile.rx()++) {
                 lines.append(QLine(rowPos + oct[0], rowPos + oct[1]));
                 lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
                 lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
@@ -288,27 +290,27 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     CellRenderer renderer(painter, CellRenderer::HexagonalCells);
 
     if (p.staggerX) {
-        startTile.setX(qMax(-1, startTile.x()));
-        startTile.setY(qMax(-1, startTile.y()));
+        if (!map()->infinite()) {
+            startTile.setX(qMax(-1, startTile.x()));
+            startTile.setY(qMax(-1, startTile.y()));
+        }
 
         startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
         startPos.ry() += p.tileHeight;
 
         bool staggeredRow = p.doStaggerX(startTile.x() + layer->x());
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < layer->height();) {
+        for (; startPos.y() < rect.bottom() && (startTile.y() < layer->height() || map()->infinite());) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx() += 2) {
-                if (layer->contains(rowTile)) {
-                    const Cell &cell = layer->cellAt(rowTile);
+            for (; rowPos.x() < rect.right() && (rowTile.x() < layer->width() || map()->infinite()); rowTile.rx() += 2) {
+                const Cell &cell = layer->cellAt(rowTile);
 
-                    if (!cell.isEmpty()) {
-                        Tile *tile = cell.tile();
-                        QSize size = tile ? tile->size() : map()->tileSize();
-                        renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
-                    }
+                if (!cell.isEmpty()) {
+                    Tile *tile = cell.tile();
+                    QSize size = tile ? tile->size() : map()->tileSize();
+                    renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                 }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
@@ -328,8 +330,10 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             startPos.ry() += p.rowHeight;
         }
     } else {
-        startTile.setX(qMax(0, startTile.x()));
-        startTile.setY(qMax(0, startTile.y()));
+        if (!map()->infinite()) {
+            startTile.setX(qMax(0, startTile.x()));
+            startTile.setY(qMax(0, startTile.y()));
+        }
 
         startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
         startPos.ry() += p.tileHeight;
@@ -338,14 +342,14 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
         if (p.doStaggerY(startTile.y() + layer->y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() < rect.bottom() && startTile.y() < layer->height(); startTile.ry()++) {
+        for (; startPos.y() < rect.bottom() && (startTile.y() < layer->height() || map()->infinite()); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
             if (p.doStaggerY(startTile.y() + layer->y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
+            for (; rowPos.x() < rect.right() && (rowTile.x() < layer->width() || map()->infinite()); rowTile.rx()++) {
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
