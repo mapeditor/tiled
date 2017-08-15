@@ -26,7 +26,7 @@ following command:
 $ mvn clean install
 
 To run all unit-tests, run the following command:
-$ mvn test
+$ mvn test -P release-profile
 
 To generate reports and documentation, run:
 $ mvn site
