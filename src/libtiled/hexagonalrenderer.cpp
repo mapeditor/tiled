@@ -86,7 +86,7 @@ QRect HexagonalRenderer::mapBoundingRect() const
     if (p.staggerX) {
         QSize size(mapBounds.width() * p.columnWidth + p.sideOffsetX,
                    mapBounds.height() * (p.tileHeight + p.sideLengthY));
-        QPoint origin(mapBounds.x() * p.columnWidth + p.sideOffsetX,
+        QPoint origin(mapBounds.x() * p.columnWidth,
                       mapBounds.y() * (p.tileHeight + p.sideLengthY));
 
 
@@ -98,7 +98,7 @@ QRect HexagonalRenderer::mapBoundingRect() const
         QSize size(mapBounds.width() * (p.tileWidth + p.sideLengthX),
                    mapBounds.height() * p.rowHeight + p.sideOffsetY);
         QPoint origin(mapBounds.x() * (p.tileWidth + p.sideLengthX),
-                      mapBounds.y() * p.rowHeight + p.sideOffsetY);
+                      mapBounds.y() * p.rowHeight);
 
         if (mapBounds.height() > 1)
             size.rwidth() += p.columnWidth;
