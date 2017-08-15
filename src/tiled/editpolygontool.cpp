@@ -620,19 +620,20 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(joinNodesAction, SIGNAL(triggered()), SLOT(joinNodes()));
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
 
-    const auto firstHandle = *mSelectedHandles.begin();
-    const auto secondHandle = (n > 1) ? *(mSelectedHandles.begin() + 1) : nullptr;
-    MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
-    MapObject *secondMapObject = (n > 1) ? secondHandle->mapObjectItem()->mapObject(): nullptr;
+    const PointHandle *firstHandle = *mSelectedHandles.begin();
+    const MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
 
     if (mapObject->shape() == MapObject::Polygon) {
         QAction *deleteEdge = menu.addAction(tr("Delete Edge"));
 
         bool enabled = false;
-        if (mSelectedHandles.size() == 2 && mapObject == secondMapObject) {
+        if (n == 2) {
+            const PointHandle *secondHandle = *(mSelectedHandles.begin() + 1);
             int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
-            if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1)
-                enabled = true;
+            if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1) {
+                const MapObject *secondMapObject = secondHandle->mapObjectItem()->mapObject();
+                enabled = (mapObject == secondMapObject);
+            }
         }
 
         deleteEdge->setEnabled(enabled);
