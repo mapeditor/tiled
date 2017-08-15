@@ -60,5 +60,19 @@ private:
     QPolygonF mNewPolygon;
 };
 
+class TogglePolygonPolyline : public QUndoCommand
+{
+public:
+    TogglePolygonPolyline(MapObject *MapObject);
+
+    void undo() override { toggle(); }
+    void redo() override { toggle(); }
+
+private:
+    void toggle();
+
+    MapObject *mMapObject;
+};
+
 } // namespace Internal
 } // namespace Tiled

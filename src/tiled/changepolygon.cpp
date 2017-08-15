@@ -61,3 +61,14 @@ void ChangePolygon::redo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mNewPolygon);
 }
+
+TogglePolygonPolyline::TogglePolygonPolyline(MapObject *mapObject)
+    : mMapObject(mapObject)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Toggle Polygon/Polyline"));
+}
+
+void TogglePolygonPolyline::toggle()
+{
+    mMapObject->setShape((mMapObject->shape() == MapObject::Polygon) ? MapObject::Polyline : MapObject::Polygon);
+}

@@ -44,6 +44,8 @@
 #include <QPalette>
 #include <QUndoStack>
 
+#include <cstdlib>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -618,6 +620,26 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     connect(joinNodesAction, SIGNAL(triggered()), SLOT(joinNodes()));
     connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
 
+    const PointHandle *firstHandle = *mSelectedHandles.begin();
+    const MapObject *mapObject = firstHandle->mapObjectItem()->mapObject();
+
+    if (mapObject->shape() == MapObject::Polygon) {
+        QAction *deleteSegment = menu.addAction(tr("Delete Segment"));
+
+        bool enabled = false;
+        if (n == 2) {
+            const PointHandle *secondHandle = *(mSelectedHandles.begin() + 1);
+            int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+            if (indexDifference == 1 || indexDifference == mapObject->polygon().size() - 1) {
+                const MapObject *secondMapObject = secondHandle->mapObjectItem()->mapObject();
+                enabled = (mapObject == secondMapObject);
+            }
+        }
+
+        deleteSegment->setEnabled(enabled);
+        connect(deleteSegment, SIGNAL(triggered()), SLOT(deleteSegment()));
+    }
+
     menu.exec(screenPos);
 }
 
@@ -869,4 +891,37 @@ void EditPolygonTool::splitSegments()
 
     if (macroStarted)
         undoStack->endMacro();
+}
+
+void EditPolygonTool::deleteSegment()
+{
+    if (mSelectedHandles.size() != 2)
+        return;
+
+    const auto &firstHandle = *mSelectedHandles.begin();
+    const auto &secondHandle = *(mSelectedHandles.begin() + 1);
+
+    const MapObjectItem *item = firstHandle->mapObjectItem();
+    MapObject *mapObject = item->mapObject();
+
+    QPolygonF polygon = mapObject->polygon();
+    QPolygonF newPolygon(polygon);
+
+    int indexDifference = std::abs(firstHandle->pointIndex() - secondHandle->pointIndex());
+
+    if (indexDifference != polygon.size() - 1) {
+        int maxIndex = std::max(firstHandle->pointIndex(), secondHandle->pointIndex());
+        for (int i = maxIndex; i < polygon.size(); ++i)
+            newPolygon[i - maxIndex] = polygon[i];
+
+        for (int i = 0; i < maxIndex; ++i)
+            newPolygon[polygon.size() - maxIndex + i] = polygon[i];
+    }
+
+    setSelectedHandles(QSet<PointHandle*>());
+
+    mapDocument()->undoStack()->beginMacro(tr("Delete Segment"));
+    mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
+    mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
+    mapDocument()->undoStack()->endMacro();
 }
