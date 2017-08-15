@@ -69,48 +69,39 @@ QRect HexagonalRenderer::mapBoundingRect() const
 
     QRect mapBounds;
 
-    LayerIterator iterator(map());
-    while (Layer *layer = iterator.next()) {
-        if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-            mapBounds = mapBounds.united(tileLayer->bounds());
-    }
+    if (map()->infinite()) {
+        LayerIterator iterator(map());
+        while (Layer *layer = iterator.next()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                mapBounds = mapBounds.united(tileLayer->bounds());
+        }
 
-    if (mapBounds.size() == QSize(0, 0))
-        mapBounds.setSize(QSize(1, 1));
+        if (mapBounds.size() == QSize(0, 0))
+            mapBounds.setSize(QSize(1, 1));
+    } else {
+        mapBounds = QRect(0, 0, map()->width(), map()->height());
+    }
 
     // The map size is the same regardless of which indexes are shifted.
     if (p.staggerX) {
-        if (!map()->infinite()) {
-            QSize size(map()->width() * p.columnWidth + p.sideOffsetX,
-                       map()->height() * (p.tileHeight + p.sideLengthY));
-
-            if (map()->width() > 1)
-                size.rheight() += p.rowHeight;
-
-            return QRect(0, 0, size.width(), size.height());
-        }
-
         QSize size(mapBounds.width() * p.columnWidth + p.sideOffsetX,
                    mapBounds.height() * (p.tileHeight + p.sideLengthY));
         QPoint origin(mapBounds.x() * p.columnWidth + p.sideOffsetX,
                       mapBounds.y() * (p.tileHeight + p.sideLengthY));
 
+
+        if (mapBounds.width() > 1)
+            size.rheight() += p.rowHeight;
+
         return QRect(origin, size);
     } else {
-        if (!map()->infinite()) {
-            QSize size(map()->width() * (p.tileWidth + p.sideLengthX),
-                       map()->height() * p.rowHeight + p.sideOffsetY);
-
-            if (map()->height() > 1)
-                size.rwidth() += p.columnWidth;
-
-            return QRect(0, 0, size.width(), size.height());
-        }
-
         QSize size(mapBounds.width() * (p.tileWidth + p.sideLengthX),
                    mapBounds.height() * p.rowHeight + p.sideOffsetY);
         QPoint origin(mapBounds.x() * (p.tileWidth + p.sideLengthX),
                       mapBounds.y() * p.rowHeight + p.sideOffsetY);
+
+        if (mapBounds.height() > 1)
+            size.rwidth() += p.columnWidth;
 
         return QRect(origin, size);
     }
@@ -336,7 +327,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            for (; rowPos.x() < rect.right() && endX; rowTile.rx() += 2) {
+            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx() += 2) {
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
@@ -381,7 +372,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             if (p.doStaggerY(startTile.y() + layer->y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() < rect.right() && endX; rowTile.rx()++) {
+            for (; rowPos.x() < rect.right() && rowTile.x() < endX; rowTile.rx()++) {
                 const Cell &cell = layer->cellAt(rowTile);
 
                 if (!cell.isEmpty()) {
