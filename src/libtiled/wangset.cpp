@@ -320,22 +320,12 @@ WangSet::WangSet(Tileset *tileset,
 
 int WangSet::edgeColorCount() const
 {
-    int size = mEdgeColors.size();
-
-    if (size > 1)
-        return size;
-    else
-        return 1;
+    return qMax(1, mEdgeColors.size());
 }
 
 int WangSet::cornerColorCount() const
 {
-    int size = mCornerColors.size();
-
-    if (size > 1)
-        return size;
-    else
-        return 1;
+    return qMax(1, mCornerColors.size());
 }
 
 void WangSet::setEdgeColorCount(int n)

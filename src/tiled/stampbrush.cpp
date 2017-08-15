@@ -441,15 +441,15 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        for (const QPoint p : list) {
-            WangFiller wangFiller(mWangSet,
-                                  dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
-                                  mapDocument()->map()->staggerAxis());
+        WangFiller wangFiller(mWangSet,
+                              dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
+                              mapDocument()->map()->staggerAxis());
 
+        for (const QPoint p : list) {
             Cell cell = wangFiller.findFittingCell(*tileLayer,
-                                                    *preview.data(),
-                                                    paintedRegion,
-                                                    p);
+                                                   *preview.data(),
+                                                   paintedRegion,
+                                                   p);
 
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
