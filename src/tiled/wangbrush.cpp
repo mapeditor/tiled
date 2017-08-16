@@ -365,9 +365,6 @@ void WangBrush::captureHoverColor()
 
     QPoint mousePoint = mPaintPoint - tileLayer->position();
 
-    if (!tileLayer->contains(mousePoint) && !mapDocument()->map()->infinite())
-        return;
-
     const Cell &cell = tileLayer->cellAt(mousePoint);
 
     if (WangId wangId = mWangSet->wangIdOfCell(cell)) {
@@ -544,7 +541,7 @@ void WangBrush::updateBrush()
                 continue;
 
             QPoint p = adjacentPositions[i];
-            if ((!currentLayer->contains(p) && !mapDocument()->map()->infinite()) || currentLayer->cellAt(p).isEmpty())
+            if (currentLayer->cellAt(p).isEmpty())
                 continue;
 
             WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
@@ -622,7 +619,7 @@ void WangBrush::updateBrush()
             for (int i = 0; i < 4; ++i) {
                 QPoint p = adjacentPoints[i];
 
-                if ((!currentLayer->contains(p) && !mapDocument()->map()->infinite()) || currentLayer->cellAt(p).isEmpty())
+                if (currentLayer->cellAt(p).isEmpty())
                     continue;
 
                 WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
@@ -681,44 +678,36 @@ void WangBrush::updateBrush()
                 dirPoint = mPaintPoint + aroundTilePoints[mEdgeDir*2];
             }
 
-            if (mapDocument()->map()->infinite() || currentLayer->contains(mPaintPoint)) {
-                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
+            if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint))) {
+                wangId.setEdgeColor(mEdgeDir, mCurrentColor);
 
-                if (wangId && !currentLayer->cellAt(mPaintPoint).isEmpty()) {
-                    wangId.setEdgeColor(mEdgeDir, mCurrentColor);
+                const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-                    const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
-
-                    if (cell.isEmpty()) {
-                        QRegion r = QRect(mPaintPoint, QSize(1, 1));
-                        r += QRect(dirPoint, QSize(1, 1));
-                        static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
-                        return;
-                    }
-
-                    QPoint p = mPaintPoint - stamp->position();
-                    stamp->setCell(p.x(), p.y(), cell);
+                if (cell.isEmpty()) {
+                    QRegion r = QRect(mPaintPoint, QSize(1, 1));
+                    r += QRect(dirPoint, QSize(1, 1));
+                    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
+                    return;
                 }
+
+                QPoint p = mPaintPoint - stamp->position();
+                stamp->setCell(p.x(), p.y(), cell);
             }
 
-            if (mapDocument()->map()->infinite() || currentLayer->contains(dirPoint)) {
-                WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
+            if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint))) {
+                wangId.setEdgeColor((mEdgeDir + 2) % 4, mCurrentColor);
 
-                if (wangId && !currentLayer->cellAt(dirPoint).isEmpty()) {
-                    wangId.setEdgeColor((mEdgeDir + 2) % 4, mCurrentColor);
+                const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
 
-                    const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
-
-                    if (cell.isEmpty()) {
-                        QRegion r = QRect(mPaintPoint, QSize(1, 1));
-                        r += QRect(dirPoint, QSize(1, 1));
-                        static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
-                        return;
-                    }
-
-                    dirPoint -= stamp->position();
-                    stamp->setCell(dirPoint.x(), dirPoint.y(), cell);
+                if (cell.isEmpty()) {
+                    QRegion r = QRect(mPaintPoint, QSize(1, 1));
+                    r += QRect(dirPoint, QSize(1, 1));
+                    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(r);
+                    return;
                 }
+
+                dirPoint -= stamp->position();
+                stamp->setCell(dirPoint.x(), dirPoint.y(), cell);
             }
         }
     }
