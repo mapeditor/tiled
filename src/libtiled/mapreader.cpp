@@ -603,7 +603,9 @@ TileLayer *MapReaderPrivate::readTileLayer()
 	const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
 	const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
 
-    TileLayer *tileLayer = new TileLayer(name, x, y, width, height, tileWidth, tileHeight);
+    TileLayer *tileLayer = new TileLayer(name, x, y,
+										 width, height,
+										 (tileWidth ? tileWidth : mMap->tileWidth()) , (tileHeight ? tileHeight : mMap->tileHeight()));
     readLayerAttributes(*tileLayer, atts);
 
     while (xml.readNextStartElement()) {
