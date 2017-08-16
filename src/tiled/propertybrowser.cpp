@@ -675,6 +675,13 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
+
+	addProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
+	addProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
+	addProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty)->setAttribute(QLatin1String("minimum"), 1);
+	addProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty)->setAttribute(QLatin1String("minimum"), 1);
+
+
     addLayerProperties(groupProperty);
     addProperty(groupProperty);
 }
@@ -1030,8 +1037,24 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(val)
+	TileLayer* tileLayer = static_cast<TileLayer*>(mObject);
+	switch(id) {
+		case TileWidthProperty:
+		case TileHeightProperty: {
+			QSize tileSize = tileLayer->tileSize();
+
+			if (id == TileWidthProperty) {
+				tileSize.setWidth(val.toInt());
+			} else {
+				tileSize.setHeight(val.toInt());
+			}
+
+			tileLayer->setTileSize(tileSize);
+			break;
+		}
+		default:
+			break;
+	}
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
@@ -1441,8 +1464,14 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
         switch (layer->layerType()) {
-        case Layer::TileLayerType:
+        case Layer::TileLayerType: {
+			const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+			mIdToProperty[WidthProperty]->setValue(tileLayer->width());
+			mIdToProperty[HeightProperty]->setValue(tileLayer->height());
+			mIdToProperty[TileWidthProperty]->setValue(tileLayer->tileWidth());
+			mIdToProperty[TileHeightProperty]->setValue(tileLayer->tileHeight());
             break;
+	    }
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             const QColor color = objectGroup->color();
