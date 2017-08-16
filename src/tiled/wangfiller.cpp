@@ -40,9 +40,11 @@ static const QPoint aroundTilePoints[] = {
 };
 
 WangFiller::WangFiller(WangSet *wangSet,
+                       bool isInfinite,
                        StaggeredRenderer *staggeredRenderer,
                        Map::StaggerAxis staggerAxis)
     : mWangSet(wangSet)
+    , mIsInfinite(isInfinite)
     , mStaggeredRenderer(staggeredRenderer)
     , mStaggerAxis(staggerAxis)
 {
@@ -248,9 +250,9 @@ const Cell &WangFiller::getCell(const TileLayer &back,
                                 const QRegion &fillRegion,
                                 QPoint point) const
 {
-    if (!fillRegion.contains(point) && back.contains(point)) {
+    if (!fillRegion.contains(point) && (mIsInfinite || back.contains(point))) {
         return back.cellAt(point);
-    } else if (front.contains(point.x() - front.x(), point.y() - front.y())) {
+    } else if ((mIsInfinite || front.contains(point.x() - front.x(), point.y() - front.y()))) {
         return front.cellAt(point.x() - front.x(), point.y() - front.y());
     } else {
         static const Cell cell;
@@ -285,7 +287,7 @@ WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
     getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
 
     for (int i = 0; i < 8; ++i) {
-        if (!fillRegion.contains(adjacentPoints[i]) && back.contains(adjacentPoints[i]))
+        if (!fillRegion.contains(adjacentPoints[i]) && (mIsInfinite || back.contains(adjacentPoints[i])))
             surroundingCells[i] = back.cellAt(adjacentPoints[i]);
     }
 

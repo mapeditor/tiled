@@ -365,7 +365,7 @@ void WangBrush::captureHoverColor()
 
     QPoint mousePoint = mPaintPoint - tileLayer->position();
 
-    if (!tileLayer->contains(mousePoint))
+    if (!tileLayer->contains(mousePoint) && !mapDocument()->map()->infinite())
         return;
 
     const Cell &cell = tileLayer->cellAt(mousePoint);
@@ -511,7 +511,7 @@ void WangBrush::updateBrush()
                 adjacentPositions[i] = mPaintPoint + aroundTilePoints[i];
         }
 
-        if (currentLayer->contains(mPaintPoint)) {
+        if (mapDocument()->map()->infinite() || currentLayer->contains(mPaintPoint)) {
             WangId centerWangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
 
             for (int i = 0; i < 4; ++i) {
@@ -544,7 +544,7 @@ void WangBrush::updateBrush()
                 continue;
 
             QPoint p = adjacentPositions[i];
-            if (!currentLayer->contains(p) || currentLayer->cellAt(p).isEmpty())
+            if ((!currentLayer->contains(p) && !mapDocument()->map()->infinite()) || currentLayer->cellAt(p).isEmpty())
                 continue;
 
             WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
@@ -622,7 +622,7 @@ void WangBrush::updateBrush()
             for (int i = 0; i < 4; ++i) {
                 QPoint p = adjacentPoints[i];
 
-                if (!currentLayer->contains(p) || currentLayer->cellAt(p).isEmpty())
+                if ((!currentLayer->contains(p) && !mapDocument()->map()->infinite()) || currentLayer->cellAt(p).isEmpty())
                     continue;
 
                 WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(p));
@@ -681,7 +681,7 @@ void WangBrush::updateBrush()
                 dirPoint = mPaintPoint + aroundTilePoints[mEdgeDir*2];
             }
 
-            if (currentLayer->contains(mPaintPoint)) {
+            if (mapDocument()->map()->infinite() || currentLayer->contains(mPaintPoint)) {
                 WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint));
 
                 if (wangId && !currentLayer->cellAt(mPaintPoint).isEmpty()) {
@@ -701,7 +701,7 @@ void WangBrush::updateBrush()
                 }
             }
 
-            if (currentLayer->contains(dirPoint)) {
+            if (mapDocument()->map()->infinite() || currentLayer->contains(dirPoint)) {
                 WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint));
 
                 if (wangId && !currentLayer->cellAt(dirPoint).isEmpty()) {
