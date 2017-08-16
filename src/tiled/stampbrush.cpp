@@ -437,6 +437,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.width(), bounds.height()));
 
         WangFiller wangFiller(mWangSet,
+                              mapDocument()->map()->infinite(),
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                               mapDocument()->map()->staggerAxis());
 
