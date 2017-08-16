@@ -354,6 +354,11 @@ public:
      */
     QSize size() const { return QSize(mWidth, mHeight); }
 
+    /**
+     * Returns the size of this layer.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+
     void setSize(const QSize &size);
 
 	void setTileSize(const QSize &size);

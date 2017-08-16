@@ -109,6 +109,7 @@ int TmxRasterizer::render(const QString &mapFileName,
         yScale = (qreal) mSize / mapSize.height();
         xScale = yScale = qMin(1.0, qMin(xScale, yScale));
     } else if (mTileSize > 0) {
+		// LUCA TODO: Ask Bjorn if this is okay to stay
         xScale = (qreal) mTileSize / map->tileWidth();
         yScale = (qreal) mTileSize / map->tileHeight();
     } else {

@@ -418,9 +418,10 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     const bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
 
     if (moveFast) {
+		TileLayer* tileLayer = mapDocument()->currentLayer()->layerType() == Layer::TileLayerType ? static_cast<TileLayer*>(mapDocument()->currentLayer()) : 0;
         // TODO: This only makes sense for orthogonal maps
-        moveBy.rx() *= mapDocument()->map()->tileWidth();
-        moveBy.ry() *= mapDocument()->map()->tileHeight();
+        moveBy.rx() *= tileLayer ? tileLayer->tileWidth() : mapDocument()->map()->tileWidth();
+        moveBy.ry() *= tileLayer ? tileLayer->tileWidth() : mapDocument()->map()->tileHeight();
         if (snapToFineGrid)
             moveBy /= Preferences::instance()->gridFine();
     }

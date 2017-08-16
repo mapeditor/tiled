@@ -134,9 +134,11 @@ void BrushItem::paint(QPainter *painter,
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
     
-    int mapWidth = mMapDocument->map()->width();
-    int mapHeight = mMapDocument->map()->height();
-    QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+	TileLayer* tileLayer = mMapDocument->currentLayer()->layerType() == Layer::TileLayerType ? static_cast<TileLayer*>(mMapDocument->currentLayer()) : 0;
+    int layerWidth = tileLayer ? tileLayer->width() : mMapDocument->map()->width();
+    int layerHeight = tileLayer? tileLayer->height() : mMapDocument->map()->height();
+
+    QRegion mapRegion = QRegion(0, 0, layerWidth, layerHeight);
 
     if (!mMapDocument->currentLayer()->isUnlocked())
         mapRegion = QRegion();
@@ -174,7 +176,7 @@ void BrushItem::updateBoundingRect()
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
-        QSize tileSize = mMapDocument->map()->tileSize();
+        QSize tileSize = mTileLayer->tileSize();
 
         QMargins drawMargins = mTileLayer->drawMargins();
         drawMargins.setTop(drawMargins.top() - tileSize.height());

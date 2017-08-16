@@ -479,7 +479,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
 
         auto map = mMapDocument->map();
         sourceLayer = static_cast<TileLayer*>(currentLayer);
-        auto newTileLayer = new TileLayer(name, 0, 0, map->width(), map->height(), map->tileWidth(), map->tileHeight());
+        auto newTileLayer = new TileLayer(name, 0, 0, sourceLayer->width(), sourceLayer->height(), sourceLayer->tileWidth(), sourceLayer->tileHeight());
         newTileLayer->setCells(0, 0, sourceLayer, selectedArea);
 
         newLayer = newTileLayer;

@@ -131,7 +131,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         const Map *map = mapDocument->map();
         Map *copyMap = new Map(map->orientation(),
                                copy->width(), copy->height(),
-                               map->tileWidth(), map->tileHeight());
+                               copy->tileWidth(), copy->tileHeight());
 
         // Add tileset references to map
         foreach (const SharedTileset &tileset, copy->usedTilesets())
