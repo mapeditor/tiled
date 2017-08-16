@@ -159,7 +159,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
                 if (key == QLatin1String("type")) {
                     tilelayer = new TileLayer(value, 0, 0,
-                                              map->width(),map->height());
+                                              map->width(), map->height(),
+											  map->tileWidth(), map->tileHeight());
                     map->addLayer(tilelayer);
                 } else if (key == QLatin1String("format")) {
                     if (value == QLatin1String("dec")) {

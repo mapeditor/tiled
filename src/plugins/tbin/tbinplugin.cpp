@@ -164,7 +164,8 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
             if (tlayer.tileSize.x != tmap.layers[0].tileSize.x || tlayer.tileSize.y != tmap.layers[0].tileSize.y)
                 throw std::invalid_argument(QT_TR_NOOP("Different tile sizes per layer are not supported."));
 
-            Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y);
+			// LUCA TODO: Do this properly, ask Bjorn
+            Tiled::TileLayer* layer = new Tiled::TileLayer(tlayer.id.c_str(), 0, 0, tlayer.layerSize.x, tlayer.layerSize.y, 0, 0);
             tbinToTiledProperties(tlayer.props, layer);
             Tiled::ObjectGroup* objects = new Tiled::ObjectGroup(tlayer.id.c_str(), 0, 0);
             for (std::size_t i = 0; i < tlayer.tiles.size(); ++i) {

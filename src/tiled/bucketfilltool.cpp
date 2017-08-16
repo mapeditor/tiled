@@ -176,7 +176,9 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
                                                      fillBounds.x(),
                                                      fillBounds.y(),
                                                      fillBounds.width(),
-                                                     fillBounds.height()));
+                                                     fillBounds.height(),
+													 tileLayer->tileWidth(),
+													 tileLayer->tileHeight()));
     }
 
     // Paint the new overlay

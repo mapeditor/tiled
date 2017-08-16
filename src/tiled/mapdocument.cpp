@@ -424,7 +424,7 @@ Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
     switch (layerType) {
     case Layer::TileLayerType:
         name = tr("Tile Layer %1").arg(mMap->tileLayerCount() + 1);
-        layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
+        layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height(), mMap->tileWidth(), mMap->tileHeight());
         break;
     case Layer::ObjectGroupType:
         name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);

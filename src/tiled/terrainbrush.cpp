@@ -386,7 +386,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // create the tile stamp
-    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(), 0, 0, currentLayer->width(), currentLayer->height()));
+    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(), 0, 0, currentLayer->width(), currentLayer->height(), currentLayer->tileWidth(), currentLayer->tileHeight()));
 
     // create a consideration list, and push the start points
     QVector<ConsiderationPoint> transitionList;

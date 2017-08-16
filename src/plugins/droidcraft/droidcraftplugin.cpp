@@ -67,7 +67,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     map->addTileset(mapTileset);
 
     // Fill layer
-    TileLayer *mapLayer = new TileLayer("map", 0, 0, 48, 48);
+    TileLayer *mapLayer = new TileLayer("map", 0, 0, 48, 48, 32, 32);
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {

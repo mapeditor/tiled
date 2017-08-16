@@ -320,7 +320,14 @@ public:
     /**
      * Constructor.
      */
-    TileLayer(const QString &name, int x, int y, int width, int height);
+    TileLayer(
+			const QString &name,
+			int x,
+			int y,
+			int width,
+			int height,
+			int tileWidth,
+			int tileHeight);
 
     /**
      * Returns the width of this layer.
@@ -332,12 +339,24 @@ public:
      */
     int height() const { return mHeight; }
 
+	/**
+	 * Return the tile width of this layer
+	 */
+	int tileWidth() const { return mTileWidth; }
+
+	/**
+	 * Return the tile height of this layer
+	 */
+	int tileHeight() const { return mTileHeight; }
+
     /**
      * Returns the size of this layer.
      */
     QSize size() const { return QSize(mWidth, mHeight); }
 
     void setSize(const QSize &size);
+
+	void setTileSize(const QSize &size);
 
     /**
      * Returns the bounds of this layer.
@@ -504,6 +523,8 @@ protected:
 private:
     int mWidth;
     int mHeight;
+	int mTileWidth;
+	int mTileHeight;
     Cell mEmptyCell;
     QHash<QPoint, Chunk> mChunks;
     mutable QSet<SharedTileset> mUsedTilesets;
@@ -559,6 +580,15 @@ inline void TileLayer::setSize(const QSize &size)
 {
     mWidth = size.width();
     mHeight = size.height();
+}
+
+/**
+ * Sets the tile size of this layer.
+ */
+inline void TileLayer::setTileSize(const QSize &size)
+{
+    mTileWidth = size.width();
+    mTileHeight = size.height();
 }
 
 /**

@@ -38,7 +38,8 @@ void test_StaggeredRenderer::initTestCase()
     mMap = new Map(Map::Staggered, 10, 10, 64, 32);
     TileLayer *tileLayer = new TileLayer(QString(),
                                          0, 0,
-                                         mMap->width(), mMap->height());
+                                         mMap->width(), mMap->height(),
+										 mMap->tileWidth(), mMap->tileHeight());
     mMap->addLayer(tileLayer);
 }
 

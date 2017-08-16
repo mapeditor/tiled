@@ -478,10 +478,15 @@ void TilesetDock::updateCurrentTiles()
         if (maxY < index.row()) maxY = index.row();
     }
 
+	Map* map = mMapDocument->map();
+
+	// LUCA TODO: Make sure these are the correct values for tile sizes, ask Bjorn
     // Create a tile layer from the current selection
     TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
                                          maxX - minX + 1,
-                                         maxY - minY + 1);
+                                         maxY - minY + 1,
+										 map->tileWidth(),
+										 map->tileHeight());
 
     const TilesetModel *model = view->tilesetModel();
     for (const QModelIndex &index : indexes) {

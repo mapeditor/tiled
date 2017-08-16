@@ -100,7 +100,14 @@ void Chunk::replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset)
     }
 }
 
-TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
+TileLayer::TileLayer(
+		const QString &name,
+		int x,
+		int y,
+		int width,
+		int height,
+		int tileWidth,
+		int tileHeight)
     : Layer(TileLayerType, name, x, y)
     , mWidth(width)
     , mHeight(height)
@@ -108,6 +115,11 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
 {
     Q_ASSERT(width >= 0);
     Q_ASSERT(height >= 0);
+	Q_ASSERT(tileWidth >= 0);
+	Q_ASSERT(tileHeight >= 0);
+
+	mTileWidth = tileWidth;
+	mTileHeight = tileHeight;
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -199,7 +211,8 @@ TileLayer *TileLayer::copy(const QRegion &region) const
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      bounds.width(), bounds.height());
+                                      bounds.width(), bounds.height(),
+									  tileWidth(), tileHeight());
 
     for (const QRect &rect : area.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
@@ -273,7 +286,7 @@ void TileLayer::erase(const QRegion &area)
 
 void TileLayer::flip(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight, mTileWidth, mTileHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -306,7 +319,7 @@ void TileLayer::flip(FlipDirection direction)
 
 void TileLayer::flipHexagonal(FlipDirection direction)
 {
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight));
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, mWidth, mHeight, mTileWidth, mTileHeight));
 
     Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
 
@@ -363,7 +376,7 @@ void TileLayer::rotate(RotateDirection direction)
 
     int newWidth = mHeight;
     int newHeight = mWidth;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight, mTileWidth, mTileHeight));
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
@@ -419,7 +432,9 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
     int newWidth = topRight.toStaggered(staggerIndex, staggerAxis).x() * 2 + 2;
     int newHeight = bottomRight.toStaggered(staggerIndex, staggerAxis).y() * 2 + 2;
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight));
+
+	// LUCA TODO: Check if this is right with Bjorn
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, newWidth, newHeight, mTileWidth, mTileHeight));
 
     Hex newCenter(newWidth / 2, newHeight / 2, staggerIndex, staggerAxis);
 
@@ -559,7 +574,8 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     if (this->size() == size && offset.isNull())
         return;
 
-    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height()));
+	// LUCA TODO: Check if the resizing here is correct
+    QScopedPointer<TileLayer> newLayer(new TileLayer(QString(), 0, 0, size.width(), size.height(), mTileWidth, mTileHeight));
 
     // Copy over the preserved part
     const int startX = qMax(0, -offset.x());
@@ -677,7 +693,7 @@ bool TileLayer::isEmpty() const
  */
 TileLayer *TileLayer::clone() const
 {
-    return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight, mTileWidth, mTileHeight));
 }
 
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const

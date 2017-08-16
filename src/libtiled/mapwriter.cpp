@@ -541,6 +541,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                          QString::number(tileLayer.width()));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(tileLayer.height()));
+
+		w.writeAttribute(QLatin1String("tilewidth"),
+						 QString::number(tileLayer.tileWidth()));
+		w.writeAttribute(QLatin1String("tileheight"),
+						 QString::number(tileLayer.tileHeight()));
     }
 
     if (!layer.isVisible())

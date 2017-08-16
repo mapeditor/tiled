@@ -103,9 +103,10 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
             return 0;
         }
 
+		// LUCA TODO: I don't know where the tile sizes come from
         // Create a layer object.
         TileLayer *layer =
-            new TileLayer(layerTypeToName(type), 0, 0, width, height);
+            new TileLayer(layerTypeToName(type), 0, 0, width, height, 0, 0);
         layer->setProperty("type", QString::number(type));
         layer->setProperty("tile_index", QString::number(tileIndex));
         layer->setProperty("scroll_speed", QString::number(scrollSpeed, 'f'));

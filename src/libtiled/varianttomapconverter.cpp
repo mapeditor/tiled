@@ -346,11 +346,12 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     const int height = variantMap[QLatin1String("height")].toInt();
     const QVariant dataVariant = variantMap[QLatin1String("data")];
 
+	// LUCA TODO: Don't know where the tile sizes are found here
     typedef QScopedPointer<TileLayer> TileLayerPtr;
     TileLayerPtr tileLayer(new TileLayer(name,
                                          variantMap[QLatin1String("x")].toInt(),
                                          variantMap[QLatin1String("y")].toInt(),
-                                         width, height));
+                                         width, height, 0, 0));
 
     const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
     const bool visible = variantMap[QLatin1String("visible")].toBool();

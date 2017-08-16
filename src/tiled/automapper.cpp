@@ -353,7 +353,9 @@ bool AutoMapper::setupMissingLayers()
         const int index =  mMapWork->layerCount();
         TileLayer *tileLayer = new TileLayer(name, 0, 0,
                                              mMapWork->width(),
-                                             mMapWork->height());
+                                             mMapWork->height(),
+											 mMapWork->tileWidth(),
+											 mMapWork->tileHeight());
         undoStack->push(new AddLayer(mMapDocument, index, tileLayer, nullptr));
         mAddedLayers.append(tileLayer);
     }
