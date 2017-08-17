@@ -154,10 +154,10 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     mMapScene->setSelectedTool(mToolManager->selectedTool());
 
     connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
-            this, &TemplatesDock::setTemplate);
+            this, &TemplatesDock::currentTemplateChanged);
 
     connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
-            this, &TemplatesDock::currentTemplateChanged);
+            this, &TemplatesDock::setTemplate);
 
     connect(mTemplatesView->model(), &ObjectTemplateModel::dataChanged,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
@@ -165,11 +165,19 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     connect(mTemplatesView->model(), &ObjectTemplateModel::rowsInserted,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
 
+    connect(mTemplatesView, &TemplatesView::focusInEvent,
+            this, &TemplatesDock::focusInEvent);
+
+    connect(mTemplatesView, &TemplatesView::focusOutEvent,
+            this, &TemplatesDock::focusOutEvent);
+
+    connect(mTemplatesView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            mTemplatesView, &TemplatesView::updateSelection);
+
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &TemplatesDock::setSelectedTool);
 
     setFocusPolicy(Qt::ClickFocus);
-    mTemplatesView->setFocusProxy(this);
     mMapView->setFocusProxy(this);
 }
 
@@ -372,6 +380,16 @@ void TemplatesDock::focusInEvent(QFocusEvent *event)
     mPropertiesDock->setDocument(mDummyMapDocument);
 }
 
+void TemplatesDock::focusOutEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+
+    if (hasFocus() || !mDummyMapDocument)
+        return;
+
+    mDummyMapDocument->setSelectedObjects(QList<MapObject*>());
+}
+
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Templates"));
@@ -384,11 +402,7 @@ TemplatesView::TemplatesView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setHeaderHidden(true);
-
-    connect(this, &QAbstractItemView::pressed, this, &TemplatesView::onPressed);
-
     setSelectionBehavior(QAbstractItemView::SelectRows);
-
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
@@ -421,11 +435,15 @@ QSize TemplatesView::sizeHint() const
     return Utils::dpiScaled(QSize(130, 100));
 }
 
-void TemplatesView::onPressed(const QModelIndex &index)
+void TemplatesView::updateSelection(const QItemSelection &selected, const QItemSelection &deselected)
 {
+    Q_UNUSED(deselected);
     auto model = ObjectTemplateModel::instance();
 
-    ObjectTemplate *objectTemplate = model->toObjectTemplate(index);
+    QModelIndexList indexes = selected.indexes();
+    if (indexes.isEmpty())
+        return;
 
+    ObjectTemplate *objectTemplate = model->toObjectTemplate(indexes.first());
     emit currentTemplateChanged(objectTemplate);
 }

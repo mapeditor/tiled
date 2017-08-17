@@ -71,6 +71,7 @@ private slots:
 
 protected:
     void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 private:
     void retranslateUi();
@@ -103,9 +104,11 @@ public:
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
-private slots:
-    void onPressed(const QModelIndex &index);
+public slots:
+    void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
