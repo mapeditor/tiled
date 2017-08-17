@@ -114,6 +114,12 @@ public:
     void setCurrentLayer(Layer *layer);
 
     /**
+     * Returns the current work space
+     */
+    void currentWorkSpace(QRect& workSpace) const;
+
+
+    /**
      * Resize this map to the given \a size, while at the same time shifting
      * the contents by \a offset. If \a removeObjects is true then all objects
      * which are outside the map will be removed.

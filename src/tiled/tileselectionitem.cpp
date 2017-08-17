@@ -62,7 +62,9 @@ void TileSelectionItem::paint(QPainter *painter,
     highlight.setAlpha(128);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    renderer->drawTileSelection(painter, selection, highlight,
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+    renderer->drawTileSelection(painter, selection, workSize, highlight,
                                 option->exposedRect);
 }
 
@@ -74,7 +76,11 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
-    update(mMapDocument->renderer()->boundingRect(changedArea));
+
+    QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+
+    update(mMapDocument->renderer()->boundingRect(changedArea, workSize));
 }
 
 void TileSelectionItem::layerChanged(Layer *layer)
@@ -93,5 +99,7 @@ void TileSelectionItem::currentLayerChanged(Layer *layer)
 void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->selectedArea().boundingRect();
-    mBoundingRect = mMapDocument->renderer()->boundingRect(b);
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(b, workSize);
 }

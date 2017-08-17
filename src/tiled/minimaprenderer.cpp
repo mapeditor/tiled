@@ -80,6 +80,9 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     renderer->setPainterScale(scale);
 
     LayerIterator iterator(mMapDocument->map());
+
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
     while (const Layer *layer = iterator.next()) {
         if (visibleLayersOnly && layer->isHidden())
             continue;
@@ -94,7 +97,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer && drawTiles) {
-            renderer->drawTileLayer(&painter, tileLayer);
+            renderer->drawTileLayer(&painter, tileLayer, workSize);
         } else if (objGroup && drawObjects) {
             QList<MapObject*> objects = objGroup->objects();
 
@@ -104,7 +107,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position());
+                        QPointF origin = renderer->pixelToScreenCoords(object->position(), workSize);
                         painter.save();
                         painter.translate(origin);
                         painter.rotate(object->rotation());
@@ -112,14 +115,14 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
                     }
 
                     const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, object, color);
+                    renderer->drawMapObject(&painter, workSize, object, color);
 
                     if (object->rotation() != qreal(0))
                         painter.restore();
                 }
             }
         } else if (imageLayer && drawImages) {
-            renderer->drawImageLayer(&painter, imageLayer);
+            renderer->drawImageLayer(&painter, workSize, imageLayer);
         }
 
         painter.translate(-offset);
@@ -127,7 +130,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), workSize,
                            prefs->gridColor());
     }
 

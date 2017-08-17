@@ -218,6 +218,9 @@ void ExportAsImageDialog::accept()
     painter.translate(margins.left(), margins.top());
 
     LayerIterator iterator(mMapDocument->map());
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+
     while (Layer *layer = iterator.next()) {
         if (visibleLayersOnly && layer->isHidden())
             continue;
@@ -230,7 +233,7 @@ void ExportAsImageDialog::accept()
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-            renderer->drawTileLayer(&painter, tileLayer);
+            renderer->drawTileLayer(&painter, tileLayer, workSize);
             break;
         }
 
@@ -244,7 +247,7 @@ void ExportAsImageDialog::accept()
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position());
+                        QPointF origin = renderer->pixelToScreenCoords(object->position(), workSize);
                         painter.save();
                         painter.translate(origin);
                         painter.rotate(object->rotation());
@@ -252,7 +255,7 @@ void ExportAsImageDialog::accept()
                     }
 
                     const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, object, color);
+                    renderer->drawMapObject(&painter, workSize, object, color);
 
                     if (object->rotation() != qreal(0))
                         painter.restore();
@@ -262,7 +265,7 @@ void ExportAsImageDialog::accept()
         }
         case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
-            renderer->drawImageLayer(&painter, imageLayer);
+            renderer->drawImageLayer(&painter, workSize, imageLayer);
             break;
         }
 
@@ -276,7 +279,7 @@ void ExportAsImageDialog::accept()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), workSize,
                            prefs->gridColor());
     }
 

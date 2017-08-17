@@ -102,12 +102,16 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
 {
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
-    if (Layer *layer = currentLayer())
+    Layer *layer = currentLayer();
+    if (layer)
         offsetPos -= layer->totalOffset();
+
+	QRect workSize;
+	mapDocument()->currentWorkSpace(workSize);
 
     const QPoint pixelPos = offsetPos.toPoint();
 
-    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
+    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workSize);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));

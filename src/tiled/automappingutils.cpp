@@ -23,6 +23,7 @@
 
 #include "addremovemapobject.h"
 #include "mapdocument.h"
+#include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
@@ -38,6 +39,9 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 {
     QUndoStack *undo = mapDocument->undoStack();
 
+	QRect workSize;
+	mapDocument->currentWorkSpace(workSize);
+
     const auto objects = layer->objects();
     for (MapObject *obj : objects) {
         // TODO: we are checking bounds, which is only correct for rectangles and
@@ -47,10 +51,10 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         // Convert the boundary of the object into tile space
         const QRectF objBounds = obj->boundsUseTile();
-        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft());
-        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight());
-        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight());
-        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft());
+        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft(), workSize);
+        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight(), workSize);
+        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight(), workSize);
+        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft(), workSize);
 
         QRectF objInTileSpace;
         objInTileSpace.setTopLeft(tl);

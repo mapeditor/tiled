@@ -21,6 +21,7 @@
 #include "createtextobjecttool.h"
 
 #include "mapdocument.h"
+#include "map.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -46,9 +47,13 @@ void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
 
     const MapObject *mapObject = mNewMapObjectItem->mapObject();
     const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 
-    SnapHelper(renderer, modifiers).snap(pixelCoords);
+	QRect workSize;
+	mapDocument()->currentWorkSpace(workSize);
+
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSize);
+
+    SnapHelper(renderer, modifiers).snap(pixelCoords, workSize);
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();

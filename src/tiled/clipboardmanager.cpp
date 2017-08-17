@@ -206,8 +206,11 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
 
         const QPointF scenePos = view->mapToScene(viewPos);
 
-        insertPos = renderer->screenToPixelCoords(scenePos) - center;
-        SnapHelper(renderer).snap(insertPos);
+		QRect workSize;
+		mapDocument->currentWorkSpace(workSize);
+
+        insertPos = renderer->screenToPixelCoords(scenePos, workSize) - center;
+        SnapHelper(renderer).snap(insertPos, workSize);
     }
 
     QUndoStack *undoStack = mapDocument->undoStack();

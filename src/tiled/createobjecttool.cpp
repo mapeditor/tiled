@@ -131,8 +131,11 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
 
-    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
-    SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
+	QRect workSize;
+	mapDocument()->currentWorkSpace(workSize);
+
+    QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos, workSize);
+    SnapHelper(renderer, event->modifiers()).snap(pixelCoords, workSize);
 
     if (startNewMapObject(pixelCoords, objectGroup))
         mouseMovedWhileCreatingObject(offsetPos, event->modifiers());

@@ -21,6 +21,7 @@
 #include "createmultipointobjecttool.h"
 
 #include "mapdocument.h"
+#include "map.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -55,9 +56,13 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
                                                                Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
-    SnapHelper(renderer, modifiers).snap(pixelCoords);
+	QRect workSize;
+	mapDocument()->currentWorkSpace(workSize);
+
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSize);
+
+    SnapHelper(renderer, modifiers).snap(pixelCoords, workSize);
 
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 

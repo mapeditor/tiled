@@ -21,6 +21,7 @@
 #include "createscalableobjecttool.h"
 
 #include "mapdocument.h"
+#include "map.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -49,7 +50,11 @@ static qreal sign(qreal value)
 void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+	QRect workSize;
+	mapDocument()->currentWorkSpace(workSize);
+
+    const QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSize);
 
     QRectF objectArea(mStartPos, pixelCoords);
 
@@ -62,7 +67,7 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 
     // Update the position and size of the new map object
     QPointF snapSize(objectArea.width(), objectArea.height());
-    SnapHelper(renderer, modifiers).snap(snapSize);
+    SnapHelper(renderer, modifiers).snap(snapSize, workSize);
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 

@@ -40,15 +40,18 @@
 
 using namespace Tiled;
 
-QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
+QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer, const QRect &workSize) const
 {
+	Q_UNUSED(workSize)
     return QRectF(QPointF(), imageLayer->image().size());
 }
 
 void MapRenderer::drawImageLayer(QPainter *painter,
+		                         const QRect &workSize,
                                  const ImageLayer *imageLayer,
                                  const QRectF &exposed)
 {
+	Q_UNUSED(workSize)
     Q_UNUSED(exposed)
 
     painter->drawPixmap(QPointF(), imageLayer->image());

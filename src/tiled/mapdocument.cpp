@@ -239,6 +239,21 @@ void MapDocument::setCurrentLayer(Layer *layer)
             setCurrentObject(mCurrentLayer);
 }
 
+void MapDocument::currentWorkSpace(QRect &workSpace) const {
+	if (mCurrentLayer && mCurrentLayer->asTileLayer()) {
+		TileLayer* tLayer = static_cast<TileLayer*>(mCurrentLayer);
+		workSpace.setX(tLayer->width());
+		workSpace.setY(tLayer->height());
+		workSpace.setWidth(tLayer->tileWidth());
+		workSpace.setHeight(tLayer->tileHeight());
+	} else {
+		workSpace.setX(mMap->width());
+		workSpace.setY(mMap->height());
+		workSpace.setWidth(mMap->tileWidth());
+		workSpace.setHeight(mMap->tileHeight());
+	}
+}
+
 /**
  * Custom intersects check necessary because QRectF::intersects wants a
  * non-empty area of overlap, but we should also consider overlap with empty
@@ -255,13 +270,15 @@ static bool intersects(const QRectF &a, const QRectF &b)
 }
 
 static bool visibleIn(const QRectF &area, MapObject *object,
-                      MapRenderer *renderer)
+                      MapRenderer *renderer, MapDocument* mapDocument)
 {
-    QRectF boundingRect = renderer->boundingRect(object);
+	QRect workSize;
+	mapDocument->currentWorkSpace(workSize);
+    QRectF boundingRect = renderer->boundingRect(object, workSize);
 
     if (object->rotation() != 0) {
         // Rotate around object position
-        QPointF pos = renderer->pixelToScreenCoords(object->position());
+        QPointF pos = renderer->pixelToScreenCoords(object->position(), workSize);
         boundingRect.translate(-pos);
 
         QTransform transform;
@@ -276,12 +293,15 @@ static bool visibleIn(const QRectF &area, MapObject *object,
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
+	QRect workSize;
+	currentWorkSpace(workSize);
+
     const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
-    const QRectF visibleArea = mRenderer->boundingRect(newArea);
+    const QRectF visibleArea = mRenderer->boundingRect(newArea, workSize);
 
-    const QPointF origin = mRenderer->tileToPixelCoords(QPointF());
-    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset);
+    const QPointF origin = mRenderer->tileToPixelCoords(QPointF(), workSize);
+    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset, workSize);
     const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer
@@ -299,7 +319,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
             ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
 
             for (MapObject *o : objectGroup->objects()) {
-                if (removeObjects && !visibleIn(visibleArea, o, mRenderer)) {
+                if (removeObjects && !visibleIn(visibleArea, o, mRenderer, this)) {
                     // Remove objects that will fall outside of the map
                     new RemoveMapObject(this, o, command);
                 } else {

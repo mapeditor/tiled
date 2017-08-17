@@ -43,43 +43,45 @@ public:
 
     QSize mapSize() const override;
 
-    QRect boundingRect(const QRect &rect) const override;
+    QRect boundingRect(const QRect &rect, const QRect &workSize) const override;
 
-    QRectF boundingRect(const MapObject *object) const override;
-    QPainterPath shape(const MapObject *object) const override;
+    QRectF boundingRect(const MapObject *object, const QRect &workSize) const override;
+    QPainterPath shape(const MapObject *object, const QRect &workSize) const override;
 
-    void drawGrid(QPainter *painter, const QRectF &rect,
+    void drawGrid(QPainter *painter, const QRectF &rect, const QRect &workSize,
                   QColor gridColor) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
+    void drawTileLayer(QPainter *painter, const TileLayer *layer, const QRect &workSize,
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
+						   const QRect &workSize,
                            const QColor &color,
                            const QRectF &exposed) const override;
 
     void drawMapObject(QPainter *painter,
+			           const QRect &workSize,
                        const MapObject *object,
                        const QColor &color) const override;
 
     using MapRenderer::pixelToTileCoords;
-    QPointF pixelToTileCoords(qreal x, qreal y) const override;
+    QPointF pixelToTileCoords(qreal x, qreal y, const QRect &workSize) const override;
 
     using MapRenderer::tileToPixelCoords;
-    QPointF tileToPixelCoords(qreal x, qreal y) const override;
+    QPointF tileToPixelCoords(qreal x, qreal y, const QRect &workSize) const override;
 
     using MapRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y) const override;
+    QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSize) const override;
 
     using MapRenderer::tileToScreenCoords;
-    QPointF tileToScreenCoords(qreal x, qreal y) const override;
+    QPointF tileToScreenCoords(qreal x, qreal y, const QRect &workSize) const override;
 
     using MapRenderer::screenToPixelCoords;
-    QPointF screenToPixelCoords(qreal x, qreal y) const override;
+    QPointF screenToPixelCoords(qreal x, qreal y, const QRect &workSize) const override;
 
     using MapRenderer::pixelToScreenCoords;
-    QPointF pixelToScreenCoords(qreal x, qreal y) const override;
+    QPointF pixelToScreenCoords(qreal x, qreal y, const QRect &workSize) const override;
 };
 
 } // namespace Tiled

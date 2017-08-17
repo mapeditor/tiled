@@ -59,9 +59,11 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units
         MapRenderer *renderer = mapDocument->renderer();
-        const QPointF origin = renderer->tileToPixelCoords(QPointF());
-        const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
-        const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
+		QRect workSize;
+		mapDocument->currentWorkSpace(workSize);
+        const QPointF origin = renderer->tileToPixelCoords(QPointF(), workSize);
+        const QPointF pixelOffset = renderer->tileToPixelCoords(offset, workSize) - origin;
+        const QRectF pixelBounds = renderer->tileToPixelCoords(bounds, workSize);
 
         if (mOriginalLayer->layerType() == Layer::ObjectGroupType) {
             static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);

@@ -117,9 +117,9 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
-static QPixmap renderThumbnail(const ThumbnailRenderer &renderer)
+static QPixmap renderThumbnail(const ThumbnailRenderer &renderer, const QRect &workSize)
 {
-    return QPixmap::fromImage(renderer.render(QSize(64, 64))
+    return QPixmap::fromImage(renderer.render(QSize(64, 64), workSize)
                               .scaled(32, 32,
                                       Qt::IgnoreAspectRatio,
                                       Qt::SmoothTransformation));
@@ -139,7 +139,8 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-                    thumbnail = renderThumbnail(renderer);
+					const QRect workSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+                    thumbnail = renderThumbnail(renderer, workSize);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
@@ -164,7 +165,8 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-                    thumbnail = renderThumbnail(renderer);
+					const QRect workSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+                    thumbnail = renderThumbnail(renderer, workSize);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;

@@ -75,8 +75,10 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
-    QRectF bounds = renderer->boundingRect(mObject);
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSize);
+    QRectF bounds = renderer->boundingRect(mObject, workSize);
 
     bounds.translate(-pixelPos);
 
@@ -103,7 +105,9 @@ QRectF MapObjectItem::boundingRect() const
 
 QPainterPath MapObjectItem::shape() const
 {
-    QPainterPath path = mMapDocument->renderer()->shape(mObject);
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+    QPainterPath path = mMapDocument->renderer()->shape(mObject, workSize);
     path.translate(-pos());
     return path;
 }
@@ -112,10 +116,13 @@ void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *widget)
 {
+	QRect workSize;
+	mMapDocument->currentWorkSpace(workSize);
+
     qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
-    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
+    mMapDocument->renderer()->drawMapObject(painter, workSize, mObject, mColor);
 }
 
 void MapObjectItem::resizeObject(const QRectF &bounds)

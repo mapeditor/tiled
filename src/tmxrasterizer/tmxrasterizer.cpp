@@ -133,6 +133,8 @@ int TmxRasterizer::render(const QString &mapFileName,
 
     painter.translate(margins.left(), margins.top());
 
+	const QRect mapWorkSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+
     // Perform a similar rendering than found in exportasimagedialog.cpp
     LayerIterator iterator(map);
     while (const Layer *layer = iterator.next()) {
@@ -148,9 +150,11 @@ int TmxRasterizer::render(const QString &mapFileName,
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
-            renderer->drawTileLayer(&painter, tileLayer);
+			const QRect workSize(tileLayer->width(), tileLayer->height(),
+					             tileLayer->tileWidth(), tileLayer->tileHeight());
+            renderer->drawTileLayer(&painter, tileLayer, workSize);
         } else if (imageLayer) {
-            renderer->drawImageLayer(&painter, imageLayer);
+            renderer->drawImageLayer(&painter, mapWorkSize, imageLayer);
         }
 
         painter.translate(-offset);

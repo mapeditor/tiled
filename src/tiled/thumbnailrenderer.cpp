@@ -73,6 +73,7 @@ static bool smoothTransform(qreal scale)
 }
 
 static QRectF cellRect(const MapRenderer &renderer,
+                       const QRect &workSize,
                        const Cell &cell,
                        const QPointF &tileCoords)
 {
@@ -80,7 +81,7 @@ static QRectF cellRect(const MapRenderer &renderer,
     if (!tile)
         return QRectF();
 
-    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords);
+    QPointF pixelCoords = renderer.tileToScreenCoords(tileCoords, workSize);
     QPointF offset = tile->offset();
     QSize size = tile->size();
 
@@ -106,6 +107,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
             continue;
 
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+		const QRect workSize(tileLayer->width(), tileLayer->height(), tileLayer->tileWidth(), tileLayer->tileHeight());
         const QPointF offset = tileLayer->totalOffset();
 
         for (int y = 0; y < tileLayer->height(); ++y) {
@@ -113,7 +115,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
                 const Cell &cell = tileLayer->cellAt(x, y);
 
                 if (!cell.isEmpty()) {
-                    QRectF r = cellRect(renderer, cell, QPointF(x, y));
+                    QRectF r = cellRect(renderer, workSize, cell, QPointF(x, y));
                     r.translate(offset);
                     rect |= r;
                 }
@@ -124,7 +126,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
     return rect.toAlignedRect();
 }
 
-QImage ThumbnailRenderer::render(const QSize &size) const
+QImage ThumbnailRenderer::render(const QSize &size, const QRect &workSize) const
 {
     QImage image(size, QImage::Format_ARGB32_Premultiplied);
 
@@ -173,7 +175,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-            mRenderer->drawTileLayer(&painter, tileLayer);
+            mRenderer->drawTileLayer(&painter, tileLayer, workSize);
             break;
         }
 
@@ -187,7 +189,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     if (object->rotation() != qreal(0)) {
-                        QPointF origin = mRenderer->pixelToScreenCoords(object->position());
+                        QPointF origin = mRenderer->pixelToScreenCoords(object->position(), workSize);
                         painter.save();
                         painter.translate(origin);
                         painter.rotate(object->rotation());
@@ -195,7 +197,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
                     }
 
                     const QColor color = MapObjectItem::objectColor(object);
-                    mRenderer->drawMapObject(&painter, object, color);
+                    mRenderer->drawMapObject(&painter, workSize, object, color);
 
                     if (object->rotation() != qreal(0))
                         painter.restore();
@@ -205,7 +207,7 @@ QImage ThumbnailRenderer::render(const QSize &size) const
         }
         case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
-            mRenderer->drawImageLayer(&painter, imageLayer);
+            mRenderer->drawImageLayer(&painter, workSize, imageLayer);
             break;
         }
         case Layer::GroupLayerType: {
