@@ -39,8 +39,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -75,13 +79,15 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
     private File tilebmpFile;
     private Color transparentColor;
     private Image tileSetImage;
+    private TreeMap<Integer, Tile> tiles;
 
     /**
      * Default constructor
      */
     public TileSet() {
         super();
-        this.tiles = new ArrayList<>();
+        this.internalTiles = new ArrayList<>();
+        this.tiles = new TreeMap<>();
     }
 
     /**
@@ -258,7 +264,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public int addTile(Tile t) {
         if (t.getId() < 0) {
-            t.setId(tiles.size());
+            t.setId(getMaxTileId() + 1);
         }
 
         if (tileWidth < t.getWidth()) {
@@ -269,7 +275,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
             tileHeight = t.getHeight();
         }
 
-        tiles.add(t);
+        tiles.put(t.getId(), t);
         t.setTileSet(this);
 
         return t.getId();
@@ -295,7 +301,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @param i the index to remove
      */
     public void removeTile(int i) {
-        tiles.set(i, null);
+        tiles.remove(i);
     }
 
     /**
@@ -314,7 +320,11 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @return the maximum tile id, or -1 when there are no tiles
      */
     public int getMaxTileId() {
-        return tiles.size() - 1;
+        try {
+            return tiles.lastKey();
+        } catch (NoSuchElementException e) {
+            return -1;
+        }
     }
 
     /**
@@ -324,7 +334,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     @Override
     public Iterator<Tile> iterator() {
-        return tiles.iterator();
+        return tiles.values().iterator();
     }
 
     /**
@@ -384,6 +394,32 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public Color getTransparentColor() {
         return transparentColor;
+    }
+
+    /**
+     * JAXB class defined event callback, invoked before marshalling XML data.
+     *
+     * @param marshaller the marshaller doing the marshalling.
+     */
+    public void beforeMarshal(Marshaller marshaller) {
+        internalTiles = new ArrayList<>();
+        for (java.util.Map.Entry<Integer, Tile> entry : tiles.entrySet()) {
+            internalTiles.add(entry.getValue());
+        }
+    }
+
+    /**
+     * JAXB class defined event callback, invoked after unmarshalling XML data.
+     *
+     * @param unmarshaller the unmarshaller doing the unmarshalling.
+     * @param parent the parent instance that will reference this instance,
+     * or null if this instance is the XML root.
+     */
+    public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+        tiles = new TreeMap<>();
+        for (Tile tile : getInternalTiles()) {
+            tiles.put(tile.getId(), tile);
+        }
     }
 
     /** {@inheritDoc} */

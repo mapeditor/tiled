@@ -42,7 +42,9 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
+import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileSet;
 
 public class MapReaderTest {
 
@@ -112,6 +114,30 @@ public class MapReaderTest {
 
         TileLayer layer = (TileLayer) map.getLayer(0);
         assertNotNull(layer.getTileAt(0, 0));
+    }
+
+    @Test
+    public void testReadingCsvMapEmbeddedImageCollection() throws Exception {
+        // Arrange
+        URL url = getUrlFromResources("csvmap_embedded_image_collection/csvmap_embedded_image_collection.tmx");
+
+        // Act
+        Map map = new TMXMapReader().readMap(url.getPath());
+
+        // Assert
+        assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals(3, map.getWidth());
+        assertEquals(1, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
+        assertNotNull(layer.getTileAt(2, 0));
+
+        TileSet tileset = layer.getMap().getTileSets().get(0);
+        assertEquals(3, tileset.getMaxTileId());
     }
 
     @Test
