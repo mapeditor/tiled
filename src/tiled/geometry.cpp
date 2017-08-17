@@ -97,6 +97,71 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 }
 
 /**
+ * returns an elliptical region centered at x0,y0 with radius determinded by x1,y1
+ */
+QRegion ellipseRegion(int x0, int y0, int x1, int y1)
+{
+    QRegion ret;
+    int x, y;
+    int xChange, yChange;
+    int ellipseError;
+    int twoXSquare, twoYSquare;
+    int stoppingX, stoppingY;
+    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
+    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
+
+    if (radiusX == 0 && radiusY == 0)
+        return ret;
+
+    twoXSquare = 2 * radiusX * radiusX;
+    twoYSquare = 2 * radiusY * radiusY;
+    x = radiusX;
+    y = 0;
+    xChange = radiusY * radiusY * (1 - 2 * radiusX);
+    yChange = radiusX * radiusX;
+    ellipseError = 0;
+    stoppingX = twoYSquare*radiusX;
+    stoppingY = 0;
+    while (stoppingX >= stoppingY) {
+        ret += QRect(x, -y, 1, y * 2);
+        ret += QRect(-x, -y, 1, y * 2);
+        y++;
+        stoppingY += twoXSquare;
+        ellipseError += yChange;
+        yChange += twoXSquare;
+        if ((2 * ellipseError + xChange) > 0) {
+            x--;
+            stoppingX -= twoYSquare;
+            ellipseError += xChange;
+            xChange += twoYSquare;
+        }
+    }
+    x = 0;
+    y = radiusY;
+    xChange = radiusY * radiusY;
+    yChange = radiusX * radiusX * (1 - 2 * radiusY);
+    ellipseError = 0;
+    stoppingX = 0;
+    stoppingY = twoXSquare * radiusY;
+    while (stoppingX <= stoppingY) {
+        ret += QRect(x, -y, 1, y * 2);
+        ret += QRect(-x, -y, 1, y * 2);
+        x++;
+        stoppingX += twoYSquare;
+        ellipseError += xChange;
+        xChange += twoYSquare;
+        if ((2 * ellipseError + yChange) > 0) {
+            y--;
+            stoppingY -= twoXSquare;
+            ellipseError += yChange;
+            yChange += twoXSquare;
+        }
+    }
+
+    return ret.translated(x0, y0);
+}
+
+/**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *
  * This is an implementation of Bresenham's line algorithm, initially copied

@@ -49,6 +49,7 @@ public:
         BottomLeft = 2,
         TopLeft = 3
     };
+
     enum Edge {
         Top = 0,
         Right = 1,
