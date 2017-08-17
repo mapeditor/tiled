@@ -62,10 +62,10 @@ public:
         const QPointF &position = mapObject->position();
 
 		const Map* map = renderer->map();
-		const QRect workSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-        const QPointF pixelPos = renderer->pixelToScreenCoords(position, workSize);
+		const QRect workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+        const QPointF pixelPos = renderer->pixelToScreenCoords(position, workSpace);
 
-        QRectF boundingRect = renderer->boundingRect(mapObject, workSize);
+        QRectF boundingRect = renderer->boundingRect(mapObject, workSpace);
         boundingRect.translate(-pixelPos);
         mBoundingRect = boundingRect;
 
@@ -83,8 +83,8 @@ public:
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
 		const Map* map = mRenderer->map();
-		const QRect workSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-        mRenderer->drawMapObject(p, workSize, mMapObject,
+		const QRect workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+        mRenderer->drawMapObject(p, workSpace, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
 
@@ -112,9 +112,9 @@ public:
 
     QRectF boundingRect() const override
     {
-		const QRect workSize(mTileLayer->width(), mTileLayer->height(),
+		const QRect workSpace(mTileLayer->width(), mTileLayer->height(),
 				             mTileLayer->tileWidth(), mTileLayer->tileHeight());
-        return mRenderer->boundingRect(mTileLayer->bounds(), workSize);
+        return mRenderer->boundingRect(mTileLayer->bounds(), workSpace);
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override

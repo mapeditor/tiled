@@ -45,10 +45,10 @@ void SnapHelper::toggleSnap()
     mSnapToFineGrid = false;
 }
 
-void SnapHelper::snap(QPointF &pixelPos, const QRect &workSize) const
+void SnapHelper::snap(QPointF &pixelPos, const QRect &workSpace) const
 {
     if (mSnapToFineGrid || mSnapToGrid) {
-        QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos, workSize);
+        QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos, workSpace);
         if (mSnapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
             tileCoords = (tileCoords * gridFine).toPoint();
@@ -56,10 +56,10 @@ void SnapHelper::snap(QPointF &pixelPos, const QRect &workSize) const
         } else {
             tileCoords = tileCoords.toPoint();
         }
-        pixelPos = mRenderer->tileToPixelCoords(tileCoords, workSize);
+        pixelPos = mRenderer->tileToPixelCoords(tileCoords, workSpace);
     } else if (mSnapToPixels) {
-        QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos, workSize);
-        pixelPos = mRenderer->screenToPixelCoords(screenPos.toPoint(), workSize);
+        QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos, workSpace);
+        pixelPos = mRenderer->screenToPixelCoords(screenPos.toPoint(), workSpace);
     }
 }
 

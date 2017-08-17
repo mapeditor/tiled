@@ -356,11 +356,11 @@ void MapScene::repaintRegion(const QRegion &region, Layer *layer)
     const MapRenderer *renderer = mMapDocument->renderer();
     const QMargins margins = mMapDocument->map()->drawMargins();
 
-	QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
 
     for (const QRect &r : region.rects()) {
-        QRectF boundingRect = renderer->boundingRect(r, workSize);
+        QRectF boundingRect = renderer->boundingRect(r, workSpace);
 
         boundingRect.adjust(-margins.left(),
                             -margins.top(),
@@ -757,10 +757,10 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 
     Preferences *prefs = Preferences::instance();
 
-	QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
     mMapDocument->renderer()->drawGrid(painter,
-                                       rect.translated(-offset), workSize,
+                                       rect.translated(-offset), workSpace,
                                        prefs->gridColor());
 }
 

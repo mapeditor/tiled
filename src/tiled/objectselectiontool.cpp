@@ -774,7 +774,7 @@ static bool canResizeAbsolute(const MapObject *object)
  */
 static QRectF objectBounds(const MapObject *object,
                            const MapRenderer *renderer,
-						   const QRect &workSize,
+						   const QRect &workSpace,
                            const QTransform &transform)
 {
     if (!object->cell().isEmpty()) {
@@ -789,7 +789,7 @@ static QRectF objectBounds(const MapObject *object,
             imgSize = object->size();
         }
 
-        const QPointF position = renderer->pixelToScreenCoords(object->position(), workSize);
+        const QPointF position = renderer->pixelToScreenCoords(object->position(), workSpace);
         const QSizeF objectSize = object->size();
         const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
         const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
@@ -808,7 +808,7 @@ static QRectF objectBounds(const MapObject *object,
         case MapObject::Rectangle: {
             QRectF bounds(object->bounds());
             align(bounds, object->alignment());
-            QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds, workSize);
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds, workSpace);
             return transform.map(screenPolygon).boundingRect();
         }
         case MapObject::Polygon:
@@ -816,11 +816,11 @@ static QRectF objectBounds(const MapObject *object,
             // Alignment is irrelevant for polygon objects since they have no size
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon, workSize);
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon, workSpace);
             return transform.map(screenPolygon).boundingRect();
         }
         case MapObject::Text: {
-            const auto rect = renderer->boundingRect(object, workSize);
+            const auto rect = renderer->boundingRect(object, workSpace);
             return transform.mapRect(rect);
         }
         }
@@ -838,12 +838,12 @@ static QTransform rotateAt(const QPointF &position, qreal rotation)
     return transform;
 }
 
-static QTransform objectTransform(MapObject *object, MapRenderer *renderer, const QRect &workSize)
+static QTransform objectTransform(MapObject *object, MapRenderer *renderer, const QRect &workSpace)
 {
     QTransform transform;
 
     if (object->rotation() != 0) {
-        const QPointF pos = renderer->pixelToScreenCoords(object->position(), workSize);
+        const QPointF pos = renderer->pixelToScreenCoords(object->position(), workSpace);
         transform = rotateAt(pos, object->rotation());
     }
 
@@ -864,16 +864,16 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
-		QRect workSize;
-		mapDocument()->currentWorkSpace(workSize);
+		QRect workSpace;
+		mapDocument()->currentWorkSpace(workSpace);
 
-        QRectF boundingRect = objectBounds(objects.first(), renderer, workSize,
-                                           objectTransform(objects.first(), renderer, workSize));
+        QRectF boundingRect = objectBounds(objects.first(), renderer, workSpace,
+                                           objectTransform(objects.first(), renderer, workSpace));
 
         for (int i = 1; i < objects.size(); ++i) {
             MapObject *object = objects.at(i);
-            boundingRect |= objectBounds(object, renderer, workSize,
-                                         objectTransform(object, renderer, workSize));
+            boundingRect |= objectBounds(object, renderer, workSpace,
+                                         objectTransform(object, renderer, workSpace));
         }
 
         QPointF topLeft = boundingRect.topLeft();
@@ -893,20 +893,20 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
             if (resizeInPixelSpace(object)) {
                 QRectF bounds = pixelBounds(object);
 
-                QTransform transform(objectTransform(object, renderer, workSize));
-                topLeft = transform.map(renderer->pixelToScreenCoords(bounds.topLeft(), workSize));
-                topRight = transform.map(renderer->pixelToScreenCoords(bounds.topRight(), workSize));
-                bottomLeft = transform.map(renderer->pixelToScreenCoords(bounds.bottomLeft(), workSize));
-                bottomRight = transform.map(renderer->pixelToScreenCoords(bounds.bottomRight(), workSize));
-                center = transform.map(renderer->pixelToScreenCoords(bounds.center(), workSize));
+                QTransform transform(objectTransform(object, renderer, workSpace));
+                topLeft = transform.map(renderer->pixelToScreenCoords(bounds.topLeft(), workSpace));
+                topRight = transform.map(renderer->pixelToScreenCoords(bounds.topRight(), workSpace));
+                bottomLeft = transform.map(renderer->pixelToScreenCoords(bounds.bottomLeft(), workSpace));
+                bottomRight = transform.map(renderer->pixelToScreenCoords(bounds.bottomRight(), workSpace));
+                center = transform.map(renderer->pixelToScreenCoords(bounds.center(), workSpace));
 
                 // Ugly hack to make handles appear nicer in this case
                 if (mapDocument()->map()->orientation() == Map::Isometric)
                     handleRotation += 45;
             } else {
-                QRectF bounds = objectBounds(object, renderer, workSize, QTransform());
+                QRectF bounds = objectBounds(object, renderer, workSpace, QTransform());
 
-                QTransform transform(objectTransform(object, renderer, workSize));
+                QTransform transform(objectTransform(object, renderer, workSpace));
                 topLeft = transform.map(bounds.topLeft());
                 topRight = transform.map(bounds.topRight());
                 bottomLeft = transform.map(bounds.bottomLeft());
@@ -1092,14 +1092,14 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
                                             Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+    QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF diff = snapToGrid(pos - mStart, modifiers);
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF newPixelPos = object.oldItemPosition + diff;
-        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos, workSize);
+        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos, workSpace);
 
         MapObject *mapObject = object.item->mapObject();
         mapObject->setPosition(newPos);
@@ -1164,8 +1164,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF startDiff = mOrigin - mStart;
     const QPointF currentDiff = mOrigin - pos;
@@ -1188,7 +1188,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
         const QPointF newPixelPos = mOrigin + newRelPos - offset;
-        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos, workSize);
+        const QPointF newPos = renderer->screenToPixelCoords(newPixelPos, workSpace);
 
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
@@ -1239,8 +1239,8 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
     QPointF resizingOrigin = mClickedResizeHandle->resizingOrigin();
     if (modifiers & Qt::ShiftModifier)
@@ -1254,9 +1254,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     SnapHelper snapHelper(renderer);
     if (modifiers & Qt::AltModifier)
         snapHelper.toggleSnap();
-    QPointF pixelPos = renderer->screenToPixelCoords(pos - mStartOffset, workSize);
-    snapHelper.snap(pixelPos, workSize);
-    QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos, workSize);
+    QPointF pixelPos = renderer->screenToPixelCoords(pos - mStartOffset, workSpace);
+    snapHelper.snap(pixelPos, workSpace);
+    QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos, workSpace);
 
     if (mMovingObjects.size() == 1) {
         /* For single items the resizing is performed in object space in order
@@ -1295,7 +1295,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         const QPointF scaledRelPos(oldRelPos.x() * scale,
                                    oldRelPos.y() * scale);
         const QPointF newScreenPos = resizingOrigin + scaledRelPos - offset;
-        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos, workSize);
+        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos, workSpace);
         const QSizeF origSize = object.oldSize;
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
@@ -1332,8 +1332,8 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
                                                    Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
     const MovingObject &object = mMovingObjects.first();
     MapObject *mapObject = object.item->mapObject();
@@ -1363,9 +1363,9 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     const bool preserveAspect = modifiers & Qt::ControlModifier;
 
     if (pixelSpace) {
-        origin = renderer->screenToPixelCoords(origin, workSize);
-        pos = renderer->screenToPixelCoords(pos, workSize);
-        start = renderer->screenToPixelCoords(start, workSize);
+        origin = renderer->screenToPixelCoords(origin, workSpace);
+        pos = renderer->screenToPixelCoords(pos, workSpace);
+        start = renderer->screenToPixelCoords(start, workSpace);
         oldPos = object.oldPosition;
     }
 
@@ -1459,9 +1459,9 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     }
 
     if (pixelSpace)
-        newPos = renderer->pixelToScreenCoords(newPos, workSize);
+        newPos = renderer->pixelToScreenCoords(newPos, workSpace);
 
-    newPos = renderer->screenToPixelCoords(newPos * rotate, workSize);
+    newPos = renderer->screenToPixelCoords(newPos * rotate, workSpace);
 
     mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
@@ -1550,19 +1550,19 @@ QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
                                         Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
     SnapHelper snapHelper(renderer, modifiers);
 
     if (snapHelper.snaps()) {
-        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition, workSize);
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition, workSpace);
         const QPointF newAlignScreenPos = alignScreenPos + diff;
 
-        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos, workSize);
-        snapHelper.snap(newAlignPixelPos, workSize);
+        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos, workSpace);
+        snapHelper.snap(newAlignPixelPos, workSpace);
 
-        return renderer->pixelToScreenCoords(newAlignPixelPos, workSize) - alignScreenPos;
+        return renderer->pixelToScreenCoords(newAlignPixelPos, workSpace) - alignScreenPos;
     }
 
     return diff;

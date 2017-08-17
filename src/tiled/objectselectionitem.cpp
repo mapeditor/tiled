@@ -72,7 +72,7 @@ static void align(QRectF &r, Alignment alignment)
  * returns.
  */
 static QRectF objectBounds(const MapObject *object,
-                           const MapRenderer *renderer, const QRect &workSize)
+                           const MapRenderer *renderer, const QRect &workSpace)
 {
 	// LUCA TODO: Check if this is entire file is okay (there's no document)
     if (!object->cell().isEmpty()) {
@@ -87,7 +87,7 @@ static QRectF objectBounds(const MapObject *object,
             imgSize = object->size();
         }
 
-        const QPointF position = renderer->pixelToScreenCoords(object->position(), workSize);
+        const QPointF position = renderer->pixelToScreenCoords(object->position(), workSpace);
         const QSizeF objectSize = object->size();
         const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
         const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
@@ -106,7 +106,7 @@ static QRectF objectBounds(const MapObject *object,
         case MapObject::Rectangle: {
             QRectF bounds(object->bounds());
             align(bounds, object->alignment());
-            QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds, workSize);
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds, workSpace);
             return screenPolygon.boundingRect();
         }
         case MapObject::Polygon:
@@ -114,11 +114,11 @@ static QRectF objectBounds(const MapObject *object,
             // Alignment is irrelevant for polygon objects since they have no size
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon, workSize);
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon, workSpace);
             return screenPolygon.boundingRect();
         }
         case MapObject::Text:
-            return renderer->boundingRect(object, workSize);
+            return renderer->boundingRect(object, workSpace);
         }
     }
 
@@ -142,7 +142,7 @@ public:
         setZValue(1); // makes sure outlines are above labels
     }
 
-    void syncWithMapObject(MapRenderer *renderer, const QRect &workSize);
+    void syncWithMapObject(MapRenderer *renderer, const QRect &workSpace);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -161,10 +161,10 @@ private:
     int mOffset = 0;
 };
 
-void MapObjectOutline::syncWithMapObject(MapRenderer *renderer, const QRect &workSize)
+void MapObjectOutline::syncWithMapObject(MapRenderer *renderer, const QRect &workSpace)
 {
-    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSize);
-    QRectF bounds = objectBounds(mObject, renderer, workSize);
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSpace);
+    QRectF bounds = objectBounds(mObject, renderer, workSpace);
 
     bounds.translate(-pixelPos);
 
@@ -241,7 +241,7 @@ public:
     }
 
     MapObject *mapObject() const { return mObject; }
-    void syncWithMapObject(MapRenderer *renderer, const QRect &workSize);
+    void syncWithMapObject(MapRenderer *renderer, const QRect &workSpace);
     void updateColor();
 
     QRectF boundingRect() const override;
@@ -255,7 +255,7 @@ private:
     QColor mColor;
 };
 
-void MapObjectLabel::syncWithMapObject(MapRenderer *renderer, const QRect &workSize)
+void MapObjectLabel::syncWithMapObject(MapRenderer *renderer, const QRect &workSpace)
 {
     const bool nameVisible = mObject->isVisible() && !mObject->name().isEmpty();
     setVisible(nameVisible);
@@ -270,8 +270,8 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer, const QRect &workS
     boundingRect.translate(-boundingRect.width() / 2, -labelDistance);
     boundingRect.adjust(-labelMargin*2, -labelMargin, labelMargin*2, labelMargin);
 
-    QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSize);
-    QRectF bounds = objectBounds(mObject, renderer, workSize);
+    QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSpace);
+    QRectF bounds = objectBounds(mObject, renderer, workSpace);
 
     // Adjust the bounding box for object rotation
     QTransform transform;
@@ -394,14 +394,14 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         MapRenderer *renderer = mMapDocument->renderer();
 
-		QRect workSize;
-		mMapDocument->currentWorkSpace(workSize);
+		QRect workSpace;
+		mMapDocument->currentWorkSpace(workSpace);
 
         for (MapObject *object : *objectGroup) {
             Q_ASSERT(!mObjectLabels.contains(object));
 
             MapObjectLabel *labelItem = new MapObjectLabel(object, this);
-            labelItem->syncWithMapObject(renderer, workSize);
+            labelItem->syncWithMapObject(renderer, workSpace);
             mObjectLabels.insert(object, labelItem);
         }
     }
@@ -463,14 +463,14 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
 {
     MapRenderer *renderer = mMapDocument->renderer();
 
-	QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
 
     for (MapObject *object : objects) {
         if (MapObjectOutline *outlineItem = mObjectOutlines.value(object))
-            outlineItem->syncWithMapObject(renderer, workSize);
+            outlineItem->syncWithMapObject(renderer, workSpace);
         if (MapObjectLabel *labelItem = mObjectLabels.value(object))
-            labelItem->syncWithMapObject(renderer, workSize);
+            labelItem->syncWithMapObject(renderer, workSpace);
     }
 }
 
@@ -485,14 +485,14 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         MapRenderer *renderer = mMapDocument->renderer();
 
-		QRect workSize;
-		mMapDocument->currentWorkSpace(workSize);
+		QRect workSpace;
+		mMapDocument->currentWorkSpace(workSpace);
 
         for (MapObject *object : objects) {
             Q_ASSERT(!mObjectLabels.contains(object));
 
             MapObjectLabel *labelItem = new MapObjectLabel(object, this);
-            labelItem->syncWithMapObject(renderer, workSize);
+            labelItem->syncWithMapObject(renderer, workSpace);
             mObjectLabels.insert(object, labelItem);
         }
     }
@@ -535,10 +535,10 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         if (!labelItem) {
             labelItem = new MapObjectLabel(object, this);
             
-			QRect workSize;
-			mMapDocument->currentWorkSpace(workSize);
+			QRect workSpace;
+			mMapDocument->currentWorkSpace(workSpace);
 
-            labelItem->syncWithMapObject(renderer, workSize);
+            labelItem->syncWithMapObject(renderer, workSpace);
         }
 
         labelItems.insert(object, labelItem);
@@ -576,14 +576,14 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
     QHash<MapObject*, MapObjectOutline*> outlineItems;
     MapRenderer *renderer = mMapDocument->renderer();
 
-	QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
 
     for (MapObject *mapObject : mMapDocument->selectedObjects()) {
         MapObjectOutline *outlineItem = mObjectOutlines.take(mapObject);
         if (!outlineItem) {
             outlineItem = new MapObjectOutline(mapObject, this);
-            outlineItem->syncWithMapObject(renderer, workSize);
+            outlineItem->syncWithMapObject(renderer, workSpace);
         }
         outlineItems.insert(mapObject, outlineItem);
     }

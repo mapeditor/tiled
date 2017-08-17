@@ -57,12 +57,12 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSize);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSpace);
 
-    SnapHelper(renderer, modifiers).snap(pixelCoords, workSize);
+    SnapHelper(renderer, modifiers).snap(pixelCoords, workSpace);
 
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 

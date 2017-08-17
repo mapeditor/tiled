@@ -48,12 +48,12 @@ void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     const MapObject *mapObject = mNewMapObjectItem->mapObject();
     const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
 
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSize);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSpace);
 
-    SnapHelper(renderer, modifiers).snap(pixelCoords, workSize);
+    SnapHelper(renderer, modifiers).snap(pixelCoords, workSpace);
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();

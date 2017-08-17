@@ -45,9 +45,9 @@ void TileLayerItem::syncWithTileLayer()
     prepareGeometryChange();
 
     MapRenderer *renderer = mMapDocument->renderer();
-	QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
-    QRectF boundingRect = renderer->boundingRect(tileLayer()->bounds(), workSize);
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
+    QRectF boundingRect = renderer->boundingRect(tileLayer()->bounds(), workSpace);
 
     QMargins margins = tileLayer()->drawMargins();
     if (const Map *map = tileLayer()->map()) {
@@ -71,9 +71,9 @@ void TileLayerItem::paint(QPainter *painter,
                           QWidget *)
 {
     MapRenderer *renderer = mMapDocument->renderer();
-    QRect workSize;
-	mMapDocument->currentWorkSpace(workSize);
+    QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
 
     // TODO: Display a border around the layer when selected
-    renderer->drawTileLayer(painter, tileLayer(), workSize, option->exposedRect);
+    renderer->drawTileLayer(painter, tileLayer(), workSpace, option->exposedRect);
 }

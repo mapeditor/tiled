@@ -73,10 +73,10 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     if (Layer *layer = currentLayer())
         offsetPos -= layer->totalOffset();
 
-	QRect workSize;
-	mapDocument()->currentWorkSpace(workSize);
+	QRect workSpace;
+	mapDocument()->currentWorkSpace(workSpace);
 
-    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workSize);
+    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workSpace);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
@@ -98,7 +98,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     auto currentLayer = mapDocument()->currentLayer();
     if (currentLayer && mDragging) {
         QPointF newOffset = mOldOffset + (pos - mMouseSceneStart);
-        SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset, workSize);
+        SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset, workSpace);
         mApplyingChange = true;
         mapDocument()->layerModel()->setLayerOffset(currentLayer, newOffset);
         mApplyingChange = false;

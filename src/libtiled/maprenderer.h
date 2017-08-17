@@ -82,32 +82,32 @@ public:
      * This is useful for calculating the bounding rect of a tile layer or of
      * a region of tiles that was changed.
      */
-    virtual QRect boundingRect(const QRect &rect, const QRect &workSize) const = 0;
+    virtual QRect boundingRect(const QRect &rect, const QRect &workSpace) const = 0;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a object, as it
      * would be drawn by drawMapObject().
      */
-    virtual QRectF boundingRect(const MapObject *object, const QRect &workSize) const = 0;
+    virtual QRectF boundingRect(const MapObject *object, const QRect &workSpace) const = 0;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a imageLayer, as
      * it would be drawn by drawImageLayer().
      */
-    QRectF boundingRect(const ImageLayer *imageLayer, const QRect &workSize) const;
+    QRectF boundingRect(const ImageLayer *imageLayer, const QRect &workSpace) const;
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
      * mouse interaction and should match the rendered object as closely as
      * possible.
      */
-    virtual QPainterPath shape(const MapObject *object, const QRect &workSize) const = 0;
+    virtual QPainterPath shape(const MapObject *object, const QRect &workSpace) const = 0;
 
     /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
-    virtual void drawGrid(QPainter *painter, const QRectF &rect, const QRect &workSize,
+    virtual void drawGrid(QPainter *painter, const QRectF &rect, const QRect &workSpace,
                           QColor gridColor = Qt::black) const = 0;
 
     /**
@@ -116,7 +116,7 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    virtual void drawTileLayer(QPainter *painter, const TileLayer *layer, const QRect &workSize,
+    virtual void drawTileLayer(QPainter *painter, const TileLayer *layer, const QRect &workSpace,
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**
@@ -127,7 +127,7 @@ public:
      */
     virtual void drawTileSelection(QPainter *painter,
                                    const QRegion &region,
-								   const QRect &workSize,
+								   const QRect &workSpace,
                                    const QColor &color,
                                    const QRectF &exposed) const = 0;
 
@@ -135,7 +135,7 @@ public:
      * Draws the \a object in the given \a color using the \a painter.
      */
     virtual void drawMapObject(QPainter *painter,
-			                   const QRect &workSize,
+			                   const QRect &workSpace,
                                const MapObject *object,
                                const QColor &color) const = 0;
 
@@ -143,63 +143,63 @@ public:
      * Draws the given image \a layer using the given \a painter.
      */
     void drawImageLayer(QPainter *painter,
-			            const QRect &workSize,
+			            const QRect &workSpace,
                         const ImageLayer *imageLayer,
                         const QRectF &exposed = QRectF());
 
     /**
      * Returns the tile coordinates matching the given pixel position.
      */
-    virtual QPointF pixelToTileCoords(qreal x, qreal y, const QRect &workSize) const = 0;
+    virtual QPointF pixelToTileCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
 
-    inline QPointF pixelToTileCoords(const QPointF &point, const QRect &workSize) const
-    { return pixelToTileCoords(point.x(), point.y(), workSize); }
+    inline QPointF pixelToTileCoords(const QPointF &point, const QRect &workSpace) const
+    { return pixelToTileCoords(point.x(), point.y(), workSpace); }
 
-    QPolygonF pixelToScreenCoords(const QPolygonF &polygon, const QRect &workSize) const
+    QPolygonF pixelToScreenCoords(const QPolygonF &polygon, const QRect &workSpace) const
     {
         QPolygonF screenPolygon(polygon.size());
         for (int i = polygon.size() - 1; i >= 0; --i)
-            screenPolygon[i] = pixelToScreenCoords(polygon[i], workSize);
+            screenPolygon[i] = pixelToScreenCoords(polygon[i], workSpace);
         return screenPolygon;
     }
 
     /**
      * Returns the pixel coordinates matching the given tile coordinates.
      */
-    virtual QPointF tileToPixelCoords(qreal x, qreal y, const QRect &workSize) const = 0;
+    virtual QPointF tileToPixelCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
 
-    inline QPointF tileToPixelCoords(const QPointF &point, const QRect &workSize) const
-    { return tileToPixelCoords(point.x(), point.y(), workSize); }
+    inline QPointF tileToPixelCoords(const QPointF &point, const QRect &workSpace) const
+    { return tileToPixelCoords(point.x(), point.y(), workSpace); }
 
-    inline QRectF tileToPixelCoords(const QRectF &area, const QRect &workSize) const
+    inline QRectF tileToPixelCoords(const QRectF &area, const QRect &workSpace) const
     {
-        return QRectF(tileToPixelCoords(area.topLeft(), workSize),
-                      tileToPixelCoords(area.bottomRight(), workSize));
+        return QRectF(tileToPixelCoords(area.topLeft(), workSpace),
+                      tileToPixelCoords(area.bottomRight(), workSpace));
     }
 
     /**
      * Returns the tile coordinates matching the given screen position.
      */
-    virtual QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSize) const = 0;
-    inline QPointF screenToTileCoords(const QPointF &point, const QRect &workSize) const;
+    virtual QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
+    inline QPointF screenToTileCoords(const QPointF &point, const QRect &workSpace) const;
 
     /**
      * Returns the screen position matching the given tile coordinates.
      */
-    virtual QPointF tileToScreenCoords(qreal x, qreal y, const QRect &workSize) const = 0;
-    inline QPointF tileToScreenCoords(const QPointF &point, const QRect &workSize) const;
+    virtual QPointF tileToScreenCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
+    inline QPointF tileToScreenCoords(const QPointF &point, const QRect &workSpace) const;
 
     /**
      * Returns the pixel position matching the given screen position.
      */
-    virtual QPointF screenToPixelCoords(qreal x, qreal y, const QRect &workSize) const = 0;
-    inline QPointF screenToPixelCoords(const QPointF &point, const QRect &workSize) const;
+    virtual QPointF screenToPixelCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
+    inline QPointF screenToPixelCoords(const QPointF &point, const QRect &workSpace) const;
 
     /**
      * Returns the screen position matching the given pixel position.
      */
-    virtual QPointF pixelToScreenCoords(qreal x, qreal y, const QRect &workSize) const = 0;
-    inline QPointF pixelToScreenCoords(const QPointF &point, const QRect &workSize) const;
+    virtual QPointF pixelToScreenCoords(qreal x, qreal y, const QRect &workSpace) const = 0;
+    inline QPointF pixelToScreenCoords(const QPointF &point, const QRect &workSpace) const;
 
     qreal objectLineWidth() const { return mObjectLineWidth; }
     void setObjectLineWidth(qreal lineWidth) { mObjectLineWidth = lineWidth; }
@@ -226,24 +226,24 @@ private:
     qreal mPainterScale;
 };
 
-inline QPointF MapRenderer::screenToTileCoords(const QPointF &point, const QRect &workSize) const
+inline QPointF MapRenderer::screenToTileCoords(const QPointF &point, const QRect &workSpace) const
 {
-    return screenToTileCoords(point.x(), point.y(), workSize);
+    return screenToTileCoords(point.x(), point.y(), workSpace);
 }
 
-inline QPointF MapRenderer::tileToScreenCoords(const QPointF &point, const QRect &workSize) const
+inline QPointF MapRenderer::tileToScreenCoords(const QPointF &point, const QRect &workSpace) const
 {
-    return tileToScreenCoords(point.x(), point.y(), workSize);
+    return tileToScreenCoords(point.x(), point.y(), workSpace);
 }
 
-inline QPointF MapRenderer::screenToPixelCoords(const QPointF &point, const QRect &workSize) const
+inline QPointF MapRenderer::screenToPixelCoords(const QPointF &point, const QRect &workSpace) const
 {
-    return screenToPixelCoords(point.x(), point.y(), workSize);
+    return screenToPixelCoords(point.x(), point.y(), workSpace);
 }
 
-inline QPointF MapRenderer::pixelToScreenCoords(const QPointF &point, const QRect &workSize) const
+inline QPointF MapRenderer::pixelToScreenCoords(const QPointF &point, const QRect &workSpace) const
 {
-    return pixelToScreenCoords(point.x(), point.y(), workSize);
+    return pixelToScreenCoords(point.x(), point.y(), workSpace);
 }
 
 inline const Map *MapRenderer::map() const

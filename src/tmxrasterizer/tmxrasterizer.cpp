@@ -150,9 +150,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
-			const QRect workSize(tileLayer->width(), tileLayer->height(),
+			const QRect workSpace(tileLayer->width(), tileLayer->height(),
 					             tileLayer->tileWidth(), tileLayer->tileHeight());
-            renderer->drawTileLayer(&painter, tileLayer, workSize);
+            renderer->drawTileLayer(&painter, tileLayer, workSpace);
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, mapWorkSize, imageLayer);
         }
