@@ -64,10 +64,8 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map, const QRect &workS
 }
 
 
-QSize HexagonalRenderer::mapSize() const
+QSize HexagonalRenderer::workSize(const QRect &workSpace) const
 {
-	// LUCA TODO: Fix this up
-	const QRect workSpace;
     const RenderParams p(map(), workSpace);
 
     // The map size is the same regardless of which indexes are shifted.

@@ -184,18 +184,20 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
+	const QRect workSpace(map.width(), map.height(), map.tileWidth(), map.tileHeight());
+
     switch (map.orientation()) {
     case Map::Isometric:
-        size = IsometricRenderer(&map).mapSize();
+        size = IsometricRenderer(&map).workSize(workSpace);
         break;
     case Map::Staggered:
-        size = StaggeredRenderer(&map).mapSize();
+        size = StaggeredRenderer(&map).workSize(workSpace);
         break;
     case Map::Hexagonal:
-        size = HexagonalRenderer(&map).mapSize();
+        size = HexagonalRenderer(&map).workSize(workSpace);
         break;
     default:
-        size = OrthogonalRenderer(&map).mapSize();
+        size = OrthogonalRenderer(&map).workSize(workSpace);
         break;
     }
 

@@ -38,7 +38,7 @@
 
 using namespace Tiled;
 
-QSize OrthogonalRenderer::mapSize() const
+QSize OrthogonalRenderer::workSize(const QRect &workSpace) const
 {
     return QSize(map()->width() * map()->tileWidth(),
                  map()->height() * map()->tileHeight());

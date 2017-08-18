@@ -38,7 +38,7 @@
 
 using namespace Tiled;
 
-QSize IsometricRenderer::mapSize() const
+QSize IsometricRenderer::workSize(const QRect &workSpace) const
 {
     // Map width and height contribute equally in both directions
     const int side = map()->height() + map()->width();

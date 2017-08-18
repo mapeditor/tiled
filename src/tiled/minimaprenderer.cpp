@@ -63,7 +63,10 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     const Tiled::RenderFlags rendererFlags = renderer->flags();
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-    QSize mapSize = renderer->mapSize();
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
+    QSize mapSize = renderer->workSize(workSpace);
+
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
@@ -81,8 +84,6 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     LayerIterator iterator(mMapDocument->map());
 
-	QRect workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
     while (const Layer *layer = iterator.next()) {
         if (visibleLayersOnly && layer->isHidden())
             continue;
@@ -130,7 +131,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), workSpace,
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->workSize(workSpace)), workSpace,
                            prefs->gridColor());
     }
 

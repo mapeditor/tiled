@@ -157,7 +157,9 @@ void ExportAsImageDialog::accept()
 
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-    QSize mapSize = renderer->mapSize();
+	QRect workSpace;
+	mMapDocument->currentWorkSpace(workSpace);
+    QSize mapSize = renderer->workSize(workSpace);
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -218,8 +220,6 @@ void ExportAsImageDialog::accept()
     painter.translate(margins.left(), margins.top());
 
     LayerIterator iterator(mMapDocument->map());
-	QRect workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
 
     while (Layer *layer = iterator.next()) {
         if (visibleLayersOnly && layer->isHidden())
@@ -279,7 +279,7 @@ void ExportAsImageDialog::accept()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()), workSpace,
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->workSize(workSpace)), workSpace,
                            prefs->gridColor());
     }
 
