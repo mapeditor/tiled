@@ -38,6 +38,7 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "workspace.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -62,7 +63,7 @@ public:
         const QPointF &position = mapObject->position();
 
 		const Map* map = renderer->map();
-		const QRect workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+		const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
         const QPointF pixelPos = renderer->pixelToScreenCoords(position, workSpace);
 
         QRectF boundingRect = renderer->boundingRect(mapObject, workSpace);
@@ -83,7 +84,7 @@ public:
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
 		const Map* map = mRenderer->map();
-		const QRect workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+		const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
         mRenderer->drawMapObject(p, workSpace, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
@@ -112,14 +113,16 @@ public:
 
     QRectF boundingRect() const override
     {
-		const QRect workSpace(mTileLayer->width(), mTileLayer->height(),
+		const WorkSpace workSpace(mTileLayer->width(), mTileLayer->height(),
 				             mTileLayer->tileWidth(), mTileLayer->tileHeight());
         return mRenderer->boundingRect(mTileLayer->bounds(), workSpace);
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
-        mRenderer->drawTileLayer(p, mTileLayer, option->rect);
+		const WorkSpace workSpace(mTileLayer->width(), mTileLayer->height(),
+				                  mTileLayer->tileWidth(), mTileLayer->tileHeight());
+        mRenderer->drawTileLayer(p, mTileLayer, workSpace, option->rect);
     }
 
 private:

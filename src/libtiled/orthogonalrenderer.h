@@ -29,6 +29,7 @@
 #pragma once
 
 #include "maprenderer.h"
+#include "workspace.h"
 
 namespace Tiled {
 
@@ -41,47 +42,47 @@ class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 public:
     OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
-    QSize workSize(const QRect &workSpace) const override;
+    QSize workSize(const WorkSpace &workSpace) const override;
 
-    QRect boundingRect(const QRect &rect, const QRect &workSpace) const override;
+    QRect boundingRect(const QRect &rect, const WorkSpace &workSpace) const override;
 
-    QRectF boundingRect(const MapObject *object, const QRect &workSpace) const override;
-    QPainterPath shape(const MapObject *object, const QRect &workSpace) const override;
+    QRectF boundingRect(const MapObject *object, const WorkSpace &workSpace) const override;
+    QPainterPath shape(const MapObject *object, const WorkSpace &workSpace) const override;
 
-    void drawGrid(QPainter *painter, const QRectF &rect, const QRect &workSpace,
+    void drawGrid(QPainter *painter, const QRectF &rect, const WorkSpace &workSpace,
                   QColor gridColor) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer, const QRect &workSpace,
+    void drawTileLayer(QPainter *painter, const TileLayer *layer, const WorkSpace &workSpace,
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
-						   const QRect &workSpace,
+						   const WorkSpace &workSpace,
                            const QColor &color,
                            const QRectF &exposed) const override;
 
     void drawMapObject(QPainter *painter,
-			           const QRect &workSpace,
+			           const WorkSpace &workSpace,
                        const MapObject *object,
                        const QColor &color) const override;
 
     using MapRenderer::pixelToTileCoords;
-    QPointF pixelToTileCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF pixelToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using MapRenderer::tileToPixelCoords;
-    QPointF tileToPixelCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF tileToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using MapRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using MapRenderer::tileToScreenCoords;
-    QPointF tileToScreenCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF tileToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using MapRenderer::screenToPixelCoords;
-    QPointF screenToPixelCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF screenToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using MapRenderer::pixelToScreenCoords;
-    QPointF pixelToScreenCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF pixelToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 };
 
 } // namespace Tiled

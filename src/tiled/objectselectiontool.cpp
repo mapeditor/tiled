@@ -33,6 +33,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "raiselowerhelper.h"
+#include "workspace.h"
 #include "resizemapobject.h"
 #include "rotatemapobject.h"
 #include "selectionrectangle.h"
@@ -40,6 +41,7 @@
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
@@ -774,7 +776,7 @@ static bool canResizeAbsolute(const MapObject *object)
  */
 static QRectF objectBounds(const MapObject *object,
                            const MapRenderer *renderer,
-						   const QRect &workSpace,
+						   const WorkSpace &workSpace,
                            const QTransform &transform)
 {
     if (!object->cell().isEmpty()) {
@@ -838,7 +840,7 @@ static QTransform rotateAt(const QPointF &position, qreal rotation)
     return transform;
 }
 
-static QTransform objectTransform(MapObject *object, MapRenderer *renderer, const QRect &workSpace)
+static QTransform objectTransform(MapObject *object, MapRenderer *renderer, const WorkSpace &workSpace)
 {
     QTransform transform;
 
@@ -864,7 +866,7 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
-		QRect workSpace;
+		WorkSpace workSpace;
 		mapDocument()->currentWorkSpace(workSpace);
 
         QRectF boundingRect = objectBounds(objects.first(), renderer, workSpace,
@@ -1092,7 +1094,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
                                             Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    QRect workSpace;
+    WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF diff = snapToGrid(pos - mStart, modifiers);
@@ -1164,7 +1166,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF startDiff = mOrigin - mStart;
@@ -1239,7 +1241,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     QPointF resizingOrigin = mClickedResizeHandle->resizingOrigin();
@@ -1332,7 +1334,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
                                                    Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const MovingObject &object = mMovingObjects.first();
@@ -1550,7 +1552,7 @@ QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
                                         Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     SnapHelper snapHelper(renderer, modifiers);

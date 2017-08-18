@@ -58,6 +58,7 @@
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
+#include "workspace.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -239,18 +240,18 @@ void MapDocument::setCurrentLayer(Layer *layer)
             setCurrentObject(mCurrentLayer);
 }
 
-void MapDocument::currentWorkSpace(QRect &workSpace) const {
+void MapDocument::currentWorkSpace(WorkSpace &workSpace) const {
 	if (mCurrentLayer && mCurrentLayer->asTileLayer()) {
 		TileLayer* tLayer = static_cast<TileLayer*>(mCurrentLayer);
-		workSpace.setX(tLayer->width());
-		workSpace.setY(tLayer->height());
-		workSpace.setWidth(tLayer->tileWidth());
-		workSpace.setHeight(tLayer->tileHeight());
+		workSpace.setWidth(tLayer->width());
+		workSpace.setHeight(tLayer->height());
+		workSpace.setTileWidth(tLayer->tileWidth());
+		workSpace.setTileHeight(tLayer->tileHeight());
 	} else {
-		workSpace.setX(mMap->width());
-		workSpace.setY(mMap->height());
-		workSpace.setWidth(mMap->tileWidth());
-		workSpace.setHeight(mMap->tileHeight());
+		workSpace.setWidth(mMap->width());
+		workSpace.setHeight(mMap->height());
+		workSpace.setTileWidth(mMap->tileWidth());
+		workSpace.setTileHeight(mMap->tileHeight());
 	}
 }
 
@@ -272,7 +273,7 @@ static bool intersects(const QRectF &a, const QRectF &b)
 static bool visibleIn(const QRectF &area, MapObject *object,
                       MapRenderer *renderer, MapDocument* mapDocument)
 {
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument->currentWorkSpace(workSpace);
     QRectF boundingRect = renderer->boundingRect(object, workSpace);
 
@@ -293,7 +294,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
-	QRect workSpace;
+	WorkSpace workSpace;
 	currentWorkSpace(workSpace);
 
     const QRegion movedSelection = mSelectedArea.translated(offset);

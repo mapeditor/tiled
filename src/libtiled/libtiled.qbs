@@ -96,6 +96,7 @@ DynamicLibrary {
         "tilesetmanager.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
+		"workspace.h"
     ]
 
     Group {

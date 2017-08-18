@@ -35,6 +35,7 @@
 #include "selectionrectangle.h"
 #include "snaphelper.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
@@ -386,7 +387,7 @@ void EditPolygonTool::updateHandles()
     }
 
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     for (MapObjectItem *item : selection) {
@@ -505,7 +506,7 @@ void EditPolygonTool::startMoving()
     mMode = Moving;
 
     MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     // Remember the current object positions
@@ -536,7 +537,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     SnapHelper snapHelper(renderer, modifiers);
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     if (snapHelper.snaps()) {

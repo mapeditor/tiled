@@ -29,6 +29,7 @@
 #pragma once
 
 #include "hexagonalrenderer.h"
+#include "workspace.h"
 
 namespace Tiled {
 
@@ -78,7 +79,7 @@ public:
     StaggeredRenderer(const Map *map) : HexagonalRenderer(map) {}
 
     using HexagonalRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 };
 
 } // namespace Tiled

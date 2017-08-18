@@ -34,6 +34,7 @@
 #include "resizemapobject.h"
 #include "tile.h"
 #include "zoomable.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -75,7 +76,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSpace);
     QRectF bounds = renderer->boundingRect(mObject, workSpace);
@@ -105,7 +106,7 @@ QRectF MapObjectItem::boundingRect() const
 
 QPainterPath MapObjectItem::shape() const
 {
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     QPainterPath path = mMapDocument->renderer()->shape(mObject, workSpace);
     path.translate(-pos());
@@ -116,7 +117,7 @@ void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *widget)
 {
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();

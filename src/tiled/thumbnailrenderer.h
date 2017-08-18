@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QImage>
+#include "workspace.h"
 
 namespace Tiled {
 
@@ -37,7 +38,7 @@ public:
     ThumbnailRenderer(Map *map);
     ~ThumbnailRenderer();
 
-    QImage render(const QSize &size, const QRect &workSpace) const;
+    QImage render(const QSize &size, const WorkSpace &workSpace) const;
 
     bool visibleLayersOnly() const;
     void setVisibleLayersOnly(bool visibleLayersOnly);

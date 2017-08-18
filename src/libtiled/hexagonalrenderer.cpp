@@ -41,7 +41,7 @@
 
 using namespace Tiled;
 
-HexagonalRenderer::RenderParams::RenderParams(const Map *map, const QRect &workSpace)
+HexagonalRenderer::RenderParams::RenderParams(const Map *map, const WorkSpace &workSpace)
     : tileWidth(map->tileWidth() & ~1)
     , tileHeight(map->tileHeight() & ~1)
     , sideLengthX(0)
@@ -64,7 +64,7 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map, const QRect &workS
 }
 
 
-QSize HexagonalRenderer::workSize(const QRect &workSpace) const
+QSize HexagonalRenderer::workSize(const WorkSpace &workSpace) const
 {
     const RenderParams p(map(), workSpace);
 
@@ -88,7 +88,7 @@ QSize HexagonalRenderer::workSize(const QRect &workSpace) const
     }
 }
 
-QRect HexagonalRenderer::boundingRect(const QRect &rect, const QRect &workSpace) const
+QRect HexagonalRenderer::boundingRect(const QRect &rect, const WorkSpace &workSpace) const
 {
     const RenderParams p(map(), workSpace);
 
@@ -118,7 +118,7 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect, const QRect &workSpace)
     return QRect(topLeft.x(), topLeft.y(), width, height);
 }
 
-void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed, const QRect &workSpace,
+void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed, const WorkSpace &workSpace,
                                  QColor gridColor) const
 {
     QRect rect = exposed.toAlignedRect();
@@ -247,7 +247,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed, const
 
 void HexagonalRenderer::drawTileLayer(QPainter *painter,
                                       const TileLayer *layer,
-									  const QRect &workSpace,
+									  const WorkSpace &workSpace,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map(), workSpace);
@@ -366,7 +366,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
 void HexagonalRenderer::drawTileSelection(QPainter *painter,
                                           const QRegion &region,
-										  const QRect &workSpace,
+										  const WorkSpace &workSpace,
                                           const QColor &color,
                                           const QRectF &exposed) const
 {
@@ -384,12 +384,12 @@ void HexagonalRenderer::drawTileSelection(QPainter *painter,
     }
 }
 
-QPointF HexagonalRenderer::tileToPixelCoords(qreal x, qreal y, const QRect &workSpace) const
+QPointF HexagonalRenderer::tileToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
     return HexagonalRenderer::tileToScreenCoords(x, y, workSpace);
 }
 
-QPointF HexagonalRenderer::pixelToTileCoords(qreal x, qreal y, const QRect &workSpace) const
+QPointF HexagonalRenderer::pixelToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
     return HexagonalRenderer::screenToTileCoords(x, y, workSpace);
 }
@@ -398,7 +398,7 @@ QPointF HexagonalRenderer::pixelToTileCoords(qreal x, qreal y, const QRect &work
  * Converts screen to tile coordinates. Sub-tile return values are not
  * supported by this renderer.
  */
-QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const
+QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
     const RenderParams p(map(), workSpace);
 
@@ -477,7 +477,7 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y, const QRect &wor
  * Converts tile to screen coordinates. Sub-tile return values are not
  * supported by this renderer.
  */
-QPointF HexagonalRenderer::tileToScreenCoords(qreal x, qreal y, const QRect &workSpace) const
+QPointF HexagonalRenderer::tileToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
     const RenderParams p(map(), workSpace);
     const int tileX = qFloor(x);
@@ -564,7 +564,7 @@ QPoint HexagonalRenderer::bottomRight(int x, int y) const
 QPolygonF HexagonalRenderer::tileToScreenPolygon(int x, int y) const
 {
 	// LUCA TODO: Do this properly, workSpace is not set to anything
-	const QRect workSpace;
+	const WorkSpace workSpace;
     const RenderParams p(map(), workSpace);
     const QPointF topRight = tileToScreenCoords(x, y, workSpace);
 

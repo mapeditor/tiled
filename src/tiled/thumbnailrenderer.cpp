@@ -73,7 +73,7 @@ static bool smoothTransform(qreal scale)
 }
 
 static QRectF cellRect(const MapRenderer &renderer,
-                       const QRect &workSpace,
+                       const WorkSpace &workSpace,
                        const Cell &cell,
                        const QPointF &tileCoords)
 {
@@ -99,7 +99,7 @@ static QRectF cellRect(const MapRenderer &renderer,
 static QRect computeMapRect(const MapRenderer &renderer)
 {
 	const Map* map = renderer.map();
-	const QRect mapWorkSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+	const WorkSpace mapWorkSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
     // Start with the basic map size
     QRectF rect(QPointF(0, 0), renderer.workSize(mapWorkSpace));
 
@@ -109,7 +109,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
             continue;
 
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-		const QRect workSpace(tileLayer->width(), tileLayer->height(), tileLayer->tileWidth(), tileLayer->tileHeight());
+		const WorkSpace workSpace(tileLayer->width(), tileLayer->height(), tileLayer->tileWidth(), tileLayer->tileHeight());
         const QPointF offset = tileLayer->totalOffset();
 
         for (int y = 0; y < tileLayer->height(); ++y) {
@@ -128,7 +128,7 @@ static QRect computeMapRect(const MapRenderer &renderer)
     return rect.toAlignedRect();
 }
 
-QImage ThumbnailRenderer::render(const QSize &size, const QRect &workSpace) const
+QImage ThumbnailRenderer::render(const QSize &size, const WorkSpace &workSpace) const
 {
     QImage image(size, QImage::Format_ARGB32_Premultiplied);
 

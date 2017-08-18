@@ -31,6 +31,7 @@
 #include "preferences.h"
 #include "tilelayer.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -157,7 +158,7 @@ void ExportAsImageDialog::accept()
 
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     QSize mapSize = renderer->workSize(workSpace);
 

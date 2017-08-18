@@ -29,6 +29,7 @@
 #include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QPalette>
@@ -57,7 +58,7 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSpace);

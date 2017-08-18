@@ -27,6 +27,7 @@
 #include "maprenderer.h"
 #include "snaphelper.h"
 #include "utils.h"
+#include "workspace.h"
 
 namespace Tiled {
 namespace Internal {
@@ -48,7 +49,7 @@ void CreateTextObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     const MapObject *mapObject = mNewMapObjectItem->mapObject();
     const QPointF diff(-mapObject->width() / 2, -mapObject->height() / 2);
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSpace);

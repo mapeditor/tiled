@@ -33,6 +33,7 @@
 #include "snaphelper.h"
 #include "tile.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -131,7 +132,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF offsetPos = event->scenePos() - objectGroup->totalOffset();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos, workSpace);

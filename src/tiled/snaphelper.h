@@ -22,6 +22,7 @@
 #pragma once
 
 #include "maprenderer.h"
+#include "workspace.h"
 
 namespace Tiled {
 namespace Internal {
@@ -35,7 +36,7 @@ public:
 
     bool snaps() const { return mSnapToGrid || mSnapToFineGrid || mSnapToPixels; }
 
-    void snap(QPointF &pixelPos, const QRect &workSpace) const;
+    void snap(QPointF &pixelPos, const WorkSpace &workSpace) const;
 
 private:
     const MapRenderer *mRenderer;

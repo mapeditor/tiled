@@ -24,6 +24,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "workspace.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -45,7 +46,7 @@ void TileLayerItem::syncWithTileLayer()
     prepareGeometryChange();
 
     MapRenderer *renderer = mMapDocument->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     QRectF boundingRect = renderer->boundingRect(tileLayer()->bounds(), workSpace);
 
@@ -71,7 +72,7 @@ void TileLayerItem::paint(QPainter *painter,
                           QWidget *)
 {
     MapRenderer *renderer = mMapDocument->renderer();
-    QRect workSpace;
+    WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     // TODO: Display a border around the layer when selected

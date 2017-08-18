@@ -41,6 +41,7 @@
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
+#include "workspace.h"
 #include "zoomable.h"
 
 #include <QApplication>
@@ -790,7 +791,7 @@ void DocumentManager::centerMapViewOn(qreal x, qreal y)
     if (MapView *view = currentMapView()) {
         auto mapDocument = view->mapScene()->mapDocument();
 
-		QRect workSpace;
+		WorkSpace workSpace;
 		mapDocument->currentWorkSpace(workSpace);
         view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y, workSpace));
     }

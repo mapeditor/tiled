@@ -45,6 +45,7 @@
 #include "stylehelper.h"
 #include "toolmanager.h"
 #include "tilesetmanager.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -295,7 +296,7 @@ void MapScene::updateDefaultBackgroundColor()
 
 void MapScene::updateSceneRect()
 {
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     const QSize mapSize = mMapDocument->renderer()->workSize(workSpace);
     QRectF sceneRect(0, 0, mapSize.width(), mapSize.height());
@@ -358,7 +359,7 @@ void MapScene::repaintRegion(const QRegion &region, Layer *layer)
     const MapRenderer *renderer = mMapDocument->renderer();
     const QMargins margins = mMapDocument->map()->drawMargins();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     for (const QRect &r : region.rects()) {
@@ -759,7 +760,7 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 
     Preferences *prefs = Preferences::instance();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     mMapDocument->renderer()->drawGrid(painter,
                                        rect.translated(-offset), workSpace,

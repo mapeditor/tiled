@@ -837,13 +837,8 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int src
 {
     QUndoStack *undo = mMapDocument->undoStack();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
-
-	TileLayer* tLayer = mMapDocument->currentLayer()->layerType() == Layer::TileLayerType ? static_cast<TileLayer*>(mMapDocument->currentLayer()) : 0;
-	if (tLayer) {
-		workSpace = QRect(tLayer->width(), tLayer->height(), tLayer->tileWidth(), tLayer->tileHeight());
-	}
 
     const QRectF rect = QRectF(srcX, srcY, width, height);
     const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect, workSpace);

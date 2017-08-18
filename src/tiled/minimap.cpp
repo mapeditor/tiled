@@ -28,6 +28,7 @@
 #include "mapview.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "workspace.h"
 
 #include <QCursor>
 #include <QResizeEvent>
@@ -173,7 +174,7 @@ void MiniMap::renderMapToImage()
 #else
     const QSize viewSize = contentsRect().size() * devicePixelRatio();
 #endif
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     QSize mapSize = renderer->workSize(workSpace);
 

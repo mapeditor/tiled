@@ -27,6 +27,7 @@
 #include "snaphelper.h"
 #include "tile.h"
 #include "utils.h"
+#include "workspace.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -48,7 +49,7 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
     QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSpace);
 

@@ -30,6 +30,7 @@
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QGuiApplication>
 #include <QTimerEvent>
@@ -72,7 +73,7 @@ static void align(QRectF &r, Alignment alignment)
  * returns.
  */
 static QRectF objectBounds(const MapObject *object,
-                           const MapRenderer *renderer, const QRect &workSpace)
+                           const MapRenderer *renderer, const WorkSpace &workSpace)
 {
 	// LUCA TODO: Check if this is entire file is okay (there's no document)
     if (!object->cell().isEmpty()) {
@@ -142,7 +143,7 @@ public:
         setZValue(1); // makes sure outlines are above labels
     }
 
-    void syncWithMapObject(MapRenderer *renderer, const QRect &workSpace);
+    void syncWithMapObject(MapRenderer *renderer, const WorkSpace &workSpace);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -161,7 +162,7 @@ private:
     int mOffset = 0;
 };
 
-void MapObjectOutline::syncWithMapObject(MapRenderer *renderer, const QRect &workSpace)
+void MapObjectOutline::syncWithMapObject(MapRenderer *renderer, const WorkSpace &workSpace)
 {
     const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position(), workSpace);
     QRectF bounds = objectBounds(mObject, renderer, workSpace);
@@ -241,7 +242,7 @@ public:
     }
 
     MapObject *mapObject() const { return mObject; }
-    void syncWithMapObject(MapRenderer *renderer, const QRect &workSpace);
+    void syncWithMapObject(MapRenderer *renderer, const WorkSpace &workSpace);
     void updateColor();
 
     QRectF boundingRect() const override;
@@ -255,7 +256,7 @@ private:
     QColor mColor;
 };
 
-void MapObjectLabel::syncWithMapObject(MapRenderer *renderer, const QRect &workSpace)
+void MapObjectLabel::syncWithMapObject(MapRenderer *renderer, const WorkSpace &workSpace)
 {
     const bool nameVisible = mObject->isVisible() && !mObject->name().isEmpty();
     setVisible(nameVisible);
@@ -394,7 +395,7 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         MapRenderer *renderer = mMapDocument->renderer();
 
-		QRect workSpace;
+		WorkSpace workSpace;
 		mMapDocument->currentWorkSpace(workSpace);
 
         for (MapObject *object : *objectGroup) {
@@ -463,7 +464,7 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
 {
     MapRenderer *renderer = mMapDocument->renderer();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     for (MapObject *object : objects) {
@@ -485,7 +486,7 @@ void ObjectSelectionItem::objectsAdded(const QList<MapObject *> &objects)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         MapRenderer *renderer = mMapDocument->renderer();
 
-		QRect workSpace;
+		WorkSpace workSpace;
 		mMapDocument->currentWorkSpace(workSpace);
 
         for (MapObject *object : objects) {
@@ -535,7 +536,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         if (!labelItem) {
             labelItem = new MapObjectLabel(object, this);
             
-			QRect workSpace;
+			WorkSpace workSpace;
 			mMapDocument->currentWorkSpace(workSpace);
 
             labelItem->syncWithMapObject(renderer, workSpace);
@@ -576,7 +577,7 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
     QHash<MapObject*, MapObjectOutline*> outlineItems;
     MapRenderer *renderer = mMapDocument->renderer();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     for (MapObject *mapObject : mMapDocument->selectedObjects()) {

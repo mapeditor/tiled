@@ -29,6 +29,7 @@
 #pragma once
 
 #include "orthogonalrenderer.h"
+#include "workspace.h"
 
 namespace Tiled {
 
@@ -46,7 +47,7 @@ class TILEDSHARED_EXPORT HexagonalRenderer : public OrthogonalRenderer
 protected:
     struct RenderParams
     {
-        RenderParams(const Map *map, const QRect &workSpace);
+        RenderParams(const Map *map, const WorkSpace &workSpace);
 
         bool doStaggerX(int x) const
         { return staggerX && (x & 1) ^ staggerEven; }
@@ -69,33 +70,33 @@ protected:
 public:
     HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
 
-    QSize workSize(const QRect &workSpace) const override;
+    QSize workSize(const WorkSpace &workSpace) const override;
 
-    QRect boundingRect(const QRect &rect, const QRect &workSpace) const override;
+    QRect boundingRect(const QRect &rect, const WorkSpace &workSpace) const override;
 
-    void drawGrid(QPainter *painter, const QRectF &exposed, const QRect &workSpace,
+    void drawGrid(QPainter *painter, const QRectF &exposed, const WorkSpace &workSpace,
                   QColor gridColor) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer, const QRect &workSpace,
+    void drawTileLayer(QPainter *painter, const TileLayer *layer, const WorkSpace &workSpace,
                        const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
-						   const QRect &workSpace,
+						   const WorkSpace &workSpace,
                            const QColor &color,
                            const QRectF &exposed) const override;
 
     using OrthogonalRenderer::pixelToTileCoords;
-    QPointF pixelToTileCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF pixelToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using OrthogonalRenderer::tileToPixelCoords;
-    QPointF tileToPixelCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF tileToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using OrthogonalRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     using OrthogonalRenderer::tileToScreenCoords;
-    QPointF tileToScreenCoords(qreal x, qreal y, const QRect &workSpace) const override;
+    QPointF tileToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const override;
 
     // Functions specific to this type of renderer
     QPoint topLeft(int x, int y) const;

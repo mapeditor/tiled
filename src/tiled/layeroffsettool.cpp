@@ -26,6 +26,7 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "snaphelper.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QUndoStack>
@@ -73,7 +74,7 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     if (Layer *layer = currentLayer())
         offsetPos -= layer->totalOffset();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workSpace);

@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
+#include "workspace.h"
 
 #include <QUndoStack>
 
@@ -39,7 +40,7 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 {
     QUndoStack *undo = mapDocument->undoStack();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument->currentWorkSpace(workSpace);
 
     const auto objects = layer->objects();

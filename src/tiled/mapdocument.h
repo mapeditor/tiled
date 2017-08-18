@@ -26,6 +26,7 @@
 #include "layer.h"
 #include "tiled.h"
 #include "tileset.h"
+#include "workspace.h"
 
 #include <QList>
 #include <QPointer>
@@ -116,7 +117,7 @@ public:
     /**
      * Returns the current work space
      */
-    void currentWorkSpace(QRect& workSpace) const;
+    void currentWorkSpace(WorkSpace &workSpace) const;
 
 
     /**

@@ -23,6 +23,7 @@
 
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "workspace.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -42,7 +43,7 @@ ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument, QGra
 void ImageLayerItem::syncWithImageLayer()
 {
     prepareGeometryChange();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     mBoundingRect = mMapDocument->renderer()->boundingRect(imageLayer(), workSpace);
 }
@@ -58,7 +59,7 @@ void ImageLayerItem::paint(QPainter *painter,
 {
     // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     renderer->drawImageLayer(painter, workSpace, imageLayer(), option->exposedRect);
 }

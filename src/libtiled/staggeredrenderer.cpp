@@ -39,7 +39,7 @@ using namespace Tiled;
  * This override exists because the method used by the HexagonalRenderer
  * does not produce nice results for isometric shapes in the tile corners.
  */
-QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y, const QRect &workSpace) const
+QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
     const RenderParams p(map(), workSpace);
 

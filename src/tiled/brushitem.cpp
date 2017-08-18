@@ -26,6 +26,7 @@
 #include "painttilelayer.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -148,7 +149,7 @@ void BrushItem::paint(QPainter *painter,
 
     const MapRenderer *renderer = mMapDocument->renderer();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     if (mTileLayer) {
         const qreal opacity = painter->opacity();
@@ -176,7 +177,7 @@ void BrushItem::updateBoundingRect()
 
     const QRect bounds = mRegion.boundingRect();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
 
     mBoundingRect = mMapDocument->renderer()->boundingRect(bounds, workSpace);

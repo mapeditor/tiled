@@ -45,7 +45,7 @@ void SnapHelper::toggleSnap()
     mSnapToFineGrid = false;
 }
 
-void SnapHelper::snap(QPointF &pixelPos, const QRect &workSpace) const
+void SnapHelper::snap(QPointF &pixelPos, const WorkSpace &workSpace) const
 {
     if (mSnapToFineGrid || mSnapToGrid) {
         QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos, workSpace);

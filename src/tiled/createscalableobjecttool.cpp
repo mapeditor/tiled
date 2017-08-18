@@ -27,6 +27,7 @@
 #include "maprenderer.h"
 #include "snaphelper.h"
 #include "utils.h"
+#include "workspace.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -51,7 +52,7 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSpace);

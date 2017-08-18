@@ -37,6 +37,7 @@
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QAction>
 #include <QApplication>
@@ -407,7 +408,7 @@ void MapDocumentActionHandler::copyPosition()
     const QPointF scenePos = view->mapToScene(viewportPos);
 
     const MapRenderer *renderer = mapDocument()->renderer();
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPointF tilePos = renderer->screenToTileCoords(scenePos, workSpace);

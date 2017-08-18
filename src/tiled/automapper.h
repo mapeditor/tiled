@@ -21,6 +21,7 @@
 #pragma once
 
 #include "tileset.h"
+#include "workspace.h"
 
 #include <QList>
 #include <QMap>

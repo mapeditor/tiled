@@ -28,6 +28,7 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QCoreApplication>
 
@@ -59,7 +60,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     case Layer::GroupLayerType: {
         // These layers need offset and bounds converted to pixel units
         MapRenderer *renderer = mapDocument->renderer();
-		QRect workSpace;
+		WorkSpace workSpace;
 		mapDocument->currentWorkSpace(workSpace);
         const QPointF origin = renderer->tileToPixelCoords(QPointF(), workSpace);
         const QPointF pixelOffset = renderer->tileToPixelCoords(offset, workSpace) - origin;

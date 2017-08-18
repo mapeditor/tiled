@@ -37,6 +37,7 @@
 #include "orthogonalrenderer.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QDebug>
 #include <QImageWriter>
@@ -101,9 +102,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
-	const QRect mapWorkSize(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+	const WorkSpace mapWorkSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
 
-    QSize mapSize = renderer->workSize(mapWorkSize);
+    QSize mapSize = renderer->workSize(mapWorkSpace);
     qreal xScale, yScale;
 
     if (mSize > 0) {
@@ -150,11 +151,11 @@ int TmxRasterizer::render(const QString &mapFileName,
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
-			const QRect workSpace(tileLayer->width(), tileLayer->height(),
+			const WorkSpace workSpace(tileLayer->width(), tileLayer->height(),
 					             tileLayer->tileWidth(), tileLayer->tileHeight());
             renderer->drawTileLayer(&painter, tileLayer, workSpace);
         } else if (imageLayer) {
-            renderer->drawImageLayer(&painter, mapWorkSize, imageLayer);
+            renderer->drawImageLayer(&painter, mapWorkSpace, imageLayer);
         }
 
         painter.translate(-offset);

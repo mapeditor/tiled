@@ -31,6 +31,7 @@
 #include "tmxmapformat.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -206,7 +207,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
 
         const QPointF scenePos = view->mapToScene(viewPos);
 
-		QRect workSpace;
+		WorkSpace workSpace;
 		mapDocument->currentWorkSpace(workSpace);
 
         insertPos = renderer->screenToPixelCoords(scenePos, workSpace) - center;

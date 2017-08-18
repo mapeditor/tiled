@@ -31,6 +31,7 @@
 #include "resizemapobject.h"
 #include "tile.h"
 #include "utils.h"
+#include "workspace.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -106,7 +107,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     if (layer)
         offsetPos -= layer->totalOffset();
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mapDocument()->currentWorkSpace(workSpace);
 
     const QPoint pixelPos = offsetPos.toPoint();

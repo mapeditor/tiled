@@ -30,6 +30,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QPainter>
 
@@ -63,7 +64,7 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     const Tiled::RenderFlags rendererFlags = renderer->flags();
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-	QRect workSpace;
+	WorkSpace workSpace;
 	mMapDocument->currentWorkSpace(workSpace);
     QSize mapSize = renderer->workSize(workSpace);
 

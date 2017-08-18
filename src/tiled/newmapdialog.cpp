@@ -29,6 +29,7 @@
 #include "preferences.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
+#include "workspace.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -184,7 +185,7 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
-	const QRect workSpace(map.width(), map.height(), map.tileWidth(), map.tileHeight());
+	const WorkSpace workSpace(map.width(), map.height(), map.tileWidth(), map.tileHeight());
 
     switch (map.orientation()) {
     case Map::Isometric:
