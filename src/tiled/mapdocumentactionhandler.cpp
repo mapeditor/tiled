@@ -94,6 +94,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionGroupLayers = new QAction(this);
     mActionUngroupLayers = new QAction(this);
 
+	mActionResizeLayer = new QAction(this);
+
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
     mActionDuplicateLayer->setIcon(
@@ -156,6 +158,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionGroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::groupLayers);
     connect(mActionUngroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::ungroupLayers);
 
+	connect(mActionResizeLayer, &QAction::triggered, this, &MapDocumentActionHandler::resizeLayer);
     connect(mActionDuplicateLayer, &QAction::triggered, this, &MapDocumentActionHandler::duplicateLayer);
     connect(mActionMergeLayerDown, &QAction::triggered, this, &MapDocumentActionHandler::mergeLayerDown);
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
@@ -195,6 +198,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionGroupLayers->setText(tr("&Group Layer"));
     mActionUngroupLayers->setText(tr("&Ungroup Layer"));
 
+    mActionResizeLayer->setText(tr("&Resize Layer"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
@@ -568,6 +572,12 @@ void MapDocumentActionHandler::duplicateLayer()
         mMapDocument->duplicateLayer();
 }
 
+void MapDocumentActionHandler::resizeLayer()
+{
+    if (mMapDocument)
+        mMapDocument->duplicateLayer();
+}
+
 void MapDocumentActionHandler::mergeLayerDown()
 {
     if (mMapDocument)
@@ -698,6 +708,7 @@ void MapDocumentActionHandler::updateActions()
     const bool canMoveLayerUp = currentLayer && MoveLayer::canMoveUp(*currentLayer);
     const bool canMoveLayerDown = currentLayer && MoveLayer::canMoveDown(*currentLayer);
 
+	mActionDuplicateLayer->setEnabled(currentLayer);
     mActionDuplicateLayer->setEnabled(currentLayer);
     mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
