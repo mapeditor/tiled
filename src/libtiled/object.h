@@ -43,6 +43,8 @@ public:
         LayerType,
         MapObjectType,
         MapType,
+        ObjectTemplateType,
+        TemplateGroupType,
         TerrainType,
         TilesetType,
         TileType,
@@ -138,6 +140,7 @@ inline bool Object::isPartOfTileset() const
     case Object::TileType:
     case Object::TerrainType:
     case Object::WangSetType:
+    case Object::WangColorType:
         return true;
     default:
         return false;

@@ -58,6 +58,7 @@ private:
 
     QPolygonF mOldPolygon;
     QPolygonF mNewPolygon;
+    bool mOldChangeState;
 };
 
 class TogglePolygonPolyline : public QUndoCommand

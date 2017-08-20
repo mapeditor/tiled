@@ -28,7 +28,6 @@
 #include "savefile.h"
 #include "tilesetmanager.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
@@ -66,6 +65,7 @@ Preferences::Preferences()
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
     mObjectTypesFile = stringValue("ObjectTypesFile");
+    mTemplateDocumentsFile = stringValue("TemplateDocumentsFile");
     mSettings->endGroup();
 
     SaveFile::setSafeSavingEnabled(mSafeSavingEnabled);
@@ -123,7 +123,6 @@ Preferences::Preferences()
     } else {
         mSettings->remove(QLatin1String("ObjectTypes"));
     }
-
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -444,6 +443,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ObjectTypesFile:
         key.append(QLatin1String("ObjectTypes"));
         break;
+    case Preferences::TemplateDocumentsFile:
+        key.append(QLatin1String("TemplateDocuments"));
+        break;
     case Preferences::ImageFile:
         key.append(QLatin1String("Images"));
         break;
@@ -715,4 +717,21 @@ void Preferences::setObjectTypesFile(const QString &fileName)
     mSettings->setValue(QLatin1String("Storage/ObjectTypesFile"), fileName);
 
     emit stampsDirectoryChanged(fileName);
+}
+
+QString Preferences::templateDocumentsFile() const
+{
+    if (mTemplateDocumentsFile.isEmpty())
+        return dataLocation() + QLatin1String("/templategroups.xml");
+
+    return mTemplateDocumentsFile;
+}
+
+void Preferences::setTemplateDocumentsFile(const QString &fileName)
+{
+    if (mTemplateDocumentsFile == fileName)
+        return;
+
+    mTemplateDocumentsFile = fileName;
+    mSettings->setValue(QLatin1String("Storage/TemplateDocumentsFile"), fileName);
 }

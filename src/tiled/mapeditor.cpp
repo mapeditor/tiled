@@ -28,6 +28,7 @@
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
+#include "createtemplatetool.h"
 #include "createtextobjecttool.h"
 #include "createtileobjecttool.h"
 #include "documentmanager.h"
@@ -46,6 +47,7 @@
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectsdock.h"
+#include "templatesdock.h"
 #include "objectselectiontool.h"
 #include "painttilelayer.h"
 #include "preferences.h"
@@ -133,6 +135,7 @@ MapEditor::MapEditor(QObject *parent)
     , mMapsDock(new MapsDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mObjectsDock(new ObjectsDock(mMainWindow))
+    , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mTilesetDock(new TilesetDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
     , mWangDock(new WangDock(mMainWindow))
@@ -167,6 +170,7 @@ MapEditor::MapEditor(QObject *parent)
     mBucketFillTool = new BucketFillTool(this);
     mEditPolygonTool = new EditPolygonTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
+    CreateTemplateTool *templatesTool = new CreateTemplateTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
@@ -189,6 +193,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
@@ -205,6 +210,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTemplatesDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
@@ -239,6 +245,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
+    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, templatesTool, &CreateTemplateTool::setTemplate);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
@@ -460,6 +467,7 @@ QList<QDockWidget *> MapEditor::dockWidgets() const
         mMapsDock,
         mUndoDock,
         mObjectsDock,
+        mTemplatesDock,
         mTilesetDock,
         mTerrainDock,
         mWangDock,

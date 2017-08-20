@@ -25,6 +25,7 @@
 #include <QVariant>
 
 #include "gidmapper.h"
+#include "tidmapper.h"
 
 namespace Tiled {
 
@@ -51,14 +52,18 @@ public:
      * construct relative paths to external resources.
      */
     QVariant toVariant(const Tileset &tileset, const QDir &directory);
+    QVariant toVariant(const TemplateGroup &templateGroup, const QDir &directory);
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
+    QVariant toVariant(const TemplateGroup &templateGroup, int firstTid) const;
     QVariant toVariant(const Properties &properties) const;
     QVariant propertyTypesToVariant(const Properties &properties) const;
     QVariant toVariant(const QList<Layer*> &layers, Map::LayerDataFormat format) const;
     QVariant toVariant(const TileLayer &tileLayer, Map::LayerDataFormat format) const;
     QVariant toVariant(const ObjectGroup &objectGroup) const;
+    QVariant toVariant(const MapObject &object) const;
+    QVariant toVariant(const ObjectTemplate &objectTemplate) const;
     QVariant toVariant(const TextData &textData) const;
     QVariant toVariant(const ImageLayer &imageLayer) const;
     QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
@@ -71,6 +76,7 @@ private:
 
     QDir mMapDir;
     GidMapper mGidMapper;
+    TidMapper mTidMapper;
 };
 
 } // namespace Tiled

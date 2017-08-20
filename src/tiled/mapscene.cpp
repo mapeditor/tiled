@@ -24,6 +24,7 @@
 #include "mapscene.h"
 
 #include "abstracttool.h"
+#include "addremovemapobject.h"
 #include "containerhelpers.h"
 #include "grouplayer.h"
 #include "grouplayeritem.h"
@@ -36,6 +37,7 @@
 #include "objectgroupitem.h"
 #include "objectselectionitem.h"
 #include "preferences.h"
+#include "templatemanager.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
@@ -50,6 +52,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QKeyEvent>
+#include <QMimeData>
 #include <QPalette>
 
 #include <cmath>
@@ -833,11 +836,61 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 /**
- * Override to ignore drag enter events.
+ * Override to ignore drag enter events except for templates.
  */
 void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    event->ignore();
+    if (!event->mimeData()->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+        event->ignore();
+}
+
+/**
+ * Accepts dropping a single template into an object group
+ */
+void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
+    if (!objectGroup || !mimeData->hasFormat(QLatin1String(TEMPLATES_MIMETYPE)))
+        return;
+
+    QByteArray encodedData = mimeData->data(QLatin1String(TEMPLATES_MIMETYPE));
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+
+    TemplateManager *templateManager = TemplateManager::instance();
+
+    QString groupFileName;
+    unsigned templateId;
+    stream >> groupFileName >> templateId;
+
+    const ObjectTemplate *objectTemplate = templateManager->findTemplate(groupFileName, templateId);
+
+    if (!objectTemplate)
+        return;
+
+    MapObject *newMapObject = new MapObject();
+    newMapObject->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+    newMapObject->syncWithTemplate();
+    newMapObject->setPosition(event->scenePos());
+
+    auto addObjectCommand = new AddMapObject(mapDocument(),
+                                             objectGroup,
+                                             newMapObject);
+
+    mapDocument()->undoStack()->push(addObjectCommand);
+
+    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+}
+
+void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
+{
+    Q_UNUSED(event);
+}
+
+void MapScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+{
+    Q_UNUSED(event);
 }
 
 bool MapScene::eventFilter(QObject *, QEvent *event)

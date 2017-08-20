@@ -32,6 +32,7 @@
 
 #include "layer.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
@@ -288,6 +289,35 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
             return true;
 
     return false;
+}
+
+bool Map::addTemplateGroup(TemplateGroup *templateGroup)
+{
+    if (mTemplateGroups.contains(templateGroup))
+        return false;
+
+    mTemplateGroups.append(templateGroup);
+    return true;
+}
+
+QList<MapObject*> Map::replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *newTemplateGroup)
+{
+    Q_ASSERT(oldTemplateGroup != newTemplateGroup);
+
+    QList<MapObject*> changedObjects;
+    const int index = mTemplateGroups.indexOf(oldTemplateGroup);
+    for (auto group : objectGroups()) {
+        for (auto o : group->objects()){
+            if (o->templateRef().templateGroup == oldTemplateGroup) {
+                o->setTemplateRef({newTemplateGroup, o->templateRef().templateId});
+                o->syncWithTemplate();
+                changedObjects.append(o);
+            }
+        }
+    }
+
+    mTemplateGroups.replace(index, newTemplateGroup);
+    return changedObjects;
 }
 
 void Map::initializeObjectIds(ObjectGroup &objectGroup)

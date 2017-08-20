@@ -26,7 +26,9 @@
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "newtemplatedialog.h"
 #include "objectgroup.h"
+#include "objecttemplatemodel.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
 #include "tile.h"
@@ -40,7 +42,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
 
 static bool isTileObject(MapObject *mapObject)
 {
@@ -192,6 +193,20 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
+void AbstractObjectTool::saveSelectedObject()
+{
+    QString name;
+    int groupIndex;
+
+    auto object = mapDocument()->selectedObjects().first();
+
+    NewTemplateDialog newTemplateDialog(object->name());
+    newTemplateDialog.createTemplate(name, groupIndex);
+
+    if (!name.isEmpty())
+        mapDocument()->saveSelectedObject(name, groupIndex);
+}
+
 void AbstractObjectTool::flipHorizontally()
 {
     mapDocument()->flipSelectedObjects(FlipHorizontally);
@@ -259,6 +274,13 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                     selectedObjects.end(),
                                                     isResizedTileObject));
+    }
+
+    if (selectedObjects.size() == 1) {
+        // Saving objects with embedded tilesets is disabled
+        auto cell = selectedObjects.first()->cell();
+        if (cell.isEmpty() || cell.tileset()->isExternal())
+            menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
     }
 
     menu.addSeparator();

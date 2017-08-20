@@ -37,6 +37,8 @@
 #include "mapobject.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
+#include "templategroup.h"
+#include "tidmapper.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -75,6 +77,9 @@ public:
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
+    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
+                            const QString &path);
+
     bool openFile(SaveFile *file);
 
     QString mError;
@@ -85,12 +90,15 @@ private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
     void writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                       unsigned firstGid);
+    void writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
+                            unsigned firstTid);
     void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer &layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
+    void writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
@@ -98,6 +106,7 @@ private:
 
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
+    TidMapper mTidMapper;
     bool mUseAbsolutePaths;
 };
 
@@ -176,6 +185,47 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     writer.writeEndDocument();
 }
 
+void MapWriterPrivate::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
+                                          const QString &path)
+{
+    mMapDir = QDir(path);
+    mUseAbsolutePaths = path.isEmpty();
+
+    AutoFormattingWriter writer(device);
+    writer.writeStartDocument();
+    writer.writeStartElement(QLatin1String("templategroup"));
+
+    writer.writeAttribute(QLatin1String("name"), templateGroup->name());
+    writer.writeAttribute(QLatin1String("nexttemplateid"),
+                          QString::number(templateGroup->nextTemplateId()));
+
+    mGidMapper.clear();
+    unsigned firstGid = 1;
+    for (const SharedTileset &tileset : templateGroup->tilesets()) {
+        writeTileset(writer, *tileset, firstGid);
+        mGidMapper.insert(firstGid, tileset.data());
+        firstGid += tileset->nextTileId();
+    }
+
+    for (const ObjectTemplate *objectTemplate: templateGroup->templates())
+        writeTemplate(writer, *objectTemplate);
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+}
+
+void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate)
+{
+    w.writeStartElement(QLatin1String("template"));
+
+    w.writeAttribute(QLatin1String("name"), objectTemplate.name());
+    w.writeAttribute(QLatin1String("id"), QString::number(objectTemplate.id()));
+
+    writeObject(w, *objectTemplate.object());
+
+    w.writeEndElement();
+}
+
 void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 {
     w.writeStartElement(QLatin1String("map"));
@@ -224,6 +274,27 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
         writeTileset(w, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset.data());
         firstGid += tileset->nextTileId();
+    }
+
+    mTidMapper.clear();
+    unsigned firstTid = 1;
+
+    QSet<TemplateGroup*> templateGroups;
+    for (ObjectGroup *group : map.objectGroups())
+        for (MapObject *object : group->objects())
+            if (object->isTemplateInstance())
+                templateGroups.insert(object->templateGroup());
+
+    for (TemplateGroup *templateGroup : templateGroups) {
+        writeTemplateGroup(w, *templateGroup, firstTid);
+        mTidMapper.insert(firstTid, templateGroup);
+
+        // When a template group is not loaded, reserve enough space
+        // to enable loading when the templateGroup is fixed
+        if (templateGroup->loaded())
+            firstTid += templateGroup->nextTemplateId();
+        else
+            firstTid += templateGroup->maxId() + 1;
     }
 
     writeLayers(w, map.layers());
@@ -499,6 +570,25 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     w.writeEndElement();
 }
 
+void MapWriterPrivate::writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
+                                          unsigned firstTid)
+{
+    w.writeStartElement(QLatin1String("templategroup"));
+    if (firstTid > 0)
+        w.writeAttribute(QLatin1String("firsttid"), QString::number(firstTid));
+
+    const QString &fileName = templateGroup.fileName();
+    if (!fileName.isEmpty()) {
+        QString source = fileName;
+        if (!mUseAbsolutePaths)
+            source = mMapDir.relativeFilePath(source);
+        w.writeAttribute(QLatin1String("source"), source);
+
+        w.writeEndElement();
+        return;
+    }
+}
+
 void MapWriterPrivate::writeLayers(QXmlStreamWriter &w, const QList<Layer*> &layers)
 {
     for (const Layer *layer : layers) {
@@ -678,39 +768,59 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
+static bool shouldWrite(bool holdsInfo, bool isTemplateInstance, bool changed)
+{
+    return isTemplateInstance ? changed : holdsInfo;
+}
+
 void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject &mapObject)
 {
     w.writeStartElement(QLatin1String("object"));
-    w.writeAttribute(QLatin1String("id"), QString::number(mapObject.id()));
+    const int id = mapObject.id();
     const QString &name = mapObject.name();
     const QString &type = mapObject.type();
-    if (!name.isEmpty())
+    const QPointF pos = mapObject.position();
+
+    bool isTemplateInstance = mapObject.isTemplateInstance();
+
+    if (isTemplateInstance) {
+        unsigned tid = mTidMapper.templateRefToTid(mapObject.templateRef());
+        w.writeAttribute(QLatin1String("tid"), QString::number(tid));
+    }
+
+    if (id != 0)
+        w.writeAttribute(QLatin1String("id"), QString::number(id));
+
+    if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QLatin1String("name"), name);
-    if (!type.isEmpty())
+
+    if (shouldWrite(!type.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::TypeProperty)))
         w.writeAttribute(QLatin1String("type"), type);
 
-    if (!mapObject.cell().isEmpty()) {
+    if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
-    const QPointF pos = mapObject.position();
-    const QSizeF size = mapObject.size();
+    if (id != 0) {
+        w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
+        w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
+    }
 
-    w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
-    w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
-
-    if (size.width() != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
-    if (size.height() != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
+    if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::SizeProperty))) {
+        const QSizeF size = mapObject.size();
+        if (size.width() != 0)
+            w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
+        if (size.height() != 0)
+            w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
+    }
 
     const qreal rotation = mapObject.rotation();
-    if (rotation != 0.0)
+    if (shouldWrite(rotation != 0.0, isTemplateInstance, mapObject.propertyChanged(MapObject::RotationProperty)))
         w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
-    if (!mapObject.isVisible())
+    if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
 
     writeProperties(w, mapObject.properties());
@@ -720,28 +830,37 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         break;
     case MapObject::Polygon:
     case MapObject::Polyline: {
-        if (mapObject.shape() == MapObject::Polygon)
-            w.writeStartElement(QLatin1String("polygon"));
-        else
-            w.writeStartElement(QLatin1String("polyline"));
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty))) {
+            if (mapObject.shape() == MapObject::Polygon)
+                w.writeStartElement(QLatin1String("polygon"));
+            else
+                w.writeStartElement(QLatin1String("polyline"));
 
-        QString points;
-        for (const QPointF &point : mapObject.polygon()) {
-            points.append(QString::number(point.x()));
-            points.append(QLatin1Char(','));
-            points.append(QString::number(point.y()));
-            points.append(QLatin1Char(' '));
+            QString points;
+            for (const QPointF &point : mapObject.polygon()) {
+                points.append(QString::number(point.x()));
+                points.append(QLatin1Char(','));
+                points.append(QString::number(point.y()));
+                points.append(QLatin1Char(' '));
+            }
+            points.chop(1);
+            w.writeAttribute(QLatin1String("points"), points);
+            w.writeEndElement();
         }
-        points.chop(1);
-        w.writeAttribute(QLatin1String("points"), points);
-        w.writeEndElement();
         break;
     }
     case MapObject::Ellipse:
-        w.writeEmptyElement(QLatin1String("ellipse"));
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
+            w.writeEmptyElement(QLatin1String("ellipse"));
         break;
     case MapObject::Text: {
-        writeObjectText(w, mapObject.textData());
+        if (shouldWrite(true, isTemplateInstance,
+                        mapObject.propertyChanged(MapObject::TextProperty) ||
+                        mapObject.propertyChanged(MapObject::TextFontProperty) ||
+                        mapObject.propertyChanged(MapObject::TextAlignmentProperty) ||
+                        mapObject.propertyChanged(MapObject::TextWordWrapProperty) ||
+                        mapObject.propertyChanged(MapObject::TextColorProperty)))
+            writeObjectText(w, mapObject.textData());
         break;
     }
     }
@@ -923,6 +1042,33 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
         return false;
 
     writeTileset(tileset, file.device(), QFileInfo(fileName).absolutePath());
+
+    if (file.error() != QFileDevice::NoError) {
+        d->mError = file.errorString();
+        return false;
+    }
+
+    if (!file.commit()) {
+        d->mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+void MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
+                                   const QString &path)
+{
+    d->writeTemplateGroup(templateGroup, device, path);
+}
+
+bool MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName)
+{
+    SaveFile file(fileName);
+    if (!d->openFile(&file))
+        return false;
+
+    writeTemplateGroup(templateGroup, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

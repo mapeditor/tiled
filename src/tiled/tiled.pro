@@ -126,6 +126,7 @@ SOURCES += aboutdialog.cpp \
     createpolylineobjecttool.cpp \
     createrectangleobjecttool.cpp \
     createscalableobjecttool.cpp \
+    createtemplatetool.cpp \
     createtextobjecttool.cpp \
     createtileobjecttool.cpp \
     document.cpp \
@@ -169,12 +170,14 @@ SOURCES += aboutdialog.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
     newmapdialog.cpp \
+    newtemplatedialog.cpp \
     newtilesetdialog.cpp \
     noeditorwidget.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
+    objecttemplatemodel.cpp \
     objecttypes.cpp \
     objecttypeseditor.cpp \
     objecttypesmodel.cpp \
@@ -192,6 +195,7 @@ SOURCES += aboutdialog.cpp \
     renameterrain.cpp \
     renamewangset.cpp \
     reparentlayers.cpp \
+    replacetemplate.cpp \
     replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
@@ -208,6 +212,8 @@ SOURCES += aboutdialog.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
     swaptiles.cpp \
+    templategroupdocument.cpp \
+    templatesdock.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -314,6 +320,7 @@ HEADERS += aboutdialog.h \
     createpolylineobjecttool.h \
     createrectangleobjecttool.h \
     createscalableobjecttool.h \
+    createtemplatetool.h \
     createtextobjecttool.h \
     createtileobjecttool.h \
     document.h \
@@ -357,11 +364,13 @@ HEADERS += aboutdialog.h \
     movemapobject.h \
     movemapobjecttogroup.h \
     newmapdialog.h \
+    newtemplatedialog.h \
     newtilesetdialog.h \
     noeditorwidget.h \
     objectgroupitem.h \
     objectsdock.h \
     objectselectionitem.h \
+    objecttemplatemodel.h \
     objectselectiontool.h \
     objecttypeseditor.h \
     objecttypes.h \
@@ -382,6 +391,7 @@ HEADERS += aboutdialog.h \
     renameterrain.h \
     renamewangset.h \
     reparentlayers.h \
+    replacetemplate.h \
     replacetileset.h \
     resizedialog.h \
     resizehelper.h \
@@ -399,6 +409,8 @@ HEADERS += aboutdialog.h \
     standardautoupdater.h \
     stylehelper.h \
     swaptiles.h \
+    templategroupdocument.h \
+    templatesdock.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \
@@ -454,6 +466,7 @@ FORMS += aboutdialog.ui \
     imagecolorpickerwidget.ui \
     mainwindow.ui \
     newmapdialog.ui \
+    newtemplatedialog.ui \
     newtilesetdialog.ui \
     noeditorwidget.ui \
     objecttypeseditor.ui \

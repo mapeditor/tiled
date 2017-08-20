@@ -58,6 +58,8 @@ private:
     MapObject *mMapObject;
     MapObject::Property mProperty;
     QVariant mValue;
+    bool mOldChangeState;
+    bool mNewChangeState;
 };
 
 
@@ -106,6 +108,7 @@ private:
     Tile * const mTile;
     QVector<Cell> mOldCells;
     QVector<bool> mUpdateSize;
+    QVector<bool> mOldChangeStates;
 };
 
 } // namespace Internal

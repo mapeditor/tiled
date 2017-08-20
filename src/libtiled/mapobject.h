@@ -44,6 +44,7 @@
 namespace Tiled {
 
 class ObjectGroup;
+class TemplateGroup;
 class Tile;
 
 struct TILEDSHARED_EXPORT TextData
@@ -65,6 +66,11 @@ struct TILEDSHARED_EXPORT TextData
     int flags() const;
     QTextOption textOption() const;
     QSizeF textSize() const;
+};
+
+struct TemplateRef {
+    TemplateGroup *templateGroup;
+    unsigned templateId;
 };
 
 /**
@@ -99,15 +105,21 @@ public:
      * Can be used to get/set property values using QVariant.
      */
     enum Property {
-        NameProperty,
-        TypeProperty,
-        VisibleProperty,
-        TextProperty,
-        TextFontProperty,
-        TextAlignmentProperty,
-        TextWordWrapProperty,
-        TextColorProperty
+        NameProperty             = 1 << 0,
+        TypeProperty             = 1 << 1,
+        VisibleProperty          = 1 << 2,
+        TextProperty             = 1 << 3,
+        TextFontProperty         = 1 << 4,
+        TextAlignmentProperty    = 1 << 5,
+        TextWordWrapProperty     = 1 << 6,
+        TextColorProperty        = 1 << 7,
+        SizeProperty             = 1 << 8,
+        RotationProperty         = 1 << 9,
+        CellProperty             = 1 << 10,
+        ShapeProperty            = 1 << 11
     };
+
+    Q_DECLARE_FLAGS(ChangedProperties, Property)
 
     MapObject();
 
@@ -165,6 +177,9 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
+    const TemplateRef &templateRef() const;
+    void setTemplateRef(const TemplateRef &templateRef);
+
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
 
@@ -179,9 +194,22 @@ public:
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 
+    void setChangedProperties(const ChangedProperties &changedProperties);
+
+    void setPropertyChanged(Property property, bool state = true);
+    bool propertyChanged(Property property) const;
+
     void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
+
+    const MapObject *templateObject() const;
+
+    void syncWithTemplate();
+
+    bool isTemplateInstance() const;
+
+    TemplateGroup *templateGroup() const;
 
 private:
     void flipRectObject(const QTransform &flipTransform);
@@ -197,9 +225,11 @@ private:
     QPolygonF mPolygon;
     Shape mShape;
     Cell mCell;
+    TemplateRef mTemplateRef;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    ChangedProperties mChangedProperties;
 };
 
 /**
@@ -393,6 +423,12 @@ inline const Cell &MapObject::cell() const
 inline void MapObject::setCell(const Cell &cell)
 { mCell = cell; }
 
+inline const TemplateRef &MapObject::templateRef() const
+{ return mTemplateRef; }
+
+inline void MapObject::setTemplateRef(const TemplateRef &templateRef)
+{ mTemplateRef = templateRef; }
+
 /**
  * Returns the object group this object belongs to.
  */
@@ -423,6 +459,20 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline void MapObject::setChangedProperties(const ChangedProperties &changedProperties)
+{ mChangedProperties = changedProperties; }
+
+inline void MapObject::setPropertyChanged(Property property, bool state)
+{
+    if (state)
+        mChangedProperties |= property;
+    else
+        mChangedProperties &= ~property;
+}
+
+inline bool MapObject::propertyChanged(Property property) const
+{ return mChangedProperties.testFlag(property); }
 
 } // namespace Tiled
 

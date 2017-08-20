@@ -369,6 +369,8 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
+    case Object::ObjectTemplateType:
+    case Object::TemplateGroupType:
         break;
     }
 
@@ -546,14 +548,16 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     }
 
     switch (mObject->typeId()) {
-    case Object::MapType:       applyMapValue(id, val); break;
-    case Object::MapObjectType: applyMapObjectValue(id, val); break;
-    case Object::LayerType:     applyLayerValue(id, val); break;
-    case Object::TilesetType:   applyTilesetValue(id, val); break;
-    case Object::TileType:      applyTileValue(id, val); break;
-    case Object::TerrainType:   applyTerrainValue(id, val); break;
-    case Object::WangSetType:   applyWangSetValue(id, val); break;
-    case Object::WangColorType: applyWangColorValue(id, val); break;
+    case Object::MapType:               applyMapValue(id, val); break;
+    case Object::MapObjectType:         applyMapObjectValue(id, val); break;
+    case Object::LayerType:             applyLayerValue(id, val); break;
+    case Object::TilesetType:           applyTilesetValue(id, val); break;
+    case Object::TileType:              applyTileValue(id, val); break;
+    case Object::TerrainType:           applyTerrainValue(id, val); break;
+    case Object::WangSetType:           applyWangSetValue(id, val); break;
+    case Object::WangColorType:         applyWangColorValue(id, val); break;
+    case Object::ObjectTemplateType:    break;
+    case Object::TemplateGroupType:     break;
     }
 }
 
@@ -1490,6 +1494,8 @@ void PropertyBrowser::addProperties()
     case Object::TerrainType:           addTerrainProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
+    case Object::ObjectTemplateType:    break;
+    case Object::TemplateGroupType:     break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1673,6 +1679,9 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
         break;
     }
+    case Object::ObjectTemplateType:
+    case Object::TemplateGroupType:
+        break;
     }
 
     mUpdating = false;
@@ -1714,6 +1723,16 @@ void PropertyBrowser::updateCustomProperties()
         auto mapObject = static_cast<MapObject*>(mObject);
         objectType = mapObject->type();
 
+        // Inherit properties from the template
+        if (const MapObject *templateObject = mapObject->templateObject()) {
+            QMapIterator<QString,QVariant> it(templateObject->properties());
+            while (it.hasNext()) {
+                it.next();
+                if (!mCombinedProperties.contains(it.key()))
+                    mCombinedProperties.insert(it.key(), it.value());
+            }
+        }
+
         if (Tile *tile = mapObject->cell().tile()) {
             if (objectType.isEmpty())
                 objectType = tile->type();
@@ -1734,6 +1753,8 @@ void PropertyBrowser::updateCustomProperties()
     case Object::TilesetType:
     case Object::WangSetType:
     case Object::WangColorType:
+    case Object::ObjectTemplateType:
+    case Object::TemplateGroupType:
         break;
     }
 

@@ -43,15 +43,19 @@
 #include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
+#include "objecttemplatemodel.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
+#include "preferences.h"
 #include "rangeset.h"
 #include "reparentlayers.h"
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "rotatemapobject.h"
 #include "staggeredrenderer.h"
+#include "templategroup.h"
+#include "templategroupdocument.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -119,8 +123,18 @@ MapDocument::~MapDocument()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMap->tilesets());
 
+    qDeleteAll(mNonEmbeddedTemplateGroups);
     delete mRenderer;
     delete mMap;
+}
+
+void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
+{
+    if (mSelectedObjects.size() != 1)
+        return;
+
+    auto model = ObjectTemplateModel::instance();
+    model->saveObjectToDocument(mSelectedObjects.first(), name, groupIndex);
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -654,6 +668,19 @@ SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tilese
         emit tilesetRemoved(oldTileset.data());
 
     return oldTileset;
+}
+
+TemplateGroup *MapDocument::replaceTemplateGroup(int index, TemplateGroup *templateGroup)
+{
+    TemplateGroup *oldTemplateGroup = mMap->templateGroups().at(index);
+    auto changedObjects = mMap->replaceTemplateGroup(oldTemplateGroup, templateGroup);
+
+    // Update the objects in the map scene
+    emit objectsChanged(changedObjects);
+
+    emit templateGroupReplaced(index, templateGroup, oldTemplateGroup);
+
+    return oldTemplateGroup;
 }
 
 void MapDocument::setSelectedArea(const QRegion &selection)

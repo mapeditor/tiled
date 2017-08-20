@@ -64,6 +64,12 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
         } else { //computing bound rect for other
             boundaryObjectsRect = boundaryObjectsRect.united(objectTransform.mapRect(object->bounds()));
         }
+
+        mOldCellStates.append(object->propertyChanged(MapObject::CellProperty));
+        mNewCellStates.append(true);;
+
+        mOldRotationStates.append(object->propertyChanged(MapObject::RotationProperty));
+        mNewRotationStates.append(true);;
     }
     mObjectsCenter = boundaryObjectsRect.center();
 }
@@ -71,8 +77,14 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 void FlipMapObjects::flip()
 {
     //flip objects
-    for (MapObject *object : mMapObjects)
-        object->flip(mFlipDirection, mObjectsCenter);
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        mMapObjects[i]->flip(mFlipDirection, mObjectsCenter);
+
+        mMapObjects[i]->setPropertyChanged(MapObject::CellProperty, mNewCellStates[i]);
+        mMapObjects[i]->setPropertyChanged(MapObject::RotationProperty, mNewRotationStates[i]);
+    }
+
+    mOldRotationStates.swap(mNewRotationStates);
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }

@@ -32,6 +32,7 @@
 
 #include "map.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
 
 #include <QFontMetricsF>
@@ -77,9 +78,11 @@ MapObject::MapObject():
     mId(0),
     mSize(0, 0),
     mShape(Rectangle),
+    mTemplateRef({nullptr, 0}),
     mObjectGroup(nullptr),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mChangedProperties(0)
 {
 }
 
@@ -93,9 +96,11 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
+    mTemplateRef({nullptr, 0}),
     mObjectGroup(nullptr),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mChangedProperties(0)
 {
 }
 
@@ -178,6 +183,10 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case SizeProperty:          return mSize;
+    case RotationProperty:      return mRotation;
+    case CellProperty:          Q_ASSERT(false); break;
+    case ShapeProperty:         Q_ASSERT(false); break;
     }
     return QVariant();
 }
@@ -195,6 +204,10 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
+    case SizeProperty:          mSize = value.toSizeF(); break;
+    case RotationProperty:      mRotation = value.toReal(); break;
+    case CellProperty:          Q_ASSERT(false); break;
+    case ShapeProperty:         Q_ASSERT(false); break;
     }
 }
 
@@ -244,7 +257,66 @@ MapObject *MapObject::clone() const
     o->setCell(mCell);
     o->setRotation(mRotation);
     o->setVisible(mVisible);
+    o->setChangedProperties(mChangedProperties);
+    o->setTemplateRef(templateRef());
     return o;
+}
+
+const MapObject *MapObject::templateObject() const
+{
+    if (!mTemplateRef.templateGroup)
+        return nullptr;
+
+    auto objectTemplate = mTemplateRef.templateGroup->findTemplate(mTemplateRef.templateId);
+
+    if (objectTemplate)
+        return objectTemplate->object();
+
+    return nullptr;
+}
+
+void MapObject::syncWithTemplate()
+{
+    const MapObject *base = templateObject();
+
+    if (!base)
+        return;
+
+    if (!propertyChanged(MapObject::NameProperty))
+        setName(base->name());
+
+    if (!propertyChanged(MapObject::SizeProperty))
+        setSize(base->size());
+
+    if (!propertyChanged(MapObject::TypeProperty))
+        setType(base->type());
+
+    if (!propertyChanged(MapObject::TextProperty))
+        setTextData(base->textData());
+
+    if (!propertyChanged(MapObject::ShapeProperty)) {
+        setShape(base->shape());
+        setPolygon(base->polygon());
+    }
+
+    if (!propertyChanged(MapObject::CellProperty))
+        setCell(base->cell());
+
+    if (!propertyChanged(MapObject::RotationProperty))
+        setRotation(base->rotation());
+
+    if (!propertyChanged(MapObject::VisibleProperty))
+        setVisible(base->isVisible());
+}
+
+bool MapObject::isTemplateInstance() const
+{
+    return templateRef().templateGroup;
+}
+
+TemplateGroup *MapObject::templateGroup() const
+{
+    return templateRef().templateGroup;
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)

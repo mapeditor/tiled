@@ -38,6 +38,8 @@ ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mProperty(property)
     , mValue(value)
+    , mOldChangeState(mapObject->propertyChanged(property))
+    , mNewChangeState(true)
 {
     switch (property) {
     case MapObject::VisibleProperty:
@@ -56,6 +58,9 @@ void ChangeMapObject::swap()
     QVariant oldValue = mMapObject->mapObjectProperty(mProperty);
     mMapDocument->mapObjectModel()->setObjectProperty(mMapObject, mProperty, mValue);
     std::swap(mValue, oldValue);
+
+    mMapObject->setPropertyChanged(mProperty, mNewChangeState);
+    std::swap(mOldChangeState, mNewChangeState);
 }
 
 
@@ -105,6 +110,8 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(MapDocument *mapDocument,
         Tile *tile = cell.tile();
         // Update the size if the object's tile is valid and the sizes match
         mUpdateSize.append(tile && object->size() == tile->size());
+
+        mOldChangeStates.append(object->propertyChanged(MapObject::CellProperty));
     }
 }
 
@@ -132,8 +139,10 @@ void ChangeMapObjectsTile::redo()
 
 void ChangeMapObjectsTile::restoreTiles()
 {
-    for (int i = 0; i < mMapObjects.size(); ++i)
+    for (int i = 0; i < mMapObjects.size(); ++i) {
         setObjectCell(mMapObjects[i], mOldCells[i], mUpdateSize[i]);
+        mMapObjects[i]->setPropertyChanged(MapObject::CellProperty, mOldChangeStates[i]);
+    }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
@@ -144,6 +153,7 @@ void ChangeMapObjectsTile::changeTiles()
         Cell cell = mMapObjects[i]->cell();
         cell.setTile(mTile);
         setObjectCell(mMapObjects[i], cell, mUpdateSize[i]);
+        mMapObjects[i]->setPropertyChanged(MapObject::CellProperty);
     }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
