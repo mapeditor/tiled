@@ -67,7 +67,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
             emit mMapDocument->tileLayerDrawMarginsChanged(after);
 
         // reduce memory usage by saving only diffs
-        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
+        QRect diffRegion = before->computeDiffRegion(after, where->boundingRect()).boundingRect();
         TileLayer *before1 = before->copy(diffRegion);
         TileLayer *after1 = after->copy(diffRegion);
 

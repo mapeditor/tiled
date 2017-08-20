@@ -691,7 +691,7 @@ static bool compareLayerTo(const TileLayer *setLayer,
                 bool matchListNo  = false;
 
 
-                if (!setLayer->contains(x + offset.x(), y + offset.y())) {
+                if (!(setLayer->contains(x + offset.x(), y + offset.y()) || setLayer->map()->infinite())) {
                     foreach (const TileLayer *comparedTileLayer, listYes) {
                         if (!comparedTileLayer->contains(x, y))
                             return false;
@@ -809,11 +809,18 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
                                 int width, int height,
                                 TileLayer *dstLayer, int dstX, int dstY)
 {
-    const int startX = qMax(dstX, 0);
-    const int startY = qMax(dstY, 0);
+    int startX = dstX;
+    int startY = dstY;
 
-    const int endX = qMin(dstX + width, dstLayer->width());
-    const int endY = qMin(dstY + height, dstLayer->height());
+    int endX = dstX + width;
+    int endY = dstY + height;
+
+    if (!mMapWork->infinite()) {
+        startX = qMax(dstX, startX);
+        startY = qMax(dstY, startY);
+        endX = qMin(dstLayer->width(), endX);
+        endY = qMin(dstLayer->height(), endY);
+    }
 
     const int offsetX = srcX - dstX;
     const int offsetY = srcY - dstY;
