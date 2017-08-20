@@ -3,12 +3,12 @@
  <image source="PathAndObjects.png" width="512" height="512"/>
  <wangsets>
   <wangset name="Lots" tile="82">
-   <wangcornercolor name="Grass" color="#1aff48" tile="0" probability="4"/>
-   <wangcornercolor name="Stone" color="#feffa9" tile="0" probability="2"/>
-   <wangcornercolor name="Darker Stone" color="#e3ffd0" tile="0" probability="1"/>
-   <wangcornercolor name="Dirt" color="#ffcc54" tile="0" probability="1"/>
-   <wangcornercolor name="Rooty dirt" color="#ff9d3a" tile="0" probability="0.1"/>
-   <wangcornercolor name="LightStone" color="#b8fff1" tile="0" probability="0.01"/>
+   <wangcornercolor name="Grass" color="#1aff48" tile="177" probability="4"/>
+   <wangcornercolor name="Stone" color="#feffa9" tile="17" probability="2"/>
+   <wangcornercolor name="Darker Stone" color="#e3ffd0" tile="20" probability="1"/>
+   <wangcornercolor name="Dirt" color="#ffcc54" tile="23" probability="1"/>
+   <wangcornercolor name="Rooty dirt" color="#ff9d3a" tile="26" probability="0.1"/>
+   <wangcornercolor name="LightStone" color="#b8fff1" tile="97" probability="0.01"/>
    <wangtile tileid="0" wangid="0x10102010"/>
    <wangtile tileid="1" wangid="0x10202010"/>
    <wangtile tileid="2" wangid="0x10201010"/>
@@ -81,9 +81,9 @@
    <wangtile tileid="145" wangid="0x10606060"/>
    <wangtile tileid="177" wangid="0x10101010"/>
   </wangset>
-  <wangset name="GrassAndStone" tile="0">
-   <wangcornercolor name="Stone" color="#ffefaf" tile="0" probability="0.25"/>
-   <wangcornercolor name="Grass" color="#82ff79" tile="0" probability="1"/>
+  <wangset name="Grass and Stone" tile="0">
+   <wangcornercolor name="Stone" color="#ffefaf" tile="17" probability="0.25"/>
+   <wangcornercolor name="Grass" color="#82ff79" tile="177" probability="1"/>
    <wangtile tileid="0" wangid="0x20201020"/>
    <wangtile tileid="1" wangid="0x20101020"/>
    <wangtile tileid="2" wangid="0x20102020"/>
@@ -99,10 +99,10 @@
    <wangtile tileid="65" wangid="0x20101010"/>
    <wangtile tileid="177" wangid="0x20202020"/>
   </wangset>
-  <wangset name="GrassAndWater" tile="162">
-   <wangcornercolor name="Ground" color="#ffe78e" tile="0" probability="1"/>
-   <wangcornercolor name="Grass" color="#31ff49" tile="0" probability="1"/>
-   <wangcornercolor name="Water" color="#5977ff" tile="0" probability="1"/>
+  <wangset name="Grass and Water" tile="162">
+   <wangcornercolor name="Ground" color="#ffe78e" tile="194" probability="1"/>
+   <wangcornercolor name="Grass" color="#31ff49" tile="177" probability="1"/>
+   <wangcornercolor name="Water" color="#5977ff" tile="163" probability="1"/>
    <wangtile tileid="160" wangid="0x30302030"/>
    <wangtile tileid="161" wangid="0x30202030"/>
    <wangtile tileid="162" wangid="0x30203030"/>
