@@ -27,6 +27,7 @@ public:
 	 int height() const { return mHeight; }
 	 int tileWidth() const { return mTileWidth; }
 	 int tileHeight() const { return mTileHeight; }
+	 QSize tileSize() const { return QSize(mWidth, mHeight); }
 
 	 void setWidth(const int width) { mWidth = width; }
 	 void setHeight(const int height) { mHeight = height; }

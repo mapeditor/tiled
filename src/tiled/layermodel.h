@@ -89,6 +89,7 @@ public:
     void setLayerLocked(Layer *layer, bool locked);
     void setLayerOpacity(Layer *layer, float opacity);
     void setLayerOffset(Layer *layer, const QPointF &offset);
+	void setLayerTileSize(Layer *layer, const QSize &tileSize);
 
     void renameLayer(Layer *layer, const QString &name);
 

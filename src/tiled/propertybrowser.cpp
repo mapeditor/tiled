@@ -1037,6 +1037,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
+    QUndoCommand *command = nullptr;
 	TileLayer* tileLayer = static_cast<TileLayer*>(mObject);
 	switch(id) {
 		case TileWidthProperty:
@@ -1049,12 +1050,15 @@ void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 				tileSize.setHeight(val.toInt());
 			}
 
-			tileLayer->setTileSize(tileSize);
+			command = new SetLayerTileSize(mMapDocument, tileLayer, tileSize);
 			break;
 		}
 		default:
 			break;
 	}
+
+	if (command)
+		mDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)

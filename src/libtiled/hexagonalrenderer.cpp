@@ -42,8 +42,8 @@
 using namespace Tiled;
 
 HexagonalRenderer::RenderParams::RenderParams(const Map *map, const WorkSpace &workSpace)
-    : tileWidth(map->tileWidth() & ~1)
-    , tileHeight(map->tileHeight() & ~1)
+    : tileWidth(workSpace.tileWidth() & ~1)
+    , tileHeight(workSpace.tileHeight() & ~1)
     , sideLengthX(0)
     , sideLengthY(0)
     , staggerX(map->staggerAxis() == Map::StaggerX)
@@ -70,18 +70,18 @@ QSize HexagonalRenderer::workSize(const WorkSpace &workSpace) const
 
     // The map size is the same regardless of which indexes are shifted.
     if (p.staggerX) {
-        QSize size(map()->width() * p.columnWidth + p.sideOffsetX,
-                   map()->height() * (p.tileHeight + p.sideLengthY));
+        QSize size(workSpace.width() * p.columnWidth + p.sideOffsetX,
+                   workSpace.height() * (p.tileHeight + p.sideLengthY));
 
-        if (map()->width() > 1)
+        if (workSpace.width() > 1)
             size.rheight() += p.rowHeight;
 
         return size;
     } else {
-        QSize size(map()->width() * (p.tileWidth + p.sideLengthX),
-                   map()->height() * p.rowHeight + p.sideOffsetY);
+        QSize size(workSpace.width() * (p.tileWidth + p.sideLengthX),
+                   workSpace.height() * p.rowHeight + p.sideOffsetY);
 
-        if (map()->height() > 1)
+        if (workSpace.height() > 1)
             size.rwidth() += p.columnWidth;
 
         return size;
@@ -171,21 +171,21 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed, const
         if (p.doStaggerX(startTile.x()))
             startPos.ry() -= p.rowHeight;
 
-        for (; startPos.x() <= rect.right() && startTile.x() < map()->width(); startTile.rx()++) {
+        for (; startPos.x() <= rect.right() && startTile.x() < workSpace.width(); startTile.rx()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
             if (p.doStaggerX(startTile.x()))
                 rowPos.ry() += p.rowHeight;
 
-            for (; rowPos.y() <= rect.bottom() && rowTile.y() < map()->height(); rowTile.ry()++) {
+            for (; rowPos.y() <= rect.bottom() && rowTile.y() < workSpace.height(); rowTile.ry()++) {
                 lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
                 lines.append(QLine(rowPos + oct[2], rowPos + oct[3]));
                 lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
 
                 const bool isStaggered = p.doStaggerX(startTile.x());
-                const bool lastRow = rowTile.y() == map()->height() - 1;
-                const bool lastColumn = rowTile.x() == map()->width() - 1;
+                const bool lastRow = rowTile.y() == workSpace.height() - 1;
+                const bool lastColumn = rowTile.x() == workSpace.width() - 1;
                 const bool bottomLeft = rowTile.x() == 0 || (lastRow && isStaggered);
                 const bool bottomRight = lastColumn || (lastRow && isStaggered);
 
@@ -209,21 +209,21 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed, const
         if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() <= rect.bottom() && startTile.y() < map()->height(); startTile.ry()++) {
+        for (; startPos.y() <= rect.bottom() && startTile.y() < workSpace.height(); startTile.ry()++) {
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
             if (p.doStaggerY(startTile.y()))
                 rowPos.rx() += p.columnWidth;
 
-            for (; rowPos.x() <= rect.right() && rowTile.x() < map()->width(); rowTile.rx()++) {
+            for (; rowPos.x() <= rect.right() && rowTile.x() < workSpace.width(); rowTile.rx()++) {
                 lines.append(QLine(rowPos + oct[0], rowPos + oct[1]));
                 lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
                 lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
 
                 const bool isStaggered = p.doStaggerY(startTile.y());
-                const bool lastRow = rowTile.y() == map()->height() - 1;
-                const bool lastColumn = rowTile.x() == map()->width() - 1;
+                const bool lastRow = rowTile.y() == workSpace.height() - 1;
+                const bool lastColumn = rowTile.x() == workSpace.width() - 1;
                 const bool bottomLeft = lastRow || (rowTile.x() == 0 && !isStaggered);
                 const bool bottomRight = lastRow || (lastColumn && isStaggered);
 
@@ -308,7 +308,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                     if (!cell.isEmpty()) {
                         Tile *tile = cell.tile();
-                        QSize size = tile ? tile->size() : map()->tileSize();
+                        QSize size = tile ? tile->size() : workSpace.tileSize();
                         renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                     }
                 }
@@ -352,7 +352,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                 if (!cell.isEmpty()) {
                     Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : map()->tileSize();
+                    QSize size = tile ? tile->size() : workSpace.tileSize();
                     renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                 }
 

@@ -135,7 +135,7 @@ void BrushItem::paint(QPainter *painter,
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
     
-	TileLayer* tileLayer = mMapDocument->currentLayer()->layerType() == Layer::TileLayerType ? static_cast<TileLayer*>(mMapDocument->currentLayer()) : 0;
+	TileLayer* tileLayer = mMapDocument->currentLayer()->asTileLayer();
     int layerWidth = tileLayer ? tileLayer->width() : mMapDocument->map()->width();
     int layerHeight = tileLayer? tileLayer->height() : mMapDocument->map()->height();
 

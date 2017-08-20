@@ -40,14 +40,14 @@ using namespace Tiled;
 
 QSize OrthogonalRenderer::workSize(const WorkSpace &workSpace) const
 {
-    return QSize(map()->width() * map()->tileWidth(),
-                 map()->height() * map()->tileHeight());
+    return QSize(workSpace.width() * workSpace.tileWidth(),
+                 workSpace.height() * workSpace.tileHeight());
 }
 
 QRect OrthogonalRenderer::boundingRect(const QRect &rect, const WorkSpace &workSpace) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = workSpace.tileWidth();
+    const int tileHeight = workSpace.tileHeight();
 
     return QRect(rect.x() * tileWidth,
                  rect.y() * tileHeight,
@@ -182,8 +182,8 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object, const WorkSpace 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const WorkSpace &workSpace,
                                   QColor gridColor) const
 {
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = workSpace.tileWidth();
+    const int tileHeight = workSpace.tileHeight();
 
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
@@ -191,9 +191,9 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const W
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin(qCeil(rect.right()),
-                          map()->width() * tileWidth + 1);
+                          workSpace.width() * tileWidth + 1);
     const int endY = qMin(qCeil(rect.bottom()),
-                          map()->height() * tileHeight + 1);
+                          workSpace.height() * tileHeight + 1);
 
     QPen gridPen = makeGridPen(painter->device(), gridColor);
 
@@ -218,8 +218,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const QRectF &exposed) const
 {
 
-    const int tileWidth = map()->tileWidth();
-    const int tileHeight = map()->tileHeight();
+    const int tileWidth = workSpace.tileWidth();
+    const int tileHeight = workSpace.tileHeight();
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
@@ -291,7 +291,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             Tile *tile = cell.tile();
-            QSize size = tile ? tile->size() : map()->tileSize();
+            QSize size = tile ? tile->size() : workSpace.tileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
                             size,
@@ -469,26 +469,26 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
 QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
-    return QPointF(x / map()->tileWidth(),
-                   y / map()->tileHeight());
+    return QPointF(x / workSpace.tileWidth(),
+                   y / workSpace.tileHeight());
 }
 
 QPointF OrthogonalRenderer::tileToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
-    return QPointF(x * map()->tileWidth(),
-                   y * map()->tileHeight());
+    return QPointF(x * workSpace.tileWidth(),
+                   y * workSpace.tileHeight());
 }
 
 QPointF OrthogonalRenderer::screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
-    return QPointF(x / map()->tileWidth(),
-                   y / map()->tileHeight());
+    return QPointF(x / workSpace.tileWidth(),
+                   y / workSpace.tileHeight());
 }
 
 QPointF OrthogonalRenderer::tileToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const
 {
-    return QPointF(x * map()->tileWidth(),
-                   y * map()->tileHeight());
+    return QPointF(x * workSpace.tileWidth(),
+                   y * workSpace.tileHeight());
 }
 
 QPointF OrthogonalRenderer::screenToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const
