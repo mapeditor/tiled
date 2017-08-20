@@ -42,8 +42,7 @@ namespace Internal {
 class WangFiller
 {
 public:
-    explicit WangFiller(WangSet *wangSet,
-                        bool isInfinite,  //the map we are filling to is infinite.
+    explicit WangFiller(WangSet *wangSet,  //the map we are filling to is infinite.
                         StaggeredRenderer *staggeredRenderer = nullptr,
                         Map::StaggerAxis staggerAxis = Map::StaggerX);
 
@@ -92,7 +91,6 @@ private:
                                   QPoint point) const;
 
     WangSet *mWangSet;
-    bool mIsInfinite;
     StaggeredRenderer *mStaggeredRenderer;
     Map::StaggerAxis mStaggerAxis;
 };
