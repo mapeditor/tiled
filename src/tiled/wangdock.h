@@ -29,7 +29,7 @@ class QModelIndex;
 class QPushButton;
 class QToolBar;
 class QTreeView;
-class QStackedWidget;
+class QTabWidget;
 
 namespace Tiled {
 namespace Internal {
@@ -90,7 +90,6 @@ protected:
 
 private slots:
     void activateErase();
-    void switchTemplateViewButtonClicked();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
     void refreshCurrentWangColor();
@@ -118,7 +117,6 @@ private:
     Document *mDocument;
     WangSetView *mWangSetView;
     QPushButton *mEraseWangIdsButton;
-    QPushButton *mSwitchTemplateViewButton;
     WangSet *mCurrentWangSet;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
@@ -128,7 +126,7 @@ private:
     HasChildrenFilterModel *mProxyModel;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
-    QStackedWidget *mTemplateAndColorView;
+    QTabWidget *mTemplateAndColorView;
     QWidget *mTemplateAndColorWidget;
 
     bool mInitializing;

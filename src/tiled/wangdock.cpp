@@ -42,7 +42,7 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
-#include <QStackedWidget>
+#include <QTabWidget>
 #include <QToolBar>
 #include <QTreeView>
 #include <QUndoStack>
@@ -198,13 +198,6 @@ WangDock::WangDock(QWidget *parent)
     connect(mEraseWangIdsButton, &QPushButton::clicked,
             this, &WangDock::activateErase);
 
-    mSwitchTemplateViewButton = new QPushButton(this);
-    mSwitchTemplateViewButton->setIconSize(Utils::smallIconSize());
-    mSwitchTemplateViewButton->setCheckable(false);
-
-    connect(mSwitchTemplateViewButton, &QPushButton::clicked,
-            this, &WangDock::switchTemplateViewButtonClicked);
-
     //WangSetView widget:
     QWidget *wangSetWidget = new QWidget;
 
@@ -229,16 +222,16 @@ WangDock::WangDock(QWidget *parent)
     colorViewVertical->addWidget(mWangColorView);
     colorViewVertical->addLayout(colorViewHorizontal);
 
-    mTemplateAndColorView = new QStackedWidget();
-    mTemplateAndColorView->addWidget(mWangTemplateView);
-    mTemplateAndColorView->addWidget(wangColorWidget);
+    mTemplateAndColorView = new QTabWidget;
+    mTemplateAndColorView->setDocumentMode(true);
+    mTemplateAndColorView->addTab(mWangTemplateView, tr("Patterns"));
+    mTemplateAndColorView->addTab(wangColorWidget, tr("Colors"));
 
     //Template and color widget.
     mTemplateAndColorWidget = new QWidget;
 
     QHBoxLayout *templateAndColorHorizontal = new QHBoxLayout;
     templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
-    templateAndColorHorizontal->addWidget(mSwitchTemplateViewButton);
 
     QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
     templateAndColorVertical->setMargin(0);
@@ -290,8 +283,9 @@ void WangDock::setDocument(Document *document)
         mWangSetToolBar->setVisible(false);
         mWangColorToolBar->setVisible(false);
         mEraseWangIdsButton->setVisible(false);
-        mSwitchTemplateViewButton->setVisible(false);
 
+        mTemplateAndColorView->setTabEnabled(0, false);
+        mTemplateAndColorView->tabBar()->hide();
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         TilesetWangSetModel *wangSetModel = tilesetDocument->wangSetModel();
 
@@ -312,7 +306,9 @@ void WangDock::setDocument(Document *document)
         mWangSetToolBar->setVisible(true);
         mWangColorToolBar->setVisible(true);
         mEraseWangIdsButton->setVisible(true);
-        mSwitchTemplateViewButton->setVisible(true);
+
+        mTemplateAndColorView->setTabEnabled(0, true);
+        mTemplateAndColorView->tabBar()->show();
         setTemplateView();
 
         /*
@@ -355,14 +351,6 @@ void WangDock::changeEvent(QEvent *event)
     default:
         break;
     }
-}
-
-void WangDock::switchTemplateViewButtonClicked()
-{
-    if (mTemplateAndColorView->currentIndex() == 0)
-        setColorView();
-    else
-        setTemplateView();
 }
 
 void WangDock::refreshCurrentWangSet()
@@ -560,10 +548,8 @@ void WangDock::retranslateUi()
     mAddCornerColor->setText(tr("Add Corner Color"));
     mRemoveColor->setText(tr("Remove Color"));
 
-    if (mWangColorView->isVisible())
-        mSwitchTemplateViewButton->setText(tr("Switch to Template View"));
-    else
-        mSwitchTemplateViewButton->setText(tr("Switch to Color View"));
+    mTemplateAndColorView->setTabText(0, tr("Patterns"));
+    mTemplateAndColorView->setTabText(1, tr("Colors"));
 }
 
 QModelIndex WangDock::wangSetIndex(WangSet *wangSet) const
