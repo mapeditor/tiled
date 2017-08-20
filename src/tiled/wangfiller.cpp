@@ -40,11 +40,9 @@ static const QPoint aroundTilePoints[] = {
 };
 
 WangFiller::WangFiller(WangSet *wangSet,
-                       bool isInfinite,
                        StaggeredRenderer *staggeredRenderer,
                        Map::StaggerAxis staggerAxis)
     : mWangSet(wangSet)
-    , mIsInfinite(isInfinite)
     , mStaggeredRenderer(staggeredRenderer)
     , mStaggerAxis(staggerAxis)
 {

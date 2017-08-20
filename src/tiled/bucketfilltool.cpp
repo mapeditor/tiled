@@ -413,7 +413,6 @@ void BucketFillTool::wangFill(TileLayer &tileLayerToFill,
         return;
 
     WangFiller wangFiller(mWangSet,
-                          mapDocument()->map()->infinite(),
                           dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                           mapDocument()->map()->staggerAxis());
 
