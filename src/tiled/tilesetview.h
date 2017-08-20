@@ -135,7 +135,6 @@ signals:
     void wangIdUsedChanged(WangId wangId);
     void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
-    void changeSelectedMapObjectsTileRequested(Tile *tile);
 
 protected:
     bool event(QEvent *event) override;
@@ -155,7 +154,6 @@ private slots:
     void selectWangColorImage();
     void editTileProperties();
     void swapTiles();
-    void changeSelectedMapObjectsTile();
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();

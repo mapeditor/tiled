@@ -49,13 +49,6 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-public slots:
-    /**
-     * Sets the tile that will be used when the creation mode is
-     * CreateTileObjects.
-     */
-    void setTile(Tile *tile) { mTile = tile; }
-
 protected:
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
                                                Qt::KeyboardModifiers modifiers);
@@ -73,7 +66,6 @@ protected:
     ObjectGroupItem *mObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
     MapObjectItem *mOverlayPolygonItem;
-    Tile *mTile;
 };
 
 } // namespace Internal

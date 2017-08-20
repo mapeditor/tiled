@@ -21,16 +21,26 @@
 
 #include "templatesdock.h"
 
+#include "editpolygontool.h"
+#include "mapdocument.h"
+#include "mapscene.h"
+#include "mapview.h"
+#include "objectgroup.h"
 #include "objecttemplatemodel.h"
+#include "objectselectiontool.h"
 #include "preferences.h"
+#include "propertiesdock.h"
 #include "templatemanager.h"
 #include "tmxmapformat.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QSplitter>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -39,34 +49,91 @@ TemplatesDock::TemplatesDock(QWidget *parent):
     QDockWidget(parent),
     mTemplatesView(new TemplatesView),
     mNewTemplateGroup(new QAction(this)),
-    mOpenTemplateGroup(new QAction(this))
+    mOpenTemplateGroup(new QAction(this)),
+    mUndoAction(new QAction(this)),
+    mRedoAction(new QAction(this)),
+    mDummyMapDocument(nullptr),
+    mMapScene(new MapScene(this)),
+    mMapView(new MapView(this, MapView::NoStaticContents)),
+    mToolManager(new ToolManager(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));
 
     QWidget *widget = new QWidget(this);
 
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    layout->addWidget(mTemplatesView);
+    // Prevent dropping a template into the editing view
+    mMapView->setAcceptDrops(false);
+    mMapView->setScene(mMapScene);
 
-    mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
-    Utils::setThemeIcon(mNewTemplateGroup, "document-new");
-    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
+    mMapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
 
+    mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    Utils::setThemeIcon(mNewTemplateGroup, "document-new");
+    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
+
     mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
     connect(mOpenTemplateGroup, &QAction::triggered, this, &TemplatesDock::openTemplateGroup);
+    connect(this, &TemplatesDock::setTile, mToolManager, &ToolManager::setTile);
 
     toolBar->addAction(mNewTemplateGroup);
     toolBar->addAction(mOpenTemplateGroup);
 
+    mUndoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-undo.png")));
+    Utils::setThemeIcon(mUndoAction, "edit-undo");
+    connect(mUndoAction, &QAction::triggered, this, &TemplatesDock::undo);
+    toolBar->addAction(mUndoAction);
+
+    mRedoAction->setIcon(QIcon(QLatin1String(":/images/16x16/edit-redo.png")));
+    Utils::setThemeIcon(mRedoAction, "edit-redo");
+    connect(mRedoAction, &QAction::triggered, this, &TemplatesDock::redo);
+    toolBar->addAction(mRedoAction);
+
+    // Initially disabled until a change happens
+    mUndoAction->setDisabled(true);
+    mRedoAction->setDisabled(true);
+
+    QToolBar *editingToolBar = new QToolBar;
+    editingToolBar->setFloatable(false);
+    editingToolBar->setMovable(false);
+    editingToolBar->setIconSize(Utils::smallIconSize());
+
+    auto objectSelectionTool = new ObjectSelectionTool(this);
+    auto editPolygonTool = new EditPolygonTool(this);
+
+    // Assign empty shortcuts to avoid collision with the map editor
+    objectSelectionTool->setShortcut(QKeySequence());
+    editPolygonTool->setShortcut(QKeySequence());
+
+    editingToolBar->addAction(mToolManager->registerTool(objectSelectionTool));
+    editingToolBar->addAction(mToolManager->registerTool(editPolygonTool));
+
+    // Construct the UI
+    QVBoxLayout *editorLayout = new QVBoxLayout;
+    editorLayout->addWidget(editingToolBar);
+    editorLayout->addWidget(mMapView);
+    editorLayout->setMargin(0);
+    editorLayout->setSpacing(0);
+
+    QWidget *editorWidget = new QWidget;
+    editorWidget->setLayout(editorLayout);
+
+    QSplitter *splitter = new QSplitter;
+    splitter->addWidget(mTemplatesView);
+    splitter->addWidget(editorWidget);
+
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(splitter);
     layout->addWidget(toolBar);
+
     setWidget(widget);
     retranslateUi();
 
@@ -84,18 +151,55 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     mTemplatesView->setModel(model);
 
+    mMapScene->setSelectedTool(mToolManager->selectedTool());
+
     connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
             this, &TemplatesDock::currentTemplateChanged);
 
+    connect(mTemplatesView, &TemplatesView::currentTemplateChanged,
+            this, &TemplatesDock::setTemplate);
+
     connect(mTemplatesView->model(), &ObjectTemplateModel::dataChanged,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
+
     connect(mTemplatesView->model(), &ObjectTemplateModel::rowsInserted,
             mTemplatesView, &TemplatesView::applyTemplateGroups);
+
+    connect(mTemplatesView, &TemplatesView::focusInEvent,
+            this, &TemplatesDock::focusInEvent);
+
+    connect(mTemplatesView, &TemplatesView::focusOutEvent,
+            this, &TemplatesDock::focusOutEvent);
+
+    connect(mTemplatesView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            mTemplatesView, &TemplatesView::updateSelection);
+
+    connect(mToolManager, &ToolManager::selectedToolChanged,
+            this, &TemplatesDock::setSelectedTool);
+
+    setFocusPolicy(Qt::ClickFocus);
+    mMapView->setFocusProxy(this);
 }
 
 TemplatesDock::~TemplatesDock()
 {
+    mMapScene->disableSelectedTool();
+
+    if (mDummyMapDocument) {
+        disconnect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
+                   this, &TemplatesDock::applyChanges);
+    }
+
+    delete mDummyMapDocument;
+
     ObjectTemplateModel::deleteInstance();
+}
+
+void TemplatesDock::setSelectedTool(AbstractTool *tool)
+{
+    mMapScene->disableSelectedTool();
+    mMapScene->setSelectedTool(tool);
+    mMapScene->enableSelectedTool();
 }
 
 void TemplatesDock::newTemplateGroup()
@@ -175,6 +279,117 @@ void TemplatesDock::openTemplateGroup()
                        QFileInfo(fileName).path());
 }
 
+void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
+{
+    if (mObjectTemplate == objectTemplate)
+        return;
+
+    mObjectTemplate = objectTemplate;
+
+    mMapScene->disableSelectedTool();
+    MapDocument *previousDocument = mDummyMapDocument;
+
+    mMapView->setEnabled(objectTemplate);
+
+    if (objectTemplate) {
+        Map::Orientation orientation = Map::Orthogonal;
+
+        Map *map = new Map(orientation, 1, 1, 1, 1);
+
+        mObject = objectTemplate->object()->clone();
+
+        if (Tile *tile = mObject->cell().tile()) {
+            map->addTileset(tile->sharedTileset());
+            mObject->setPosition({-mObject->width() / 2, mObject->height() / 2});
+        } else {
+            mObject->setPosition({-mObject->width() / 2, -mObject->height()  /2});
+        }
+
+        ObjectGroup *objectGroup = new ObjectGroup;
+        objectGroup->addObject(mObject);
+
+        map->addLayer(objectGroup);
+
+        mDummyMapDocument = new MapDocument(map);
+        mDummyMapDocument->setCurrentLayer(objectGroup);
+
+        mMapScene->setMapDocument(mDummyMapDocument);
+
+        mMapScene->enableSelectedTool();
+        mToolManager->setMapDocument(mDummyMapDocument);
+
+        mPropertiesDock->setDocument(mDummyMapDocument);
+        mDummyMapDocument->setCurrentObject(mObject);
+
+        mUndoAction->setDisabled(true);
+        mRedoAction->setDisabled(true);
+
+        connect(mDummyMapDocument->undoStack(), &QUndoStack::indexChanged,
+                this, &TemplatesDock::applyChanges);
+    } else {
+        mPropertiesDock->setDocument(nullptr);
+        mDummyMapDocument = nullptr;
+        mMapScene->setMapDocument(nullptr);
+        mToolManager->setMapDocument(nullptr);
+    }
+
+    if (previousDocument) {
+        disconnect(previousDocument->undoStack(), &QUndoStack::indexChanged,
+                   this, &TemplatesDock::applyChanges);
+
+        delete previousDocument;
+    }
+}
+
+void TemplatesDock::undo()
+{
+    if (mDummyMapDocument) {
+        mDummyMapDocument->undoStack()->undo();
+        emit mDummyMapDocument->selectedObjectsChanged();
+    }
+}
+
+void TemplatesDock::redo()
+{
+    if (mDummyMapDocument) {
+        mDummyMapDocument->undoStack()->redo();
+        emit mDummyMapDocument->selectedObjectsChanged();
+    }
+}
+
+void TemplatesDock::applyChanges()
+{
+    TemplateGroup *templateGroup = mObjectTemplate->templateGroup();
+
+    // Add the tileset of the new tile in case the operation was change tile
+    // TODO: only save used tilesets
+    if (auto tileset = mObject->cell().tileset())
+        templateGroup->addTileset(tileset->sharedPointer());
+
+    mObjectTemplate->setObject(mObject);
+    ObjectTemplateModel::instance()->save(templateGroup);
+
+    mUndoAction->setEnabled(mDummyMapDocument->undoStack()->canUndo());
+    mRedoAction->setEnabled(mDummyMapDocument->undoStack()->canRedo());
+    emit templateEdited(mObjectTemplate->object());
+}
+
+void TemplatesDock::focusInEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+    mPropertiesDock->setDocument(mDummyMapDocument);
+}
+
+void TemplatesDock::focusOutEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+
+    if (hasFocus() || !mDummyMapDocument)
+        return;
+
+    mDummyMapDocument->setSelectedObjects(QList<MapObject*>());
+}
+
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Templates"));
@@ -187,11 +402,7 @@ TemplatesView::TemplatesView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setHeaderHidden(true);
-
-    connect(this, &QAbstractItemView::pressed, this, &TemplatesView::onPressed);
-
     setSelectionBehavior(QAbstractItemView::SelectRows);
-
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
@@ -224,10 +435,15 @@ QSize TemplatesView::sizeHint() const
     return Utils::dpiScaled(QSize(130, 100));
 }
 
-void TemplatesView::onPressed(const QModelIndex &index)
+void TemplatesView::updateSelection(const QItemSelection &selected, const QItemSelection &deselected)
 {
+    Q_UNUSED(deselected);
     auto model = ObjectTemplateModel::instance();
 
-    if (ObjectTemplate *objectTemplate = model->toObjectTemplate(index))
-        emit currentTemplateChanged(objectTemplate);
+    QModelIndexList indexes = selected.indexes();
+    if (indexes.isEmpty())
+        return;
+
+    ObjectTemplate *objectTemplate = model->toObjectTemplate(indexes.first());
+    emit currentTemplateChanged(objectTemplate);
 }

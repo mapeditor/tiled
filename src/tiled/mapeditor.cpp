@@ -203,6 +203,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addToolBar(mToolSpecificToolBar);
 
     mPropertiesDock = new PropertiesDock(mMainWindow);
+    mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
 
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
@@ -242,7 +243,8 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mWidgetStack, &QStackedWidget::currentChanged, this, &MapEditor::currentWidgetChanged);
     connect(mToolManager, &ToolManager::statusInfoChanged, this, &MapEditor::updateStatusInfoLabel);
-    connect(mTilesetDock, &TilesetDock::currentTileChanged, tileObjectsTool, &CreateObjectTool::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged, mToolManager, &ToolManager::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
     connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, templatesTool, &CreateTemplateTool::setTemplate);
@@ -280,6 +282,9 @@ MapEditor::MapEditor(QObject *parent)
     setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
             this, &MapEditor::setSelectedTool);
+
+    connect(mTemplatesDock, &TemplatesDock::templateEdited,
+            this, &MapEditor::updateTemplateInstances);
 
     setupQuickStamps();
     retranslateUi();
@@ -410,6 +415,12 @@ void MapEditor::setCurrentDocument(Document *document)
             mZoomable = mapView->zoomable();
             mZoomable->setComboBox(mZoomComboBox);
         }
+
+        connect(mCurrentMapDocument, &MapDocument::currentObjectChanged,
+                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
+
+        connect(mapView, &MapView::focused,
+                this, [this, mapDocument](){ mPropertiesDock->setDocument(mapDocument); });
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
@@ -759,6 +770,15 @@ void MapEditor::addExternalTilesets(const QStringList &fileNames)
 void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
 {
     handleExternalTilesetsAndImages(fileNames, true);
+}
+
+void MapEditor::updateTemplateInstances(const MapObject *mapObject)
+{
+    QHashIterator<MapDocument*, MapView*> mapDocumentIterator(mWidgetForMap);
+    while (mapDocumentIterator.hasNext()) {
+        mapDocumentIterator.next();
+        mapDocumentIterator.key()->updateTemplateInstances(mapObject);
+    }
 }
 
 void MapEditor::handleExternalTilesetsAndImages(const QStringList &fileNames,

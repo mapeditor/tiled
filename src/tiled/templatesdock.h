@@ -30,12 +30,19 @@ class QAbstractProxyModel;
 namespace Tiled {
 
 class ObjectTemplate;
+class MapObject;
+class Tile;
 
 namespace Internal {
 
+class AbstractTool;
+class MapDocument;
+class MapScene;
+class MapView;
 class ObjectTemplateModel;
-
+class PropertiesDock;
 class TemplatesView;
+class ToolManager;
 
 class TemplatesDock : public QDockWidget
 {
@@ -45,12 +52,26 @@ public:
     TemplatesDock(QWidget *parent = nullptr);
     ~TemplatesDock();
 
+    void setPropertiesDock(PropertiesDock *propertiesDock);
+
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
+    void templateEdited(const MapObject *mapObject);
+    void setTile(Tile *tile);
 
 private slots:
+    void setSelectedTool(AbstractTool*tool);
     void newTemplateGroup();
     void openTemplateGroup();
+    void setTemplate(ObjectTemplate *objectTemplate);
+
+    void undo();
+    void redo();
+    void applyChanges();
+
+protected:
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 private:
     void retranslateUi();
@@ -59,6 +80,16 @@ private:
 
     QAction *mNewTemplateGroup;
     QAction *mOpenTemplateGroup;
+    QAction *mUndoAction;
+    QAction *mRedoAction;
+
+    MapDocument *mDummyMapDocument;
+    MapScene *mMapScene;
+    MapView *mMapView;
+    ObjectTemplate *mObjectTemplate;
+    MapObject *mObject;
+    PropertiesDock *mPropertiesDock;
+    ToolManager *mToolManager;
 };
 
 class TemplatesView : public QTreeView
@@ -73,10 +104,15 @@ public:
 
 signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
-private slots:
-    void onPressed(const QModelIndex &index);
+public slots:
+    void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
 };
+
+inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
+{ mPropertiesDock = propertiesDock; }
 
 } // namespace Internal
 } // namespace Tiled

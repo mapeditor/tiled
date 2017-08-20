@@ -170,6 +170,7 @@ public:
     void setShape(Shape shape);
 
     bool isPolyShape() const;
+    bool isTileObject() const;
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
@@ -401,6 +402,9 @@ inline void MapObject::setShape(MapObject::Shape shape)
  */
 inline bool MapObject::isPolyShape() const
 { return mShape == Polygon || mShape == Polyline; }
+
+inline bool MapObject::isTileObject() const
+{ return !mCell.isEmpty(); }
 
 /**
  * Shortcut to getting a QRectF from position() and size().

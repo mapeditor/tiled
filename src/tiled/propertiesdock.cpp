@@ -104,6 +104,9 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
 void PropertiesDock::setDocument(Document *document)
 {
+    if (mDocument == document)
+        return;
+
     if (mDocument)
         mDocument->disconnect(this);
 

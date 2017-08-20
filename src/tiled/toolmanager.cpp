@@ -35,6 +35,7 @@ ToolManager::ToolManager(QObject *parent)
     , mDisabledTool(nullptr)
     , mPreviouslyDisabledTool(nullptr)
     , mMapDocument(nullptr)
+    , mTile(nullptr)
     , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
@@ -77,9 +78,14 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    toolAction->setToolTip(
-            QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                  tool->shortcut().toString()));
+    if (!tool->shortcut().isEmpty()) {
+        toolAction->setToolTip(
+                QString(QLatin1String("%1 (%2)")).arg(tool->name(),
+                                                      tool->shortcut().toString()));
+    } else {
+        toolAction->setToolTip(tool->name());
+    }
+
     toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
 
@@ -139,6 +145,13 @@ void ToolManager::retranslateTools()
         action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
                 tool->name(), tool->shortcut().toString()));
     }
+}
+
+void ToolManager::setTile(Tile *tile)
+{
+    mTile = tile;
+    if (mSelectedTool)
+        mSelectedTool->setTile(mTile);
 }
 
 void ToolManager::toolEnabledChanged(bool enabled)
@@ -215,5 +228,6 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         emit statusInfoChanged(mSelectedTool->statusInfo());
         connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
                 this, SIGNAL(statusInfoChanged(QString)));
+        tool->setTile(mTile);
     }
 }

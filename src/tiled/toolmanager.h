@@ -26,6 +26,9 @@ class QAction;
 class QActionGroup;
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class AbstractTool;
@@ -55,6 +58,13 @@ public:
 
     void retranslateTools();
 
+public slots:
+    /**
+     * Sets the tile that will be used when the creation mode is
+     * CreateTileObjects or when replacing a tile of a tile object.
+     */
+    void setTile(Tile *tile);
+
 signals:
     void selectedToolChanged(AbstractTool *tool);
 
@@ -80,6 +90,7 @@ private:
     AbstractTool *mDisabledTool;
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
+    Tile *mTile;
 
     bool mSelectEnabledToolPending;
 };

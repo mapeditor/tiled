@@ -86,12 +86,12 @@ void CreateTileObjectTool::languageChanged()
 
 MapObject *CreateTileObjectTool::createNewMapObject()
 {
-    if (!mTile)
+    if (!tile())
         return nullptr;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
-    newMapObject->setCell(Cell(mTile));
-    newMapObject->setSize(mTile->size());
+    newMapObject->setCell(Cell(tile()));
+    newMapObject->setSize(tile()->size());
     return newMapObject;
 }

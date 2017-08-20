@@ -316,6 +316,12 @@ void MapView::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
+void MapView::focusInEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+    emit focused();
+}
+
 /**
  * Moves the view with the mouse while hand scrolling.
  */

@@ -20,6 +20,8 @@
 
 #include "abstractobjecttool.h"
 
+#include "addremovetileset.h"
+#include "changemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -207,6 +209,26 @@ void AbstractObjectTool::saveSelectedObject()
         mapDocument()->saveSelectedObject(name, groupIndex);
 }
 
+void AbstractObjectTool::changeTile()
+{
+    QList<MapObject*> tileObjects;
+
+    MapDocument *currentMapDocument = mapDocument();
+
+    for (auto object : currentMapDocument->selectedObjects())
+        if (object->isTileObject())
+            tileObjects.append(object);
+
+    auto changeMapObjectCommand = new ChangeMapObjectsTile(currentMapDocument, tileObjects, tile());
+
+    // Make sure the tileset is part of the document
+    SharedTileset sharedTileset = tile()->tileset()->sharedPointer();
+    if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
+        new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
+
+    currentMapDocument->undoStack()->push(changeMapObjectCommand);
+}
+
 void AbstractObjectTool::flipHorizontally()
 {
     mapDocument()->flipSelectedObjects(FlipHorizontally);
@@ -274,6 +296,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                     selectedObjects.end(),
                                                     isResizedTileObject));
+
+        auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
+        changeTileAction->setEnabled(tile());
     }
 
     if (selectedObjects.size() == 1) {
