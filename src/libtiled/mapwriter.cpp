@@ -789,7 +789,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("tid"), QString::number(tid));
     }
 
-    if (id != 0)
+    if (!mapObject.isTemplateBase())
         w.writeAttribute(QLatin1String("id"), QString::number(id));
 
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
@@ -803,7 +803,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
-    if (id != 0) {
+    if (!mapObject.isTemplateBase()) {
         w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
         w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
     }

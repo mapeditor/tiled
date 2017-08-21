@@ -333,10 +333,18 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     }
 
     if (selectedObjects.size() == 1) {
-        // Saving objects with embedded tilesets is disabled
-        auto cell = selectedObjects.first()->cell();
-        if (cell.isEmpty() || cell.tileset()->isExternal())
-            menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+        MapObject *currentObject = selectedObjects.first();
+        if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
+            const Cell cell = selectedObjects.first()->cell();
+            // Saving objects with embedded tilesets is disabled
+            if (cell.isEmpty() || cell.tileset()->isExternal())
+                menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+        }
+
+        if (currentObject->isTemplateBase()) { // Hide this operations for template base
+            duplicateAction->setVisible(false);
+            removeAction->setVisible(false);
+        }
     }
 
     bool anyIsTemplateInstance = std::any_of(selectedObjects.begin(),

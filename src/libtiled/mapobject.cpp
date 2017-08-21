@@ -92,7 +92,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mObjectGroup(nullptr),
     mRotation(0.0f),
     mVisible(true),
-    mChangedProperties(0)
+    mChangedProperties(0),
+    mTemplateBase(false)
 {
 }
 

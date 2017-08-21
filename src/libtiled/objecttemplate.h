@@ -68,7 +68,7 @@ inline void ObjectTemplate::setObject(const MapObject *object)
 {
     delete mObject;
     mObject = object->clone();
-    mObject->setId(0);
+    mObject->markAsTemplateBase();
 }
 
 inline unsigned ObjectTemplate::id() const
