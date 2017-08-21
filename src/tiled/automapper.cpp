@@ -816,8 +816,8 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, int srcX, int srcY,
     int endY = dstY + height;
 
     if (!mMapWork->infinite()) {
-        startX = qMax(dstX, startX);
-        startY = qMax(dstY, startY);
+        startX = qMax(0, startX);
+        startY = qMax(0, startY);
         endX = qMin(dstLayer->width(), endX);
         endY = qMin(dstLayer->height(), endY);
     }
