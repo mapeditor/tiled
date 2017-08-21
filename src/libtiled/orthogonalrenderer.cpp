@@ -218,8 +218,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const QRectF &exposed) const
 {
 
-    const int tileWidth = workSpace.tileWidth();
-    const int tileHeight = workSpace.tileHeight();
+    const int tileWidth = layer->tileWidth();
+    const int tileHeight = layer->tileHeight();
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
 
@@ -291,7 +291,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             Tile *tile = cell.tile();
-            QSize size = tile ? tile->size() : workSpace.tileSize();
+            QSize size = tile ? tile->size() : layer->tileSize();
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
                             size,

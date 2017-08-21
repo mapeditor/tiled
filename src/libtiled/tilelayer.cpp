@@ -111,15 +111,14 @@ TileLayer::TileLayer(
     : Layer(TileLayerType, name, x, y)
     , mWidth(width)
     , mHeight(height)
+	, mTileWidth(tileWidth)
+    , mTileHeight(tileHeight)
     , mUsedTilesetsDirty(false)
 {
     Q_ASSERT(width >= 0);
     Q_ASSERT(height >= 0);
 	Q_ASSERT(tileWidth >= 0);
 	Q_ASSERT(tileHeight >= 0);
-
-	mTileWidth = tileWidth;
-	mTileHeight = tileHeight;
 }
 
 static QMargins maxMargins(const QMargins &a,

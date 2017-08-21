@@ -250,12 +250,13 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 									  const WorkSpace &workSpace,
                                       const QRectF &exposed) const
 {
-    const RenderParams p(map(), workSpace);
+	WorkSpace tileWorkSpace(layer->width(), layer->height(), layer->tileWidth(), layer->tileHeight());
+    const RenderParams p(map(), tileWorkSpace);
 
     QRect rect = exposed.toAlignedRect();
 
     if (rect.isNull())
-        rect = boundingRect(layer->bounds(), workSpace);
+        rect = boundingRect(layer->bounds(), tileWorkSpace);
 
     QMargins drawMargins = layer->drawMargins();
     drawMargins.setBottom(drawMargins.bottom() + p.tileHeight);
@@ -267,12 +268,12 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
                 drawMargins.top());
 
     // Determine the tile and pixel coordinates to start at
-    QPoint startTile = screenToTileCoords(rect.topLeft(), workSpace).toPoint();
+    QPoint startTile = screenToTileCoords(rect.topLeft(), tileWorkSpace).toPoint();
 
     // Compensate for the layer position
     startTile -= layer->position();
 
-    QPoint startPos = tileToScreenCoords(startTile + layer->position(), workSpace).toPoint();
+    QPoint startPos = tileToScreenCoords(startTile + layer->position(), tileWorkSpace).toPoint();
 
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
@@ -293,7 +294,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
         startTile.setX(qMax(-1, startTile.x()));
         startTile.setY(qMax(-1, startTile.y()));
 
-        startPos = tileToScreenCoords(startTile + layer->position(), workSpace).toPoint();
+        startPos = tileToScreenCoords(startTile + layer->position(), tileWorkSpace).toPoint();
         startPos.ry() += p.tileHeight;
 
         bool staggeredRow = p.doStaggerX(startTile.x() + layer->x());
@@ -308,7 +309,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                     if (!cell.isEmpty()) {
                         Tile *tile = cell.tile();
-                        QSize size = tile ? tile->size() : workSpace.tileSize();
+                        QSize size = tile ? tile->size() : tileWorkSpace.tileSize();
                         renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                     }
                 }
@@ -333,7 +334,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
         startTile.setX(qMax(0, startTile.x()));
         startTile.setY(qMax(0, startTile.y()));
 
-        startPos = tileToScreenCoords(startTile + layer->position(), workSpace).toPoint();
+        startPos = tileToScreenCoords(startTile + layer->position(), tileWorkSpace).toPoint();
         startPos.ry() += p.tileHeight;
 
         // Odd row shifting is applied in the rendering loop, so un-apply it here
@@ -352,7 +353,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
 
                 if (!cell.isEmpty()) {
                     Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : workSpace.tileSize();
+                    QSize size = tile ? tile->size() : tileWorkSpace.tileSize();
                     renderer.render(cell, rowPos, size, CellRenderer::BottomLeft);
                 }
 

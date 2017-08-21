@@ -184,15 +184,16 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 									  const WorkSpace &workSpace,
                                       const QRectF &exposed) const
 {
-    const int tileWidth = workSpace.tileWidth();
-    const int tileHeight = workSpace.tileHeight();
+	WorkSpace tileWorkSpace(layer->width(), layer->height(), layer->tileWidth(), layer->tileHeight());
+    const int tileWidth = tileWorkSpace.tileWidth();
+    const int tileHeight = tileWorkSpace.tileHeight();
 
     if (tileWidth <= 0 || tileHeight <= 1)
         return;
 
     QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
-        rect = boundingRect(layer->bounds(), workSpace);
+        rect = boundingRect(layer->bounds(), tileWorkSpace);
 
     QMargins drawMargins = layer->drawMargins();
     drawMargins.setTop(drawMargins.top() - tileHeight);
@@ -204,10 +205,10 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 drawMargins.top());
 
     // Determine the tile and pixel coordinates to start at
-    QPointF tilePos = screenToTileCoords(rect.x(), rect.y(), workSpace);
+    QPointF tilePos = screenToTileCoords(rect.x(), rect.y(), tileWorkSpace);
     QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
                            (int) std::floor(tilePos.y()));
-    QPointF startPos = tileToScreenCoords(rowItr, workSpace);
+    QPointF startPos = tileToScreenCoords(rowItr, tileWorkSpace);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
 
@@ -248,7 +249,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
                     Tile *tile = cell.tile();
-                    QSize size = tile ? tile->size() : workSpace.tileSize();
+                    QSize size = tile ? tile->size() : tileWorkSpace.tileSize();
                     renderer.render(cell, QPointF(x, (float)y / 2), size,
                                     CellRenderer::BottomLeft);
                 }
