@@ -54,7 +54,7 @@ GidMapper::GidMapper()
  * Constructor that initializes the gid mapper using the given \a tilesets.
  */
 GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
-    : mInvalidTile(0)
+    : GidMapper()
 {
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : tilesets) {

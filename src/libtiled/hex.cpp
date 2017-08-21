@@ -33,14 +33,7 @@ Hex::Hex(int x, int y, int z):
     mX(x),
     mY(y),
     mZ(z)
-{ }
-
-Hex::Hex(QPoint point,
-         Map::StaggerIndex staggerIndex,
-         Map::StaggerAxis staggerAxis)
-{
-    setStaggered(point.x(), point.y(), staggerIndex, staggerAxis);
-}
+{}
 
 Hex::Hex(int col, int row,
          Map::StaggerIndex staggerIndex,

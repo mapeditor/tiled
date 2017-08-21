@@ -40,8 +40,7 @@
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
-    : Layer(ObjectGroupType, QString(), 0, 0)
-    , mDrawOrder(TopDownOrder)
+    : ObjectGroup(QString(), 0, 0)
 {
 }
 
