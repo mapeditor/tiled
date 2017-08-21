@@ -92,6 +92,7 @@ private:
 
     int mEdgeIndex;
     int mObjectIndex;
+    bool mOldChangeState;
 };
 
 } // namespace Internal

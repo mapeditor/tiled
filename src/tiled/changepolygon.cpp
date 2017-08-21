@@ -23,6 +23,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 
@@ -83,8 +84,9 @@ SplitPolyline::SplitPolyline(MapDocument *mapDocument,
     : mMapDocument(mapDocument)
     , mFirstPolyline(mapObject)
     , mEdgeIndex(index)
-    , mObjectIndex(-1)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {
+    mObjectIndex = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
     mSecondPolyline = mFirstPolyline->clone();
     mSecondPolyline->resetId();
 
@@ -99,12 +101,11 @@ void SplitPolyline::undo()
     QPolygonF firstPolygon = mFirstPolyline->polygon();
     QPolygonF secondPolygon = mSecondPolyline->polygon();
 
-    firstPolygon.append(secondPolygon);
-    secondPolygon = firstPolygon;
-    mSecondPolyline->setPolygon(secondPolygon);
+    firstPolygon += secondPolygon;
+    mSecondPolyline->setPolygon(firstPolygon);
 
     mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, firstPolygon);
-    mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty);
+    mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty, mOldChangeState);
 }
 
 void SplitPolyline::redo()
