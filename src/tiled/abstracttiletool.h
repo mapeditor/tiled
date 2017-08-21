@@ -82,6 +82,7 @@ protected:
      */
     virtual void updateStatusInfo();
 
+    void setBrushVisible(bool visible);
     bool isBrushVisible() const { return mBrushVisible; }
 
     /**
@@ -115,7 +116,6 @@ protected:
     TileLayer *currentTileLayer() const;
 
 private:
-    void setBrushVisible(bool visible);
     void updateBrushVisibility();
 
     TilePositionMethod mTilePositionMethod;

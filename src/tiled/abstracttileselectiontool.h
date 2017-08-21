@@ -43,7 +43,16 @@ public:
                               const QKeySequence &shortcut,
                               QObject *parent = nullptr);
 
-    void mouseMoved(const QPointF &pos,Qt::KeyboardModifiers modifiers) override;
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
+    void keyPressed(QKeyEvent *event) override;
+
+    // Overridden to not show/hide the BrushItem
+    void mouseEntered() override {}
+    void mouseLeft() override {}
+
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
@@ -68,21 +77,17 @@ protected:
     QRegion selectedRegion() { return mSelectedRegion; }
     void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
 
-    bool moving() { return mMoving; }
+    bool moving() { return mDragModifier || mPreviewLayer; }
 
 private:
-    void activate();
-    void deactivate();
-
     void refreshCursor();
 
-    void cut();
-    void paste();
+    void floatSelection(bool duplicate);
+    void anchorSelection();
 
-    bool mMoving;
+    bool mDragModifier;
     bool mDragging;
     bool mMousePressed;
-    bool mDuplicate;
 
     QPoint mMouseStart;
     QPoint mDragStart;

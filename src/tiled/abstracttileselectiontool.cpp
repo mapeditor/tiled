@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QKeyEvent>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -39,10 +40,9 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
                                                      const QKeySequence &shortcut,
                                                      QObject *parent)
     : AbstractTileTool(name, icon, shortcut, parent)
-    , mMoving(false)
+    , mDragModifier(false)
     , mDragging(false)
     , mMousePressed(false)
-    , mDuplicate(false)
     , mSelectionMode(Replace)
     , mDefaultMode(Replace)
 {
@@ -86,6 +86,35 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(const QString &name,
     languageChanged();
 }
 
+void AbstractTileSelectionTool::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    setBrushVisible(true);
+}
+
+void AbstractTileSelectionTool::deactivate(MapScene *scene)
+{
+    if (mPreviewLayer)
+        anchorSelection();
+
+    AbstractTileTool::deactivate(scene);
+}
+
+void AbstractTileSelectionTool::keyPressed(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (mPreviewLayer) {
+            anchorSelection();
+            return;
+        }
+        break;
+    }
+
+    AbstractTileTool::keyPressed(event);
+}
+
 void AbstractTileSelectionTool::tilePositionChanged(const QPoint &pos)
 {
     if (mDragging) {
@@ -109,9 +138,9 @@ void AbstractTileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModif
         const int dragDistance = (mMouseStart - screenPos).manhattanLength();
 
         if (dragDistance >= QApplication::startDragDistance() / 2) {
-            if (!mPreviewLayer) {
-                cut();
-            }
+            if (!mPreviewLayer)
+                floatSelection(modifiers & Qt::ControlModifier);
+
             mDragging = true;
             tilePositionChanged(tilePosition());
         }
@@ -131,6 +160,31 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     MapDocument *document = mapDocument();
 
+    if (mDragModifier || mPreviewLayer) {
+        if (button == Qt::LeftButton) {
+            bool startDrag = event->modifiers() & Qt::AltModifier;
+
+            if (!startDrag && mPreviewLayer) {
+                if (brushItem()->tileRegion().contains(tilePosition()))
+                    startDrag = true;
+                else
+                    anchorSelection();
+            }
+
+            if (startDrag) {
+                mMouseStart = event->screenPos();
+                mDragStart = tilePosition();
+                mMousePressed = true;
+                mLastUpdate = tilePosition();
+            }
+        }
+
+        if (button == Qt::RightButton)
+            anchorSelection();
+
+        return;
+    }
+
     QRegion selection;
 
     // Left button modifies selection, right button clears selection
@@ -143,16 +197,9 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         case Subtract:  selection -= mSelectedRegion; break;
         case Intersect: selection &= mSelectedRegion; break;
         }
-
-        if (mMoving && brushItem()->tileRegion().contains(tilePosition())) {
-            mMouseStart = event->screenPos();
-            mDragStart = tilePosition();
-            mMousePressed = true;
-            mLastUpdate = tilePosition();
-        }
     }
 
-    if (selection != document->selectedArea() && !mMoving) {
+    if (selection != document->selectedArea()) {
         QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
         document->undoStack()->push(cmd);
     }
@@ -163,12 +210,9 @@ void AbstractTileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
-    if (mMoving) {
-        mDragging = false;
-        mMousePressed = false;
-        refreshCursor();
-        paste();
-    }
+    mDragging = false;
+    mMousePressed = false;
+    refreshCursor();
 }
 
 void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -182,25 +226,17 @@ void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers
     else
         mSelectionMode = mDefaultMode;
 
-    if (modifiers == (Qt::ControlModifier | Qt::AltModifier)) {
-        mMoving = true;
-        activate();
-    } else if (modifiers == (Qt::ControlModifier | Qt::AltModifier | Qt::ShiftModifier)) {
-        mMoving = true;
-        mDuplicate = true;
-        activate();
-    } else if (mMoving) {
-        mMoving = false;
-        mDuplicate = false;
-        deactivate();
-    }
-
     switch (mSelectionMode) {
     case Replace:   mReplace->setChecked(true); break;
     case Add:       mAdd->setChecked(true); break;
     case Subtract:  mSubtract->setChecked(true); break;
     case Intersect: mIntersect->setChecked(true); break;
     }
+
+    mDragModifier = modifiers == Qt::AltModifier ||
+                    modifiers == (Qt::AltModifier | Qt::ControlModifier);
+
+    refreshCursor();
 }
 
 void AbstractTileSelectionTool::languageChanged()
@@ -219,34 +255,29 @@ void AbstractTileSelectionTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mIntersect);
 }
 
-void AbstractTileSelectionTool::activate()
-{
-    brushItem()->setTileRegion(mapDocument()->selectedArea());
-    brushItem()->setVisible(true);
-    mTargetLayer = mapDocument()->currentLayer()->asTileLayer();
-}
-
-void AbstractTileSelectionTool::deactivate()
-{
-    paste();
-    brushItem()->setTileRegion(QRegion());
-}
-
 void AbstractTileSelectionTool::refreshCursor()
 {
     Qt::CursorShape cursorShape = Qt::ArrowCursor;
 
-    if (brushItem()->tileRegion().contains(tilePosition()) || mDragging)
-        cursorShape = Qt::SizeAllCursor;
+    if (mDragModifier) {
+        if (mPreviewLayer || !mapDocument()->selectedArea().isEmpty())
+            cursorShape = Qt::SizeAllCursor;
+    } else if (mPreviewLayer) {
+        if (mDragging || brushItem()->tileRegion().contains(tilePosition()))
+            cursorShape = Qt::SizeAllCursor;
+    }
 
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);
 }
 
-void AbstractTileSelectionTool::cut()
+void AbstractTileSelectionTool::floatSelection(bool duplicate)
 {
     const QRegion &selectedArea = mapDocument()->selectedArea();
+    if (selectedArea.isEmpty())
+        return;
 
+    mTargetLayer = mapDocument()->currentLayer()->asTileLayer();
     mPreviewLayer = SharedTileLayer(mTargetLayer->copy(selectedArea.translated(-mTargetLayer->position())));
     mPreviewLayer->setPosition(selectedArea.boundingRect().topLeft());
 
@@ -256,7 +287,7 @@ void AbstractTileSelectionTool::cut()
 
     stack->beginMacro(tr("Move Selection"));
 
-    if (!mDuplicate)
+    if (!duplicate)
         stack->push(new EraseTiles(mapDocument(), mTargetLayer, selectedArea));
 
     stack->push(new ChangeSelectedArea(mapDocument(), QRegion()));
@@ -264,7 +295,7 @@ void AbstractTileSelectionTool::cut()
     stack->endMacro();
 }
 
-void AbstractTileSelectionTool::paste()
+void AbstractTileSelectionTool::anchorSelection()
 {
     const TileLayer *preview = mPreviewLayer.data();
     if (!preview || !mTargetLayer)
