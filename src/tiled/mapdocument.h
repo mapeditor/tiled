@@ -127,6 +127,13 @@ public:
      */
     void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
 
+    /**
+     * Resize current layer to the given \a size, while at the same time shifting
+     * the contents by \a offset. If \a removeObjects is true then all objects
+     * which are outside the layer will be removed.
+     */
+    void resizeLayer(const QSize &size, const QPoint &offset, bool removeObjects);
+
     void autocropMap();
 
     /**
@@ -305,6 +312,7 @@ private slots:
 private:
     void deselectObjects(const QList<MapObject*> &objects);
     void moveObjectIndex(const MapObject *object, int count);
+	void resizeLayer(Layer* layer, const QSize &size, const QPoint &offset, bool removeObjects);
 
     QString mLastExportFileName;
 

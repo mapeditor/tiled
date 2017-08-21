@@ -292,10 +292,84 @@ static bool visibleIn(const QRectF &area, MapObject *object,
     return intersects(area, boundingRect);
 }
 
+void MapDocument::resizeLayer(const QSize &size, const QPoint &offset, bool removeObjects)
+{
+	resizeLayer(currentLayer(), size, offset, removeObjects);
+}
+
+void MapDocument::resizeLayer(Layer* layer, const QSize &size, const QPoint &offset, bool removeObjects)
+{
+	int width = map()->width();
+	int height = map()->height();
+	int tileWidth = map()->tileWidth();
+	int tileHeight = map()->tileHeight();
+
+	TileLayer* tileLayer = layer->asTileLayer();
+	if (tileLayer) {
+		width = tileLayer->width();
+		height = tileLayer->height();
+		tileWidth = tileLayer->tileWidth();
+		tileHeight = tileLayer->tileHeight();
+	}
+
+	WorkSpace workSpace(width, height, tileWidth, tileHeight);
+
+    const QRegion movedSelection = mSelectedArea.translated(offset);
+    const QRect newArea = QRect(-offset, size);
+    const QRectF visibleArea = mRenderer->boundingRect(newArea, workSpace);
+
+    const QPointF origin = mRenderer->tileToPixelCoords(QPointF(), workSpace);
+    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset, workSpace);
+    const QPointF pixelOffset = origin - newOrigin;
+
+    // Resize the map and each layer
+    QUndoCommand *command = new QUndoCommand(tr("Resize Layer"));
+
+	switch (layer->layerType()) {
+	case Layer::TileLayerType: {
+		TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+		new ResizeTileLayer(this, tileLayer, size, offset, command);
+		break;
+	}
+	case Layer::ObjectGroupType: {
+		ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+
+		for (MapObject *o : objectGroup->objects()) {
+			if (removeObjects && !visibleIn(visibleArea, o, mRenderer, this)) {
+				// Remove objects that will fall outside of the map
+				new RemoveMapObject(this, o, command);
+			} else {
+				QPointF oldPos = o->position();
+				QPointF newPos = oldPos + pixelOffset;
+				new MoveMapObject(this, o, newPos, oldPos, command);
+			}
+		}
+		break;
+	}
+	case Layer::ImageLayerType: {
+		// Adjust image layer by changing its offset
+		auto imageLayer = static_cast<ImageLayer*>(layer);
+		new SetLayerOffset(this, layer,
+						   imageLayer->offset() + pixelOffset,
+						   command);
+		break;
+	}
+	case Layer::GroupLayerType: {
+		// Recursion handled by LayerIterator
+		break;
+	}
+	}
+
+    new ChangeSelectedArea(this, movedSelection, command);
+
+    mUndoStack->push(command);
+
+    // TODO: Handle layers that don't match the map size correctly
+}
+
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
-	WorkSpace workSpace;
-	currentWorkSpace(workSpace);
+	WorkSpace workSpace(map()->width(), map()->height(), map()->tileWidth(), map()->tileHeight());
 
     const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
@@ -308,6 +382,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
     // Resize the map and each layer
     QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
 
+	/*
     LayerIterator iterator(mMap);
     while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
@@ -345,6 +420,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool remove
         }
         }
     }
+	*/
 
     new ResizeMap(this, size, command);
     new ChangeSelectedArea(this, movedSelection, command);

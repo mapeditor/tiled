@@ -33,8 +33,10 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapview.h"
+#include "minimaprenderer.h"
 #include "movelayer.h"
 #include "objectgroup.h"
+#include "resizedialog.h"
 #include "tilelayer.h"
 #include "utils.h"
 #include "workspace.h"
@@ -574,8 +576,33 @@ void MapDocumentActionHandler::duplicateLayer()
 
 void MapDocumentActionHandler::resizeLayer()
 {
-    if (mMapDocument)
-        mMapDocument->duplicateLayer();
+    auto mapDocument = qobject_cast<MapDocument*>(mMapDocument);
+    if (!mapDocument)
+        return;
+
+    Map *map = mapDocument->map();
+
+    ResizeDialog resizeDialog(static_cast<QWidget*>(parent()));
+    resizeDialog.setOldSize(map->size());
+
+    // TODO: Look into fixing up the preview for maps that do not use square
+    // tiles, and possibly also staggered maps.
+    if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
+        resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
+            QImage image(size, QImage::Format_ARGB32_Premultiplied);
+            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
+                                                       | MiniMapRenderer::DrawImages
+                                                       | MiniMapRenderer::DrawTiles
+                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            return image;
+        });
+    }
+
+    if (resizeDialog.exec()) {
+        const QSize &newSize = resizeDialog.newSize();
+        const QPoint &offset = resizeDialog.offset();
+		mapDocument->resizeLayer(newSize, offset, resizeDialog.removeObjects());
+    }
 }
 
 void MapDocumentActionHandler::mergeLayerDown()

@@ -1199,8 +1199,8 @@ void MainWindow::resizeMap()
         const QSize &newSize = resizeDialog.newSize();
         const QPoint &offset = resizeDialog.offset();
         if (newSize != map->size() || !offset.isNull())
-            mapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
-    }
+			mapDocument->resizeMap(newSize, offset, resizeDialog.removeObjects());
+	}
 }
 
 void MainWindow::offsetMap()
