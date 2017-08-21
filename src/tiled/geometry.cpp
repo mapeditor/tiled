@@ -123,8 +123,8 @@ QRegion ellipseRegion(int x0, int y0, int x1, int y1)
     stoppingX = twoYSquare*radiusX;
     stoppingY = 0;
     while (stoppingX >= stoppingY) {
-        ret += QRect(x, -y, 1, y * 2);
-        ret += QRect(-x, -y, 1, y * 2);
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
         y++;
         stoppingY += twoXSquare;
         ellipseError += yChange;
@@ -144,8 +144,8 @@ QRegion ellipseRegion(int x0, int y0, int x1, int y1)
     stoppingX = 0;
     stoppingY = twoXSquare * radiusY;
     while (stoppingX <= stoppingY) {
-        ret += QRect(x, -y, 1, y * 2);
-        ret += QRect(-x, -y, 1, y * 2);
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
         x++;
         stoppingX += twoYSquare;
         ellipseError += xChange;

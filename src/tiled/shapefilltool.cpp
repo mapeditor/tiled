@@ -189,7 +189,7 @@ void ShapeFillTool::updateFillOverlay()
 
     switch (mCurrentShape) {
     case Rect:
-        mFillRegion = QRegion(boundingRect, QRegion::Rectangle);
+        mFillRegion = boundingRect;
         break;
     case Circle:
         mFillRegion = ellipseRegion(boundingRect.center().x(),
