@@ -76,7 +76,7 @@ MapObject *CreatePolylineObjectTool::createNewMapObject()
 void CreatePolylineObjectTool::finishNewMapObject()
 {
     if (mNewMapObjectItem->mapObject()->polygon().size() >= 2)
-        CreateObjectTool::finishNewMapObject();
+        CreateMultipointObjectTool::finishNewMapObject();
     else
-        CreateObjectTool::cancelNewMapObject();
+        CreateMultipointObjectTool::cancelNewMapObject();
 }

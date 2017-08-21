@@ -49,9 +49,6 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-signals:
-    void extendingFinished();
-
 protected:
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
                                                Qt::KeyboardModifiers modifiers);
@@ -69,7 +66,6 @@ protected:
     ObjectGroupItem *mObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
     MapObjectItem *mOverlayPolygonItem;
-    bool mExtending;
 };
 
 } // namespace Internal

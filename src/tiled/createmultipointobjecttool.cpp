@@ -31,6 +31,7 @@
 #include "utils.h"
 
 #include <QApplication>
+#include <QKeyEvent>
 #include <QPalette>
 #include <QUndoStack>
 
@@ -40,6 +41,7 @@ using namespace Tiled::Internal;
 CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     : CreateObjectTool(parent)
     , mOverlayPolygonObject(new MapObject)
+    , mExtending(false)
     , mExtendingFirst(false)
     , mOverlayObjectGroup(new ObjectGroup)
 {
@@ -52,6 +54,20 @@ CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
 CreateMultipointObjectTool::~CreateMultipointObjectTool()
 {
     delete mOverlayObjectGroup;
+}
+
+void CreateMultipointObjectTool::keyPressed(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Escape:
+        if (mNewMapObjectItem && mExtending) {
+            finishNewMapObject();
+            return;
+        }
+        break;
+    }
+
+    CreateObjectTool::keyPressed(event);
 }
 
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
@@ -104,6 +120,46 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
                                                                mNewMapObjectItem->mapObject(),
                                                                current));
         }
+    }
+}
+
+void CreateMultipointObjectTool::cancelNewMapObject()
+{
+    if (mExtending) {
+        mExtending = false;
+        mNewMapObjectItem = nullptr;
+
+        delete mOverlayPolygonItem;
+        mOverlayPolygonItem = nullptr;
+
+        emit extendingFinished();
+    } else {
+        CreateObjectTool::cancelNewMapObject();
+    }
+}
+
+void CreateMultipointObjectTool::finishNewMapObject()
+{
+    if (mExtending) {
+        ObjectGroup *objectGroup = currentObjectGroup();
+        if (!objectGroup) {
+            cancelNewMapObject();
+            return;
+        }
+
+        MapObject *newMapObject = mNewMapObjectItem->mapObject();
+
+        mExtending = false;
+        mNewMapObjectItem = nullptr;
+
+        delete mOverlayPolygonItem;
+        mOverlayPolygonItem = nullptr;
+
+        emit extendingFinished();
+
+        mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
+    } else {
+        CreateObjectTool::finishNewMapObject();
     }
 }
 

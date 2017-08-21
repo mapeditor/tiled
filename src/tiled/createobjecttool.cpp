@@ -50,7 +50,6 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
     , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
     , mNewMapObjectItem(nullptr)
     , mOverlayPolygonItem(nullptr)
-    , mExtending(false)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
@@ -88,11 +87,7 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
         break;
     case Qt::Key_Escape:
         if (mNewMapObjectItem) {
-            if (mExtending)
-                finishNewMapObject();
-            else
-                cancelNewMapObject();
-            return;
+            cancelNewMapObject();
         }
         break;
     }
@@ -192,18 +187,8 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
 
 void CreateObjectTool::cancelNewMapObject()
 {
-    if (!mExtending) {
-        MapObject *newMapObject = clearNewMapObjectItem();
-        delete newMapObject;
-    } else {
-        mExtending = false;
-        mNewMapObjectItem = nullptr;
-
-        delete mOverlayPolygonItem;
-        mOverlayPolygonItem = nullptr;
-
-        emit extendingFinished();
-    }
+    MapObject *newMapObject = clearNewMapObjectItem();
+    delete newMapObject;
 }
 
 void CreateObjectTool::finishNewMapObject()
@@ -218,31 +203,21 @@ void CreateObjectTool::finishNewMapObject()
 
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
-    if (!mExtending) {
-        clearNewMapObjectItem();
+    clearNewMapObjectItem();
 
-        auto addObjectCommand = new AddMapObject(mapDocument(),
-                                                 objectGroup,
-                                                 newMapObject);
+    auto addObjectCommand = new AddMapObject(mapDocument(),
+                                             objectGroup,
+                                             newMapObject);
 
-        if (Tileset *tileset = newMapObject->cell().tileset()) {
-            SharedTileset sharedTileset = tileset->sharedPointer();
+    if (Tileset *tileset = newMapObject->cell().tileset()) {
+        SharedTileset sharedTileset = tileset->sharedPointer();
 
-            // Make sure this tileset is part of the map
-            if (!mapDocument()->map()->tilesets().contains(sharedTileset))
-                new AddTileset(mapDocument(), sharedTileset, addObjectCommand);
-        }
-
-        mapDocument()->undoStack()->push(addObjectCommand);
-    } else {
-        mExtending = false;
-        mNewMapObjectItem = nullptr;
-
-        delete mOverlayPolygonItem;
-        mOverlayPolygonItem = nullptr;
-
-        emit extendingFinished();
+        // Make sure this tileset is part of the map
+        if (!mapDocument()->map()->tilesets().contains(sharedTileset))
+            new AddTileset(mapDocument(), sharedTileset, addObjectCommand);
     }
+
+    mapDocument()->undoStack()->push(addObjectCommand);
 
     mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }
