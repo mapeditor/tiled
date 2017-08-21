@@ -64,7 +64,7 @@ private:
 class TogglePolygonPolyline : public QUndoCommand
 {
 public:
-    TogglePolygonPolyline(MapObject *MapObject);
+    TogglePolygonPolyline(MapObject *mapObject);
 
     void undo() override { toggle(); }
     void redo() override { toggle(); }
@@ -73,6 +73,25 @@ private:
     void toggle();
 
     MapObject *mMapObject;
+};
+
+class SplitPolyline : public QUndoCommand
+{
+public:
+    SplitPolyline(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  int edgeIndex);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    MapDocument *mMapDocument;
+    MapObject *mFirstPolyline;
+    MapObject *mSecondPolyline;
+
+    int mEdgeIndex;
+    int mObjectIndex;
 };
 
 } // namespace Internal
