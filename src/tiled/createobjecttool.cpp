@@ -51,7 +51,6 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
     , mNewMapObjectItem(nullptr)
     , mOverlayPolygonItem(nullptr)
     , mExtending(false)
-    , mExtendingFirst(false)
 {
     mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }

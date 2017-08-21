@@ -70,7 +70,6 @@ protected:
     MapObjectItem *mNewMapObjectItem;
     MapObjectItem *mOverlayPolygonItem;
     bool mExtending;
-    bool mExtendingFirst;
 };
 
 } // namespace Internal

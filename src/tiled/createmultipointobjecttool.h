@@ -42,6 +42,7 @@ protected:
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
     MapObject *mOverlayPolygonObject;
+    bool mExtendingFirst;
 
 private:
     ObjectGroup *mOverlayObjectGroup;

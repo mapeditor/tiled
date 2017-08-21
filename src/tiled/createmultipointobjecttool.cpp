@@ -40,6 +40,7 @@ using namespace Tiled::Internal;
 CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     : CreateObjectTool(parent)
     , mOverlayPolygonObject(new MapObject)
+    , mExtendingFirst(false)
     , mOverlayObjectGroup(new ObjectGroup)
 {
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
@@ -81,8 +82,10 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
         QPolygonF current = mNewMapObjectItem->mapObject()->polygon();
         QPolygonF next = mOverlayPolygonObject->polygon();
 
-        // If the last position is still the same, ignore the click
-        if (next.last() == current.last() && !mExtending)
+        if (mExtendingFirst && next.first() == current.first())
+            return;
+
+        if (!mExtendingFirst && next.last() == current.last())
             return;
 
         // Assign current overlay polygon to the new object
@@ -96,10 +99,11 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
 
         mOverlayPolygonItem->setPolygon(next);
 
-        if (mExtending)
+        if (mExtending) {
             mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
                                                                mNewMapObjectItem->mapObject(),
                                                                current));
+        }
     }
 }
 

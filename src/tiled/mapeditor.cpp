@@ -679,13 +679,13 @@ void MapEditor::setWangFill(bool value)
 
 void MapEditor::extend(MapObjectItem *mapObjectItem, bool extendingFirst)
 {
-    setSelectedTool(mPolylineObjectsTool);
+    mToolManager->selectTool(mPolylineObjectsTool);
     mPolylineObjectsTool->extend(mapObjectItem, extendingFirst);
 }
 
 void MapEditor::extendingFinished()
 {
-    setSelectedTool(mEditPolygonTool);
+    mToolManager->selectTool(mEditPolygonTool);
 }
 
 /**
