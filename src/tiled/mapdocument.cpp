@@ -134,8 +134,15 @@ void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
     if (mSelectedObjects.size() != 1)
         return;
 
-    auto model = ObjectTemplateModel::instance();
-    model->saveObjectToDocument(mSelectedObjects.first(), name, groupIndex);
+    ObjectTemplateModel* model = ObjectTemplateModel::instance();
+    MapObject *object = mSelectedObjects.first();
+
+    if (ObjectTemplate *objectTemplate = model->saveObjectToDocument(object, name, groupIndex)) {
+        // Convert the saved object into an instance and clear the changed properties flags
+        object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+        object->setChangedProperties(0);
+        emit objectsChanged(mSelectedObjects);
+    }
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
