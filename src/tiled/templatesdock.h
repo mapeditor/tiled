@@ -61,7 +61,6 @@ signals:
 
 private slots:
     void setSelectedTool(AbstractTool*tool);
-    void newTemplateGroup();
     void openTemplateGroup();
     void setTemplate(ObjectTemplate *objectTemplate);
 

@@ -42,7 +42,7 @@ NewTemplateDialog::NewTemplateDialog(const QString &objectName, QWidget *parent)
     mUi->templateName->setText(objectName);
 
     connect(mUi->createGroupButton, &QPushButton::pressed,
-            this, &NewTemplateDialog::newTemplateGroup);
+            this, &NewTemplateDialog::createGroup);
 
     auto model = ObjectTemplateModel::instance();
     mUi->groupsComboBox->setModel(model);
@@ -78,9 +78,13 @@ void NewTemplateDialog::updateOkButton()
     okButton->setDisabled(noTemplateName || index == -1);
 }
 
-/**
- * This code is duplicated from the templates dock.
- */
+void NewTemplateDialog::createGroup()
+{
+    newTemplateGroup();
+    mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
+    updateOkButton();
+}
+
 void NewTemplateDialog::newTemplateGroup()
 {
     FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
@@ -91,7 +95,7 @@ void NewTemplateDialog::newTemplateGroup()
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
     suggestedFileName += tr("/untitled.ttx");
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+    QString fileName = QFileDialog::getSaveFileName(nullptr, tr("Save File"),
                                                     suggestedFileName,
                                                     filter,
                                                     &selectedFilter);
@@ -110,7 +114,7 @@ void NewTemplateDialog::newTemplateGroup()
 
     QString error;
     if (!templateGroupDocument->save(fileName, &error)) {
-        QMessageBox::critical(this, tr("Error Creating Template Group"), error);
+        QMessageBox::critical(nullptr, tr("Error Creating Template Group"), error);
         return;
     }
 
@@ -119,8 +123,4 @@ void NewTemplateDialog::newTemplateGroup()
 
     prefs->setLastPath(Preferences::TemplateDocumentsFile,
                        QFileInfo(fileName).path());
-
-    mUi->groupsComboBox->setCurrentIndex(mUi->groupsComboBox->count() - 1);
-
-    updateOkButton();
 }

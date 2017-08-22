@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "newtemplatedialog.h"
 #include "objectgroup.h"
 #include "objecttemplatemodel.h"
 #include "objectselectiontool.h"
@@ -75,7 +76,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     Utils::setThemeIcon(mNewTemplateGroup, "document-new");
-    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
+    connect(mNewTemplateGroup, &QAction::triggered, this, [](){ NewTemplateDialog::newTemplateGroup(); });
 
     mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
@@ -200,46 +201,6 @@ void TemplatesDock::setSelectedTool(AbstractTool *tool)
     mMapScene->disableSelectedTool();
     mMapScene->setSelectedTool(tool);
     mMapScene->enableSelectedTool();
-}
-
-void TemplatesDock::newTemplateGroup()
-{
-    FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
-    QString filter = helper.filter();
-    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
-
-    Preferences *prefs = Preferences::instance();
-    QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    suggestedFileName += tr("/untitled.ttx");
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                    suggestedFileName,
-                                                    filter,
-                                                    &selectedFilter);
-
-    if (fileName.isEmpty())
-        return;
-
-    auto templateGroup = new TemplateGroup();
-    templateGroup->setName(QFileInfo(fileName).baseName());
-    templateGroup->setFileName(fileName);
-    QScopedPointer<TemplateGroupDocument>
-        templateGroupDocument(new TemplateGroupDocument(templateGroup));
-
-    TemplateGroupFormat *format = helper.formatByNameFilter(selectedFilter);
-    templateGroup->setFormat(format);
-
-    QString error;
-    if (!templateGroupDocument->save(fileName, &error)) {
-        QMessageBox::critical(this, tr("Error Creating Template Group"), error);
-        return;
-    }
-
-    auto model = ObjectTemplateModel::instance();
-    model->addNewDocument(templateGroupDocument.take());
-
-    prefs->setLastPath(Preferences::TemplateDocumentsFile,
-                       QFileInfo(fileName).path());
 }
 
 void TemplatesDock::openTemplateGroup()
