@@ -141,6 +141,7 @@ void CommandDialog::updateWidgets(const QModelIndex &current, const QModelIndex 
     mUi->argumentsEdit->setEnabled(enable);
     mUi->workingDirectoryEdit->setEnabled(enable);
     mUi->exBrowseButton->setEnabled(enable);
+    mUi->wdBrowseButton->setEnabled(enable);
     mUi->keySequenceEdit->setEnabled(enable);
     mUi->clearButton->setEnabled(enable);
     mUi->outputBox->setEnabled(enable);
