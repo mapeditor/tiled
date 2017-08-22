@@ -30,6 +30,7 @@
 
 #include "compression.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tileset.h"
 
 using namespace Tiled;
@@ -152,18 +153,10 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    int startX = 0;
-    int startY = 0;
-    int endX = tileLayer.width() - 1;
-    int endY = tileLayer.height() - 1;
-
-    if (tileLayer.map()->infinite()) {
-        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-        startX = bounds.left();
-        startY = bounds.top();
-        endX = bounds.right();
-        endY = bounds.bottom();
-    }
+    const int startX = 0;
+    const int startY = 0;
+    const int endX = tileLayer.width() - 1;
+    const int endY = tileLayer.height() - 1;
 
     QByteArray tileData;
     tileData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
@@ -186,10 +179,44 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     return tileData.toBase64();
 }
 
+QByteArray GidMapper::encodeChunkData(const TileLayer &tileLayer,
+                                      int chunkStartX,
+                                      int chunkStartY,
+                                      Map::LayerDataFormat format) const
+{
+    Q_ASSERT(format != Map::XML);
+    Q_ASSERT(format != Map::CSV);
+
+    int startX = chunkStartX;
+    int startY = chunkStartY;
+    int endX = chunkStartX + CHUNK_SIZE - 1;
+    int endY = chunkStartY + CHUNK_SIZE - 1;
+
+
+    QByteArray chunkData;
+    chunkData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
+
+    for (int y = startY; y <= endY; ++y) {
+        for (int x = startX; x <= endX; ++x) {
+            const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
+            chunkData.append((char) (gid));
+            chunkData.append((char) (gid >> 8));
+            chunkData.append((char) (gid >> 16));
+            chunkData.append((char) (gid >> 24));
+        }
+    }
+
+    if (format == Map::Base64Gzip)
+        chunkData = compress(chunkData, Gzip);
+    else if (format == Map::Base64Zlib)
+        chunkData = compress(chunkData, Zlib);
+
+    return chunkData.toBase64();
+}
+
 GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
                                                   const QByteArray &layerData,
-                                                  Map::LayerDataFormat format,
-                                                  int startX, int startY) const
+                                                  Map::LayerDataFormat format) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
@@ -220,10 +247,56 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
             return isEmpty() ? TileButNoTilesets : InvalidTile;
         }
 
-        tileLayer.setCell(x + startX, y + startY, result);
+        tileLayer.setCell(x, y, result);
 
         x++;
         if (x == tileLayer.width()) {
+            x = 0;
+            y++;
+        }
+    }
+
+    return NoError;
+}
+
+GidMapper::DecodeError GidMapper::decodeChunkData(TileLayer &tileLayer,
+                                                  const QByteArray &layerData,
+                                                  Map::LayerDataFormat format,
+                                                  int startX, int startY) const
+{
+    Q_ASSERT(format != Map::XML);
+    Q_ASSERT(format != Map::CSV);
+
+    QByteArray decodedData = QByteArray::fromBase64(layerData);
+    const int size = (CHUNK_SIZE * CHUNK_SIZE) * 4;
+
+    if (format == Map::Base64Gzip || format == Map::Base64Zlib)
+        decodedData = decompress(decodedData, size);
+
+    if (size != decodedData.length())
+        return CorruptLayerData;
+
+    const unsigned char *data = reinterpret_cast<const unsigned char*>(decodedData.constData());
+    int x = 0;
+    int y = 0;
+    bool ok;
+
+    for (int i = 0; i < size - 3; i += 4) {
+        const unsigned gid = data[i] |
+                             data[i + 1] << 8 |
+                             data[i + 2] << 16 |
+                             data[i + 3] << 24;
+
+        const Cell result = gidToCell(gid, ok);
+        if (!ok) {
+            mInvalidTile = gid;
+            return isEmpty() ? TileButNoTilesets : InvalidTile;
+        }
+
+        tileLayer.setCell(x + startX, y + startY, result);
+
+        x++;
+        if (x == CHUNK_SIZE) {
             x = 0;
             y++;
         }

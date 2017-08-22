@@ -98,7 +98,7 @@ private:
     Layer *tryReadLayer();
 
     TileLayer *readTileLayer();
-    void readTileLayerData(TileLayer &tileLayer, const int startX, const int startY);
+    void readTileLayerData(TileLayer &tileLayer);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
                                Map::LayerDataFormat format,
@@ -773,8 +773,6 @@ TileLayer *MapReaderPrivate::readTileLayer()
     const int y = atts.value(QLatin1String("y")).toInt();
     const int width = atts.value(QLatin1String("width")).toInt();
     const int height = atts.value(QLatin1String("height")).toInt();
-    const int startX = atts.value(QLatin1String("startx")).toInt();
-    const int startY = atts.value(QLatin1String("starty")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(*tileLayer, atts);
@@ -783,7 +781,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
-            readTileLayerData(*tileLayer, startX, startY);
+            readTileLayerData(*tileLayer);
         else
             readUnknownElement();
     }
@@ -791,9 +789,7 @@ TileLayer *MapReaderPrivate::readTileLayer()
     return tileLayer;
 }
 
-void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
-                                         const int startX,
-                                         const int startY)
+void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
 
@@ -825,42 +821,96 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer,
 
     mMap->setLayerDataFormat(layerDataFormat);
 
-    int x = 0;
-    int y = 0;
+    if (mMap->infinite()) {
+        while (xml.readNext() != QXmlStreamReader::Invalid) {
+            if (xml.isEndElement()) {
+                break;
+            } else if (xml.isStartElement()) {
+                if (xml.name() == QLatin1String("chunk")) {
+                    const QXmlStreamAttributes atts = xml.attributes();
+                    int startX = atts.value(QLatin1String("startx")).toInt();
+                    int startY = atts.value(QLatin1String("starty")).toInt();
 
-    while (xml.readNext() != QXmlStreamReader::Invalid) {
-        if (xml.isEndElement()) {
-            break;
-        } else if (xml.isStartElement()) {
-            if (xml.name() == QLatin1String("tile")) {
-                if (y >= tileLayer.height()) {
-                    xml.raiseError(tr("Too many <tile> elements"));
-                    continue;
+                    int x = 0;
+                    int y = 0;
+
+                    while (xml.readNext() != QXmlStreamReader::Invalid) {
+                        if (xml.isEndElement()) {
+                            break;
+                        } else if (xml.isStartElement()) {
+                            if (xml.name() == QLatin1String("tile")) {
+                                if (y >= CHUNK_SIZE) {
+                                    xml.raiseError(tr("Too many <tile> elements"));
+                                    continue;
+                                }
+
+                                const QXmlStreamAttributes atts = xml.attributes();
+                                unsigned gid = atts.value(QLatin1String("gid")).toUInt();
+                                tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
+
+                                x++;
+                                if (x >= CHUNK_SIZE) {
+                                    x = 0;
+                                    y++;
+                                }
+
+                                xml.skipCurrentElement();
+                            } else {
+                                readUnknownElement();
+                            }
+                        } else if (xml.isCharacters() && !xml.isWhitespace()) {
+                            if (encoding == QLatin1String("base64")) {
+                                decodeBinaryLayerData(tileLayer,
+                                                      xml.text().toLatin1(),
+                                                      layerDataFormat,
+                                                      startX,
+                                                      startY);
+                            } else if (encoding == QLatin1String("csv")) {
+                                decodeCSVLayerData(tileLayer, xml.text(), startX, startY);
+                            }
+                        }
+                    }
                 }
-
-                const QXmlStreamAttributes atts = xml.attributes();
-                unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-                tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
-
-                x++;
-                if (x >= tileLayer.width()) {
-                    x = 0;
-                    y++;
-                }
-
-                xml.skipCurrentElement();
-            } else {
-                readUnknownElement();
             }
-        } else if (xml.isCharacters() && !xml.isWhitespace()) {
-            if (encoding == QLatin1String("base64")) {
-                decodeBinaryLayerData(tileLayer,
-                                      xml.text().toLatin1(),
-                                      layerDataFormat,
-                                      startX,
-                                      startY);
-            } else if (encoding == QLatin1String("csv")) {
-                decodeCSVLayerData(tileLayer, xml.text(), startX, startY);
+        }
+    } else {
+        int x = 0;
+        int y = 0;
+
+        while (xml.readNext() != QXmlStreamReader::Invalid) {
+            if (xml.isEndElement()) {
+                break;
+            } else if (xml.isStartElement()) {
+                if (xml.name() == QLatin1String("tile")) {
+                    if (y >= tileLayer.height()) {
+                        xml.raiseError(tr("Too many <tile> elements"));
+                        continue;
+                    }
+
+                    const QXmlStreamAttributes atts = xml.attributes();
+                    unsigned gid = atts.value(QLatin1String("gid")).toUInt();
+                    tileLayer.setCell(x, y, cellForGid(gid));
+
+                    x++;
+                    if (x >= tileLayer.width()) {
+                        x = 0;
+                        y++;
+                    }
+
+                    xml.skipCurrentElement();
+                } else {
+                    readUnknownElement();
+                }
+            } else if (xml.isCharacters() && !xml.isWhitespace()) {
+                if (encoding == QLatin1String("base64")) {
+                    decodeBinaryLayerData(tileLayer,
+                                          xml.text().toLatin1(),
+                                          layerDataFormat,
+                                          0,
+                                          0);
+                } else if (encoding == QLatin1String("csv")) {
+                    decodeCSVLayerData(tileLayer, xml.text(), 0, 0);
+                }
             }
         }
     }
@@ -872,7 +922,12 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
                                              const int startX,
                                              const int startY)
 {
-    GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer, data, format, startX, startY);
+    GidMapper::DecodeError error;
+
+    if (mMap->infinite())
+        error = mGidMapper.decodeChunkData(tileLayer, data, format, startX, startY);
+    else
+        error = mGidMapper.decodeLayerData(tileLayer, data, format);
 
     switch (error) {
     case GidMapper::CorruptLayerData:
@@ -897,16 +952,22 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
     QString trimText = text.trimmed().toString();
     QStringList tiles = trimText.split(QLatin1Char(','));
 
-    if (tiles.length() != tileLayer.width() * tileLayer.height()) {
+    int lengthCheck = (mMap->infinite()) ? CHUNK_SIZE * CHUNK_SIZE :
+                                           tileLayer.width() * tileLayer.height();
+
+    if (tiles.length() != lengthCheck) {
         xml.raiseError(tr("Corrupt layer data for layer '%1'")
                        .arg(tileLayer.name()));
         return;
     }
 
-    for (int y = 0; y < tileLayer.height(); y++) {
-        for (int x = 0; x < tileLayer.width(); x++) {
+    int width = (mMap->infinite()) ? CHUNK_SIZE : tileLayer.width();
+    int height = (mMap->infinite()) ? CHUNK_SIZE : tileLayer.height();
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             bool conversionOk;
-            const unsigned gid = tiles.at(y * tileLayer.width() + x)
+            const unsigned gid = tiles.at(y * width + x)
                     .toUInt(&conversionOk);
             if (!conversionOk) {
                 xml.raiseError(
@@ -914,6 +975,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                                .arg(x + 1).arg(y + 1).arg(tileLayer.name()));
                 return;
             }
+
             tileLayer.setCell(x + startX, y + startY, cellForGid(gid));
         }
     }

@@ -41,6 +41,7 @@
 #include "tidmapper.h"
 #include "savefile.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "terrain.h"
@@ -648,41 +649,105 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
         startX = bounds.left();
         startY = bounds.top();
-        endX = bounds.right();
-        endY = bounds.bottom();
-    }
+        endX = bounds.right() + 1;
+        endY = bounds.bottom() + 1;
 
-    if (mLayerDataFormat == Map::XML) {
-        for (int y = startY; y <= endY; ++y) {
-            for (int x = startX; x <= endX; ++x) {
-                const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
-                w.writeStartElement(QLatin1String("tile"));
-                w.writeAttribute(QLatin1String("gid"), QString::number(gid));
-                w.writeEndElement();
+        int chunkStartX = startX;
+        int chunkStartY = startY;
+        int resetX = chunkStartX;
+
+        startX = (startX < 0) ? (startX + 1) / CHUNK_SIZE - 1 : startX / CHUNK_SIZE;
+        startY = (startY < 0) ? (startY + 1) / CHUNK_SIZE - 1 : startY / CHUNK_SIZE;
+        endX = (endX < 0) ? (endX + 1) / CHUNK_SIZE - 1 : endX / CHUNK_SIZE;
+        endY = (endY < 0) ? (endY + 1) / CHUNK_SIZE - 1 : endY / CHUNK_SIZE;
+
+        for (int y = startY; y < endY; ++y) {
+            for (int x = startX; x < endX; ++x) {
+                if (tileLayer.findChunk(chunkStartX, chunkStartY)) {
+                    w.writeStartElement(QLatin1String("chunk"));
+                    w.writeAttribute(QLatin1String("startx"), QString::number(chunkStartX));
+                    w.writeAttribute(QLatin1String("starty"), QString::number(chunkStartY));
+
+                    if (mLayerDataFormat == Map::XML) {
+                        for (int y1 = 0; y1 < CHUNK_SIZE; y1++) {
+                            for (int x1 = 0; x1 < CHUNK_SIZE; x1++) {
+                                const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(chunkStartX + x1,
+                                                                                           chunkStartY + y1));
+                                w.writeStartElement(QLatin1String("tile"));
+                                w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+                                w.writeEndElement();
+                            }
+                        }
+                    } else if (mLayerDataFormat == Map::CSV) {
+                        QString chunkData;
+
+                        for (int y1 = 0; y1 < CHUNK_SIZE; y1++) {
+                            for (int x1 = 0; x1 < CHUNK_SIZE; x1++) {
+                                const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(chunkStartX + x1,
+                                                                                           chunkStartY + y1));
+                                chunkData.append(QString::number(gid));
+                                if (x1 != CHUNK_SIZE - 1 || y1 != CHUNK_SIZE - 1)
+                                    chunkData.append(QLatin1String(","));
+                            }
+                            chunkData.append(QLatin1String("\n"));
+                        }
+
+                        w.writeCharacters(QLatin1String("\n"));
+                        w.writeCharacters(chunkData);
+                    } else {
+                        QByteArray chunkData = mGidMapper.encodeChunkData(tileLayer,
+                                                                          chunkStartX,
+                                                                          chunkStartY,
+                                                                          mLayerDataFormat);
+
+                        w.writeCharacters(QLatin1String("\n   "));
+                        w.writeCharacters(QString::fromLatin1(chunkData));
+                        w.writeCharacters(QLatin1String("\n  "));
+                    }
+
+                    w.writeEndElement(); // </chunk>
+                }
+
+                chunkStartX += 16;
             }
-        }
-    } else if (mLayerDataFormat == Map::CSV) {
-        QString tileData;
 
-        for (int y = startY; y <= endY; ++y) {
-            for (int x = startX; x <= endX; ++x) {
-                const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
-                tileData.append(QString::number(gid));
-                if (x != endX || y != endY)
-                    tileData.append(QLatin1String(","));
-            }
-            tileData.append(QLatin1String("\n"));
+            chunkStartX = resetX;
+            chunkStartY += 16;
         }
-
-        w.writeCharacters(QLatin1String("\n"));
-        w.writeCharacters(tileData);
     } else {
-        QByteArray tileData = mGidMapper.encodeLayerData(tileLayer,
-                                                         mLayerDataFormat);
 
-        w.writeCharacters(QLatin1String("\n   "));
-        w.writeCharacters(QString::fromLatin1(tileData));
-        w.writeCharacters(QLatin1String("\n  "));
+        if (mLayerDataFormat == Map::XML) {
+            for (int y = startY; y <= endY; ++y) {
+                for (int x = startX; x <= endX; ++x) {
+                    const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
+                    w.writeStartElement(QLatin1String("tile"));
+                    w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+                    w.writeEndElement();
+                }
+            }
+        } else if (mLayerDataFormat == Map::CSV) {
+            QString tileData;
+
+            for (int y = startY; y <= endY; ++y) {
+                for (int x = startX; x <= endX; ++x) {
+                    const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
+                    tileData.append(QString::number(gid));
+                    if (x != endX || y != endY)
+                        tileData.append(QLatin1String(","));
+                }
+                tileData.append(QLatin1String("\n"));
+            }
+
+            w.writeCharacters(QLatin1String("\n"));
+            w.writeCharacters(tileData);
+        } else {
+            QByteArray tileData = mGidMapper.encodeLayerData(tileLayer,
+                                                             mLayerDataFormat);
+
+            w.writeCharacters(QLatin1String("\n   "));
+            w.writeCharacters(QString::fromLatin1(tileData));
+            w.writeCharacters(QLatin1String("\n  "));
+        }
     }
 
     w.writeEndElement(); // </data>
@@ -708,27 +773,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         int width = tileLayer.width();
         int height = tileLayer.height();
 
-
-        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-
-        bool infinite = tileLayer.map()->infinite();
-
-        if (infinite) {
-            width = bounds.width();
-            height = bounds.height();
-        }
-
         w.writeAttribute(QLatin1String("width"),
                          QString::number(width));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(height));
 
-        if (infinite) {
-            w.writeAttribute(QLatin1String("startx"),
-                             QString::number(bounds.left()));
-            w.writeAttribute(QLatin1String("starty"),
-                             QString::number(bounds.top()));
-        }
     }
 
     if (!layer.isVisible())

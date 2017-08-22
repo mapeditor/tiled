@@ -54,6 +54,11 @@ public:
     QByteArray encodeLayerData(const TileLayer &tileLayer,
                                Map::LayerDataFormat format) const;
 
+    QByteArray encodeChunkData(const TileLayer &tileLayer,
+                               int chunkStartX,
+                               int chunkStartY,
+                               Map::LayerDataFormat format) const;
+
     enum DecodeError {
         NoError = 0,
         CorruptLayerData,
@@ -63,8 +68,13 @@ public:
 
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
+                                Map::LayerDataFormat format) const;
+
+    DecodeError decodeChunkData(TileLayer &tileLayer,
+                                const QByteArray &layerData,
                                 Map::LayerDataFormat format,
-                                int startX, int startY) const;
+                                int startX,
+                                int startY) const;
 
     unsigned invalidTile() const;
 
