@@ -16,10 +16,9 @@ It is located on the main toolbar to the right of the redo button.
 Clicking on it will run the default command (the first command in the
 command list). Clicking the arrow next to it will bring down a menu that
 allows you to run any command you have set up, as well as an option to
-open the Edit Commands dialog.
+open the Edit Commands dialog. You can also find all the commands in the File menu.
 
-You can press F5 as a shortcut to clicking the button to run the default
-command.
+Apart from this, you can setup custom keyboard shortcuts for each command and use those key sequences to execute the command directly.
 
 Editing Commands
 ----------------
@@ -29,8 +28,7 @@ several properties:
 
 -  **Name**: The name of the command as it will be shown in the drop
    down list, so you can easily identify it.
--  **Command**: The actual shell command to execute. This usually starts
-   with an executable program followed by arguments. You can use the
+-  **Executable**: The executable for the actual shell command to execute. You can either write your own executable or browse your own executable in case it's not in the system path. You can use the
    following variables:
 
    -  ``%mapfile`` is replaced with the current maps full path.
@@ -43,13 +41,22 @@ several properties:
    -  ``%layername`` is replaced with the name of the currently selected
       layer. (since Tiled 0.17)
 
+-  **Arguments**: The arguments for the actual shell command to execute. You can use the same magic variables as used in the Executable.
+
+-  **Working Directory**: The working directory of the shell command to be executed. You can either give path to some custom working directory or browse one. You can use the same magic variables as used in Executable and in addition to them you can also use:
+
+   -  ``%executablepath`` is replaced with the path to the Executable given.
+
+-  **Shortcut**: A custom key sequence to trigger the command. You can use 'Clear' to reset the shortcut.
+
+-  **Output in Debug Console**: If this is enabled, then the output (stdout and stderr) of this command will be displayed in the Debug Console. You can find Tiled's Debug Console in ``View > Views and Toolbars > Debug Console``.
+
+-  **Save map before executing**: If this is enabled, then the current map will be saved before executing this command.
+
 -  **Enabled**: A quick way to disable commands and remove them from the
    drop down list.
 
    -  The default command is the first enabled command.
-
-You can also change whether or not it should save the current map before
-running commands.
 
 Note that if the program or any of its arguments contain spaces, these
 parts need to be quoted.
