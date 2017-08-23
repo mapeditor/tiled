@@ -247,7 +247,7 @@ you can join them together by choosing "Join Nodes" from the context
 menu. You can also split the segments in between the nodes by choosing
 "Split Segments", which is currently the only way to extend an existing
 polygon. You can also delete a segment when two consecutive nodes are selected 
-in a polygon be choosing "Delete Segment" in the contex menu. This will convert 
+in a polygon be choosing "Delete Segment" in the context menu. This will convert 
 a polygon into a polyline.
 
 .. raw:: html
