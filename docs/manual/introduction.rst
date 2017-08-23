@@ -60,7 +60,7 @@ first thing we’ll do is to start a new map with *File -> New…*
    New Map
 
 Here, we choose the initial map size, tile size, orientation, tile layer
-format and tile render order (only supported for *Orthogonal* maps). All
+format, tile render order (only supported for *Orthogonal* maps) and whether the map is infinite or not. All
 of these things can be changed later as needed, so it’s not important to
 get it all right the first time.
 
