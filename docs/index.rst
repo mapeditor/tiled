@@ -24,6 +24,7 @@ Manual
    manual/custom-properties
    manual/using-templates
    manual/using-the-terrain-tool
+   manual/using-wang-tiles
    manual/using-commands
    manual/automapping
    manual/keyboard-shortcuts
