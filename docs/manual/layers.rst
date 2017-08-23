@@ -8,9 +8,14 @@ There is also an `Image Layer <#image-layers>`__ for including simple
 foreground or background graphics. The order of the layers determines
 the rendering order of your content.
 
-Layers can be hidden or made only partially visible. Layers also have an
+Layers can be hidden, made only partially visible and can even be locked. Layers also have an
 offset, which can be used to position them independently of each other,
 for example to fake depth.
+
+.. figure:: images/layers/lock-visibility-toggle.png
+   :alt: Tiled Window
+
+   The eye and lock icon toggle the visibility and lock of a layer respectively.
 
 You use `Group Layers <#group-layers>`__ to organize the layers into a
 hierarchy. This makes it more comfortable to work with a large amount of
@@ -109,7 +114,7 @@ Group layers work like folders and can be used for organizing the layers
 into a hierarchy. This is mainly useful when your map contains a large
 amount of layers.
 
-The visibility, opacity and offset of a group layer affects all child
+The visibility, opacity, offset and lock of a group layer affects all child
 layers.
 
 Layers can be easily dragged in and out of groups with the mouse. The
@@ -125,16 +130,12 @@ Future Extensions
 
 There are many ways in which the layers can be made more powerful:
 
--  Ability to lock layers
-   (`#734 <https://github.com/bjorn/tiled/issues/734>`__) or even
-   individual objects
+-  Ability to lock individual objects
    (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
 -  Moving certain map-global properties to the Tile Layer
    (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
    useful if one map could accommodate layers of different tile sizes
    and maybe even of different orientation.
--  "Infinite" tile layers that grow automatically
-   (`#260 <https://github.com/bjorn/tiled/issues/260>`__).
 
 If you like any of these plans, please help me getting around to it
 faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
