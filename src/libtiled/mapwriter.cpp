@@ -784,13 +784,13 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     bool isTemplateInstance = mapObject.isTemplateInstance();
 
+    if (!mapObject.isTemplateBase())
+        w.writeAttribute(QLatin1String("id"), QString::number(id));
+
     if (isTemplateInstance) {
         unsigned tid = mTidMapper.templateRefToTid(mapObject.templateRef());
         w.writeAttribute(QLatin1String("tid"), QString::number(tid));
     }
-
-    if (!mapObject.isTemplateBase())
-        w.writeAttribute(QLatin1String("id"), QString::number(id));
 
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QLatin1String("name"), name);
