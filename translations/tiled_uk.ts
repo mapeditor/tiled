@@ -1439,7 +1439,7 @@ Line %1, column %2</source>
         <location line="-130"/>
         <location line="+131"/>
         <source>Tiled Fusion</source>
-        <translation>Tiled Fusion</translation>
+        <translation>Мозаїчне злиття</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+22"/>
