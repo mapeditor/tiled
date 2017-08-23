@@ -26,7 +26,7 @@ The Stamp Brush has some extra features:
 -  While holding ``Ctrl+Shift``, click any two points two draw a circle
    or ellipse centered on the first point.
 
--  Activate the *Random Mode* using the dice button on the tool bar to
+-  Activate the *Random Mode* using the dice button on the Tool Options tool bar to
    have the Stamp Brush paint with random tiles from the tile stamp. The
    probability of each tile depends on how often it occurred on the tile
    stamp, as well as the probability set on each tile in the *Tileset
@@ -36,6 +36,9 @@ The Stamp Brush has some extra features:
    randomly from a set of predefined tile stamps. This can be more
    useful than the *Random Mode*, which randomly places individual
    tiles.
+
+-  You can flip horizontally/vertically the current tile stamp by using ``X`` and ``Y`` respectively. You can also 
+   rotate left/right by using ``Z`` and ``Shift+Z`` respectively. These actions can also be triggered from the Tool Options toolbar.
 
 Terrain Brush
 -------------
@@ -83,6 +86,8 @@ regardless of its contents. This is useful for filling custom areas that
 have been selected previously using one or more `Selection
 Tools <#selection-tools>`__.
 
+Similar to `Stamp Brush <#stamp-brush>`__, you can also use the flipping and rotating tools here.
+
 Eraser
 ------
 
@@ -112,6 +117,8 @@ The following modifiers can be used to change this behavior:
 -  Holding ``Ctrl`` subtracts the new area from the current selection
 -  Holding ``Ctrl`` and ``Shift`` selects the intersection of the new
    area with the current selection
+
+You can also lock into one of these modes (Add, Subtract or Intersect) by clicking on one of the tool buttons in the Tool Options toolbar.
 
 Managing Tile Stamps
 --------------------
