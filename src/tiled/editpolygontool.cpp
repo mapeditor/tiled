@@ -907,7 +907,18 @@ void EditPolygonTool::deleteSegment()
 
     if (mapObject->shape() == MapObject::Polyline) {
         int minIndex = std::min(firstHandle->pointIndex(), secondHandle->pointIndex());
-        mapDocument()->undoStack()->push(new SplitPolyline(mapDocument(), mapObject, minIndex));
+        int maxIndex = std::max(firstHandle->pointIndex(), secondHandle->pointIndex());
+        int polygonSize = mapObject->polygon().size();
+
+        if (minIndex == 0) {
+            setSelectedHandle((firstHandle->pointIndex() == 0) ? firstHandle : secondHandle);
+            deleteNodes();
+        } else if (maxIndex == polygonSize - 1) {
+            setSelectedHandle((firstHandle->pointIndex() == polygonSize - 1) ? firstHandle : secondHandle);
+            deleteNodes();
+        } else {
+            mapDocument()->undoStack()->push(new SplitPolyline(mapDocument(), mapObject, minIndex));
+        }
     } else {
         QPolygonF polygon = mapObject->polygon();
         QPolygonF newPolygon(polygon);
