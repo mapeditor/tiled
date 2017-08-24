@@ -42,6 +42,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
+#include <QtCore/QtMath>
 #include <QUndoStack>
 
 #include <cstdlib>
@@ -138,6 +139,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
     , mClickedHandle(nullptr)
     , mClickedObjectItem(nullptr)
     , mMode(NoMode)
+    , mSplit(false)
 {
 }
 
@@ -238,6 +240,8 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (mMode != NoMode) // Ignore additional presses during select/move
         return;
 
+    mSplit = false;
+
     switch (event->button()) {
     case Qt::LeftButton: {
         mMousePressed = true;
@@ -259,6 +263,10 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
             }
         }
         mClickedHandle = first<PointHandle>(items);
+
+        if (!mClickedHandle)
+            selectEdge(mStart, event->modifiers());
+
         break;
     }
     case Qt::RightButton: {
@@ -337,6 +345,12 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     mMousePressed = false;
     mClickedHandle = nullptr;
+}
+
+void EditPolygonTool::mouseDoubleClicked(QGraphicsSceneMouseEvent*)
+{
+    if (mSplit)
+        splitSegments();
 }
 
 void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -924,4 +938,102 @@ void EditPolygonTool::deleteSegment()
     mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(), mapObject, newPolygon, polygon));
     mapDocument()->undoStack()->push(new TogglePolygonPolyline(mapObject));
     mapDocument()->undoStack()->endMacro();
+}
+
+/**
+ * Returns the distance between QPointF a and QLineF(a, b)
+ * Returns infinite if angle b-a-c is not obtuse
+ */
+static qreal helper(QPointF a, QPointF b, QPointF c)
+{
+    QLineF ab(a, b);
+    QLineF bc(b, c);
+    QLineF ca(c, a);
+
+    qreal sideC = ab.length();
+    qreal sideA = bc.length();
+    qreal sideB = ca.length();
+
+    qreal cosA = (sideB * sideB + sideC * sideC - sideA * sideA) / (2.0 * sideB * sideC);
+    qreal angleA = qAcos(cosA);
+
+    if (angleA < M_PI / 2.0)
+        return INT_MAX;
+
+    qreal x0 = a.x();
+    qreal x1 = b.x();
+    qreal x2 = c.x();
+    qreal y0 = a.y();
+    qreal y1 = b.y();
+    qreal y2 = c.y();
+
+    qreal num = std::abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
+    qreal den = std::sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+
+    return num / den;
+}
+
+void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
+
+    const QSet<MapObjectItem*> &selection = mapScene()->selectedObjectItems();
+
+    qreal minDistance = INT_MAX;
+    int index1 = -1;
+    int index2 = -1;
+    MapObjectItem *selectedItem = nullptr;
+
+    for (MapObjectItem *item : selection) {
+        const MapObject *object = item->mapObject();
+        if (!object->cell().isEmpty())
+            continue;
+
+        if (object->shape() != MapObject::Polygon && object->shape() != MapObject::Polyline)
+            continue;
+
+        QPolygonF polygon = object->polygon();
+        QPointF point = pixelCoords - object->position();
+
+        for (int i = 0; i < polygon.size() - 1; ++i) {
+            qreal temp = helper(point, polygon.at(i), polygon.at(i + 1));
+            if (temp < minDistance) {
+                minDistance = temp;
+                index1 = i;
+                index2 = i + 1;
+                selectedItem = item;
+            }
+        }
+
+        if (object->shape() == MapObject::Polygon) {
+            qreal temp = helper(point, polygon.first(), polygon.last());
+            if (temp < minDistance) {
+                minDistance = temp;
+                index1 = 0;
+                index2 = polygon.size() - 1;
+                selectedItem = item;
+            }
+        }
+    }
+
+    if (minDistance < QApplication::startDragDistance() / 2) {
+        QSet<PointHandle*> selectedHandles;
+
+        for (PointHandle *handle : mHandles[selectedItem]) {
+            if (handle->pointIndex() == index1 || handle->pointIndex() == index2)
+                selectedHandles.insert(handle);
+        }
+
+        if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier))
+            selectedHandles |= mSelectedHandles;
+
+        setSelectedHandles(selectedHandles);
+
+        mSplit = true;
+    } else {
+        mSplit = false;
+    }
 }
