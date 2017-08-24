@@ -24,6 +24,7 @@ Manual
    manual/custom-properties
    manual/using-the-terrain-tool
    manual/using-commands
+   manual/automapping
    manual/keyboard-shortcuts
 
 Reference
