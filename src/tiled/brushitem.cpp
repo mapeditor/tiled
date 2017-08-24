@@ -149,19 +149,19 @@ void BrushItem::paint(QPainter *painter,
 
     const MapRenderer *renderer = mMapDocument->renderer();
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
     if (mTileLayer) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
-        renderer->drawTileLayer(painter, mTileLayer.data(), workSpace, option->exposedRect);
+        renderer->drawTileLayer(painter, mTileLayer.data(), workspace, option->exposedRect);
         painter->setOpacity(opacity);
     }
 
-    renderer->drawTileSelection(painter, insideMapRegion, workSpace,
+    renderer->drawTileSelection(painter, insideMapRegion, workspace,
                                 insideMapHighlight,
                                 option->exposedRect);
-    renderer->drawTileSelection(painter, outsideMapRegion, workSpace,
+    renderer->drawTileSelection(painter, outsideMapRegion, workspace,
                                 outsideMapHighlight,
                                 option->exposedRect);
 }
@@ -177,10 +177,10 @@ void BrushItem::updateBoundingRect()
 
     const QRect bounds = mRegion.boundingRect();
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
 
-    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds, workSpace);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds, workspace);
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {

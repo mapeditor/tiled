@@ -185,20 +185,20 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
-	const WorkSpace workSpace(map.width(), map.height(), map.tileWidth(), map.tileHeight());
+	const Workspace workspace(map.width(), map.height(), map.tileWidth(), map.tileHeight());
 
     switch (map.orientation()) {
     case Map::Isometric:
-        size = IsometricRenderer(&map).workSize(workSpace);
+        size = IsometricRenderer(&map).workSize(workspace);
         break;
     case Map::Staggered:
-        size = StaggeredRenderer(&map).workSize(workSpace);
+        size = StaggeredRenderer(&map).workSize(workspace);
         break;
     case Map::Hexagonal:
-        size = HexagonalRenderer(&map).workSize(workSpace);
+        size = HexagonalRenderer(&map).workSize(workspace);
         break;
     default:
-        size = OrthogonalRenderer(&map).workSize(workSpace);
+        size = OrthogonalRenderer(&map).workSize(workspace);
         break;
     }
 

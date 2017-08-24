@@ -174,9 +174,9 @@ void MiniMap::renderMapToImage()
 #else
     const QSize viewSize = contentsRect().size() * devicePixelRatio();
 #endif
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
-    QSize mapSize = renderer->workSize(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
+    QSize mapSize = renderer->workSize(workspace);
 
     if (mapSize.isEmpty()) {
         mMapImage = QImage();

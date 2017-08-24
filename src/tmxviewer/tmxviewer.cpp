@@ -63,10 +63,10 @@ public:
         const QPointF &position = mapObject->position();
 
 		const Map* map = renderer->map();
-		const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-        const QPointF pixelPos = renderer->pixelToScreenCoords(position, workSpace);
+		const Workspace workspace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+        const QPointF pixelPos = renderer->pixelToScreenCoords(position, workspace);
 
-        QRectF boundingRect = renderer->boundingRect(mapObject, workSpace);
+        QRectF boundingRect = renderer->boundingRect(mapObject, workspace);
         boundingRect.translate(-pixelPos);
         mBoundingRect = boundingRect;
 
@@ -84,8 +84,8 @@ public:
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
 		const Map* map = mRenderer->map();
-		const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-        mRenderer->drawMapObject(p, workSpace, mMapObject,
+		const Workspace workspace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+        mRenderer->drawMapObject(p, workspace, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
 
@@ -113,16 +113,16 @@ public:
 
     QRectF boundingRect() const override
     {
-		const WorkSpace workSpace(mTileLayer->width(), mTileLayer->height(),
+		const Workspace workspace(mTileLayer->width(), mTileLayer->height(),
 				             mTileLayer->tileWidth(), mTileLayer->tileHeight());
-        return mRenderer->boundingRect(mTileLayer->bounds(), workSpace);
+        return mRenderer->boundingRect(mTileLayer->bounds(), workspace);
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
-		const WorkSpace workSpace(mTileLayer->width(), mTileLayer->height(),
+		const Workspace workspace(mTileLayer->width(), mTileLayer->height(),
 				                  mTileLayer->tileWidth(), mTileLayer->tileHeight());
-        mRenderer->drawTileLayer(p, mTileLayer, workSpace, option->rect);
+        mRenderer->drawTileLayer(p, mTileLayer, workspace, option->rect);
     }
 
 private:

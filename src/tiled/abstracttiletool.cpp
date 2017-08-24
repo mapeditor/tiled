@@ -84,10 +84,10 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 
     const MapRenderer *renderer = mapDocument()->renderer();
 
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
-    const QPointF tilePosF = renderer->screenToTileCoords(offsetPos, workSpace);
+    const QPointF tilePosF = renderer->screenToTileCoords(offsetPos, workspace);
     QPoint tilePos;
 
     if (mTilePositionMethod == BetweenTiles)

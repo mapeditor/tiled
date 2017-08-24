@@ -117,7 +117,7 @@ public:
     /**
      * Returns the current work space
      */
-    void currentWorkSpace(WorkSpace &workSpace) const;
+    void currentWorkspace(Workspace &workspace) const;
 
 
     /**

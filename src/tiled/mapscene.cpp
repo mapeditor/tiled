@@ -296,9 +296,9 @@ void MapScene::updateDefaultBackgroundColor()
 
 void MapScene::updateSceneRect()
 {
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
-    const QSize mapSize = mMapDocument->renderer()->workSize(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
+    const QSize mapSize = mMapDocument->renderer()->workSize(workspace);
     QRectF sceneRect(0, 0, mapSize.width(), mapSize.height());
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
@@ -359,11 +359,11 @@ void MapScene::repaintRegion(const QRegion &region, Layer *layer)
     const MapRenderer *renderer = mMapDocument->renderer();
     const QMargins margins = mMapDocument->map()->drawMargins();
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
 
     for (const QRect &r : region.rects()) {
-        QRectF boundingRect = renderer->boundingRect(r, workSpace);
+        QRectF boundingRect = renderer->boundingRect(r, workspace);
 
         boundingRect.adjust(-margins.left(),
                             -margins.top(),
@@ -760,10 +760,10 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 
     Preferences *prefs = Preferences::instance();
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
     mMapDocument->renderer()->drawGrid(painter,
-                                       rect.translated(-offset), workSpace,
+                                       rect.translated(-offset), workspace,
                                        prefs->gridColor());
 }
 

@@ -52,10 +52,10 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
-    const QPointF pixelCoords = renderer->screenToPixelCoords(pos, workSpace);
+    const QPointF pixelCoords = renderer->screenToPixelCoords(pos, workspace);
 
     QRectF objectArea(mStartPos, pixelCoords);
 
@@ -68,7 +68,7 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 
     // Update the position and size of the new map object
     QPointF snapSize(objectArea.width(), objectArea.height());
-    SnapHelper(renderer, modifiers).snap(snapSize, workSpace);
+    SnapHelper(renderer, modifiers).snap(snapSize, workspace);
     objectArea.setWidth(snapSize.x());
     objectArea.setHeight(snapSize.y());
 

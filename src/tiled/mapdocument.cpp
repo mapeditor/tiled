@@ -240,18 +240,18 @@ void MapDocument::setCurrentLayer(Layer *layer)
             setCurrentObject(mCurrentLayer);
 }
 
-void MapDocument::currentWorkSpace(WorkSpace &workSpace) const {
+void MapDocument::currentWorkspace(Workspace &workspace) const {
 	if (mCurrentLayer && mCurrentLayer->asTileLayer()) {
 		TileLayer* tLayer = static_cast<TileLayer*>(mCurrentLayer);
-		workSpace.setWidth(tLayer->width());
-		workSpace.setHeight(tLayer->height());
-		workSpace.setTileWidth(tLayer->tileWidth());
-		workSpace.setTileHeight(tLayer->tileHeight());
+		workspace.setWidth(tLayer->width());
+		workspace.setHeight(tLayer->height());
+		workspace.setTileWidth(tLayer->tileWidth());
+		workspace.setTileHeight(tLayer->tileHeight());
 	} else {
-		workSpace.setWidth(mMap->width());
-		workSpace.setHeight(mMap->height());
-		workSpace.setTileWidth(mMap->tileWidth());
-		workSpace.setTileHeight(mMap->tileHeight());
+		workspace.setWidth(mMap->width());
+		workspace.setHeight(mMap->height());
+		workspace.setTileWidth(mMap->tileWidth());
+		workspace.setTileHeight(mMap->tileHeight());
 	}
 }
 
@@ -273,13 +273,13 @@ static bool intersects(const QRectF &a, const QRectF &b)
 static bool visibleIn(const QRectF &area, MapObject *object,
                       MapRenderer *renderer, MapDocument* mapDocument)
 {
-	WorkSpace workSpace;
-	mapDocument->currentWorkSpace(workSpace);
-    QRectF boundingRect = renderer->boundingRect(object, workSpace);
+	Workspace workspace;
+	mapDocument->currentWorkspace(workspace);
+    QRectF boundingRect = renderer->boundingRect(object, workspace);
 
     if (object->rotation() != 0) {
         // Rotate around object position
-        QPointF pos = renderer->pixelToScreenCoords(object->position(), workSpace);
+        QPointF pos = renderer->pixelToScreenCoords(object->position(), workspace);
         boundingRect.translate(-pos);
 
         QTransform transform;
@@ -304,7 +304,7 @@ void MapDocument::resizeLayer(Layer* layer, const QSize &size, const QPoint &off
 		return;
 	}
 
-	WorkSpace workSpace(tileLayer->width(), tileLayer->height(),
+	Workspace workspace(tileLayer->width(), tileLayer->height(),
 			            tileLayer->tileWidth(), tileLayer->tileHeight());
 
     const QRegion movedSelection = mSelectedArea.translated(offset);
@@ -321,14 +321,14 @@ void MapDocument::resizeLayer(Layer* layer, const QSize &size, const QPoint &off
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset, bool removeObjects)
 {
-	WorkSpace workSpace(map()->width(), map()->height(), map()->tileWidth(), map()->tileHeight());
+	Workspace workspace(map()->width(), map()->height(), map()->tileWidth(), map()->tileHeight());
 
     const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
-    const QRectF visibleArea = mRenderer->boundingRect(newArea, workSpace);
+    const QRectF visibleArea = mRenderer->boundingRect(newArea, workspace);
 
-    const QPointF origin = mRenderer->tileToPixelCoords(QPointF(), workSpace);
-    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset, workSpace);
+    const QPointF origin = mRenderer->tileToPixelCoords(QPointF(), workspace);
+    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset, workspace);
     const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer

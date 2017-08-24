@@ -36,7 +36,7 @@ public:
 
     bool snaps() const { return mSnapToGrid || mSnapToFineGrid || mSnapToPixels; }
 
-    void snap(QPointF &pixelPos, const WorkSpace &workSpace) const;
+    void snap(QPointF &pixelPos, const Workspace &workspace) const;
 
 private:
     const MapRenderer *mRenderer;

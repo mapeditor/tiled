@@ -49,11 +49,11 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile()->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
 
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
-    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff, workspace);
 
-    SnapHelper(renderer, modifiers).snap(pixelCoords, workSpace);
+    SnapHelper(renderer, modifiers).snap(pixelCoords, workspace);
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();

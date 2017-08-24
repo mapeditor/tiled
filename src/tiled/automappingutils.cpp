@@ -40,8 +40,8 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 {
     QUndoStack *undo = mapDocument->undoStack();
 
-	WorkSpace workSpace;
-	mapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument->currentWorkspace(workspace);
 
     const auto objects = layer->objects();
     for (MapObject *obj : objects) {
@@ -52,10 +52,10 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
 
         // Convert the boundary of the object into tile space
         const QRectF objBounds = obj->boundsUseTile();
-        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft(), workSpace);
-        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight(), workSpace);
-        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight(), workSpace);
-        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft(), workSpace);
+        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft(), workspace);
+        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight(), workspace);
+        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight(), workspace);
+        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft(), workspace);
 
         QRectF objInTileSpace;
         objInTileSpace.setTopLeft(tl);

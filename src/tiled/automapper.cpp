@@ -837,14 +837,14 @@ void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, int srcX, int src
 {
     QUndoStack *undo = mMapDocument->undoStack();
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
 
     const QRectF rect = QRectF(srcX, srcY, width, height);
-    const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect, workSpace);
+    const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect, workspace);
     const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
 
-    QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY, workSpace);
+    QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY, workspace);
     pixelOffset -= pixelRect.topLeft();
 
     for (MapObject *obj : objects) {

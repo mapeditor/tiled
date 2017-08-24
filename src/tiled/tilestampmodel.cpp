@@ -118,9 +118,9 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
-static QPixmap renderThumbnail(const ThumbnailRenderer &renderer, const WorkSpace &workSpace)
+static QPixmap renderThumbnail(const ThumbnailRenderer &renderer, const Workspace &workspace)
 {
-    return QPixmap::fromImage(renderer.render(QSize(64, 64), workSpace)
+    return QPixmap::fromImage(renderer.render(QSize(64, 64), workspace)
                               .scaled(32, 32,
                                       Qt::IgnoreAspectRatio,
                                       Qt::SmoothTransformation));
@@ -140,8 +140,8 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-					const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-                    thumbnail = renderThumbnail(renderer, workSpace);
+					const Workspace workspace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+                    thumbnail = renderThumbnail(renderer, workspace);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
@@ -166,8 +166,8 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-					const WorkSpace workSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
-                    thumbnail = renderThumbnail(renderer, workSpace);
+					const Workspace workspace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+                    thumbnail = renderThumbnail(renderer, workspace);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;

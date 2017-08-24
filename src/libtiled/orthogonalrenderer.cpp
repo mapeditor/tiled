@@ -38,16 +38,16 @@
 
 using namespace Tiled;
 
-QSize OrthogonalRenderer::workSize(const WorkSpace &workSpace) const
+QSize OrthogonalRenderer::workSize(const Workspace &workspace) const
 {
-    return QSize(workSpace.width() * workSpace.tileWidth(),
-                 workSpace.height() * workSpace.tileHeight());
+    return QSize(workspace.width() * workspace.tileWidth(),
+                 workspace.height() * workspace.tileHeight());
 }
 
-QRect OrthogonalRenderer::boundingRect(const QRect &rect, const WorkSpace &workSpace) const
+QRect OrthogonalRenderer::boundingRect(const QRect &rect, const Workspace &workspace) const
 {
-    const int tileWidth = workSpace.tileWidth();
-    const int tileHeight = workSpace.tileHeight();
+    const int tileWidth = workspace.tileWidth();
+    const int tileHeight = workspace.tileHeight();
 
     return QRect(rect.x() * tileWidth,
                  rect.y() * tileHeight,
@@ -55,7 +55,7 @@ QRect OrthogonalRenderer::boundingRect(const QRect &rect, const WorkSpace &workS
                  rect.height() * tileHeight);
 }
 
-QRectF OrthogonalRenderer::boundingRect(const MapObject *object, const WorkSpace &workSpace) const
+QRectF OrthogonalRenderer::boundingRect(const MapObject *object, const Workspace &workspace) const
 {
     const QRectF bounds = object->bounds();
 
@@ -107,7 +107,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object, const WorkSpace
 
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            QPolygonF screenPolygon = pixelToScreenCoords(polygon, workSpace);
+            QPolygonF screenPolygon = pixelToScreenCoords(polygon, workspace);
             boundingRect = screenPolygon.boundingRect().adjusted(-extraSpace,
                                                                  -extraSpace,
                                                                  extraSpace + 1,
@@ -124,12 +124,12 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object, const WorkSpace
     return boundingRect;
 }
 
-QPainterPath OrthogonalRenderer::shape(const MapObject *object, const WorkSpace &workSpace) const
+QPainterPath OrthogonalRenderer::shape(const MapObject *object, const Workspace &workspace) const
 {
     QPainterPath path;
 
     if (!object->cell().isEmpty()) {
-        path.addRect(boundingRect(object, workSpace));
+        path.addRect(boundingRect(object, workspace));
     } else {
         switch (object->shape()) {
         case MapObject::Rectangle: {
@@ -146,7 +146,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object, const WorkSpace 
         case MapObject::Polyline: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            const QPolygonF screenPolygon = pixelToScreenCoords(polygon, workSpace);
+            const QPolygonF screenPolygon = pixelToScreenCoords(polygon, workspace);
             if (object->shape() == MapObject::Polygon) {
                 path.addPolygon(screenPolygon);
             } else {
@@ -179,11 +179,11 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object, const WorkSpace 
     return path;
 }
 
-void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const WorkSpace &workSpace,
+void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const Workspace &workspace,
                                   QColor gridColor) const
 {
-    const int tileWidth = workSpace.tileWidth();
-    const int tileHeight = workSpace.tileHeight();
+    const int tileWidth = workspace.tileWidth();
+    const int tileHeight = workspace.tileHeight();
 
     if (tileWidth <= 0 || tileHeight <= 0)
         return;
@@ -191,9 +191,9 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const W
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin(qCeil(rect.right()),
-                          workSpace.width() * tileWidth + 1);
+                          workspace.width() * tileWidth + 1);
     const int endY = qMin(qCeil(rect.bottom()),
-                          workSpace.height() * tileHeight + 1);
+                          workspace.height() * tileHeight + 1);
 
     QPen gridPen = makeGridPen(painter->device(), gridColor);
 
@@ -214,7 +214,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect, const W
 
 void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
-									   const WorkSpace &workSpace,
+									   const Workspace &workspace,
                                        const QRectF &exposed) const
 {
 
@@ -306,19 +306,19 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QRegion &region,
-										   const WorkSpace &workSpace,
+										   const Workspace &workspace,
                                            const QColor &color,
                                            const QRectF &exposed) const
 {
     foreach (const QRect &r, region.rects()) {
-        const QRectF toFill = QRectF(boundingRect(r, workSpace)).intersected(exposed);
+        const QRectF toFill = QRectF(boundingRect(r, workspace)).intersected(exposed);
         if (!toFill.isEmpty())
             painter->fillRect(toFill, color);
     }
 }
 
 void OrthogonalRenderer::drawMapObject(QPainter *painter,
-		                               const WorkSpace &workSpace,
+		                               const Workspace &workspace,
                                        const MapObject *object,
                                        const QColor &color) const
 {
@@ -399,7 +399,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
 
         case MapObject::Polyline: {
-            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon(), workSpace);
+            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon(), workspace);
 
             QPen thickShadowPen(shadowPen);
             QPen thickLinePen(linePen);
@@ -420,7 +420,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
 
         case MapObject::Polygon: {
-            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon(), workSpace);
+            QPolygonF screenPolygon = pixelToScreenCoords(object->polygon(), workspace);
 
             QPen thickShadowPen(shadowPen);
             QPen thickLinePen(linePen);
@@ -467,36 +467,36 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->restore();
 }
 
-QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y, const Workspace &workspace) const
 {
-    return QPointF(x / workSpace.tileWidth(),
-                   y / workSpace.tileHeight());
+    return QPointF(x / workspace.tileWidth(),
+                   y / workspace.tileHeight());
 }
 
-QPointF OrthogonalRenderer::tileToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::tileToPixelCoords(qreal x, qreal y, const Workspace &workspace) const
 {
-    return QPointF(x * workSpace.tileWidth(),
-                   y * workSpace.tileHeight());
+    return QPointF(x * workspace.tileWidth(),
+                   y * workspace.tileHeight());
 }
 
-QPointF OrthogonalRenderer::screenToTileCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::screenToTileCoords(qreal x, qreal y, const Workspace &workspace) const
 {
-    return QPointF(x / workSpace.tileWidth(),
-                   y / workSpace.tileHeight());
+    return QPointF(x / workspace.tileWidth(),
+                   y / workspace.tileHeight());
 }
 
-QPointF OrthogonalRenderer::tileToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::tileToScreenCoords(qreal x, qreal y, const Workspace &workspace) const
 {
-    return QPointF(x * workSpace.tileWidth(),
-                   y * workSpace.tileHeight());
+    return QPointF(x * workspace.tileWidth(),
+                   y * workspace.tileHeight());
 }
 
-QPointF OrthogonalRenderer::screenToPixelCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::screenToPixelCoords(qreal x, qreal y, const Workspace &workspace) const
 {
     return QPointF(x, y);
 }
 
-QPointF OrthogonalRenderer::pixelToScreenCoords(qreal x, qreal y, const WorkSpace &workSpace) const
+QPointF OrthogonalRenderer::pixelToScreenCoords(qreal x, qreal y, const Workspace &workspace) const
 {
     return QPointF(x, y);
 }

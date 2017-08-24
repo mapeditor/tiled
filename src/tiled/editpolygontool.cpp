@@ -387,8 +387,8 @@ void EditPolygonTool::updateHandles()
     }
 
     MapRenderer *renderer = mapDocument()->renderer();
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
     for (MapObjectItem *item : selection) {
         const MapObject *object = item->mapObject();
@@ -418,7 +418,7 @@ void EditPolygonTool::updateHandles()
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
             const QPointF &point = polygon.at(i);
-            const QPointF handlePos = renderer->pixelToScreenCoords(point, workSpace);
+            const QPointF handlePos = renderer->pixelToScreenCoords(point, workspace);
             const QPointF internalHandlePos = handlePos - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
         }
@@ -506,17 +506,17 @@ void EditPolygonTool::startMoving()
     mMode = Moving;
 
     MapRenderer *renderer = mapDocument()->renderer();
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
     // Remember the current object positions
     mOldHandlePositions.clear();
     mOldPolygons.clear();
-    mAlignPosition = renderer->screenToPixelCoords((*mSelectedHandles.begin())->pos(), workSpace);
+    mAlignPosition = renderer->screenToPixelCoords((*mSelectedHandles.begin())->pos(), workspace);
 
     const auto &selectedHandles = mSelectedHandles;
     for (PointHandle *handle : selectedHandles) {
-        const QPointF pos = renderer->screenToPixelCoords(handle->pos(), workSpace);
+        const QPointF pos = renderer->screenToPixelCoords(handle->pos(), workspace);
         mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
             mAlignPosition.setX(pos.x());
@@ -537,17 +537,17 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     SnapHelper snapHelper(renderer, modifiers);
 
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
     if (snapHelper.snaps()) {
-        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition, workSpace);
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition, workspace);
         const QPointF newAlignScreenPos = alignScreenPos + diff;
 
-        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos, workSpace);
-        snapHelper.snap(newAlignPixelPos, workSpace);
+        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos, workspace);
+        snapHelper.snap(newAlignPixelPos, workspace);
 
-        diff = renderer->pixelToScreenCoords(newAlignPixelPos, workSpace) - alignScreenPos;
+        diff = renderer->pixelToScreenCoords(newAlignPixelPos, workspace) - alignScreenPos;
     }
 
     const auto &selectedHandles = mSelectedHandles;
@@ -562,7 +562,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         const MapObjectItem *item = handle->mapObjectItem();
         const QPointF newInternalPos = item->mapFromScene(newScreenPos);
         const QPointF newScenePos = item->pos() + newInternalPos;
-        const QPointF newPixelPos = renderer->screenToPixelCoords(newScenePos, workSpace);
+        const QPointF newPixelPos = renderer->screenToPixelCoords(newScenePos, workspace);
 
         // update the polygon
         MapObject *mapObject = item->mapObject();

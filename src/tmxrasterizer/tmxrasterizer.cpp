@@ -102,9 +102,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     }
 
-	const WorkSpace mapWorkSpace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
+	const Workspace mapWorkspace(map->width(), map->height(), map->tileWidth(), map->tileHeight());
 
-    QSize mapSize = renderer->workSize(mapWorkSpace);
+    QSize mapSize = renderer->workSize(mapWorkspace);
     qreal xScale, yScale;
 
     if (mSize > 0) {
@@ -151,11 +151,11 @@ int TmxRasterizer::render(const QString &mapFileName,
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
-			const WorkSpace workSpace(tileLayer->width(), tileLayer->height(),
+			const Workspace workspace(tileLayer->width(), tileLayer->height(),
 					             tileLayer->tileWidth(), tileLayer->tileHeight());
-            renderer->drawTileLayer(&painter, tileLayer, workSpace);
+            renderer->drawTileLayer(&painter, tileLayer, workspace);
         } else if (imageLayer) {
-            renderer->drawImageLayer(&painter, mapWorkSpace, imageLayer);
+            renderer->drawImageLayer(&painter, mapWorkspace, imageLayer);
         }
 
         painter.translate(-offset);

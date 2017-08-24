@@ -38,7 +38,7 @@ public:
     ThumbnailRenderer(Map *map);
     ~ThumbnailRenderer();
 
-    QImage render(const QSize &size, const WorkSpace &workSpace) const;
+    QImage render(const QSize &size, const Workspace &workspace) const;
 
     bool visibleLayersOnly() const;
     void setVisibleLayersOnly(bool visibleLayersOnly);

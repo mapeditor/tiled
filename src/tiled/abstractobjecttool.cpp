@@ -107,12 +107,12 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     if (layer)
         offsetPos -= layer->totalOffset();
 
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
     const QPoint pixelPos = offsetPos.toPoint();
 
-    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workSpace);
+    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos, workspace);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));

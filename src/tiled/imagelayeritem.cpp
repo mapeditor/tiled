@@ -43,9 +43,9 @@ ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument, QGra
 void ImageLayerItem::syncWithImageLayer()
 {
     prepareGeometryChange();
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
-    mBoundingRect = mMapDocument->renderer()->boundingRect(imageLayer(), workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(imageLayer(), workspace);
 }
 
 QRectF ImageLayerItem::boundingRect() const
@@ -59,7 +59,7 @@ void ImageLayerItem::paint(QPainter *painter,
 {
     // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
-    renderer->drawImageLayer(painter, workSpace, imageLayer(), option->exposedRect);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
+    renderer->drawImageLayer(painter, workspace, imageLayer(), option->exposedRect);
 }

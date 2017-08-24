@@ -414,10 +414,10 @@ void MapDocumentActionHandler::copyPosition()
     const QPointF scenePos = view->mapToScene(viewportPos);
 
     const MapRenderer *renderer = mapDocument()->renderer();
-	WorkSpace workSpace;
-	mapDocument()->currentWorkSpace(workSpace);
+	Workspace workspace;
+	mapDocument()->currentWorkspace(workspace);
 
-    const QPointF tilePos = renderer->screenToTileCoords(scenePos, workSpace);
+    const QPointF tilePos = renderer->screenToTileCoords(scenePos, workspace);
     const int x = qFloor(tilePos.x());
     const int y = qFloor(tilePos.y());
 

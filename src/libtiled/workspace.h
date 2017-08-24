@@ -6,17 +6,17 @@
 
 namespace Tiled {
 
-class WorkSpace
+class Workspace
 {
 public:
-	WorkSpace(int width, int height, int tileWidth, int tileHeight)
+	Workspace(int width, int height, int tileWidth, int tileHeight)
 		: mWidth(width)
 		, mHeight(height)
 		, mTileWidth(tileWidth)
 		, mTileHeight(tileHeight)
 	{}
 
-	WorkSpace()
+	Workspace()
 		: mWidth(0)
 		, mHeight(0)
 		, mTileWidth(0)

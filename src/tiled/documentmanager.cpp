@@ -791,9 +791,9 @@ void DocumentManager::centerMapViewOn(qreal x, qreal y)
     if (MapView *view = currentMapView()) {
         auto mapDocument = view->mapScene()->mapDocument();
 
-		WorkSpace workSpace;
-		mapDocument->currentWorkSpace(workSpace);
-        view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y, workSpace));
+		Workspace workspace;
+		mapDocument->currentWorkspace(workspace);
+        view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y, workspace));
     }
 }
 

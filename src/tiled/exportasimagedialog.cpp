@@ -158,9 +158,9 @@ void ExportAsImageDialog::accept()
 
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-	WorkSpace workSpace;
-	mMapDocument->currentWorkSpace(workSpace);
-    QSize mapSize = renderer->workSize(workSpace);
+	Workspace workspace;
+	mMapDocument->currentWorkspace(workspace);
+    QSize mapSize = renderer->workSize(workspace);
 
     QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
@@ -234,7 +234,7 @@ void ExportAsImageDialog::accept()
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-            renderer->drawTileLayer(&painter, tileLayer, workSpace);
+            renderer->drawTileLayer(&painter, tileLayer, workspace);
             break;
         }
 
@@ -248,7 +248,7 @@ void ExportAsImageDialog::accept()
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position(), workSpace);
+                        QPointF origin = renderer->pixelToScreenCoords(object->position(), workspace);
                         painter.save();
                         painter.translate(origin);
                         painter.rotate(object->rotation());
@@ -256,7 +256,7 @@ void ExportAsImageDialog::accept()
                     }
 
                     const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, workSpace, object, color);
+                    renderer->drawMapObject(&painter, workspace, object, color);
 
                     if (object->rotation() != qreal(0))
                         painter.restore();
@@ -266,7 +266,7 @@ void ExportAsImageDialog::accept()
         }
         case Layer::ImageLayerType: {
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
-            renderer->drawImageLayer(&painter, workSpace, imageLayer);
+            renderer->drawImageLayer(&painter, workspace, imageLayer);
             break;
         }
 
@@ -280,7 +280,7 @@ void ExportAsImageDialog::accept()
 
     if (drawTileGrid) {
         Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->workSize(workSpace)), workSpace,
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->workSize(workspace)), workspace,
                            prefs->gridColor());
     }
 
