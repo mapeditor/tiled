@@ -942,35 +942,31 @@ void EditPolygonTool::deleteSegment()
 
 /**
  * Returns the distance between QPointF a and QLineF(a, b)
- * Returns infinite if angle b-a-c is not obtuse
+ * Returns infinite if the closest position to the line does
+ * not lie within the line
  */
-static qreal helper(QPointF a, QPointF b, QPointF c)
+static qreal distanceOfPointToLine(const QPointF &point, const QLineF &line)
 {
-    QLineF ab(a, b);
-    QLineF bc(b, c);
-    QLineF ca(c, a);
+    const QLineF &normal = line.normalVector();
+    const QLineF &normalInOrigin = normal.translated(-normal.p1());
+    const QLineF &shortestLineToLine = normalInOrigin.translated(point);
 
-    qreal sideC = ab.length();
-    qreal sideA = bc.length();
-    qreal sideB = ca.length();
+    QPointF intersectionPoint;
+    QLineF::IntersectType intersectionType = shortestLineToLine.intersect(line, &intersectionPoint);
+    Q_ASSERT(intersectionType != QLineF::NoIntersection);
 
-    qreal cosA = (sideB * sideB + sideC * sideC - sideA * sideA) / (2.0 * sideB * sideC);
-    qreal angleA = qAcos(cosA);
+    if (intersectionType == QLineF::UnboundedIntersection) {
+        qreal dx = intersectionPoint.x() - line.p1().x();
+        qreal dy = intersectionPoint.y() - line.p1().y();
+        qreal factorOfDx = dx / line.dx();
+        qreal factorOfdY = dy / line.dy();
 
-    if (angleA < M_PI / 2.0)
-        return INT_MAX;
+        if (factorOfDx < 0 || factorOfDx > 1 || factorOfdY < 0 || factorOfdY > 1) {
+            return std::numeric_limits<qreal>::max();
+        }
+    }
 
-    qreal x0 = a.x();
-    qreal x1 = b.x();
-    qreal x2 = c.x();
-    qreal y0 = a.y();
-    qreal y1 = b.y();
-    qreal y2 = c.y();
-
-    qreal num = std::abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
-    qreal den = std::sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
-
-    return num / den;
+    return QLineF(point, intersectionPoint).length();
 }
 
 void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modifiers)
@@ -983,8 +979,8 @@ void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modif
     const QSet<MapObjectItem*> &selection = mapScene()->selectedObjectItems();
 
     qreal minDistance = INT_MAX;
-    int index1 = -1;
-    int index2 = -1;
+    int selectedStartIndex = -1;
+    int selectedEndIndex = -1;
     MapObjectItem *selectedItem = nullptr;
 
     for (MapObjectItem *item : selection) {
@@ -998,22 +994,17 @@ void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modif
         QPolygonF polygon = object->polygon();
         QPointF point = pixelCoords - object->position();
 
-        for (int i = 0; i < polygon.size() - 1; ++i) {
-            qreal temp = helper(point, polygon.at(i), polygon.at(i + 1));
-            if (temp < minDistance) {
-                minDistance = temp;
-                index1 = i;
-                index2 = i + 1;
-                selectedItem = item;
-            }
-        }
+        bool isEndConnectedToStart = object->shape() == MapObject::Polygon;
+        int lastIndex = isEndConnectedToStart ? polygon.size() : polygon.size() - 1;
 
-        if (object->shape() == MapObject::Polygon) {
-            qreal temp = helper(point, polygon.first(), polygon.last());
-            if (temp < minDistance) {
-                minDistance = temp;
-                index1 = 0;
-                index2 = polygon.size() - 1;
+        for (int edgeStartIndex = 0; edgeStartIndex < lastIndex; ++edgeStartIndex) {
+            int edgeEndIndex = (edgeStartIndex + 1) % polygon.size();
+            const QLineF lineToTest(polygon.at(edgeStartIndex), polygon.at(edgeEndIndex));
+            qreal distance = distanceOfPointToLine(point, lineToTest);
+            if (distance < minDistance) {
+                minDistance = distance;
+                selectedStartIndex = edgeStartIndex;
+                selectedEndIndex = edgeEndIndex;
                 selectedItem = item;
             }
         }
@@ -1023,8 +1014,10 @@ void EditPolygonTool::selectEdge(const QPointF &pos, Qt::KeyboardModifiers modif
         QSet<PointHandle*> selectedHandles;
 
         for (PointHandle *handle : mHandles[selectedItem]) {
-            if (handle->pointIndex() == index1 || handle->pointIndex() == index2)
+            if (handle->pointIndex() == selectedStartIndex ||
+                    handle->pointIndex() == selectedEndIndex) {
                 selectedHandles.insert(handle);
+            }
         }
 
         if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier))
