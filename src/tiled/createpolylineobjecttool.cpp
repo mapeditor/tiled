@@ -49,7 +49,7 @@ void CreatePolylineObjectTool::extend(MapObjectItem *mapObjectItem, bool extendi
     mExtendingFirst = extendingFirst;
 
     mNewMapObjectItem = mapObjectItem;
-    mOverlayPolygonObject = mapObjectItem->mapObject()->clone();
+    mOverlayPolygonObject->setPolygon(mapObjectItem->mapObject()->polygon());
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
                                             mapDocument(),
                                             mObjectGroupItem);

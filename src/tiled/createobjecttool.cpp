@@ -88,6 +88,7 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Escape:
         if (mNewMapObjectItem) {
             cancelNewMapObject();
+            return;
         }
         break;
     }
@@ -202,7 +203,6 @@ void CreateObjectTool::finishNewMapObject()
     }
 
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
-
     clearNewMapObjectItem();
 
     auto addObjectCommand = new AddMapObject(mapDocument(),
