@@ -395,7 +395,7 @@ bottom-left while in isometric it's aligned to the bottom-center.
 
 When the object has a ``tid`` set, it will borrow all the properties from
 the specified template, properties saved with the object will have higher
-priority, i.e. it will override the template properties.
+priority, i.e. they will override the template properties.
 
 Can contain: `properties <#properties>`__, `ellipse <#ellipse>`__ (since
 0.9), `polygon <#polygon>`__, `polyline <#polyline>`__, `text <#text>`__
@@ -550,7 +550,7 @@ Usage inside the map
 
 -  **firsttid:** the first ID of this template group (this ID maps to the
    first template in this templategroup).
--  **source:** The reference to the template group. 
+-  **source:** The reference to the template group.
 
 Objects inside the map can be template instances by referring to a specific
 template inside a template group:
@@ -558,6 +558,8 @@ template inside a template group:
    .. code:: xml
 
       <object id="1363" tid="14" x="20" y="55"/>
+
+.. _templategroup-format:
 
 The Template Group Format
 ~~~~~~~~~~~~~~~~~~~~~~~~~

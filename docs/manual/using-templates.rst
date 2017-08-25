@@ -8,8 +8,6 @@ New in Tiled 1.1
 
    </div>
 
-.. _templates-introduction:
-
 Using Templates
 ===============
 
@@ -38,6 +36,11 @@ templates view or from the new template dialog.
 
 .. figure:: images/templates/creating-templates.gif
    :alt: New Template Dialog
+
+.. note:: You can't create a template from a tile object that uses a
+   tile from an embedded tileset, because the
+   :ref:`template group format <templategroup-format>` does not support
+   referring to such tilesets.
 
 The templates View
 ------------------
@@ -77,13 +80,13 @@ immediately reflected upon all the template instances on the map.
 If a property of a template instance is changed, it will be internally marked
 as an overridden property and won't be changed when the template changes.
 
-Detaching template instances
+Detaching Template Instances
 ----------------------------
 
-Detaching template instance will disconnect it from the base template, so any
+Detaching a template instance will disconnect it from the base template, so any
 further edits to the template will not affect the detached instance.
 
-To detach an instance, right click on it and select detach.
+To detach an instance, right click on it and select *Detach*.
 
 Future Extensions
 -----------------

@@ -7,15 +7,16 @@ Below are described the changes/additions that were made to the
 Tiled 1.1
 ---------
 
--  :ref:`Templates <templates-introduction>` was added, a :ref:`template group
-   <tmx-templategroup>` is an external file referenced by maps:
+-  :doc:`Templates </manual/using-templates>` were added, a
+   :ref:`template group <tmx-templategroup>` is an external file
+   referenced by maps:
 
    .. code:: xml
 
       <templategroup firsttid="1" source="platforms.ttx"/>
 
--  An object can be a template instnace, by refereing to a template by a
-   template id (:ref:`tid <tmx-object>`):
+-  An object can be a template instance, by referring to a template by a
+   template id (the :ref:`tid attribute <tmx-object>`):
 
    .. code:: xml
 
