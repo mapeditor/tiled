@@ -17,7 +17,6 @@ General
 -  ``Ctrl + Object Resize`` - Keep aspect ratio
 -  ``Alt + Object Resize`` - Toggles "Snap to Grid" temporarily
 -  ``Middle Click`` or ``Space Bar`` - Hold to pan the map view
--  ``F5`` - Run the :doc:`first custom command <using-commands>`
 -  ``Ctrl + X`` - Cut (tiles, objects or properties)
 -  ``Ctrl + C`` - Copy (tiles, objects or properties)
 -  ``Ctrl + V`` - Paste (tiles, objects or properties)
