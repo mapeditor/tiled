@@ -74,7 +74,8 @@ rendered by Tiled.
 
 Can contain: `properties <#properties>`__, `tileset <#tileset>`__,
 `layer <#layer>`__, `objectgroup <#objectgroup>`__,
-`imagelayer <#imagelayer>`__, `group <#group>`__ (since 1.0)
+`imagelayer <#imagelayer>`__, `group <#group>`__ (since 1.0),
+`templategroup <#templategroup>`__ (since 1.1)
 
 .. _tmx-tileset:
 
@@ -546,7 +547,7 @@ Usage inside the map
 
    .. code:: xml
 
-      <templategroup firsttid="1" source="platforms.ttx"/>
+      <templategroup firsttid="1" source="platforms.tgx"/>
 
 -  **firsttid:** the first ID of this template group (this ID maps to the
    first template in this templategroup).
@@ -573,6 +574,8 @@ Template groups are saved as external files, and are referenced by the map. A
 template group can contain multiple :ref:`tileset <tmx-tileset>` elements
 that point to external tilesets.
 
+Can contain: `tileset <#tileset>`__, `template <#template>`__
+
 <template>
 ^^^^^^^^^^
 
@@ -595,6 +598,8 @@ Example of a template group file:
       <object gid="38" width="128" height="96"/>
      </template>
     </templategroup>
+
+Can contain: `object <#object>`__
 
 --------------
 
