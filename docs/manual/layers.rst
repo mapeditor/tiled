@@ -8,14 +8,15 @@ There is also an `Image Layer <#image-layers>`__ for including simple
 foreground or background graphics. The order of the layers determines
 the rendering order of your content.
 
-Layers can be hidden, made only partially visible and can even be locked. Layers also have an
-offset, which can be used to position them independently of each other,
-for example to fake depth.
+Layers can be hidden, made only partially visible and can be locked.
+Layers also have an offset, which can be used to position them
+independently of each other, for example to fake depth.
 
 .. figure:: images/layers/lock-visibility-toggle.png
-   :alt: Tiled Window
+   :alt: Layers View
 
-   The eye and lock icon toggle the visibility and lock of a layer respectively.
+   The eye and lock icon toggle the visibility and locked state of a
+   layer respectively.
 
 You use `Group Layers <#group-layers>`__ to organize the layers into a
 hierarchy. This makes it more comfortable to work with a large amount of

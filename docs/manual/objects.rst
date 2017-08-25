@@ -239,16 +239,16 @@ their nodes. You can select and move the nodes of multiple polygons at
 the same time.
 
 Nodes can be deleted by selecting them and choosing "Delete Nodes" from
-the context menu. ``Delete`` key can also be used to delete the selected nodes, but it will 
-delete the selected object(s) if no nodes are selected.
+the context menu. The ``Delete`` key can also be used to delete the
+selected nodes, or the selected objects if no nodes are selected.
 
 When you have selected multiple consecutive nodes of the same polygon,
 you can join them together by choosing "Join Nodes" from the context
 menu. You can also split the segments in between the nodes by choosing
 "Split Segments", which is currently the only way to extend an existing
-polygon. You can also delete a segment when two consecutive nodes are selected 
-in a polygon be choosing "Delete Segment" in the context menu. This will convert 
-a polygon into a polyline.
+polygon. You can also delete a segment when two consecutive nodes are
+selected in a polygon by choosing "Delete Segment" in the context menu.
+This will convert a polygon into a polyline.
 
 .. raw:: html
 
