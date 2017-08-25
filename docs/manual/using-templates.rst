@@ -32,7 +32,7 @@ template group to save the template to. If the object already has a name the
 name field will be auto-filled with it.
 
 Template groups can be created from the New Template Group button in the
-Templates View or from the New Template Dialog.
+Templates view or from the New Template dialog.
 
 .. figure:: images/templates/creating-templates.gif
    :alt: New Template Dialog
@@ -45,7 +45,7 @@ Templates View or from the New Template Dialog.
 The Templates View
 ------------------
 
-Working with templates is done through the Templates View. The Templates View
+Working with templates is done through the Templates view. The Templates view
 is divided into two parts, the left part is a tree view that shows the loaded
 template groups and their templates, the right part shows a preview of the
 selected template.
@@ -56,7 +56,7 @@ Creating Template Instances
 Shortcut: ``V``
 
 Template instantiation works by either dragging and dropping the template from
-the Templates Tree View into the map, or by using the "Insert Template" tool
+the list of templates to the map, or by using the "Insert Template" tool
 by selecting a template and clicking on the map which is more convenient when
 you want to create many instances.
 
@@ -67,8 +67,8 @@ you want to create many instances.
 Editing Templates
 -----------------
 
-Selecting a template will show an editable preview in the Templates View and
-will load the template's properties into the Properties View where they can be
+Selecting a template will show an editable preview in the Templates view and
+will show the template's properties in the Properties view where they can be
 edited.
 
 All template instances are linked to their template, so all edits will be
