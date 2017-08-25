@@ -74,7 +74,8 @@ rendered by Tiled.
 
 Can contain: `properties <#properties>`__, `tileset <#tileset>`__,
 `layer <#layer>`__, `objectgroup <#objectgroup>`__,
-`imagelayer <#imagelayer>`__, `group <#group>`__ (since 1.0)
+`imagelayer <#imagelayer>`__, `group <#group>`__ (since 1.0),
+`templategroup <#templategroup>`__ (since 1.1)
 
 .. _tmx-tileset:
 
@@ -374,9 +375,10 @@ Can contain: `properties <#properties>`__, `object <#object>`__
 -  **height:** The height of the object in pixels (defaults to 0).
 -  **rotation:** The rotation of the object in degrees clockwise (defaults
    to 0). (since 0.10)
--  **gid:** An reference to a tile (optional).
+-  **gid:** A reference to a tile (optional).
 -  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
    1. (since 0.9)
+-  **tid:** A reference to a template (optional).
 
 While tile layers are very suitable for anything repetitive aligned to
 the tile grid, sometimes you want to annotate your map with other
@@ -391,6 +393,10 @@ When the object has a ``gid`` set, then it is represented by the image
 of the tile with that global ID. The image alignment currently depends
 on the map orientation. In orthogonal orientation it's aligned to the
 bottom-left while in isometric it's aligned to the bottom-center.
+
+When the object has a ``tid`` set, it will borrow all the properties from
+the specified template, properties saved with the object will have higher
+priority, i.e. they will override the template properties.
 
 Can contain: `properties <#properties>`__, `ellipse <#ellipse>`__ (since
 0.9), `polygon <#polygon>`__, `polyline <#polyline>`__, `text <#text>`__
@@ -528,6 +534,72 @@ will write out the value as characters contained inside the ``property``
 element rather than as the ``value`` attribute. It is possible that a
 future version of the TMX format will switch to always saving property
 values inside the element rather than as an attribute.
+
+.. _tmx-templategroup:
+
+<templategroup>
+---------------
+
+Unlike tilesets, embedding a template group inside a map is not supported, so the map must reference the external template group.
+
+Usage inside the map
+~~~~~~~~~~~~~~~~~~~~
+
+   .. code:: xml
+
+      <templategroup firsttid="1" source="platforms.tgx"/>
+
+-  **firsttid:** the first ID of this template group (this ID maps to the
+   first template in this templategroup).
+-  **source:** The reference to the template group.
+
+Objects inside the map can be template instances by referring to a specific
+template inside a template group:
+
+   .. code:: xml
+
+      <object id="1363" tid="14" x="20" y="55"/>
+
+.. _templategroup-format:
+
+The Template Group Format
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  **name:** The name of the template group.
+-  **nexttemplateid:** Stores the next available ID for new templates. This
+   number is stored to prevent reuse of the same ID after templates have
+   been removed.
+
+Template groups are saved as external files, and are referenced by the map. A
+template group can contain multiple :ref:`tileset <tmx-tileset>` elements
+that point to external tilesets.
+
+Can contain: `tileset <#tileset>`__, `template <#template>`__
+
+<template>
+^^^^^^^^^^
+
+-  **name:** The name of the template.
+-  **id:** Unique ID for the template inside the template group.
+
+Each template element contains the saved :ref:`map object <tmx-object>`.
+
+Example of a template group file:
+
+   .. code:: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <templategroup name="Plants" nexttemplateid="2">
+     <tileset firstgid="1" source="desert.tsx"/>
+     <template name="cactus" id="0">
+      <object gid="31" width="81" height="101"/>
+     </template>
+     <template name="tree" id="1">
+      <object gid="38" width="128" height="96"/>
+     </template>
+    </templategroup>
+
+Can contain: `object <#object>`__
 
 --------------
 

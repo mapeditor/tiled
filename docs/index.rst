@@ -22,6 +22,7 @@ Manual
    manual/editing-tile-layers
    manual/objects
    manual/custom-properties
+   manual/using-templates
    manual/using-the-terrain-tool
    manual/using-commands
    manual/automapping
