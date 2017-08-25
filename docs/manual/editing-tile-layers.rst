@@ -92,12 +92,15 @@ Shortcut: ``G``
 The Wang Brush works in a very similar way to the Terrain Brush, except
 it uses wangsets. Key differences are:
 
+-  Wang tiles supports edges as well as corners, whereas terrains only support
+   corners. This makes Wang tiles useful for drawing paths, or fences.
 -  The default size is to edit one edge/corner. Holding ``Ctrl`` expands it
    to the whole tile.
 -  If the transition cannot be made on the immediately affected tiles,
    the operation is aborted.
 
 To use the tool, a color must be selected from the wang color view.
+Wang tiles and this tool are described in detail in :doc:`Using Wang Tiles <using-wang-tiles>`.
 
 Bucket Fill Tool
 ----------------
