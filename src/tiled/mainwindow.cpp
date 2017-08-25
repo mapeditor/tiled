@@ -112,13 +112,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mDocumentManager(DocumentManager::instance())
     , mTmxMapFormat(new TmxMapFormat(this))
     , mTsxTilesetFormat(new TsxTilesetFormat(this))
-    , mTtxTemplateGroupFormat(new TtxTemplateGroupFormat(this))
+    , mTgxTemplateGroupFormat(new TgxTemplateGroupFormat(this))
 {
     mUi->setupUi(this);
 
     PluginManager::addObject(mTmxMapFormat);
     PluginManager::addObject(mTsxTilesetFormat);
-    PluginManager::addObject(mTtxTemplateGroupFormat);
+    PluginManager::addObject(mTgxTemplateGroupFormat);
 
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");

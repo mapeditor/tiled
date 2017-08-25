@@ -210,7 +210,7 @@ void TemplatesDock::openTemplateGroup()
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
+    QString selectedFilter = TgxTemplateGroupFormat().nameFilter();
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Template Group"),
                                                     suggestedFileName,

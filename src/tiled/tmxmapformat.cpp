@@ -167,12 +167,12 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
     return false;
 }
 
-TtxTemplateGroupFormat::TtxTemplateGroupFormat(QObject *parent)
+TgxTemplateGroupFormat::TgxTemplateGroupFormat(QObject *parent)
     : TemplateGroupFormat(parent)
 {
 }
 
-TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
+TemplateGroup *TgxTemplateGroupFormat::read(const QString &fileName)
 {
     mError.clear();
 
@@ -184,7 +184,7 @@ TemplateGroup *TtxTemplateGroupFormat::read(const QString &fileName)
     return templateGroup;
 }
 
-bool TtxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
+bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
@@ -200,9 +200,9 @@ bool TtxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QSt
     return result;
 }
 
-bool TtxTemplateGroupFormat::supportsFile(const QString &fileName) const
+bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
 {
-    if (fileName.endsWith(QLatin1String(".ttx"), Qt::CaseInsensitive))
+    if (fileName.endsWith(QLatin1String(".tgx"), Qt::CaseInsensitive))
         return true;
 
     if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {

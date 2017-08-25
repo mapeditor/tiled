@@ -89,11 +89,11 @@ void NewTemplateDialog::newTemplateGroup()
 {
     FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
     QString filter = helper.filter();
-    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
+    QString selectedFilter = TgxTemplateGroupFormat().nameFilter();
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    suggestedFileName += tr("/untitled.ttx");
+    suggestedFileName += tr("/untitled.tgx");
 
     QString fileName = QFileDialog::getSaveFileName(nullptr, tr("Save File"),
                                                     suggestedFileName,

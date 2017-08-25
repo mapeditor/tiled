@@ -58,7 +58,7 @@ class MapView;
 class ObjectTypesEditor;
 class TmxMapFormat;
 class TsxTilesetFormat;
-class TtxTemplateGroupFormat;
+class TgxTemplateGroupFormat;
 class Zoomable;
 
 /**
@@ -220,7 +220,7 @@ private:
 
     TmxMapFormat *mTmxMapFormat;
     TsxTilesetFormat *mTsxTilesetFormat;
-    TtxTemplateGroupFormat *mTtxTemplateGroupFormat;
+    TgxTemplateGroupFormat *mTgxTemplateGroupFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
