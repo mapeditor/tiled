@@ -38,7 +38,7 @@ The Stamp Brush has some extra features:
    to have the Stamp Brush paint using the wang methods. This makes adjacent
    tiles match edge and corner colors to be placed. Wang Tiles is described
    in detail in :doc:`Using Wang Tiles <using-wang-tiles>`.
-   
+
 -  In combination with the *Tile Stamps* view, it can also place
    randomly from a set of predefined tile stamps. This can be more
    useful than the *Random Mode*, which randomly places individual
@@ -48,6 +48,8 @@ The Stamp Brush has some extra features:
    ``X`` and ``Y`` respectively. You can also rotate left/right by
    using ``Z`` and ``Shift+Z`` respectively. These actions can also be
    triggered from the Tool Options tool bar.
+
+.. _terrain-tool:
 
 Terrain Brush
 -------------
@@ -80,6 +82,8 @@ where two sides need to have equal opportunities. The modifier works
 well in combination with either ``Shift`` for drawing lines or ``Ctrl``
 for reducing the edited area.
 
+.. _wang-tool:
+
 Wang Brush
 ----------
 
@@ -92,7 +96,7 @@ it uses wangsets. Key differences are:
    to the whole tile.
 -  If the transition cannot be made on the immediately affected tiles,
    the operation is aborted.
-   
+
 To use the tool, a color must be selected from the wang color view.
 
 Bucket Fill Tool
