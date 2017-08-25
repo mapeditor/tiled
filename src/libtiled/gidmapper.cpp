@@ -148,15 +148,19 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
  * without compression.
  */
 QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
-                                      Map::LayerDataFormat format) const
+                                      Map::LayerDataFormat format,
+                                      QRect bounds) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    const int startX = 0;
-    const int startY = 0;
-    const int endX = tileLayer.width() - 1;
-    const int endY = tileLayer.height() - 1;
+    if (bounds.isEmpty())
+        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
+
+    const int startX = bounds.x();
+    const int startY = bounds.y();
+    const int endX = startX + bounds.width() - 1;
+    const int endY = startY + bounds.height() - 1;
 
     QByteArray tileData;
     tileData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
@@ -179,96 +183,19 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     return tileData.toBase64();
 }
 
-QByteArray GidMapper::encodeChunkData(const TileLayer &tileLayer,
-                                      int chunkStartX,
-                                      int chunkStartY,
-                                      Map::LayerDataFormat format) const
-{
-    Q_ASSERT(format != Map::XML);
-    Q_ASSERT(format != Map::CSV);
-
-    int startX = chunkStartX;
-    int startY = chunkStartY;
-    int endX = chunkStartX + CHUNK_SIZE - 1;
-    int endY = chunkStartY + CHUNK_SIZE - 1;
-
-
-    QByteArray chunkData;
-    chunkData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
-
-    for (int y = startY; y <= endY; ++y) {
-        for (int x = startX; x <= endX; ++x) {
-            const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
-            chunkData.append((char) (gid));
-            chunkData.append((char) (gid >> 8));
-            chunkData.append((char) (gid >> 16));
-            chunkData.append((char) (gid >> 24));
-        }
-    }
-
-    if (format == Map::Base64Gzip)
-        chunkData = compress(chunkData, Gzip);
-    else if (format == Map::Base64Zlib)
-        chunkData = compress(chunkData, Zlib);
-
-    return chunkData.toBase64();
-}
-
 GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
                                                   const QByteArray &layerData,
-                                                  Map::LayerDataFormat format) const
-{
-    Q_ASSERT(format != Map::XML);
-    Q_ASSERT(format != Map::CSV);
-
-    QByteArray decodedData = QByteArray::fromBase64(layerData);
-    const int size = (tileLayer.width() * tileLayer.height()) * 4;
-
-    if (format == Map::Base64Gzip || format == Map::Base64Zlib)
-        decodedData = decompress(decodedData, size);
-
-    if (size != decodedData.length())
-        return CorruptLayerData;
-
-    const unsigned char *data = reinterpret_cast<const unsigned char*>(decodedData.constData());
-    int x = 0;
-    int y = 0;
-    bool ok;
-
-    for (int i = 0; i < size - 3; i += 4) {
-        const unsigned gid = data[i] |
-                             data[i + 1] << 8 |
-                             data[i + 2] << 16 |
-                             data[i + 3] << 24;
-
-        const Cell result = gidToCell(gid, ok);
-        if (!ok) {
-            mInvalidTile = gid;
-            return isEmpty() ? TileButNoTilesets : InvalidTile;
-        }
-
-        tileLayer.setCell(x, y, result);
-
-        x++;
-        if (x == tileLayer.width()) {
-            x = 0;
-            y++;
-        }
-    }
-
-    return NoError;
-}
-
-GidMapper::DecodeError GidMapper::decodeChunkData(TileLayer &tileLayer,
-                                                  const QByteArray &layerData,
                                                   Map::LayerDataFormat format,
-                                                  int startX, int startY) const
+                                                  QRect bounds) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
+    if (bounds.isEmpty())
+        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
+
     QByteArray decodedData = QByteArray::fromBase64(layerData);
-    const int size = (CHUNK_SIZE * CHUNK_SIZE) * 4;
+    const int size = (bounds.width() * bounds.height()) * 4;
 
     if (format == Map::Base64Gzip || format == Map::Base64Zlib)
         decodedData = decompress(decodedData, size);
@@ -293,10 +220,10 @@ GidMapper::DecodeError GidMapper::decodeChunkData(TileLayer &tileLayer,
             return isEmpty() ? TileButNoTilesets : InvalidTile;
         }
 
-        tileLayer.setCell(x + startX, y + startY, result);
+        tileLayer.setCell(x + bounds.x(), y + bounds.y(), result);
 
         x++;
-        if (x == CHUNK_SIZE) {
+        if (x == bounds.width()) {
             x = 0;
             y++;
         }

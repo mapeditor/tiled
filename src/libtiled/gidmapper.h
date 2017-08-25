@@ -52,12 +52,8 @@ public:
     unsigned cellToGid(const Cell &cell) const;
 
     QByteArray encodeLayerData(const TileLayer &tileLayer,
-                               Map::LayerDataFormat format) const;
-
-    QByteArray encodeChunkData(const TileLayer &tileLayer,
-                               int chunkStartX,
-                               int chunkStartY,
-                               Map::LayerDataFormat format) const;
+                               Map::LayerDataFormat format,
+                               QRect bounds = QRect()) const;
 
     enum DecodeError {
         NoError = 0,
@@ -68,13 +64,8 @@ public:
 
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
-                                Map::LayerDataFormat format) const;
-
-    DecodeError decodeChunkData(TileLayer &tileLayer,
-                                const QByteArray &layerData,
                                 Map::LayerDataFormat format,
-                                int startX,
-                                int startY) const;
+                                QRect bounds = QRect()) const;
 
     unsigned invalidTile() const;
 
