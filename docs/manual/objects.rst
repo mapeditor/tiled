@@ -77,6 +77,8 @@ paths to be followed.
 Despite its name, the `Edit Polygons <#edit-polygons>`__ tool is also
 used to edit polylines.
 
+.. _insert-tile-tool:
+
 Insert Tile
 ~~~~~~~~~~~
 

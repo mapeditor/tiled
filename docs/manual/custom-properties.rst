@@ -114,12 +114,12 @@ New in Tiled 1.0
 Typed Tiles
 ~~~~~~~~~~~
 
-If you're using tile objects, you can set the type on the tile to avoid
-having to set it on each object instance. Setting the type on the tile
-makes the predefined properties visible when having the tile selected,
-allowing to override the values. It also makes those possibly overriden
-values visible when having a tile object instance selected, again
-allowing you to override them.
+If you're using :ref:`tile objects <insert-tile-tool>`, you can set the
+type on the tile to avoid having to set it on each object instance.
+Setting the type on the tile makes the predefined properties visible
+when having the tile selected, allowing to override the values. It also
+makes those possibly overridden values visible when having a tile object
+instance selected, again allowing you to override them.
 
 An example use-case for this would be to define custom types like "NPC",
 "Enemy" or "Item" with properties like "name", "health" or "weight". You
