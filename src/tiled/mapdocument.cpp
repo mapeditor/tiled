@@ -946,6 +946,19 @@ void MapDocument::updateTemplateInstances(const MapObject *mapObject)
     emit objectsChanged(objectList);
 }
 
+void MapDocument::selectAllInstances(const MapObject *mapObject)
+{
+    QList<MapObject*> objectList;
+    for (ObjectGroup *group : mMap->objectGroups()) {
+        for (auto object : group->objects()) {
+            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+                objectList.append(object);
+            }
+        }
+    }
+    setSelectedObjects(objectList);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
     // Unset the current object when it was part of this list of objects

@@ -306,6 +306,7 @@ private slots:
 
 public slots:
     void updateTemplateInstances(const MapObject *mapObject);
+    void selectAllInstances(const MapObject *mapObject);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);

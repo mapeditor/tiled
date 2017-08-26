@@ -23,6 +23,7 @@
 
 #include "editpolygontool.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "newtemplatedialog.h"
@@ -39,6 +40,7 @@
 #include <QBoxLayout>
 #include <QSplitter>
 #include <QFileDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
 #include <QUndoStack>
@@ -368,6 +370,12 @@ TemplatesView::TemplatesView(QWidget *parent)
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
+
+    mActionSelectAllInstances = new QAction(this);
+    mActionSelectAllInstances->setEnabled(true);
+    mActionSelectAllInstances->setText(tr("Select All Instances"));
+
+    connect(mActionSelectAllInstances, &QAction::triggered, this, &TemplatesView::selectAllInstances);
 }
 
 void TemplatesView::applyTemplateGroups()
@@ -392,6 +400,23 @@ void TemplatesView::applyTemplateGroups()
     }
 }
 
+void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
+{
+    const QModelIndex index = indexAt(event->pos());
+
+    if (!index.isValid())
+        return;
+
+    QMenu menu;
+
+    auto model = ObjectTemplateModel::instance();
+
+    if ((mObjectTemplate = model->toObjectTemplate(index))) {
+        menu.addAction(mActionSelectAllInstances);
+        menu.exec(event->globalPos());
+    }
+}
+
 QSize TemplatesView::sizeHint() const
 {
     return Utils::dpiScaled(QSize(130, 100));
@@ -408,4 +433,14 @@ void TemplatesView::updateSelection(const QItemSelection &selected, const QItemS
 
     ObjectTemplate *objectTemplate = model->toObjectTemplate(indexes.first());
     emit currentTemplateChanged(objectTemplate);
+}
+
+void TemplatesView::selectAllInstances()
+{
+    if (!mObjectTemplate)
+        return;
+
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
+    handler->selectAllInstances(mObjectTemplate->object());
 }
