@@ -830,10 +830,12 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
             } else if (xml.isStartElement()) {
                 if (xml.name() == QLatin1String("chunk")) {
                     const QXmlStreamAttributes atts = xml.attributes();
-                    int startX = atts.value(QLatin1String("startx")).toInt();
-                    int startY = atts.value(QLatin1String("starty")).toInt();
+                    int x = atts.value(QLatin1String("x")).toInt();
+                    int y = atts.value(QLatin1String("y")).toInt();
+                    int width = atts.value(QLatin1String("width")).toInt();
+                    int height = atts.value(QLatin1String("height")).toInt();
 
-                    readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(startX, startY, CHUNK_SIZE, CHUNK_SIZE));
+                    readTileLayerRect(tileLayer, layerDataFormat, encoding, QRect(x, y, width, height));
                 }
             }
         }
@@ -847,26 +849,26 @@ void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                                          QStringRef encoding,
                                          QRect bounds)
 {
-    int x = 0;
-    int y = 0;
+    int x = bounds.x();
+    int y = bounds.y();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
             break;
         } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("tile")) {
-                if (y >= bounds.height()) {
+                if (y >= bounds.bottom() + 1) {
                     xml.raiseError(tr("Too many <tile> elements"));
                     continue;
                 }
 
                 const QXmlStreamAttributes atts = xml.attributes();
                 unsigned gid = atts.value(QLatin1String("gid")).toUInt();
-                tileLayer.setCell(x + bounds.x(), y + bounds.y(), cellForGid(gid));
+                tileLayer.setCell(x, y, cellForGid(gid));
 
                 x++;
-                if (x >= bounds.width()) {
-                    x = 0;
+                if (x >= bounds.right() + 1) {
+                    x = bounds.x();
                     y++;
                 }
 
@@ -926,14 +928,13 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
         return;
     }
 
-    int width = bounds.width();
-    int height = bounds.height();
+    int currentTile = 0;
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+    for (int y = bounds.top(); y <= bounds.bottom(); y++) {
+        for (int x = bounds.left(); x <= bounds.right(); x++) {
             bool conversionOk;
-            const unsigned gid = tiles.at(y * width + x)
-                    .toUInt(&conversionOk);
+            const unsigned gid = tiles.at(currentTile++).toUInt(&conversionOk);
+
             if (!conversionOk) {
                 xml.raiseError(
                         tr("Unable to parse tile at (%1,%2) on layer '%3'")
@@ -941,7 +942,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
                 return;
             }
 
-            tileLayer.setCell(x + bounds.x(), y + bounds.y(), cellForGid(gid));
+            tileLayer.setCell(x, y, cellForGid(gid));
         }
     }
 }

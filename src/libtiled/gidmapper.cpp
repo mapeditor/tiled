@@ -157,16 +157,11 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     if (bounds.isEmpty())
         bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
 
-    const int startX = bounds.x();
-    const int startY = bounds.y();
-    const int endX = startX + bounds.width() - 1;
-    const int endY = startY + bounds.height() - 1;
-
     QByteArray tileData;
-    tileData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
+    tileData.reserve(bounds.width() * bounds.height() * 4);
 
-    for (int y = startY; y <= endY; ++y) {
-        for (int x = startX; x <= endX; ++x) {
+    for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+        for (int x = bounds.left(); x <= bounds.right(); ++x) {
             const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
             tileData.append((char) (gid));
             tileData.append((char) (gid >> 8));
@@ -204,8 +199,8 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
         return CorruptLayerData;
 
     const unsigned char *data = reinterpret_cast<const unsigned char*>(decodedData.constData());
-    int x = 0;
-    int y = 0;
+    int x = bounds.x();
+    int y = bounds.y();
     bool ok;
 
     for (int i = 0; i < size - 3; i += 4) {
@@ -220,11 +215,11 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
             return isEmpty() ? TileButNoTilesets : InvalidTile;
         }
 
-        tileLayer.setCell(x + bounds.x(), y + bounds.y(), result);
+        tileLayer.setCell(x, y, result);
 
         x++;
-        if (x == bounds.width()) {
-            x = 0;
+        if (x == bounds.right() + 1) {
+            x = bounds.x();
             y++;
         }
     }
