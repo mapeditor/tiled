@@ -85,6 +85,7 @@ public:
     QAction *removeTilesAction() const;
     QAction *editTerrainAction() const;
     QAction *editCollisionAction() const;
+    QAction *showAnimationEditor() const;
 
     TileAnimationEditor *tileAnimationEditor() const;
 
@@ -127,6 +128,8 @@ private slots:
     void setWangColorImage(Tile *tile, bool isEdge, int index);
     void setWangColorColor(QColor color, bool isEdge, int index);
 
+    void onAnimationEditorClosed();
+
 private:
     void setCurrentTile(Tile *tile);
 
@@ -139,6 +142,7 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mShowAnimationEditor;
 
     PropertiesDock *mPropertiesDock;
     UndoDock *mUndoDock;
@@ -162,6 +166,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::showAnimationEditor() const
+{
+    return mShowAnimationEditor;
 }
 
 inline TileAnimationEditor *TilesetEditor::tileAnimationEditor() const

@@ -162,6 +162,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
+    , mShowAnimationEditor(new QAction(this))
     , mPropertiesDock(new PropertiesDock(mMainWindow))
     , mUndoDock(new UndoDock(mMainWindow))
     , mTerrainDock(new TerrainDock(mMainWindow))
@@ -196,6 +197,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
+    mShowAnimationEditor->setIcon(QIcon(QLatin1String(":images/24x24/animation-edit.png")));
+    mShowAnimationEditor->setCheckable(true);
+    mShowAnimationEditor->setIconVisibleInMenu(false);
     editTerrain->setIcon(QIcon(QLatin1String(":images/24x24/terrain.png")));
     editTerrain->setIconVisibleInMenu(false);
     editCollision->setIcon(QIcon(QLatin1String(":images/48x48/tile-collision-editor.png")));
@@ -214,6 +218,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTilesetToolBar->addAction(editTerrain);
     mTilesetToolBar->addAction(editCollision);
     mTilesetToolBar->addAction(editWang);
+    mTilesetToolBar->addAction(mShowAnimationEditor);
 
     mMainWindow->statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -227,6 +232,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(editTerrain, &QAction::toggled, this, &TilesetEditor::setEditTerrain);
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
+    connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
+
+    connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged, this, &TilesetEditor::currentTerrainChanged);
     connect(mTerrainDock, &TerrainDock::addTerrainTypeRequested, this, &TilesetEditor::addTerrainType);
@@ -569,6 +577,7 @@ void TilesetEditor::retranslateUi()
 
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
+    mShowAnimationEditor->setText(tr("Tile Animation Editor"));
 
     mTileCollisionDock->toggleViewAction()->setShortcut(QCoreApplication::translate("Tiled::Internal::MainWindow", "Ctrl+Shift+O"));
 }
@@ -960,6 +969,11 @@ void TilesetEditor::setWangColorColor(QColor color, bool isEdge, int index)
                                                                         index,
                                                                         isEdge,
                                                                         mWangDock->wangColorModel()));
+}
+
+void TilesetEditor::onAnimationEditorClosed()
+{
+    mShowAnimationEditor->setChecked(false);
 }
 
 void TilesetEditor::updateAddRemoveActions()

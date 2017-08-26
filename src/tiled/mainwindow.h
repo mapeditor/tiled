@@ -161,7 +161,6 @@ private slots:
     void autoMappingWarning(bool automatic);
 
     void onObjectTypesEditorClosed();
-    void onAnimationEditorClosed();
 
     void ensureHasBorderInFullScreen();
 
@@ -211,7 +210,6 @@ private:
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
-    QAction *mShowTileAnimationEditor;
 
     void setupQuickStamps();
 
