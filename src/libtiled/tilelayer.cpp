@@ -197,20 +197,17 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    const QRect bounds = region.boundingRect();
     const QRect areaBounds = region.boundingRect();
-    const int offsetX = qMax(0, areaBounds.x() - bounds.x());
-    const int offsetY = qMax(0, areaBounds.y() - bounds.y());
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      bounds.width(), bounds.height());
+                                      areaBounds.width(), areaBounds.height());
 
     for (const QRect &rect : region.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                copied->setCell(x - areaBounds.x() + offsetX,
-                                y - areaBounds.y() + offsetY,
+                copied->setCell(x - areaBounds.x(),
+                                y - areaBounds.y(),
                                 cellAt(x, y));
 
     return copied;
@@ -236,7 +233,10 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
                          const QRegion &mask)
 {
     // Determine the overlapping area
-    QRegion area = QRect(x, y, layer->width(), layer->height());
+    int width = qMax(layer->width(), layer->bounds().width());
+    int height = qMax(layer->height(), layer->bounds().height());
+
+    QRegion area = QRect(x, y, width, height);
 
     if (!mask.isEmpty())
         area &= mask;
