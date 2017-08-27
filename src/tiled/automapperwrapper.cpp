@@ -124,5 +124,5 @@ void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
                 b.top() - t->y(),
                 layer,
                 b.translated(-t->position()));
-    emit mMapDocument->regionChanged(b, t);
+    emit mMapDocument->regionChanged(layer->rect(), t);
 }
