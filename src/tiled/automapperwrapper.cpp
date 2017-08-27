@@ -115,7 +115,7 @@ void AutoMapperWrapper::redo()
 void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
 {
     Map *map = mMapDocument->map();
-    QRect b = layer->bounds();
+    QRect b = layer->rect();
 
     Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
     TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
@@ -124,5 +124,5 @@ void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
                 b.top() - t->y(),
                 layer,
                 b.translated(-t->position()));
-    emit mMapDocument->regionChanged(layer->rect(), t);
+    emit mMapDocument->regionChanged(b, t);
 }
