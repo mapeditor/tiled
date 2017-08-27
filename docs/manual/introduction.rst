@@ -51,7 +51,7 @@ following default window layout:
    Tiled Window
 
 There is a large gray area in the middle because no map is open yet. The
-first thing we’ll do is to start a new map with *File -> New…*
+first thing we’ll do is to start a new map with *File -> New -> New Map…*
 (``Ctrl+N``). The following dialog will pop up:
 
 .. figure:: images/introduction/tiled-new-map.png
@@ -67,8 +67,8 @@ time.
 
 After pressing *OK*, we’ll see the tile grid and an initial tile layer
 will be added to the map. However, before we can start using any tiles
-we need to add a tileset. Choose *Map -> New Tileset…* to open the New
-Tileset dialog:
+we need to add a tileset. Choose *File -> New -> New Tileset…* to open the
+New Tileset dialog:
 
 .. figure:: images/introduction/tiled-new-tileset.png
    :alt: New Tileset
