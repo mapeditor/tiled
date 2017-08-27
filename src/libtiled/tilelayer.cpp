@@ -232,11 +232,7 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
 void TileLayer::setCells(int x, int y, TileLayer *layer,
                          const QRegion &mask)
 {
-    // Determine the overlapping area
-    int width = qMax(layer->width(), layer->bounds().width());
-    int height = qMax(layer->height(), layer->bounds().height());
-
-    QRegion area = QRect(x, y, width, height);
+    QRegion area = QRect(x, y, layer->width(), layer->height());
 
     if (!mask.isEmpty())
         area &= mask;
