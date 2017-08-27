@@ -166,6 +166,7 @@ public:
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
+    void loadImages();
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 

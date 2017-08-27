@@ -4,6 +4,8 @@ TEMPLATE = lib
 TARGET = tiled
 target.path = $${LIBDIR}
 INSTALLS += target
+QT += network
+
 macx {
     DESTDIR = ../../bin/Tiled.app/Contents/Frameworks
     QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/

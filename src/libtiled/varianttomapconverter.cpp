@@ -123,8 +123,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     // Try to load the tileset images
     auto tilesets = map->tilesets();
     for (SharedTileset &tileset : tilesets) {
-        if (!tileset->imageSource().isEmpty() && tileset->fileName().isEmpty())
-            tileset->loadImage();
+        if (tileset->fileName().isEmpty())
+            tileset->loadImages();
     }
 
     return map.take();

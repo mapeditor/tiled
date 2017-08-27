@@ -306,10 +306,9 @@ Map *MapReaderPrivate::readMap()
     } else {
         // Try to load the tileset images for embedded tilesets
         auto tilesets = mMap->tilesets();
-        for (SharedTileset &tileset : tilesets) {
-            if (!tileset->isCollection() && tileset->fileName().isEmpty())
-                tileset->loadImage();
-        }
+        for (SharedTileset &tileset : tilesets)
+            if (tileset->fileName().isEmpty())
+                tileset->loadImages();
 
         // Fix up sizes of tile objects. This is for backwards compatibility.
         LayerIterator iterator(mMap.data());

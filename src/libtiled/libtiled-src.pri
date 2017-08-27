@@ -16,6 +16,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/maprenderer.cpp \
     $$PWD/maptovariantconverter.cpp \
     $$PWD/mapwriter.cpp \
+    $$PWD/networkaccessmanager.cpp \
     $$PWD/objectgroup.cpp \
     $$PWD/objecttemplate.cpp \
     $$PWD/orthogonalrenderer.cpp \
@@ -55,6 +56,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/maprenderer.h \
     $$PWD/maptovariantconverter.h \
     $$PWD/mapwriter.h \
+    $$PWD/networkaccessmanager.h \
     $$PWD/object.h \
     $$PWD/objectgroup.h \
     $$PWD/objecttemplate.h \

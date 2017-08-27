@@ -29,6 +29,7 @@
 
 #include "tileset.h"
 
+#include "networkaccessmanager.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
@@ -248,7 +249,27 @@ bool Tileset::loadFromImage(const QImage &image, const QString &source)
  */
 bool Tileset::loadImage()
 {
-    return loadFromImage(mImageReference.create(), mImageReference.source);
+    if (mImageReference.source.isLocalFile())
+        return loadFromImage(mImageReference.create(), mImageReference.source);
+    else
+        NetworkAccessManager::instance()->requestImage(this);
+
+    return false;
+}
+
+void Tileset::loadImages()
+{
+    if (isCollection()) {
+        for (Tile *tile : mTiles) {
+            if (tile->imageSource().isLocalFile()) {
+                tile->setImage(QPixmap(tile->imageSource().toLocalFile()));
+            } else {
+                NetworkAccessManager::instance()->requestImage(tile);
+            }
+        }
+    } else {
+        loadImage();
+    }
 }
 
 /**

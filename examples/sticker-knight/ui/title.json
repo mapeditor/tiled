@@ -3,7 +3,6 @@
  "layers":[
         {
          "draworder":"topdown",
-         "height":26,
          "name":"background",
          "objects":[
                 {
@@ -17,7 +16,7 @@
                  "width":1736,
                  "x":-256,
                  "y":920.666666666667
-                }, 
+                },
                 {
                  "gid":6,
                  "height":832,
@@ -33,13 +32,11 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":38,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
-         "height":26,
          "name":"clouds",
          "objects":[
                 {
@@ -53,7 +50,7 @@
                  "width":184,
                  "x":640,
                  "y":320
-                }, 
+                },
                 {
                  "gid":8,
                  "height":61.3333333333333,
@@ -65,7 +62,7 @@
                  "width":184,
                  "x":336,
                  "y":144
-                }, 
+                },
                 {
                  "gid":8,
                  "height":61.3333333333333,
@@ -77,7 +74,7 @@
                  "width":192,
                  "x":1024,
                  "y":145
-                }, 
+                },
                 {
                  "gid":2147483656,
                  "height":61.3333333333333,
@@ -89,7 +86,7 @@
                  "width":184,
                  "x":44,
                  "y":136
-                }, 
+                },
                 {
                  "gid":6,
                  "height":600,
@@ -101,7 +98,7 @@
                  "width":954,
                  "x":-226,
                  "y":768
-                }, 
+                },
                 {
                  "gid":2147483654,
                  "height":546,
@@ -113,7 +110,7 @@
                  "width":826,
                  "x":710,
                  "y":782
-                }, 
+                },
                 {
                  "gid":2147483656,
                  "height":103.333333333333,
@@ -125,7 +122,7 @@
                  "width":284,
                  "x":926,
                  "y":307
-                }, 
+                },
                 {
                  "gid":8,
                  "height":103.333333333333,
@@ -141,13 +138,11 @@
          "opacity":0.490000009536743,
          "type":"objectgroup",
          "visible":true,
-         "width":38,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
-         "height":38,
          "name":"title",
          "objects":[
                 {
@@ -165,13 +160,11 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":25,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
-         "height":26,
          "name":"help",
          "objects":[
                 {
@@ -189,13 +182,11 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":false,
-         "width":38,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
-         "height":38,
          "name":"buttons",
          "objects":[
                 {
@@ -209,7 +200,7 @@
                  "width":256,
                  "x":485,
                  "y":655.333333333333
-                }, 
+                },
                 {
                  "gid":1,
                  "height":64,
@@ -225,13 +216,13 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":26,
          "x":0,
          "y":0
         }],
  "nextobjectid":38,
  "orientation":"orthogonal",
  "renderorder":"right-down",
+ "tiledversion":"1.0.2",
  "tileheight":32,
  "tilesets":[
         {
@@ -246,36 +237,51 @@
             {
              "0":
                 {
-                 "image":"buttonHelp.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/buttonHelp.png",
+                 "imageheight":64,
+                 "imagewidth":192
                 },
              "1":
                 {
-                 "image":"buttonStart.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/buttonStart.png",
+                 "imageheight":64,
+                 "imagewidth":192
                 },
              "2":
                 {
-                 "image":"helpBackground.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/helpBackground.png",
+                 "imageheight":416,
+                 "imagewidth":416
                 },
              "3":
                 {
-                 "image":"title.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/title.png",
+                 "imageheight":224,
+                 "imagewidth":448
                 },
              "5":
                 {
-                 "image":"backgroundSet.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/backgroundSet.png",
+                 "imageheight":832,
+                 "imagewidth":1232
                 },
              "6":
                 {
-                 "image":"block.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/block.png",
+                 "imageheight":64,
+                 "imagewidth":64
                 },
              "7":
                 {
-                 "image":"cloud.png"
+                 "image":"https://raw.githubusercontent.com/bjorn/tiled/master/examples/sticker-knight/ui/cloud.png",
+                 "imageheight":128,
+                 "imagewidth":384
                 }
             },
          "tilewidth":1232
         }],
  "tilewidth":32,
+ "type":"map",
  "version":1,
  "width":38
 }
