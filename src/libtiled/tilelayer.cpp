@@ -197,20 +197,17 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
-    const QRect bounds = region.boundingRect();
     const QRect areaBounds = region.boundingRect();
-    const int offsetX = qMax(0, areaBounds.x() - bounds.x());
-    const int offsetY = qMax(0, areaBounds.y() - bounds.y());
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      bounds.width(), bounds.height());
+                                      areaBounds.width(), areaBounds.height());
 
     for (const QRect &rect : region.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                copied->setCell(x - areaBounds.x() + offsetX,
-                                y - areaBounds.y() + offsetY,
+                copied->setCell(x - areaBounds.x(),
+                                y - areaBounds.y(),
                                 cellAt(x, y));
 
     return copied;
@@ -235,7 +232,6 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
 void TileLayer::setCells(int x, int y, TileLayer *layer,
                          const QRegion &mask)
 {
-    // Determine the overlapping area
     QRegion area = QRect(x, y, layer->width(), layer->height());
 
     if (!mask.isEmpty())
@@ -641,8 +637,8 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
 
     const int dx = other->x() - mX;
     const int dy = other->y() - mY;
-    QRect r = QRect(0, 0, width(), height());
-    r &= QRect(dx, dy, other->width(), other->height());
+
+    const QRect r = bounds().united(other->bounds()).translated(-position());
 
     for (int y = r.top(); y <= r.bottom(); ++y) {
         for (int x = r.left(); x <= r.right(); ++x) {
