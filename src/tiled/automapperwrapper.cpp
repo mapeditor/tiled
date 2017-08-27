@@ -63,7 +63,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         TileLayer *before = mLayersBefore.at(beforeIndex);
         TileLayer *after = static_cast<TileLayer*>(map->layerAt(layerIndex));
 
-        if (before->drawMargins() != after->drawMargins())
+        if (before->drawMargins() != after->drawMargins() || before->bounds() != after->bounds())
             emit mMapDocument->tileLayerDrawMarginsChanged(after);
 
         // reduce memory usage by saving only diffs
