@@ -60,7 +60,6 @@
 #include "resizedialog.h"
 #include "templatemanager.h"
 #include "terrain.h"
-#include "tileanimationeditor.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -389,9 +388,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowObjectTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
-    mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
-    mShowTileAnimationEditor->setCheckable(true);
-    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mShowTileAnimationEditor);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->showAnimationEditor());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editCollisionAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, tilesetEditor->editTerrainAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
@@ -405,11 +402,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mShowObjectTypesEditor, SIGNAL(toggled(bool)),
             mObjectTypesEditor, SLOT(setVisible(bool)));
     connect(mObjectTypesEditor, SIGNAL(closed()), SLOT(onObjectTypesEditorClosed()));
-
-    connect(mShowTileAnimationEditor, &QAction::toggled,
-            tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::setVisible);
-    connect(tilesetEditor->tileAnimationEditor(), &TileAnimationEditor::closed,
-            this, &MainWindow::onAnimationEditorClosed);
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -1323,11 +1315,6 @@ void MainWindow::onObjectTypesEditorClosed()
     mShowObjectTypesEditor->setChecked(false);
 }
 
-void MainWindow::onAnimationEditorClosed()
-{
-    mShowTileAnimationEditor->setChecked(false);
-}
-
 void MainWindow::ensureHasBorderInFullScreen()
 {
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
@@ -1556,7 +1543,6 @@ void MainWindow::retranslateUi()
     mNewLayerMenu->setTitle(tr("&New"));
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
-    mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mActionHandler->retranslateUi();
 }
 

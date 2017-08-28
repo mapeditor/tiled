@@ -139,5 +139,6 @@
         <file>images/24x24/wangtile.png</file>
         <file>images/32x32/wangtile.png</file>
         <file>images/24x24/wangtile-edit.png</file>
+        <file>images/24x24/animation-edit.png</file>
     </qresource>
 </RCC>
