@@ -641,17 +641,12 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 
-    int startX = 0;
-    int startY = 0;
-    int endX = tileLayer.width() - 1;
-    int endY = tileLayer.height() - 1;
-
     if (tileLayer.map()->infinite()) {
         QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-        startX = bounds.left();
-        startY = bounds.top();
-        endX = bounds.right() + 1;
-        endY = bounds.bottom() + 1;
+        int startX = bounds.left();
+        int startY = bounds.top();
+        int endX = bounds.right() + 1;
+        int endY = bounds.bottom() + 1;
 
         int chunkStartX = startX;
         int chunkStartY = startY;
@@ -683,7 +678,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
             chunkStartY += CHUNK_SIZE;
         }
     } else {
-        writeTileLayerData(w, tileLayer, QRect(0, 0, endX + 1, endY + 1));
+        writeTileLayerData(w, tileLayer, QRect(0, 0, tileLayer.width(), tileLayer.height()));
     }
 
     w.writeEndElement(); // </data>
