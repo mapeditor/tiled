@@ -154,9 +154,11 @@ void AbstractTileFillTool::updateRandomListAndMissingTilesets()
         return;
 
     if (mIsWangFill) {
-        const SharedTileset &tileset = mWangSet->tileset()->sharedPointer();
-        if (!mapDocument()->map()->tilesets().contains(tileset))
-            mMissingTilesets.append(tileset);
+        if (mWangSet) {
+            const SharedTileset &tileset = mWangSet->tileset()->sharedPointer();
+            if (!mapDocument()->map()->tilesets().contains(tileset))
+                mMissingTilesets.append(tileset);
+        }
     } else {
         for (const TileStampVariation &variation : mStamp.variations()) {
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
@@ -197,9 +199,7 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
                           dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                           mapDocument()->map()->staggerAxis());
 
-    TileLayer *stamp = wangFiller.fillRegion(backgroundTileLayer,
-                                              region);
-
+    TileLayer *stamp = wangFiller.fillRegion(backgroundTileLayer, region);
     tileLayerToFill.setCells(0, 0, stamp);
     delete stamp;
 }
