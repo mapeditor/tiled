@@ -23,8 +23,10 @@
 
 #include "editpolygontool.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "newtemplatedialog.h"
 #include "objectgroup.h"
 #include "objecttemplatemodel.h"
 #include "objectselectiontool.h"
@@ -38,6 +40,7 @@
 #include <QBoxLayout>
 #include <QSplitter>
 #include <QFileDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QToolBar>
 #include <QUndoStack>
@@ -75,7 +78,7 @@ TemplatesDock::TemplatesDock(QWidget *parent):
 
     mNewTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     Utils::setThemeIcon(mNewTemplateGroup, "document-new");
-    connect(mNewTemplateGroup, &QAction::triggered, this, &TemplatesDock::newTemplateGroup);
+    connect(mNewTemplateGroup, &QAction::triggered, this, [](){ NewTemplateDialog::newTemplateGroup(); });
 
     mOpenTemplateGroup->setIcon(QIcon(QLatin1String(":/images/16x16/document-open.png")));
     Utils::setThemeIcon(mOpenTemplateGroup, "document-open");
@@ -202,46 +205,6 @@ void TemplatesDock::setSelectedTool(AbstractTool *tool)
     mMapScene->enableSelectedTool();
 }
 
-void TemplatesDock::newTemplateGroup()
-{
-    FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
-    QString filter = helper.filter();
-    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
-
-    Preferences *prefs = Preferences::instance();
-    QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    suggestedFileName += tr("/untitled.ttx");
-
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                    suggestedFileName,
-                                                    filter,
-                                                    &selectedFilter);
-
-    if (fileName.isEmpty())
-        return;
-
-    auto templateGroup = new TemplateGroup();
-    templateGroup->setName(QFileInfo(fileName).baseName());
-    templateGroup->setFileName(fileName);
-    QScopedPointer<TemplateGroupDocument>
-        templateGroupDocument(new TemplateGroupDocument(templateGroup));
-
-    TemplateGroupFormat *format = helper.formatByNameFilter(selectedFilter);
-    templateGroup->setFormat(format);
-
-    QString error;
-    if (!templateGroupDocument->save(fileName, &error)) {
-        QMessageBox::critical(this, tr("Error Creating Template Group"), error);
-        return;
-    }
-
-    auto model = ObjectTemplateModel::instance();
-    model->addNewDocument(templateGroupDocument.take());
-
-    prefs->setLastPath(Preferences::TemplateDocumentsFile,
-                       QFileInfo(fileName).path());
-}
-
 void TemplatesDock::openTemplateGroup()
 {
     FormatHelper<TemplateGroupFormat> helper(FileFormat::ReadWrite);
@@ -249,7 +212,7 @@ void TemplatesDock::openTemplateGroup()
 
     Preferences *prefs = Preferences::instance();
     QString suggestedFileName = prefs->lastPath(Preferences::TemplateDocumentsFile);
-    QString selectedFilter = TtxTemplateGroupFormat().nameFilter();
+    QString selectedFilter = TgxTemplateGroupFormat().nameFilter();
 
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Template Group"),
                                                     suggestedFileName,
@@ -297,6 +260,7 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
         Map *map = new Map(orientation, 1, 1, 1, 1);
 
         mObject = objectTemplate->object()->clone();
+        mObject->markAsTemplateBase();
 
         if (Tile *tile = mObject->cell().tile()) {
             map->addTileset(tile->sharedTileset());
@@ -406,6 +370,12 @@ TemplatesView::TemplatesView(QWidget *parent)
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
+
+    mActionSelectAllInstances = new QAction(this);
+    mActionSelectAllInstances->setEnabled(true);
+    mActionSelectAllInstances->setText(tr("Select All Instances"));
+
+    connect(mActionSelectAllInstances, &QAction::triggered, this, &TemplatesView::selectAllInstances);
 }
 
 void TemplatesView::applyTemplateGroups()
@@ -430,6 +400,23 @@ void TemplatesView::applyTemplateGroups()
     }
 }
 
+void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
+{
+    const QModelIndex index = indexAt(event->pos());
+
+    if (!index.isValid())
+        return;
+
+    QMenu menu;
+
+    auto model = ObjectTemplateModel::instance();
+
+    if ((mObjectTemplate = model->toObjectTemplate(index))) {
+        menu.addAction(mActionSelectAllInstances);
+        menu.exec(event->globalPos());
+    }
+}
+
 QSize TemplatesView::sizeHint() const
 {
     return Utils::dpiScaled(QSize(130, 100));
@@ -446,4 +433,14 @@ void TemplatesView::updateSelection(const QItemSelection &selected, const QItemS
 
     ObjectTemplate *objectTemplate = model->toObjectTemplate(indexes.first());
     emit currentTemplateChanged(objectTemplate);
+}
+
+void TemplatesView::selectAllInstances()
+{
+    if (!mObjectTemplate)
+        return;
+
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
+    handler->selectAllInstances(mObjectTemplate->object());
 }

@@ -157,7 +157,8 @@ private:
         CornerCountProperty,
         WangColorProbabilityProperty,
         CustomProperty,
-        InfiniteProperty
+        InfiniteProperty,
+        TemplateInstanceProperty
     };
 
     void addMapProperties();

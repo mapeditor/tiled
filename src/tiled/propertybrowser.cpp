@@ -644,6 +644,7 @@ void PropertyBrowser::addMapObjectProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
+    addProperty(TemplateInstanceProperty, QVariant::Bool, tr("Template Instance"), groupProperty)->setEnabled(false);
     addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
     QtVariantProperty *typeProperty =
@@ -1557,6 +1558,7 @@ void PropertyBrowser::updateProperties()
                                                                 : QPalette::Active;
 
         mIdToProperty[IdProperty]->setValue(mapObject->id());
+        mIdToProperty[TemplateInstanceProperty]->setValue(mapObject->isTemplateInstance());
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(type);
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));

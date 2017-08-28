@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changelayer.h"
+#include "changemapobject.h"
 #include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
@@ -133,8 +134,15 @@ void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
     if (mSelectedObjects.size() != 1)
         return;
 
-    auto model = ObjectTemplateModel::instance();
-    model->saveObjectToDocument(mSelectedObjects.first(), name, groupIndex);
+    ObjectTemplateModel* model = ObjectTemplateModel::instance();
+    MapObject *object = mSelectedObjects.first();
+
+    if (ObjectTemplate *objectTemplate = model->saveObjectToDocument(object, name, groupIndex)) {
+        // Convert the saved object into an instance and clear the changed properties flags
+        object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+        object->setChangedProperties(0);
+        emit objectsChanged(mSelectedObjects);
+    }
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -938,6 +946,19 @@ void MapDocument::updateTemplateInstances(const MapObject *mapObject)
     emit objectsChanged(objectList);
 }
 
+void MapDocument::selectAllInstances(const MapObject *mapObject)
+{
+    QList<MapObject*> objectList;
+    for (ObjectGroup *group : mMap->objectGroups()) {
+        for (auto object : group->objects()) {
+            if (object->isTemplateInstance() && object->templateObject() == mapObject) {
+                objectList.append(object);
+            }
+        }
+    }
+    setSelectedObjects(objectList);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
     // Unset the current object when it was part of this list of objects
@@ -1093,6 +1114,14 @@ void MapDocument::moveObjectsDown(const QList<MapObject *> &objects)
 
     if (command->childCount() > 0)
         mUndoStack->push(command.take());
+}
+
+void MapDocument::detachObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->push(new DetachObjects(this, objects));
 }
 
 void MapDocument::createRenderer()

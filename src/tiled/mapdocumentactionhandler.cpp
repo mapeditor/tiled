@@ -635,6 +635,12 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
     }
 }
 
+void MapDocumentActionHandler::selectAllInstances(const MapObject *mapObject)
+{
+    if (mMapDocument)
+        mMapDocument->selectAllInstances(mapObject);
+}
+
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = nullptr;

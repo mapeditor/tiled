@@ -191,7 +191,7 @@ bool ObjectTemplateModel::addTemplateGroup(TemplateGroup *templateGroup)
     return true;
 }
 
-bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, int documentIndex)
+ObjectTemplate *ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, int documentIndex)
 {
     auto document = mTemplateDocuments.at(documentIndex);
     auto templateGroup = document->templateGroup();
@@ -209,10 +209,10 @@ bool ObjectTemplateModel::saveObjectToDocument(MapObject *object, QString name, 
     document->addTemplate(objectTemplate);
     endInsertRows();
 
-    if (!document->save(document->fileName()))
-        return false;
-
-    return true;
+    if (document->save(document->fileName()))
+        return objectTemplate;
+    else
+        return nullptr;
 }
 
 ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) const

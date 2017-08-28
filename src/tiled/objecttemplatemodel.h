@@ -53,7 +53,7 @@ public:
     bool addNewDocument(TemplateGroupDocument *document);
     bool addDocument(TemplateGroupDocument *document);
     bool addTemplateGroup(TemplateGroup *templateGroup);
-    bool saveObjectToDocument(MapObject *object, QString name, int documentIndex);
+    ObjectTemplate *saveObjectToDocument(MapObject *object, QString name, int documentIndex);
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
     void save(const TemplateGroup *templateGroup) const;
 

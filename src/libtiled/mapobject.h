@@ -210,6 +210,10 @@ public:
 
     bool isTemplateInstance() const;
 
+    bool isTemplateBase() const;
+    void markAsTemplateBase();
+
+
     TemplateGroup *templateGroup() const;
 
 private:
@@ -231,6 +235,7 @@ private:
     qreal mRotation;
     bool mVisible;
     ChangedProperties mChangedProperties;
+    bool mTemplateBase;
 };
 
 /**
@@ -477,6 +482,12 @@ inline void MapObject::setPropertyChanged(Property property, bool state)
 
 inline bool MapObject::propertyChanged(Property property) const
 { return mChangedProperties.testFlag(property); }
+
+inline bool MapObject::isTemplateBase() const
+{ return mTemplateBase; }
+
+inline void MapObject::markAsTemplateBase()
+{ mTemplateBase = true; }
 
 } // namespace Tiled
 

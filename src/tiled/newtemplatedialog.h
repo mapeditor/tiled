@@ -39,12 +39,13 @@ class NewTemplateDialog : public QDialog
 public:
     explicit NewTemplateDialog(const QString &objectName, QWidget *parent = nullptr);
     ~NewTemplateDialog();
+    static void newTemplateGroup();
 
     void createTemplate(QString &name, int &index);
 
 private slots:
     void updateOkButton();
-    void newTemplateGroup();
+    void createGroup();
 
 private:
     Ui::NewTemplateDialog *mUi;

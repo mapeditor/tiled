@@ -159,6 +159,7 @@ public:
                             ObjectGroup *objectGroup);
     void moveObjectsUp(const QList<MapObject*> &objects);
     void moveObjectsDown(const QList<MapObject*> &objects);
+    void detachObjects(const QList<MapObject*> &objects);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -305,6 +306,7 @@ private slots:
 
 public slots:
     void updateTemplateInstances(const MapObject *mapObject);
+    void selectAllInstances(const MapObject *mapObject);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);

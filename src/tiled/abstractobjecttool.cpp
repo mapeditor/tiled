@@ -209,6 +209,37 @@ void AbstractObjectTool::saveSelectedObject()
         mapDocument()->saveSelectedObject(name, groupIndex);
 }
 
+void AbstractObjectTool::detachSelectedObjects()
+{
+    MapDocument *currentMapDocument = mapDocument();
+    QList<MapObject *> templateInstances;
+
+    /**
+     * Stores the unique tilesets used by the templates
+     * to avoid creating multiple undo commands for the same tileset
+     */
+    QSet<SharedTileset> sharedTilesets;
+
+    for (MapObject *object : mapDocument()->selectedObjects()) {
+        if (object->templateObject()) {
+            templateInstances.append(object);
+
+            if (Tile *tile = object->cell().tile())
+                sharedTilesets.insert(tile->tileset()->sharedPointer());
+        }
+    }
+
+    auto changeMapObjectCommand = new DetachObjects(currentMapDocument, templateInstances);
+
+    // Add any missing tileset used by the templates to the map map before detaching
+    for (SharedTileset sharedTileset : sharedTilesets) {
+        if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
+            new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
+    }
+
+    currentMapDocument->undoStack()->push(changeMapObjectCommand);
+}
+
 void AbstractObjectTool::changeTile()
 {
     QList<MapObject*> tileObjects;
@@ -302,11 +333,26 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     }
 
     if (selectedObjects.size() == 1) {
-        // Saving objects with embedded tilesets is disabled
-        auto cell = selectedObjects.first()->cell();
-        if (cell.isEmpty() || cell.tileset()->isExternal())
-            menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+        MapObject *currentObject = selectedObjects.first();
+        if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
+            const Cell cell = selectedObjects.first()->cell();
+            // Saving objects with embedded tilesets is disabled
+            if (cell.isEmpty() || cell.tileset()->isExternal())
+                menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+        }
+
+        if (currentObject->isTemplateBase()) { // Hide this operations for template base
+            duplicateAction->setVisible(false);
+            removeAction->setVisible(false);
+        }
     }
+
+    bool anyIsTemplateInstance = std::any_of(selectedObjects.begin(),
+                                             selectedObjects.end(),
+                                             [](MapObject *object) { return object->isTemplateInstance(); });
+
+    if (anyIsTemplateInstance)
+        menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));

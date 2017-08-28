@@ -61,7 +61,6 @@ signals:
 
 private slots:
     void setSelectedTool(AbstractTool*tool);
-    void newTemplateGroup();
     void openTemplateGroup();
     void setTemplate(ObjectTemplate *objectTemplate);
 
@@ -107,8 +106,16 @@ signals:
     void focusInEvent(QFocusEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
 
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
 public slots:
     void updateSelection(const QItemSelection &selected, const QItemSelection &deselected);
+    void selectAllInstances();
+
+private:
+    QAction *mActionSelectAllInstances;
+    ObjectTemplate *mObjectTemplate;
 };
 
 inline void TemplatesDock::setPropertiesDock(PropertiesDock *propertiesDock)
