@@ -34,6 +34,11 @@ The Stamp Brush has some extra features:
    on the tile stamp, as well as the probability set on each tile in the
    *Tileset Editor*.
 
+-  Activate the *Wang Fill Mode* using the Wang tile button on the tool bar
+   to have the Stamp Brush paint using the Wang methods. This makes adjacent
+   tiles match edge and corner colors to be placed. Wang tiles are described
+   in detail in :doc:`using-wang-tiles`.
+
 -  In combination with the *Tile Stamps* view, it can also place
    randomly from a set of predefined tile stamps. This can be more
    useful than the *Random Mode*, which randomly places individual
@@ -43,6 +48,8 @@ The Stamp Brush has some extra features:
    ``X`` and ``Y`` respectively. You can also rotate left/right by
    using ``Z`` and ``Shift+Z`` respectively. These actions can also be
    triggered from the Tool Options tool bar.
+
+.. _terrain-tool:
 
 Terrain Brush
 -------------
@@ -75,6 +82,26 @@ where two sides need to have equal opportunities. The modifier works
 well in combination with either ``Shift`` for drawing lines or ``Ctrl``
 for reducing the edited area.
 
+.. _wang-tool:
+
+Wang Brush
+----------
+
+Shortcut: ``G``
+
+The Wang Brush works in a very similar way to the :ref:`terrain-tool`, except
+it uses Wang sets. Key differences are:
+
+-  Wang tiles support edges as well as corners, whereas terrains only support
+   corners. This makes Wang tiles useful for drawing paths, or fences.
+-  The default size is to edit one edge/corner. Holding ``Ctrl`` expands it
+   to the whole tile.
+-  If the transition cannot be made on the immediately affected tiles,
+   the operation is aborted.
+
+To use the tool, a color must be selected from the Wang color view.
+Wang tiles and this tool are described in detail in :doc:`using-wang-tiles`.
+
 Bucket Fill Tool
 ----------------
 
@@ -83,7 +110,7 @@ Shortcut: ``F``
 The Bucket Fill Tool provides a quick way of filling empty areas or
 areas covered with the same tiles. The currently active tile stamp will
 be repeated in the filled area. It can also be used in combination with
-the *Random Mode*.
+the *Random Mode*, or *Wang Fill Mode*.
 
 When holding ``Shift``, the tool fills the currently selected area
 regardless of its contents. This is useful for filling custom areas that
