@@ -862,8 +862,6 @@ static void collectObjects(Layer *layer, QList<MapObject*> &objects)
 void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
     Layer *layer = groupLayer ? groupLayer->layerAt(index) : mMap->layerAt(index);
-    if (layer == mCurrentObject)
-        setCurrentObject(nullptr);
 
     // Deselect any objects on this layer when necessary
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
@@ -877,8 +875,13 @@ void MapDocument::onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 
 void MapDocument::onLayerRemoved(Layer *layer)
 {
-    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer))
+    if (mCurrentLayer && mCurrentLayer->isParentOrSelf(layer)) {
+        // Assumption: the current object is either not a layer, or it is the current layer.
+        if (mCurrentObject == mCurrentLayer)
+            setCurrentObject(nullptr);
+
         setCurrentLayer(nullptr);
+    }
 
     emit layerRemoved(layer);
 }
