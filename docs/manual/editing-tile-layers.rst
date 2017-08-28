@@ -34,10 +34,10 @@ The Stamp Brush has some extra features:
    on the tile stamp, as well as the probability set on each tile in the
    *Tileset Editor*.
 
--  Active the *Wang Fill Mode* using the wang tile button on the tool bar
-   to have the Stamp Brush paint using the wang methods. This makes adjacent
-   tiles match edge and corner colors to be placed. Wang Tiles is described
-   in detail in :doc:`Using Wang Tiles <using-wang-tiles>`.
+-  Activate the *Wang Fill Mode* using the Wang tile button on the tool bar
+   to have the Stamp Brush paint using the Wang methods. This makes adjacent
+   tiles match edge and corner colors to be placed. Wang tiles are described
+   in detail in :doc:`using-wang-tiles`.
 
 -  In combination with the *Tile Stamps* view, it can also place
    randomly from a set of predefined tile stamps. This can be more
@@ -89,18 +89,18 @@ Wang Brush
 
 Shortcut: ``G``
 
-The Wang Brush works in a very similar way to the Terrain Brush, except
-it uses wangsets. Key differences are:
+The Wang Brush works in a very similar way to the :ref:`terrain-tool`, except
+it uses Wang sets. Key differences are:
 
--  Wang tiles supports edges as well as corners, whereas terrains only support
+-  Wang tiles support edges as well as corners, whereas terrains only support
    corners. This makes Wang tiles useful for drawing paths, or fences.
 -  The default size is to edit one edge/corner. Holding ``Ctrl`` expands it
    to the whole tile.
 -  If the transition cannot be made on the immediately affected tiles,
    the operation is aborted.
 
-To use the tool, a color must be selected from the wang color view.
-Wang tiles and this tool are described in detail in :doc:`Using Wang Tiles <using-wang-tiles>`.
+To use the tool, a color must be selected from the Wang color view.
+Wang tiles and this tool are described in detail in :doc:`using-wang-tiles`.
 
 Bucket Fill Tool
 ----------------
