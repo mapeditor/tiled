@@ -574,8 +574,8 @@ bool DocumentManager::reloadDocumentAt(int index)
     if (auto mapDocument = qobject_cast<MapDocument*>(oldDocument)) {
         // TODO: Consider fixing the reload to avoid recreating the MapDocument
         auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                        mapDocument->readerFormat(),
-                                        &error);
+                                             mapDocument->readerFormat(),
+                                             &error);
         if (!newDocument) {
             emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
             return false;
@@ -586,7 +586,7 @@ bool DocumentManager::reloadDocumentAt(int index)
         closeDocumentAt(index);
         mTabBar->moveTab(mDocuments.size() - 1, index);
 
-        checkTilesetColumns(mapDocument);
+        checkTilesetColumns(newDocument);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(oldDocument)) {
         if (tilesetDocument->isEmbedded()) {
