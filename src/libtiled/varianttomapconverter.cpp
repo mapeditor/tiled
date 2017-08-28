@@ -494,9 +494,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
         const QByteArray data = dataVariant.toByteArray();
         GidMapper::DecodeError error = mGidMapper.decodeLayerData(*tileLayer,
                                                                   data,
-                                                                  layerDataFormat,
-                                                                  startX,
-                                                                  startY);
+                                                                  layerDataFormat);
 
         switch (error) {
         case GidMapper::CorruptLayerData:

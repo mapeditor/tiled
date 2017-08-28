@@ -41,6 +41,7 @@
 #include "tidmapper.h"
 #include "savefile.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "terrain.h"
@@ -94,6 +95,7 @@ private:
                             unsigned firstTid);
     void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
+    void writeTileLayerData(QXmlStreamWriter &w, const TileLayer &tileLayer, QRect bounds);
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer &layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
@@ -639,22 +641,57 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 
-    int startX = 0;
-    int startY = 0;
-    int endX = tileLayer.width() - 1;
-    int endY = tileLayer.height() - 1;
-
     if (tileLayer.map()->infinite()) {
         QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-        startX = bounds.left();
-        startY = bounds.top();
-        endX = bounds.right();
-        endY = bounds.bottom();
+        int startX = bounds.left();
+        int startY = bounds.top();
+        int endX = bounds.right() + 1;
+        int endY = bounds.bottom() + 1;
+
+        int chunkStartX = startX;
+        int chunkStartY = startY;
+        int resetX = chunkStartX;
+
+        startX = (startX < 0) ? (startX + 1) / CHUNK_SIZE - 1 : startX / CHUNK_SIZE;
+        startY = (startY < 0) ? (startY + 1) / CHUNK_SIZE - 1 : startY / CHUNK_SIZE;
+        endX = (endX < 0) ? (endX + 1) / CHUNK_SIZE - 1 : endX / CHUNK_SIZE;
+        endY = (endY < 0) ? (endY + 1) / CHUNK_SIZE - 1 : endY / CHUNK_SIZE;
+
+        for (int y = startY; y < endY; ++y) {
+            for (int x = startX; x < endX; ++x) {
+                if (tileLayer.findChunk(chunkStartX, chunkStartY)) {
+                    w.writeStartElement(QLatin1String("chunk"));
+                    w.writeAttribute(QLatin1String("x"), QString::number(chunkStartX));
+                    w.writeAttribute(QLatin1String("y"), QString::number(chunkStartY));
+                    w.writeAttribute(QLatin1String("width"), QString::number(CHUNK_SIZE));
+                    w.writeAttribute(QLatin1String("height"), QString::number(CHUNK_SIZE));
+
+                    writeTileLayerData(w, tileLayer, QRect(chunkStartX, chunkStartY, CHUNK_SIZE, CHUNK_SIZE));
+
+                    w.writeEndElement(); // </chunk>
+                }
+
+                chunkStartX += CHUNK_SIZE;
+            }
+
+            chunkStartX = resetX;
+            chunkStartY += CHUNK_SIZE;
+        }
+    } else {
+        writeTileLayerData(w, tileLayer, QRect(0, 0, tileLayer.width(), tileLayer.height()));
     }
 
+    w.writeEndElement(); // </data>
+    w.writeEndElement(); // </layer>
+}
+
+void MapWriterPrivate::writeTileLayerData(QXmlStreamWriter &w,
+                                          const TileLayer &tileLayer,
+                                          QRect bounds)
+{
     if (mLayerDataFormat == Map::XML) {
-        for (int y = startY; y <= endY; ++y) {
-            for (int x = startX; x <= endX; ++x) {
+        for (int y = bounds.top(); y <= bounds.bottom(); y++) {
+            for (int x = bounds.left(); x <= bounds.right(); x++) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
                 w.writeStartElement(QLatin1String("tile"));
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
@@ -662,31 +699,29 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
             }
         }
     } else if (mLayerDataFormat == Map::CSV) {
-        QString tileData;
+        QString chunkData;
 
-        for (int y = startY; y <= endY; ++y) {
-            for (int x = startX; x <= endX; ++x) {
+        for (int y = bounds.top(); y <= bounds.bottom(); y++) {
+            for (int x = bounds.left(); x <= bounds.right(); x++) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
-                tileData.append(QString::number(gid));
-                if (x != endX || y != endY)
-                    tileData.append(QLatin1String(","));
+                chunkData.append(QString::number(gid));
+                if (x != bounds.right() || y != bounds.bottom())
+                    chunkData.append(QLatin1String(","));
             }
-            tileData.append(QLatin1String("\n"));
+            chunkData.append(QLatin1String("\n"));
         }
 
         w.writeCharacters(QLatin1String("\n"));
-        w.writeCharacters(tileData);
+        w.writeCharacters(chunkData);
     } else {
-        QByteArray tileData = mGidMapper.encodeLayerData(tileLayer,
-                                                         mLayerDataFormat);
+        QByteArray chunkData = mGidMapper.encodeLayerData(tileLayer,
+                                                          mLayerDataFormat,
+                                                          bounds);
 
         w.writeCharacters(QLatin1String("\n   "));
-        w.writeCharacters(QString::fromLatin1(tileData));
+        w.writeCharacters(QString::fromLatin1(chunkData));
         w.writeCharacters(QLatin1String("\n  "));
     }
-
-    w.writeEndElement(); // </data>
-    w.writeEndElement(); // </layer>
 }
 
 void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
@@ -708,27 +743,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         int width = tileLayer.width();
         int height = tileLayer.height();
 
-
-        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-
-        bool infinite = tileLayer.map()->infinite();
-
-        if (infinite) {
-            width = bounds.width();
-            height = bounds.height();
-        }
-
         w.writeAttribute(QLatin1String("width"),
                          QString::number(width));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(height));
 
-        if (infinite) {
-            w.writeAttribute(QLatin1String("startx"),
-                             QString::number(bounds.left()));
-            w.writeAttribute(QLatin1String("starty"),
-                             QString::number(bounds.top()));
-        }
     }
 
     if (!layer.isVisible())

@@ -30,6 +30,7 @@
 
 #include "compression.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tileset.h"
 
 using namespace Tiled;
@@ -147,29 +148,20 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
  * without compression.
  */
 QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
-                                      Map::LayerDataFormat format) const
+                                      Map::LayerDataFormat format,
+                                      QRect bounds) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
-    int startX = 0;
-    int startY = 0;
-    int endX = tileLayer.width() - 1;
-    int endY = tileLayer.height() - 1;
-
-    if (tileLayer.map()->infinite()) {
-        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-        startX = bounds.left();
-        startY = bounds.top();
-        endX = bounds.right();
-        endY = bounds.bottom();
-    }
+    if (bounds.isEmpty())
+        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
 
     QByteArray tileData;
-    tileData.reserve((endX - startX + 1) * (endY - startY + 1) * 4);
+    tileData.reserve(bounds.width() * bounds.height() * 4);
 
-    for (int y = startY; y <= endY; ++y) {
-        for (int x = startX; x <= endX; ++x) {
+    for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+        for (int x = bounds.left(); x <= bounds.right(); ++x) {
             const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
             tileData.append((char) (gid));
             tileData.append((char) (gid >> 8));
@@ -189,13 +181,16 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
 GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
                                                   const QByteArray &layerData,
                                                   Map::LayerDataFormat format,
-                                                  int startX, int startY) const
+                                                  QRect bounds) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
 
+    if (bounds.isEmpty())
+        bounds = QRect(0, 0, tileLayer.width(), tileLayer.height());
+
     QByteArray decodedData = QByteArray::fromBase64(layerData);
-    const int size = (tileLayer.width() * tileLayer.height()) * 4;
+    const int size = (bounds.width() * bounds.height()) * 4;
 
     if (format == Map::Base64Gzip || format == Map::Base64Zlib)
         decodedData = decompress(decodedData, size);
@@ -204,8 +199,8 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
         return CorruptLayerData;
 
     const unsigned char *data = reinterpret_cast<const unsigned char*>(decodedData.constData());
-    int x = 0;
-    int y = 0;
+    int x = bounds.x();
+    int y = bounds.y();
     bool ok;
 
     for (int i = 0; i < size - 3; i += 4) {
@@ -220,11 +215,11 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
             return isEmpty() ? TileButNoTilesets : InvalidTile;
         }
 
-        tileLayer.setCell(x + startX, y + startY, result);
+        tileLayer.setCell(x, y, result);
 
         x++;
-        if (x == tileLayer.width()) {
-            x = 0;
+        if (x == bounds.right() + 1) {
+            x = bounds.x();
             y++;
         }
     }
