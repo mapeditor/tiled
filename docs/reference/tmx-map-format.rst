@@ -322,6 +322,16 @@ The following C++ pseudo-code should make it all clear:
 directly tested, please make sure to report any errors you encounter
 when basing your parsing code on it, thanks.)
 
+<chunk>
+~~~~~~~
+
+-  *x:* The x coordinate of the chunk in tiles.
+-  *y:* The y coordinate of the chunk in tiles.
+-  **width:** The width of the chunk in tiles.
+-  **height:** The height of the chunk in tiles.
+
+This is currently added only for infinite maps.
+
 <tile>
 ~~~~~~
 
