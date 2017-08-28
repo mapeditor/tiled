@@ -300,8 +300,12 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         }
 
         QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
-        if (!objectGroupVariant.isEmpty())
-            tile->setObjectGroup(toObjectGroup(objectGroupVariant));
+        if (!objectGroupVariant.isEmpty()) {
+            ObjectGroup *objectGroup = toObjectGroup(objectGroupVariant);
+            if (objectGroup)
+                objectGroup->setProperties(extractProperties(objectGroupVariant));
+            tile->setObjectGroup(objectGroup);
+        }
 
         QVariantList frameList = tileVar[QLatin1String("animation")].toList();
         if (!frameList.isEmpty()) {

@@ -667,6 +667,7 @@ void MapDocumentActionHandler::updateActions()
     }
 
     mActionSelectAll->setEnabled(map);
+    mActionSelectInverse->setEnabled(map);
 
     if (currentLayer) {
         if (currentLayer->asTileLayer()) {

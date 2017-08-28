@@ -1,3 +1,13 @@
+### 1.0.3 (29 August 2017)
+
+* Fixed crash on reload map (#1659, #1694)
+* Fixed possible crash on undo/redo in collision editor (#1695)
+* Fixed tile replacement to add tileset when needed (by Mohamed Thabet, #1641)
+* Fixed the display of the image source property for tilesets
+* Fixed shortcut for 'Copy tile coordinates' (Alt+C) in Portuguese translation (by olueiro)
+* JSON plugin: Fixed reading of tileset column count
+* JSON plugin: Fixed reading of custom properties on tile collision object group
+
 ### 1.0.2 (27 June 2017)
 
 * Added read-only tile and terrain properties in map editor (#1615)
