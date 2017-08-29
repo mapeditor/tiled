@@ -7,6 +7,10 @@ Below are described the changes/additions that were made to the
 Tiled 1.1
 ---------
 
+-  A new :ref:`tmx-chunk` element was added for infinite maps which 
+   contains the similar content as ``data``, except it stores 
+   the data of the area specified by its attributes.
+
 -  :doc:`Templates </manual/using-templates>` were added, a
    :ref:`template group <tmx-templategroup>` is an external file
    referenced by maps:

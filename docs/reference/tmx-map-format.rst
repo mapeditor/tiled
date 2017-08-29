@@ -251,7 +251,7 @@ find out from which tileset the tile is you need to find the tileset
 with the highest ``firstgid`` that is still lower or equal than the gid.
 The tilesets are always stored with increasing ``firstgid``\ s.
 
-Can contain: `tile <#tile_1>`__
+Can contain: `tile <#tile_1>`__, `chunk <#chunk>`__
 
 Tile flipping
 ^^^^^^^^^^^^^
@@ -322,6 +322,8 @@ The following C++ pseudo-code should make it all clear:
 directly tested, please make sure to report any errors you encounter
 when basing your parsing code on it, thanks.)
 
+.. _tmx-chunk:
+
 <chunk>
 ~~~~~~~
 
@@ -330,7 +332,11 @@ when basing your parsing code on it, thanks.)
 -  **width:** The width of the chunk in tiles.
 -  **height:** The height of the chunk in tiles.
 
-This is currently added only for infinite maps.
+This is currently added only for infinite maps. The contents of a chunk
+element is same as that of the ``data`` element, except it stores the 
+data of the area specified in the attributes.
+
+Can contain: `tile <#tile_1>`__
 
 <tile>
 ~~~~~~
