@@ -72,6 +72,7 @@ SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     abstracttileselectiontool.cpp \
     abstracttiletool.cpp \
+    abstracttilefilltool.cpp \
     abstracttool.cpp \
     actionmanager.cpp \
     addpropertydialog.cpp \
@@ -206,6 +207,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     selectionrectangle.cpp \
     selectsametiletool.cpp \
+    shapefilltool.cpp \
     snaphelper.cpp \
     stampactions.cpp \
     stampbrush.cpp \
@@ -265,6 +267,7 @@ HEADERS += aboutdialog.h \
     abstractobjecttool.h \
     abstracttileselectiontool.h \
     abstracttiletool.h \
+    abstracttilefilltool.h \
     abstracttool.h \
     actionmanager.h \
     addpropertydialog.h \
@@ -402,6 +405,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     selectionrectangle.h \
     selectsametiletool.h \
+    shapefilltool.h \
     snaphelper.h \
     sparkleautoupdater.h \
     stampactions.h \

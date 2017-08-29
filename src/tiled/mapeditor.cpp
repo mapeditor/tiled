@@ -54,6 +54,7 @@
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
 #include "selectsametiletool.h"
+#include "shapefilltool.h"
 #include "stampbrush.h"
 #include "terrain.h"
 #include "terrainbrush.h"
@@ -169,6 +170,7 @@ MapEditor::MapEditor(QObject *parent)
     mWangBrush = new WangBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     mEditPolygonTool = new EditPolygonTool(this);
+    mShapeFillTool = new ShapeFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateTemplateTool *templatesTool = new CreateTemplateTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
@@ -181,6 +183,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(mTerrainBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mWangBrush));
     mToolsToolBar->addAction(mToolManager->registerTool(mBucketFillTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(mShapeFillTool));
     mToolsToolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
@@ -251,10 +254,13 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
+    connect(mShapeFillTool, &ShapeFillTool::stampChanged, this, &MapEditor::setStamp);
     connect(mStampBrush, &StampBrush::randomChanged, this, &MapEditor::setRandom);
     connect(mBucketFillTool, &BucketFillTool::randomChanged, this, &MapEditor::setRandom);
+    connect(mShapeFillTool, &ShapeFillTool::randomChanged, this, &MapEditor::setRandom);
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
+    connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
 
     connect(mTerrainDock, &TerrainDock::currentTerrainChanged,
             mTerrainBrush, &TerrainBrush::setTerrain);
@@ -265,6 +271,8 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mBucketFillTool, &BucketFillTool::setWangSet);
+    connect(mWangDock, &WangDock::currentWangSetChanged,
+            mShapeFillTool, &ShapeFillTool::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mStampBrush, &StampBrush::setWangSet);
     connect(mWangDock, &WangDock::currentWangSetChanged,
@@ -665,12 +673,14 @@ void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
     mBucketFillTool->setRandom(value);
+    mShapeFillTool->setRandom(value);
 }
 
 void MapEditor::setWangFill(bool value)
 {
     mStampBrush->setWangFill(value);
     mBucketFillTool->setWangFill(value);
+    mShapeFillTool->setWangFill(value);
 }
 
 /**
@@ -684,10 +694,13 @@ void MapEditor::setStamp(const TileStamp &stamp)
 
     mStampBrush->setStamp(stamp);
     mBucketFillTool->setStamp(stamp);
+    mShapeFillTool->setStamp(stamp);
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
     AbstractTool *selectedTool = mToolManager->selectedTool();
-    if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
+    if (selectedTool != mStampBrush
+            && selectedTool != mBucketFillTool
+            && selectedTool != mShapeFillTool)
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);

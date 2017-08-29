@@ -1,8 +1,6 @@
 /*
- * bucketfilltool.h
- * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
+ * shapefilltool.h
+ * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
  *
  * This file is part of Tiled.
  *
@@ -23,31 +21,18 @@
 #pragma once
 
 #include "abstracttilefilltool.h"
-#include "randompicker.h"
-#include "tilelayer.h"
-#include "tilestamp.h"
+
+class QAction;
 
 namespace Tiled {
-
-class WangSet;
-
 namespace Internal {
 
-class MapDocument;
-class StampActions;
-class WangFiller;
-
-/**
- * Implements a tool that bucket fills (flood fills) a region with a repeatable
- * stamp.
- */
-class BucketFillTool : public AbstractTileFillTool
+class ShapeFillTool : public AbstractTileFillTool
 {
     Q_OBJECT
 
 public:
-    BucketFillTool(QObject *parent = nullptr);
-    ~BucketFillTool();
+    ShapeFillTool(QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -56,18 +41,33 @@ public:
 
     void languageChanged() override;
 
-protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
-    void clearConnections(MapDocument *mapDocument) override;
+    void populateToolBar(QToolBar *toolBar) override;
 
-private slots:
-    void clearOverlay();
+protected:
+    void tilePositionChanged(const QPoint&) override;
+    void clearConnections(MapDocument *) override {}
 
 private:
-    bool mLastShiftStatus;
+    enum ToolBehavior {
+        Free, //nothing has been started
+        MakingShape
+    };
 
-    void makeConnections();
+    enum Shape {
+        Rect,   //making a rectangle
+        Circle //making a circle
+    };
+
+    ToolBehavior mToolBehavior;
+    Shape mCurrentShape;
+    QPoint mStartCorner;
+
+    QAction *mRectFill;
+    QAction *mCircleFill;
+
+    void setCurrentShape(Shape shape);
+    void updateFillOverlay();
 };
 
-} // namespace Internal
-} // namespace Tiled
+}
+}
