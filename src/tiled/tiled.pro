@@ -468,6 +468,10 @@ desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../tiled.desktop
 INSTALLS += desktopfile
 
+appdatafile.path = $${PREFIX}/share/metainfo/
+appdatafile.files += ../../tiled.appdata.xml
+INSTALLS += appdatafile
+
 manpage.path = $${PREFIX}/share/man/man1/
 manpage.files += ../../man/tiled.1
 INSTALLS += manpage
