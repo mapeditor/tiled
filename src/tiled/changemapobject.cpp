@@ -203,3 +203,60 @@ void DetachObjects::undo()
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
+
+ResetInstances::ResetInstances(MapDocument *mapDocument,
+                               QList<MapObject *> mapObjects,
+                               QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Reset %n Instnaces",
+                                               nullptr, mapObjects.size()), parent)
+    , mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+{
+    for (const MapObject *object : mMapObjects)
+        mOldMapObjects.append(object->clone());
+}
+
+ResetInstances::~ResetInstances()
+{
+    qDeleteAll(mOldMapObjects);
+}
+
+void ResetInstances::redo()
+{
+    for (auto object : mMapObjects) {
+        // Template instances initially don't hold any custom properties
+        object->clearProperties();
+
+        // Reset built-in properties
+        object->setChangedProperties(0);
+        object->syncWithTemplate();
+    }
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+
+    // This signal forces updating custom properties in the properties dock
+    emit mMapDocument->selectedObjectsChanged();
+}
+
+void ResetInstances::undo()
+{
+    for (int i = 0; i < mMapObjects.size(); ++i) {
+        MapObject *current = mMapObjects.at(i);
+        MapObject *old = mOldMapObjects.at(i);
+        current->setName(old->name());
+        current->setSize(old->size());
+        current->setType(old->type());
+        current->setTextData(old->textData());
+        current->setPolygon(old->polygon());
+        current->setShape(old->shape());
+        current->setCell(old->cell());
+        current->setRotation(old->rotation());
+        current->setVisible(old->VisibleProperty);
+        current->setProperties(old->properties());
+        current->setChangedProperties(old->changedProperties());
+    }
+
+    emit mMapDocument->objectsChanged(mMapObjects);
+    emit mMapDocument->selectedObjectsChanged();
+}

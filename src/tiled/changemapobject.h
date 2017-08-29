@@ -130,5 +130,24 @@ private:
     QVector<TemplateRef> mTemplateRefs;
     QVector<Properties> mProperties;
 };
+
+class ResetInstances : public QUndoCommand
+{
+public:
+    ResetInstances(MapDocument *mapDocument,
+                   QList<MapObject *> mapObjects,
+                   QUndoCommand *parent = nullptr);
+
+    ~ResetInstances();
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+};
+
 } // namespace Internal
 } // namespace Tiled
