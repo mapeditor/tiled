@@ -20,7 +20,7 @@ Templates are organized into template groups. Template groups can be part of
 your project and are referred to by the map. You can save them in either XML
 or JSON format, just like map and tileset files.
 
-.. figure:: images/templates/overview.png
+.. figure:: images/templates/templates-overview.png
    :alt: Templates Overview
 
 Creating Templates

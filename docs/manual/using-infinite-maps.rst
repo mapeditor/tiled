@@ -17,7 +17,7 @@ can be painted upon without worrying about the width and height of the map.
 The bounds of a particular layer get expanded whenever tiles are painted
 outside the current bounds.
 
-.. figure:: images/infinite/overview.png
+.. figure:: images/infinite/infinite-map-overview.png
    :alt: Infinite Maps Overview
 
 Creating an Infinite Map
