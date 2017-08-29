@@ -192,10 +192,10 @@ void ShapeFillTool::updateFillOverlay()
         mFillRegion = boundingRect;
         break;
     case Circle:
-        mFillRegion = ellipseRegion(boundingRect.center().x(),
-                                    boundingRect.center().y(),
-                                    boundingRect.right(),
-                                    boundingRect.bottom());
+        mFillRegion = ellipseRegion(mStartCorner.x(),
+                                    mStartCorner.y(),
+                                    mStartCorner.x() + width,
+                                    mStartCorner.y() + height);
         break;
     }
 
