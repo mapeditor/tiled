@@ -116,14 +116,32 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        int tileId = -1;
+        Cell cell;
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
             const QPoint pos = tilePosition() - tileLayer->position();
-            tileId = tileLayer->cellAt(pos).tileId();
+            cell = tileLayer->cellAt(pos);
         }
 
-        QString tileIdString = tileId >= 0 ? QString::number(tileId) : tr("empty");
+        QString tileIdString = cell.tileId() >= 0 ? QString::number(cell.tileId()) : tr("empty");
+
+        QVarLengthArray<QChar, 3> flippedBits;
+        if (cell.flippedHorizontally())
+            flippedBits.append(QLatin1Char('H'));
+        if (cell.flippedVertically())
+            flippedBits.append(QLatin1Char('V'));
+        if (cell.flippedAntiDiagonally())
+            flippedBits.append(QLatin1Char('D'));
+
+        if (!flippedBits.isEmpty()) {
+            tileIdString.append(QLatin1Char(' '));
+            tileIdString.append(flippedBits.first());
+            for (int i = 1; i < flippedBits.size(); ++i) {
+                tileIdString.append(QLatin1Char(','));
+                tileIdString.append(flippedBits.at(i));
+            }
+        }
+
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
                       .arg(mTilePosition.x())
                       .arg(mTilePosition.y())
