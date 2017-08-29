@@ -25,6 +25,7 @@ Manual
    manual/using-templates
    manual/using-the-terrain-tool
    manual/using-wang-tiles
+   manual/using-infinite-maps
    manual/using-commands
    manual/automapping
    manual/keyboard-shortcuts

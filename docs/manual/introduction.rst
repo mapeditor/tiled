@@ -60,10 +60,10 @@ first thing we’ll do is to start a new map with *File -> New -> New Map…*
    New Map
 
 Here, we choose the initial map size, tile size, orientation, tile layer
-format, tile render order (only supported for *Orthogonal* maps) and
-whether the map is infinite or not. All of these things can be changed
-later as needed, so it’s not important to get it all right the first
-time.
+format, tile render order (only supported for *Orthogonal* maps) and whether
+the map is :doc:`infinite <using-infinite-maps>` or not. All of these things
+can be changed later as needed, so it’s not important to get it all right the
+first time.
 
 After pressing *OK*, we’ll see the tile grid and an initial tile layer
 will be added to the map. However, before we can start using any tiles
