@@ -109,7 +109,7 @@ void CommandManager::updateActions()
 
     mActions.append(mSeparator);
 
-    QAction *mEditCommands = new QAction(this);
+    mEditCommands = new QAction(this);
     mEditCommands->setIcon(
             QIcon(QLatin1String(":/images/24x24/system-run.png")));
     mEditCommands->setText(tr("Edit Commands..."));
@@ -120,6 +120,11 @@ void CommandManager::updateActions()
     mActions.append(mEditCommands);
 
     populateMenus();
+}
+
+void CommandManager::retranslateUi()
+{
+    mEditCommands->setText(tr("Edit Commands..."));
 }
 
 } // namespace Internal
