@@ -40,6 +40,7 @@ CommandManager::CommandManager()
     , mLogger(new LoggingInterface())
 {
     updateActions();
+    retranslateUi();
 }
 
 CommandManager *CommandManager::instance()
@@ -112,7 +113,6 @@ void CommandManager::updateActions()
     mEditCommands = new QAction(this);
     mEditCommands->setIcon(
             QIcon(QLatin1String(":/images/24x24/system-run.png")));
-    mEditCommands->setText(tr("Edit Commands..."));
     Utils::setThemeIcon(mEditCommands, "system-run");
 
     connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
