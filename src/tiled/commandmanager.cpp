@@ -40,7 +40,6 @@ CommandManager::CommandManager()
     , mLogger(new LoggingInterface())
 {
     updateActions();
-    retranslateUi();
 }
 
 CommandManager *CommandManager::instance()
@@ -119,6 +118,7 @@ void CommandManager::updateActions()
 
     mActions.append(mEditCommands);
 
+    retranslateUi();
     populateMenus();
 }
 
