@@ -88,7 +88,7 @@
     <message>
         <location line="+39"/>
         <source>Executable:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Виконуваний файл:</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -1281,7 +1281,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Я вже надав підтримку!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1396,12 +1396,12 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вимкніть це, якщо маєте проблему зі збереженням файлів</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Use safe writing of files</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати безпечне записування файлів</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -2491,7 +2491,7 @@ Line %1, column %2</source>
     <message>
         <location line="-109"/>
         <source>Shortcut for this command</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорочення для цієї команди</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -2549,7 +2549,7 @@ Line %1, column %2</source>
     <message>
         <location line="+79"/>
         <source>Select Executable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Оберіть виконуваний файл</translation>
     </message>
 </context>
 <context>
@@ -2681,7 +2681,7 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>Hello World</source>
-        <translation type="unfinished"></translation>
+        <translation>Привіт, Світ</translation>
     </message>
 </context>
 <context>
