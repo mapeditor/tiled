@@ -57,6 +57,8 @@ public:
 
     LoggingInterface *logger() { return mLogger; }
 
+    void retranslateUi();
+
 public slots:
 
     /**
@@ -78,6 +80,7 @@ private:
     CommandDataModel *mModel;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;
+    QAction *mEditCommands;
 
     LoggingInterface *mLogger;
 };

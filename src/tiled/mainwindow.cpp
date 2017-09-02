@@ -1544,6 +1544,7 @@ void MainWindow::retranslateUi()
     mGroupLayerMenu->setTitle(tr("&Group"));
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mActionHandler->retranslateUi();
+    CommandManager::instance()->retranslateUi();
 }
 
 void MainWindow::documentChanged(Document *document)
