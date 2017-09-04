@@ -160,11 +160,11 @@ void ChangeMapObjectsTile::changeTiles()
 }
 
 DetachObjects::DetachObjects(MapDocument *mapDocument,
-                             QList<MapObject *> mapObjects,
+                             const QList<MapObject *> &mapObjects,
                              QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                "Detach %n Template Instance(s)",
-                                                 nullptr, mapObjects.size()), parent)
+                                               "Detach %n Template Instance(s)",
+                                               nullptr, mapObjects.size()), parent)
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
 {
@@ -204,11 +204,12 @@ void DetachObjects::undo()
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
 }
 
+
 ResetInstances::ResetInstances(MapDocument *mapDocument,
-                               QList<MapObject *> mapObjects,
+                               const QList<MapObject *> &mapObjects,
                                QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Reset %n Instnaces",
+                                               "Reset %n Instances",
                                                nullptr, mapObjects.size()), parent)
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)

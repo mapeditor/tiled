@@ -373,7 +373,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (anyIsTemplateInstance) {
         menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
 
-        auto resetToTemplateAction = menu.addAction(tr("Reset Template instance(s)"), this, SLOT(resetInstances()));
+        auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, SLOT(resetInstances()));
         resetToTemplateAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                       selectedObjects.end(),
                                                       isChangedTemplateInstance));

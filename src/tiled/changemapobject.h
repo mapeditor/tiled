@@ -115,10 +115,11 @@ class DetachObjects : public QUndoCommand
 {
 public:
     /**
-     * Creates an undo command that detaches the given template instances from their templates.
+     * Creates an undo command that detaches the given template instances
+     * from their templates.
      */
     DetachObjects(MapDocument *mapDocument,
-                  QList<MapObject *> mapObjects,
+                  const QList<MapObject *> &mapObjects,
                   QUndoCommand *parent = nullptr);
 
     void redo() override;
@@ -135,7 +136,7 @@ class ResetInstances : public QUndoCommand
 {
 public:
     ResetInstances(MapDocument *mapDocument,
-                   QList<MapObject *> mapObjects,
+                   const QList<MapObject *> &mapObjects,
                    QUndoCommand *parent = nullptr);
 
     ~ResetInstances();
