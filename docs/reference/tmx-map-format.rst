@@ -341,7 +341,7 @@ Can contain: `tile <#tile_1>`__
 <tile>
 ~~~~~~
 
--  **gid:** The global tile ID.
+-  **gid:** The global tile ID (default: 0).
 
 Not to be confused with the ``tile`` element inside a ``tileset``, this
 element defines the value of a single tile on a tile layer. This is

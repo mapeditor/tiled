@@ -694,7 +694,8 @@ void MapWriterPrivate::writeTileLayerData(QXmlStreamWriter &w,
             for (int x = bounds.left(); x <= bounds.right(); x++) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer.cellAt(x, y));
                 w.writeStartElement(QLatin1String("tile"));
-                w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+                if (gid != 0)
+                    w.writeAttribute(QLatin1String("gid"), QString::number(gid));
                 w.writeEndElement();
             }
         }
