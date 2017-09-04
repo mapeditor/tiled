@@ -214,7 +214,7 @@ ResetInstances::ResetInstances(MapDocument *mapDocument,
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
 {
-    for (const MapObject *object : mMapObjects)
+    for (const MapObject *object : mapObjects)
         mOldMapObjects.append(object->clone());
 }
 
