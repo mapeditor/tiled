@@ -127,7 +127,7 @@ public:
 
 private:
     MapDocument *mMapDocument;
-    QList<MapObject*> mMapObjects;
+    const QList<MapObject*> mMapObjects;
     QVector<TemplateRef> mTemplateRefs;
     QVector<Properties> mProperties;
 };
@@ -146,7 +146,7 @@ public:
 
 private:
     MapDocument *mMapDocument;
-    QList<MapObject*> mMapObjects;
+    const QList<MapObject*> mMapObjects;
     QList<MapObject*> mOldMapObjects;
 };
 
