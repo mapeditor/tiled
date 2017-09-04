@@ -196,6 +196,7 @@ public:
     void setMapObjectProperty(Property property, const QVariant &value);
 
     void setChangedProperties(const ChangedProperties &changedProperties);
+    MapObject::ChangedProperties changedProperties() const;
 
     void setPropertyChanged(Property property, bool state = true);
     bool propertyChanged(Property property) const;
@@ -212,7 +213,6 @@ public:
 
     bool isTemplateBase() const;
     void markAsTemplateBase();
-
 
     TemplateGroup *templateGroup() const;
 
@@ -471,6 +471,9 @@ inline void MapObject::setVisible(bool visible)
 
 inline void MapObject::setChangedProperties(const ChangedProperties &changedProperties)
 { mChangedProperties = changedProperties; }
+
+inline MapObject::ChangedProperties MapObject::changedProperties() const
+{ return mChangedProperties; }
 
 inline void MapObject::setPropertyChanged(Property property, bool state)
 {

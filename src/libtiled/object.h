@@ -81,6 +81,12 @@ public:
     { mProperties = properties; }
 
     /**
+     * Clears all existing properties
+     */
+    void clearProperties ()
+    { mProperties.clear(); }
+
+    /**
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *

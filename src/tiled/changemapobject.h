@@ -115,10 +115,11 @@ class DetachObjects : public QUndoCommand
 {
 public:
     /**
-     * Creates an undo command that detaches the given template instances from their templates.
+     * Creates an undo command that detaches the given template instances
+     * from their templates.
      */
     DetachObjects(MapDocument *mapDocument,
-                  QList<MapObject *> mapObjects,
+                  const QList<MapObject *> &mapObjects,
                   QUndoCommand *parent = nullptr);
 
     void redo() override;
@@ -126,9 +127,28 @@ public:
 
 private:
     MapDocument *mMapDocument;
-    QList<MapObject*> mMapObjects;
+    const QList<MapObject*> mMapObjects;
     QVector<TemplateRef> mTemplateRefs;
     QVector<Properties> mProperties;
 };
+
+class ResetInstances : public QUndoCommand
+{
+public:
+    ResetInstances(MapDocument *mapDocument,
+                   const QList<MapObject *> &mapObjects,
+                   QUndoCommand *parent = nullptr);
+
+    ~ResetInstances();
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+};
+
 } // namespace Internal
 } // namespace Tiled

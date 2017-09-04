@@ -57,6 +57,15 @@ static bool isResizedTileObject(MapObject *mapObject)
     return false;
 }
 
+static bool isChangedTemplateInstance(MapObject *mapObject)
+{
+    if (const MapObject *templateObject = mapObject->templateObject()) {
+        return mapObject->changedProperties() != 0 ||
+               mapObject->properties() != templateObject->properties();
+    }
+    return false;
+}
+
 
 AbstractObjectTool::AbstractObjectTool(const QString &name,
                                        const QIcon &icon,
@@ -240,6 +249,18 @@ void AbstractObjectTool::detachSelectedObjects()
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }
 
+void AbstractObjectTool::resetInstances()
+{
+    QList<MapObject *> templateInstances;
+
+    for (MapObject *object : mapDocument()->selectedObjects()) {
+        if (object->templateObject())
+            templateInstances.append(object);
+    }
+
+    mapDocument()->undoStack()->push(new ResetInstances(mapDocument(), templateInstances));
+}
+
 void AbstractObjectTool::changeTile()
 {
     QList<MapObject*> tileObjects;
@@ -351,8 +372,14 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                              selectedObjects.end(),
                                              [](MapObject *object) { return object->isTemplateInstance(); });
 
-    if (anyIsTemplateInstance)
+    if (anyIsTemplateInstance) {
         menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
+
+        auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, SLOT(resetInstances()));
+        resetToTemplateAction->setEnabled(std::any_of(selectedObjects.begin(),
+                                                      selectedObjects.end(),
+                                                      isChangedTemplateInstance));
+    }
 
     menu.addSeparator();
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
