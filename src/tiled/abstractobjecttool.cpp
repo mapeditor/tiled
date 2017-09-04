@@ -59,8 +59,10 @@ static bool isResizedTileObject(MapObject *mapObject)
 
 static bool isChangedTemplateInstance(MapObject *mapObject)
 {
-    if (const MapObject *templateObject = mapObject->templateObject())
-        return mapObject->changedProperties() != 0 ||  mapObject->properties() != templateObject->properties();
+    if (const MapObject *templateObject = mapObject->templateObject()) {
+        return mapObject->changedProperties() != 0 ||
+               mapObject->properties() != templateObject->properties();
+    }
     return false;
 }
 
