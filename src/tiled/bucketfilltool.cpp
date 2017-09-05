@@ -67,15 +67,6 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
     TilePainter regionComputer(mapDocument(), tileLayer);
 
-    // If the stamp is a single tile, ignore that tile when making the region
-    if (!shiftPressed && mFillMethod != WangFill && mStamp.variations().size() == 1) {
-        const TileStampVariation &variation = mStamp.variations().first();
-        TileLayer *stampLayer = variation.tileLayer();
-        if (stampLayer->size() == QSize(1, 1) &&
-                stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
-            return;
-    }
-
     // This clears the connections so we don't get callbacks
     clearConnections(mapDocument());
 
@@ -92,8 +83,20 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
         // Get the new fill region
         if (!shiftPressed) {
-            // If not holding shift, a region is generated from the current pos
-            mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
+            // If not holding shift, a region is computed from the current pos
+            bool computeRegion = true;
+
+            // If the stamp is a single tile, ignore that tile when making the region
+            if (mFillMethod != WangFill && mStamp.variations().size() == 1) {
+                const TileStampVariation &variation = mStamp.variations().first();
+                TileLayer *stampLayer = variation.tileLayer();
+                if (stampLayer->size() == QSize(1, 1) &&
+                        stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
+                    computeRegion = false;
+            }
+
+            if (computeRegion)
+                mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
         } else {
             // If holding shift, the region is the selection bounds
             mFillRegion = mapDocument()->selectedArea();
