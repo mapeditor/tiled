@@ -674,15 +674,23 @@ void MapEditor::rotate(RotateDirection direction)
 void MapEditor::setRandom(bool value)
 {
     mStampBrush->setRandom(value);
-    mBucketFillTool->setRandom(value);
-    mShapeFillTool->setRandom(value);
+
+    auto fillMethod = value ? AbstractTileFillTool::RandomFill :
+                              AbstractTileFillTool::TileFill;
+
+    mBucketFillTool->setFillMethod(fillMethod);
+    mShapeFillTool->setFillMethod(fillMethod);
 }
 
 void MapEditor::setWangFill(bool value)
 {
     mStampBrush->setWangFill(value);
-    mBucketFillTool->setWangFill(value);
-    mShapeFillTool->setWangFill(value);
+
+    auto fillMethod = value ? AbstractTileFillTool::WangFill :
+                              AbstractTileFillTool::TileFill;
+
+    mBucketFillTool->setFillMethod(fillMethod);
+    mShapeFillTool->setFillMethod(fillMethod);
 }
 
 /**

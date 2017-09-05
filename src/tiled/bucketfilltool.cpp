@@ -54,7 +54,7 @@ BucketFillTool::~BucketFillTool()
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
     // Skip filling if the stamp is empty and not in wangFill mode
-    if (mStamp.isEmpty() && !mIsWangFill)
+    if (mStamp.isEmpty() && mFillMethod != WangFill)
         return;
 
     // Make sure that a tile layer is selected
@@ -67,8 +67,8 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
     TilePainter regionComputer(mapDocument(), tileLayer);
 
-    // If the stamp is a single tile, ignore it when making the region
-    if (!shiftPressed && !mIsWangFill && mStamp.variations().size() == 1) {
+    // If the stamp is a single tile, ignore that tile when making the region
+    if (!shiftPressed && mFillMethod != WangFill && mStamp.variations().size() == 1) {
         const TileStampVariation &variation = mStamp.variations().first();
         TileLayer *stampLayer = variation.tileLayer();
         if (stampLayer->size() == QSize(1, 1) &&
@@ -113,8 +113,8 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (mFillRegion.isEmpty())
         return;
 
-    if (mLastRandomStatus != mIsRandom) {
-        mLastRandomStatus = mIsRandom;
+    if (mLastFillMethod != mFillMethod) {
+        mLastFillMethod = mFillMethod;
         fillRegionChanged = true;
     }
 
@@ -129,18 +129,22 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     }
 
     // Paint the new overlay
-    if (mIsRandom) {
-        randomFill(*mFillOverlay, mFillRegion);
-        fillRegionChanged = true;
-    } else if (mIsWangFill) {
-        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
-        fillRegionChanged = true;
-    } else {
+    switch (mFillMethod) {
+    case TileFill:
         if (fillRegionChanged || mStamp.variations().size() > 1) {
             fillWithStamp(*mFillOverlay, mStamp,
                           mFillRegion.translated(-mFillOverlay->position()));
             fillRegionChanged = true;
         }
+        break;
+    case RandomFill:
+        randomFill(*mFillOverlay, mFillRegion);
+        fillRegionChanged = true;
+        break;
+    case WangFill:
+        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
+        fillRegionChanged = true;
+        break;
     }
 
     if (fillRegionChanged) {

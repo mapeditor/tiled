@@ -40,6 +40,12 @@ class AbstractTileFillTool : public AbstractTileTool
     Q_OBJECT
 
 public:
+    enum FillMethod {
+        TileFill,
+        RandomFill,
+        WangFill
+    };
+
     AbstractTileFillTool(const QString &name,
                          const QIcon &icon,
                          const QKeySequence &shortcut,
@@ -60,15 +66,13 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 public slots:
-    void setRandom(bool value);
-    void setWangFill(bool value);
+    void setFillMethod(FillMethod fillMethod);
     void setWangSet(WangSet *wangSet);
 
 signals:
     void stampChanged(const TileStamp &stamp);
 
     void randomChanged(bool value);
-
     void wangFillChanged(bool value);
 
 protected:
@@ -97,16 +101,15 @@ protected:
     QRegion mFillRegion;
     QVector<SharedTileset> mMissingTilesets;
 
-    bool mIsRandom;
-    bool mIsWangFill;
+    FillMethod mFillMethod;
 
     /**
-     * Contains the value of mIsRandom at that time, when the latest call of
-     * tilePositionChanged() took place.
-     * This variable is needed to detect if the random mode was changed during
+     * The active fill method during the last call of tilePositionChanged().
+     *
+     * This variable is needed to detect if the fill method was changed during
      * mFillOverlay being brushed at an area.
      */
-    bool mLastRandomStatus;
+    FillMethod mLastFillMethod;
 
     StampActions *mStampActions;
 
@@ -121,5 +124,5 @@ private:
     void updateRandomListAndMissingTilesets();
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

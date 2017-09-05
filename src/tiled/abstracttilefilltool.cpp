@@ -36,9 +36,8 @@ AbstractTileFillTool::AbstractTileFillTool(const QString &name,
                                            BrushItem *brushItem,
                                            QObject *parent)
     : AbstractTileTool(name, icon, shortcut, brushItem, parent)
-    , mIsRandom(false)
-    , mIsWangFill(false)
-    , mLastRandomStatus(false)
+    , mFillMethod(TileFill)
+    , mLastFillMethod(TileFill)
     , mStampActions(new StampActions(this))
     , mWangSet(nullptr)
 {
@@ -74,44 +73,25 @@ void AbstractTileFillTool::setStamp(const TileStamp &stamp)
 
 void AbstractTileFillTool::populateToolBar(QToolBar *toolBar)
 {
-    mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill);
+    mStampActions->populateToolBar(toolBar,
+                                   mFillMethod == RandomFill,
+                                   mFillMethod == WangFill);
 }
 
-void AbstractTileFillTool::setRandom(bool value)
+void AbstractTileFillTool::setFillMethod(FillMethod fillMethod)
 {
-    if (mIsRandom == value)
+    if (mFillMethod == fillMethod)
         return;
 
-    mIsRandom = value;
+    mFillMethod = fillMethod;
 
-    if (mIsRandom) {
-        mIsWangFill = false;
-        mStampActions->wangFill()->setChecked(false);
+    mStampActions->random()->setChecked(mFillMethod == RandomFill);
+    mStampActions->wangFill()->setChecked(mFillMethod == WangFill);
 
+    if (mFillMethod == RandomFill || mFillMethod == WangFill)
         updateRandomListAndMissingTilesets();
-    }
 
     // Don't need to recalculate fill region if there was no fill region
-    if (!mFillOverlay)
-        return;
-
-    tilePositionChanged(tilePosition());
-}
-
-void AbstractTileFillTool::setWangFill(bool value)
-{
-    if (mIsWangFill == value)
-        return;
-
-    mIsWangFill = value;
-
-    if (mIsWangFill) {
-        mIsRandom = false;
-        mStampActions->random()->setChecked(false);
-
-        updateRandomListAndMissingTilesets();
-    }
-
     if (!mFillOverlay)
         return;
 
@@ -153,7 +133,7 @@ void AbstractTileFillTool::updateRandomListAndMissingTilesets()
     if (!mapDocument())
         return;
 
-    if (mIsWangFill) {
+    if (mFillMethod == WangFill) {
         if (mWangSet) {
             const SharedTileset &tileset = mWangSet->tileset()->sharedPointer();
             if (!mapDocument()->map()->tilesets().contains(tileset))
@@ -162,7 +142,7 @@ void AbstractTileFillTool::updateRandomListAndMissingTilesets()
     } else {
         for (const TileStampVariation &variation : mStamp.variations()) {
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-            if (mIsRandom) {
+            if (mFillMethod == RandomFill) {
                 const TileLayer &tileLayer = *variation.tileLayer();
                 for (const Cell &cell : tileLayer) {
                     if (const Tile *tile = cell.tile())
@@ -208,6 +188,9 @@ void AbstractTileFillTool::fillWithStamp(TileLayer &layer,
                                          const TileStamp &stamp,
                                          const QRegion &mask)
 {
+    if (stamp.isEmpty())
+        return;
+
     const QSize size = stamp.maxSize();
 
     // Fill the entire layer with random variations of the stamp

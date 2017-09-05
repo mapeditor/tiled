@@ -206,14 +206,18 @@ void ShapeFillTool::updateFillOverlay()
                                                  fillBound.width(),
                                                  fillBound.height()));
 
-    if (mIsRandom) {
-        randomFill(*mFillOverlay, mFillRegion);
-    } else if (mIsWangFill) {
-        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
-    } else if (mStamp.variations().size() >= 1) {
+    switch (mFillMethod) {
+    case TileFill:
         fillWithStamp(*mFillOverlay,
                       mStamp,
                       mFillRegion.translated(-mFillOverlay->position()));
+        break;
+    case RandomFill:
+        randomFill(*mFillOverlay, mFillRegion);
+        break;
+    case WangFill:
+        wangFill(*mFillOverlay, *tileLayer, mFillRegion);
+        break;
     }
 
     brushItem()->setTileLayer(mFillOverlay);
