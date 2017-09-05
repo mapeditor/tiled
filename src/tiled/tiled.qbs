@@ -540,6 +540,14 @@ QtGuiApplication {
     }
 
     Group {
+        name: "AppData file (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/metainfo"
+        files: [ "../../tiled.appdata.xml" ]
+    }
+
+    Group {
         name: "Thumbnailer (Linux)"
         condition: qbs.targetOS.contains("linux")
         qbs.install: true

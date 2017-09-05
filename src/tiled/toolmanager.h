@@ -58,6 +58,8 @@ public:
 
     void retranslateTools();
 
+    void createShortcuts(QWidget *parent);
+
 public slots:
     /**
      * Sets the tile that will be used when the creation mode is
