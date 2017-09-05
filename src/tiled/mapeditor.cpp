@@ -191,6 +191,8 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
 
+    mToolManager->createShortcuts(mMainWindow);
+
     mMainWindow->addToolBar(mMainToolBar);
     mMainWindow->addToolBar(mToolsToolBar);
 

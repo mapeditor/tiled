@@ -55,6 +55,8 @@ public:
 
     void retranslateTools();
 
+    void createShortcuts(QWidget *parent);
+
 signals:
     void selectedToolChanged(AbstractTool *tool);
 

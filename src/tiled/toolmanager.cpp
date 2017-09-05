@@ -24,6 +24,7 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QShortcut>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -138,6 +139,37 @@ void ToolManager::retranslateTools()
         action->setShortcut(tool->shortcut());
         action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
                 tool->name(), tool->shortcut().toString()));
+    }
+}
+
+/**
+ * Replaces the shortcuts set on the actions with QShortcut instances, using
+ * \a parent as their parent.
+ *
+ * This is done to make sure the shortcuts can still be used even when the
+ * actions are only added to a tool bar and this tool bar is hidden.
+ */
+void ToolManager::createShortcuts(QWidget *parent)
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        QKeySequence key = action->shortcut();
+
+        if (!key.isEmpty()) {
+            auto shortcut = new QShortcut(key, parent);
+
+            // Make sure the shortcut is only enabled when the action is,
+            // because different tools may use the same shortcut.
+            shortcut->setEnabled(action->isEnabled());
+            connect(action, &QAction::changed, shortcut, [=]() {
+                shortcut->setEnabled(action->isEnabled());
+            });
+
+            connect(shortcut, &QShortcut::activated, action, &QAction::trigger);
+
+            // Unset the shortcut from the action to avoid ambiguous overloads
+            action->setShortcut(QKeySequence());
+        }
     }
 }
 
