@@ -53,6 +53,11 @@ BucketFillTool::~BucketFillTool()
 
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
+    AbstractTileFillTool::tilePositionChanged(tilePos);
+
+    if (isCapturing())
+        return;
+
     // Skip filling if the stamp is empty and not in wangFill mode
     if (mStamp.isEmpty() && mFillMethod != WangFill)
         return;
@@ -160,6 +165,10 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
 void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileFillTool::mousePressed(event);
+    if (event->isAccepted())
+        return;
+
     if (event->button() != Qt::LeftButton || mFillRegion.isEmpty())
         return;
     if (!brushItem()->isVisible())
@@ -192,10 +201,6 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(paint);
     emit mapDocument()->regionEdited(fillRegion, currentTileLayer());
-}
-
-void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *)
-{
 }
 
 void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)

@@ -105,6 +105,8 @@ QtGuiApplication {
         "brushitem.h",
         "bucketfilltool.cpp",
         "bucketfilltool.h",
+        "capturestamphelper.cpp",
+        "capturestamphelper.h",
         "changeimagelayerposition.cpp",
         "changeimagelayerposition.h",
         "changeimagelayerproperties.cpp",

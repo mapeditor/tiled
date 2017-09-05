@@ -66,6 +66,10 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
 
 void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileFillTool::mousePressed(event);
+    if (event->isAccepted())
+        return;
+
     if (mToolBehavior != Free)
         return;
 
@@ -82,6 +86,8 @@ void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
+    AbstractTileFillTool::mouseReleased(event);
+
     if (mToolBehavior != MakingShape)
         return;
 
@@ -155,10 +161,12 @@ void ShapeFillTool::populateToolBar(QToolBar *toolBar)
     toolBar->addActions(actionGroup->actions());
 }
 
-void ShapeFillTool::tilePositionChanged(const QPoint&)
+void ShapeFillTool::tilePositionChanged(const QPoint &tilePos)
 {
     if (mToolBehavior == MakingShape)
         updateFillOverlay();
+    else
+        AbstractTileFillTool::tilePositionChanged(tilePos);
 }
 
 void ShapeFillTool::setCurrentShape(Shape shape)

@@ -73,6 +73,12 @@ StampBrush::~StampBrush()
 {
 }
 
+void StampBrush::deactivate(MapScene *scene)
+{
+    mCaptureStampHelper.reset();
+    AbstractTileTool::deactivate(scene);
+}
+
 void StampBrush::tilePositionChanged(const QPoint &pos)
 {
     if (mBrushBehavior == Paint) {
@@ -275,8 +281,7 @@ void StampBrush::beginCapture()
         return;
 
     mBrushBehavior = Capture;
-
-    mCaptureStart = tilePosition();
+    mCaptureStampHelper.beginCapture(tilePosition());
 
     setStamp(TileStamp());
 }
@@ -288,52 +293,11 @@ void StampBrush::endCapture()
 
     mBrushBehavior = Free;
 
-    TileLayer *tileLayer = currentTileLayer();
-    Q_ASSERT(tileLayer);
-
-    // Intersect with the layer and translate to layer coordinates
-    QRect captured = capturedArea().intersected(tileLayer->bounds());
-
-    if (captured.isValid()) {
-        captured.translate(-tileLayer->x(), -tileLayer->y());
-        Map *map = tileLayer->map();
-        TileLayer *capture = tileLayer->copy(captured);
-        Map *stamp = new Map(map->orientation(),
-                             capture->width(),
-                             capture->height(),
-                             map->tileWidth(),
-                             map->tileHeight());
-
-        //gets if the relative stagger should be the same as the base layer
-        int staggerIndexOffSet;
-        if (tileLayer->map()->staggerAxis() == Map::StaggerX)
-            staggerIndexOffSet = captured.x() % 2;
-        else
-            staggerIndexOffSet = captured.y() % 2;
-
-        stamp->setStaggerAxis(map->staggerAxis());
-        stamp->setStaggerIndex((Map::StaggerIndex)((map->staggerIndex() + staggerIndexOffSet) % 2));
-
-        // Add tileset references to map
-        foreach (const SharedTileset &tileset, capture->usedTilesets())
-            stamp->addTileset(tileset);
-
-        stamp->addLayer(capture);
-
+    TileStamp stamp = mCaptureStampHelper.endCapture(currentTileLayer(), tilePosition());
+    if (!stamp.isEmpty())
         emit stampChanged(TileStamp(stamp));
-    } else {
+    else
         updatePreview();
-    }
-}
-
-QRect StampBrush::capturedArea() const
-{
-    QRect captured = QRect(mCaptureStart, tilePosition()).normalized();
-    if (captured.width() == 0)
-        captured.adjust(-1, 0, 1, 0);
-    if (captured.height() == 0)
-        captured.adjust(0, -1, 0, 1);
-    return captured;
 }
 
 /**
@@ -565,7 +529,7 @@ void StampBrush::updatePreview(QPoint tilePos)
 
     if (mBrushBehavior == Capture) {
         mPreviewLayer.clear();
-        tileRegion = capturedArea();
+        tileRegion = mCaptureStampHelper.capturedArea(tilePos);
     } else if (mStamp.isEmpty() && !mIsWangFill) {
         mPreviewLayer.clear();
         tileRegion = QRect(tilePos, QSize(1, 1));

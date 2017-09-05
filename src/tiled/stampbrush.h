@@ -22,6 +22,7 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "capturestamphelper.h"
 #include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
@@ -49,6 +50,8 @@ class StampBrush : public AbstractTileTool
 public:
     StampBrush(QObject *parent = nullptr);
     ~StampBrush();
+
+    void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
@@ -103,7 +106,6 @@ private:
 
     void beginCapture();
     void endCapture();
-    QRect capturedArea() const;
 
     void updatePreview();
     void updatePreview(QPoint tilePos);
@@ -112,7 +114,7 @@ private:
     SharedTileLayer mPreviewLayer;
     QVector<SharedTileset> mMissingTilesets;
 
-    QPoint mCaptureStart;
+    CaptureStampHelper mCaptureStampHelper;
     QPoint mPrevTilePosition;
 
     void drawPreviewLayer(const QVector<QPoint> &list);

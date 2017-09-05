@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "capturestamphelper.h"
 #include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
@@ -53,6 +54,11 @@ public:
                          QObject *parent = nullptr);
     ~AbstractTileFillTool();
 
+    void deactivate(MapScene *scene) override;
+
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+
     /**
      * Sets the stamp that is drawn when filling.
      */
@@ -64,6 +70,8 @@ public:
     const TileStamp &stamp() const { return mStamp; }
 
     void populateToolBar(QToolBar *toolBar) override;
+
+    bool isCapturing() const;
 
 public slots:
     void setFillMethod(FillMethod fillMethod);
@@ -78,6 +86,8 @@ signals:
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
+
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     virtual void clearConnections(MapDocument *mapDocument) = 0;
 
@@ -117,12 +127,20 @@ private:
     WangSet *mWangSet;
     RandomPicker<Cell> mRandomCellPicker;
 
+    CaptureStampHelper mCaptureStampHelper;
+
     /**
      * Updates the list of random cells.
      * This is done by taking all non-null tiles from the original stamp mStamp.
      */
     void updateRandomListAndMissingTilesets();
 };
+
+
+inline bool AbstractTileFillTool::isCapturing() const
+{
+    return mCaptureStampHelper.isActive();
+}
 
 } // namespace Internal
 } // namespace Tiled

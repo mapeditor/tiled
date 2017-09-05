@@ -91,6 +91,7 @@ SOURCES += aboutdialog.cpp \
     brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
+    capturestamphelper.cpp \
     changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
@@ -286,6 +287,7 @@ HEADERS += aboutdialog.h \
     brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
+    capturestamphelper.h \
     changeimagelayerposition.h \
     changeimagelayerproperties.h \
     changelayer.h \

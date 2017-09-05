@@ -50,7 +50,6 @@ public:
     ~BucketFillTool();
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
     void modifiersChanged(Qt::KeyboardModifiers) override;
 

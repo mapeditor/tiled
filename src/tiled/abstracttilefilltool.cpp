@@ -58,6 +58,37 @@ AbstractTileFillTool::~AbstractTileFillTool()
 {
 }
 
+void AbstractTileFillTool::deactivate(MapScene *scene)
+{
+    mCaptureStampHelper.reset();
+    AbstractTileTool::deactivate(scene);
+}
+
+void AbstractTileFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton) {
+        mCaptureStampHelper.beginCapture(tilePosition());
+        return;
+    }
+
+    event->ignore();
+}
+
+void AbstractTileFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton && mCaptureStampHelper.isActive()) {
+        clearOverlay();
+
+        TileStamp stamp = mCaptureStampHelper.endCapture(currentTileLayer(), tilePosition());
+        if (!stamp.isEmpty())
+            emit stampChanged(stamp);
+
+        return;
+    }
+
+    event->ignore();
+}
+
 void AbstractTileFillTool::setStamp(const TileStamp &stamp)
 {
     // Clear any overlay that we presently have with an old stamp
@@ -116,6 +147,17 @@ void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
         updateRandomListAndMissingTilesets();
 
     clearOverlay();
+}
+
+void AbstractTileFillTool::tilePositionChanged(const QPoint &tilePos)
+{
+    if (mCaptureStampHelper.isActive()) {
+        clearOverlay();
+
+        QRegion capturedArea = mCaptureStampHelper.capturedArea(tilePos);
+        if (!capturedArea.isEmpty())
+            brushItem()->setTileRegion(capturedArea);
+    }
 }
 
 void AbstractTileFillTool::clearOverlay()

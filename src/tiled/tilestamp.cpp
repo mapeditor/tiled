@@ -89,6 +89,11 @@ TileStamp::TileStamp()
 {
 }
 
+/**
+ * Constructs a tile stamp with the given \a map as its only variation.
+ *
+ * The stamp takes ownership over the map.
+ */
 TileStamp::TileStamp(Map *map)
     : d(new TileStampData)
 {
