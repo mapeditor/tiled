@@ -127,6 +127,7 @@ void CreateMultipointObjectTool::cancelNewMapObject()
 {
     if (mExtending) {
         mExtending = false;
+        mExtendingFirst = false;
         mNewMapObjectItem = nullptr;
 
         delete mOverlayPolygonItem;
@@ -150,6 +151,7 @@ void CreateMultipointObjectTool::finishNewMapObject()
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
         mExtending = false;
+        mExtendingFirst = false;
         mNewMapObjectItem = nullptr;
 
         delete mOverlayPolygonItem;
