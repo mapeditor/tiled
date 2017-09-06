@@ -49,19 +49,22 @@ void CreatePolylineObjectTool::extend(MapObjectItem *mapObjectItem, bool extendi
     mExtendingFirst = extendingFirst;
 
     mNewMapObjectItem = mapObjectItem;
-    mOverlayPolygonObject->setPolygon(mapObjectItem->mapObject()->polygon());
-    mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
-                                            mapDocument(),
-                                            mObjectGroupItem);
 
-    QPolygonF next = mOverlayPolygonObject->polygon();
+    MapObject *mapObject = mapObjectItem->mapObject();
+    QPolygonF next = mapObject->polygon();
 
     if (extendingFirst)
         next.prepend(next.first());
     else
         next.append(next.last());
 
-    mOverlayPolygonItem->setPolygon(next);
+    mOverlayPolygonObject->setPolygon(next);
+    mOverlayPolygonObject->setShape(mapObject->shape());
+    mOverlayPolygonObject->setPosition(mapObject->position());
+
+    mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
+                                            mapDocument(),
+                                            mObjectGroupItem);
 
     mapDocument()->setSelectedObjects(QList<MapObject*>());
 }
