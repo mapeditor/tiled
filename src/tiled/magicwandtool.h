@@ -46,7 +46,20 @@ public:
     void languageChanged() override;
 
 protected:
+    enum ScopeMode {
+        Contiguous,
+        Global
+    };
+
     void tilePositionChanged(const QPoint &tilePos) override;
+    void populateToolBar(QToolBar *toolBar) override;
+
+private:
+    QAction *mContiguousScope;
+    QAction *mGlobalScope;
+    QActionGroup *mScopeActionGroup;
+
+    ScopeMode mScope;
 };
 
 } // namespace Internal
