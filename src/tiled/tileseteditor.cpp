@@ -177,9 +177,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     mTileCollisionDock->setVisible(false);
     mWangDock->setVisible(false);
 
-#if QT_VERSION >= 0x050600
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
-#endif
     mMainWindow->setDockNestingEnabled(true);
     mMainWindow->setCentralWidget(mWidgetStack);
     mMainWindow->addToolBar(mMainToolBar);

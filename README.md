@@ -30,7 +30,7 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 5.4) development libraries are installed:
+Make sure the Qt (>= 5.6) development libraries are installed:
 
 * In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
 * In Fedora:        `sudo dnf builddep tiled`

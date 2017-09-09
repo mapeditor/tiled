@@ -10,7 +10,7 @@ QtGuiApplication {
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.4" }
+    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
 
     property bool qtcRunnable: true
 

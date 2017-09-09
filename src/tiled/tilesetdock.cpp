@@ -760,11 +760,7 @@ void TilesetDock::onTilesetDataChanged(const QModelIndex &topLeft, const QModelI
 
 void TilesetDock::onTabMoved(int from, int to)
 {
-#if QT_VERSION >= 0x050600
     mTilesets.move(from, to);
-#else
-    mTilesets.insert(to, mTilesets.takeAt(from));
-#endif
     mTilesetDocuments.move(from, to);
 
     // Move the related tileset view

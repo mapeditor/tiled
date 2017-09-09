@@ -91,7 +91,7 @@
 #include <QUndoStack>
 #include <QUndoView>
 
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
 #include <QtPlatformHeaders\QWindowsWindowFunctions>
 #endif
 
@@ -137,9 +137,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
-#if QT_VERSION >= 0x050600
     setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
-#endif
 
     Preferences *preferences = Preferences::instance();
 
@@ -447,7 +445,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
             this, SLOT(autoMappingError(bool)));
 
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
@@ -1317,7 +1315,7 @@ void MainWindow::onObjectTypesEditorClosed()
 
 void MainWindow::ensureHasBorderInFullScreen()
 {
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050600
+#ifdef Q_OS_WIN
     // Workaround issue #1576
     static bool hasBorderInFullScreen = false;
 
