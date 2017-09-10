@@ -39,3 +39,4 @@ Reference
    reference/support-for-tmx-maps
    reference/tmx-map-format
    reference/tmx-changelog
+   reference/json-map-format
