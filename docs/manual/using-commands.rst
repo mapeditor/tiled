@@ -28,31 +28,36 @@ Editing Commands
 The 'Edit Commands' dialog contains a list of commands. Each command has
 several properties:
 
--  **Name**: The name of the command as it will be shown in the drop
-   down list, so you can easily identify it.
+Name
+    The name of the command as it will be shown in the drop
+    down list, so you can easily identify it.
 
--  **Executable**: The executable to run. It should either be a full
-   path or the name of an executable in the system PATH.
+Executable
+    The executable to run. It should either be a full
+    path or the name of an executable in the system PATH.
 
--  **Arguments**: The arguments for running the executable.
+Arguments
+    The arguments for running the executable.
 
--  **Working directory**: The path to the working directory.
+Working directory
+    The path to the working directory.
 
--  **Shortcut**: A custom key sequence to trigger the command.
-   You can use 'Clear' to reset the shortcut.
+Shortcut
+    A custom key sequence to trigger the command. You can use 'Clear'
+    to reset the shortcut.
 
--  **Output in Debug Console**: If this is enabled, then the output
-   (stdout and stderr) of this command will be displayed in the Debug
-   Console. You can find the Debug Console in *View > Views and
-   Toolbars > Debug Console*.
+Output in Debug Console
+    If this is enabled, then the output (stdout and stderr) of this
+    command will be displayed in the Debug Console. You can find the
+    Debug Console in *View > Views and Toolbars > Debug Console*.
 
--  **Save map before executing**: If this is enabled, then the current
-   map will be saved before executing the command.
+Save map before executing
+    If this is enabled, then the current map will be saved before
+    executing the command.
 
--  **Enabled**: A quick way to disable commands and remove them from the
-   drop down list.
-
-   -  The default command is the first enabled command.
+Enabled
+    A quick way to disable commands and remove them from the drop down list.
+    The default command is the first enabled command.
 
 Note that if the executable or any of its arguments contain spaces,
 these parts need to be quoted.
@@ -63,20 +68,26 @@ Substituted Variables
 In the executable, arguments and working directory fields, you can use
 the following variables:
 
--  ``%mapfile`` - replaced with the current maps full path.
--  ``%mappath`` - replaced with the full folder path in which the
-   map is located. (since Tiled 0.18)
--  ``%objecttype`` - replaced with the type of the currently
-   selected object, if any. (since Tiled 0.12)
--  ``%objectid`` - replaced with the ID of the currently selected
-   object, if any. (since Tiled 0.17)
--  ``%layername`` - replaced with the name of the currently selected
-   layer. (since Tiled 0.17)
+``%mapfile``
+    the current maps full path.
+
+``%mappath``
+    the full folder path in which the map is located. (since Tiled 0.18)
+
+``%objecttype``
+    the type of the currently selected object, if any. (since Tiled 0.12)
+
+``%objectid``
+    the ID of the currently selected object, if any. (since Tiled 0.17)
+
+``%layername``
+    the name of the currently selected layer. (since Tiled 0.17)
 
 For the working directory field, you can additionally use the following
 variable:
 
--  ``%executablepath`` - replaced with the path to the executable.
+``%executablepath``
+    the path to the executable.
 
 
 Example Commands

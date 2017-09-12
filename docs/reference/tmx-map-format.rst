@@ -72,10 +72,10 @@ the only type, and are simply called ``layer``, object layers have the
 order in which these layers appear is the order in which the layers are
 rendered by Tiled.
 
-Can contain: `properties <#properties>`__, `tileset <#tileset>`__,
-`layer <#layer>`__, `objectgroup <#objectgroup>`__,
-`imagelayer <#imagelayer>`__, `group <#group>`__ (since 1.0),
-`templategroup <#templategroup>`__ (since 1.1)
+Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`,
+:ref:`tmx-layer`, :ref:`tmx-objectgroup`,
+:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0),
+:ref:`tmx-templategroup` (since 1.1)
 
 .. _tmx-tileset:
 
@@ -108,9 +108,12 @@ order of their ``firstgid`` attribute. The first tileset always has a
 not necessarily number their tiles consecutively since gaps can occur
 when removing tiles.
 
-Can contain: `tileoffset <#tileoffset>`__ (since 0.8),
-`properties <#properties>`__ (since 0.8), `image <#image>`__,
-`terraintypes <#terraintypes>`__ (since 0.9), `tile <#tile>`__
+Can contain: :ref:`tmx-tileoffset` (since 0.8),
+:ref:`tmx-properties` (since 0.8), :ref:`tmx-image`,
+:ref:`tmx-terraintypes` (since 0.9), :ref:`tmx-tileset-tile`,
+:ref:`tmx-wangsets` (since 1.1)
+
+.. _tmx-tileoffset:
 
 <tileoffset>
 ~~~~~~~~~~~~
@@ -121,6 +124,8 @@ Can contain: `tileoffset <#tileoffset>`__ (since 0.8),
 This element is used to specify an offset in pixels, to be applied when
 drawing a tile from the related tileset. When not present, no offset is
 applied.
+
+.. _tmx-image:
 
 <image>
 ~~~~~~~
@@ -144,7 +149,9 @@ embedded image data, even though the TMX format supports this. It is
 possible to create such maps using ``libtiled`` (Qt/C++) or
 `tmxlib <https://pypi.python.org/pypi/tmxlib>`__ (Python).
 
-Can contain: `data <#data>`__ (since 0.9)
+Can contain: :ref:`tmx-data` (since 0.9)
+
+.. _tmx-terraintypes:
 
 <terraintypes>
 ~~~~~~~~~~~~~~
@@ -152,7 +159,9 @@ Can contain: `data <#data>`__ (since 0.9)
 This element defines an array of terrain types, which can be referenced
 from the ``terrain`` attribute of the ``tile`` element.
 
-Can contain: `terrain <#terrain>`__
+Can contain: :ref:`tmx-terrain`
+
+.. _tmx-terrain:
 
 <terrain>
 ^^^^^^^^^
@@ -161,7 +170,7 @@ Can contain: `terrain <#terrain>`__
 -  **tile:** The local tile-id of the tile that represents the terrain
    visually.
 
-Can contain: `properties <#properties>`__
+Can contain: :ref:`tmx-properties`
 
 .. _tmx-tileset-tile:
 
@@ -179,9 +188,11 @@ Can contain: `properties <#properties>`__
    tile is chosen when it competes with others while editing with the
    terrain tool. (optional) (since 0.9)
 
-Can contain: `properties <#properties>`__, `image <#image>`__ (since
-0.9), `objectgroup <#objectgroup>`__ (since 0.10),
-`animation <#animation>`__ (since 0.10)
+Can contain: :ref:`tmx-properties`, :ref:`tmx-image` (since
+0.9), :ref:`tmx-objectgroup` (since 0.10),
+:ref:`tmx-animation` (since 0.10)
+
+.. _tmx-animation:
 
 <animation>
 ^^^^^^^^^^^
@@ -192,15 +203,81 @@ As of Tiled 0.10, each tile can have exactly one animation associated
 with it. In the future, there could be support for multiple named
 animations on a tile.
 
-Can contain: `frame <#frame>`__
+Can contain: :ref:`tmx-frame`
+
+.. _tmx-frame:
 
 <frame>
 '''''''
 
 -  **tileid:** The local ID of a tile within the parent
-   `tileset <#tileset>`__.
+   :ref:`tmx-tileset`.
 -  **duration:** How long (in milliseconds) this frame should be displayed
    before advancing to the next frame.
+
+.. _tmx-wangsets:
+
+<wangsets>
+~~~~~~~~~~
+
+Contains the list of Wang sets defined for this tileset.
+
+Can contain: :ref:`tmx-wangset`
+
+.. _tmx-wangset:
+
+<wangset>
+^^^^^^^^^
+
+Defines a list of corner colors and a list of edge colors, and any
+number of Wang tiles using these colors.
+
+-  **name**: The name of the Wang set.
+-  **tile**: The tile ID of the tile representing this Wang set.
+
+Can contain: :ref:`tmx-wangcornercolor`, :ref:`tmx-wangedgecolor`, :ref:`tmx-wangtile`
+
+.. _tmx-wangcornercolor:
+
+<wangcornercolor>
+'''''''''''''''''
+
+A color that can be used to define the corner of a Wang tile.
+
+-  **name**: The name of this color.
+-  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile**: The tile ID of the tile representing this color.
+-  **probability**: The relative probability that this color is chosen
+   over others in case of multiple options.
+
+.. _tmx-wangedgecolor:
+
+<wangedgecolor>
+'''''''''''''''''
+
+A color that can be used to define the edge of a Wang tile.
+
+-  **name**: The name of this color.
+-  **color**: The color in ``#RRGGBB`` format (example: ``#c17d11``).
+-  **tile**: The tile ID of the tile representing this color.
+-  **probability**: The relative probability that this color is chosen
+   over others in case of multiple options.
+
+.. _tmx-wangtile:
+
+<wangtile>
+''''''''''
+
+Defines a Wang tile, by referring to a tile in the tileset and
+associating it with a certain Wang ID.
+
+-  **tileid**: The tile ID.
+-  **wangid**: The Wang ID, which is a 32-bit unsigned integer stored
+   in the format ``0xCECECECE`` (where each C is a corner color and
+   each E is an edge color, from right to left clockwise, starting with
+   the top edge)
+
+.. _tmx-layer:
 
 <layer>
 -------
@@ -224,7 +301,9 @@ tiles.
 -  **offsety:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
 
-Can contain: `properties <#properties>`__, `data <#data>`__
+Can contain: :ref:`tmx-properties`, :ref:`tmx-data`
+
+.. _tmx-data:
 
 <data>
 ~~~~~~
@@ -251,7 +330,7 @@ find out from which tileset the tile is you need to find the tileset
 with the highest ``firstgid`` that is still lower or equal than the gid.
 The tilesets are always stored with increasing ``firstgid``\ s.
 
-Can contain: `tile <#tile_1>`__, `chunk <#chunk>`__
+Can contain: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
 
 Tile flipping
 ^^^^^^^^^^^^^
@@ -333,10 +412,12 @@ when basing your parsing code on it, thanks.)
 -  **height:** The height of the chunk in tiles.
 
 This is currently added only for infinite maps. The contents of a chunk
-element is same as that of the ``data`` element, except it stores the 
+element is same as that of the ``data`` element, except it stores the
 data of the area specified in the attributes.
 
-Can contain: `tile <#tile_1>`__
+Can contain: :ref:`tmx-tilelayer-tile`
+
+.. _tmx-tilelayer-tile:
 
 <tile>
 ~~~~~~
@@ -347,6 +428,8 @@ Not to be confused with the ``tile`` element inside a ``tileset``, this
 element defines the value of a single tile on a tile layer. This is
 however the most inefficient way of storing the tile layer data, and
 should generally be avoided.
+
+.. _tmx-objectgroup:
 
 <objectgroup>
 -------------
@@ -373,7 +456,7 @@ should generally be avoided.
 The object group is in fact a map layer, and is hence called "object
 layer" in Tiled Qt.
 
-Can contain: `properties <#properties>`__, `object <#object>`__
+Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 
 .. _tmx-object:
 
@@ -414,9 +497,11 @@ When the object has a ``tid`` set, it will borrow all the properties from
 the specified template, properties saved with the object will have higher
 priority, i.e. they will override the template properties.
 
-Can contain: `properties <#properties>`__, `ellipse <#ellipse>`__ (since
-0.9), `polygon <#polygon>`__, `polyline <#polyline>`__, `text <#text>`__
-(since 1.0), image
+Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
+0.9), :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
+(since 1.0), *image*
+
+.. _tmx-ellipse:
 
 <ellipse>
 ~~~~~~~~~
@@ -424,6 +509,8 @@ Can contain: `properties <#properties>`__, `ellipse <#ellipse>`__ (since
 Used to mark an object as an ellipse. The existing ``x``, ``y``,
 ``width`` and ``height`` attributes are used to determine the size of
 the ellipse.
+
+.. _tmx-polygon:
 
 <polygon>
 ~~~~~~~~~
@@ -435,6 +522,8 @@ coordinates. The origin for these coordinates is the location of the
 parent ``object``. By default, the first point is created as 0,0
 denoting that the point will originate exactly where the ``object`` is
 placed.
+
+.. _tmx-polyline:
 
 <polyline>
 ~~~~~~~~~~
@@ -493,7 +582,7 @@ character data.
 
 A layer consisting of a single image.
 
-Can contain: `properties <#properties>`__, `image <#image>`__
+Can contain: :ref:`tmx-properties`, :ref:`tmx-image`
 
 .. _tmx-group:
 
@@ -513,14 +602,15 @@ A group layer, used to organize the layers of the map in a hierarchy.
 Its attributes ``offsetx``, ``offsety``, ``opacity`` and ``visible``
 recursively affect child layers.
 
-Can contain: `properties <#properties>`__, `layer <#layer>`__,
-`objectgroup <#objectgroup>`__, `imagelayer <#imagelayer>`__,
-`group <#group>`__
+Can contain: :ref:`tmx-properties`, :ref:`tmx-layer`,
+:ref:`tmx-objectgroup`, :ref:`tmx-imagelayer`, :ref:`tmx-group`
+
+.. _tmx-properties:
 
 <properties>
 ------------
 
-Can contain: `property <#property>`__
+Can contain: :ref:`tmx-property`
 
 Wraps any number of custom properties. Can be used as a child of the
 ``map``, ``tileset``, ``tile`` (when part of a ``tileset``),
@@ -590,7 +680,9 @@ Template groups are saved as external files, and are referenced by the map. A
 template group can contain multiple :ref:`tileset <tmx-tileset>` elements
 that point to external tilesets.
 
-Can contain: `tileset <#tileset>`__, `template <#template>`__
+Can contain: :ref:`tmx-tileset`, :ref:`tmx-template`
+
+.. _tmx-template:
 
 <template>
 ^^^^^^^^^^
@@ -615,7 +707,7 @@ Example of a template group file:
      </template>
     </templategroup>
 
-Can contain: `object <#object>`__
+Can contain: :ref:`tmx-object`
 
 --------------
 

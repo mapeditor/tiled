@@ -11,11 +11,9 @@ Tiled Documentation
    documentation for specific Tiled features. Over time, this should become the
    place to refer to for any details about using Tiled.
 
-Manual
-------
-
 .. toctree::
    :maxdepth: 2
+   :caption: Manual
 
    manual/introduction
    manual/layers
@@ -30,11 +28,9 @@ Manual
    manual/automapping
    manual/keyboard-shortcuts
 
-Reference
----------
-
 .. toctree::
    :maxdepth: 2
+   :caption: Reference
 
    reference/support-for-tmx-maps
    reference/tmx-map-format
