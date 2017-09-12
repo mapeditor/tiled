@@ -76,6 +76,7 @@ class HasChildrenFilterModel : public QSortFilterProxyModel
 public:
     explicit HasChildrenFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
+        , mEnabled(true)
     {
     }
 

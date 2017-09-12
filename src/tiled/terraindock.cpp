@@ -76,6 +76,7 @@ class TerrainFilterModel : public QSortFilterProxyModel
 public:
     explicit TerrainFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
+        , mEnabled(true)
     {
     }
 

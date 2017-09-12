@@ -29,27 +29,23 @@
 
 #include "templategroup.h"
 
-#include "templategroupformat.h"
 #include "tilesetmanager.h"
 
 using namespace Tiled;
 
-TemplateGroup::TemplateGroup():
-    Object(TemplateGroupType),
-    mNextTemplateId(0),
-    mLoaded(true),
-    mEmbedded(true),
-    mMaxId(0)
+TemplateGroup::TemplateGroup()
+    : TemplateGroup(QString())
 {
 }
 
-TemplateGroup::TemplateGroup(QString name):
-    Object(TemplateGroupType),
-    mName(name),
-    mNextTemplateId(0),
-    mLoaded(true),
-    mEmbedded(true),
-    mMaxId(0)
+TemplateGroup::TemplateGroup(const QString &name)
+    : Object(TemplateGroupType)
+    , mFormat(nullptr)
+    , mName(name)
+    , mNextTemplateId(0)
+    , mLoaded(true)
+    , mEmbedded(true)
+    , mMaxId(0)
 {
 }
 

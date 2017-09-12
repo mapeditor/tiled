@@ -29,23 +29,19 @@
 
 #include "objecttemplate.h"
 
-#include "templategroup.h"
-
 namespace Tiled {
 
-ObjectTemplate::ObjectTemplate():
-    Object(ObjectTemplateType),
-    mObject(nullptr),
-    mTemplateGroup(nullptr)
+ObjectTemplate::ObjectTemplate()
+    : ObjectTemplate(0, QString())
 {
 }
 
-ObjectTemplate::ObjectTemplate(unsigned id, QString name):
-    Object(ObjectTemplateType),
-    mObject(nullptr),
-    mId(id),
-    mName(name),
-    mTemplateGroup(nullptr)
+ObjectTemplate::ObjectTemplate(unsigned id, QString name)
+    : Object(ObjectTemplateType)
+    , mObject(nullptr)
+    , mId(id)
+    , mName(name)
+    , mTemplateGroup(nullptr)
 {
 }
 
