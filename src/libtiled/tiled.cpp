@@ -46,6 +46,6 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
         return url;
 
     // Resolve possible relative file reference
-    QString absolutePath = dir.filePath(filePathOrUrl);
+    QString absolutePath = QDir::cleanPath(dir.filePath(filePathOrUrl));
     return QUrl::fromLocalFile(absolutePath);
 }
