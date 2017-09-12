@@ -76,7 +76,7 @@ namespace {
 class TilesetMenuButton : public QToolButton
 {
 public:
-    TilesetMenuButton(QWidget *parent = nullptr)
+    explicit TilesetMenuButton(QWidget *parent = nullptr)
         : QToolButton(parent)
     {
         setArrowType(Qt::DownArrow);
@@ -111,7 +111,7 @@ protected:
 class WheelEnabledTabBar : public QTabBar
 {
 public:
-    WheelEnabledTabBar(QWidget *parent = nullptr)
+    explicit WheelEnabledTabBar(QWidget *parent = nullptr)
        : QTabBar(parent)
     {}
 

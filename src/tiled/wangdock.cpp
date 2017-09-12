@@ -74,7 +74,7 @@ static WangSet *firstWangSet(TilesetDocument *tilesetDocument)
 class HasChildrenFilterModel : public QSortFilterProxyModel
 {
 public:
-    HasChildrenFilterModel(QObject *parent = nullptr)
+    explicit HasChildrenFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
     }

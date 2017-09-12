@@ -141,7 +141,7 @@ static QPainterPath createResizeArrow(bool straight)
 class Handle : public QGraphicsItem
 {
 public:
-    Handle(QGraphicsItem *parent = nullptr)
+    explicit Handle(QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mUnderMouse(false)
     {
@@ -168,7 +168,7 @@ protected:
 class OriginIndicator : public Handle
 {
 public:
-    OriginIndicator(QGraphicsItem *parent = nullptr)
+    explicit OriginIndicator(QGraphicsItem *parent = nullptr)
         : Handle(parent)
     {
         setZValue(10000 + 1);

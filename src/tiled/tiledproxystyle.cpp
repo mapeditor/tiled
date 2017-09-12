@@ -49,7 +49,7 @@ static Q_DECL_CONSTEXPR inline int qt_div_255(int x) { return (x + (x>>8) + 0x80
 template <typename T>
         struct HexString
 {
-    inline HexString(const T t)
+    inline explicit HexString(const T t)
         : val(t)
     {}
     inline void write(QChar *&dest) const

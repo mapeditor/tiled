@@ -66,7 +66,7 @@ class MapReaderPrivate
     friend class Tiled::MapReader;
 
 public:
-    MapReaderPrivate(MapReader *mapReader):
+    explicit MapReaderPrivate(MapReader *mapReader):
         p(mapReader),
         mReadingExternalTileset(false)
     {}

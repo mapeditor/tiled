@@ -74,7 +74,7 @@ static Terrain *firstTerrain(TilesetDocument *tilesetDocument)
 class TerrainFilterModel : public QSortFilterProxyModel
 {
 public:
-    TerrainFilterModel(QObject *parent = nullptr)
+    explicit TerrainFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
     }

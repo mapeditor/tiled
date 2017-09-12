@@ -107,7 +107,7 @@ namespace Internal {
 class UncheckableItemsModel : public QIdentityProxyModel
 {
 public:
-    UncheckableItemsModel(QObject *parent = nullptr)
+    explicit UncheckableItemsModel(QObject *parent = nullptr)
         : QIdentityProxyModel(parent)
     {}
 

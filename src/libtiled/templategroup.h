@@ -44,7 +44,7 @@ class TILEDSHARED_EXPORT TemplateGroup : public Object
 {
 public:
     TemplateGroup();
-    TemplateGroup(QString name);
+    explicit TemplateGroup(const QString &name);
     ~TemplateGroup();
 
     const QList<ObjectTemplate*> &templates() const;
