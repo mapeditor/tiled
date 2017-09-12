@@ -46,10 +46,10 @@ public:
     TileStampData(const TileStampData &other);
     ~TileStampData();
 
+    int quickStampIndex;
     QString name;
     QString fileName;
     QVector<TileStampVariation> variations;
-    int quickStampIndex;
 };
 
 TileStampData::TileStampData()
@@ -58,10 +58,10 @@ TileStampData::TileStampData()
 
 TileStampData::TileStampData(const TileStampData &other)
     : QSharedData(other)
+    , quickStampIndex(-1)
     , name(other.name)
     , fileName()                        // not copied
     , variations(other.variations)
-    , quickStampIndex(-1)
 {
     TilesetManager *tilesetManager = TilesetManager::instance();
 
