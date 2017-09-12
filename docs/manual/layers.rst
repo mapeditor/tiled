@@ -100,7 +100,7 @@ due to the lack of layer locking
 
 .. raw:: html
 
-   <div class="new new-old">New in Tiled 1.0</div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 Group Layers
 ------------
