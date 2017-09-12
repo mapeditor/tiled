@@ -24,6 +24,7 @@
 #include "tiledproxystyle.h"
 
 #include <QApplication>
+#include <QPixmapCache>
 #include <QStyle>
 #include <QStyleFactory>
 
@@ -132,6 +133,7 @@ void StyleHelper::apply()
     }
 
     if (QApplication::palette() != desiredPalette) {
+        QPixmapCache::clear();
         QApplication::setPalette(desiredPalette);
 
         if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
