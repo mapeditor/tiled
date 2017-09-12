@@ -496,6 +496,7 @@ bool DocumentManager::saveDocumentAs(Document *document)
 
         MapFormat *format = helper.formatByNameFilter(selectedFilter);
         mapDocument->setWriterFormat(format);
+        mapDocument->setReaderFormat(format);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (selectedFilter.isEmpty())
