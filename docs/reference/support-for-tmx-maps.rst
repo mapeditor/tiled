@@ -1,20 +1,23 @@
 Libraries and Frameworks
 ========================
 
-There are many libraries available for reading and/or writing maps stored in the
-:doc:`tmx-map-format` as well as many development frameworks that include
-support for TMX maps. This list is divided into two sections:
+There are many libraries available for reading and/or writing Tiled maps (either stored in the
+:doc:`tmx-map-format` or the :doc:`json-map-format`) as well as many
+development frameworks that include support for Tiled maps. This list is
+divided into two sections:
 
 -  `Support by Language <#support-by-language>`__
 -  `Support by Framework <#support-by-framework>`__
 
-First list is for developers who plan on implementing their own
-renderer. Second list is for developers already using (or considering) a
-particular game engine / graphics library who would rather pass on
-having to write their own tilemap renderer.
+The first list is for developers who plan on implementing their own
+renderer. The second list is for developers already using (or
+considering) a particular game engine / graphics library who would
+rather pass on having to write their own tile map renderer.
 
-*For updates to this page please open a pull request or issue `on
-github <https://github.com/bjorn/tiled/issues>`__, thanks!*
+.. note::
+
+   For updates to this page please open a pull request or issue
+   `on GitHub <https://github.com/bjorn/tiled/issues>`__, thanks!
 
 Support by Language
 -------------------

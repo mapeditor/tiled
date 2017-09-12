@@ -1,12 +1,6 @@
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.1
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.1</div>
 
 Using Infinite Maps
 ===================

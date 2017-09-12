@@ -1,3 +1,7 @@
+.. raw:: html
+
+   <div class="new">New in Tiled 1.1</div>
+
 Using Wang Tiles
 ================
 

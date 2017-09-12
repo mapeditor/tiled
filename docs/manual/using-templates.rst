@@ -1,12 +1,6 @@
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.1
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.1</div>
 
 Using Templates
 ===============
@@ -88,10 +82,10 @@ further edits to the template will not affect the detached instance.
 
 To detach an instance, right click on it and select *Detach*.
 
-Future Extensions
------------------
+.. topic:: Future Extensions
+   :class: future
 
-- Reseting overridden properties.
-- Locking template properties.
-- Handling wrong file paths.
-- Managing template groups, e.g. removing a template or a template group.
+    - Reseting overridden properties.
+    - Locking template properties.
+    - Handling wrong file paths.
+    - Managing template groups, e.g. removing a template or a template group.

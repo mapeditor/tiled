@@ -1,8 +1,3 @@
-.. warning::
-
-   This article is for Tiled version 0.9 and later. If you are using an older
-   version, please see `Automapping in Tiled 0.8 and below <https://github.com/bjorn/tiled/wiki/Automapping-in-tiled-0.8-and-below>`__.
-
 ***********
 Automapping
 ***********

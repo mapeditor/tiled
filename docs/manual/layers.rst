@@ -100,13 +100,7 @@ due to the lack of layer locking
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 Group Layers
 ------------
@@ -122,27 +116,19 @@ Layers can be easily dragged in and out of groups with the mouse. The
 Raise Layer / Lower Layer actions also allow moving layers in and out of
 groups.
 
-.. raw:: html
+.. topic:: Future Extensions
+   :class: future
 
-   <div class="future">
+   There are many ways in which the layers can be made more powerful:
 
-Future Extensions
------------------
+   -  Ability to lock individual objects
+      (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
+   -  Moving certain map-global properties to the Tile Layer
+      (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
+      useful if one map could accommodate layers of different tile sizes
+      and maybe even of different orientation.
 
-There are many ways in which the layers can be made more powerful:
-
--  Ability to lock individual objects
-   (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
--  Moving certain map-global properties to the Tile Layer
-   (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
-   useful if one map could accommodate layers of different tile sizes
-   and maybe even of different orientation.
-
-If you like any of these plans, please help me getting around to it
-faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
-more support I receive the more time I can afford to spend improving
-Tiled!
-
-.. raw:: html
-
-   </div>
+   If you like any of these plans, please help me getting around to it
+   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   more support I receive the more time I can afford to spend improving
+   Tiled!

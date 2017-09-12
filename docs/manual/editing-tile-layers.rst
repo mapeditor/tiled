@@ -68,13 +68,7 @@ with drawing lines).
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 When holding ``Alt``, the editing operations are also applied at a 180
 degree rotation. This is especially useful when editing strategic maps

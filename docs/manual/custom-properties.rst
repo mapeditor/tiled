@@ -41,13 +41,7 @@ get quoted in JSON and Lua exports.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 .. _tile-property-inheritance:
 
@@ -101,13 +95,7 @@ engine what kind of object it is dealing with.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 .. _typed-tiles:
 
@@ -127,46 +115,38 @@ can then specify values for these on the tiles representing these
 entities. And when placing those tiles as objects, you can override
 those values if you need to.
 
-.. raw:: html
+.. topic:: Future Extensions
+   :class: future
 
-   <div class="future">
+   There are several types of custom properties I'd like to add:
 
-Future Extensions
------------------
+   -  **Enumerations**, where you can predefine all possible values and it
+      forms a combo box
+      (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__).
+   -  **Object references**, which would allow easily linking objects
+      together and Tiled could display such connections
+      (`#707 <https://github.com/bjorn/tiled/issues/707>`__).
+   -  **Array properties**, which would be properties having a list of
+      values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__).
+   -  **Dictionary properties**, which would be properties that can contain
+      any number of other properties as children
+      (`#489 <https://github.com/bjorn/tiled/issues/489>`__).
 
-There are several types of custom properties I'd like to add:
+   It would also be nice to add support for **limiting property values**,
+   like the length of string properties or a minimum/maximum on number
+   values.
 
--  **Enumerations**, where you can predefine all possible values and it
-   forms a combo box
-   (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__).
--  **Object references**, which would allow easily linking objects
-   together and Tiled could display such connections
-   (`#707 <https://github.com/bjorn/tiled/issues/707>`__).
--  **Array properties**, which would be properties having a list of
-   values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__).
--  **Dictionary properties**, which would be properties that can contain
-   any number of other properties as children
-   (`#489 <https://github.com/bjorn/tiled/issues/489>`__).
+   Apart from predefining properties based on object type, I'd like to add
+   support for **predefining the properties for each data type**. So
+   defining which custom properties are valid for maps, tilesets, layers,
+   etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)
 
-It would also be nice to add support for **limiting property values**,
-like the length of string properties or a minimum/maximum on number
-values.
+   Finally, the predefined properties would work very well together with
+   explicit **support for projects**. Then you could switch between
+   different projects or get started on an existing project, without
+   needing to configure Tiled to use the right object type definitions.
 
-Apart from predefining properties based on object type, I'd like to add
-support for **predefining the properties for each data type**. So
-defining which custom properties are valid for maps, tilesets, layers,
-etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)
-
-Finally, the predefined properties would work very well together with
-explicit **support for projects**. Then you could switch between
-different projects or get started on an existing project, without
-needing to configure Tiled to use the right object type definitions.
-
-If you like any of these plans, please help me getting around to it
-faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
-more support I receive the more time I can afford to spend improving
-Tiled!
-
-.. raw:: html
-
-   </div>
+   If you like any of these plans, please help me getting around to it
+   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   more support I receive the more time I can afford to spend improving
+   Tiled!

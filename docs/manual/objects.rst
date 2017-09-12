@@ -98,13 +98,7 @@ to finish placing the object.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 To change the tile used by existing tile objects, select all the objects
 you want to change using the `Select Objects <#select-objects>`__ tool
@@ -113,13 +107,7 @@ Tile of Selected Objects*.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 Insert Text
 ~~~~~~~~~~~
@@ -153,13 +141,7 @@ can hold ``Shift`` to force the selection rectangle.
 
 .. raw:: html
 
-   <div class="new">
-
-New in Tiled 1.0
-
-.. raw:: html
-
-   </div>
+   <div class="new">New in Tiled 1.0</div>
 
 By default you interact with the top-most object. When you need to
 select an object below another object, first select the higher object
@@ -252,29 +234,21 @@ polygon. You can also delete a segment when two consecutive nodes are
 selected in a polygon by choosing "Delete Segment" in the context menu.
 This will convert a polygon into a polyline.
 
-.. raw:: html
+.. topic:: Future Extensions
+   :class: future
 
-   <div class="future">
+   Here are some ideas about improvements that could be made to the above
+   tools:
 
-Future Extensions
------------------
+   -  For the `Insert Tile <#insert-tile>`__ tool, show the preview already
+      before pressing the left mouse button
+      (`#537 <https://github.com/bjorn/tiled/issues/537>`__)
 
-Here are some ideas about improvements that could be made to the above
-tools:
+   -  Many improvements could be made to the support for editing polygons
+      and polylines, like allowing to rotate and scale the selected nodes
+      (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
 
--  For the `Insert Tile <#insert-tile>`__ tool, show the preview already
-   before pressing the left mouse button
-   (`#537 <https://github.com/bjorn/tiled/issues/537>`__)
-
--  Many improvements could be made to the support for editing polygons
-   and polylines, like allowing to rotate and scale the selected nodes
-   (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
-
-If you like any of these plans, please help me getting around to it
-faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
-more support I receive the more time I can afford to spend improving
-Tiled!
-
-.. raw:: html
-
-   </div>
+   If you like any of these plans, please help me getting around to it
+   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   more support I receive the more time I can afford to spend improving
+   Tiled!

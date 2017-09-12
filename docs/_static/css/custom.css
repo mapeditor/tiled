@@ -1,17 +1,20 @@
-div.col-md-9 img {
-    max-width: 100%;
-    display: inline;
+.figure img {
     padding: 4px;
-    line-height: 1.428571429;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
-    margin: 10px auto 10px auto;
+    margin: 0px auto 5px auto;
 }
 
-.future h2 {
+.future .topic-title {
     border-bottom: 2px solid rgb(255, 148, 90);
     color: rgb(254, 89, 0);
+
+    /* make it a header */
+    font-size: 150%;
+    margin-top: 0;
+    font-weight: 700;
+    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif;
 }
 .future a {
     color: rgb(254, 89, 0);
