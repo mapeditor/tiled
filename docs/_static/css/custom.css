@@ -24,10 +24,16 @@
     font-weight: bold;
     font-size: 80%;
     background-color: rgb(254, 89, 0);
+    border: 1px solid rgb(254, 89, 0);
     color: white;
     display: block;
     border-radius: 4px;
     float: right;
-    padding: 4px;
+    padding: 3px;
     margin: 4px 0px 10px 10px;
+}
+
+.new-prev {
+    background-color: unset;
+    color: rgb(254, 89, 0);
 }

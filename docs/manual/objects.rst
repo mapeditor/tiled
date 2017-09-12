@@ -17,6 +17,8 @@ Placement Tools
 
 Each type of object has its own placement tool.
 
+.. _insert-rectangle-tool:
+
 Insert Rectangle
 ~~~~~~~~~~~~~~~~
 
@@ -37,6 +39,8 @@ and selectable. Empty rectangles can be used for placing point objects,
 at least as long as no explicit support for point objects is available
 (`#1325 <https://github.com/bjorn/tiled/issues/1325>`__).
 
+.. _insert-ellipse-tool:
+
 Insert Ellipse
 ~~~~~~~~~~~~~~
 
@@ -45,6 +49,8 @@ Shortcut: ``C``
 Ellipses work the same way as `rectangles <#insert-rectangle>`__, except
 that they are rendered as an ellipse. Useful for when your area or
 collision shape needs to represent a circle or ellipse.
+
+.. _insert-polygon-tool:
 
 Insert Polygon
 ~~~~~~~~~~~~~~
@@ -62,7 +68,9 @@ needs to have at least three points. You can press ``Escape`` to cancel
 the creation of the polygon.
 
 When you want to change a polygon after it has been placed, you need to
-use the `Edit Polygons <#edit-polygons>`__ tool.
+use the :ref:`edit-polygons-tool` tool.
+
+.. _insert-polyline-tool:
 
 Insert Polyline
 ~~~~~~~~~~~~~~~
@@ -74,8 +82,8 @@ that they are rendered as a line and require only two points. While they
 can represent collision walls, they are also often used to represent
 paths to be followed.
 
-Despite its name, the `Edit Polygons <#edit-polygons>`__ tool is also
-used to edit polylines.
+Despite its name, the :ref:`edit-polygons-tool` tool is also used to
+edit polylines.
 
 .. _insert-tile-tool:
 
@@ -98,16 +106,28 @@ to finish placing the object.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.0</div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 To change the tile used by existing tile objects, select all the objects
-you want to change using the `Select Objects <#select-objects>`__ tool
-and then right-click on a tile in the Tilesets view, and choose *Replace
-Tile of Selected Objects*.
+you want to change using the :ref:`select-objects-tool` tool and then
+right-click on a tile in the Tilesets view, and choose *Replace Tile of
+Selected Objects*.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.0</div>
+   <div class="new">New in Tiled 1.1</div>
+
+.. _insert-template-tool:
+
+Insert Template
+~~~~~~~~~~~~~~~
+
+Shortcut: ``V``
+
+Can be used to quickly insert multiple instances of the template
+selected in the Templates view. See :ref:`creating-template-instances`.
+
+.. _insert-text-tool:
 
 Insert Text
 ~~~~~~~~~~~
@@ -118,6 +138,8 @@ Text objects can be used to add arbitrary multi-line text to your maps.
 You can configure various font properties and the wrapping / clipping
 area, making them useful for both quick notes as well as text used in
 the game.
+
+.. _select-objects-tool:
 
 Select Objects
 --------------
@@ -141,7 +163,7 @@ can hold ``Shift`` to force the selection rectangle.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.0</div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 By default you interact with the top-most object. When you need to
 select an object below another object, first select the higher object
@@ -211,6 +233,8 @@ Flipping Objects
 You can flip the selected objects horizontally by pressing ``X`` or
 vertically by pressing ``Y``. For tile objects, this also flips their
 images.
+
+.. _edit-polygons-tool:
 
 Edit Polygons
 -------------

@@ -44,6 +44,8 @@ is divided into two parts, the left part is a tree view that shows the loaded
 template groups and their templates, the right part shows a preview of the
 selected template.
 
+.. _creating-template-instances:
+
 Creating Template Instances
 ---------------------------
 
@@ -85,7 +87,8 @@ To detach an instance, right click on it and select *Detach*.
 .. topic:: Future Extensions
    :class: future
 
-    - Reseting overridden properties.
-    - Locking template properties.
-    - Handling wrong file paths.
-    - Managing template groups, e.g. removing a template or a template group.
+    - Resetting overridden properties individually (`#1725 <https://github.com/bjorn/tiled/issues/1725>`__).
+    - Locking template properties (`#1726 <https://github.com/bjorn/tiled/issues/1726>`__).
+    - Handling wrong file paths (`#1732 <https://github.com/bjorn/tiled/issues/1732>`__).
+    - Managing template groups, e.g. removing a template or a template group
+      (`#1723 <https://github.com/bjorn/tiled/issues/1723>`__, `#1724 <https://github.com/bjorn/tiled/issues/1724>`__).

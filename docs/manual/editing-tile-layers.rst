@@ -68,13 +68,17 @@ with drawing lines).
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.0</div>
+   <div class="new new-prev">New in Tiled 1.0</div>
 
 When holding ``Alt``, the editing operations are also applied at a 180
 degree rotation. This is especially useful when editing strategic maps
 where two sides need to have equal opportunities. The modifier works
 well in combination with either ``Shift`` for drawing lines or ``Ctrl``
 for reducing the edited area.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.1</div>
 
 .. _wang-tool:
 
@@ -96,6 +100,8 @@ it uses Wang sets. Key differences are:
 To use the tool, a color must be selected from the Wang color view.
 Wang tiles and this tool are described in detail in :doc:`using-wang-tiles`.
 
+.. _bucket-fill-tool:
+
 Bucket Fill Tool
 ----------------
 
@@ -113,6 +119,8 @@ Tools <#selection-tools>`__.
 
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.
+
+.. _eraser-tool:
 
 Eraser
 ------
