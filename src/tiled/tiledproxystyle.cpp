@@ -210,6 +210,11 @@ static QColor innerContrastLine()
     return QColor(255, 255, 255, 30);
 }
 
+static QColor lightShade()
+{
+    return QColor(255, 255, 255, 90);
+}
+
 static QColor darkShade()
 {
     return QColor(0, 0, 0, 60);
@@ -520,6 +525,28 @@ void TiledProxyStyle::drawControl(ControlElement element,
     QColor shadow = darkShade();
 
     switch (element) {
+    case CE_Splitter:               // Copied to adjust to DPI
+    {
+        // Don't draw handle for single pixel splitters
+        if (option->rect.width() > 1 && option->rect.height() > 1) {
+            //draw grips
+            int size = qRound(Utils::dpiScaled(3));
+            int offset = -size / 2 + 1;
+
+            if (option->state & State_Horizontal) {
+                for (int j = -size * 2 ; j < size * 4; j += size) {
+                    painter->fillRect(rect.center().x() + offset, rect.center().y() + offset + j, size - 1, size - 1, lightShade());
+                    painter->fillRect(rect.center().x() + offset, rect.center().y() + offset + j, size - 2, size - 2, shadow);
+                }
+            } else {
+                for (int i = -size * 2; i < size * 4; i += size) {
+                    painter->fillRect(rect.center().x() + offset + i, rect.center().y() + offset, size - 1, size - 1, lightShade());
+                    painter->fillRect(rect.center().x() + offset + i, rect.center().y() + offset, size - 2, size - 2, shadow);
+                }
+            }
+        }
+        break;
+    }
     case CE_MenuBarEmptyArea:       // Copied to change bottom line color
         painter->save();
     {
