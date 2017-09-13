@@ -227,6 +227,8 @@ Flixel
 Game Maker
 ~~~~~~~~~~
 
+-  Tiled ships with a plug-in that can export a map to a
+   GameMaker: Studio 1.4 room file
 -  `Tiled2GM
    Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by
    Dmi7ry
@@ -333,6 +335,12 @@ Node.js
 
 -  `node-tmx-parser <https://github.com/andrewrk/node-tmx-parser>`__ -
    loads the TMX file into a JavaScript object
+
+Oak Nut Engine (onut)
+~~~~~~~~~~~~~~~~~~~~~
+
+-  `Oak Nut Engine <http://daivuk.github.io/onut/>`__ supports Tiled maps
+   natively (see `TiledMap example <https://github.com/Daivuk/onut/tree/master/samples/TiledMap>`__)
 
 Orx Portable Game Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~
