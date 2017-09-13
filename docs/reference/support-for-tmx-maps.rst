@@ -96,6 +96,8 @@ D
    single-layer and single-tileset example to load a map and its tileset
    in `D language <http://dlang.org/>`__. It also contains basic
    rendering logic using `DSFML <https://github.com/Jebbs/DSFML/>`__
+-  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
+   maps. It also provides general tilemap-related functions and algorithms.
 
 Go
 ~~
