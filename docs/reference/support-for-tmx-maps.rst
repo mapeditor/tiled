@@ -340,7 +340,7 @@ Oak Nut Engine (onut)
 ~~~~~~~~~~~~~~~~~~~~~
 
 -  `Oak Nut Engine <http://daivuk.github.io/onut/>`__ supports Tiled maps
-   natively (see `TiledMap example <https://github.com/Daivuk/onut/tree/master/samples/TiledMap>`__)
+   through Javascript and C++. (see TiledMap `Javascript <https://github.com/Daivuk/onut/tree/master/samplesJS/TiledMap>`__ or `C++ <https://github.com/Daivuk/onut/tree/master/samples/TiledMap>`__ samples)
 
 Orx Portable Game Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~
