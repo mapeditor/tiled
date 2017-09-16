@@ -16,7 +16,7 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | Field             | Type     | Description                                              |
 +===================+==========+==========================================================+
-| version           | int      | The JSON format version                                  |
+| version           | number   | The JSON format version                                  |
 +-------------------+----------+----------------------------------------------------------+
 | tiledversion      | string   | The Tiled version used to save the file                  |
 +-------------------+----------+----------------------------------------------------------+
@@ -219,7 +219,7 @@ Ellipse Example
       "y":808
     }
     
-Ellipse Example
+Rectangle Example
 ~~~~~~~~~~~~~~
 
 .. code:: json
@@ -314,23 +314,6 @@ Polyline Example
       "width":0,
       "x":240,
       "y":88
-    }
-
-Rectangle Example
-~~~~~~~~~~~~~~
-
-.. code:: json
-
-    {
-      "height":152,
-      "id":14,
-      "name":"",
-      "rotation":0,
-      "type":"",
-      "visible":true,
-      "width":248,
-      "x":-80,
-      "y":768
     }
 
 Text Example
