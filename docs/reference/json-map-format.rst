@@ -16,6 +16,10 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | Field             | Type     | Description                                              |
 +===================+==========+==========================================================+
+| version           | number   | The JSON format version                                  |
++-------------------+----------+----------------------------------------------------------+
+| tiledversion      | string   | The Tiled version used to save the file                  |
++-------------------+----------+----------------------------------------------------------+
 | width             | int      | Number of tile columns                                   |
 +-------------------+----------+----------------------------------------------------------+
 | height            | int      | Number of tile rows                                      |
@@ -30,7 +34,7 @@ Map
 +-------------------+----------+----------------------------------------------------------+
 | tilesets          | array    | Array of `Tilesets <#tileset>`__                         |
 +-------------------+----------+----------------------------------------------------------+
-| backgroundcolor   | string   | Hex-formatted color (#RRGGBB or #AARRGGBB) (Optional)    |
+| backgroundcolor   | string   | Hex-formatted color (#RRGGBB or #AARRGGBB) (optional)    |
 +-------------------+----------+----------------------------------------------------------+
 | renderorder       | string   | Rendering direction (orthogonal maps only)               |
 +-------------------+----------+----------------------------------------------------------+
@@ -60,6 +64,7 @@ Map Example
       "tilesets":[ ],
       "tilewidth":32,
       "version":1,
+      "tiledversion":"1.0.3",
       "width":4
     }
 
@@ -165,6 +170,14 @@ Object
 +--------------+----------+----------------------------------------------+
 | gid          | int      | GID, only if object comes from a Tilemap     |
 +--------------+----------+----------------------------------------------+
+| ellipse      | bool     | Used to mark an object as an ellipse         |
++--------------+----------+----------------------------------------------+
+| polygon      | array    | A list of x,y coordinates in pixels          |
++--------------+----------+----------------------------------------------+
+| polyline     | array    | A list of x,y coordinates in pixels          |
++--------------+----------+----------------------------------------------+
+| text         | object   | String key-value pairs                       |
++--------------+----------+----------------------------------------------+
 
 Object Example
 ~~~~~~~~~~~~~~
@@ -186,6 +199,143 @@ Object Example
       "width":0,
       "x":32,
       "y":32
+    }
+    
+Ellipse Example
+~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "ellipse":true,
+      "height":152,
+      "id":13,
+      "name":"",
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":248,
+      "x":560,
+      "y":808
+    }
+    
+Rectangle Example
+~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "height":184,
+      "id":14,
+      "name":"",
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":368,
+      "x":576,
+      "y":584
+    }  
+
+Polygon Example
+~~~~~~~~~~~~~~
+
+.. code:: json
+
+    { 
+      "height":0,
+      "id":15,
+      "name":"",
+      "polygon":[
+      {
+        "x":0,
+        "y":0
+      }, 
+      {
+        "x":152,
+        "y":88
+      }, 
+      {
+        "x":136,
+        "y":-128
+      }, 
+      {
+        "x":80,
+        "y":-280
+      }, 
+      {
+        "x":16,
+        "y":-288
+      }],
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":0,
+      "x":-176,
+      "y":432
+    }    
+
+Polyline Example
+~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "height":0,
+      "id":16,
+      "name":"",
+      "polyline":[
+      {
+        "x":0,
+        "y":0
+      }, 
+      {
+        "x":248,
+        "y":-32
+      }, 
+      {
+        "x":376,
+        "y":72
+      }, 
+      {
+        "x":544,
+        "y":288
+      }, 
+      {
+        "x":656,
+        "y":120
+      }, 
+      {
+        "x":512,
+        "y":0
+      }],
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":0,
+      "x":240,
+      "y":88
+    }
+
+Text Example
+~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "height":19,
+      "id":15,
+      "name":"",
+      "text":
+      {
+        "text":"Hello World",
+        "wrap":true
+      },
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":248,
+      "x":48,
+      "y":136
     }
 
 Tileset
@@ -210,6 +360,8 @@ Tileset
 +------------------+----------+-----------------------------------------------------+
 | properties       | object   | String key-value pairs                              |
 +------------------+----------+-----------------------------------------------------+
+| propertytypes    | object   | String key-value pairs                              |
++------------------+----------+-----------------------------------------------------+
 | margin           | int      | Buffer between image edge and first tile (pixels)   |
 +------------------+----------+-----------------------------------------------------+
 | spacing          | int      | Spacing between adjacent tiles in image (pixels)    |
@@ -217,6 +369,10 @@ Tileset
 | tileproperties   | object   | Per-tile properties, indexed by gid as string       |
 +------------------+----------+-----------------------------------------------------+
 | terrains         | array    | Array of `Terrains <#terrain>`__ (optional)         |
++------------------+----------+-----------------------------------------------------+
+| columns          | int      | The number of tile columns in the tileset           |
++------------------+----------+-----------------------------------------------------+
+| tilecount        | int      | The number of tiles in this tileset                 |
 +------------------+----------+-----------------------------------------------------+
 | tiles            | object   | Gid-indexed `Tiles <#tiles>`__ (optional)           |
 +------------------+----------+-----------------------------------------------------+
@@ -227,17 +383,24 @@ Tileset Example
 .. code:: json
 
             {
+             "columns":19,
              "firstgid":1,
-             "image":"..\/image\/terrain.png",
-             "imageheight":192,
-             "imagewidth":256,
-             "margin":0,
-             "name":"terrain",
+             "image":"..\/image\/fishbaddie_parts.png",
+             "imageheight":480,
+             "imagewidth":640,
+             "margin":3,
+             "name":"",
              "properties":
-                {
-
-                },
-             "spacing":0,
+               {
+                 "myProperty1":"myProperty1_value"
+               },
+             "propertytypes":
+               {
+                 "myProperty1":"string"
+               },
+             "spacing":1,
+             "tilecount":266,
+             "tileheight":32,
              "tilewidth":32
             }
 
