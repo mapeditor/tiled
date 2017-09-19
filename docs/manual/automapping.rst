@@ -22,7 +22,7 @@ layer and everything else is setup for you. This brings some advantages:
 External Links
 --------------
 
-* `Automapping explained for tiled version 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__
+* `Automapping explained for Tiled 0.9 and later (YouTube) <http://www.youtube.com/watch?v=UUi0lD1pxyQ>`__
 * `Examples on Automapping <https://github.com/stefanbeller/tiled_examples>`__
 * `Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__
 
@@ -65,7 +65,7 @@ and the output section. The region layer(s) are only used to mark
 regions, where an Automapping rule exists. Therefore it does not matter
 which tiles are used in this layer, since these tiles are just used to
 define a region. So either use any tile or no tile at a coordinate to
-indicate if that coordinate belongs to a rule or if it doesn’t.
+indicate if that coordinate belongs to a rule or if it doesn't.
 
 If multiple rules are defined in one rulemap file, the regions must not
 be adjacent. That means there must be at least one tile of unused space
@@ -390,8 +390,8 @@ regions
 ^^^^^^^
 
 So with this rule we want to put the bent in shore line tile in the top
-left corner, hence we don’t care which tile has been there before. Also
-we don’t care about the tile in the lower right corner. (probably water,
+left corner, hence we don't care which tile has been there before. Also
+we don't care about the tile in the lower right corner. (probably water,
 but can be any decorative watertile, so just ignore it).
 
 +-----------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------+
@@ -403,7 +403,7 @@ we can see the both tilelayers regions input and regions output. The
 input section covers just these two tiles as we discussed. The output
 region covers just the single tile we want to output. Though the input
 and output region do not overlap, the united region of both the input
-and the output region is still one coherent region, so it’s one rule and
+and the output region is still one coherent region, so it's one rule and
 works.
 
 Output regions can be larger than absolutely required, since when there
@@ -418,14 +418,14 @@ Now we want to put all the nine possible patterns we observed as
 possible input for this rule. We could of course define nine different
 layers *input1\_Ground* up to *input9\_Ground*
 
-Nine TileLayers?! what a mess, we’ll put it in a better way.
+Nine TileLayers?! what a mess, we'll put it in a better way.
 
 Also consider not having just 3 possible tiles at the 2 locations but 4.
 Then we would need 4\*4=16 tilelayers to get all conditions. Another
 downside of this comes with more needed locations: Think of more than 2
 locations needed to construct a ruleinput. So for 3 locations, then each
 location could have the 3 possibilites, hence you need 3\*3\*3 = 27
-tilelayers. It’s not getting better...
+tilelayers. It's not getting better...
 
 So let's try a smart way: All input layers have the same name, so at
 each position any of the three different tiles is valid.
@@ -445,7 +445,7 @@ outputs
 
 The output is straight forward, since only one tile is needed. No
 randomness is needed, hence the index is not needed to be varied, so
-it’s kept empty. The desired output layer is called Ground, so the over
+it's kept empty. The desired output layer is called Ground, so the over
 all name of the single output layer will be output Ground. At this
 single layer at the correct location the correct tile is placed.
 

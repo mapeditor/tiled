@@ -83,18 +83,27 @@ Views
 
 Views can be defined using :ref:`rectangle objects <insert-rectangle-tool>`
 where the Type has been set to ``view``. The position and size will be
-snapped to pixels. Whether the view is visible depends on whether the
-object is visible. Views are automatically enabled when any views are
-defined.
+snapped to pixels. Whether the view is visible when the room starts
+depends on whether the object is visible. The use of views is
+automatically enabled when any views are defined.
 
-The following custom properties can be used to define the various
+.. figure:: images/gamemaker-view-settings.png
+   :alt: GameMaker View Settings
+   :figclass: align-right
+
+The following custom properties can be used to define the various other
 properties of the view:
 
-* string ``objName``
+**Port on screen**
+
 * int ``xport`` (default: 0)
 * int ``yport`` (default: 0)
 * int ``wport`` (default: 1024)
 * int ``hport`` (default: 768)
+
+**Object following**
+
+* string ``objName``
 * int ``hborder`` (default: 32)
 * int ``vborder`` (default: 32)
 * int ``hspeed`` (default: -1)

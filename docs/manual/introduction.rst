@@ -43,35 +43,36 @@ Creating a New Map
 ~~~~~~~~~~~~~~~~~~
 
 When launching Tiled for the first time, we are greeted with the
-following default window layout:
+following window:
 
 .. figure:: images/introduction/tiled-window.png
    :alt: Tiled Window
 
    Tiled Window
 
-There is a large gray area in the middle because no map is open yet. The
-first thing we’ll do is to start a new map with *File -> New -> New Map…*
-(``Ctrl+N``). The following dialog will pop up:
+The first thing we'll do is to start a new map with *File -> New -> New
+Map…* (``Ctrl+N``). The following dialog will pop up:
 
 .. figure:: images/introduction/tiled-new-map.png
    :alt: New Map
+   :scale: 66
 
    New Map
 
 Here, we choose the initial map size, tile size, orientation, tile layer
 format, tile render order (only supported for *Orthogonal* maps) and whether
 the map is :doc:`infinite <using-infinite-maps>` or not. All of these things
-can be changed later as needed, so it’s not important to get it all right the
+can be changed later as needed, so it's not important to get it all right the
 first time.
 
-After pressing *OK*, we’ll see the tile grid and an initial tile layer
+After saving our map, we'll see the tile grid and an initial tile layer
 will be added to the map. However, before we can start using any tiles
 we need to add a tileset. Choose *File -> New -> New Tileset…* to open the
 New Tileset dialog:
 
 .. figure:: images/introduction/tiled-new-tileset.png
    :alt: New Tileset
+   :scale: 66
 
    New Tileset
 
@@ -82,19 +83,37 @@ one pixel *margin* around the tiles and a one pixel *spacing* in between
 the tiles (this is pretty rare actually, usually you should leave these
 values on 0).
 
-After pressing *OK*, Tiled should look as follows:
+.. note::
+
+   We leave the *Embed in map* option off. This is recommended, since it
+   will allow the tileset to be used by multiple maps without setting up
+   its parameters again. It will also be good to store the tileset in
+   its own file if you later add tile properties, terrain definitions,
+   collision shapes, etc., since that information is then shared between
+   all your maps.
+
+After saving the tileset, Tiled should look as follows:
+
+.. figure:: images/introduction/tiled-new-tileset-created.png
+   :alt: Tileset Created
+
+   Tileset Created
+
+Since we don't want to do anything else with the tileset for now, just
+switch back to the map file:
 
 .. figure:: images/introduction/tiled-new-map-tileset-added.png
-   :alt: Tileset Added
+   :alt: Tileset Usable on the Map
 
-   Tileset Added
+   Tileset Usable on the Map
 
-We’re ready to select some tiles and :doc:`start painting <editing-tile-layers>`!
-But first, let’s have a quick look at the :doc:`various layer types <layers>`
-supported by Tiled.
+We're ready to select some tiles and start painting! But first, let's
+have a quick look at the :doc:`various layer types <layers>` supported
+by Tiled.
 
 .. note::
-   Most of the manual still needs to be written. Fortunately, there is a
+
+   Much of the manual still needs to be written. Fortunately, there is a
    very nice `Tiled Map Editor Tutorial Series`_ on GamesFromScratch.com.
    In addition, the support for Tiled in various :doc:`engines and frameworks </reference/support-for-tmx-maps>`
    often comes with some usage information.
