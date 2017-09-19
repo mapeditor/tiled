@@ -123,11 +123,9 @@ is desired, and selecting *Set Wang Color Image*.
 
    The other values can be changed from the properties view.
 
-Wang color properties
-
 Probability
 ^^^^^^^^^^^
-When choosing a tile with wang methods, all tiles with a valid wang pattern are considered.
+When choosing a tile with Wang methods, all tiles with a valid Wang pattern are considered.
 They are given a weight based on their edge/corner colors' probabilities. Then one is selected
 at random, while considering this weight. The weight is the product of all the probabilities.
 
@@ -141,5 +139,7 @@ Left shows path with probability 0.1, right shows path with probability 10.
 Standard Wang Sets
 ------------------
 
-Some typical Wang sets are `2-corner <http://www.cr31.co.uk/stagecast/wang/2corn.html>`__, `2-edge <http://www.cr31.co.uk/stagecast/wang/2edge.html>`__, and `blob <http://www.cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles in Tiled supports
-up to 15 edge and 15 corner colors in a single set.
+Some typical Wang sets are `2-corner <http://www.cr31.co.uk/stagecast/wang/2corn.html>`__,
+`2-edge <http://www.cr31.co.uk/stagecast/wang/2edge.html>`__, and
+`blob <http://www.cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles
+in Tiled support up to 15 edge and 15 corner colors in a single set.
