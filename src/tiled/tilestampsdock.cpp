@@ -306,7 +306,7 @@ TileStampView::TileStampView(QWidget *parent)
 
 QSize TileStampView::sizeHint() const
 {
-    return Utils::dpiScaled(QSize(130, 200));
+    return Utils::dpiScaled(QSize(200, 200));
 }
 
 bool TileStampView::event(QEvent *event)

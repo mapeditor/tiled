@@ -83,6 +83,8 @@ public:
      */
     void editCustomProperty(const QString &name);
 
+    QSize sizeHint() const override;
+
 protected:
     bool event(QEvent *event) override;
 

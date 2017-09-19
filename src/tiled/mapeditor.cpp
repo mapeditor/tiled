@@ -214,7 +214,7 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mUndoDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
-    mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTemplatesDock);
+    mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTemplatesDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea, mWangDock);
@@ -222,15 +222,18 @@ MapEditor::MapEditor(QObject *parent)
     mMainWindow->addDockWidget(Qt::LeftDockWidgetArea, mTileStampsDock);
 
     mMainWindow->tabifyDockWidget(mUndoDock, mMapsDock);
+    mMainWindow->tabifyDockWidget(mTemplatesDock, mTileStampsDock);
     mMainWindow->tabifyDockWidget(mMiniMapDock, mObjectsDock);
     mMainWindow->tabifyDockWidget(mObjectsDock, mLayerDock);
-    mMainWindow->tabifyDockWidget(mTerrainDock, mTilesetDock);
+    mMainWindow->tabifyDockWidget(mTerrainDock, mWangDock);
     mMainWindow->tabifyDockWidget(mWangDock, mTilesetDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
     mMapsDock->setVisible(false);
     mUndoDock->setVisible(false);
+    mTemplatesDock->setVisible(false);
+    mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 
     mUncheckableProxyModel->setSourceModel(mReversingProxyModel);

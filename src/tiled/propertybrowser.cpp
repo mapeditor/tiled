@@ -249,6 +249,11 @@ void PropertyBrowser::editCustomProperty(const QString &name)
         editItem(propertyItems.first());
 }
 
+QSize PropertyBrowser::sizeHint() const
+{
+    return Utils::dpiScaled(QSize(260, 100));
+}
+
 bool PropertyBrowser::event(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
