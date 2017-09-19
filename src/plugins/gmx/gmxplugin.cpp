@@ -393,7 +393,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
                         bgName = tileset->name();
 
                         int xInTilesetGrid = tile->id() % tileset->columnCount();
-                        int yInTilesetGrid = (int)(tile->id() / tileset->columnCount());
+                        int yInTilesetGrid = tile->id() / tileset->columnCount();
 
                         xo = tileset->margin() + (tileset->tileSpacing() + tileset->tileWidth()) * xInTilesetGrid;
                         yo = tileset->margin() + (tileset->tileSpacing() + tileset->tileHeight()) * yInTilesetGrid;

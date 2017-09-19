@@ -41,7 +41,6 @@ public:
     QString shortName() const override;
     QStringList outputFiles(const Tiled::Map *, const QString &fileName) const override;
 
-
 protected:
     QString nameFilter() const override;
 

@@ -22,6 +22,8 @@
 
 #include <QMap>
 
+#include <random>
+
 namespace Tiled {
 namespace Internal {
 
@@ -29,15 +31,16 @@ namespace Internal {
  * A class that helps pick random things that each have a probability
  * assigned.
  */
-template<typename T>
+template<typename T, typename Real = qreal>
 class RandomPicker
 {
 public:
     RandomPicker()
         : mSum(0.0)
+        , mRandomEngine(std::random_device{}())
     {}
 
-    void add(const T &value, qreal probability = 1.0)
+    void add(const T &value, Real probability = 1.0)
     {
         if (probability > 0) {
             mSum += probability;
@@ -54,7 +57,8 @@ public:
     {
         Q_ASSERT(!isEmpty());
 
-        const qreal random = ((qreal)rand() / RAND_MAX) * mSum;
+        std::uniform_real_distribution<Real> dis(0, mSum);
+        const Real random = dis(mRandomEngine);
         const auto it = mThresholds.lowerBound(random);
         if (it != mThresholds.end())
             return it.value();
@@ -67,7 +71,8 @@ public:
     {
         Q_ASSERT(!isEmpty());
 
-        const qreal random = ((qreal)rand() / RAND_MAX) * mSum;
+        std::uniform_real_distribution<Real> dis(0, mSum);
+        const Real random = dis(mRandomEngine);
         const auto it = mThresholds.lowerBound(random);
 
         if (it != mThresholds.end())
@@ -83,8 +88,9 @@ public:
     }
 
 private:
-    qreal mSum;
-    QMap<qreal, T> mThresholds;
+    Real mSum;
+    QMap<Real, T> mThresholds;
+    mutable std::default_random_engine mRandomEngine;
 };
 
 } // namespace Internal

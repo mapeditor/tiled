@@ -125,7 +125,7 @@ protected:
 
 private:
     WangSet *mWangSet;
-    RandomPicker<Cell> mRandomCellPicker;
+    RandomPicker<Cell, float> mRandomCellPicker;
 
     CaptureStampHelper mCaptureStampHelper;
 

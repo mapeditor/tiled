@@ -92,7 +92,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
                                                                                            front,
                                                                                            fillRegion,
                                                                                            point));
-    RandomPicker<WangTile> wangTiles;
+    RandomPicker<WangTile, float> wangTiles;
 
     for (const WangTile &wangTile : wangTilesList)
         wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
@@ -186,7 +186,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                 int currentIndex = (currentPoint.y() - tileLayer->y()) * tileLayer->width() + (currentPoint.x() - tileLayer->x());
 
                 QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIds[currentIndex]);
-                RandomPicker<WangTile> wangTiles;
+                RandomPicker<WangTile, float> wangTiles;
 
                 for (const WangTile &wangTile : wangTilesList)
                     wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));

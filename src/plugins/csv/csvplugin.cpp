@@ -41,7 +41,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
     QStringList layerPaths = outputFiles(map, fileName);
 
     // Traverse all tile layers
-    uint currentLayer = 0u;
+    int currentLayer = 0;
     for (const Layer *layer : map->layers()) {
         if (layer->layerType() != Layer::TileLayerType)
             continue;
