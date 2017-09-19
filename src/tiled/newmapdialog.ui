@@ -83,6 +83,9 @@
         <property name="text">
          <string>Fixed</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>

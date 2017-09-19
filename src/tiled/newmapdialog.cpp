@@ -106,7 +106,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 
     setComboBoxValue(mUi->renderOrder, prefs->mapRenderOrder());
 
-    mUi->fixedSize->setChecked(fixedSize);
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
@@ -124,6 +123,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->fixedSize, SIGNAL(toggled(bool)), SLOT(updateWidgets(bool)));
+
+    if (fixedSize)
+        mUi->fixedSize->setChecked(true);
+    else
+        mUi->mapInfinite->setChecked(true);
+
     refreshPixelSize();
 }
 
