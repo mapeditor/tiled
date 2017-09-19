@@ -26,6 +26,7 @@ Tiled Documentation
    manual/using-infinite-maps
    manual/using-commands
    manual/automapping
+   manual/export
    manual/keyboard-shortcuts
 
 .. toctree::

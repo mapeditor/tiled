@@ -212,7 +212,7 @@ Construct 2 - Scirra
 Corona SDK
 ~~~~~~~~~~
 
--  `PonyTiled <https://github.com/ponywolf/ponytiled>`__ is a simple
+-  `ponytiled <https://github.com/ponywolf/ponytiled>`__ is a simple
    Tiled Map Loader for Corona SDK (`forum
    announcement <http://discourse.mapeditor.org/t/new-lua-coronasdk-framework-ponytiled/1826>`__)
 -  `Dusk Engine <https://github.com/GymbylCoding/Dusk-Engine>`__ is a

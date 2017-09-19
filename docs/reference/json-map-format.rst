@@ -1,8 +1,8 @@
 JSON Map Format
 ===============
 
-Tiled can also export maps as JSON files. To do so, simply select "File
-> Export As" and select the JSON file type. You can export json from the
+Tiled can export maps as JSON files. To do so, simply select "File >
+Export As" and select the JSON file type. You can export json from the
 command line with the ``--export-map`` option.
 
 The fields found in the JSON format differ slightly from those in the
@@ -200,9 +200,9 @@ Object Example
       "x":32,
       "y":32
     }
-    
+
 Ellipse Example
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. code:: json
 
@@ -218,9 +218,9 @@ Ellipse Example
       "x":560,
       "y":808
     }
-    
+
 Rectangle Example
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 .. code:: json
 
@@ -234,14 +234,14 @@ Rectangle Example
       "width":368,
       "x":576,
       "y":584
-    }  
+    }
 
 Polygon Example
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. code:: json
 
-    { 
+    {
       "height":0,
       "id":15,
       "name":"",
@@ -249,19 +249,19 @@ Polygon Example
       {
         "x":0,
         "y":0
-      }, 
+      },
       {
         "x":152,
         "y":88
-      }, 
+      },
       {
         "x":136,
         "y":-128
-      }, 
+      },
       {
         "x":80,
         "y":-280
-      }, 
+      },
       {
         "x":16,
         "y":-288
@@ -272,10 +272,10 @@ Polygon Example
       "width":0,
       "x":-176,
       "y":432
-    }    
+    }
 
 Polyline Example
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 .. code:: json
 
@@ -287,23 +287,23 @@ Polyline Example
       {
         "x":0,
         "y":0
-      }, 
+      },
       {
         "x":248,
         "y":-32
-      }, 
+      },
       {
         "x":376,
         "y":72
-      }, 
+      },
       {
         "x":544,
         "y":288
-      }, 
+      },
       {
         "x":656,
         "y":120
-      }, 
+      },
       {
         "x":512,
         "y":0
@@ -317,7 +317,7 @@ Polyline Example
     }
 
 Text Example
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 .. code:: json
 
