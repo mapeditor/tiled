@@ -140,6 +140,7 @@ void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Paint:
         if (event->button() == Qt::LeftButton)
             mBrushBehavior = Free;
+        break;
     default:
         // do nothing?
         break;
