@@ -220,15 +220,10 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             qreal scaleX = 1;
             qreal scaleY = 1;
 
+            QPointF origin(optionalProperty(object, "originX", 0.0),
+                           optionalProperty(object, "originY", 0.0));
+
             if (!object->cell().isEmpty()) {
-                // Tile objects have bottom-left origin in Tiled, so the
-                // position needs to be translated for top-left origin in
-                // GameMaker, taking into account the rotation.
-                QTransform transform;
-                transform.rotate(object->rotation());
-
-                pos += transform.map(QPointF(0, -object->height()));
-
                 // For tile objects we can support scaling and flipping, though
                 // flipping in combination with rotation doesn't work in GameMaker.
                 if (auto tile = object->cell().tile()) {
@@ -238,14 +233,28 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
                     if (object->cell().flippedHorizontally()) {
                         scaleX *= -1;
-                        pos += transform.map(QPointF(object->width(), 0));
+                        origin += QPointF(object->width() - 2 * origin.x(), 0);
                     }
                     if (object->cell().flippedVertically()) {
                         scaleY *= -1;
-                        pos += transform.map(QPointF(0, object->height()));
+                        origin += QPointF(0, object->height() - 2 * origin.y());
                     }
                 }
+
+                // Tile objects have bottom-left origin in Tiled, so the
+                // position needs to be translated for top-left origin in
+                // GameMaker, taking into account the rotation.
+                origin += QPointF(0, -object->height());
             }
+
+            // Allow overriding the scale using custom properties
+            scaleX = optionalProperty(object, "scaleX", scaleX);
+            scaleY = optionalProperty(object, "scaleY", scaleY);
+
+            // Adjust the position based on the origin
+            QTransform transform;
+            transform.rotate(object->rotation());
+            pos += transform.map(origin);
 
             stream.writeAttribute("x", QString::number(qRound(pos.x())));
             stream.writeAttribute("y", QString::number(qRound(pos.y())));
