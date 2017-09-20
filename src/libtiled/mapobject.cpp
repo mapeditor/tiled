@@ -257,13 +257,9 @@ MapObject *MapObject::clone() const
 
 const MapObject *MapObject::templateObject() const
 {
-    if (!isTemplateInstance())
-        return nullptr;
-
-    auto objectTemplate = mTemplateRef.templateGroup->findTemplate(mTemplateRef.templateId);
-
-    if (objectTemplate)
-        return objectTemplate->object();
+    if (auto group = templateGroup())
+        if (auto objectTemplate = group->findTemplate(mTemplateRef.templateId))
+            return objectTemplate->object();
 
     return nullptr;
 }

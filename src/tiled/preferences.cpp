@@ -106,7 +106,8 @@ Preferences::Preferences()
 
     // Retrieve defined object types
     ObjectTypesSerializer objectTypesSerializer;
-    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), mObjectTypes);
+    ObjectTypes objectTypes;
+    bool success = objectTypesSerializer.readObjectTypes(objectTypesFile(), objectTypes);
 
     // For backwards compatibilty, read in object types from settings
     if (!success) {
@@ -118,11 +119,13 @@ Preferences::Preferences()
         if (!names.isEmpty()) {
             const int count = qMin(names.size(), colors.size());
             for (int i = 0; i < count; ++i)
-                mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+                objectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
         }
     } else {
         mSettings->remove(QLatin1String("ObjectTypes"));
     }
+
+    Object::setObjectTypes(objectTypes);
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -431,7 +434,7 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
 {
-    mObjectTypes = objectTypes;
+    Object::setObjectTypes(objectTypes);
     emit objectTypesChanged();
 }
 

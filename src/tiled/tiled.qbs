@@ -291,8 +291,6 @@ QtGuiApplication {
         "objectselectiontool.h",
         "objecttemplatemodel.cpp",
         "objecttemplatemodel.h",
-        "objecttypes.cpp",
-        "objecttypes.h",
         "objecttypeseditor.cpp",
         "objecttypeseditor.h",
         "objecttypeseditor.ui",

@@ -191,8 +191,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->propertiesView, &QtTreePropertyBrowser::currentItemChanged,
             this, &ObjectTypesEditor::currentItemChanged);
 
-    Preferences *prefs = Preferences::instance();
-    mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+    mObjectTypesModel->setObjectTypes(Object::objectTypes());
 
     retranslateUi();
 }
@@ -413,7 +412,7 @@ void ObjectTypesEditor::exportObjectTypes()
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
     ObjectTypesSerializer serializer;
-    if (!serializer.writeObjectTypes(fileName, prefs->objectTypes())) {
+    if (!serializer.writeObjectTypes(fileName, Object::objectTypes())) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
                               serializer.errorString());
     }

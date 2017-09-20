@@ -382,8 +382,7 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     if (objectType.isEmpty())
         return QVariant();
 
-    const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
-    for (const ObjectType &type : objectTypes) {
+    for (const ObjectType &type : Object::objectTypes()) {
         if (type.name == objectType)
             if (type.defaultProperties.contains(name))
                 return type.defaultProperties.value(name);
@@ -638,7 +637,7 @@ void PropertyBrowser::addMapProperties()
 static QStringList objectTypeNames()
 {
     QStringList names;
-    for (const ObjectType &type : Preferences::instance()->objectTypes())
+    for (const ObjectType &type : Object::objectTypes())
         names.append(type.name);
     return names;
 }
@@ -1334,6 +1333,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new ChangeWangSetCorners(mTilesetDocument,
                                                               mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                               val.toInt()));
+        break;
     default:
         break;
     }
@@ -1767,8 +1767,7 @@ void PropertyBrowser::updateCustomProperties()
 
     if (!objectType.isEmpty()) {
         // Inherit properties from the object type
-        const ObjectTypes objectTypes = Preferences::instance()->objectTypes();
-        for (const ObjectType &type : objectTypes) {
+        for (const ObjectType &type : Object::objectTypes()) {
             if (type.name == objectType) {
                 QMapIterator<QString,QVariant> it(type.defaultProperties);
                 while (it.hasNext()) {

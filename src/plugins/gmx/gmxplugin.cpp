@@ -38,7 +38,7 @@ using namespace Gmx;
 template <typename T>
 static T optionalProperty(const Object *object, const QString &name, const T &def)
 {
-    const QVariant var = object->property(name);
+    const QVariant var = object->inheritedProperty(name);
     return var.isValid() ? var.value<T>() : def;
 }
 
@@ -69,16 +69,6 @@ static QString sanitizeName(QString name)
     return name.replace(regexp, QLatin1String("_"));
 }
 
-static QString effectiveObjectType(const MapObject *object)
-{
-    if (!object->type().isEmpty())
-        return object->type();
-    if (Tile *tile = object->cell().tile())
-        return tile->type();
-
-    return QString();
-}
-
 static bool checkIfViewsDefined(const Map *map)
 {
     LayerIterator iterator(map);
@@ -90,7 +80,7 @@ static bool checkIfViewsDefined(const Map *map)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = effectiveObjectType(object);
+            const QString type = object->effectiveType();
             if (type == "view")
                 return true;
         }
@@ -152,7 +142,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
             for (const MapObject *object : objectLayer->objects()) {
-                const QString type = effectiveObjectType(object);
+                const QString type = object->effectiveType();
                 if (type != "view")
                     continue;
 
@@ -205,7 +195,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
         const ObjectGroup *objectLayer = static_cast<const ObjectGroup*>(layer);
 
         for (const MapObject *object : objectLayer->objects()) {
-            const QString type = effectiveObjectType(object);
+            const QString type = object->effectiveType();
             if (type.isEmpty())
                 continue;
             if (type == "view")
@@ -367,7 +357,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
 
             foreach (const MapObject *object, objects) {
                 // Objects with types are already exported as instances
-                if (!effectiveObjectType(object).isEmpty())
+                if (!object->effectiveType().isEmpty())
                     continue;
 
                 // Non-typed tile objects are exported as tiles. Rotation is

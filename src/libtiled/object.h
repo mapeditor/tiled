@@ -29,7 +29,7 @@
 #pragma once
 
 #include "properties.h"
-
+#include "objecttypes.h"
 
 namespace Tiled {
 
@@ -62,7 +62,7 @@ public:
     /**
      * Virtual destructor.
      */
-    virtual ~Object() {}
+    virtual ~Object();
 
     /**
      * Returns the type of this object.
@@ -101,6 +101,8 @@ public:
     QVariant property(const QString &name) const
     { return mProperties.value(name); }
 
+    QVariant inheritedProperty(const QString &name) const;
+
     /**
      * Returns the value of the object's \a name property, as a string.
      *
@@ -130,9 +132,15 @@ public:
 
     bool isPartOfTileset() const;
 
+    static void setObjectTypes(const ObjectTypes &objectTypes);
+    static const ObjectTypes &objectTypes()
+    { return mObjectTypes; }
+
 private:
     const TypeId mTypeId;
     Properties mProperties;
+
+    static ObjectTypes mObjectTypes;
 };
 
 

@@ -104,7 +104,6 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
-    const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
@@ -244,7 +243,6 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
-    ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
 

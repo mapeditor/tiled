@@ -180,7 +180,6 @@ SOURCES += aboutdialog.cpp \
     objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttemplatemodel.cpp \
-    objecttypes.cpp \
     objecttypeseditor.cpp \
     objecttypesmodel.cpp \
     offsetlayer.cpp \
@@ -378,7 +377,6 @@ HEADERS += aboutdialog.h \
     objecttemplatemodel.h \
     objectselectiontool.h \
     objecttypeseditor.h \
-    objecttypes.h \
     objecttypesmodel.h \
     offsetlayer.h \
     offsetmapdialog.h \
