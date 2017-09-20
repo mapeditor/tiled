@@ -36,6 +36,8 @@ Other things worth mentioning are the support for adding custom map or
 tileset formats through plugins, the tile stamp memory, tile animation
 support and the tile collision editor.
 
+.. _getting-started:
+
 Getting Started
 ---------------
 
@@ -85,12 +87,12 @@ values on 0).
 
 .. note::
 
-   We leave the *Embed in map* option off. This is recommended, since it
-   will allow the tileset to be used by multiple maps without setting up
-   its parameters again. It will also be good to store the tileset in
-   its own file if you later add tile properties, terrain definitions,
-   collision shapes, etc., since that information is then shared between
-   all your maps.
+   We leave the *Embed in map* option disabled. This is recommended,
+   since it will allow the tileset to be used by multiple maps without
+   setting up its parameters again. It will also be good to store the
+   tileset in its own file if you later add tile properties, terrain
+   definitions, collision shapes, etc., since that information is then
+   shared between all your maps.
 
 After saving the tileset, Tiled should look as follows:
 
