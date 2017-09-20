@@ -1,7 +1,7 @@
 TMX Map Format
 ==============
 
-**Version 1.0**
+**Version 1.1**
 
 The TMX (Tile Map XML) map format used by
 `Tiled <http://www.mapeditor.org>`__ is a flexible way to describe a
@@ -36,12 +36,11 @@ might be useful for XML-namespacing anyway.*
 -  **tiledversion:** The Tiled version used to save the file (since Tiled
    1.0.1). May be a date (for snapshot builds).
 -  **orientation:** Map orientation. Tiled supports "orthogonal",
-   "isometric", "staggered" (since 0.9) and "hexagonal" (since 0.11).
+   "isometric", "staggered" and "hexagonal" (since 0.11).
 -  **renderorder:** The order in which tiles on tile layers are rendered.
    Valid values are ``right-down`` (the default), ``right-up``,
    ``left-down`` and ``left-up``. In all cases, the map is drawn
-   row-by-row. (since 0.10, but only supported for orthogonal maps at
-   the moment)
+   row-by-row. (only supported for orthogonal maps at the moment)
 -  **width:** The map width in tiles.
 -  **height:** The map height in tiles.
 -  **tilewidth:** The width of a tile.
@@ -54,9 +53,8 @@ might be useful for XML-namespacing anyway.*
 -  **staggerindex:** For staggered and hexagonal maps, determines whether
    the "even" or "odd" indexes along the staggered axis are shifted.
    (since 0.11)
--  **backgroundcolor:** The background color of the map. (since 0.9,
-   optional, may include alpha value since 0.15 in the form
-   ``#AARRGGBB``)
+-  **backgroundcolor:** The background color of the map. (optional, may
+   include alpha value since 0.15 in the form ``#AARRGGBB``)
 -  **nextobjectid:** Stores the next available ID for new objects. This
    number is stored to prevent reuse of the same ID after objects have
    been removed. (since 0.11)
@@ -108,10 +106,9 @@ order of their ``firstgid`` attribute. The first tileset always has a
 not necessarily number their tiles consecutively since gaps can occur
 when removing tiles.
 
-Can contain: :ref:`tmx-tileoffset` (since 0.8),
-:ref:`tmx-properties` (since 0.8), :ref:`tmx-image`,
-:ref:`tmx-terraintypes` (since 0.9), :ref:`tmx-tileset-tile`,
-:ref:`tmx-wangsets` (since 1.1)
+Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-properties`,
+:ref:`tmx-image`, :ref:`tmx-terraintypes`,
+:ref:`tmx-tileset-tile`, :ref:`tmx-wangsets` (since 1.1)
 
 .. _tmx-tileoffset:
 
@@ -132,7 +129,7 @@ applied.
 
 -  **format:** Used for embedded images, in combination with a ``data``
    child element. Valid values are file extensions like ``png``,
-   ``gif``, ``jpg``, ``bmp``, etc. (since 0.9)
+   ``gif``, ``jpg``, ``bmp``, etc.
 -  *id:* Used by some versions of Tiled Java. Deprecated and unsupported
    by Tiled Qt.
 -  **source:** The reference to the tileset image file (Tiled supports most
@@ -149,7 +146,7 @@ embedded image data, even though the TMX format supports this. It is
 possible to create such maps using ``libtiled`` (Qt/C++) or
 `tmxlib <https://pypi.python.org/pypi/tmxlib>`__ (Python).
 
-Can contain: :ref:`tmx-data` (since 0.9)
+Can contain: :ref:`tmx-data`
 
 .. _tmx-terraintypes:
 
@@ -183,14 +180,13 @@ Can contain: :ref:`tmx-properties`
 -  **terrain:** Defines the terrain type of each corner of the tile,
    given as comma-separated indexes in the terrain types array in the
    order top-left, top-right, bottom-left, bottom-right. Leaving out a
-   value means that corner has no terrain. (optional) (since 0.9)
+   value means that corner has no terrain. (optional)
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
-   terrain tool. (optional) (since 0.9)
+   terrain tool. (optional)
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-image` (since
-0.9), :ref:`tmx-objectgroup` (since 0.10),
-:ref:`tmx-animation` (since 0.10)
+0.9), :ref:`tmx-objectgroup`, :ref:`tmx-animation`
 
 .. _tmx-animation:
 
@@ -199,9 +195,8 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-image` (since
 
 Contains a list of animation frames.
 
-As of Tiled 0.10, each tile can have exactly one animation associated
-with it. In the future, there could be support for multiple named
-animations on a tile.
+Each tile can have exactly one animation associated with it. In the
+future, there could be support for multiple named animations on a tile.
 
 Can contain: :ref:`tmx-frame`
 
@@ -287,14 +282,11 @@ that parsers may rely on having the tilesets before needing to resolve
 tiles.
 
 -  **name:** The name of the layer.
--  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled Qt.
--  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled Qt.
--  **width:** The width of the layer in tiles. Required, but
-   as of Tiled Qt always the same as the map width.
--  **height:** The height of the layer in tiles. Required, but
-   as of Tiled Qt always the same as the map height.
--  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
-   1.
+-  *x:* The x coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
+-  *y:* The y coordinate of the layer in tiles. Defaults to 0 and can not be changed in Tiled.
+-  **width:** The width of the layer in tiles. Always the same as the map width for fixed-size maps.
+-  **height:** The height of the layer in tiles. Always the same as the map height for fixed-size maps.
+-  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to 1.
 -  **visible:** Whether the layer is shown (1) or hidden (0). Defaults to 1.
 -  **offsetx:** Rendering offset for this layer in pixels. Defaults to 0.
    (since 0.14)
@@ -311,7 +303,7 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-data`
 -  **encoding:** The encoding used to encode the tile layer data. When used,
    it can be "base64" and "csv" at the moment.
 -  **compression:** The compression used to compress the tile layer data.
-   Tiled Qt supports "gzip" and "zlib".
+   Tiled supports "gzip" and "zlib".
 
 When no encoding or compression is given, the tiles are stored as
 individual XML ``tile`` elements. Next to that, the easiest format to
@@ -335,13 +327,12 @@ Can contain: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
 Tile flipping
 ^^^^^^^^^^^^^
 
-When you use the tile flipping feature added in Tiled Qt 0.7, the
-highest two bits of the gid store the flipped state. Bit 32 is used for
-storing whether the tile is horizontally flipped and bit 31 is used for
-the vertically flipped tiles. And since Tiled Qt 0.8, bit 30 means
-whether the tile is flipped (anti) diagonally, enabling tile rotation.
-These bits have to be read and cleared before you can find out which
-tileset a tile belongs to.
+The highest three bits of the gid store the flipped states. Bit 32 is
+used for storing whether the tile is horizontally flipped, bit 31 is
+used for the vertically flipped tiles and bit 30 indicates whether the
+tile is flipped (anti) diagonally, enabling tile rotation. These bits
+have to be read and cleared before you can find out which tileset a tile
+belongs to.
 
 When rendering a tile, the order of operation matters. The diagonal flip
 (x/y axis swap) is done first, followed by the horizontal and vertical
@@ -406,8 +397,8 @@ when basing your parsing code on it, thanks.)
 <chunk>
 ~~~~~~~
 
--  *x:* The x coordinate of the chunk in tiles.
--  *y:* The y coordinate of the chunk in tiles.
+-  **x:** The x coordinate of the chunk in tiles.
+-  **y:** The y coordinate of the chunk in tiles.
 -  **width:** The width of the chunk in tiles.
 -  **height:** The height of the chunk in tiles.
 
@@ -437,9 +428,9 @@ should generally be avoided.
 -  **name:** The name of the object group.
 -  **color:** The color used to display the objects in this group.
 -  *x:* The x coordinate of the object group in tiles. Defaults to 0 and
-   can no longer be changed in Tiled Qt.
+   can no longer be changed in Tiled.
 -  *y:* The y coordinate of the object group in tiles. Defaults to 0 and
-   can no longer be changed in Tiled Qt.
+   can no longer be changed in Tiled.
 -  *width:* The width of the object group in tiles. Meaningless.
 -  *height:* The height of the object group in tiles. Meaningless.
 -  **opacity:** The opacity of the layer as a value from 0 to 1. Defaults to
@@ -454,7 +445,7 @@ should generally be avoided.
    Defaults to "topdown".
 
 The object group is in fact a map layer, and is hence called "object
-layer" in Tiled Qt.
+layer" in Tiled.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 
@@ -465,7 +456,7 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 
 -  **id:** Unique ID of the object. Each object that is placed on a map gets
    a unique id. Even if an object was deleted, no object gets the same
-   ID. Can not be changed in Tiled Qt. (since Tiled 0.11)
+   ID. Can not be changed in Tiled. (since Tiled 0.11)
 -  **name:** The name of the object. An arbitrary string.
 -  **type:** The type of the object. An arbitrary string.
 -  **x:** The x coordinate of the object in pixels.
@@ -473,10 +464,10 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 -  **width:** The width of the object in pixels (defaults to 0).
 -  **height:** The height of the object in pixels (defaults to 0).
 -  **rotation:** The rotation of the object in degrees clockwise (defaults
-   to 0). (since 0.10)
+   to 0).
 -  **gid:** A reference to a tile (optional).
 -  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
-   1. (since 0.9)
+   1.
 -  **tid:** A reference to a template (optional).
 
 While tile layers are very suitable for anything repetitive aligned to
@@ -648,7 +639,7 @@ values inside the element rather than as an attribute.
 
 Unlike tilesets, embedding a template group inside a map is not supported, so the map must reference the external template group.
 
-Usage inside the map
+Usage Inside the Map
 ~~~~~~~~~~~~~~~~~~~~
 
    .. code:: xml

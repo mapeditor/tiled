@@ -13,7 +13,7 @@ Tiled Documentation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Manual
+   :caption: User Manual
 
    manual/introduction
    manual/layers

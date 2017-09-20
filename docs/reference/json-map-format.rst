@@ -74,9 +74,9 @@ Layer
 +--------------+----------+---------------------------------------------------------+
 | Field        | Type     | Description                                             |
 +==============+==========+=========================================================+
-| width        | int      | Column count. Same as map width in Tiled Qt.            |
+| width        | int      | Column count. Same as map width for fixed-size maps.    |
 +--------------+----------+---------------------------------------------------------+
-| height       | int      | Row count. Same as map height in Tiled Qt.              |
+| height       | int      | Row count. Same as map height for fixed-size maps.      |
 +--------------+----------+---------------------------------------------------------+
 | name         | string   | Name assigned to this layer                             |
 +--------------+----------+---------------------------------------------------------+
@@ -84,9 +84,9 @@ Layer
 +--------------+----------+---------------------------------------------------------+
 | visible      | bool     | Whether layer is shown or hidden in editor              |
 +--------------+----------+---------------------------------------------------------+
-| x            | int      | Horizontal layer offset. Always 0 in Tiled Qt.          |
+| x            | int      | Horizontal layer offset in tiles. Always 0.             |
 +--------------+----------+---------------------------------------------------------+
-| y            | int      | Vertical layer offset. Always 0 in Tiled Qt.            |
+| y            | int      | Vertical layer offset in tiles. Always 0.               |
 +--------------+----------+---------------------------------------------------------+
 | data         | int      | Array of GIDs. ``tilelayer`` only.                      |
 +--------------+----------+---------------------------------------------------------+

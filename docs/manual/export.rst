@@ -49,6 +49,8 @@ property called ``name``, in which case its value is used to write out
 the tile. Using multiple tilesets will lead to ambiguous IDs, unless the
 custom ``name`` property is used. Empty cells get the value ``-1``.
 
+.. _gamemaker-export:
+
 GameMaker: Studio 1.4
 ---------------------
 
@@ -89,7 +91,7 @@ automatically enabled when any views are defined.
 
 .. figure:: images/gamemaker-view-settings.png
    :alt: GameMaker View Settings
-   :figclass: align-right
+   :align: right
 
 The following custom properties can be used to define the various other
 properties of the view:

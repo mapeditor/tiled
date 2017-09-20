@@ -173,8 +173,8 @@ additional information to a **rulefile**:
    determines how many tiles around your changes will be checked as well
    for redoing the Automapping at live Automapping.
 
--  **NoOverlappingRules** - (since 0.8.0) This map property is a boolean
-   property: A rule is not allowed to overlap on itself.
+-  **NoOverlappingRules** - This map property is a boolean property:
+   A rule is not allowed to overlap on itself.
 
 These properties are map wide, meaning it applies to all rules which are
 part of the rulemap. If you need rules with different properties, you
@@ -184,7 +184,7 @@ Converting Rules From 0.8 and Below
 ===================================
 
 There is a tool **automappingconverter** along in your distribution to
-convert the rules created for previous versions of tiled to version 0.9
+convert the rules created for previous versions of Tiled to version 0.9
 and later.
 
 If you are compiling tiled from scratch the tool is found in the in

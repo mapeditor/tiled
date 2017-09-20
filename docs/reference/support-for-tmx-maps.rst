@@ -227,11 +227,8 @@ Flixel
 Game Maker
 ~~~~~~~~~~
 
--  Tiled ships with a plug-in that can export a map to a
-   GameMaker: Studio 1.4 room file
--  `Tiled2GM
-   Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by
-   Dmi7ry
+-  Tiled ships with a plug-in that can :ref:`export a map to a GameMaker: Studio 1.4 room file <gamemaker-export>`
+-  `Tiled2GM Converter <http://gmc.yoyogames.com/index.php?showtopic=539494>`__ by Dmi7ry
 
 Godot
 ~~~~~
