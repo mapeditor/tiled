@@ -70,11 +70,34 @@ GameMaker object instances are created by putting the object name in the
 tile objects also flipping and scaling is supported (though flipping in
 combination with rotation doesn't appear to work in GameMaker).
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.1</div>
+
+The following custom properties can be set on objects to affect the
+exported instance:
+
+* float ``scaleX`` (default: derived from tile or 1.0)
+* float ``scaleY`` (default: derived from tile or 1.0)
+* int ``originX`` (default: 0)
+* int ``originY`` (default: 0)
+
+The ``scaleX`` and ``scaleY`` properties can be used to override the
+scale of the instance. However, if the scale is relevant then it will
+generally be easier to use a tile object, in which case it is
+automatically derived from the tile size and the object size.
+
+The ``originX`` and ``originY`` properties can be used to tell Tiled
+about the origin of the object defined in GameMaker, as an offset from
+the top-left. This origin is taken into account when determining the
+position of the exported instance.
+
 .. hint::
 
-   Of course setting the type manually for each instance will get old
-   fast. Since Tiled 1.0.2, you can instead use tile objects with the
-   type set on the tile.
+   Of course setting the type and/or the above properties manually for
+   each instance will get old fast. Since Tiled 1.0.2, you can instead
+   use tile objects with the type set on the tile, and in Tiled 1.1 you
+   can also use :doc:`object templates <using-templates>`.
 
 .. raw:: html
 
@@ -83,15 +106,15 @@ combination with rotation doesn't appear to work in GameMaker).
 Views
 ~~~~~
 
+.. figure:: images/gamemaker-view-settings.png
+   :alt: GameMaker View Settings
+   :align: right
+
 Views can be defined using :ref:`rectangle objects <insert-rectangle-tool>`
 where the Type has been set to ``view``. The position and size will be
 snapped to pixels. Whether the view is visible when the room starts
 depends on whether the object is visible. The use of views is
 automatically enabled when any views are defined.
-
-.. figure:: images/gamemaker-view-settings.png
-   :alt: GameMaker View Settings
-   :align: right
 
 The following custom properties can be used to define the various other
 properties of the view:
@@ -111,6 +134,13 @@ properties of the view:
 * int ``hspeed`` (default: -1)
 * int ``vspeed`` (default: -1)
 
+.. hint::
+
+   When you're defining views in Tiled, it is useful to add ``view``
+   as object type in the :ref:`Object Types Editor <predefining-properties>`,
+   adding the above properties for ease of access. If you frequently use
+   views with similar settings, you can set up
+   :doc:`templates <using-templates>` for them.
 
 Map Properties
 ~~~~~~~~~~~~~~
