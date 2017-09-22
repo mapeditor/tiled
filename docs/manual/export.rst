@@ -62,7 +62,7 @@ Tile layers and tile objects (when no type is set) will export as "tile"
 elements. These support horizontal and vertical flipping, but no
 rotation. For tile objects, scaling is also supported.
 
-Tilesets in Tiled have to be named the same as the corresponding backgrounds in the GameMaker project. Otherwise GameMaker gets cought in an infinite error loop when loading the exported room.gmx file from Tiled.
+Tilesets in Tiled have to be named the same as the corresponding backgrounds in the GameMaker project. Otherwise GameMaker gets caught in an infinite error loop when loading the exported room.gmx file from Tiled.
 
 Object Instances
 ~~~~~~~~~~~~~~~~
