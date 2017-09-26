@@ -206,9 +206,6 @@ void TerrainBrush::capture()
 
     const QPoint position = tilePosition() - tileLayer->position();
 
-    if (!tileLayer->contains(position))
-        return;
-
     Terrain *terrain = nullptr;
 
     const Cell &cell = tileLayer->cellAt(position);
