@@ -382,17 +382,15 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // create the tile stamp
-    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(), 0, 0, currentLayer->width(), currentLayer->height()));
+    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(), 0, 0, 0, 0));
 
     // create a consideration list, and push the start points
     QVector<ConsiderationPoint> transitionList;
 
     if (list) { // if we were supplied a list of start points
         transitionList.reserve(list->size());
-        for (QPoint p : *list) {
-            p -= layerPosition;
-            transitionList.append(p);
-        }
+        for (QPoint p : *list)
+            transitionList.append(p - layerPosition);
     } else {
         transitionList.append(ConsiderationPoint(cursorPos, paintCorner));
     }
@@ -415,7 +413,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         bounds |= QRect(point, point);
     int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 3;
     bounds.adjust(-margin, -margin, margin, margin);
-    bounds = bounds.intersected(QRect(0, 0, stamp->width(), stamp->height()));
 
     int initialTiles = transitionList.size();
 
