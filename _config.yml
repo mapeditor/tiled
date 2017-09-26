@@ -2,5 +2,6 @@ gems:
   - jekyll-seo-tag
   - jekyll-redirect-from
 title: Tiled Map Editor
+repository: bjorn/tiled
 twitter:
   username: thorbjorn81
