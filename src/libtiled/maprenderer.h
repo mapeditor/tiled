@@ -63,7 +63,7 @@ public:
         , mPainterScale(1)
     {}
 
-    virtual ~MapRenderer() {}
+    virtual ~MapRenderer();
 
     /**
      * Returns the map this renderer is associated with.

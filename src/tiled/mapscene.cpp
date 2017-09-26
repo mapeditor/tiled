@@ -29,7 +29,6 @@
 #include "grouplayer.h"
 #include "grouplayeritem.h"
 #include "map.h"
-#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
@@ -134,8 +133,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::regionChanged,
                 this, &MapScene::repaintRegion);
-        connect(mMapDocument, &MapDocument::tileLayerDrawMarginsChanged,
-                this, &MapScene::tileLayerDrawMarginsChanged);
+        connect(mMapDocument, &MapDocument::tileLayerChanged,
+                this, &MapScene::tileLayerChanged);
         connect(mMapDocument, &MapDocument::layerAdded,
                 this, &MapScene::layerAdded);
         connect(mMapDocument, &MapDocument::layerRemoved,
@@ -308,10 +307,7 @@ void MapScene::updateSceneRect()
 
     setSceneRect(sceneRect);
 
-    if (mMapDocument->map()->infinite())
-        mDarkRectangle->setRect(QRect());
-    else
-        mDarkRectangle->setRect(sceneRect);
+    mDarkRectangle->setRect(sceneRect);
 }
 
 void MapScene::updateCurrentLayerHighlight()
@@ -446,10 +442,13 @@ void MapScene::repaintTileset(Tileset *tileset)
         update();
 }
 
-void MapScene::tileLayerDrawMarginsChanged(TileLayer *tileLayer)
+void MapScene::tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags)
 {
     TileLayerItem *item = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
     item->syncWithTileLayer();
+
+    if (flags & MapDocument::LayerBoundsChanged)
+        updateSceneRect();
 }
 
 void MapScene::layerAdded(Layer *layer)

@@ -40,6 +40,9 @@
 
 using namespace Tiled;
 
+MapRenderer::~MapRenderer()
+{}
+
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
 {
     return QRectF(QPointF(), imageLayer->image().size());
@@ -71,7 +74,7 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     QPointF direction = QVector2D(end - start).normalized().toPointF();
     QPointF perpendicular(-direction.y(), direction.x());
 
-    const qreal thickness = 5.0f; // 5 pixels on each side
+    const qreal thickness = 5.0; // 5 pixels on each side
     direction *= thickness;
     perpendicular *= thickness;
 

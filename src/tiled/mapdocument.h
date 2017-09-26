@@ -68,6 +68,13 @@ class MapDocument : public Document
     Q_OBJECT
 
 public:
+    enum TileLayerChangeFlag {
+        LayerDrawMarginsChanged,
+        LayerBoundsChanged
+    };
+    Q_DECLARE_FLAGS(TileLayerChangeFlags, TileLayerChangeFlag)
+    Q_FLAG(TileLayerChangeFlags)
+
     /**
      * Constructs a map document around the given map. The map document takes
      * ownership of the map.
@@ -258,7 +265,7 @@ signals:
      */
     void regionEdited(const QRegion &region, Layer *layer);
 
-    void tileLayerDrawMarginsChanged(TileLayer *layer);
+    void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
     /**
      * Should be emitted when changing the color or drawing order of an object
@@ -349,3 +356,5 @@ inline void MapDocument::addNonEmbeddedTemplateGroup(TemplateGroup *templateGrou
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MapDocument::TileLayerChangeFlags)

@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include "mapdocument.h"
+
 #include <QColor>
 #include <QGraphicsScene>
 #include <QMap>
@@ -159,7 +161,7 @@ private slots:
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerDrawMarginsChanged(TileLayer *tileLayer);
+    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
     void layerRemoved(Layer *layer);
