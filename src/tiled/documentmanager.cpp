@@ -168,10 +168,14 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
+
+    mTabBar->installEventFilter(this);
 }
 
 DocumentManager::~DocumentManager()
 {
+    mTabBar->removeEventFilter(this);
+
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
     Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
@@ -525,6 +529,34 @@ void DocumentManager::closeCurrentDocument()
     closeDocumentAt(index);
 }
 
+void DocumentManager::closeOtherDocuments(int index)
+{
+    if (index == -1)
+        return;
+
+    const int count = mTabBar->count();
+
+    for (int i = count; i > 0; --i) {
+        if (i-1 != index) {
+            documentCloseRequested(i-1);
+        }
+    }
+}
+
+void DocumentManager::closeDocumentsToRight(int index)
+{
+    if (index == -1)
+        return;
+
+    const int count = mTabBar->count();
+
+    for (int i = count; i > 0; --i) {
+        if (i-1 > index) {
+            documentCloseRequested(i-1);
+        }
+    }
+}
+
 void DocumentManager::closeDocumentAt(int index)
 {
     Document *document = mDocuments.at(index);
@@ -715,6 +747,24 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
     connect(openFolder, &QAction::triggered, [fileName] {
         showInFileManager(fileName);
+    });
+
+    menu.addSeparator();
+
+    QIcon close_icon = QIcon::fromTheme(QString::fromLatin1("window-close"));
+    QAction *closeTab = menu.addAction(close_icon, tr("Close"));
+    connect(closeTab, &QAction::triggered, [this, index] {
+        this->documentCloseRequested(index);
+    });
+
+    QAction *closeOtherTabs = menu.addAction(tr("Close Other Tabs"));
+    connect(closeOtherTabs, &QAction::triggered, [this, index] {
+        this->closeOtherDocuments(index);
+    });
+
+    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs To The Right"));
+    connect(closeTabsToRight, &QAction::triggered, [this, index] {
+        this->closeDocumentsToRight(index);
     });
 
     menu.exec(mTabBar->mapToGlobal(pos));
@@ -967,4 +1017,28 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
                                   QMessageBox::Yes);
 
     return r == QMessageBox::Yes;
+}
+
+bool DocumentManager::eventFilter(QObject *, QEvent *event)
+{
+    switch (event->type()) {
+        case QEvent::MouseButtonRelease: {
+            // middle-click tab closing
+            QMouseEvent *mevent = static_cast<QMouseEvent*>(event);
+
+            if (mevent->button() == Qt::MidButton) {
+                int index = mTabBar->tabAt(mevent->pos());
+
+                if (index != -1) {
+                    documentCloseRequested(index);
+                    return true;
+                }
+            }
+        }
+        break;
+    default:
+        break;
+    }
+
+    return false;
 }
