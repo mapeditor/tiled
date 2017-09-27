@@ -801,7 +801,10 @@ bool MainWindow::confirmSave(Document *document)
     switch (ret) {
     case QMessageBox::Save:    return saveFile();
     case QMessageBox::Discard: return true;
-    case QMessageBox::Cancel:
+    case QMessageBox::Cancel: {
+        mDocumentManager->abortMultiDocumentClose();
+        return false;
+    }
     default:
         return false;
     }

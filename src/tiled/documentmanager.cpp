@@ -126,6 +126,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
+    , mMultiDocumentClose(false)
 {
     mBrokenLinksWidget->setVisible(false);
 
@@ -534,10 +535,17 @@ void DocumentManager::closeOtherDocuments(int index)
     if (index == -1)
         return;
 
+    mMultiDocumentClose = true;
+
     for (int i = mTabBar->count(); i > 0; --i) {
         if (i-1 != index)
             documentCloseRequested(i-1);
+
+        if (!mMultiDocumentClose)
+            return;
     }
+
+    mMultiDocumentClose = false;
 }
 
 void DocumentManager::closeDocumentsToRight(int index)
@@ -545,10 +553,17 @@ void DocumentManager::closeDocumentsToRight(int index)
     if (index == -1)
         return;
 
+    mMultiDocumentClose = true;
+
     for (int i = mTabBar->count(); i > 0; --i) {
         if (i-1 > index)
             documentCloseRequested(i-1);
+
+        if (!mMultiDocumentClose)
+            return;
     }
+
+    mMultiDocumentClose = false;
 }
 
 void DocumentManager::closeDocumentAt(int index)
@@ -1041,4 +1056,8 @@ bool DocumentManager::eventFilter(QObject *, QEvent *event)
     }
 
     return false;
+}
+
+void DocumentManager::abortMultiDocumentClose() {
+    mMultiDocumentClose = false;
 }

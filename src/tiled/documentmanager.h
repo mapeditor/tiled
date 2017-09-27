@@ -197,6 +197,12 @@ public:
     void centerMapViewOn(const QPointF &pos)
     { centerMapViewOn(pos.x(), pos.y()); }
 
+    /**
+     * Unsets a flag to stop closeOtherDocuments() and closeDocumentsToRight()
+     * when Cancel is pressed
+     */
+    void abortMultiDocumentClose();
+
 signals:
     void fileOpenRequested();
     void fileOpenRequested(const QString &path);
@@ -286,6 +292,8 @@ private:
     QMap<SharedTileset, TilesetDocument*> mTilesetToDocument;
 
     static DocumentManager *mInstance;
+
+    bool mMultiDocumentClose;
 };
 
 inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const
