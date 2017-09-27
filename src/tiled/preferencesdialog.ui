@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>423</width>
-    <height>426</height>
+    <width>466</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -169,9 +169,9 @@
            <widget class="QComboBox" name="languageCombo"/>
           </item>
           <item row="6" column="0">
-           <widget class="QCheckBox" name="wheelZoomsDefault">
+           <widget class="QCheckBox" name="wheelZoomsByDefault">
             <property name="text">
-             <string>Mouse wheel zooms by default</string>
+             <string>Mouse wheel &amp;zooms by default</string>
             </property>
            </widget>
           </item>

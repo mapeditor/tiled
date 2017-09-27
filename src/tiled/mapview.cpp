@@ -288,10 +288,10 @@ void MapView::wheelEvent(QWheelEvent *event)
     auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
     auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
 
-    if ((static_cast<bool>(event->modifiers() & Qt::ControlModifier) ^
-         static_cast<bool>(Preferences::instance()->zoomWheelByDefault()))
-             && event->orientation() == Qt::Vertical)
-    {
+    bool wheelZoomsByDefault = Preferences::instance()->wheelZoomsByDefault();
+    bool control = event->modifiers() & Qt::ControlModifier;
+
+    if ((wheelZoomsByDefault != control) && event->orientation() == Qt::Vertical) {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
@@ -302,13 +302,13 @@ void MapView::wheelEvent(QWheelEvent *event)
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
         return;
     }
+
     // By default, the scroll area forwards the wheel events to the scroll
     // bars, which apply their bounds. This custom wheel handling is here to
     // override the bounds checking.
     //
     // This also disables QGraphicsSceneWheelEvent, but Tiled does not rely
     // on that event.
-   // if (!(Preferences::instance()->getZoomPref() ^ (bool)(event->modifiers() & Qt::ControlModifier))) {
     QPoint pixels = event->pixelDelta();
 
     if (pixels.isNull()) {
