@@ -25,6 +25,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -293,7 +294,7 @@ QRect MiniMap::viewportRect() const
     if (!mapView)
         return QRect(0, 0, 1, 1);
 
-    const QRectF sceneRect = mapView->sceneRect();
+    const QRectF sceneRect = mapView->mapScene()->sceneRect();
     const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
     return QRect((viewRect.x() - sceneRect.x()) / sceneRect.width() * mImageRect.width() + mImageRect.x(),
                  (viewRect.y() - sceneRect.y()) / sceneRect.height() * mImageRect.height() + mImageRect.y(),
@@ -310,7 +311,7 @@ QPointF MiniMap::mapToScene(QPoint p) const
     if (!mapView)
         return QPointF();
 
-    const QRectF sceneRect = mapView->sceneRect();
+    const QRectF sceneRect = mapView->mapScene()->sceneRect();
     p -= mImageRect.topLeft();
     return QPointF(p.x() * (sceneRect.width() / mImageRect.width()) + sceneRect.x(),
                    p.y() * (sceneRect.height() / mImageRect.height()) + sceneRect.y());
