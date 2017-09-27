@@ -534,12 +534,9 @@ void DocumentManager::closeOtherDocuments(int index)
     if (index == -1)
         return;
 
-    const int count = mTabBar->count();
-
-    for (int i = count; i > 0; --i) {
-        if (i-1 != index) {
+    for (int i = mTabBar->count(); i > 0; --i) {
+        if (i-1 != index)
             documentCloseRequested(i-1);
-        }
     }
 }
 
@@ -548,12 +545,9 @@ void DocumentManager::closeDocumentsToRight(int index)
     if (index == -1)
         return;
 
-    const int count = mTabBar->count();
-
-    for (int i = count; i > 0; --i) {
-        if (i-1 > index) {
+    for (int i = mTabBar->count(); i > 0; --i) {
+        if (i-1 > index)
             documentCloseRequested(i-1);
-        }
     }
 }
 
@@ -751,20 +745,26 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 
     menu.addSeparator();
 
-    QIcon close_icon = QIcon::fromTheme(QString::fromLatin1("window-close"));
-    QAction *closeTab = menu.addAction(close_icon, tr("Close"));
+    QAction *closeTab = menu.addAction(tr("Close"));
+
+    Utils::setThemeIcon(closeTab, "window-close");
+    if (closeTab->icon().isNull()) {
+        QIcon closeIcon;
+        closeIcon.addFile(QStringLiteral(":/images/16x16/window-close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        closeTab->setIcon(closeIcon);
+    }
     connect(closeTab, &QAction::triggered, [this, index] {
-        this->documentCloseRequested(index);
+        documentCloseRequested(index);
     });
 
     QAction *closeOtherTabs = menu.addAction(tr("Close Other Tabs"));
     connect(closeOtherTabs, &QAction::triggered, [this, index] {
-        this->closeOtherDocuments(index);
+        closeOtherDocuments(index);
     });
 
-    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs To The Right"));
+    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs to the Right"));
     connect(closeTabsToRight, &QAction::triggered, [this, index] {
-        this->closeDocumentsToRight(index);
+        closeDocumentsToRight(index);
     });
 
     menu.exec(mTabBar->mapToGlobal(pos));
