@@ -158,6 +158,7 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
             // allow going over different variations by repeatedly clicking
             updatePreview();
         }
+        break;
     default:
         // do nothing?
         break;
@@ -368,7 +369,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             return;
 
         QRegion paintedRegion;
-        for (const QPoint p : list)
+        for (const QPoint &p : list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
@@ -393,7 +394,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             return;
 
         QRegion paintedRegion;
-        for (const QPoint p : list)
+        for (const QPoint &p : list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
@@ -405,7 +406,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                               mapDocument()->map()->staggerAxis());
 
-        for (const QPoint p : list) {
+        for (const QPoint &p : list) {
             Cell cell = wangFiller.findFittingCell(*tileLayer,
                                                    *preview.data(),
                                                    paintedRegion,
