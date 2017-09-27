@@ -312,7 +312,8 @@ void StampBrush::endCapture()
  */
 QRegion StampBrush::doPaint(int flags)
 {
-    const TileLayer *preview = mPreviewLayer.data();
+    // local reference to avoid issues when member gets cleared
+    SharedTileLayer preview = mPreviewLayer;
     if (!preview)
         return QRegion();
 
@@ -330,7 +331,7 @@ QRegion StampBrush::doPaint(int flags)
                                                tileLayer,
                                                preview->x(),
                                                preview->y(),
-                                               preview);
+                                               preview.data());
 
     if (!mMissingTilesets.isEmpty()) {
         for (const SharedTileset &tileset : mMissingTilesets) {
