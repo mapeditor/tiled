@@ -761,13 +761,8 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     menu.addSeparator();
 
     QAction *closeTab = menu.addAction(tr("Close"));
-
+    closeTab->setIcon(QIcon(QStringLiteral(":/images/16x16/window-close.png")));
     Utils::setThemeIcon(closeTab, "window-close");
-    if (closeTab->icon().isNull()) {
-        QIcon closeIcon;
-        closeIcon.addFile(QStringLiteral(":/images/16x16/window-close.png"), QSize(), QIcon::Normal, QIcon::Off);
-        closeTab->setIcon(closeIcon);
-    }
     connect(closeTab, &QAction::triggered, [this, index] {
         documentCloseRequested(index);
     });
