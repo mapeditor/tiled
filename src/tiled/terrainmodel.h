@@ -99,6 +99,8 @@ private slots:
     void onTerrainAdded(Tileset *tileset);
     void onTerrainAboutToBeRemoved(Terrain *terrain);
     void onTerrainRemoved(Terrain *terrain);
+    void onTerrainAboutToBeSwapped(Tileset *tileset, int terrainId, int swapTerrainId);
+    void onTerrainSwapped();
 
 private:
     QAbstractItemModel *mTilesetDocumentsModel;

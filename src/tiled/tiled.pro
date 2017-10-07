@@ -171,6 +171,7 @@ SOURCES += aboutdialog.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
+    moveterrain.cpp \
     newmapdialog.cpp \
     newtemplatedialog.cpp \
     newtilesetdialog.cpp \
@@ -366,6 +367,7 @@ HEADERS += aboutdialog.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
+    moveterrain.h \
     newmapdialog.h \
     newtemplatedialog.h \
     newtilesetdialog.h \
