@@ -101,7 +101,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    mUi->objectTypesTable->setModel(mObjectTypesModel);    
+    mUi->objectTypesTable->setModel(mObjectTypesModel);
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
