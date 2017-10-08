@@ -27,6 +27,7 @@ void ObjectTypesModel::setObjectTypes(const ObjectTypes &objectTypes)
 {
     beginResetModel();
     mObjectTypes = objectTypes;
+    sort(0, Qt::AscendingOrder);
     endResetModel();
 }
 
@@ -93,6 +94,7 @@ bool ObjectTypesModel::setData(const QModelIndex &index,
     if (role == Qt::EditRole && index.column() == 0) {
         mObjectTypes[index.row()].name = value.toString().trimmed();
         emit dataChanged(index, index);
+        sort(0, Qt::AscendingOrder);
         return true;
     }
     return false;
@@ -104,6 +106,21 @@ Qt::ItemFlags ObjectTypesModel::flags(const QModelIndex &index) const
     if (index.column() == 0)
         f |= Qt::ItemIsEditable;
     return f;
+}
+
+static bool objectTypeLessThan(ObjectType const &a, ObjectType const &b)
+{
+    return a.name.toLower() < b.name.toLower();
+}
+
+void ObjectTypesModel::sort(int column, Qt::SortOrder order)
+{
+    if (column == 0 && order == Qt::AscendingOrder)
+    {
+       	emit layoutAboutToBeChanged();
+        qSort(mObjectTypes.begin(), mObjectTypes.end(), objectTypeLessThan);
+        emit layoutChanged();
+    }
 }
 
 void ObjectTypesModel::setObjectTypeColor(int objectIndex, const QColor &color)
@@ -141,4 +158,5 @@ void ObjectTypesModel::appendNewObjectType()
     beginInsertRows(QModelIndex(), mObjectTypes.size(), mObjectTypes.size());
     mObjectTypes.append(ObjectType());
     endInsertRows();
+    sort(0, Qt::AscendingOrder);
 }

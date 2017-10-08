@@ -101,7 +101,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    mUi->objectTypesTable->setModel(mObjectTypesModel);
+    mUi->objectTypesTable->setModel(mObjectTypesModel);    
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
@@ -233,12 +233,11 @@ void ObjectTypesEditor::retranslateUi()
 
 void ObjectTypesEditor::addObjectType()
 {
-    const int newRow = mObjectTypesModel->objectTypes().size();
     mObjectTypesModel->appendNewObjectType();
 
     // Select and focus the new row and ensure it is visible
     QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    const QModelIndex newIndex = mObjectTypesModel->index(newRow, 0);
+    const QModelIndex newIndex = mObjectTypesModel->index(0, 0);
     sm->select(newIndex,
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);
