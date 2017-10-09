@@ -96,7 +96,7 @@ Object, you gain the ability to freely scale and rotate the image.
 The only advantage of using an image layer is that it avoids selecting /
 dragging the image while using the Select Objects tool, which is mainly
 due to the lack of layer locking
-(`#734 <https://github.com/bjorn/tiled/issues/734>`__).
+(`#734 <https://github.com/bjorn/tiled/issues/734>`__). Update: Layer locking has been implemented.
 
 .. raw:: html
 
