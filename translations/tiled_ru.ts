@@ -230,7 +230,7 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+54"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -248,7 +248,7 @@
     <message>
         <location line="+71"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
 </context>
 <context>
@@ -271,7 +271,7 @@
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удалось открыть файл для чтения.</translation>
+        <translation>Не удается открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -362,7 +362,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
 </context>
 <context>
@@ -370,7 +370,7 @@
     <message>
         <location filename="../src/plugins/gmx/gmxplugin.cpp" line="+82"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+294"/>
@@ -383,7 +383,7 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+55"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удалось открыть файл для чтения.</translation>
+        <translation>Не удается открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -393,7 +393,7 @@
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -418,7 +418,7 @@
     <message>
         <location line="+66"/>
         <source>Could not open file for reading.</source>
-        <translation>Не удалось открыть файл для чтения.</translation>
+        <translation>Не удается открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -428,7 +428,7 @@
     <message>
         <location line="+45"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -448,7 +448,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+60"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -872,7 +872,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation>Не удалось прочитать файл: %1</translation>
+        <translation>Не удается прочитать файл: %1</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -944,7 +944,7 @@ Line %1, column %2</source>
         <location line="+12"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer '%3'</source>
-        <translation>Не удалось обработать тайл по координатам (%1, %2) на слое '%3'</translation>
+        <translation>Не удается обработать тайл по координатам (%1, %2) на слое '%3'</translation>
     </message>
     <message>
         <location line="-28"/>
@@ -956,7 +956,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+117"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-178"/>
@@ -1141,12 +1141,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypes.cpp" line="+266"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Could not open file.</source>
-        <translation>Не удалось открыть файл.</translation>
+        <translation>Не удается открыть файл.</translation>
     </message>
     <message>
         <location line="-89"/>
@@ -1978,17 +1978,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+58"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Не удалось открыть Replica Insland map-файл!</translation>
+        <translation>Не удается открыть Replica Insland map-файл!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can't parse file header!</source>
-        <translation>Не удалось разобрать заголовок файла!</translation>
+        <translation>Не удается разобрать заголовок файла!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can't parse layer header!</source>
-        <translation>Не удалось разобрать заголовок слоя!</translation>
+        <translation>Не удается разобрать заголовок слоя!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2013,7 +2013,7 @@ Line %1, column %2</source>
     <message>
         <location line="+37"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2023,7 +2023,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Can't save non-tile layer!</source>
-        <translation>Не удалось сохранить нетайловый слой!</translation>
+        <translation>Не удается сохранить нетайловый слой!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2097,7 +2097,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+49"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+244"/>
@@ -4855,7 +4855,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation>Не удалось открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+30"/>
