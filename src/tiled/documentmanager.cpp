@@ -544,8 +544,6 @@ void DocumentManager::closeOtherDocuments(int index)
         if (!mMultiDocumentClose)
             return;
     }
-
-    mMultiDocumentClose = false;
 }
 
 void DocumentManager::closeDocumentsToRight(int index)
@@ -562,8 +560,6 @@ void DocumentManager::closeDocumentsToRight(int index)
         if (!mMultiDocumentClose)
             return;
     }
-
-    mMultiDocumentClose = false;
 }
 
 void DocumentManager::closeDocumentAt(int index)
@@ -1034,10 +1030,10 @@ bool DocumentManager::eventFilter(QObject *, QEvent *event)
     switch (event->type()) {
         case QEvent::MouseButtonRelease: {
             // middle-click tab closing
-            QMouseEvent *mevent = static_cast<QMouseEvent*>(event);
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
 
-            if (mevent->button() == Qt::MidButton) {
-                int index = mTabBar->tabAt(mevent->pos());
+            if (mouseEvent->button() == Qt::MidButton) {
+                int index = mTabBar->tabAt(mouseEvent->pos());
 
                 if (index != -1) {
                     documentCloseRequested(index);
@@ -1053,6 +1049,7 @@ bool DocumentManager::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-void DocumentManager::abortMultiDocumentClose() {
+void DocumentManager::abortMultiDocumentClose()
+{
     mMultiDocumentClose = false;
 }
