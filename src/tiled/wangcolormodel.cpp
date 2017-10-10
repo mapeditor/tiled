@@ -252,7 +252,7 @@ void WangColorModel::setImage(int imageId, bool isEdge, int index)
     else
         mWangSet->cornerColorAt(index)->setImageId(imageId);
 
-    QModelIndex i = isEdge? edgeIndex(index) : cornerIndex(index);
+    QModelIndex i = isEdge ? edgeIndex(index) : cornerIndex(index);
     emit dataChanged(i, i);
 }
 
@@ -264,7 +264,7 @@ void WangColorModel::setColor(QColor color, bool isEdge, int index)
         mWangSet->cornerColorAt(index)->setColor(color);
 
 
-    QModelIndex i = isEdge? edgeIndex(index) : cornerIndex(index);
+    QModelIndex i = isEdge ? edgeIndex(index) : cornerIndex(index);
     emit dataChanged(i, i);
 }
 
