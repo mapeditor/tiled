@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-03 17:16+0200\n"
-"PO-Revision-Date: 2017-08-05 16:20+0000\n"
-"Last-Translator: Dieppedalle David <dieppedalle.david@yahoo.fr>\n"
+"PO-Revision-Date: 2017-10-18 13:04+0000\n"
+"Last-Translator: Bastien LABOUCHE <bastien.labouche@live.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.16-dev\n"
+"X-Generator: Weblate 2.17\n"
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../manual/custom-properties.rst:2
@@ -25,7 +25,6 @@ msgid "Custom Properties"
 msgstr "Propriétés personnalisées"
 
 #: ../../manual/custom-properties.rst:4
-#, fuzzy
 msgid ""
 "One of the major strengths of Tiled is that it allows setting custom "
 "properties on all of its basic data structures. This way it is possible "
@@ -34,73 +33,65 @@ msgid ""
 msgstr ""
 "Une des grandes forces de Tiled, est qu'il permet de définir des propriétés "
 "personnalisées sur l'ensemble de ses structures de base de données. De cette "
-"manière, il est possible d'inclure de nombreuses formes d'information "
-"personnalisée, qui peuvent être ensuite utilisé par votre jeu ou par le "
-"framework que vous utilisez pour intégrer une carte de Tiled."
+"manière, il est possible d'inclure de nombreuses formes personnalisées "
+"d'information, qui peuvent être ensuite utilisé par votre jeu ou par le "
+"framework que vous utilisez pour intégrer les cartes de Tiled."
 
 #: ../../manual/custom-properties.rst:9
-#, fuzzy
 msgid ""
 "Custom properties are displayed in the Properties view. This view is "
 "context-sensitive, usually displaying the properties of the last selected"
 " object. For tiles in a tileset or objects on an object layer, it also "
 "supports multi-selection."
 msgstr ""
-"Les propriétés personnalisées sont affichées dans la vue Propriétés. Ce "
-"point de vue est sensible au contexte, généralement en affichant les "
+"Les propriétés personnalisées sont affichées dans la vue Propriétés. Cette "
+"vue dépend du contexte, on l'obtient généralement en affichant les "
 "propriétés du dernier objet sélectionné. Pour les tuiles dans un tileset ou "
 "des objets sur un calque d'objet, il prend également en charge le multi-"
 "sélection."
 
 #: ../../manual/custom-properties.rst:17
-#, fuzzy
 msgid "Properties View"
 msgstr "Propriétés De La Vue"
 
 #: ../../manual/custom-properties.rst:20
-#, fuzzy
 msgid "Adding Properties"
 msgstr "Ajout de propriétés"
 
 #: ../../manual/custom-properties.rst:22
-#, fuzzy
 msgid ""
 "When you add a property (using the '+' button at the bottom of the "
 "Properties view), you are prompted for its name and its type. Currently "
 "Tiled supports the following basic property types:"
 msgstr ""
 "Lorsque vous ajoutez une propriété (en utilisant le bouton \" + \" en bas de "
-"la Propriétés \"vue\"), vous êtes invité à entrer son nom et son type. "
-"Actuellement Tiled prend en charge la base suivant les types de propriétés:"
+"la vue \"Propriétés\"), vous êtes invité à entrer son nom et son type. "
+"Actuellement Tiled prend en charge les types basiques de propriétés suivants "
+":"
 
 #: ../../manual/custom-properties.rst:26
 msgid "**string** (any text, including multi-line text)"
 msgstr "**string** (n’importe quel texte, y compris le texte multi-ligne)"
 
 #: ../../manual/custom-properties.rst:27
-#, fuzzy
 msgid "**float** (a floating point number)"
 msgstr "**float** (un nombre à virgule flottante)"
 
 #: ../../manual/custom-properties.rst:28
-#, fuzzy
 msgid "**int** (a whole number)"
 msgstr "**int** (un nombre entier)"
 
 #: ../../manual/custom-properties.rst:29
-#, fuzzy
 msgid "**bool** (true or false)"
 msgstr "**bool** (vrai ou faux)"
 
 #: ../../manual/custom-properties.rst:30
-#, fuzzy
 msgid "**file** (a relative path referencing a file)"
-msgstr "**file** (un chemin d’accès relatif qui référence un fichier)"
+msgstr "**file** (le chemin relatif d'un fichier)"
 
 #: ../../manual/custom-properties.rst:31
-#, fuzzy
 msgid "**color** (a 32-bit color value)"
-msgstr "**color** (une valeur de couleur 32 bits)"
+msgstr "**color** (une valeur de couleur sur 32 bits)"
 
 #: ../../manual/custom-properties.rst:36
 #, fuzzy
@@ -128,12 +119,10 @@ msgid "New in Tiled 1.0"
 msgstr "Nouveau dans Tiled 1.0"
 
 #: ../../manual/custom-properties.rst:55
-#, fuzzy
 msgid "Tile Property Inheritance"
-msgstr "Héritage de propriété de tuile"
+msgstr "Héritage des propriétés de tuile"
 
 #: ../../manual/custom-properties.rst:57
-#, fuzzy
 msgid ""
 "When custom properties are added to a tile, these properties will also be"
 " visible when an object instance of that tile is selected. This enables "
@@ -141,11 +130,11 @@ msgid ""
 "a tile. This becomes especially useful when combined with :ref:`typed-"
 "tiles`."
 msgstr ""
-"Lorsque les propriétés personnalisées sont ajoutées à une tuile, ces "
+"Lorsque des propriétés personnalisées sont ajoutées à une tuile, ces "
 "propriétés seront également visibles lorsqu’une instance de l’objet de cette "
-"tuile est sélectionnée. Cela permet facile par objet, la substitution de "
-"certaines propriétés par défaut associées à un carreau. Cela devient "
-"particulièrement utile lorsqu’il est combiné avec :ref:`typed-tiles`."
+"tuile est sélectionnée. Cela permet de ré-écrire facilement les propriétés "
+"associées à une tuile pour chaque objet. Cela devient particulièrement utile "
+"lorsqu’il est combiné avec :ref:`typed-tiles`."
 
 #: ../../manual/custom-properties.rst:63
 msgid ""
@@ -153,16 +142,20 @@ msgid ""
 "whereas overridden properties will be displayed in black (usual text "
 "color)."
 msgstr ""
+"Les propriétés héritées seront affichées en gris (couleur de texte "
+"désactivée), tandis que les propriétés ré-écrites seront affichées en noir ("
+"couleur de texte habituelle)."
 
 #: ../../manual/custom-properties.rst:70
 msgid "Predefining Properties"
-msgstr ""
+msgstr "Propriétés Prédéfinies"
 
 #: ../../manual/custom-properties.rst:73
 msgid "General Setup"
-msgstr ""
+msgstr "Paramètres Généraux"
 
 #: ../../manual/custom-properties.rst:75
+#, fuzzy
 msgid ""
 "Usually you only use a limited set of object types in your game, and each"
 " type of object has a fixed set of possible properties, with specific "
@@ -170,12 +163,19 @@ msgid ""
 "these properties based on the \"Type\" field for objects. You can set "
 "this up using the Object Types Editor, available from the *View* menu."
 msgstr ""
+"Habituellement vous utilisez une quantité limitée de types d'objets dans "
+"votre jeu, et chaque type a un nombre fixe de propriétés possibles, avec des "
+"types spécifiques et des valeurs par défaut. Pour économiser votre temps, "
+"Tiled permet de prédéfinir ces propriétés  en se basant sur le champ \"Type\""
+" des objets. Vous pouvez mettre ceci en place en utilisant l'Éditeur de "
+"Types d'Objets, disponible depuis le menu \"Vue\"."
 
 #: ../../manual/custom-properties.rst:85
 msgid "Object Types Editor"
-msgstr ""
+msgstr "Éditeur de Type d'Objet"
 
 #: ../../manual/custom-properties.rst:87
+#, fuzzy
 msgid ""
 "By default, Tiled stores these object types in the user settings. "
 "However, since you'll often want to share them with other people in your "
@@ -183,6 +183,12 @@ msgid ""
 "of the object types file. A simple XML or JSON file with self-explanatory"
 " contents is used to store your object types."
 msgstr ""
+"Par défaut Tiled stocke ces types d'objets dans les paramètres "
+"d'Utilisateurs. Cependant depuis que vous voulez souvent les partager avec "
+"les autres personnes de votre projet, vous pouvez exporter ces types "
+"d'objets ou modifier le répertoire d'enregistrement des fichiers de types "
+"d'objets. Un simple fichier XML ou JSON avec un contenu auto-explicatif est "
+"utilisé pour stocker vos types d'objets."
 
 #: ../../manual/custom-properties.rst:93
 msgid ""
@@ -190,20 +196,29 @@ msgid ""
 "objects, but is also the color of the label which will show up if you "
 "give your object a name."
 msgstr ""
+"La couleur n'affecte pas seulement le rendu des différentes formes d'objets, "
+"mais aussi la couleur de l'étiquette qui apparaîtra si vous donnez un nom à "
+"votre objet."
 
 #: ../../manual/custom-properties.rst:97
+#, fuzzy
 msgid ""
 "To make the predefined properties show up in the Properties view, all you"
 " need to do is to enter the name of the type in the built-in \"Type\" "
 "property. Usually this is what you're doing already anyway to tell your "
 "engine what kind of object it is dealing with."
 msgstr ""
+"Pour faire apparaître les propriétés prédéfinies dans la vue Propriétés, "
+"tout ce que vous devez faire est d'entrer le nom et le type dans la "
+"propriété \"Type\" intégrée. Habituellement c'est ce que vous faites de "
+"toute façon en indiquant à votre moteur de jeu quel genre d'objet il utilise."
 
 #: ../../manual/custom-properties.rst:115
 msgid "Typed Tiles"
-msgstr ""
+msgstr "Tuiles Typées"
 
 #: ../../manual/custom-properties.rst:117
+#, fuzzy
 msgid ""
 "If you're using tile objects, you can set the type on the tile to avoid "
 "having to set it on each object instance. Setting the type on the tile "
@@ -212,6 +227,13 @@ msgid ""
 "values visible when having a tile object instance selected, again "
 "allowing you to override them."
 msgstr ""
+"Si vous utilisez des objets tuiles, vous pouvez indiquer le type sur la "
+"tuile pour éviter d'avoir à l'indiquer sur chaque instance de l'objet. "
+"Mettre en place le type sur la tuile rend les propriétés prédéfinies "
+"visibles quand la tuile est sélectionnée, permettant de modifier les "
+"valeurs. Cela rend également possible l'affichage des valeurs modifiées "
+"lorsque l'on a une instance d'un objet tuile sélectionnée, permettant de les "
+"modifier une nouvelle fois."
 
 #: ../../manual/custom-properties.rst:124
 msgid ""
@@ -221,15 +243,21 @@ msgid ""
 "representing these entities. And when placing those tiles as objects, you"
 " can override those values if you need to."
 msgstr ""
+"Un exemple de cas d'utilisation serait de définir des types personnalisés "
+"comme \"PNJ\", \"Ennemi\" ou \"Objet\" avec des propriétés comme \"Nom\", \""
+"Santé\" ou \"Poids\". Vous pouvez ensuite spécifier les valeurs pour ces "
+"propriétés sur les tuiles qui représentent ces entités. Quand vous placez "
+"ces tuiles comme des objets, vous pouvez si besoin ré-écrire ces valeurs."
 
 #: ../../manual/custom-properties.rst:135 ../../manual/layers.rst:124
 #: ../../manual/objects.rst:257
 msgid "Future Extensions"
-msgstr ""
+msgstr "Futures Extensions"
 
 #: ../../manual/custom-properties.rst:137
 msgid "There are several types of custom properties I'd like to add:"
 msgstr ""
+"Il y a plusieurs types de propriétés personnalisées que j'aimerais ajouter :"
 
 #: ../../manual/custom-properties.rst:139
 msgid ""
@@ -237,6 +265,9 @@ msgid ""
 "forms a combo box (`#1211 "
 "<https://github.com/bjorn/tiled/issues/1211>`__)."
 msgstr ""
+"**Énumérations**, où vous pouvez prédéfinir toutes les valeurs possibles et "
+"que cela forme une boite de dialogue (`#1211 "
+"<https://github.com/bjorn/tiled/issues/1211>`__)."
 
 #: ../../manual/custom-properties.rst:142
 msgid ""
@@ -244,12 +275,17 @@ msgid ""
 "and Tiled could display such connections (`#707 "
 "<https://github.com/bjorn/tiled/issues/707>`__)."
 msgstr ""
+"**Références d'Objets**, qui permettent de facilement lier des objets entre "
+"eux et Tiled pourrait afficher ces connexions (`#707 "
+"<https://github.com/bjorn/tiled/issues/707>`__)."
 
 #: ../../manual/custom-properties.rst:145
 msgid ""
 "**Array properties**, which would be properties having a list of values "
 "(`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
 msgstr ""
+"**Propriétés Liste**, qui seraient des propriétés ayant une liste de valeurs "
+"(`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
 
 #: ../../manual/custom-properties.rst:147
 msgid ""
@@ -257,6 +293,9 @@ msgid ""
 " number of other properties as children (`#489 "
 "<https://github.com/bjorn/tiled/issues/489>`__)."
 msgstr ""
+"**Propriétés dictionnaire**, qui seraient des propriétés qui peuvent "
+"contenir n'importe quel nombre d'autres propriétés comme enfants (`#489 "
+"<https://github.com/bjorn/tiled/issues/489>`__)."
 
 #: ../../manual/custom-properties.rst:151
 msgid ""
@@ -264,6 +303,9 @@ msgid ""
 "like the length of string properties or a minimum/maximum on number "
 "values."
 msgstr ""
+"Cela serait également une bonne chose d'ajouter un support pour les **"
+"Limites des valeurs de propriétés**, comme la taille des chaînes de "
+"caractères ou un nombre minimum/maximum de valeurs."
 
 #: ../../manual/custom-properties.rst:155
 msgid ""
@@ -272,6 +314,11 @@ msgid ""
 "defining which custom properties are valid for maps, tilesets, layers, "
 "etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)"
 msgstr ""
+"À part pour prédéfinir les propriétés basées sur un type d'objet, J'aimerais "
+"ajouter un support pour **prédéfinir les propriétés pour chaque type de "
+"données**. Définissant ainsi que chaque propriété personnalisée est valide "
+"pour les maps, groupes de tuiles, niveaux, etc. (`#1410 "
+"<https://github.com/bjorn/tiled/issues/1410>`__)"
 
 #: ../../manual/custom-properties.rst:160
 msgid ""
@@ -280,20 +327,31 @@ msgid ""
 "different projects or get started on an existing project, without needing"
 " to configure Tiled to use the right object type definitions."
 msgstr ""
+"Finalement, les propriétés prédéfinies devraient très bien fonctionner "
+"ensembles avec un explicite **support pour projets**. Enfin vous pouvez "
+"changer entre les différents projets ou commencer sur un projet existant, "
+"sans avoir besoin de configurer Tiled pour utiliser les définitions "
+"correctes de types d'objets."
 
 #: ../../manual/custom-properties.rst:165 ../../manual/layers.rst:139
 #: ../../manual/objects.rst:270
+#, fuzzy
 msgid ""
 "If you like any of these plans, please help me getting around to it "
 "faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The more"
 " support I receive the more time I can afford to spend improving Tiled!"
 msgstr ""
+"Si vous aimez au moins un seul de ces points, s'il-vous-plaît aidez-moi à y "
+"arriver plus vite en `devenant un mécène <https://www.patreon.com/bjorn>`__. "
+"Plus je recevrai de soutient, plus j'aurais les moyens de passer du temps à "
+"améliorer Tiled."
 
 #: ../../manual/editing-tile-layers.rst:2
 msgid "Editing Tile Layers"
-msgstr ""
+msgstr "Modifier les Niveaux de Tiled"
 
 #: ../../manual/editing-tile-layers.rst:4
+#, fuzzy
 msgid ""
 ":ref:`tile-layer-introduction` are what makes Tiled a *tile map editor*. "
 "Although not as flexible as :ref:`object-layer-introduction`, they "
@@ -301,16 +359,23 @@ msgid ""
 "efficient content creation. Every new map gets one by default, though "
 "feel free to delete it when you're not going to use it."
 msgstr ""
+":ref:`tile-layer-introduction`sont ce qui fait de Tiled un *éditeur de carte "
+"par tuiles*. Bien que pas aussi flexible que :ref:`object-layer-introduction`"
+", ils permettent un stockage efficace des données et un bon rendu de "
+"performance ainsi qu'une création efficace de contenu. Chaque nouvelle carte "
+"en obtient par défaut, sentez-vous libre de le supprimer si vous n'allez pas "
+"l'utiliser."
 
 #: ../../manual/editing-tile-layers.rst:11
 msgid "Stamp Brush"
-msgstr ""
+msgstr "Brosse Tampon"
 
 #: ../../manual/editing-tile-layers.rst:13
 msgid "Shortcut: ``B``"
-msgstr ""
+msgstr "Raccourci: ``B``"
 
 #: ../../manual/editing-tile-layers.rst:15
+#, fuzzy
 msgid ""
 "The primary tool for editing tile layers is the Stamp Brush. It can be "
 "used to paint single tiles as well as larger \"stamps\", which is where "
@@ -318,20 +383,31 @@ msgid ""
 "capture tile stamps from the currently active layer. A tile stamp is "
 "commonly created by selecting one or more tiles in the Tilesets view."
 msgstr ""
+"L'outil le plus basique pour modifier les niveaux de tuiles est la Brosse "
+"Tampon. Elle peut être utilisée pour peindre aussi bien une seule tuile "
+"qu'un \"tampon\" plus large, c'est de là que vient son nom. En utilisant le "
+"clique droit de la souris, elle peut également capturer rapidement un tampon "
+"de tuile du niveau actif. Un tampon de tuile est communément crée en "
+"sélectionnant une ou plusieurs tuiles dans la vue Tilesets."
 
 #: ../../manual/editing-tile-layers.rst:21
 msgid "The Stamp Brush has some extra features:"
-msgstr ""
+msgstr "La Brosse Tampon a de nombreuses fonctionnalités supplémentaires :"
 
 #: ../../manual/editing-tile-layers.rst:23
 msgid "While holding ``Shift``, click any two points to draw a line between them."
 msgstr ""
+"En maintenant la touche ``Maj`` enfoncée, cliquez à deux endroits différents "
+"pour créer deux points et dessiner une ligne entre eux."
 
 #: ../../manual/editing-tile-layers.rst:26
 msgid ""
 "While holding ``Ctrl+Shift``, click any two points two draw a circle or "
 "ellipse centered on the first point."
 msgstr ""
+"En maintenant les touches ``Ctrl+Maj`` enfoncées, cliquez à deux endroits "
+"différents pour créer deux points et dessiner un cercle ou une ellipse "
+"centré(e) sur le premier point."
 
 #: ../../manual/editing-tile-layers.rst:29
 msgid ""
@@ -341,6 +417,11 @@ msgid ""
 "stamp, as well as the probability set on each tile in the *Tileset "
 "Editor*."
 msgstr ""
+"Activez le *Mode Aléatoire* en utilisant le bouton dés sur la barre d'outils "
+"pour peindre des tuiles aléatoires du tampon de tuiles avec la Brosse "
+"Tampon. La probabilité de chaque tuile dépend autant de combien de fois elle "
+"apparaît sur le tampon de tuiles, que de la probabilité indiquée pour chaque "
+"tuile dans l' *Éditeur de Tileset*."
 
 #: ../../manual/editing-tile-layers.rst:35
 msgid ""
@@ -348,32 +429,48 @@ msgid ""
 "from a set of predefined tile stamps. This can be more useful than the "
 "*Random Mode*, which randomly places individual tiles."
 msgstr ""
+"En combinaison avec la vue *Tampon de Tuiles*, elle peut également placer "
+"aléatoirement depuis un paquet prédéfinit de tampon de tuiles. Cela peut "
+"être plus utile que le *Mode Aléatoire*, qui place aléatoirement des tuiles "
+"individuelles."
 
 #: ../../manual/editing-tile-layers.rst:41
 msgid "Terrain Brush"
-msgstr ""
+msgstr "Brosse de Terrain"
 
 #: ../../manual/editing-tile-layers.rst:43 ../../manual/objects.rst:83
 msgid "Shortcut: ``T``"
-msgstr ""
+msgstr "Raccourci: ``T``"
 
 #: ../../manual/editing-tile-layers.rst:45
+#, fuzzy
 msgid ""
 "The Terrain Brush allows for efficient editing with a certain type of "
 "corner-based terrain transitions. Setting it up requires associating "
 "terrain information with your tiles, which is described in detail in "
 ":doc:`Using the Terrain Tool <using-the-terrain-tool>`."
 msgstr ""
+"La Brosse de Terrain permet une édition efficace avec un certain type de "
+"transitions de terrain basée sur le coin. Les mettre en place requiert "
+"d'associer les informations de terrain avec vos tuiles, qui sont décrites en "
+"détail dans :doc:`Utiliser Les Outils de Terrain <using-the-terrain-tool>`."
 
 #: ../../manual/editing-tile-layers.rst:50
+#, fuzzy
 msgid ""
 "Similarly to the `Stamp Brush <#stamp-brush>`__, you can draw lines by "
 "holding ``Shift``. When holding ``Ctrl``, the size of the editing area is"
 " reduced to one corner (this currently doesn't work well in combination "
 "with drawing lines)."
 msgstr ""
+"De manière similaire à la `Brosse Tampon <#stamp-brush>`__, vous pouvez "
+"dessiner des lignes en maintenant enfoncée la touche ``Maj``. En maintenant "
+"la touche ``Ctrl`` enfoncée, la taille de la zone d'édition est réduite à un "
+"coin (actuellement cela ne fonctionne pas très bien avec le dessin de "
+"lignes)."
 
 #: ../../manual/editing-tile-layers.rst:65
+#, fuzzy
 msgid ""
 "When holding ``Alt``, the editing operations are also applied at a 180 "
 "degree rotation. This is especially useful when editing strategic maps "
@@ -381,22 +478,33 @@ msgid ""
 " in combination with either ``Shift`` for drawing lines or ``Ctrl`` for "
 "reducing the edited area."
 msgstr ""
+"En maintenant ``Alt``, les opérations d'édition sont également appliquées "
+"avec une rotation de 180 degrés. C'est particulièrement utile lors de "
+"l'édition de cartes stratégiques où les deux côtés doivent avoir des chances "
+"équitables. Le modificateur marche bien en combinaison avec les touches "
+"``Maj`` pour dessiner des lignes ou ``Ctrl`` pour réduire la zone d'édition."
 
 #: ../../manual/editing-tile-layers.rst:72
+#, fuzzy
 msgid "Bucket Fill Tool"
-msgstr ""
+msgstr "Outil de Remplissage de Seau"
 
 #: ../../manual/editing-tile-layers.rst:74
 msgid "Shortcut: ``F``"
-msgstr ""
+msgstr "Raccourci: ``F``"
 
 #: ../../manual/editing-tile-layers.rst:76
+#, fuzzy
 msgid ""
 "The Bucket Fill Tool provides a quick way of filling empty areas or areas"
 " covered with the same tiles. The currently active tile stamp will be "
 "repeated in the filled area. It can also be used in combination with the "
 "*Random Mode*."
 msgstr ""
+"L'Outil de Remplissage de Seau fournit une manière rapide de remplir les "
+"zones vides ou les zones couvertes par les mêmes tuiles. Le tampon de tuile "
+"actuellement sélectionné sera répété dans la zone de remplissage. Il peut "
+"également être utilisé en combinaison avec le *Mode Aléatoire*."
 
 #: ../../manual/editing-tile-layers.rst:81
 msgid ""
@@ -405,46 +513,61 @@ msgid ""
 "have been selected previously using one or more `Selection Tools "
 "<#selection-tools>`__."
 msgstr ""
+"En maintenant la touche ``Maj`` enfoncée, l'outil remplit la zone "
+"sélectionnée sans prêter attention à son contenu. C'est utile pour remplir "
+"des zones personnalisées qui ont été précédemment sélectionnées en utilisant "
+"un ou plusieurs `Outils de Sélections <#selection-tools>`__."
 
 #: ../../manual/editing-tile-layers.rst:87
 msgid "Eraser"
-msgstr ""
+msgstr "Gomme"
 
 #: ../../manual/editing-tile-layers.rst:89 ../../manual/objects.rst:234
 msgid "Shortcut: ``E``"
-msgstr ""
+msgstr "Raccourci: ``E``"
 
 #: ../../manual/editing-tile-layers.rst:91
 msgid ""
 "A simple eraser tool. Left click erases single tiles and right click can "
 "be used to quickly erase rectangular areas."
 msgstr ""
+"Un simple outil d'effacement. Le clique gauche efface une seule tuile tandis "
+"que le clique droit est utilisé pour effacer rapidement des zones "
+"rectangulaires."
 
 #: ../../manual/editing-tile-layers.rst:95
 msgid "Selection Tools"
-msgstr ""
+msgstr "Outils de Sélection"
 
 #: ../../manual/editing-tile-layers.rst:97
 msgid "There are various tile selection tools that all work in similar fashion:"
 msgstr ""
+"Il y a de nombreux outils de sélection de tuiles qui fonctionnent de manière "
+"similaire :"
 
 #: ../../manual/editing-tile-layers.rst:99
 msgid ""
 "**Rectangular Select** allows selection of rectangular areas (shortcut: "
 "``R``)"
 msgstr ""
+"**Sélection Rectangulaire** permet la sélection de zones rectangulaires ("
+"raccourci : ``R``)"
 
 #: ../../manual/editing-tile-layers.rst:102
 msgid ""
 "**Magic Wand** allows selection of connected areas filled with the same "
 "tile (shortcut: ``W``)"
 msgstr ""
+"**Baguette Magique** permet la sélection de zones connectées remplies par la "
+"même tuile (raccourci : ``W``)"
 
 #: ../../manual/editing-tile-layers.rst:105
 msgid ""
 "**Select Same Tile** allows selection of same-tiles across the entire "
 "layer (shortcut: ``S``)"
 msgstr ""
+"**Sélectionner la Même Tuile** permet la sélection des tuiles identiques à "
+"travers le niveau entier (raccourci : ``S``)"
 
 #: ../../manual/editing-tile-layers.rst:108
 msgid ""
