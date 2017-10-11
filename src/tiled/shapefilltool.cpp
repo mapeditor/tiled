@@ -208,11 +208,11 @@ void ShapeFillTool::updateFillOverlay()
     }
 
     const QRect fillBound = mFillRegion.boundingRect();
-    mFillOverlay = SharedTileLayer(new TileLayer(QString(),
-                                                 fillBound.x(),
-                                                 fillBound.y(),
-                                                 fillBound.width(),
-                                                 fillBound.height()));
+    mFillOverlay = SharedTileLayer::create(QString(),
+                                           fillBound.x(),
+                                           fillBound.y(),
+                                           fillBound.width(),
+                                           fillBound.height());
 
     switch (mFillMethod) {
     case TileFill:
