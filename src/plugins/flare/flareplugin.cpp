@@ -232,21 +232,21 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     float x,y;
                     int w,h;
                     if (map->orientation() == Map::Orthogonal) {
-                        x = (loc[0].toFloat())*map->tileWidth();
-                        y = (loc[1].toFloat())*map->tileHeight();
+                        x = loc[0].toFloat() * map->tileWidth();
+                        y = loc[1].toFloat() * map->tileHeight();
                         if (loc.size() > 3) {
-                            w = loc[2].toInt()*map->tileWidth();
-                            h = loc[3].toInt()*map->tileHeight();
+                            w = loc[2].toInt() * map->tileWidth();
+                            h = loc[3].toInt() * map->tileHeight();
                         } else {
                             w = map->tileWidth();
                             h = map->tileHeight();
                         }
                     } else {
-                        x = loc[0].toFloat()*map->tileHeight();
-                        y = loc[1].toFloat()*map->tileHeight();
+                        x = loc[0].toFloat() * map->tileHeight();
+                        y = loc[1].toFloat() * map->tileHeight();
                         if (loc.size() > 3) {
-                            w = loc[2].toInt()*map->tileHeight();
-                            h = loc[3].toInt()*map->tileHeight();
+                            w = loc[2].toInt() * map->tileHeight();
+                            h = loc[3].toInt() * map->tileHeight();
                         } else {
                             w = h = map->tileHeight();
                         }
@@ -300,8 +300,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(file.device());
-    QColor backgroundColor;
-    backgroundColor = map->backgroundColor();
+    QColor backgroundColor = map->backgroundColor();
     out.setCodec("UTF-8");
 
     const int mapWidth = map->width();
@@ -361,10 +360,9 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             Properties::const_iterator it = tileLayer->properties().constBegin();
             Properties::const_iterator it_end = tileLayer->properties().constEnd();
             for (; it != it_end; ++it) {
-                if(it->userType() == filePathTypeId()){
+                if (it->userType() == filePathTypeId()) {
                     out << it.key() << "=" << mapDir.relativeFilePath(toExportValue(it.value()).toString()) << "\n";
-                }
-                else{
+                } else {
                     out << it.key() << "=" << it.value().toString() << "\n";
                 }
             }
