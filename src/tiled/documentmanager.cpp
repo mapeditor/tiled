@@ -126,6 +126,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
+    , mMultiDocumentClose(false)
 {
     mBrokenLinksWidget->setVisible(false);
 
@@ -168,10 +169,14 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
+
+    mTabBar->installEventFilter(this);
 }
 
 DocumentManager::~DocumentManager()
 {
+    mTabBar->removeEventFilter(this);
+
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
     Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
@@ -525,6 +530,37 @@ void DocumentManager::closeCurrentDocument()
     closeDocumentAt(index);
 }
 
+void DocumentManager::closeOtherDocuments(int index)
+{
+    if (index == -1)
+        return;
+
+    mMultiDocumentClose = true;
+
+    for (int i = mTabBar->count() - 1; i >= 0; --i) {
+        if (i != index)
+            documentCloseRequested(i);
+
+        if (!mMultiDocumentClose)
+            return;
+    }
+}
+
+void DocumentManager::closeDocumentsToRight(int index)
+{
+    if (index == -1)
+        return;
+
+    mMultiDocumentClose = true;
+
+    for (int i = mTabBar->count() - 1; i > index; --i) {
+        documentCloseRequested(i);
+
+        if (!mMultiDocumentClose)
+            return;
+    }
+}
+
 void DocumentManager::closeDocumentAt(int index)
 {
     Document *document = mDocuments.at(index);
@@ -715,6 +751,25 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     QAction *openFolder = menu.addAction(tr("Open Containing Folder..."));
     connect(openFolder, &QAction::triggered, [fileName] {
         showInFileManager(fileName);
+    });
+
+    menu.addSeparator();
+
+    QAction *closeTab = menu.addAction(tr("Close"));
+    closeTab->setIcon(QIcon(QStringLiteral(":/images/16x16/window-close.png")));
+    Utils::setThemeIcon(closeTab, "window-close");
+    connect(closeTab, &QAction::triggered, [this, index] {
+        documentCloseRequested(index);
+    });
+
+    QAction *closeOtherTabs = menu.addAction(tr("Close Other Tabs"));
+    connect(closeOtherTabs, &QAction::triggered, [this, index] {
+        closeOtherDocuments(index);
+    });
+
+    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs to the Right"));
+    connect(closeTabsToRight, &QAction::triggered, [this, index] {
+        closeDocumentsToRight(index);
     });
 
     menu.exec(mTabBar->mapToGlobal(pos));
@@ -967,4 +1022,28 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
                                   QMessageBox::Yes);
 
     return r == QMessageBox::Yes;
+}
+
+bool DocumentManager::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == mTabBar && event->type() == QEvent::MouseButtonRelease) {
+        // middle-click tab closing
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+
+        if (mouseEvent->button() == Qt::MidButton) {
+            int index = mTabBar->tabAt(mouseEvent->pos());
+
+            if (index != -1) {
+                documentCloseRequested(index);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void DocumentManager::abortMultiDocumentClose()
+{
+    mMultiDocumentClose = false;
 }
