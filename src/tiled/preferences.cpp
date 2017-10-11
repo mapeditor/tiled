@@ -614,7 +614,7 @@ void Preferences::setCheckForUpdates(bool on)
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
-    	return;
+        return;
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);

@@ -116,7 +116,7 @@ Qt::ItemFlags ObjectTypesModel::flags(const QModelIndex &index) const
 void ObjectTypesModel::sort(int column, Qt::SortOrder order)
 {
     if (column == 0 && order == Qt::AscendingOrder) {
-       	emit layoutAboutToBeChanged();
+        emit layoutAboutToBeChanged();
         qSort(mObjectTypes.begin(), mObjectTypes.end(), objectTypeLessThan);
         emit layoutChanged();
     }
@@ -156,6 +156,6 @@ QModelIndex ObjectTypesModel::addNewObjectType()
 {
     beginInsertRows(QModelIndex(), 0, 0);
     mObjectTypes.prepend(ObjectType());
-	endInsertRows();
-	return index(0, 0);
+    endInsertRows();
+    return index(0, 0);
 }
