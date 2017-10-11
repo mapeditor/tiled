@@ -1024,25 +1024,20 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
     return r == QMessageBox::Yes;
 }
 
-bool DocumentManager::eventFilter(QObject *, QEvent *event)
+bool DocumentManager::eventFilter(QObject *object, QEvent *event)
 {
-    switch (event->type()) {
-        case QEvent::MouseButtonRelease: {
-            // middle-click tab closing
-            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+    if (object == mTabBar && event->type() == QEvent::MouseButtonRelease) {
+        // middle-click tab closing
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
 
-            if (mouseEvent->button() == Qt::MidButton) {
-                int index = mTabBar->tabAt(mouseEvent->pos());
+        if (mouseEvent->button() == Qt::MidButton) {
+            int index = mTabBar->tabAt(mouseEvent->pos());
 
-                if (index != -1) {
-                    documentCloseRequested(index);
-                    return true;
-                }
+            if (index != -1) {
+                documentCloseRequested(index);
+                return true;
             }
         }
-        break;
-    default:
-        break;
     }
 
     return false;
