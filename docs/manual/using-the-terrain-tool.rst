@@ -24,6 +24,8 @@ edges. Now we will define the terrain information for this tileset,
 which the :ref:`terrain-tool` will use to automatically place the right
 transitions.
 
+.. _define-terrain-information:
+
 Define the Terrain Information
 ------------------------------
 

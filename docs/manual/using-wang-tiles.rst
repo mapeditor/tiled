@@ -15,6 +15,8 @@ More info on Wang tiles can be found `here <http://www.cr31.co.uk/stagecast/wang
 To demonstrate how to use Wang tiles, I will describe the steps necessary
 to recreate ``walkways.tsx`` example tileset.
 
+.. _defining-wang-tile-info:
+
 Defining Wang Tile Info
 -----------------------
 

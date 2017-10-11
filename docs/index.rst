@@ -19,6 +19,7 @@ Tiled Documentation
    manual/layers
    manual/editing-tile-layers
    manual/objects
+   manual/editing-tilesets
    manual/custom-properties
    manual/using-templates
    manual/using-the-terrain-tool
