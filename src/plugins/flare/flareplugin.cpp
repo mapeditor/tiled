@@ -154,7 +154,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     map->setTileHeight(value.toInt());
                 else if (key == QLatin1String("orientation"))
                     map->setOrientation(orientationFromString(value));
-                else if (key == QLatin1String("backgroundColor")){
+                else if (key == QLatin1String("background_color")){
                     backgroundColor = enrichColorInformation(value);
                     map->setBackgroundColor(backgroundColor);
                 }
@@ -354,7 +354,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
-    out << "backgroundColor=" << backgroundColor.name(QColor::HexArgb) << "\n";
+    out << "background_color=" << backgroundColor.name(QColor::HexArgb) << "\n";
 
     const QDir mapDir = QFileInfo(fileName).absoluteDir();
 
