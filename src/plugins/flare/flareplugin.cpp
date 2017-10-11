@@ -37,60 +37,10 @@
 #include <QSettings>
 #include <QStringList>
 #include <QTextStream>
-#include <QTextCodec>
-#include <qnumeric.h>
 
 using namespace Tiled;
 
 namespace Flare {
-
-int hexToDecimal(const std::string& hex){
-   int value = 0;
-   int i = hex.size() - 1;
-   for (int pos = 0; pos < hex.size(); pos++){
-       int modifier = 0;
-       char x = hex[pos];
-       switch (x){
-       case '0':
-       case '1':
-       case '2':
-       case '3':
-       case '4':
-       case '5':
-       case '6':
-       case '7':
-       case '8':
-       case '9':
-           modifier = x - 48;
-           break;
-       case 'a':
-       case 'b':
-       case 'c':
-       case 'd':
-       case 'e':
-       case 'f':
-           modifier = x - 87;
-           break;
-       default:
-           throw "Uknown hex character!";
-           break;
-       }
-       value += modifier * pow(16, i);
-       i--;
-   }
-   return value;
-}
-
-QColor enrichColorInformation(const QString& colorHex){
-    QColor color;
-    std::string hexVal = colorHex.toStdString();
-    int startHex = hexVal.find('#') + 1;
-    color.setAlpha(hexToDecimal(hexVal.substr(startHex, 2)));
-    color.setRed(hexToDecimal(hexVal.substr(startHex + 2, 2)));
-    color.setGreen(hexToDecimal(hexVal.substr(startHex + 4, 2)));
-    color.setBlue(hexToDecimal(hexVal.substr(startHex + 6, 2)));
-    return color;
-}
 
 FlarePlugin::FlarePlugin()
 {
@@ -155,7 +105,17 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 else if (key == QLatin1String("orientation"))
                     map->setOrientation(orientationFromString(value));
                 else if (key == QLatin1String("background_color")){
-                    backgroundColor = enrichColorInformation(value);
+                    QStringList rgbaList = value.split(',');
+
+                    if (!rgbaList.isEmpty())
+                        backgroundColor.setRed(rgbaList.takeFirst().toInt());
+                    if (!rgbaList.isEmpty())
+                        backgroundColor.setGreen(rgbaList.takeFirst().toInt());
+                    if (!rgbaList.isEmpty())
+                        backgroundColor.setBlue(rgbaList.takeFirst().toInt());
+                    if (!rgbaList.isEmpty())
+                        backgroundColor.setAlpha(rgbaList.takeFirst().toInt());
+
                     map->setBackgroundColor(backgroundColor);
                 }
                 else
@@ -354,7 +314,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
     out << "orientation=" << orientationToString(map->orientation()) << "\n";
-    out << "background_color=" << backgroundColor.name(QColor::HexArgb) << "\n";
+    out << "background_color=" << backgroundColor.red() << "," << backgroundColor.green() << "," << backgroundColor.blue() << "," << backgroundColor.alpha() << "\n";
 
     const QDir mapDir = QFileInfo(fileName).absoluteDir();
 
