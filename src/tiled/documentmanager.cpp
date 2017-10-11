@@ -537,9 +537,9 @@ void DocumentManager::closeOtherDocuments(int index)
 
     mMultiDocumentClose = true;
 
-    for (int i = mTabBar->count(); i > 0; --i) {
-        if (i-1 != index)
-            documentCloseRequested(i-1);
+    for (int i = mTabBar->count() - 1; i >= 0; --i) {
+        if (i != index)
+            documentCloseRequested(i);
 
         if (!mMultiDocumentClose)
             return;
@@ -553,9 +553,8 @@ void DocumentManager::closeDocumentsToRight(int index)
 
     mMultiDocumentClose = true;
 
-    for (int i = mTabBar->count(); i > 0; --i) {
-        if (i-1 > index)
-            documentCloseRequested(i-1);
+    for (int i = mTabBar->count() - 1; i > index; --i) {
+        documentCloseRequested(i);
 
         if (!mMultiDocumentClose)
             return;
