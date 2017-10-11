@@ -23,11 +23,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static bool objectTypeLessThan(const ObjectType &a, const ObjectType &b)
+{
+    return a.name.toLower() < b.name.toLower();
+}
+
 void ObjectTypesModel::setObjectTypes(const ObjectTypes &objectTypes)
 {
     beginResetModel();
     mObjectTypes = objectTypes;
-    sort(0, Qt::AscendingOrder);
+    qSort(mObjectTypes.begin(), mObjectTypes.end(), objectTypeLessThan);
     endResetModel();
 }
 
@@ -108,15 +113,9 @@ Qt::ItemFlags ObjectTypesModel::flags(const QModelIndex &index) const
     return f;
 }
 
-static bool objectTypeLessThan(ObjectType const &a, ObjectType const &b)
-{
-    return a.name.toLower() < b.name.toLower();
-}
-
 void ObjectTypesModel::sort(int column, Qt::SortOrder order)
 {
-    if (column == 0 && order == Qt::AscendingOrder)
-    {
+    if (column == 0 && order == Qt::AscendingOrder) {
        	emit layoutAboutToBeChanged();
         qSort(mObjectTypes.begin(), mObjectTypes.end(), objectTypeLessThan);
         emit layoutChanged();
@@ -153,10 +152,10 @@ void ObjectTypesModel::removeObjectTypes(const QModelIndexList &indexes)
     }
 }
 
-void ObjectTypesModel::appendNewObjectType()
+QModelIndex ObjectTypesModel::addNewObjectType()
 {
-    beginInsertRows(QModelIndex(), mObjectTypes.size(), mObjectTypes.size());
-    mObjectTypes.append(ObjectType());
-    endInsertRows();
-    sort(0, Qt::AscendingOrder);
+    beginInsertRows(QModelIndex(), 0, 0);
+    mObjectTypes.prepend(ObjectType());
+	endInsertRows();
+	return index(0, 0);
 }
