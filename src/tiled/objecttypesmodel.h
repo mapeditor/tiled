@@ -53,7 +53,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
 
     void setObjectTypeColor(int objectIndex, const QColor &color);
     void setObjectTypeProperties(int objectIndex, const Properties &properties);
