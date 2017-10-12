@@ -396,10 +396,9 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     // write all properties for this object
                     QVariantMap propsMap = o->properties();
                     for (QVariantMap::const_iterator it = propsMap.constBegin(); it != propsMap.constEnd(); ++it) {
-                        if(it->userType() == filePathTypeId()){
+                        if (it->userType() == filePathTypeId()) {
                             out << it.key() << "=" << mapDir.relativeFilePath(toExportValue(it.value()).toString()) << "\n";
-                        }
-                        else{
+                        } else {
                             out << it.key() << "=" << toExportValue(it.value()).toString() << "\n";
                         }
                     }
