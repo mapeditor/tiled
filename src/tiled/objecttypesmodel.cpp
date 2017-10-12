@@ -101,13 +101,13 @@ bool ObjectTypesModel::setData(const QModelIndex &index,
         mObjectTypes[oldRow].name = value.toString().trimmed();
         emit dataChanged(index, index);
 
-		auto nextObjectType = std::lower_bound(mObjectTypes.begin(), mObjectTypes.end(), mObjectTypes[oldRow], objectTypeLessThan);
+        auto nextObjectType = std::lower_bound(mObjectTypes.begin(), mObjectTypes.end(), mObjectTypes[oldRow], objectTypeLessThan);
         const int newRow = nextObjectType - mObjectTypes.begin();
         if (newRow != oldRow) {
             beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
             mObjectTypes.move(oldRow, newRow > oldRow ? newRow - 1 : newRow);
             endMoveRows();
-		}
+        }
         return true;
     }
     return false;
