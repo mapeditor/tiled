@@ -146,7 +146,7 @@ void ExportAsImageDialog::accept()
     const bool drawTileGrid = mUi->drawTileGrid->isChecked();
     const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
-    MiniMapRenderer miniMapRenderer(mMapDocument);
+    MiniMapRenderer miniMapRenderer(mMapDocument->map());
 
     MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
                                              MiniMapRenderer::DrawMapObjects |

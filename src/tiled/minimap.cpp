@@ -192,7 +192,7 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    MiniMapRenderer miniMapRenderer(mMapDocument);
+    MiniMapRenderer miniMapRenderer(mMapDocument->map());
     miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 

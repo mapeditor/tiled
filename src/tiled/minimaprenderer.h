@@ -25,9 +25,11 @@
 #include <QImage>
 
 namespace Tiled {
-namespace Internal {
 
-class MapDocument;
+class Map;
+class MapRenderer;
+
+namespace Internal {
 
 class MiniMapRenderer
 {
@@ -39,17 +41,22 @@ public:
         IgnoreInvisibleLayer    = 0x0008,
         DrawGrid                = 0x0010,
         DrawBackground          = 0x0020,
-        SmoothPixmapTransform   = 0x0040
+        SmoothPixmapTransform   = 0x0040,
+        IncludeOverhangingTiles = 0x0080
     };
 
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 
-    MiniMapRenderer(MapDocument *mapDocument);
+    MiniMapRenderer(Map *map);
+    ~MiniMapRenderer();
+
+    QImage render(QSize size, RenderFlags renderFlags) const;
 
     void renderToImage(QImage &image, RenderFlags renderFlags) const;
 
 private:
-    MapDocument *mMapDocument;
+    Map *mMap;
+    MapRenderer *mRenderer;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMapRenderer::RenderFlags)

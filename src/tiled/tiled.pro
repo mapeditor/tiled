@@ -222,7 +222,6 @@ SOURCES += aboutdialog.cpp \
     terrainview.cpp \
     texteditordialog.cpp \
     textpropertyedit.cpp \
-    thumbnailrenderer.cpp \
     tileanimationeditor.cpp \
     tilecollisiondock.cpp \
     tiledapplication.cpp \
@@ -421,7 +420,6 @@ HEADERS += aboutdialog.h \
     terrainview.h \
     texteditordialog.h \
     textpropertyedit.h \
-    thumbnailrenderer.h \
     tileanimationeditor.h \
     tilecollisiondock.h \
     tiledapplication.h \
