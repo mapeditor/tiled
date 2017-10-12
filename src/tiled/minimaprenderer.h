@@ -33,11 +33,13 @@ class MiniMapRenderer
 {
 public:
     enum RenderFlag {
-        DrawObjects             = 0x0001,
-        DrawTiles               = 0x0002,
-        DrawImages              = 0x0004,
+        DrawMapObjects          = 0x0001,
+        DrawTileLayers          = 0x0002,
+        DrawImageLayers         = 0x0004,
         IgnoreInvisibleLayer    = 0x0008,
-        DrawGrid                = 0x0010
+        DrawGrid                = 0x0010,
+        DrawBackground          = 0x0020,
+        SmoothPixmapTransform   = 0x0040
     };
 
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)

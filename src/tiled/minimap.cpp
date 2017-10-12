@@ -44,10 +44,11 @@ MiniMap::MiniMap(QWidget *parent)
     , mDragging(false)
     , mMouseMoveCursorState(false)
     , mRedrawMapImage(false)
-    , mRenderFlags(MiniMapRenderer::DrawTiles
-                   | MiniMapRenderer::DrawObjects
-                   | MiniMapRenderer::DrawImages
-                   | MiniMapRenderer::IgnoreInvisibleLayer)
+    , mRenderFlags(MiniMapRenderer::DrawTileLayers
+                   | MiniMapRenderer::DrawMapObjects
+                   | MiniMapRenderer::DrawImageLayers
+                   | MiniMapRenderer::IgnoreInvisibleLayer
+                   | MiniMapRenderer::SmoothPixmapTransform)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     setMinimumSize(50, 50);

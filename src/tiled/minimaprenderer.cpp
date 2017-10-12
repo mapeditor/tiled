@@ -50,12 +50,14 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
 {
     if (!mMapDocument)
         return;
+    if (image.isNull())
+        return;
 
     MapRenderer *renderer = mMapDocument->renderer();
 
-    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawObjects);
-    bool drawTiles = renderFlags.testFlag(RenderFlag::DrawTiles);
-    bool drawImages = renderFlags.testFlag(RenderFlag::DrawImages);
+    bool drawObjects = renderFlags.testFlag(RenderFlag::DrawMapObjects);
+    bool drawTileLayers = renderFlags.testFlag(RenderFlag::DrawTileLayers);
+    bool drawImageLayers = renderFlags.testFlag(RenderFlag::DrawImageLayers);
     bool drawTileGrid = renderFlags.testFlag(RenderFlag::DrawGrid);
     bool visibleLayersOnly = renderFlags.testFlag(RenderFlag::IgnoreInvisibleLayer);
 
@@ -71,16 +73,23 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) image.width() / mapSize.width(),
-                       (qreal) image.height() / mapSize.height());
+    qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
+                       static_cast<qreal>(image.height()) / mapSize.height());
 
-    image.fill(Qt::transparent);
+    if (renderFlags.testFlag(DrawBackground)) {
+        if (mMapDocument->map()->backgroundColor().isValid())
+            image.fill(mMapDocument->map()->backgroundColor());
+        else
+            image.fill(Qt::gray);
+    } else {
+        image.fill(Qt::transparent);
+    }
+
     QPainter painter(&image);
-    painter.setRenderHints(QPainter::SmoothPixmapTransform);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform, renderFlags.testFlag(SmoothPixmapTransform));
     painter.setTransform(QTransform::fromScale(scale, scale));
     painter.translate(margins.left(), margins.top());
-    if (mMapDocument->map()->infinite())
-        painter.translate(-mapBoundingRect.topLeft());
+    painter.translate(-mapBoundingRect.topLeft());
 
     renderer->setPainterScale(scale);
 
@@ -94,37 +103,54 @@ void MiniMapRenderer::renderToImage(QImage& image, RenderFlags renderFlags) cons
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            if (drawTileLayers) {
+                const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+                renderer->drawTileLayer(&painter, tileLayer);
+            }
+            break;
+        }
 
-        if (tileLayer && drawTiles) {
-            renderer->drawTileLayer(&painter, tileLayer);
-        } else if (objGroup && drawObjects) {
-            QList<MapObject*> objects = objGroup->objects();
+        case Layer::ObjectGroupType: {
+            if (drawObjects) {
+                const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
+                QList<MapObject*> objects = objectGroup->objects();
 
-            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
-                qStableSort(objects.begin(), objects.end(), objectLessThan);
+                if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
+                    qStableSort(objects.begin(), objects.end(), objectLessThan);
 
-            foreach (const MapObject *object, objects) {
-                if (object->isVisible()) {
-                    if (object->rotation() != qreal(0)) {
-                        QPointF origin = renderer->pixelToScreenCoords(object->position());
-                        painter.save();
-                        painter.translate(origin);
-                        painter.rotate(object->rotation());
-                        painter.translate(-origin);
+                foreach (const MapObject *object, objects) {
+                    if (object->isVisible()) {
+                        if (object->rotation() != qreal(0)) {
+                            QPointF origin = renderer->pixelToScreenCoords(object->position());
+                            painter.save();
+                            painter.translate(origin);
+                            painter.rotate(object->rotation());
+                            painter.translate(-origin);
+                        }
+
+                        const QColor color = MapObjectItem::objectColor(object);
+                        renderer->drawMapObject(&painter, object, color);
+
+                        if (object->rotation() != qreal(0))
+                            painter.restore();
                     }
-
-                    const QColor color = MapObjectItem::objectColor(object);
-                    renderer->drawMapObject(&painter, object, color);
-
-                    if (object->rotation() != qreal(0))
-                        painter.restore();
                 }
             }
-        } else if (imageLayer && drawImages) {
-            renderer->drawImageLayer(&painter, imageLayer);
+            break;
+        }
+        case Layer::ImageLayerType: {
+            if (drawImageLayers) {
+                const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+                renderer->drawImageLayer(&painter, imageLayer);
+            }
+            break;
+        }
+
+        case Layer::GroupLayerType:
+            // Recursion handled by LayerIterator
+            break;
         }
 
         painter.translate(-offset);
