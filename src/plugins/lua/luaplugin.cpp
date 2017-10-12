@@ -36,6 +36,8 @@
 #include <QFile>
 #include <QCoreApplication>
 
+#include <algorithm>
+
 /**
  * See below for an explanation of the different formats. One of these needs
  * to be defined.
@@ -350,6 +352,13 @@ void LuaPlugin::writeLayers(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+static bool comparePoints(const QPoint &a, const QPoint &b)
+{
+    if (a.y() != b.y())
+        return a.y() < b.y();
+    return a.x() < b.x();
+}
+
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format)
@@ -375,15 +384,6 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     case Map::XML:
     case Map::CSV:
         writer.writeKeyAndValue("encoding", "lua");
-        writer.writeStartTable("data");
-        for (int y = 0; y < tileLayer->height(); ++y) {
-            if (y > 0)
-                writer.prepareNewLine();
-
-            for (int x = 0; x < tileLayer->width(); ++x)
-                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
-        }
-        writer.writeEndTable();
         break;
 
     case Map::Base64:
@@ -396,13 +396,79 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
         else if (format == Map::Base64Gzip)
             writer.writeKeyAndValue("compression", "gzip");
 
-        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format);
-        writer.writeKeyAndValue("data", layerData);
         break;
     }
     }
 
+    if (tileLayer->map()->infinite()) {
+        const auto &chunks = tileLayer->chunks();
+
+        QVector<QPoint> chunksToWrite;
+        chunksToWrite.reserve(chunks.size());
+
+        QHashIterator<QPoint, Chunk> it(chunks);
+        while (it.hasNext()) {
+            it.next();
+            if (!it.value().isEmpty())
+                chunksToWrite.append(it.key());
+        }
+
+        std::sort(chunksToWrite.begin(), chunksToWrite.end(), comparePoints);
+
+        writer.writeStartTable("chunks");
+        for (const QPoint &p : chunksToWrite) {
+            writer.writeStartTable();
+
+            writer.writeKeyAndValue("x", p.x() * CHUNK_SIZE);
+            writer.setSuppressNewlines(true);
+            writer.writeKeyAndValue("y", p.y() * CHUNK_SIZE);
+            writer.writeKeyAndValue("width", CHUNK_SIZE);
+            writer.writeKeyAndValue("height", CHUNK_SIZE);
+            writer.setSuppressNewlines(false);
+
+            writeTileLayerData(writer, tileLayer, format,
+                               QRect(p.x() * CHUNK_SIZE,
+                                     p.y() * CHUNK_SIZE,
+                                     CHUNK_SIZE, CHUNK_SIZE));
+
+            writer.writeEndTable();
+        }
+        writer.writeEndTable();
+    } else {
+        writeTileLayerData(writer, tileLayer, format,
+                           QRect(0, 0, tileLayer->width(), tileLayer->height()));
+    }
+
     writer.writeEndTable();
+}
+
+void LuaPlugin::writeTileLayerData(LuaTableWriter &writer,
+                                   const TileLayer *tileLayer,
+                                   Map::LayerDataFormat format,
+                                   QRect bounds)
+{
+    switch (format) {
+    case Map::XML:
+    case Map::CSV:
+        writer.writeStartTable("data");
+        for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
+            if (y > bounds.top())
+                writer.prepareNewLine();
+
+            for (int x = bounds.left(); x <= bounds.right(); ++x)
+                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+        }
+        writer.writeEndTable();
+        break;
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format, bounds);
+        writer.writeKeyAndValue("data", layerData);
+        break;
+    }
+    }
 }
 
 void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,

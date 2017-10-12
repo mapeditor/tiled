@@ -678,7 +678,8 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
             chunkStartY += CHUNK_SIZE;
         }
     } else {
-        writeTileLayerData(w, tileLayer, QRect(0, 0, tileLayer.width(), tileLayer.height()));
+        writeTileLayerData(w, tileLayer,
+                           QRect(0, 0, tileLayer.width(), tileLayer.height()));
     }
 
     w.writeEndElement(); // </data>
