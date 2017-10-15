@@ -59,9 +59,10 @@ cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 #cls_tile.add_method('size', 'QSize', [])
 
-cls_sharedtileset = tiled.add_class('SharedTileset')
-
 cls_tileset = tiled.add_class('Tileset', cls_object)
+cls_sharedtileset = tiled.add_class('SharedTileset')
+cls_sharedtileset.add_method('data', retval('Tiled::Tileset*',reference_existing_object=True), [])
+
 cls_tileset.add_method('create', 'Tiled::SharedTileset',
                        [('QString','name'), ('int','tileWidth'), ('int','tileHeight'), ('int','tileSpacing'), ('int','margin')],
                        is_static=True)

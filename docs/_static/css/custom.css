@@ -8,6 +8,7 @@
 
 .future .topic-title {
     border-bottom: 2px solid rgb(255, 148, 90);
+    padding-bottom: 4px;
     color: rgb(254, 89, 0);
 
     /* make it a header */

@@ -373,9 +373,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
         for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
@@ -398,9 +398,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
         WangFiller wangFiller(mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
@@ -501,9 +501,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         }
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);

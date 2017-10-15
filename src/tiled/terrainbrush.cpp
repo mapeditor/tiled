@@ -379,7 +379,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // create the tile stamp
-    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(), 0, 0, 0, 0));
+    SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     // create a consideration list, and push the start points
     QVector<ConsiderationPoint> transitionList;
@@ -411,7 +411,12 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     int margin = terrainTileset ? terrainTileset->maximumTerrainDistance() : 3;
     bounds.adjust(-margin, -margin, margin, margin);
 
+    if (!mapDocument()->map()->infinite())
+        bounds = bounds.intersected(currentLayer->rect().translated(-layerPosition));
+
     int initialTiles = transitionList.size();
+
+    auto staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer());
 
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {
@@ -431,11 +436,11 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         QPoint leftPoint(x - 1, y);
         QPoint rightPoint(x + 1, y);
 
-        if (auto renderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
-            upPoint = renderer->topRight(x, y);
-            bottomPoint = renderer->bottomLeft(x, y);
-            leftPoint = renderer->topLeft(x, y);
-            rightPoint = renderer->bottomRight(x, y);
+        if (staggeredRenderer) {
+            upPoint = staggeredRenderer->topRight(x, y);
+            bottomPoint = staggeredRenderer->bottomLeft(x, y);
+            leftPoint = staggeredRenderer->topLeft(x, y);
+            rightPoint = staggeredRenderer->bottomRight(x, y);
         }
 
         const Tile *tile = currentLayer->cellAt(p).tile();
