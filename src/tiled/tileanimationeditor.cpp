@@ -67,10 +67,11 @@ public:
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
     void addTileIdAsFrame(int id);
+    void setDefaultFrameTime(int duration);
     const QVector<Frame> &frames() const;
 
 private:
-    static const int DEFAULT_DURATION = 100;
+    static int DEFAULT_DURATION;
 
     void addFrame(const Frame &frame);
 
@@ -78,6 +79,7 @@ private:
     QVector<Frame> mFrames;
 };
 
+int FrameListModel::DEFAULT_DURATION=100;
 int FrameListModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mFrames.size();
@@ -257,6 +259,13 @@ const QVector<Frame> &FrameListModel::frames() const
 {
     return mFrames;
 }
+void FrameListModel::setDefaultFrameTime(int duration)
+{
+    DEFAULT_DURATION=duration;
+    for(Frame &F:mFrames){
+        F.duration=duration;
+    }
+}
 
 
 TileAnimationEditor::TileAnimationEditor(QWidget *parent)
@@ -291,6 +300,11 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     connect(mPreviewAnimationDriver, SIGNAL(update(int)),
             SLOT(advancePreviewAnimation(int)));
+
+    connect(mUi->setFrameTimeButton, SIGNAL(clicked(bool)),
+            SLOT(setFrameTime()));
+
+
 
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
@@ -390,6 +404,21 @@ void TileAnimationEditor::framesEdited()
                                             mTile,
                                             mFrameListModel->frames()));
     mApplyingChanges = false;
+}
+void TileAnimationEditor::setFrameTime()
+{
+    QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
+    QModelIndexList indexes = selectionModel->selectedIndexes();
+    if (indexes.isEmpty()){
+        mFrameListModel->setDefaultFrameTime(mUi->frameTime->value());
+        mUi->frameList->setFocus();
+        framesEdited();
+        return;
+    }
+    for (const QModelIndex &index : indexes)
+        mFrameListModel->setData(index,mUi->frameTime->value(),Qt::EditRole);
+
+    framesEdited();
 }
 
 void TileAnimationEditor::tileAnimationChanged(Tile *tile)

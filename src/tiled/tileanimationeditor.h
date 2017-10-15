@@ -69,6 +69,7 @@ private slots:
 
     void addFrameForTileAt(const QModelIndex &index);
 
+    void setFrameTime();
     void undo();
     void redo();
     void delete_();
