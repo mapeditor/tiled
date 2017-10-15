@@ -79,7 +79,8 @@ private:
     QVector<Frame> mFrames;
 };
 
-int FrameListModel::DEFAULT_DURATION=100;
+int FrameListModel::DEFAULT_DURATION = 100;
+
 int FrameListModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mFrames.size();
@@ -259,12 +260,12 @@ const QVector<Frame> &FrameListModel::frames() const
 {
     return mFrames;
 }
+
 void FrameListModel::setDefaultFrameTime(int duration)
 {
-    DEFAULT_DURATION=duration;
-    for(Frame &F:mFrames){
+    DEFAULT_DURATION = duration;
+    for(Frame &F:mFrames)
         F.duration=duration;
-    }
 }
 
 
@@ -405,11 +406,12 @@ void TileAnimationEditor::framesEdited()
                                             mFrameListModel->frames()));
     mApplyingChanges = false;
 }
+
 void TileAnimationEditor::setFrameTime()
 {
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
     QModelIndexList indexes = selectionModel->selectedIndexes();
-    if (indexes.isEmpty()){
+    if (indexes.isEmpty()) {
         mFrameListModel->setDefaultFrameTime(mUi->frameTime->value());
         mUi->frameList->setFocus();
         framesEdited();
