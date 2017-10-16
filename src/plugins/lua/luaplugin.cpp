@@ -36,8 +36,6 @@
 #include <QFile>
 #include <QCoreApplication>
 
-#include <algorithm>
-
 /**
  * See below for an explanation of the different formats. One of these needs
  * to be defined.
@@ -352,13 +350,6 @@ void LuaPlugin::writeLayers(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-static bool comparePoints(const QPoint &a, const QPoint &b)
-{
-    if (a.y() != b.y())
-        return a.y() < b.y();
-    return a.x() < b.x();
-}
-
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format)
@@ -401,35 +392,18 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     }
 
     if (tileLayer->map()->infinite()) {
-        const auto &chunks = tileLayer->chunks();
-
-        QVector<QPoint> chunksToWrite;
-        chunksToWrite.reserve(chunks.size());
-
-        QHashIterator<QPoint, Chunk> it(chunks);
-        while (it.hasNext()) {
-            it.next();
-            if (!it.value().isEmpty())
-                chunksToWrite.append(it.key());
-        }
-
-        std::sort(chunksToWrite.begin(), chunksToWrite.end(), comparePoints);
-
         writer.writeStartTable("chunks");
-        for (const QPoint &p : chunksToWrite) {
+        for (const QRect &rect : tileLayer->sortedChunksToWrite()) {
             writer.writeStartTable();
 
-            writer.writeKeyAndValue("x", p.x() * CHUNK_SIZE);
+            writer.writeKeyAndValue("x", rect.x());
             writer.setSuppressNewlines(true);
-            writer.writeKeyAndValue("y", p.y() * CHUNK_SIZE);
-            writer.writeKeyAndValue("width", CHUNK_SIZE);
-            writer.writeKeyAndValue("height", CHUNK_SIZE);
+            writer.writeKeyAndValue("y", rect.y());
+            writer.writeKeyAndValue("width", rect.width());
+            writer.writeKeyAndValue("height", rect.height());
             writer.setSuppressNewlines(false);
 
-            writeTileLayerData(writer, tileLayer, format,
-                               QRect(p.x() * CHUNK_SIZE,
-                                     p.y() * CHUNK_SIZE,
-                                     CHUNK_SIZE, CHUNK_SIZE));
+            writeTileLayerData(writer, tileLayer, format, rect);
 
             writer.writeEndTable();
         }

@@ -500,7 +500,7 @@ public:
     const_iterator begin() const { return const_iterator(mChunks.begin(), mChunks.end()); }
     const_iterator end() const { return const_iterator(mChunks.end(), mChunks.end()); }
 
-    const QHash<QPoint, Chunk> &chunks() const { return mChunks; }
+    QVector<QRect> sortedChunksToWrite() const;
 
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
