@@ -642,40 +642,16 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("compression"), compression);
 
     if (tileLayer.map()->infinite()) {
-        QRect bounds = tileLayer.bounds().translated(-tileLayer.position());
-        int startX = bounds.left();
-        int startY = bounds.top();
-        int endX = bounds.right() + 1;
-        int endY = bounds.bottom() + 1;
+        for (const QRect &rect : tileLayer.sortedChunksToWrite()) {
+            w.writeStartElement(QLatin1String("chunk"));
+            w.writeAttribute(QLatin1String("x"), QString::number(rect.x()));
+            w.writeAttribute(QLatin1String("y"), QString::number(rect.y()));
+            w.writeAttribute(QLatin1String("width"), QString::number(rect.width()));
+            w.writeAttribute(QLatin1String("height"), QString::number(rect.height()));
 
-        int chunkStartX = startX;
-        int chunkStartY = startY;
-        int resetX = chunkStartX;
+            writeTileLayerData(w, tileLayer, rect);
 
-        startX = (startX < 0) ? (startX + 1) / CHUNK_SIZE - 1 : startX / CHUNK_SIZE;
-        startY = (startY < 0) ? (startY + 1) / CHUNK_SIZE - 1 : startY / CHUNK_SIZE;
-        endX = (endX < 0) ? (endX + 1) / CHUNK_SIZE - 1 : endX / CHUNK_SIZE;
-        endY = (endY < 0) ? (endY + 1) / CHUNK_SIZE - 1 : endY / CHUNK_SIZE;
-
-        for (int y = startY; y < endY; ++y) {
-            for (int x = startX; x < endX; ++x) {
-                if (tileLayer.findChunk(chunkStartX, chunkStartY)) {
-                    w.writeStartElement(QLatin1String("chunk"));
-                    w.writeAttribute(QLatin1String("x"), QString::number(chunkStartX));
-                    w.writeAttribute(QLatin1String("y"), QString::number(chunkStartY));
-                    w.writeAttribute(QLatin1String("width"), QString::number(CHUNK_SIZE));
-                    w.writeAttribute(QLatin1String("height"), QString::number(CHUNK_SIZE));
-
-                    writeTileLayerData(w, tileLayer, QRect(chunkStartX, chunkStartY, CHUNK_SIZE, CHUNK_SIZE));
-
-                    w.writeEndElement(); // </chunk>
-                }
-
-                chunkStartX += CHUNK_SIZE;
-            }
-
-            chunkStartX = resetX;
-            chunkStartY += CHUNK_SIZE;
+            w.writeEndElement(); // </chunk>
         }
     } else {
         writeTileLayerData(w, tileLayer,

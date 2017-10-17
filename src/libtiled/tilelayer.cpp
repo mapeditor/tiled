@@ -675,6 +675,13 @@ static bool compareRectPos(const QRect &a, const QRect &b)
     return a.x() < b.x();
 }
 
+/**
+ * Returns a list of rectangles that cover all the used area of this layer.
+ * The list is sorted by the top-left of each rectangle.
+ *
+ * This function is used to determine the chunks to write when saving a tile
+ * layer.
+ */
 QVector<QRect> TileLayer::sortedChunksToWrite() const
 {
     QVector<QRect> chunksToWrite;
