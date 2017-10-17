@@ -152,10 +152,14 @@ void ExportAsImageDialog::accept()
                                              MiniMapRenderer::DrawMapObjects |
                                              MiniMapRenderer::DrawImageLayers);
 
-    renderFlags.setFlag(MiniMapRenderer::IgnoreInvisibleLayer, visibleLayersOnly);
-    renderFlags.setFlag(MiniMapRenderer::DrawGrid, drawTileGrid);
-    renderFlags.setFlag(MiniMapRenderer::DrawBackground, includeBackgroundColor);
-    renderFlags.setFlag(MiniMapRenderer::SmoothPixmapTransform, useCurrentScale && smoothTransform(mCurrentScale));
+    if (visibleLayersOnly)
+        renderFlags |= MiniMapRenderer::IgnoreInvisibleLayer;
+    if (drawTileGrid)
+        renderFlags |= MiniMapRenderer::DrawGrid;
+    if (includeBackgroundColor)
+        renderFlags |= MiniMapRenderer::DrawBackground;
+    if (useCurrentScale && smoothTransform(mCurrentScale))
+        renderFlags |= MiniMapRenderer::SmoothPixmapTransform;
 
     MapRenderer *renderer = mMapDocument->renderer();
 
