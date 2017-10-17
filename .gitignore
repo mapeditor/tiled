@@ -25,6 +25,7 @@ automappingconverter.exe
 *.intermediate.manifest
 
 # Build artifacts on Mac
+.qmake.stash
 translations/phony_target.app
 
 # IDE files
