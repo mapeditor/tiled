@@ -165,7 +165,7 @@ private:
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
 
     QTabBar *mTabBar;
-    QStackedWidget *mViewStack;
+    QStackedWidget *mSuperViewStack, *mViewStack;
     QToolBar *mToolBar;
     Tile *mCurrentTile;
     TileLayer *mCurrentTiles;

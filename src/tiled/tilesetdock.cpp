@@ -73,6 +73,21 @@ using namespace Tiled::Internal;
 
 namespace {
 
+class NewTilesetView : public QWidget
+{
+public:
+    explicit NewTilesetView(QWidget *tmb = nullptr)
+        : QWidget(tmb)
+    {
+        QWidget *w = new QWidget(this);
+
+        QPushButton *pbNewTileset = new QPushButton(w);
+        pbNewTileset->setText(QStringLiteral("New Tileset..."));
+
+        connect(pbNewTileset, SIGNAL(released()), tmb, SLOT(newTileset()));
+    }
+};
+
 class TilesetMenuButton : public QToolButton
 {
 public:
@@ -154,6 +169,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mMapDocument(nullptr)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
     , mTabBar(new WheelEnabledTabBar)
+    , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
     , mToolBar(new QToolBar)
     , mCurrentTile(nullptr)
@@ -189,7 +205,10 @@ TilesetDock::TilesetDock(QWidget *parent)
     vertical->setSpacing(0);
     vertical->setMargin(0);
     vertical->addLayout(horizontal);
-    vertical->addWidget(mViewStack);
+    vertical->addWidget(mSuperViewStack);
+
+    mSuperViewStack->insertWidget(0, new NewTilesetView(this));
+    mSuperViewStack->insertWidget(1, mViewStack);
 
     horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
@@ -508,6 +527,9 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 
     TilesetView *view = new TilesetView;
 
+    // Hides the "New Tileset..." special view if it is shown.
+    mSuperViewStack->setCurrentIndex(1);
+
     // Insert view before the tab to make sure it is there when the tab index
     // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
@@ -552,6 +574,10 @@ void TilesetDock::deleteTilesetView(int index)
     mTilesetDocuments.removeAt(index);
     delete view;                    // view needs to go before the tab
     mTabBar->removeTab(index);
+
+    // Make the "New Tileset..." special tab reappear if there is no opened tileset
+    if (mTilesets.count() == 0)
+        mSuperViewStack->setCurrentIndex(0);
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
