@@ -577,9 +577,8 @@ void TilesetDock::deleteTilesetView(int index)
     mTabBar->removeTab(index);
 
     // Make the "New Tileset..." special tab reappear if there is no tileset open
-    if (mTilesets.count() == 0) {
+    if (mTilesets.count() == 0)
         mSuperViewStack->setCurrentIndex(0);
-    }
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
