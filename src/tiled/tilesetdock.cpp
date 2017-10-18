@@ -53,6 +53,7 @@
 #include <QComboBox>
 #include <QDropEvent>
 #include <QFileDialog>
+#include <QPushButton>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
@@ -575,9 +576,10 @@ void TilesetDock::deleteTilesetView(int index)
     delete view;                    // view needs to go before the tab
     mTabBar->removeTab(index);
 
-    // Make the "New Tileset..." special tab reappear if there is no opened tileset
-    if (mTilesets.count() == 0)
+    // Make the "New Tileset..." special tab reappear if there is no tileset open
+    if (mTilesets.count() == 0) {
         mSuperViewStack->setCurrentIndex(0);
+    }
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {
