@@ -97,15 +97,20 @@ bool ObjectTypesModel::setData(const QModelIndex &index,
                                int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
+        const ObjectTypes oldObjectTypes(mObjectTypes);
         const int oldRow = index.row();
+
         mObjectTypes[oldRow].name = value.toString().trimmed();
         emit dataChanged(index, index);
 
-        auto nextObjectType = std::lower_bound(mObjectTypes.begin(), mObjectTypes.end(), mObjectTypes[oldRow], objectTypeLessThan);
-        const int newRow = nextObjectType - mObjectTypes.begin();
-        if (newRow != oldRow) {
+        auto nextObjectType = std::lower_bound(oldObjectTypes.begin(), oldObjectTypes.end(), mObjectTypes[oldRow], objectTypeLessThan);
+        const int newRow = nextObjectType - oldObjectTypes.begin();
+        const int moveToRow = newRow > oldRow ? newRow - 1 : newRow;
+        if (moveToRow != oldRow) {
+            Q_ASSERT(newRow != oldRow);
+            Q_ASSERT(newRow != oldRow + 1);
             beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
-            mObjectTypes.move(oldRow, newRow > oldRow ? newRow - 1 : newRow);
+            mObjectTypes.move(oldRow, moveToRow);
             endMoveRows();
         }
         return true;
