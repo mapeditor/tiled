@@ -28,6 +28,7 @@ class QActionGroup;
 namespace Tiled {
 
 class Tile;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -66,6 +67,7 @@ public slots:
      * CreateTileObjects or when replacing a tile of a tile object.
      */
     void setTile(Tile *tile);
+    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 signals:
     void selectedToolChanged(AbstractTool *tool);
@@ -93,6 +95,7 @@ private:
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
     Tile *mTile;
+    ObjectTemplate *mObjectTemplate;
 
     bool mSelectEnabledToolPending;
 };

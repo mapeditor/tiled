@@ -22,6 +22,7 @@
 #include "abstracttool.h"
 
 #include "mapdocument.h"
+#include "templatesdock.h"
 
 #include <QKeyEvent>
 
@@ -36,6 +37,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mShortcut(shortcut)
     , mEnabled(false)
     , mTile(nullptr)
+    , mObjectTemplate(nullptr)
     , mMapDocument(nullptr)
 {
 }

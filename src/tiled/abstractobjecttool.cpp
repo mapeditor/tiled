@@ -249,6 +249,13 @@ void AbstractObjectTool::detachSelectedObjects()
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }
 
+void AbstractObjectTool::replaceObjectsWithTemplate()
+{
+    mapDocument()->undoStack()->push(new ReplaceObjectsWithTemplate(mapDocument(),
+                                                                    mapDocument()->selectedObjects(),
+                                                                    {objectTemplate()->templateGroup(), objectTemplate()->id()}));
+}
+
 void AbstractObjectTool::resetInstances()
 {
     QList<MapObject *> templateInstances;
@@ -351,6 +358,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
 
         auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
         changeTileAction->setEnabled(tile());
+
+        auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+        replaceTemplateAction->setEnabled(objectTemplate());
     }
 
     if (selectedObjects.size() == 1) {

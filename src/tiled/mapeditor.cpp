@@ -253,7 +253,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTilesetDock, &TilesetDock::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
     connect(mTilesetDock, &TilesetDock::stampCaptured, this, &MapEditor::setStamp);
     connect(mTilesetDock, &TilesetDock::localFilesDropped, this, &MapEditor::filesDroppedOnTilesetDock);
-    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, templatesTool, &CreateTemplateTool::setTemplate);
+    connect(mTemplatesDock, &TemplatesDock::currentTemplateChanged, mToolManager, &ToolManager::setObjectTemplate);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);

@@ -150,5 +150,28 @@ private:
     QList<MapObject*> mOldMapObjects;
 };
 
+class ReplaceObjectsWithTemplate : public QUndoCommand
+{
+public:
+    /**
+     * Creates an undo command that replaces the given objects with a template
+     */
+    ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+                               const QList<MapObject *> &mapObjects,
+                               TemplateRef templateRef,
+                               QUndoCommand *parent = nullptr);
+
+    ~ReplaceObjectsWithTemplate();
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+    TemplateRef mTemplateRef;
+};
+
 } // namespace Internal
 } // namespace Tiled

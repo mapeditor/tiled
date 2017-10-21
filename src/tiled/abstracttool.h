@@ -37,6 +37,7 @@ namespace Tiled {
 
 class Layer;
 class Tile;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -93,6 +94,8 @@ public:
     void setEnabled(bool enabled);
 
     Tile *tile() const;
+
+    ObjectTemplate *objectTemplate() const;
 
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
@@ -152,6 +155,7 @@ public:
 public slots:
     void setMapDocument(MapDocument *mapDocument);
     void setTile(Tile *tile);
+    void setObjectTemplate(ObjectTemplate *objectTemplate);
 
 protected:
     /**
@@ -191,6 +195,7 @@ private:
     QCursor mCursor;
     bool mEnabled;
     Tile *mTile;
+    ObjectTemplate *mObjectTemplate;
 
     MapDocument *mMapDocument;
 };
@@ -249,6 +254,16 @@ inline Tile *AbstractTool::tile() const
 inline void AbstractTool::setTile(Tile *tile)
 {
     mTile = tile;
+}
+
+inline ObjectTemplate *AbstractTool::objectTemplate() const
+{
+    return mObjectTemplate;
+}
+
+inline void AbstractTool::setObjectTemplate(ObjectTemplate *objectTemplate)
+{
+    mObjectTemplate = objectTemplate;
 }
 
 } // namespace Internal
