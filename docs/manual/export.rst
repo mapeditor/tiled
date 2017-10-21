@@ -175,6 +175,13 @@ Physics
 
    <div class="new">New in Tiled 1.1</div>
 
+Command-line
+------------
+
+As stated at the top of the page you can automate the export process with the ``--export-map`` command-line parameter. 
+
+Note, in this case Tiled still needs a display to perform the export, so if you are in a headless environment you'll need to use a headless X server such as Xvfb. In the case of Xvfb you would use Tiled from the command-line as follows: ``xvfb-run tiled --export-map``.
+   
 tBIN
 ----
 
