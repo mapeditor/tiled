@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDAPPLICATION_H
-#define TILEDAPPLICATION_H
+#pragma once
 
 #include <QtSingleApplication>
 
@@ -49,5 +48,3 @@ private slots:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILEDAPPLICATION_H

@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_GIDMAPPER_H
-#define TILED_GIDMAPPER_H
+#pragma once
 
 #include "map.h"
 #include "tilelayer.h"
@@ -53,7 +52,8 @@ public:
     unsigned cellToGid(const Cell &cell) const;
 
     QByteArray encodeLayerData(const TileLayer &tileLayer,
-                               Map::LayerDataFormat format) const;
+                               Map::LayerDataFormat format,
+                               QRect bounds = QRect()) const;
 
     enum DecodeError {
         NoError = 0,
@@ -64,7 +64,8 @@ public:
 
     DecodeError decodeLayerData(TileLayer &tileLayer,
                                 const QByteArray &layerData,
-                                Map::LayerDataFormat format) const;
+                                Map::LayerDataFormat format,
+                                QRect bounds = QRect()) const;
 
     unsigned invalidTile() const;
 
@@ -109,5 +110,3 @@ inline unsigned GidMapper::invalidTile() const
 }
 
 } // namespace Tiled
-
-#endif // TILED_GIDMAPPER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILEOBJECTGROUP_H
-#define CHANGETILEOBJECTGROUP_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -59,5 +58,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGETILEOBJECTGROUP_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RAISELOWERHELPER_H
-#define RAISELOWERHELPER_H
+#pragma once
 
 #include "mapscene.h"
 #include "rangeset.h"
@@ -76,5 +75,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RAISELOWERHELPER_H

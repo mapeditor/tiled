@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOUPDATER_H
-#define AUTOUPDATER_H
+#pragma once
 
 #include <QDateTime>
 
@@ -41,5 +40,3 @@ public:
 private:
     static AutoUpdater *sInstance;
 };
-
-#endif // AUTOUPDATER_H

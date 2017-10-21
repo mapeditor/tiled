@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_FILESYSTEMWATCHER_H
-#define TILED_FILESYSTEMWATCHER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -69,5 +68,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // TILED_FILESYSTEMWATCHER_H

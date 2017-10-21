@@ -97,6 +97,71 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 }
 
 /**
+ * returns an elliptical region centered at x0,y0 with radius determinded by x1,y1
+ */
+QRegion ellipseRegion(int x0, int y0, int x1, int y1)
+{
+    QRegion ret;
+    int x, y;
+    int xChange, yChange;
+    int ellipseError;
+    int twoXSquare, twoYSquare;
+    int stoppingX, stoppingY;
+    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
+    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
+
+    if (radiusX == 0 && radiusY == 0)
+        return ret;
+
+    twoXSquare = 2 * radiusX * radiusX;
+    twoYSquare = 2 * radiusY * radiusY;
+    x = radiusX;
+    y = 0;
+    xChange = radiusY * radiusY * (1 - 2 * radiusX);
+    yChange = radiusX * radiusX;
+    ellipseError = 0;
+    stoppingX = twoYSquare*radiusX;
+    stoppingY = 0;
+    while (stoppingX >= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        y++;
+        stoppingY += twoXSquare;
+        ellipseError += yChange;
+        yChange += twoXSquare;
+        if ((2 * ellipseError + xChange) > 0) {
+            x--;
+            stoppingX -= twoYSquare;
+            ellipseError += xChange;
+            xChange += twoYSquare;
+        }
+    }
+    x = 0;
+    y = radiusY;
+    xChange = radiusY * radiusY;
+    yChange = radiusX * radiusX * (1 - 2 * radiusY);
+    ellipseError = 0;
+    stoppingX = 0;
+    stoppingY = twoXSquare * radiusY;
+    while (stoppingX <= stoppingY) {
+        ret += QRect(-x, y, x * 2, 1);
+        ret += QRect(-x, -y, x * 2, 1);
+        x++;
+        stoppingX += twoYSquare;
+        ellipseError += xChange;
+        xChange += twoYSquare;
+        if ((2 * ellipseError + yChange) > 0) {
+            y--;
+            stoppingY -= twoXSquare;
+            ellipseError += yChange;
+            yChange += twoXSquare;
+        }
+    }
+
+    return ret.translated(x0, y0);
+}
+
+/**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *
  * This is an implementation of Bresenham's line algorithm, initially copied
@@ -177,8 +242,7 @@ QVector<QRegion> coherentRegions(const QRegion &region)
     QVector<QRect> rects = region.rects();
 
     while (!rects.isEmpty()) {
-        QRegion newCoherentRegion = rects.last();
-        rects.pop_back();
+        QRegion newCoherentRegion = rects.takeLast();
 
         // Add up all coherent rects until there is no rect left which is
         // coherent to the newly created region.

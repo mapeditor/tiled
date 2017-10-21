@@ -28,7 +28,10 @@
 
 #include "properties.h"
 
+#include "tiled.h"
+
 #include <QColor>
+#include <QJsonObject>
 
 namespace Tiled {
 
@@ -41,6 +44,47 @@ void Properties::merge(const Properties &other)
         --it;
         insert(it.key(), it.value());
     }
+}
+
+QJsonArray Properties::toJson() const
+{
+    QJsonArray json;
+
+    const_iterator it = begin();
+    const const_iterator it_end = end();
+    for (; it != it_end; ++it) {
+        const QString &name = it.key();
+        const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
+        const QString type = typeToName(it.value().userType());
+
+        QJsonObject propertyObject;
+        propertyObject.insert(QLatin1String("name"), name);
+        propertyObject.insert(QLatin1String("value"), value);
+        propertyObject.insert(QLatin1String("type"), type);
+
+        json.append(propertyObject);
+    }
+
+    return json;
+}
+
+Properties Properties::fromJson(const QJsonArray &json)
+{
+    Properties properties;
+
+    for (const QJsonValue &property : json) {
+        const QJsonObject propertyObject = property.toObject();
+        const QString name = propertyObject.value(QLatin1String("name")).toString();
+        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
+        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
+
+        if (!typeName.isEmpty())
+            value = fromExportValue(value, nameToType(typeName));
+
+        properties.insert(name, value);
+    }
+
+    return properties;
 }
 
 void AggregatedProperties::aggregate(const Properties &properties)
@@ -60,6 +104,11 @@ void AggregatedProperties::aggregate(const Properties &properties)
     }
 
     ++mAggregatedCount;
+}
+
+int filePathTypeId()
+{
+    return qMetaTypeId<FilePath>();
 }
 
 QString typeToName(int type)
@@ -106,15 +155,13 @@ QVariant toExportValue(const QVariant &value)
 
     if (type == QVariant::Color)
         return colorToString(value.value<QColor>());
-    if (type == filePathTypeId())
-        return value.value<FilePath>().absolutePath;
+
+    if (type == filePathTypeId()) {
+        const FilePath filePath = value.value<FilePath>();
+        return filePath.url.toString(QUrl::PreferLocalFile);
+    }
 
     return value;
-}
-
-int filePathTypeId()
-{
-    return qMetaTypeId<FilePath>();
 }
 
 QVariant fromExportValue(const QVariant &value, int type)
@@ -125,12 +172,36 @@ QVariant fromExportValue(const QVariant &value, int type)
     if (value.userType() == type)
         return value;
 
-    if (type == filePathTypeId())
-        return QVariant::fromValue(FilePath { value.toString() });
+    if (type == filePathTypeId()) {
+        QUrl url(value.toString());
+        if (url.isRelative())
+            url = QUrl::fromLocalFile(value.toString());
+        return QVariant::fromValue(FilePath { url });
+    }
 
     QVariant variant(value);
     variant.convert(type);
     return variant;
+}
+
+QVariant toExportValue(const QVariant &value, const QDir &dir)
+{
+    if (value.userType() == filePathTypeId()) {
+        const FilePath filePath = value.value<FilePath>();
+        return toFileReference(filePath.url, dir);
+    }
+
+    return toExportValue(value);
+}
+
+QVariant fromExportValue(const QVariant &value, int type, const QDir &dir)
+{
+    if (type == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), dir);
+        return QVariant::fromValue(FilePath { url });
+    }
+
+    return fromExportValue(value, type);
 }
 
 } // namespace Tiled

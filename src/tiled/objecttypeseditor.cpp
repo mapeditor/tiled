@@ -44,7 +44,7 @@ namespace Internal {
 class ColorDelegate : public QStyledItemDelegate
 {
 public:
-    ColorDelegate(QObject *parent = nullptr)
+    explicit ColorDelegate(QObject *parent = nullptr)
         : QStyledItemDelegate(parent)
     { }
 
@@ -178,10 +178,12 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->actionExport, SIGNAL(triggered()),
             SLOT(exportObjectTypes()));
 
-    connect(mObjectTypesModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            SLOT(applyObjectTypes()));
-    connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            SLOT(applyObjectTypes()));
+    connect(mObjectTypesModel, &ObjectTypesModel::dataChanged,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsInserted,
+            this, &ObjectTypesEditor::applyObjectTypes);
+    connect(mObjectTypesModel, &ObjectTypesModel::rowsRemoved,
+            this, &ObjectTypesEditor::applyObjectTypes);
 
     connect(mVariantManager, &QtVariantPropertyManager::valueChanged,
             this, &ObjectTypesEditor::propertyValueChanged);
@@ -189,8 +191,7 @@ ObjectTypesEditor::ObjectTypesEditor(QWidget *parent)
     connect(mUi->propertiesView, &QtTreePropertyBrowser::currentItemChanged,
             this, &ObjectTypesEditor::currentItemChanged);
 
-    Preferences *prefs = Preferences::instance();
-    mObjectTypesModel->setObjectTypes(prefs->objectTypes());
+    mObjectTypesModel->setObjectTypes(Object::objectTypes());
 
     retranslateUi();
 }
@@ -242,8 +243,7 @@ void ObjectTypesEditor::addObjectType()
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);
     sm->setCurrentIndex(newIndex, QItemSelectionModel::Current);
-    mUi->objectTypesTable->setFocus();
-    mUi->objectTypesTable->scrollTo(newIndex);
+    mUi->objectTypesTable->edit(newIndex);
 }
 
 void ObjectTypesEditor::selectedObjectTypesChanged()
@@ -283,12 +283,12 @@ void ObjectTypesEditor::applyObjectTypes()
     if (!objectTypesDir.exists())
         objectTypesDir.mkpath(QLatin1String("."));
 
-    ObjectTypesWriter writer;
-    if (!writer.writeObjectTypes(objectTypesFile, objectTypes)) {
+    ObjectTypesSerializer serializer;
+    if (!serializer.writeObjectTypes(objectTypesFile, objectTypes)) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
                               tr("Error writing to %1:\n%2")
                               .arg(prefs->objectTypesFile(),
-                                   writer.errorString()));
+                                   serializer.errorString()));
     }
 }
 
@@ -328,7 +328,7 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Choose Object Types File"),
                                          startPath,
-                                         tr("Object Types files (*.xml)"),
+                                         tr("Object Types files (*.xml *.json)"),
                                          nullptr,
                                          QFileDialog::DontConfirmOverwrite);
 
@@ -340,12 +340,11 @@ void ObjectTypesEditor::chooseObjectTypesFile()
     ObjectTypes objectTypes;
 
     if (QFile::exists(fileName)) {
-        ObjectTypesReader reader;
-        objectTypes = reader.readObjectTypes(fileName);
+        ObjectTypesSerializer serializer;
 
-        if (!reader.errorString().isEmpty()) {
+        if (!serializer.readObjectTypes(fileName, objectTypes)) {
             QMessageBox::critical(this, tr("Error Reading Object Types"),
-                                  reader.errorString());
+                                  serializer.errorString());
             return;
         }
     }
@@ -362,16 +361,16 @@ void ObjectTypesEditor::importObjectTypes()
     const QString fileName =
             QFileDialog::getOpenFileName(this, tr("Import Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml)"));
+                                         tr("Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
-    ObjectTypesReader reader;
-    const ObjectTypes objectTypes = reader.readObjectTypes(fileName);
+    ObjectTypesSerializer serializer;
+    ObjectTypes objectTypes;
 
-    if (reader.errorString().isEmpty()) {
+    if (serializer.readObjectTypes(fileName, objectTypes)) {
         ObjectTypes currentTypes = mObjectTypesModel->objectTypes();
         for (const ObjectType &type : objectTypes) {
             auto it = std::find_if(currentTypes.begin(), currentTypes.end(), [&type](ObjectType &existingType) {
@@ -389,7 +388,7 @@ void ObjectTypesEditor::importObjectTypes()
         mObjectTypesModel->setObjectTypes(currentTypes);
     } else {
         QMessageBox::critical(this, tr("Error Reading Object Types"),
-                              reader.errorString());
+                              serializer.errorString());
     }
 
     applyObjectTypes();
@@ -406,16 +405,16 @@ void ObjectTypesEditor::exportObjectTypes()
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Object Types"),
                                          lastPath,
-                                         tr("Object Types files (*.xml)"));
+                                         tr("Object Types files (*.xml *.json)"));
     if (fileName.isEmpty())
         return;
 
     prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
 
-    ObjectTypesWriter writer;
-    if (!writer.writeObjectTypes(fileName, prefs->objectTypes())) {
+    ObjectTypesSerializer serializer;
+    if (!serializer.writeObjectTypes(fileName, Object::objectTypes())) {
         QMessageBox::critical(this, tr("Error Writing Object Types"),
-                              writer.errorString());
+                              serializer.errorString());
     }
 }
 

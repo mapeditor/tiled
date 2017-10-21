@@ -29,32 +29,38 @@
 #include "filesystemwatcher.h"
 #include "mapdocument.h"
 #include "mapeditor.h"
+#include "mapformat.h"
 #include "map.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
+#include "preferences.h"
 #include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
 #include "tilesetmanager.h"
+#include "tmxmapformat.h"
+#include "utils.h"
 #include "zoomable.h"
-
-#include <QFileInfo>
-#include <QUndoGroup>
 
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
 #include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
 #include <QScrollBar>
+#include <QStackedLayout>
 #include <QTabBar>
 #include <QTabWidget>
+#include <QUndoGroup>
 #include <QUndoStack>
 #include <QVBoxLayout>
-#include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -110,6 +116,7 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
+    , mTilesetDocumentsModel(new TilesetDocumentsModel(this))
     , mWidget(new QWidget)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
     , mTabBar(new QTabBar(mWidget))
@@ -119,6 +126,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
+    , mMultiDocumentClose(false)
 {
     mBrokenLinksWidget->setVisible(false);
 
@@ -161,13 +169,17 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
+
+    mTabBar->installEventFilter(this);
 }
 
 DocumentManager::~DocumentManager()
 {
+    mTabBar->removeEventFilter(this);
+
     // All documents should be closed gracefully beforehand
     Q_ASSERT(mDocuments.isEmpty());
-    Q_ASSERT(mTilesetDocuments.isEmpty());
+    Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
     Q_ASSERT(mTilesetToDocument.isEmpty());
     delete mWidget;
 }
@@ -199,6 +211,11 @@ void DocumentManager::deleteEditor(Document::DocumentType documentType)
     if (editor == mMapEditor)
         mMapEditor = nullptr;
     delete editor;
+}
+
+QList<Editor *> DocumentManager::editors() const
+{
+    return mEditorForType.values();
 }
 
 Editor *DocumentManager::currentEditor() const
@@ -325,9 +342,9 @@ void DocumentManager::addDocument(Document *document)
             addToTilesetDocument(tileset, mapDocument);
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         // We may have opened a bare tileset that wasn't seen before
-        if (!mTilesetDocuments.contains(tilesetDocument)) {
+        if (!mTilesetDocumentsModel->contains(tilesetDocument)) {
             mTilesetToDocument.insert(tilesetDocument->tileset(), tilesetDocument);
-            mTilesetDocuments.append(tilesetDocument);
+            mTilesetDocumentsModel->append(tilesetDocument);
             emit tilesetDocumentAdded(tilesetDocument);
         }
     }
@@ -402,6 +419,108 @@ bool DocumentManager::isDocumentChangedOnDisk(Document *document) const
     return mDocumentsChangedOnDisk.contains(document);
 }
 
+/**
+ * Save the given document with the given file name. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool DocumentManager::saveDocument(Document *document, const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return false;
+
+    QString error;
+    if (!document->save(fileName, &error)) {
+        QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving File"), error);
+        return false;
+    }
+
+    Preferences::instance()->addRecentFile(fileName);
+    return true;
+}
+
+/**
+ * Save the given document with a file name chosen by the user. When saved
+ * successfully, the file is added to the list of recent files.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+bool DocumentManager::saveDocumentAs(Document *document)
+{
+    QString filter;
+    QString selectedFilter;
+    QString fileName = document->fileName();
+
+    if (FileFormat *format = document->writerFormat())
+        selectedFilter = format->nameFilter();
+
+    auto getSaveFileName = [&,this](const QString &defaultFileName) {
+        if (fileName.isEmpty()) {
+            fileName = Preferences::instance()->fileDialogStartLocation();
+            fileName += QLatin1Char('/');
+            fileName += defaultFileName;
+        }
+
+        fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
+                                                fileName,
+                                                filter,
+                                                &selectedFilter);
+
+        if (!fileName.isEmpty() &&
+            !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+        {
+            QMessageBox messageBox(QMessageBox::Warning,
+                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
+                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                   QMessageBox::Yes | QMessageBox::No,
+                                   mWidget->window());
+
+            messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
+                                                                      "Tiled may not automatically recognize your file when loading. "
+                                                                      "Are you sure you want to save with this extension?"));
+
+            int answer = messageBox.exec();
+            if (answer != QMessageBox::Yes)
+                return QString();
+        }
+
+        return fileName;
+    };
+
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TmxMapFormat().nameFilter();
+
+        FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tmx"));
+        if (fileName.isEmpty())
+            return false;
+
+        MapFormat *format = helper.formatByNameFilter(selectedFilter);
+        mapDocument->setWriterFormat(format);
+        mapDocument->setReaderFormat(format);
+
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (selectedFilter.isEmpty())
+            selectedFilter = TsxTilesetFormat().nameFilter();
+
+        FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
+        filter = helper.filter();
+
+        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tsx"));
+        if (fileName.isEmpty())
+            return false;
+
+        TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
+        tilesetDocument->setWriterFormat(format);
+    }
+
+    return saveDocument(document, fileName);
+}
+
 void DocumentManager::closeCurrentDocument()
 {
     const int index = mTabBar->currentIndex();
@@ -409,6 +528,37 @@ void DocumentManager::closeCurrentDocument()
         return;
 
     closeDocumentAt(index);
+}
+
+void DocumentManager::closeOtherDocuments(int index)
+{
+    if (index == -1)
+        return;
+
+    mMultiDocumentClose = true;
+
+    for (int i = mTabBar->count() - 1; i >= 0; --i) {
+        if (i != index)
+            documentCloseRequested(i);
+
+        if (!mMultiDocumentClose)
+            return;
+    }
+}
+
+void DocumentManager::closeDocumentsToRight(int index)
+{
+    if (index == -1)
+        return;
+
+    mMultiDocumentClose = true;
+
+    for (int i = mTabBar->count() - 1; i > index; --i) {
+        documentCloseRequested(i);
+
+        if (!mMultiDocumentClose)
+            return;
+    }
 }
 
 void DocumentManager::closeDocumentAt(int index)
@@ -435,7 +585,7 @@ void DocumentManager::closeDocumentAt(int index)
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetToDocument.remove(tilesetDocument->tileset());
-            mTilesetDocuments.removeOne(tilesetDocument);
+            mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
             delete document;
         } else {
@@ -461,8 +611,8 @@ bool DocumentManager::reloadDocumentAt(int index)
     if (auto mapDocument = qobject_cast<MapDocument*>(oldDocument)) {
         // TODO: Consider fixing the reload to avoid recreating the MapDocument
         auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                        mapDocument->readerFormat(),
-                                        &error);
+                                             mapDocument->readerFormat(),
+                                             &error);
         if (!newDocument) {
             emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
             return false;
@@ -473,7 +623,7 @@ bool DocumentManager::reloadDocumentAt(int index)
         closeDocumentAt(index);
         mTabBar->moveTab(mDocuments.size() - 1, index);
 
-        checkTilesetColumns(mapDocument);
+        checkTilesetColumns(newDocument);
 
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(oldDocument)) {
         if (tilesetDocument->isEmbedded()) {
@@ -603,6 +753,25 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
         showInFileManager(fileName);
     });
 
+    menu.addSeparator();
+
+    QAction *closeTab = menu.addAction(tr("Close"));
+    closeTab->setIcon(QIcon(QStringLiteral(":/images/16x16/window-close.png")));
+    Utils::setThemeIcon(closeTab, "window-close");
+    connect(closeTab, &QAction::triggered, [this, index] {
+        documentCloseRequested(index);
+    });
+
+    QAction *closeOtherTabs = menu.addAction(tr("Close Other Tabs"));
+    connect(closeOtherTabs, &QAction::triggered, [this, index] {
+        closeOtherDocuments(index);
+    });
+
+    QAction *closeTabsToRight = menu.addAction(tr("Close Tabs to the Right"));
+    connect(closeTabsToRight, &QAction::triggered, [this, index] {
+        closeDocumentsToRight(index);
+    });
+
     menu.exec(mTabBar->mapToGlobal(pos));
 }
 
@@ -672,15 +841,11 @@ void DocumentManager::hideChangedWarning()
     mFileChangedWarning->setVisible(false);
 }
 
-void DocumentManager::centerViewOn(qreal x, qreal y)
+void DocumentManager::centerMapViewOn(qreal x, qreal y)
 {
-    const int index = mTabBar->currentIndex();
-    if (index == -1)
-        return;
-
     if (MapView *view = currentMapView()) {
-        MapDocument *document = static_cast<MapDocument*>(mDocuments.at(index));
-        view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
+        auto mapDocument = view->mapScene()->mapDocument();
+        view->centerOn(mapDocument->renderer()->pixelToScreenCoords(x, y));
     }
 }
 
@@ -695,32 +860,13 @@ TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) c
     if (canonicalFilePath.isEmpty()) // file doesn't exist
         return nullptr;
 
-    for (auto tilesetDocument : mTilesetDocuments) {
+    for (auto tilesetDocument : mTilesetDocumentsModel->tilesetDocuments()) {
         QString name = tilesetDocument->fileName();
         if (!name.isEmpty() && QFileInfo(name).canonicalFilePath() == canonicalFilePath)
             return tilesetDocument;
     }
 
     return nullptr;
-}
-
-/**
- * Searches for a document for the given tileset, creating it if it does not
- * exist already.
- */
-TilesetDocument *DocumentManager::findOrCreateTilesetDocument(const SharedTileset &tileset)
-{
-    auto tilesetDocument = findTilesetDocument(tileset);
-
-    // Create TilesetDocument instance when it doesn't exist yet
-    if (!tilesetDocument) {
-        tilesetDocument = new TilesetDocument(tileset);
-        mTilesetToDocument.insert(tileset, tilesetDocument);
-        mTilesetDocuments.append(tilesetDocument);
-        emit tilesetDocumentAdded(tilesetDocument);
-    }
-
-    return tilesetDocument;
 }
 
 void DocumentManager::openTileset(const SharedTileset &tileset)
@@ -734,8 +880,19 @@ void DocumentManager::openTileset(const SharedTileset &tileset)
 
 void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    auto tilesetDocument = findOrCreateTilesetDocument(tileset);
-    tilesetDocument->addMapDocument(mapDocument);
+    auto tilesetDocument = findTilesetDocument(tileset);
+
+    // Create TilesetDocument instance when it doesn't exist yet
+    if (!tilesetDocument) {
+        tilesetDocument = new TilesetDocument(tileset);
+        tilesetDocument->addMapDocument(mapDocument);
+
+        mTilesetToDocument.insert(tileset, tilesetDocument);
+        mTilesetDocumentsModel->append(tilesetDocument);
+        emit tilesetDocumentAdded(tilesetDocument);
+    } else {
+        tilesetDocument->addMapDocument(mapDocument);
+    }
 }
 
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
@@ -755,7 +912,7 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
             closeDocumentAt(index);
         } else {
             mTilesetToDocument.remove(tileset);
-            mTilesetDocuments.removeOne(tilesetDocument);
+            mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
             delete tilesetDocument;
         }
@@ -766,7 +923,7 @@ static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
 {
     if (tileset.isCollection())
         return false;
-    if (!tileset.imageLoaded())
+    if (tileset.imageStatus() != LoadingReady)
         return false;
     if (tileset.columnCount() == tileset.expectedColumnCount())
         return false;
@@ -865,4 +1022,28 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
                                   QMessageBox::Yes);
 
     return r == QMessageBox::Yes;
+}
+
+bool DocumentManager::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == mTabBar && event->type() == QEvent::MouseButtonRelease) {
+        // middle-click tab closing
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+
+        if (mouseEvent->button() == Qt::MidButton) {
+            int index = mTabBar->tabAt(mouseEvent->pos());
+
+            if (index != -1) {
+                documentCloseRequested(index);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void DocumentManager::abortMultiDocumentClose()
+{
+    mMultiDocumentClose = false;
 }

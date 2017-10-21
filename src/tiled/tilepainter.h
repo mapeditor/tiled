@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEPAINTER_H
-#define TILEPAINTER_H
+#pragma once
 
 #include "tilelayer.h"
 
@@ -126,5 +125,3 @@ inline Cell TilePainter::cellAt(QPoint pos) const
 
 } // namespace Tiled
 } // namespace Internal
-
-#endif // TILEPAINTER_H

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETCHANGES_H
-#define TILESETCHANGES_H
+#pragma once
 
 #include "tileset.h"
 #include "undocommands.h"
@@ -84,7 +83,7 @@ struct TilesetParameters
 
     bool operator != (const TilesetParameters &other) const;
 
-    QString imageSource;
+    QUrl imageSource;
     QColor transparentColor;
     QSize tileSize;
     int tileSpacing;
@@ -178,5 +177,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILESETCHANGES_H

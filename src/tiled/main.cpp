@@ -43,7 +43,10 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#endif
+#if QT_VERSION >= 0x050700
+#include <QtPlatformHeaders\QWindowsWindowFunctions>
+#endif // QT_VERSION >= 0x050700
+#endif // Q_OS_WIN
 
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
@@ -161,7 +164,7 @@ void CommandLineHandler::showExportFormats()
     const auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            qWarning(" %s", qUtf8Printable(format->nameFilter()));
+            qWarning(" %s", qUtf8Printable(format->shortName()));
     }
 
     quit = true;
@@ -175,7 +178,7 @@ void CommandLineHandler::startNewInstance()
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __MINGW32_MAJOR_VERSION >= 5)
     // Make console output work on Windows, if running in a console.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
         FILE *dummy = nullptr;
@@ -184,10 +187,7 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION >= 0x050600
     QGuiApplication::setFallbackSessionManagementEnabled(false);
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 
     // Enable support for highres images (added in Qt 5.1, but off by default)
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
+                if (format->shortName().compare(*filter, Qt::CaseInsensitive) == 0) {
                     chosenFormat = format;
                     break;
                 }
@@ -313,6 +313,9 @@ int main(int argc, char *argv[])
     w.show();
 
     a.setActivationWindow(&w);
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050700
+    QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
+#endif
 
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));

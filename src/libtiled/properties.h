@@ -26,19 +26,22 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PROPERTIES_H
-#define PROPERTIES_H
+#pragma once
 
 #include "tiled_global.h"
 
+#include <QJsonArray>
 #include <QMap>
 #include <QString>
+#include <QUrl>
 #include <QVariant>
+
+class QDir;
 
 namespace Tiled {
 
 struct FilePath {
-    QString absolutePath;
+    QUrl url;
 };
 
 /**
@@ -48,6 +51,9 @@ class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
 {
 public:
     void merge(const Properties &other);
+
+    QJsonArray toJson() const;
+    static Properties fromJson(const QJsonArray &json);
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
@@ -110,8 +116,9 @@ TILEDSHARED_EXPORT int nameToType(const QString &name);
 TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value);
 TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type);
 
+TILEDSHARED_EXPORT QVariant toExportValue(const QVariant &value, const QDir &dir);
+TILEDSHARED_EXPORT QVariant fromExportValue(const QVariant &value, int type, const QDir &dir);
+
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::FilePath)
-
-#endif // PROPERTIES_H

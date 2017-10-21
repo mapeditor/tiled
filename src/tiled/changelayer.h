@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGELAYER_H
-#define CHANGELAYER_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -27,6 +26,9 @@
 #include <QUndoCommand>
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class MapDocument;
@@ -38,7 +40,7 @@ class SetLayerVisible : public QUndoCommand
 {
 public:
     SetLayerVisible(MapDocument *mapDocument,
-                    int layerIndex,
+                    Layer *layer,
                     bool visible);
 
     void undo() override { swap(); }
@@ -48,9 +50,31 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    int mLayerIndex;
+    Layer *mLayer;
     bool mVisible;
 };
+
+/**
+ * Used for changing layer lock.
+ */
+class SetLayerLocked : public QUndoCommand
+{
+public:
+    SetLayerLocked(MapDocument *mapDocument,
+                   Layer *layer,
+                   bool locked);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+    bool mLocked;
+};
+
 
 /**
  * Used for changing layer opacity.
@@ -59,7 +83,7 @@ class SetLayerOpacity : public QUndoCommand
 {
 public:
     SetLayerOpacity(MapDocument *mapDocument,
-                    int layerIndex,
+                    Layer *layer,
                     float opacity);
 
     void undo() override { setOpacity(mOldOpacity); }
@@ -73,7 +97,7 @@ private:
     void setOpacity(float opacity);
 
     MapDocument *mMapDocument;
-    int mLayerIndex;
+    Layer *mLayer;
     float mOldOpacity;
     float mNewOpacity;
 };
@@ -85,7 +109,7 @@ class SetLayerOffset : public QUndoCommand
 {
 public:
     SetLayerOffset(MapDocument *mapDocument,
-                   int layerIndex,
+                   Layer *layer,
                    const QPointF &offset,
                    QUndoCommand *parent = nullptr);
 
@@ -98,12 +122,10 @@ private:
     void setOffset(const QPointF &offset);
 
     MapDocument *mMapDocument;
-    int mLayerIndex;
+    Layer *mLayer;
     QPointF mOldOffset;
     QPointF mNewOffset;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGELAYER_H

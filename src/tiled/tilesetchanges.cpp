@@ -120,7 +120,7 @@ void ChangeTilesetParameters::apply(const TilesetParameters &parameters)
 {
     Tileset &tileset = *mTilesetDocument->tileset();
 
-    QString oldImageSource = tileset.imageSource();
+    const QUrl oldImageSource = tileset.imageSource();
 
     tileset.setImageSource(parameters.imageSource);
     tileset.setTransparentColor(parameters.transparentColor);

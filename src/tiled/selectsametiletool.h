@@ -19,11 +19,10 @@
  */
 
 
-#ifndef SELECTSAMETILETOOL_H
-#define SELECTSAMETILETOOL_H
+#pragma once
 
 
-#include "abstracttiletool.h"
+#include "abstracttileselectiontool.h"
 
 #include "tilelayer.h"
 
@@ -35,27 +34,18 @@ class MapDocument;
 /**
  * Implements a tool that selects a region with all similar tiles on the layer.
  */
-class SelectSameTileTool : public AbstractTileTool
+class SelectSameTileTool : public AbstractTileSelectionTool
 {
     Q_OBJECT
 
 public:
     SelectSameTileTool(QObject *parent = nullptr);
 
-    void mousePressed(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
-
     void languageChanged() override;
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
-
-private:
-
-    QRegion mSelectedRegion;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SELECTSAMETILETOOL_H

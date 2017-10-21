@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNDOCOMMANDS_H
-#define UNDOCOMMANDS_H
+#pragma once
 
 /**
  * These undo command IDs are used by Qt to determine whether two undo commands
@@ -31,7 +30,6 @@ enum UndoCommands {
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
     Cmd_ChangeTileTerrain,
+    Cmd_ChangeTileWangId,
     Cmd_ChangeTilesetTileOffset
 };
-
-#endif // UNDOCOMMANDS_H

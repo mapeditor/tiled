@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BRUSHITEM_H
-#define BRUSHITEM_H
+#pragma once
 
 #include "tilelayer.h"
 
@@ -61,6 +60,9 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
+protected:
+    MapDocument *mapDocument() const  { return mMapDocument; }
+
 private:
     void updateBoundingRect();
 
@@ -97,5 +99,3 @@ inline QRegion BrushItem::tileRegion() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // BRUSHITEM_H

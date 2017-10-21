@@ -31,14 +31,14 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
-    : CreateObjectTool(CreateObjectTool::CreateGeometry, parent)
+    : CreateObjectTool(parent)
 {
 }
 
-void CreateScalableObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+bool CreateScalableObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
     mStartPos = pos;
-    CreateObjectTool::startNewMapObject(pos, objectGroup);
+    return CreateObjectTool::startNewMapObject(pos, objectGroup);
 }
 
 static qreal sign(qreal value)

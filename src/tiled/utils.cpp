@@ -28,6 +28,7 @@
 #include <QGuiApplication>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
 #include <QRegExp>
@@ -50,24 +51,6 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
     return filter;
 }
 
-// Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
-//
-// Copied from qplatformdialoghelper.cpp in Qt, used under the terms of the GPL
-// version 2.0.
-static QStringList cleanFilterList(const QString &filter)
-{
-    const char filterRegExp[] =
-    "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
-
-    QRegExp regexp(QString::fromLatin1(filterRegExp));
-    Q_ASSERT(regexp.isValid());
-    QString f = filter;
-    int i = regexp.indexIn(f);
-    if (i >= 0)
-        f = regexp.cap(2);
-    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
-}
-
 namespace Tiled {
 namespace Utils {
 
@@ -85,6 +68,24 @@ QString readableImageFormatsFilter()
 QString writableImageFormatsFilter()
 {
     return toImageFileFilter(QImageWriter::supportedImageFormats());
+}
+
+// Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
+//
+// Copied from qplatformdialoghelper.cpp in Qt, used under the terms of the GPL
+// version 2.0.
+QStringList cleanFilterList(const QString &filter)
+{
+    const char filterRegExp[] =
+    "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
+
+    QRegExp regexp(QString::fromLatin1(filterRegExp));
+    Q_ASSERT(regexp.isValid());
+    QString f = filter;
+    int i = regexp.indexIn(f);
+    if (i >= 0)
+        f = regexp.cap(2);
+    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
 }
 
 /**
@@ -191,6 +192,38 @@ QSize smallIconSize()
 {
     static QSize size = dpiScaled(QSize(16, 16));
     return size;
+}
+
+bool isZoomInShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomIn))
+        return true;
+    if (event->key() == Qt::Key_Plus)
+        return true;
+    if (event->key() == Qt::Key_Equal)
+        return true;
+
+    return false;
+}
+
+bool isZoomOutShortcut(QKeyEvent *event)
+{
+    if (event->matches(QKeySequence::ZoomOut))
+        return true;
+    if (event->key() == Qt::Key_Minus)
+        return true;
+    if (event->key() == Qt::Key_Underscore)
+        return true;
+
+    return false;
+}
+
+bool isResetZoomShortcut(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_0 && event->modifiers() & Qt::ControlModifier)
+        return true;
+
+    return false;
 }
 
 } // namespace Utils

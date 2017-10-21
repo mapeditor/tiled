@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATESCALABLEOBJECTTOOL_H
-#define CREATESCALABLEOBJECTTOOL_H
+#pragma once
 
 #include "createobjecttool.h"
 
@@ -34,7 +33,7 @@ public:
     CreateScalableObjectTool(QObject *parent);
 
 protected:
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers) override;
@@ -47,5 +46,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATESCALABLEOBJECTTOOL_H

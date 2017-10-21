@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ORTHOGONALRENDERER_H
-#define ORTHOGONALRENDERER_H
+#pragma once
 
 #include "maprenderer.h"
 
@@ -42,7 +41,7 @@ class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 public:
     OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
-    QSize mapSize() const override;
+    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 
@@ -69,13 +68,13 @@ public:
 
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const override;
-    
+
     using MapRenderer::screenToTileCoords;
     QPointF screenToTileCoords(qreal x, qreal y) const override;
 
     using MapRenderer::tileToScreenCoords;
     QPointF tileToScreenCoords(qreal x, qreal y) const override;
-    
+
     using MapRenderer::screenToPixelCoords;
     QPointF screenToPixelCoords(qreal x, qreal y) const override;
 
@@ -84,5 +83,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // ORTHOGONALRENDERER_H

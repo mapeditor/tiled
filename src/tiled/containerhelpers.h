@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONTAINERHELPERS_H
-#define CONTAINERHELPERS_H
+#pragma once
 
 #include <algorithm>
 
@@ -37,5 +36,3 @@ inline bool contains(const Container &container, Value value)
                      container.end(),
                      value) != container.end();
 }
-
-#endif // CONTAINERHELPERS_H

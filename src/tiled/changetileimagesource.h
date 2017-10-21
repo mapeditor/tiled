@@ -18,10 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_CHANGETILEIMAGESOURCE_H
-#define TILED_INTERNAL_CHANGETILEIMAGESOURCE_H
+#pragma once
 
 #include <QUndoCommand>
+#include <QUrl>
 
 namespace Tiled {
 
@@ -36,21 +36,19 @@ class ChangeTileImageSource : public QUndoCommand
 public:
     ChangeTileImageSource(TilesetDocument *tilesetDocument,
                           Tile *tile,
-                          const QString &imageSource);
+                          const QUrl &imageSource);
 
     void undo() { apply(mOldImageSource); }
     void redo() { apply(mNewImageSource); }
 
 private:
-    void apply(const QString &imageSource);
+    void apply(const QUrl &imageSource);
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
-    QString mOldImageSource;
-    QString mNewImageSource;
+    QUrl mOldImageSource;
+    QUrl mNewImageSource;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_CHANGETILEIMAGESOURCE_H

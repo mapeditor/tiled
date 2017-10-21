@@ -103,13 +103,13 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (type == filePathTypeId()) {
         FileEdit *editor = new FileEdit(parent);
         FilePath filePath = manager->value(property).value<FilePath>();
-        editor->setFilePath(filePath.absolutePath);
+        editor->setFileUrl(filePath.url);
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
         mCreatedFileEdits[property].append(editor);
         mFileEditToProperty[editor] = property;
 
-        connect(editor, &FileEdit::filePathChanged,
-                this, &VariantEditorFactory::fileEditFilePathChanged);
+        connect(editor, &FileEdit::fileUrlChanged,
+                this, &VariantEditorFactory::fileEditFileUrlChanged);
         connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
 
@@ -185,7 +185,7 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
     if (mCreatedFileEdits.contains(property)) {
         for (FileEdit *edit : mCreatedFileEdits[property]) {
             FilePath filePath = value.value<FilePath>();
-            edit->setFilePath(filePath.absolutePath);
+            edit->setFileUrl(filePath.url);
         }
     }
     else if (mCreatedTilesetEdits.contains(property)) {
@@ -211,7 +211,7 @@ void VariantEditorFactory::slotPropertyAttributeChanged(QtProperty *property,
     // changing of "multiline" attribute currently not supported
 }
 
-void VariantEditorFactory::fileEditFilePathChanged(const QString &value)
+void VariantEditorFactory::fileEditFileUrlChanged(const QUrl &value)
 {
     FileEdit *fileEdit = qobject_cast<FileEdit*>(sender());
     Q_ASSERT(fileEdit);

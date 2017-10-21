@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_TILESETTERRAINMODEL_H
-#define TILED_TILESETTERRAINMODEL_H
+#pragma once
 
 #include <QAbstractItemModel>
 
@@ -114,5 +113,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_TILESETTERRAINMODEL_H

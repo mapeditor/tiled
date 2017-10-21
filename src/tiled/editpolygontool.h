@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EDITPOLYGONTOOL_H
-#define EDITPOLYGONTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
@@ -58,13 +57,18 @@ public:
 
     void languageChanged() override;
 
+    bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
+
+public slots:
+    void deleteNodes();
+
 private slots:
     void updateHandles();
     void objectsRemoved(const QList<MapObject *> &objects);
 
-    void deleteNodes();
     void joinNodes();
     void splitSegments();
+    void deleteSegment();
 
 private:
     enum Mode {
@@ -107,5 +111,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // EDITPOLYGONTOOL_H

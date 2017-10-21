@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REVERSINGPROXYMODEL_H
-#define REVERSINGPROXYMODEL_H
+#pragma once
 
 #include <QAbstractProxyModel>
 
@@ -41,6 +40,11 @@ public:
     QModelIndex parent(const QModelIndex &child) const override;
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
+
+    bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+                         int row, int column, const QModelIndex &parent) const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column, const QModelIndex &parent) override;
 
     // QAbstractProxyModel interface
     QModelIndex mapToSource(const QModelIndex &proxyIndex) const override;
@@ -71,11 +75,12 @@ private slots:
     void sourceModelReset();
 
 private:
+    void mapDropCoordinatesToSource(int row, const QModelIndex &parent,
+                                    int *sourceRow, QModelIndex *sourceParent) const;
+
     QList<QPersistentModelIndex> mLayoutChangePersistentIndexes;
     QModelIndexList mProxyIndexes;
 };
 
 } // namespace Tiled
 } // namespace Internal
-
-#endif // REVERSINGPROXYMODEL_H

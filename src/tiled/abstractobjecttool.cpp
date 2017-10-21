@@ -20,13 +20,17 @@
 
 #include "abstractobjecttool.h"
 
+#include "addremovetileset.h"
+#include "changemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "newtemplatedialog.h"
 #include "objectgroup.h"
+#include "objecttemplatemodel.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
 #include "tile.h"
@@ -41,7 +45,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-
 static bool isTileObject(MapObject *mapObject)
 {
     return !mapObject->cell().isEmpty();
@@ -51,6 +54,15 @@ static bool isResizedTileObject(MapObject *mapObject)
 {
     if (const auto tile = mapObject->cell().tile())
         return mapObject->size() != tile->size();
+    return false;
+}
+
+static bool isChangedTemplateInstance(MapObject *mapObject)
+{
+    if (const MapObject *templateObject = mapObject->templateObject()) {
+        return mapObject->changedProperties() != 0 ||
+               mapObject->properties() != templateObject->properties();
+    }
     return false;
 }
 
@@ -81,6 +93,12 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_D:
+        if (event->modifiers() & Qt::ControlModifier) {
+            duplicateObjects();
+            return;
+        }
+        break;
     }
 
     event->ignore();
@@ -97,7 +115,7 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->offset();
+        offsetPos -= layer->totalOffset();
 
     const QPoint pixelPos = offsetPos.toPoint();
 
@@ -128,11 +146,26 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
+{
+    const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
+    QList<MapObjectItem*> objectList;
+    for (auto item : items) {
+        MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
+        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
+            objectList.append(objectItem);
+    }
+    return objectList;
+}
+
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
+
     for (QGraphicsItem *item : items) {
-        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
+        MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item);
+        if (objectItem && objectItem->mapObject()->objectGroup()->isUnlocked())
             return objectItem;
     }
     return nullptr;
@@ -169,6 +202,83 @@ void AbstractObjectTool::resetTileSize()
             undoStack->push(command);
         undoStack->endMacro();
     }
+}
+
+void AbstractObjectTool::saveSelectedObject()
+{
+    QString name;
+    int groupIndex;
+
+    auto object = mapDocument()->selectedObjects().first();
+
+    NewTemplateDialog newTemplateDialog(object->name());
+    newTemplateDialog.createTemplate(name, groupIndex);
+
+    if (!name.isEmpty())
+        mapDocument()->saveSelectedObject(name, groupIndex);
+}
+
+void AbstractObjectTool::detachSelectedObjects()
+{
+    MapDocument *currentMapDocument = mapDocument();
+    QList<MapObject *> templateInstances;
+
+    /**
+     * Stores the unique tilesets used by the templates
+     * to avoid creating multiple undo commands for the same tileset
+     */
+    QSet<SharedTileset> sharedTilesets;
+
+    for (MapObject *object : mapDocument()->selectedObjects()) {
+        if (object->templateObject()) {
+            templateInstances.append(object);
+
+            if (Tile *tile = object->cell().tile())
+                sharedTilesets.insert(tile->tileset()->sharedPointer());
+        }
+    }
+
+    auto changeMapObjectCommand = new DetachObjects(currentMapDocument, templateInstances);
+
+    // Add any missing tileset used by the templates to the map map before detaching
+    for (SharedTileset sharedTileset : sharedTilesets) {
+        if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
+            new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
+    }
+
+    currentMapDocument->undoStack()->push(changeMapObjectCommand);
+}
+
+void AbstractObjectTool::resetInstances()
+{
+    QList<MapObject *> templateInstances;
+
+    for (MapObject *object : mapDocument()->selectedObjects()) {
+        if (object->templateObject())
+            templateInstances.append(object);
+    }
+
+    mapDocument()->undoStack()->push(new ResetInstances(mapDocument(), templateInstances));
+}
+
+void AbstractObjectTool::changeTile()
+{
+    QList<MapObject*> tileObjects;
+
+    MapDocument *currentMapDocument = mapDocument();
+
+    for (auto object : currentMapDocument->selectedObjects())
+        if (object->isTileObject())
+            tileObjects.append(object);
+
+    auto changeMapObjectCommand = new ChangeMapObjectsTile(currentMapDocument, tileObjects, tile());
+
+    // Make sure the tileset is part of the document
+    SharedTileset sharedTileset = tile()->tileset()->sharedPointer();
+    if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
+        new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
+
+    currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }
 
 void AbstractObjectTool::flipHorizontally()
@@ -238,6 +348,37 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         resetTileSizeAction->setEnabled(std::any_of(selectedObjects.begin(),
                                                     selectedObjects.end(),
                                                     isResizedTileObject));
+
+        auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
+        changeTileAction->setEnabled(tile());
+    }
+
+    if (selectedObjects.size() == 1) {
+        MapObject *currentObject = selectedObjects.first();
+        if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
+            const Cell cell = selectedObjects.first()->cell();
+            // Saving objects with embedded tilesets is disabled
+            if (cell.isEmpty() || cell.tileset()->isExternal())
+                menu.addAction(tr("Save As Template"), this, SLOT(saveSelectedObject()));
+        }
+
+        if (currentObject->isTemplateBase()) { // Hide this operations for template base
+            duplicateAction->setVisible(false);
+            removeAction->setVisible(false);
+        }
+    }
+
+    bool anyIsTemplateInstance = std::any_of(selectedObjects.begin(),
+                                             selectedObjects.end(),
+                                             [](MapObject *object) { return object->isTemplateInstance(); });
+
+    if (anyIsTemplateInstance) {
+        menu.addAction(tr("Detach"), this, SLOT(detachSelectedObjects()));
+
+        auto resetToTemplateAction = menu.addAction(tr("Reset Template Instance(s)"), this, SLOT(resetInstances()));
+        resetToTemplateAction->setEnabled(std::any_of(selectedObjects.begin(),
+                                                      selectedObjects.end(),
+                                                      isChangedTemplateInstance));
     }
 
     menu.addSeparator();

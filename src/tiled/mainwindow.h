@@ -21,12 +21,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include "clipboardmanager.h"
 #include "consoledock.h"
 #include "document.h"
+#include "preferences.h"
 #include "preferencesdialog.h"
 
 #include <QMainWindow>
@@ -58,6 +58,7 @@ class MapView;
 class ObjectTypesEditor;
 class TmxMapFormat;
 class TsxTilesetFormat;
+class TgxTemplateGroupFormat;
 class Zoomable;
 
 /**
@@ -96,6 +97,8 @@ public slots:
     bool openFile(const QString &fileName);
 
 protected:
+    bool event(QEvent *event) override;
+
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
 
@@ -118,9 +121,11 @@ private slots:
     void closeFile();
     void closeAllFiles();
 
+    void cut();
+    void copy();
     void paste();
     void pasteInPlace();
-    void paste(ClipboardManager::PasteFlags flags);
+    void delete_();
     void openPreferences();
 
     void labelVisibilityActionTriggered(QAction *action);
@@ -128,9 +133,9 @@ private slots:
     void zoomOut();
     void zoomNormal();
     void setFullScreen(bool fullScreen);
+    void toggleClearView(bool clearView);
 
     bool newTileset(const QString &path = QString());
-    void newTilesets(const QStringList &paths);
     void reloadTilesetImages();
     void addExternalTileset();
     void resizeMap();
@@ -147,7 +152,6 @@ private slots:
     void becomePatron();
     void aboutTiled();
     void openRecentFile();
-    void clearRecentFiles();
 
     void documentChanged(Document *document);
     void closeDocument(int index);
@@ -157,8 +161,8 @@ private slots:
     void autoMappingWarning(bool automatic);
 
     void onObjectTypesEditorClosed();
-    void onAnimationEditorClosed();
-    void onCollisionEditorClosed();
+
+    void ensureHasBorderInFullScreen();
 
 private:
     /**
@@ -181,18 +185,10 @@ private:
       */
     bool confirmAllSave();
 
-    bool saveDocument(Document *document, const QString &fileName);
-    bool saveDocumentAs(Document *document);
-
     void writeSettings();
     void readSettings();
 
-    QStringList recentFiles() const;
-    QString fileDialogStartLocation() const;
-
-    void setRecentFile(const QString &fileName);
-    void updateRecentFiles();
-
+    void updateRecentFilesMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -203,20 +199,17 @@ private:
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
-    QDockWidget *mUndoDock;
     ObjectTypesEditor *mObjectTypesEditor;
     QSettings mSettings;
 
-    enum { MaxRecentFiles = 8 };
-    QAction *mRecentFiles[MaxRecentFiles];
+    QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
     QMenu *mLayerMenu;
     QMenu *mNewLayerMenu;
+    QMenu *mGroupLayerMenu;
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
-    QAction *mShowTileAnimationEditor;
-    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 
@@ -225,11 +218,12 @@ private:
 
     TmxMapFormat *mTmxMapFormat;
     TsxTilesetFormat *mTsxTilesetFormat;
+    TgxTemplateGroupFormat *mTgxTemplateGroupFormat;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
+
+    QMap<QMainWindow*, QByteArray> mMainWindowStates;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAINWINDOW_H

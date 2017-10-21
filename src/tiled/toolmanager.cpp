@@ -24,6 +24,7 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QShortcut>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -35,6 +36,7 @@ ToolManager::ToolManager(QObject *parent)
     , mDisabledTool(nullptr)
     , mPreviouslyDisabledTool(nullptr)
     , mMapDocument(nullptr)
+    , mTile(nullptr)
     , mSelectEnabledToolPending(false)
 {
     mActionGroup->setExclusive(true);
@@ -77,9 +79,14 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
     toolAction->setCheckable(true);
-    toolAction->setToolTip(
-            QString(QLatin1String("%1 (%2)")).arg(tool->name(),
-                                                  tool->shortcut().toString()));
+    if (!tool->shortcut().isEmpty()) {
+        toolAction->setToolTip(
+                QString(QLatin1String("%1 (%2)")).arg(tool->name(),
+                                                      tool->shortcut().toString()));
+    } else {
+        toolAction->setToolTip(tool->name());
+    }
+
     toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
 
@@ -139,6 +146,44 @@ void ToolManager::retranslateTools()
         action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
                 tool->name(), tool->shortcut().toString()));
     }
+}
+
+/**
+ * Replaces the shortcuts set on the actions with QShortcut instances, using
+ * \a parent as their parent.
+ *
+ * This is done to make sure the shortcuts can still be used even when the
+ * actions are only added to a tool bar and this tool bar is hidden.
+ */
+void ToolManager::createShortcuts(QWidget *parent)
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        QKeySequence key = action->shortcut();
+
+        if (!key.isEmpty()) {
+            auto shortcut = new QShortcut(key, parent);
+
+            // Make sure the shortcut is only enabled when the action is,
+            // because different tools may use the same shortcut.
+            shortcut->setEnabled(action->isEnabled());
+            connect(action, &QAction::changed, shortcut, [=]() {
+                shortcut->setEnabled(action->isEnabled());
+            });
+
+            connect(shortcut, &QShortcut::activated, action, &QAction::trigger);
+
+            // Unset the shortcut from the action to avoid ambiguous overloads
+            action->setShortcut(QKeySequence());
+        }
+    }
+}
+
+void ToolManager::setTile(Tile *tile)
+{
+    mTile = tile;
+    if (mSelectedTool)
+        mSelectedTool->setTile(mTile);
 }
 
 void ToolManager::toolEnabledChanged(bool enabled)
@@ -215,5 +260,6 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
         emit statusInfoChanged(mSelectedTool->statusInfo());
         connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
                 this, SIGNAL(statusInfoChanged(QString)));
+        tool->setTile(mTile);
     }
 }

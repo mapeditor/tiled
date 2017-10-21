@@ -2,6 +2,7 @@
  * mapobject.cpp
  * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * Copyright 2017, Klimov Viktor <vitek.fomino@bk.ru>
  *
  * This file is part of libtiled.
  *
@@ -31,18 +32,49 @@
 
 #include "map.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
 
-using namespace Tiled;
+#include <QFontMetricsF>
+#include <qmath.h>
+
+namespace Tiled {
+
+TextData::TextData()
+    : font(QStringLiteral("sans-serif"))
+{
+    font.setPixelSize(16);
+}
+
+int TextData::flags() const
+{
+    return wordWrap ? (alignment | Qt::TextWordWrap) : alignment;
+}
+
+QTextOption TextData::textOption() const
+{
+    QTextOption option(alignment);
+
+    if (wordWrap)
+        option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    else
+        option.setWrapMode(QTextOption::ManualWrap);
+
+    return option;
+}
+
+/**
+ * Returns the size of the text when drawn without wrapping.
+ */
+QSizeF TextData::textSize() const
+{
+    QFontMetricsF fontMetrics(font);
+    return fontMetrics.size(0, text);
+}
+
 
 MapObject::MapObject():
-    Object(MapObjectType),
-    mId(0),
-    mSize(0, 0),
-    mShape(Rectangle),
-    mObjectGroup(nullptr),
-    mRotation(0.0f),
-    mVisible(true)
+    MapObject(QString(), QString(), QPointF(), QSizeF(0, 0))
 {
 }
 
@@ -56,12 +88,39 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
+    mTemplateRef({nullptr, 0}),
     mObjectGroup(nullptr),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mChangedProperties(0),
+    mTemplateBase(false)
 {
 }
 
+/**
+ * Returns the affective type of this object. This may be the type of its tile,
+ * if the object does not have a type set explicitly.
+ */
+const QString &MapObject::effectiveType() const
+{
+    if (mType.isEmpty())
+        if (const Tile *tile = mCell.tile())
+            return tile->type();
+
+    return mType;
+}
+
+/**
+ * Sets the text data associated with this object.
+ */
+void MapObject::setTextData(const TextData &textData)
+{
+    mTextData = textData;
+}
+
+/**
+ * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+ */
 QRectF MapObject::boundsUseTile() const
 {
     // FIXME: This is outdated code:
@@ -106,37 +165,187 @@ Alignment MapObject::alignment() const
     return BottomLeft;
 }
 
-void MapObject::flip(FlipDirection direction)
+QVariant MapObject::mapObjectProperty(Property property) const
 {
-    if (!mCell.isEmpty()) {
-        if (direction == FlipHorizontally)
-            mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
-        else if (direction == FlipVertically)
-            mCell.setFlippedVertically(!mCell.flippedVertically());
+    switch (property) {
+    case NameProperty:          return mName;
+    case TypeProperty:          return mType;
+    case VisibleProperty:       return mVisible;
+    case TextProperty:          return mTextData.text;
+    case TextFontProperty:      return mTextData.font;
+    case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
+    case TextWordWrapProperty:  return mTextData.wordWrap;
+    case TextColorProperty:     return mTextData.color;
+    case SizeProperty:          return mSize;
+    case RotationProperty:      return mRotation;
+    case CellProperty:          Q_ASSERT(false); break;
+    case ShapeProperty:         Q_ASSERT(false); break;
     }
+    return QVariant();
+}
 
-    if (!mPolygon.isEmpty()) {
-        const QPointF center2 = mPolygon.boundingRect().center() * 2;
-
-        if (direction == FlipHorizontally) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setX(center2.x() - mPolygon[i].x());
-        } else if (direction == FlipVertically) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setY(center2.y() - mPolygon[i].y());
-        }
+void MapObject::setMapObjectProperty(Property property, const QVariant &value)
+{
+    switch (property) {
+    case NameProperty:          mName = value.toString(); break;
+    case TypeProperty:          mType = value.toString(); break;
+    case VisibleProperty:       mVisible = value.toBool(); break;
+    case TextProperty:          mTextData.text = value.toString(); break;
+    case TextFontProperty:
+        mTextData.font = value.value<QFont>();
+        break;
+    case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
+    case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
+    case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
+    case SizeProperty:          mSize = value.toSizeF(); break;
+    case RotationProperty:      mRotation = value.toReal(); break;
+    case CellProperty:          Q_ASSERT(false); break;
+    case ShapeProperty:         Q_ASSERT(false); break;
     }
 }
 
+/**
+ * Flip this object in the given \a direction. This doesn't change the size
+ * of the object.
+ */
+void MapObject::flip(FlipDirection direction, const QPointF &origin)
+{
+    //computing new rotation and flip transform
+    QTransform flipTransform;
+    flipTransform.translate(origin.x(), origin.y());
+    qreal newRotation = 0;
+    if (direction == FlipHorizontally) {
+        newRotation = 180.0 - rotation();
+        flipTransform.scale(-1, 1);
+    } else { //direction == FlipVertically
+        flipTransform.scale(1, -1);
+        newRotation = -rotation();
+    }
+    flipTransform.translate(-origin.x(), -origin.y());
+
+
+    if (!mCell.isEmpty())
+        flipTileObject(flipTransform);
+    else if (!mPolygon.isEmpty())
+        flipPolygonObject(flipTransform);
+    else
+        flipRectObject(flipTransform);
+
+    //installing new rotation after computing new position
+    setRotation(newRotation);
+}
+
+/**
+ * Returns a duplicate of this object. The caller is responsible for the
+ * ownership of this newly created object.
+ */
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
     o->setId(mId);
     o->setProperties(properties());
+    o->setTextData(mTextData);
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
     o->setRotation(mRotation);
     o->setVisible(mVisible);
+    o->setChangedProperties(mChangedProperties);
+    o->setTemplateRef(templateRef());
     return o;
 }
+
+const MapObject *MapObject::templateObject() const
+{
+    if (auto group = templateGroup())
+        if (auto objectTemplate = group->findTemplate(mTemplateRef.templateId))
+            return objectTemplate->object();
+
+    return nullptr;
+}
+
+void MapObject::syncWithTemplate()
+{
+    const MapObject *base = templateObject();
+
+    if (!base)
+        return;
+
+    if (!propertyChanged(MapObject::NameProperty))
+        setName(base->name());
+
+    if (!propertyChanged(MapObject::SizeProperty))
+        setSize(base->size());
+
+    if (!propertyChanged(MapObject::TypeProperty))
+        setType(base->type());
+
+    if (!propertyChanged(MapObject::TextProperty))
+        setTextData(base->textData());
+
+    if (!propertyChanged(MapObject::ShapeProperty)) {
+        setShape(base->shape());
+        setPolygon(base->polygon());
+    }
+
+    if (!propertyChanged(MapObject::CellProperty))
+        setCell(base->cell());
+
+    if (!propertyChanged(MapObject::RotationProperty))
+        setRotation(base->rotation());
+
+    if (!propertyChanged(MapObject::VisibleProperty))
+        setVisible(base->isVisible());
+}
+
+bool MapObject::isTemplateInstance() const
+{
+    return mTemplateRef.templateGroup;
+}
+
+TemplateGroup *MapObject::templateGroup() const
+{
+    return mTemplateRef.templateGroup;
+}
+
+void MapObject::flipRectObject(const QTransform &flipTransform)
+{
+    QPointF oldBottomLeftPoint = QPointF(cos(qDegreesToRadians(rotation() + 90)) * height() + x(),
+                                         sin(qDegreesToRadians(rotation() + 90)) * height() + y());
+    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+
+    setPosition(newPos);
+}
+
+void MapObject::flipPolygonObject(const QTransform &flipTransform)
+{
+    QTransform polygonToMapTransform;
+    polygonToMapTransform.translate(x(), y());
+    polygonToMapTransform.rotate(rotation());
+
+    QPointF localPolygonCenter = mPolygon.boundingRect().center();
+    QTransform polygonFlip;
+    polygonFlip.translate(localPolygonCenter.x(), localPolygonCenter.y());
+    polygonFlip.scale(1, -1);
+    polygonFlip.translate(-localPolygonCenter.x(), -localPolygonCenter.y());
+
+    QPointF oldBottomLeftPoint = polygonToMapTransform.map(polygonFlip.map(QPointF(0, 0)));
+    QPointF newPos = flipTransform.map(oldBottomLeftPoint);
+
+    mPolygon = polygonFlip.map(mPolygon);
+    setPosition(newPos);
+}
+
+void MapObject::flipTileObject(const QTransform &flipTransform)
+{
+    mCell.setFlippedVertically(!mCell.flippedVertically());
+
+    //old tile position is bottomLeftPoint
+    QPointF topLeftTilePoint = QPointF(cos(qDegreesToRadians(rotation() - 90)) * height() + x(),
+                                       sin(qDegreesToRadians(rotation() - 90)) * height() + y());
+    QPointF newPos = flipTransform.map(topLeftTilePoint);
+
+    setPosition(newPos);
+}
+
+} // namespace Tiled

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CSVPLUGIN_H
-#define CSVPLUGIN_H
+#pragma once
 
 #include "mapformat.h"
 
@@ -39,6 +38,8 @@ public:
     QString errorString() const override;
     QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 
+    QString shortName() const override;
+
 protected:
     QString nameFilter() const override;
 
@@ -47,5 +48,3 @@ private:
 };
 
 } // namespace Csv
-
-#endif // CSVPLUGIN_H

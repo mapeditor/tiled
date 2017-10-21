@@ -32,9 +32,11 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
-    : CreateObjectTool(CreateObjectTool::CreateTile, parent)
+    : CreateObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-image.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-image.png"));
+    setIcon(icon);
     Utils::setThemeIcon(this, "insert-image");
     languageChanged();
 }
@@ -67,11 +69,13 @@ void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseE
         finishNewMapObject();
 }
 
-void CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+bool CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
-    CreateObjectTool::startNewMapObject(pos, objectGroup);
-    if (mNewMapObjectItem)
-        mNewMapObjectItem->setOpacity(0.75);
+    if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
+        return false;
+
+    mNewMapObjectItem->setOpacity(0.75);
+    return true;
 }
 
 void CreateTileObjectTool::languageChanged()
@@ -82,12 +86,12 @@ void CreateTileObjectTool::languageChanged()
 
 MapObject *CreateTileObjectTool::createNewMapObject()
 {
-    if (!mTile)
+    if (!tile())
         return nullptr;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
-    newMapObject->setCell(Cell(mTile));
-    newMapObject->setSize(mTile->size());
+    newMapObject->setCell(Cell(tile()));
+    newMapObject->setSize(tile()->size());
     return newMapObject;
 }

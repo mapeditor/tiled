@@ -1,6 +1,6 @@
 /*
  * mapdocument.h
- * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPDOCUMENT_H
-#define MAPDOCUMENT_H
+#pragma once
 
 #include "document.h"
 #include "layer.h"
@@ -45,13 +44,14 @@ class MapObject;
 class MapRenderer;
 class MapFormat;
 class Terrain;
+class TemplateGroup;
 class Tile;
+class WangSet;
 
 namespace Internal {
 
 class LayerModel;
 class MapObjectModel;
-class TerrainModel;
 class TileSelectionModel;
 
 /**
@@ -68,6 +68,13 @@ class MapDocument : public Document
     Q_OBJECT
 
 public:
+    enum TileLayerChangeFlag {
+        LayerDrawMarginsChanged,
+        LayerBoundsChanged
+    };
+    Q_DECLARE_FLAGS(TileLayerChangeFlags, TileLayerChangeFlag)
+    Q_FLAG(TileLayerChangeFlags)
+
     /**
      * Constructs a map document around the given map. The map document takes
      * ownership of the map.
@@ -77,6 +84,7 @@ public:
     ~MapDocument();
 
     bool save(const QString &fileName, QString *error = nullptr) override;
+    void saveSelectedObject(const QString &name, int groupIndex);
 
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
@@ -106,22 +114,14 @@ public:
      */
     Map *map() const { return mMap; }
 
-    /**
-     * Sets the current layer to the given index.
-     */
-    void setCurrentLayerIndex(int index);
-
-    /**
-     * Returns the index of the currently selected layer. Returns -1 if no
-     * layer is currently selected.
-     */
-    int currentLayerIndex() const { return mCurrentLayerIndex; }
+    int layerIndex(const Layer *layer) const;
 
     /**
      * Returns the currently selected layer, or 0 if no layer is currently
      * selected.
      */
-    Layer *currentLayer() const;
+    Layer *currentLayer() const { return mCurrentLayer; }
+    void setCurrentLayer(Layer *layer);
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
@@ -130,11 +130,13 @@ public:
      */
     void resizeMap(const QSize &size, const QPoint &offset, bool removeObjects);
 
+    void autocropMap();
+
     /**
-     * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
-     * and optionally wraps on the X or Y axis.
+     * Offsets the \a layers by \a offset, within \a bounds, and optionally
+     * wraps on the X or Y axis.
      */
-    void offsetMap(const QList<int> &layerIndexes,
+    void offsetMap(const QList<Layer *> &layers,
                    const QPoint &offset,
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
@@ -143,16 +145,20 @@ public:
     void rotateSelectedObjects(RotateDirection direction);
 
     Layer *addLayer(Layer::TypeFlag layerType);
+    void groupLayer(Layer *layer);
+    void ungroupLayer(Layer *layer);
     void duplicateLayer();
     void mergeLayerDown();
-    void moveLayerUp(int index);
-    void moveLayerDown(int index);
-    void removeLayer(int index);
-    void toggleOtherLayers(int index);
+    void moveLayerUp(Layer *layer);
+    void moveLayerDown(Layer *layer);
+    void removeLayer(Layer *layer);
+    void toggleOtherLayers(Layer *layer);
 
     void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     SharedTileset replaceTileset(int index, const SharedTileset &tileset);
+
+    TemplateGroup *replaceTemplateGroup(int index, TemplateGroup *templateGroup);
 
     void duplicateObjects(const QList<MapObject*> &objects);
     void removeObjects(const QList<MapObject*> &objects);
@@ -160,6 +166,7 @@ public:
                             ObjectGroup *objectGroup);
     void moveObjectsUp(const QList<MapObject*> &objects);
     void moveObjectsDown(const QList<MapObject*> &objects);
+    void detachObjects(const QList<MapObject*> &objects);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -168,8 +175,6 @@ public:
     LayerModel *layerModel() const { return mLayerModel; }
 
     MapObjectModel *mapObjectModel() const { return mMapObjectModel; }
-
-    TerrainModel *terrainModel() const { return mTerrainModel; }
 
     /**
      * Returns the map renderer.
@@ -209,17 +214,9 @@ public:
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
-    void emitMapChanged();
-
-    void emitRegionChanged(const QRegion &region, Layer *layer);
-    void emitRegionEdited(const QRegion &region, Layer *layer);
-
-    void emitTileLayerDrawMarginsChanged(TileLayer *layer);
-
-    void emitObjectGroupChanged(ObjectGroup *objectGroup);
-    void emitImageLayerChanged(ImageLayer *imageLayer);
-
     void emitEditLayerNameRequested();
+
+    void addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup);
 
 signals:
     /**
@@ -239,11 +236,10 @@ signals:
      */
     void mapChanged();
 
-    void layerAdded(int index);
-    void layerAboutToBeRemoved(int index);
-    void layerRenamed(int index);
-    void layerRemoved(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
     /**
      * Emitted after a new layer was added and the name should be edited.
@@ -252,9 +248,9 @@ signals:
     void editLayerNameRequested();
 
     /**
-     * Emitted when the current layer index changes.
+     * Emitted when the current layer changes.
      */
-    void currentLayerIndexChanged(int index);
+    void currentLayerChanged(Layer *layer);
 
     /**
      * Emitted when a certain region of the map changes. The region is given in
@@ -269,10 +265,18 @@ signals:
      */
     void regionEdited(const QRegion &region, Layer *layer);
 
-    void tileLayerDrawMarginsChanged(TileLayer *layer);
+    void tileLayerChanged(TileLayer *layer, TileLayerChangeFlags flags);
 
+    /**
+     * Should be emitted when changing the color or drawing order of an object
+     * group.
+     */
     void objectGroupChanged(ObjectGroup *objectGroup);
 
+    /**
+     * Should be emitted when changing the image or the transparent color of
+     * an image layer.
+     */
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
@@ -280,6 +284,7 @@ signals:
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
+    void templateGroupReplaced(int index, TemplateGroup *templateGroup, TemplateGroup *oldTemplateGroup);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
@@ -290,10 +295,9 @@ signals:
 
     // emitted from the TilesetDocument
     void tilesetNameChanged(Tileset *tileset);
-    void tilesetTerrainAboutToBeAdded(Tileset *tileset, int terrainId);
-    void tilesetTerrainAdded(Tileset *tileset, int terrainId);
-    void tilesetTerrainAboutToBeRemoved(Tileset *tileset, Terrain *terrain);
-    void tilesetTerrainRemoved(Tileset *tileset, Terrain *terrain);
+    void tilesetTileOffsetChanged(Tileset *tileset);
+    void tileTypeChanged(Tile *tile);
+    void tileImageSourceChanged(Tile *tile);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
@@ -303,9 +307,13 @@ private slots:
     void onObjectsMoved(const QModelIndex &parent, int start, int end,
                         const QModelIndex &destination, int row);
 
-    void onLayerAdded(int index);
-    void onLayerAboutToBeRemoved(int index);
-    void onLayerRemoved(int index);
+    void onLayerAdded(Layer *layer);
+    void onLayerAboutToBeRemoved(GroupLayer *groupLayer, int index);
+    void onLayerRemoved(Layer *layer);
+
+public slots:
+    void updateTemplateInstances(const MapObject *mapObject);
+    void selectAllInstances(const MapObject *mapObject);
 
 private:
     void deselectObjects(const QList<MapObject*> &objects);
@@ -325,9 +333,9 @@ private:
     QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
     MapRenderer *mRenderer;
-    int mCurrentLayerIndex;
+    Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
-    TerrainModel *mTerrainModel;
+    QList<TemplateGroup*> mNonEmbeddedTemplateGroups;
 };
 
 
@@ -341,66 +349,12 @@ inline void MapDocument::setLastExportFileName(const QString &fileName)
     mLastExportFileName = fileName;
 }
 
-/**
- * Emits the map changed signal. This signal should be emitted after changing
- * the map size or its tile size.
- */
-inline void MapDocument::emitMapChanged()
+inline void MapDocument::addNonEmbeddedTemplateGroup(TemplateGroup *templateGroup)
 {
-    emit mapChanged();
-}
-
-/**
- * Emits the region changed signal for the specified region. The region
- * should be in tile coordinates. This method is used by the TilePainter.
- */
-inline void MapDocument::emitRegionChanged(const QRegion &region, Layer *layer)
-{
-    emit regionChanged(region, layer);
-}
-
-/**
- * Emits the region edited signal for the specified region and tile layer.
- * The region should be in tile coordinates. This should be called from
- * all map document changing classes which are triggered by user input.
- */
-inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
-{
-    emit regionEdited(region, layer);
-}
-
-inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
-{
-    emit tileLayerDrawMarginsChanged(layer);
-}
-
-/**
- * Emits the objectGroupChanged signal, should be called when changing the
- * color or drawing order of an object group.
- */
-inline void MapDocument::emitObjectGroupChanged(ObjectGroup *objectGroup)
-{
-    emit objectGroupChanged(objectGroup);
-}
-
-/**
- * Emits the imageLayerChanged signal, should be called when changing the
- * image or the transparent color of an image layer.
- */
-inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
-{
-    emit imageLayerChanged(imageLayer);
-}
-
-/**
- * Emits the editLayerNameRequested signal, to get renamed.
- */
-inline void MapDocument::emitEditLayerNameRequested()
-{
-    emit editLayerNameRequested();
+    mNonEmbeddedTemplateGroups.append(templateGroup);
 }
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAPDOCUMENT_H
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MapDocument::TileLayerChangeFlags)

@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPFORMAT_H
-#define MAPFORMAT_H
+#pragma once
 
 #include "pluginmanager.h"
 
@@ -80,6 +79,11 @@ public:
      * Returns name filter for files in this map format.
      */
     virtual QString nameFilter() const = 0;
+
+    /**
+     * Returns short name for this map format
+     */
+    virtual QString shortName() const = 0;
 
     /**
      * Returns whether this map format supports reading the given file.
@@ -205,5 +209,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPFORMAT_H

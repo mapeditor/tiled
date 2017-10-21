@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTOOL_H
-#define ABSTRACTTOOL_H
+#pragma once
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -32,10 +31,12 @@
 
 class QEvent;
 class QKeyEvent;
+class QToolBar;
 
 namespace Tiled {
 
 class Layer;
+class Tile;
 
 namespace Internal {
 
@@ -91,6 +92,8 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
+    Tile *tile() const;
+
     /**
      * Activates this tool. If the tool plans to add any items to the scene, it
      * probably wants to do it here.
@@ -144,8 +147,11 @@ public:
      */
     virtual void languageChanged() = 0;
 
+    virtual void populateToolBar(QToolBar*) {}
+
 public slots:
     void setMapDocument(MapDocument *mapDocument);
+    void setTile(Tile *tile);
 
 protected:
     /**
@@ -184,6 +190,7 @@ private:
     QString mStatusInfo;
     QCursor mCursor;
     bool mEnabled;
+    Tile *mTile;
 
     MapDocument *mMapDocument;
 };
@@ -234,9 +241,17 @@ inline bool AbstractTool::isEnabled() const
     return mEnabled;
 }
 
+inline Tile *AbstractTool::tile() const
+{
+    return mTile;
+}
+
+inline void AbstractTool::setTile(Tile *tile)
+{
+    mTile = tile;
+}
+
 } // namespace Internal
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
-
-#endif // ABSTRACTTOOL_H

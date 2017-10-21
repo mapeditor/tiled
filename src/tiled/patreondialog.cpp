@@ -25,6 +25,9 @@
 #include "utils.h"
 
 #include <QDesktopServices>
+#include <QMessageBox>
+#include <QUrl>
+#include <QMenu>
 
 using namespace Tiled::Internal;
 
@@ -35,17 +38,20 @@ PatreonDialog::PatreonDialog(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     ui->setupUi(this);
-    ui->maybeLaterButton->setVisible(false);
 
     resize(Utils::dpiScaled(size()));
 
-    connect(ui->gotoPatreon, SIGNAL(clicked()), SLOT(openPatreonPage()));
-    connect(ui->alreadyPatron, SIGNAL(clicked()), SLOT(togglePatreonStatus()));
+    const QDate today(QDate::currentDate());
 
-    Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(isPatronChanged()), SLOT(updatePatreonStatus()));
+    auto laterMenu = new QMenu(this);
+    laterMenu->addAction(tr("Remind me next week"))->setData(today.addDays(7));
+    laterMenu->addAction(tr("Remind me next month"))->setData(today.addMonths(1));
+    laterMenu->addAction(tr("Don't remind me"))->setData(QDate());
+    ui->maybeLaterButton->setMenu(laterMenu);
 
-    updatePatreonStatus();
+    connect(ui->gotoPatreon, &QPushButton::clicked, this, &PatreonDialog::openPatreonPage);
+    connect(ui->alreadyPatron, &QPushButton::clicked, this, &PatreonDialog::sayThanks);
+    connect(laterMenu, &QMenu::triggered, this, &PatreonDialog::maybeLater);
 }
 
 PatreonDialog::~PatreonDialog()
@@ -58,42 +64,22 @@ void PatreonDialog::openPatreonPage()
     QDesktopServices::openUrl(QUrl(QLatin1String("https://www.patreon.com/bjorn")));
 }
 
-void PatreonDialog::togglePatreonStatus()
+void PatreonDialog::sayThanks()
 {
     Preferences *prefs = Preferences::instance();
-    prefs->setPatron(!prefs->isPatron());
-    setFocus();
+    prefs->setPatron(true);
+
+    QMessageBox box(QMessageBox::NoIcon, tr("Thanks!"),
+                    tr("Thanks a lot for your support! With your help Tiled will keep getting better."),
+                    QMessageBox::Close, this);
+    box.exec();
+
+    close();
 }
 
-void PatreonDialog::updatePatreonStatus()
+void PatreonDialog::maybeLater(QAction *action)
 {
-    if (Preferences::instance()->isPatron()) {
-        ui->textBrowser->setHtml(tr(
-            "<html><head/><body>\n"
-            "<h3>Thank you for support!</h3>\n"
-            "<p>Your support as a patron makes a big difference to me as the "
-            "main developer and maintainer of Tiled. It allows me to spend "
-            "less time working for money elsewhere and spend more time working "
-            "on Tiled instead.</p>\n"
-            "<p>Keep an eye out for exclusive updates in the Activity feed on "
-            "my Patreon page to find out what I've been up to in the time I "
-            "could spend on Tiled thanks to your support!</p>\n"
-            "<p><i>Thorbj&oslash;rn Lindeijer</i></p></body></html>"));
-
-        ui->alreadyPatron->setText(tr("I'm no longer a patron"));
-    } else {
-        ui->textBrowser->setHtml(tr(
-            "<html><head/><body>\n"
-            "<h3>With your help I can continue to improve Tiled!</h3>\n"
-            "<p>Please consider supporting me as a patron. Your support would "
-            "make a big difference to me, the main developer and maintainer of "
-            "Tiled. I could spend less time working for money elsewhere and "
-            "spend more time working on Tiled instead.</p>\n"
-            "<p>Every little bit helps. Tiled has a lot of users and if each "
-            "would contribute a small donation each month I will have time to "
-            "make sure Tiled keeps getting better.</p>\n"
-            "<p><i>Thorbj&oslash;rn Lindeijer</i></p></body></html>"));
-
-        ui->alreadyPatron->setText(tr("I'm already a patron!"));
-    }
+    const QDate date = action->data().toDate();
+    Preferences::instance()->setPatreonDialogReminder(date);
+    close();
 }

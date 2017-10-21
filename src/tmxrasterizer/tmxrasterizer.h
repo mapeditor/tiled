@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TMXRASTERIZER_H
-#define TMXRASTERIZER_H
+#pragma once
 
 #include "layer.h"
 
@@ -69,8 +68,6 @@ private:
     bool mIgnoreVisibility;
     QStringList mLayersToHide;
 
-    bool shouldDrawLayer(Layer *layer);
+    bool shouldDrawLayer(const Layer *layer);
 
 };
-
-#endif // TMXRASTERIZER_H

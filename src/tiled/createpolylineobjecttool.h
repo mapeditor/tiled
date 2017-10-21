@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATEPOLYLINEOBJECTTOOL_H
-#define CREATEPOLYLINEOBJECTTOOL_H
+#pragma once
 
 #include "createmultipointobjecttool.h"
 
@@ -39,5 +38,3 @@ protected:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CREATEPOLYLINEOBJECTTOOL_H

@@ -6,42 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>360</height>
+    <width>503</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Become a Patron</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item>
-    <widget class="QTextBrowser" name="textBrowser">
-     <property name="styleSheet">
-      <string notr="true"/>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Thanks for using Tiled! Please consider supporting further development with a small monthly donation.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>0</number>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QCommandLinkButton" name="gotoPatreon">
+      <widget class="QPushButton" name="gotoPatreon">
        <property name="text">
         <string>Visit https://www.patreon.com/bjorn</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCommandLinkButton" name="alreadyPatron">
+      <widget class="QPushButton" name="alreadyPatron">
        <property name="text">
-        <string>I'm already a patron!</string>
+        <string>I'm already a supporter!</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCommandLinkButton" name="maybeLaterButton">
+      <widget class="QPushButton" name="maybeLaterButton">
        <property name="text">
         <string>Maybe later</string>
        </property>
@@ -49,67 +65,8 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>PatreonDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>227</x>
-     <y>406</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>PatreonDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>295</x>
-     <y>412</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>maybeLaterButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PatreonDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>366</x>
-     <y>370</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>350</x>
-     <y>275</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGESELECTEDAREA_H
-#define CHANGESELECTEDAREA_H
+#pragma once
 
 #include <QRegion>
 #include <QUndoCommand>
@@ -52,5 +51,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGESELECTEDAREA_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GMXPLUGIN_H
-#define GMXPLUGIN_H
+#pragma once
 
 #include "mapformat.h"
 
@@ -37,6 +36,7 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
+    QString shortName() const override;
 
 protected:
     QString nameFilter() const override;
@@ -46,5 +46,3 @@ private:
 };
 
 } // namespace Gmx
-
-#endif // GMXPLUGIN_H

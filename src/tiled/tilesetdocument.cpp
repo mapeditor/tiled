@@ -23,10 +23,12 @@
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
+#include "wangset.h"
 #include "tile.h"
+#include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilesetterrainmodel.h"
-#include "tmxmapformat.h"
+#include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -57,21 +59,29 @@ private:
 TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
     : Document(TilesetDocumentType, fileName)
     , mTileset(tileset)
-    , mTerrainModel(new TilesetTerrainModel(this))
+    , mTerrainModel(new TilesetTerrainModel(this, this))
+    , mWangSetModel(new TilesetWangSetModel(this, this))
+    , mWangColorModel(nullptr)
 {
     mCurrentObject = tileset.data();
 
     // warning: will need to be kept up-to-date
     mFileName = tileset->fileName();
 
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeAdded,
-            this, &TilesetDocument::onTerrainAboutToBeAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAdded,
-            this, &TilesetDocument::onTerrainAdded);
-    connect(mTerrainModel, &TilesetTerrainModel::terrainAboutToBeRemoved,
-            this, &TilesetDocument::onTerrainAboutToBeRemoved);
+    connect(this, &TilesetDocument::propertyAdded,
+            this, &TilesetDocument::onPropertyAdded);
+    connect(this, &TilesetDocument::propertyRemoved,
+            this, &TilesetDocument::onPropertyRemoved);
+    connect(this, &TilesetDocument::propertyChanged,
+            this, &TilesetDocument::onPropertyChanged);
+    connect(this, &TilesetDocument::propertiesChanged,
+            this, &TilesetDocument::onPropertiesChanged);
+
     connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
             this, &TilesetDocument::onTerrainRemoved);
+
+    connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
+            this, &TilesetDocument::onWangSetRemoved);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -85,13 +95,12 @@ TilesetDocument::~TilesetDocument()
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
 {
-    TilesetFormat *tilesetFormat = mWriterFormat;
+    TilesetFormat *tilesetFormat = mTileset->format();
 
-    TsxTilesetFormat tsxTilesetFormat;
-    if (!tilesetFormat)
-        tilesetFormat = &tsxTilesetFormat;
+    if (!tilesetFormat || !(tilesetFormat->capabilities() & MapFormat::Write))
+        return false;
 
-    // todo: workaround to avoid it writing the tileset like an extenal tileset reference
+    // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
@@ -101,21 +110,27 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
     }
 
     undoStack()->setClean();
+
+    mTileset->setFileName(fileName);
     setFileName(fileName);
+
     mLastSaved = QFileInfo(fileName).lastModified();
 
     emit saved();
     return true;
 }
 
+bool TilesetDocument::canReload() const
+{
+    return !fileName().isEmpty() && mTileset->format();
+}
+
 bool TilesetDocument::reload(QString *error)
 {
-    auto format = mReaderFormat;
-    if (!format)
-        format = mWriterFormat;
+    if (!canReload())
+        return false;
 
-    // Either the file was saved or it was loaded, so now we must have a format
-    Q_ASSERT(format);
+    auto format = mTileset->format();
 
     SharedTileset tileset = format->read(fileName());
 
@@ -124,6 +139,8 @@ bool TilesetDocument::reload(QString *error)
             *error = format->errorString();
         return false;
     }
+
+    tileset->setFormat(format);
 
     mUndoStack->push(new ReloadTileset(this, tileset));
     mUndoStack->setClean();
@@ -144,32 +161,19 @@ TilesetDocument *TilesetDocument::load(const QString &fileName,
         return nullptr;
     }
 
-    auto *document = new TilesetDocument(tileset, fileName);
-    document->setReaderFormat(format);
-    if (format->hasCapabilities(MapFormat::Write))
-        document->setWriterFormat(format);
+    tileset->setFormat(format);
 
-    return document;
-}
-
-TilesetFormat *TilesetDocument::readerFormat() const
-{
-    return mReaderFormat;
-}
-
-void TilesetDocument::setReaderFormat(TilesetFormat *format)
-{
-    mReaderFormat = format;
+    return new TilesetDocument(tileset, fileName);
 }
 
 FileFormat *TilesetDocument::writerFormat() const
 {
-    return mWriterFormat;
+    return mTileset->format();
 }
 
 void TilesetDocument::setWriterFormat(TilesetFormat *format)
 {
-    mWriterFormat = format;
+    mTileset->setFormat(format);
 }
 
 QString TilesetDocument::displayName() const
@@ -242,6 +246,9 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
         mapDocument->map()->invalidateDrawMargins();
 
     emit tilesetTileOffsetChanged(mTileset.data());
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTileOffsetChanged(mTileset.data());
 }
 
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
@@ -282,31 +289,63 @@ QList<Object *> TilesetDocument::currentObjects() const
     return Document::currentObjects();
 }
 
-void TilesetDocument::onTerrainAboutToBeAdded(Tileset *tileset, int terrainId)
+void TilesetDocument::setTileType(Tile *tile, const QString &type)
 {
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    tile->setType(type);
+    emit tileTypeChanged(tile);
+
     for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAboutToBeAdded(tileset, terrainId);
+        emit mapDocument->tileTypeChanged(tile);
 }
 
-void TilesetDocument::onTerrainAdded(Tileset *tileset, int terrainId)
+void TilesetDocument::setTileImage(Tile *tile, const QPixmap &image, const QUrl &source)
 {
+    Q_ASSERT(tile->tileset() == mTileset.data());
+
+    mTileset->setTileImage(tile, image, source);
+
+    emit tileImageSourceChanged(tile);
+
     for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAdded(tileset, terrainId);
+        emit mapDocument->tileImageSourceChanged(tile);
 }
 
-void TilesetDocument::onTerrainAboutToBeRemoved(Terrain *terrain)
+void TilesetDocument::onPropertyAdded(Object *object, const QString &name)
 {
     for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainAboutToBeRemoved(mTileset.data(), terrain);
+        emit mapDocument->propertyAdded(object, name);
+}
+
+void TilesetDocument::onPropertyRemoved(Object *object, const QString &name)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertyRemoved(object, name);
+}
+
+void TilesetDocument::onPropertyChanged(Object *object, const QString &name)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertyChanged(object, name);
+}
+
+void TilesetDocument::onPropertiesChanged(Object *object)
+{
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->propertiesChanged(object);
 }
 
 void TilesetDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
         setCurrentObject(nullptr);
+}
 
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTerrainRemoved(mTileset.data(), terrain);
+void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
+{
+    if (wangSet == mCurrentObject)
+        setCurrentObject(nullptr);
 }
 
 } // namespace Internal

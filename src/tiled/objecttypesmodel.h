@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTTYPESMODEL_H
-#define OBJECTTYPESMODEL_H
+#pragma once
 
 #include "preferences.h"
 #include "properties.h"
@@ -68,5 +67,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTTYPESMODEL_H

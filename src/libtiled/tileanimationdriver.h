@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_TILEANIMATIONDRIVER_H
-#define TILED_TILEANIMATIONDRIVER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -60,5 +59,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // TILED_TILEANIMATIONDRIVER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ZOOMABLE_H
-#define ZOOMABLE_H
+#pragma once
 
 #include <QObject>
 #include <QRegExp>
@@ -103,5 +102,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ZOOMABLE_H

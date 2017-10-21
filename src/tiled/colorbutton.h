@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COLORBUTTON_H
-#define COLORBUTTON_H
+#pragma once
 
 #include <QColor>
 #include <QToolButton>
@@ -56,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COLORBUTTON_H

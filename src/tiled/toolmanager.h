@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOOLMANAGER_H
-#define TOOLMANAGER_H
+#pragma once
 
 #include <QObject>
 
@@ -27,6 +26,9 @@ class QAction;
 class QActionGroup;
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class AbstractTool;
@@ -56,6 +58,15 @@ public:
 
     void retranslateTools();
 
+    void createShortcuts(QWidget *parent);
+
+public slots:
+    /**
+     * Sets the tile that will be used when the creation mode is
+     * CreateTileObjects or when replacing a tile of a tile object.
+     */
+    void setTile(Tile *tile);
+
 signals:
     void selectedToolChanged(AbstractTool *tool);
 
@@ -81,6 +92,7 @@ private:
     AbstractTool *mDisabledTool;
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
+    Tile *mTile;
 
     bool mSelectEnabledToolPending;
 };
@@ -96,5 +108,3 @@ inline AbstractTool *ToolManager::selectedTool() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TOOLMANAGER_H

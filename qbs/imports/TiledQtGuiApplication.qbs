@@ -1,6 +1,7 @@
 import qbs
 
 QtGuiApplication {
+    cpp.useRPaths: project.useRPaths
     cpp.rpaths: {
         if (qbs.targetOS.contains("darwin"))
             return ["@loader_path/../Frameworks"];

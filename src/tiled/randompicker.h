@@ -18,10 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_RANDOMPICKER_H
-#define TILED_INTERNAL_RANDOMPICKER_H
+#pragma once
 
 #include <QMap>
+
+#include <random>
 
 namespace Tiled {
 namespace Internal {
@@ -30,15 +31,16 @@ namespace Internal {
  * A class that helps pick random things that each have a probability
  * assigned.
  */
-template<typename T>
+template<typename T, typename Real = qreal>
 class RandomPicker
 {
 public:
     RandomPicker()
         : mSum(0.0)
+        , mRandomEngine(std::random_device{}())
     {}
 
-    void add(const T &value, qreal probability = 1.0)
+    void add(const T &value, Real probability = 1.0)
     {
         if (probability > 0) {
             mSum += probability;
@@ -55,12 +57,28 @@ public:
     {
         Q_ASSERT(!isEmpty());
 
-        const qreal random = ((qreal)rand() / RAND_MAX) * mSum;
+        std::uniform_real_distribution<Real> dis(0, mSum);
+        const Real random = dis(mRandomEngine);
         const auto it = mThresholds.lowerBound(random);
         if (it != mThresholds.end())
             return it.value();
         else
             return (mThresholds.end() - 1).value();
+    }
+
+    //same as pick, but removes the selected element.
+    T take()
+    {
+        Q_ASSERT(!isEmpty());
+
+        std::uniform_real_distribution<Real> dis(0, mSum);
+        const Real random = dis(mRandomEngine);
+        const auto it = mThresholds.lowerBound(random);
+
+        if (it != mThresholds.end())
+            return mThresholds.take(it.key());
+        else
+            return mThresholds.take((it - 1).key());
     }
 
     void clear()
@@ -70,11 +88,10 @@ public:
     }
 
 private:
-    qreal mSum;
-    QMap<qreal, T> mThresholds;
+    Real mSum;
+    QMap<Real, T> mThresholds;
+    mutable std::default_random_engine mRandomEngine;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_RANDOMPICKER_H

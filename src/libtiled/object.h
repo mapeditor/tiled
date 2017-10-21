@@ -26,11 +26,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
 #include "properties.h"
-
+#include "objecttypes.h"
 
 namespace Tiled {
 
@@ -44,9 +43,13 @@ public:
         LayerType,
         MapObjectType,
         MapType,
+        ObjectTemplateType,
+        TemplateGroupType,
         TerrainType,
         TilesetType,
-        TileType
+        TileType,
+        WangSetType,
+        WangColorType
     };
 
     Object(TypeId typeId) : mTypeId(typeId) {}
@@ -59,7 +62,7 @@ public:
     /**
      * Virtual destructor.
      */
-    virtual ~Object() {}
+    virtual ~Object();
 
     /**
      * Returns the type of this object.
@@ -78,6 +81,12 @@ public:
     { mProperties = properties; }
 
     /**
+     * Clears all existing properties
+     */
+    void clearProperties ()
+    { mProperties.clear(); }
+
+    /**
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
@@ -91,6 +100,8 @@ public:
      */
     QVariant property(const QString &name) const
     { return mProperties.value(name); }
+
+    QVariant inheritedProperty(const QString &name) const;
 
     /**
      * Returns the value of the object's \a name property, as a string.
@@ -119,11 +130,35 @@ public:
     void removeProperty(const QString &name)
     { mProperties.remove(name); }
 
+    bool isPartOfTileset() const;
+
+    static void setObjectTypes(const ObjectTypes &objectTypes);
+    static const ObjectTypes &objectTypes()
+    { return mObjectTypes; }
+
 private:
     const TypeId mTypeId;
     Properties mProperties;
+
+    static ObjectTypes mObjectTypes;
 };
 
-} // namespace Tiled
 
-#endif // OBJECT_H
+/**
+ * Returns whether this object is stored as part of a tileset.
+ */
+inline bool Object::isPartOfTileset() const
+{
+    switch (mTypeId) {
+    case Object::TilesetType:
+    case Object::TileType:
+    case Object::TerrainType:
+    case Object::WangSetType:
+    case Object::WangColorType:
+        return true;
+    default:
+        return false;
+    }
+}
+
+} // namespace Tiled

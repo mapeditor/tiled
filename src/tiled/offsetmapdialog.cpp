@@ -26,7 +26,8 @@
 #include "tilelayer.h"
 #include "ui_offsetmapdialog.h"
 
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
@@ -40,6 +41,11 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
         disableBoundsSelectionCurrentArea();
     else
         mUi->boundsSelection->setCurrentIndex(1);
+
+    if (mMapDocument->map()->infinite()) {
+        mUi->wrapX->setEnabled(false);
+        mUi->wrapY->setEnabled(false);
+    }
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -47,27 +53,29 @@ OffsetMapDialog::~OffsetMapDialog()
     delete mUi;
 }
 
-QList<int> OffsetMapDialog::affectedLayerIndexes() const
+QList<Layer *> OffsetMapDialog::affectedLayers() const
 {
-    QList<int> layerIndexes;
-    const Map *map = mMapDocument->map();
+    QList<Layer *> layers;
+
+    LayerIterator iterator(mMapDocument->map());
 
     switch (layerSelection()) {
     case AllVisibleLayers:
-        for (int i = 0; i < map->layerCount(); i++)
-            if (map->layerAt(i)->isVisible())
-                layerIndexes.append(i);
+        while (Layer *layer = iterator.next())
+            if (!layer->isGroupLayer() && layer->isVisible())
+                layers.append(layer);
         break;
     case AllLayers:
-        for (int i = 0; i < map->layerCount(); i++)
-            layerIndexes.append(i);
+        while (Layer *layer = iterator.next())
+            if (!layer->isGroupLayer())
+                layers.append(layer);
         break;
     case SelectedLayer:
-        layerIndexes.append(mMapDocument->currentLayerIndex());
+        layers.append(mMapDocument->currentLayer());
         break;
     }
 
-    return layerIndexes;
+    return layers;
 }
 
 QRect OffsetMapDialog::affectedBoundingRect() const
@@ -77,6 +85,15 @@ QRect OffsetMapDialog::affectedBoundingRect() const
     switch (boundsSelection()) {
     case WholeMap:
         boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+
+        if (mMapDocument->map()->infinite()) {
+            LayerIterator iterator(mMapDocument->map());
+
+            while (Layer *layer = iterator.next())
+                if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                    boundingRect = boundingRect.united(tileLayer->bounds());
+
+        }
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();
@@ -132,3 +149,6 @@ void OffsetMapDialog::disableBoundsSelectionCurrentArea()
     mUi->boundsSelection->setEnabled(false);
     mUi->boundsSelection->setCurrentIndex(0);
 }
+
+} // namespace Internal
+} // namespace Tiled

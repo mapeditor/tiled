@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STANDARDAUTOUPDATER_H
-#define STANDARDAUTOUPDATER_H
+#pragma once
 
 #include "autoupdater.h"
 
@@ -36,5 +35,3 @@ public:
 
     QDateTime lastUpdateCheckDate() override;
 };
-
-#endif // STANDARDAUTOUPDATER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTOMAPPERWRAPPER_H
-#define AUTOMAPPERWRAPPER_H
+#pragma once
 
 #include "automapper.h"
 
@@ -59,5 +58,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // AUTOMAPPERWRAPPER_H

@@ -26,8 +26,14 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_H
-#define TILED_H
+#pragma once
+
+#include "tiled_global.h"
+
+#include <QString>
+#include <QUrl>
+
+class QDir;
 
 namespace Tiled {
 
@@ -53,9 +59,23 @@ enum Alignment {
     BottomRight
 };
 
+enum LoadingStatus {
+    LoadingPending,
+    LoadingReady,
+    LoadingInProgress,
+    LoadingError
+};
+
+const int CHUNK_SIZE = 16;
+const int CHUNK_MASK = CHUNK_SIZE - 1;
+
 static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
+static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
+static const char TEMPLATES_MIMETYPE[] = "application/vnd.templates.list";
+static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
+
+TILEDSHARED_EXPORT QString toFileReference(const QUrl &url, const QDir &dir);
+TILEDSHARED_EXPORT QUrl toUrl(const QString &reference, const QDir &dir);
 
 } // namespace Tiled
-
-#endif // TILED_H

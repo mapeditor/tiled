@@ -8,6 +8,7 @@ TiledQtGuiApplication {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["."]
+    cpp.defines: ["QT_NO_FOREACH"]
 
     consoleApplication: false
 
@@ -21,6 +22,14 @@ TiledQtGuiApplication {
         "converterwindow.ui",
         "main.cpp",
     ]
+
+    Group {
+        name: "Man page (Linux)"
+        condition: qbs.targetOS.contains("linux")
+        qbs.install: true
+        qbs.installDir: "share/man/man1"
+        files: [ "../../man/automappingconverter.1" ]
+    }
 
     Properties {
         condition: qbs.targetOS.contains("macos")

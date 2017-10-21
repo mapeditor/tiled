@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NEWMAPDIALOG_H
-#define NEWMAPDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -52,11 +51,11 @@ public:
 private slots:
     void refreshPixelSize();
 
+    void updateWidgets(bool checked);
+
 private:
     Ui::NewMapDialog *mUi;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // NEWMAPDIALOG_H

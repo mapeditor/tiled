@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_GLOBAL_H
-#define TILED_GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -36,5 +35,3 @@
 #else
 #  define TILEDSHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#endif // TILED_GLOBAL_H

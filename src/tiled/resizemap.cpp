@@ -57,7 +57,7 @@ void ResizeMap::swapSize()
     map->setHeight(mSize.height());
     mSize = oldSize;
 
-    mMapDocument->emitMapChanged();
+    emit mMapDocument->mapChanged();
 }
 
 } // namespace Internal

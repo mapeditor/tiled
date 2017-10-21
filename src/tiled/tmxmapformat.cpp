@@ -28,35 +28,10 @@
 
 #include <QBuffer>
 #include <QDir>
+#include <QXmlStreamReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-namespace {
-
-class EditorMapReader : public MapReader
-{
-protected:
-    /**
-     * Overridden in order to check with the TilesetManager whether the tileset
-     * is already loaded.
-     */
-    SharedTileset readExternalTileset(const QString &source, QString *error) override
-    {
-        // Check if this tileset is already loaded
-        TilesetManager *manager = TilesetManager::instance();
-        SharedTileset tileset = manager->findTileset(source);
-
-        // If not, try to load it
-        if (!tileset)
-            tileset = MapReader::readExternalTileset(source, error);
-
-        return tileset;
-    }
-};
-
-} // anonymous namespace
-
 
 TmxMapFormat::TmxMapFormat(QObject *parent)
     : MapFormat(parent)
@@ -67,7 +42,7 @@ Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(fileName);
     if (!map)
         mError = reader.errorString();
@@ -110,7 +85,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.setData(data);
     buffer.open(QBuffer::ReadOnly);
 
-    EditorMapReader reader;
+    MapReader reader;
     Map *map = reader.readMap(&buffer);
     if (!map)
         mError = reader.errorString();
@@ -148,7 +123,7 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
     mError.clear();
 
-    EditorMapReader reader;
+    MapReader reader;
     SharedTileset tileset = reader.readTileset(fileName);
     if (!tileset)
         mError = reader.errorString();
@@ -185,6 +160,59 @@ bool TsxTilesetFormat::supportsFile(const QString &fileName) const
             xml.setDevice(&file);
 
             if (xml.readNextStartElement() && xml.name() == QLatin1String("tileset"))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+TgxTemplateGroupFormat::TgxTemplateGroupFormat(QObject *parent)
+    : TemplateGroupFormat(parent)
+{
+}
+
+TemplateGroup *TgxTemplateGroupFormat::read(const QString &fileName)
+{
+    mError.clear();
+
+    MapReader reader;
+    TemplateGroup *templateGroup = reader.readTemplateGroup(fileName);
+    if (!templateGroup)
+        mError = reader.errorString();
+
+    return templateGroup;
+}
+
+bool TgxTemplateGroupFormat::write(const TemplateGroup *templateGroup, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result = writer.writeTemplateGroup(templateGroup, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
+}
+
+bool TgxTemplateGroupFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".tgx"), Qt::CaseInsensitive))
+        return true;
+
+    if (fileName.endsWith(QLatin1String(".xml"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QXmlStreamReader xml;
+            xml.setDevice(&file);
+
+            if (xml.readNextStartElement() && xml.name() == QLatin1String("templategroup"))
                 return true;
         }
     }

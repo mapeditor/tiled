@@ -1,6 +1,6 @@
 /*
  * tileselectiontool.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -27,19 +27,21 @@
 #include "mapscene.h"
 #include "tilelayer.h"
 
+#include <QApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 TileSelectionTool::TileSelectionTool(QObject *parent)
-    : AbstractTileTool(tr("Rectangular Select"),
-                       QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-rect-select.png")),
-                       QKeySequence(tr("R")),
-                       parent)
-    , mSelectionMode(Replace)
+    : AbstractTileSelectionTool(tr("Rectangular Select"),
+                                QIcon(QLatin1String(
+                                      ":images/22x22/stock-tool-rect-select.png")),
+                                QKeySequence(tr("R")),
+                                parent)
+    , mMouseDown(false)
     , mSelecting(false)
 {
-    setTilePositionMethod(BetweenTiles);
+    setTilePositionMethod(OnTiles);
 }
 
 void TileSelectionTool::tilePositionChanged(const QPoint &)
@@ -62,23 +64,29 @@ void TileSelectionTool::updateStatusInfo()
                   .arg(area.width()).arg(area.height()));
 }
 
+void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    if (mMouseDown && !mSelecting) {
+        QPoint screenPos = QCursor::pos();
+        const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
+
+        // Use a reduced start drag distance to increase the responsiveness
+        if (dragDistance >= QApplication::startDragDistance() / 2) {
+            mSelecting = true;
+            tilePositionChanged(tilePosition());
+        }
+    }
+
+    AbstractTileTool::mouseMoved(pos, modifiers);
+}
+
 void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
-    const Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if (button == Qt::LeftButton) {
-        if (modifiers == Qt::ControlModifier) {
-            mSelectionMode = Subtract;
-        } else if (modifiers == Qt::ShiftModifier) {
-            mSelectionMode = Add;
-        } else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier)) {
-            mSelectionMode = Intersect;
-        } else {
-            mSelectionMode = Replace;
-        }
-
-        mSelecting = true;
+        mMouseDown = true;
+        mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
         brushItem()->setTileRegion(QRegion());
     }
@@ -87,28 +95,27 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         if (mSelecting) {
             // Cancel selecting
             mSelecting = false;
+            mMouseDown = false; // Avoid restarting select on move
             brushItem()->setTileRegion(QRegion());
         } else {
-            // Clear the selection
-            MapDocument *document = mapDocument();
-            if (!document->selectedArea().isEmpty()) {
-                QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
-                document->undoStack()->push(cmd);
-            }
+            clearSelection();
         }
     }
 }
 
 void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && mSelecting) {
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    if (mSelecting) {
         mSelecting = false;
 
         MapDocument *document = mapDocument();
         QRegion selection = document->selectedArea();
         const QRect area = selectedArea();
 
-        switch (mSelectionMode) {
+        switch (selectionMode()) {
         case Replace:   selection = area; break;
         case Add:       selection += area; break;
         case Subtract:  selection -= area; break;
@@ -122,22 +129,37 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
         brushItem()->setTileRegion(QRegion());
         updateStatusInfo();
+    } else if (mMouseDown) {
+        // Clicked without dragging and not cancelled
+        clearSelection();
     }
+
+    mMouseDown = false;
 }
 
 void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
     setShortcut(QKeySequence(tr("R")));
+
+    AbstractTileSelectionTool::languageChanged();
 }
 
 QRect TileSelectionTool::selectedArea() const
 {
-    const QPoint tilePos = tilePosition();
-    const QPoint pos(qMin(tilePos.x(), mSelectionStart.x()),
-                     qMin(tilePos.y(), mSelectionStart.y()));
-    const QSize size(qAbs(tilePos.x() - mSelectionStart.x()),
-                     qAbs(tilePos.y() - mSelectionStart.y()));
+    QRect area = QRect(mSelectionStart, tilePosition()).normalized();
+    if (area.width() == 0)
+        area.adjust(-1, 0, 1, 0);
+    if (area.height() == 0)
+        area.adjust(0, -1, 0, 1);
+    return area;
+}
 
-    return QRect(pos, size);
+void TileSelectionTool::clearSelection()
+{
+    MapDocument *document = mapDocument();
+    if (!document->selectedArea().isEmpty()) {
+        QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
+        document->undoStack()->push(cmd);
+    }
 }

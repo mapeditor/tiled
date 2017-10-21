@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTTILETOOL_H
-#define ABSTRACTTILETOOL_H
+#pragma once
 
 #include "abstracttool.h"
 
@@ -46,6 +45,7 @@ public:
     AbstractTileTool(const QString &name,
                      const QIcon &icon,
                      const QKeySequence &shortcut,
+                     BrushItem *brushItem = nullptr,
                      QObject *parent = nullptr);
 
     ~AbstractTileTool();
@@ -127,5 +127,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ABSTRACTTILETOOL_H

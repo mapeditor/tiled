@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILEPROBABILITY_H
-#define CHANGETILEPROBABILITY_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -56,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGETILEPROBABILITY_H

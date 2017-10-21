@@ -32,6 +32,7 @@
 
 #include "layer.h"
 #include "objectgroup.h"
+#include "templategroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "mapobject.h"
@@ -41,7 +42,7 @@
 using namespace Tiled;
 
 Map::Map(Orientation orientation,
-         int width, int height, int tileWidth, int tileHeight):
+         int width, int height, int tileWidth, int tileHeight, bool infinite):
     Object(MapType),
     mOrientation(orientation),
     mRenderOrder(RightDown),
@@ -49,6 +50,7 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
+    mInfinite(infinite),
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
@@ -66,6 +68,7 @@ Map::Map(const Map &map):
     mHeight(map.mHeight),
     mTileWidth(map.mTileWidth),
     mTileHeight(map.mTileHeight),
+    mInfinite(map.mInfinite),
     mHexSideLength(map.mHexSideLength),
     mStaggerAxis(map.mStaggerAxis),
     mStaggerIndex(map.mStaggerIndex),
@@ -161,25 +164,18 @@ void Map::recomputeDrawMargins() const
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
        if (layer->layerType() == type)
            count++;
     return count;
 }
 
-QList<Layer*> Map::layers(Layer::TypeFlag type) const
-{
-    QList<Layer*> layers;
-    for (Layer *layer : mLayers)
-        if (layer->layerType() == type)
-            layers.append(layer);
-    return layers;
-}
-
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (ObjectGroup *og = layer->asObjectGroup())
             layers.append(og);
     return layers;
@@ -188,7 +184,8 @@ QList<ObjectGroup*> Map::objectGroups() const
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
-    for (Layer *layer : mLayers)
+    LayerIterator iterator(this);
+    while (Layer *layer = iterator.next())
         if (TileLayer *tl = layer->asTileLayer())
             layers.append(tl);
     return layers;
@@ -220,12 +217,8 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (ObjectGroup *group = layer->asObjectGroup()) {
-        for (MapObject *o : group->objects()) {
-            if (o->id() == 0)
-                o->setId(takeNextObjectId());
-        }
-    }
+    if (ObjectGroup *group = layer->asObjectGroup())
+        initializeObjectIds(*group);
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -298,6 +291,42 @@ bool Map::isTilesetUsed(const Tileset *tileset) const
     return false;
 }
 
+bool Map::addTemplateGroup(TemplateGroup *templateGroup)
+{
+    if (mTemplateGroups.contains(templateGroup))
+        return false;
+
+    mTemplateGroups.append(templateGroup);
+    return true;
+}
+
+QList<MapObject*> Map::replaceTemplateGroup(TemplateGroup *oldTemplateGroup, TemplateGroup *newTemplateGroup)
+{
+    Q_ASSERT(oldTemplateGroup != newTemplateGroup);
+
+    QList<MapObject*> changedObjects;
+    const int index = mTemplateGroups.indexOf(oldTemplateGroup);
+    for (auto group : objectGroups()) {
+        for (auto o : group->objects()){
+            if (o->templateRef().templateGroup == oldTemplateGroup) {
+                o->setTemplateRef({newTemplateGroup, o->templateRef().templateId});
+                o->syncWithTemplate();
+                changedObjects.append(o);
+            }
+        }
+    }
+
+    mTemplateGroups.replace(index, newTemplateGroup);
+    return changedObjects;
+}
+
+void Map::initializeObjectIds(ObjectGroup &objectGroup)
+{
+    for (MapObject *o : objectGroup) {
+        if (o->id() == 0)
+            o->setId(takeNextObjectId());
+    }
+}
 
 QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {

@@ -31,10 +31,10 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 RenameLayer::RenameLayer(MapDocument *mapDocument,
-                         int layerIndex,
+                         Layer *layer,
                          const QString &name):
     mMapDocument(mapDocument),
-    mLayerIndex(layerIndex),
+    mLayer(layer),
     mName(name)
 {
     setText(QCoreApplication::translate("Undo Commands", "Rename Layer"));
@@ -52,8 +52,7 @@ void RenameLayer::redo()
 
 void RenameLayer::swapName()
 {
-    const Layer *layer = mMapDocument->map()->layerAt(mLayerIndex);
-    const QString previousName = layer->name();
-    mMapDocument->layerModel()->renameLayer(mLayerIndex, mName);
+    const QString previousName = mLayer->name();
+    mMapDocument->layerModel()->renameLayer(mLayer, mName);
     mName = previousName;
 }

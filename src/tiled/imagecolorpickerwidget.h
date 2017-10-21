@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IMAGECOLORPICKERWIDGET_H
-#define IMAGECOLORPICKERWIDGET_H
+#pragma once
 
 #include <QColor>
 #include <QPixmap>
@@ -67,5 +66,3 @@ private slots:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // IMAGECOLORPICKERWIDGET_H

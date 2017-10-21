@@ -118,7 +118,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         if (!tileLayer)
             return stamp;
 
-        QRegion selection = mapDocument->selectedArea();
+        QRegion selection = mapDocument->selectedArea().intersected(tileLayer->bounds());
         if (selection.isEmpty())
             return stamp;
 

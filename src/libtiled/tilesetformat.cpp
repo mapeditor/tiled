@@ -35,21 +35,21 @@ namespace Tiled {
 SharedTileset readTileset(const QString &fileName, QString *error)
 {
     // Try the first registered tileset format that claims to support the file
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>()) {
-        if (format->supportsFile(fileName)) {
-            SharedTileset tileset = format->read(fileName);
+    if (TilesetFormat *format = findSupportingFormat(fileName)) {
+        SharedTileset tileset = format->read(fileName);
 
-            if (error) {
-                if (!tileset)
-                    *error = format->errorString();
-                else
-                    *error = QString();
-            }
-
-            return tileset;
+        if (error) {
+            if (!tileset)
+                *error = format->errorString();
+            else
+                *error = QString();
         }
-    }
 
+        if (tileset)
+            tileset->setFormat(format);
+
+        return tileset;
+    }
 
     // Fall back to default reader (TSX format)
     MapReader reader;
@@ -63,6 +63,14 @@ SharedTileset readTileset(const QString &fileName, QString *error)
     }
 
     return tileset;
+}
+
+TilesetFormat *findSupportingFormat(const QString &fileName)
+{
+    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>())
+        if (format->supportsFile(fileName))
+            return format;
+    return nullptr;
 }
 
 } // namespace Tiled

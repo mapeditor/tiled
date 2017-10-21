@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFOLDPLUGIN_H
-#define DEFOLDPLUGIN_H
+#pragma once
 
 #include "defoldplugin_global.h"
 #include "tiled.h"
@@ -39,6 +38,7 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
+    QString shortName() const override;
     QStringList outputFiles(const Tiled::Map *, const QString &fileName) const override;
 
 protected:
@@ -49,5 +49,3 @@ private:
 };
 
 } // namespace Defold
-
-#endif

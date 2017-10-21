@@ -19,10 +19,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTTOMAPCONVERTER_H
-#define VARIANTTOMAPCONVERTER_H
+#pragma once
 
 #include "gidmapper.h"
+#include "tidmapper.h"
+#include "mapobject.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -30,6 +31,7 @@
 
 namespace Tiled {
 
+class GroupLayer;
 class Layer;
 class Map;
 class ObjectGroup;
@@ -69,6 +71,7 @@ public:
      * errorString().
      */
     SharedTileset toTileset(const QVariant &variant, const QDir &directory);
+    TemplateGroup *toTemplateGroup(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -79,12 +82,17 @@ private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
+    TemplateGroup *toTemplateGroup(const QVariant &variant);
     Layer *toLayer(const QVariant &variant);
     TileLayer *toTileLayer(const QVariantMap &variantMap);
     ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    MapObject *toMapObject(const QVariantMap &variantMap);
+    ObjectTemplate *toObjectTemplate(const QVariantMap &variantMap);
     ImageLayer *toImageLayer(const QVariantMap &variantMap);
+    GroupLayer *toGroupLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
+    TextData toTextData(const QVariantMap &variant) const;
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 
@@ -92,9 +100,8 @@ private:
     QDir mMapDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
+    TidMapper mTidMapper;
     QString mError;
 };
 
 } // namespace Tiled
-
-#endif // VARIANTTOMAPCONVERTER_H

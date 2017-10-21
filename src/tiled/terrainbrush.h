@@ -20,8 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TERRAINBRUSH_H
-#define TERRAINBRUSH_H
+#pragma once
 
 #include "abstracttiletool.h"
 #include "tilelayer.h"
@@ -145,5 +144,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // STAMPBRUSH_H

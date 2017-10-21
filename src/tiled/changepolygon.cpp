@@ -23,6 +23,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 
 #include <QCoreApplication>
 
@@ -36,6 +37,7 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldPolygon(oldPolygon)
     , mNewPolygon(mapObject->polygon())
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
 }
@@ -48,6 +50,7 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mOldPolygon(oldPolygon)
     , mNewPolygon(newPolygon)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
 {
     setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
 }
@@ -55,9 +58,69 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
 void ChangePolygon::undo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mOldPolygon);
+    mMapObject->setPropertyChanged(MapObject::ShapeProperty, mOldChangeState);
 }
 
 void ChangePolygon::redo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mNewPolygon);
+    mMapObject->setPropertyChanged(MapObject::ShapeProperty);
+}
+
+TogglePolygonPolyline::TogglePolygonPolyline(MapObject *mapObject)
+    : mMapObject(mapObject)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Toggle Polygon/Polyline"));
+}
+
+void TogglePolygonPolyline::toggle()
+{
+    mMapObject->setShape((mMapObject->shape() == MapObject::Polygon) ? MapObject::Polyline : MapObject::Polygon);
+}
+
+SplitPolyline::SplitPolyline(MapDocument *mapDocument,
+                             MapObject *mapObject,
+                             int index)
+    : mMapDocument(mapDocument)
+    , mFirstPolyline(mapObject)
+    , mEdgeIndex(index)
+    , mOldChangeState(mapObject->propertyChanged(MapObject::ShapeProperty))
+{
+    mObjectIndex = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;
+    mSecondPolyline = mFirstPolyline->clone();
+    mSecondPolyline->resetId();
+
+    setText(QCoreApplication::translate("Undo Commands", "Split Polyline"));
+}
+
+void SplitPolyline::undo()
+{
+    mObjectIndex = mMapDocument->mapObjectModel()->removeObject(mFirstPolyline->objectGroup(),
+                                                                mSecondPolyline);
+
+    QPolygonF firstPolygon = mFirstPolyline->polygon();
+    QPolygonF secondPolygon = mSecondPolyline->polygon();
+
+    firstPolygon += secondPolygon;
+    mSecondPolyline->setPolygon(firstPolygon);
+
+    mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, firstPolygon);
+    mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty, mOldChangeState);
+}
+
+void SplitPolyline::redo()
+{
+    mMapDocument->mapObjectModel()->insertObject(mFirstPolyline->objectGroup(), mObjectIndex,
+                                                 mSecondPolyline);
+
+    QPolygonF firstPolygon = mFirstPolyline->polygon();
+    QPolygonF secondPolygon = mSecondPolyline->polygon();
+
+    firstPolygon.erase(firstPolygon.begin() + mEdgeIndex + 1, firstPolygon.end());
+    secondPolygon.erase(secondPolygon.begin(), secondPolygon.begin() + mEdgeIndex + 1);
+
+    mMapDocument->mapObjectModel()->setObjectPolygon(mFirstPolyline, firstPolygon);
+    mMapDocument->mapObjectModel()->setObjectPolygon(mSecondPolyline, secondPolygon);
+    mFirstPolyline->setPropertyChanged(MapObject::ShapeProperty);
+    mSecondPolyline->setPropertyChanged(MapObject::ShapeProperty);
 }

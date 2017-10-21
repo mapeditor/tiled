@@ -21,8 +21,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSCENE_H
-#define MAPSCENE_H
+#pragma once
+
+#include "mapdocument.h"
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -42,6 +43,7 @@ class Tileset;
 namespace Internal {
 
 class AbstractTool;
+class LayerItem;
 class MapDocument;
 class MapObjectItem;
 class MapScene;
@@ -131,6 +133,9 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
+    void dropEvent(QGraphicsSceneDragDropEvent *event) override;
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
+    void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private slots:
     void setGridVisible(bool visible);
@@ -152,15 +157,15 @@ private slots:
      */
     void repaintRegion(const QRegion &region, Layer *layer);
 
-    void currentLayerIndexChanged();
+    void currentLayerChanged();
 
     void mapChanged();
     void repaintTileset(Tileset *tileset);
-    void tileLayerDrawMarginsChanged(TileLayer *tileLayer);
+    void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
-    void layerAdded(int index);
-    void layerRemoved(int index);
-    void layerChanged(int index);
+    void layerAdded(Layer *layer);
+    void layerRemoved(Layer *layer);
+    void layerChanged(Layer *layer);
 
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
@@ -179,7 +184,8 @@ private slots:
     void syncAllObjectItems();
 
 private:
-    QGraphicsItem *createLayerItem(Layer *layer);
+    void createLayerItems(const QList<Layer *> &layers);
+    LayerItem *createLayerItem(Layer *layer);
 
     void updateDefaultBackgroundColor();
     void updateSceneRect();
@@ -197,17 +203,14 @@ private:
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;
-    QVector<QGraphicsItem*> mLayerItems;
+    QMap<Layer*, LayerItem*> mLayerItems;
     QGraphicsRectItem *mDarkRectangle;
     QColor mDefaultBackgroundColor;
     ObjectSelectionItem *mObjectSelectionItem;
 
-    typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
-    ObjectItems mObjectItems;
+    QMap<MapObject*, MapObjectItem*> mObjectItems;
     QSet<MapObjectItem*> mSelectedObjectItems;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSCENE_H

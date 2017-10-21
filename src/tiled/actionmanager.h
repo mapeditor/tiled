@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_ACTIONMANAGER_H
-#define TILED_INTERNAL_ACTIONMANAGER_H
+#pragma once
 
 #include "id.h"
 
@@ -56,5 +55,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_ACTIONMANAGER_H

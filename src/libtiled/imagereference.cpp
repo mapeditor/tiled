@@ -27,10 +27,10 @@ bool ImageReference::hasImage() const
     return !source.isEmpty() || !data.isEmpty();
 }
 
-QImage Tiled::ImageReference::create() const
+QImage ImageReference::create() const
 {
-    if (!source.isEmpty())
-        return QImage(source);
+    if (source.isLocalFile())
+        return QImage(source.toLocalFile());
     else if (!data.isEmpty())
         return QImage::fromData(data, format);
 

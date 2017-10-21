@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMANDDATAMODEL_H
-#define COMMANDDATAMODEL_H
+#pragma once
 
 #include "command.h"
 
@@ -37,33 +36,19 @@ class CommandDataModel : public QAbstractTableModel
 
 public:
 
-    enum { NameColumn, CommandColumn, EnabledColumn };
+    enum { NameColumn, ShortcutColumn, EnabledColumn };
 
     /**
       * Constructs the object and parses the users settings to allow easy
       * programmatic access to the command list.
       */
-    CommandDataModel();
+    CommandDataModel(QObject *parent = nullptr);
 
     /**
       * Saves the data to the users preferences.
       */
     void commit();
 
-    /**
-      * Returns whether saving before executing commands is enabled.
-      */
-    bool saveBeforeExecute() const { return mSaveBeforeExecute; }
-
-    /**
-      * Enables or disables saving before executing commands.
-      */
-    void setSaveBeforeExecute(bool enabled) { mSaveBeforeExecute = enabled; }
-
-    /**
-      * Returns the first enabled command in the list, or an empty
-      * disabled command if there are no enabled commands.
-      */
     Command firstEnabledCommand() const;
 
     /**
@@ -85,12 +70,12 @@ public:
     /**
      * Returns the number of rows (this includes the <New Command> row).
      */
-    int rowCount(const QModelIndex &) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data at <i>index</i> for the given <i>role</i>.
@@ -142,6 +127,15 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
                       int column, const QModelIndex &parent) override;
 
+    void setExecutable(const QModelIndex &index, const QString &value);
+    void setArguments(const QModelIndex &index, const QString &value);
+    void setWorkingDirectory(const QModelIndex &index, const QString &value);
+    void setShortcut(const QModelIndex &index, const QKeySequence &value);
+    void setShowOutput(const QModelIndex &index, bool value);
+    void setSaveBeforeExecute(const QModelIndex &index, bool value);
+
+    Command command(const QModelIndex &index) const;
+
 public slots:
 
     /**
@@ -179,10 +173,7 @@ private:
 
     QSettings mSettings;
     QList<Command> mCommands;
-    bool mSaveBeforeExecute;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // COMMANDDATAMODEL_H

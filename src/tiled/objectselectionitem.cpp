@@ -20,16 +20,21 @@
 
 #include "objectselectionitem.h"
 
-#include "objectgroup.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "tile.h"
+#include "utils.h"
 
 #include <QGuiApplication>
+#include <QTimerEvent>
+
+#include <cmath>
 
 namespace Tiled {
 namespace Internal {
@@ -111,6 +116,8 @@ static QRectF objectBounds(const MapObject *object,
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon);
             return screenPolygon.boundingRect();
         }
+        case MapObject::Text:
+            return renderer->boundingRect(object);
         }
     }
 
@@ -124,11 +131,11 @@ static Preferences::ObjectLabelVisiblity objectLabelVisibility()
 }
 
 
-class MapObjectOutline : public QGraphicsItem
+class MapObjectOutline : public QGraphicsObject
 {
 public:
     MapObjectOutline(MapObject *object, QGraphicsItem *parent = nullptr)
-        : QGraphicsItem(parent)
+        : QGraphicsObject(parent)
         , mObject(object)
     {
         setZValue(1); // makes sure outlines are above labels
@@ -141,9 +148,16 @@ public:
                const QStyleOptionGraphicsItem *,
                QWidget *) override;
 
+protected:
+    void timerEvent(QTimerEvent *event) override;
+
 private:
     QRectF mBoundingRect;
     MapObject *mObject;
+
+    // Marching ants effect
+    int mUpdateTimer = startTimer(100);
+    int mOffset = 0;
 };
 
 void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
@@ -153,7 +167,7 @@ void MapObjectOutline::syncWithMapObject(MapRenderer *renderer)
 
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos + mObject->objectGroup()->offset());
+    setPos(pixelPos + mObject->objectGroup()->totalOffset());
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -168,28 +182,43 @@ QRectF MapObjectOutline::boundingRect() const
 }
 
 void MapObjectOutline::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *,
-                          QWidget *)
+                             const QStyleOptionGraphicsItem *,
+                             QWidget *)
 {
-    const QLineF horizontal[2] = {
+    const QLineF lines[4] = {
         QLineF(mBoundingRect.topLeft(), mBoundingRect.topRight()),
-        QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight())
-    };
-
-    const QLineF vertical[2] = {
+        QLineF(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight()),
         QLineF(mBoundingRect.topLeft(), mBoundingRect.bottomLeft()),
         QLineF(mBoundingRect.topRight(), mBoundingRect.bottomRight())
     };
 
-    QPen dashPen(Qt::DashLine);
-    dashPen.setCosmetic(true);
-    dashPen.setDashOffset(qMax(qreal(0), x()));
-    painter->setPen(dashPen);
-    painter->drawLines(horizontal, 2);
+    // Draw a solid white line
+    QPen pen(Qt::white, 1.0, Qt::SolidLine);
+    pen.setCosmetic(true);
+    painter->setPen(pen);
+    painter->drawLines(lines, 4);
 
-    dashPen.setDashOffset(qMax(qreal(0), y()));
-    painter->setPen(dashPen);
-    painter->drawLines(vertical, 2);
+    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
+    const qreal dashLength = std::ceil(Utils::dpiScaled(3) * devicePixelRatio);
+
+    // Draw a black dashed line above the white line
+    pen.setColor(Qt::black);
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setDashPattern({dashLength, dashLength});
+    pen.setDashOffset(mOffset);
+    painter->setPen(pen);
+    painter->drawLines(lines, 4);
+}
+
+void MapObjectOutline::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == mUpdateTimer) {
+        // Update offset used in drawing black dashed line
+        mOffset++;
+        update();
+    } else {
+        QGraphicsObject::timerEvent(event);
+    }
 }
 
 
@@ -205,6 +234,7 @@ public:
                  QGraphicsItem::ItemIgnoresParentOpacity);
     }
 
+    MapObject *mapObject() const { return mObject; }
     void syncWithMapObject(MapRenderer *renderer);
     void updateColor();
 
@@ -245,7 +275,7 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
     // Center the object name on the object bounding box
     QPointF pos((bounds.left() + bounds.right()) / 2, bounds.top());
 
-    setPos(pos + mObject->objectGroup()->offset());
+    setPos(pos + mObject->objectGroup()->totalOffset());
 
     if (mBoundingRect != boundingRect) {
         prepareGeometryChange();
@@ -319,6 +349,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
     connect(mapDocument, &MapDocument::objectsRemoved,
             this, &ObjectSelectionItem::objectsRemoved);
 
+    connect(mapDocument, &MapDocument::tileTypeChanged,
+            this, &ObjectSelectionItem::tileTypeChanged);
+
     Preferences *prefs = Preferences::instance();
 
     connect(prefs, &Preferences::objectLabelVisibilityChanged,
@@ -342,9 +375,9 @@ void ObjectSelectionItem::mapChanged()
     syncOverlayItems(mMapDocument->selectedObjects());
 }
 
-void ObjectSelectionItem::layerAdded(int index)
+void ObjectSelectionItem::layerAdded(Layer *layer)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    ObjectGroup *objectGroup = layer->asObjectGroup();
     if (!objectGroup)
         return;
 
@@ -363,9 +396,10 @@ void ObjectSelectionItem::layerAdded(int index)
     }
 }
 
-void ObjectSelectionItem::layerAboutToBeRemoved(int index)
+void ObjectSelectionItem::layerAboutToBeRemoved(GroupLayer *parentLayer, int index)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    auto layer = parentLayer ? parentLayer->layerAt(index) : mMapDocument->map()->layerAt(index);
+    auto objectGroup = layer->asObjectGroup();
     if (!objectGroup)
         return;
 
@@ -374,10 +408,27 @@ void ObjectSelectionItem::layerAboutToBeRemoved(int index)
             delete mObjectLabels.take(object);
 }
 
-void ObjectSelectionItem::layerChanged(int index)
+static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects)
 {
-    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
-    if (!objectGroup)
+    for (Layer *layer : groupLayer) {
+        switch (layer->layerType()) {
+        case Layer::ObjectGroupType:
+            objects.append(static_cast<ObjectGroup*>(layer)->objects());
+            break;
+        case Layer::GroupLayerType:
+            collectObjects(*static_cast<GroupLayer*>(layer), objects);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void ObjectSelectionItem::layerChanged(Layer *layer)
+{
+    ObjectGroup *objectGroup = layer->asObjectGroup();
+    GroupLayer *groupLayer = layer->asGroupLayer();
+    if (!(objectGroup || groupLayer))
         return;
 
     // If labels for all objects are visible, some labels may need to be added
@@ -385,10 +436,16 @@ void ObjectSelectionItem::layerChanged(int index)
     if (objectLabelVisibility() == Preferences::AllObjectLabels)
         addRemoveObjectLabels();
 
-    // If an object layer changed, that means its offset may have changed,
-    // which affects the outlines of selected objects on that layer and the
-    // positions of any name labels that are shown.
-    syncOverlayItems(objectGroup->objects());
+    // If an object or group layer changed, that means its offset may have
+    // changed, which affects the outlines of selected objects on that layer
+    // and the positions of any name labels that are shown.
+    if (objectGroup) {
+        syncOverlayItems(objectGroup->objects());
+    } else {
+        QList<MapObject*> affectedObjects;
+        collectObjects(*groupLayer, affectedObjects);
+        syncOverlayItems(affectedObjects);
+    }
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
@@ -431,6 +488,18 @@ void ObjectSelectionItem::objectsRemoved(const QList<MapObject *> &objects)
             delete mObjectLabels.take(object);
 }
 
+void ObjectSelectionItem::tileTypeChanged(Tile *tile)
+{
+    for (MapObjectLabel *label : mObjectLabels) {
+        MapObject *object = label->mapObject();
+        if (object->type().isEmpty()) {
+            const auto &cell = object->cell();
+            if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id())
+                label->updateColor();
+        }
+    }
+}
+
 void ObjectSelectionItem::objectLabelVisibilityChanged()
 {
     addRemoveObjectLabels();
@@ -455,15 +524,19 @@ void ObjectSelectionItem::addRemoveObjectLabels()
     };
 
     switch (objectLabelVisibility()) {
-    case Preferences::AllObjectLabels:
-        for (Layer *layer : mMapDocument->map()->layers()) {
-            if (!layer->isVisible())
+    case Preferences::AllObjectLabels: {
+        LayerIterator iterator(mMapDocument->map());
+        while (Layer *layer = iterator.next()) {
+            if (layer->isHidden())
                 continue;
 
             if (ObjectGroup *objectGroup = layer->asObjectGroup())
                 for (MapObject *object : objectGroup->objects())
                     ensureLabel(object);
+        }
     }
+        // We want labels on selected objects regardless layer visibility
+        /*FALLTHROUGH*/
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())

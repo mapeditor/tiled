@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTIESDOCK_H
-#define PROPERTIESDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QVariant>
@@ -53,14 +52,18 @@ public slots:
 
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void currentObjectChanged(Object *object);
     void updateActions();
 
+    void cutProperties();
+    bool copyProperties();
+    void pasteProperties();
     void addProperty();
     void addProperty(const QString &name, const QVariant &value);
-    void removeProperty();
+    void removeProperties();
     void renameProperty();
     void renameProperty(const QString &name);
     void showContextMenu(const QPoint& pos);
@@ -77,5 +80,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PROPERTIESDOCK_H

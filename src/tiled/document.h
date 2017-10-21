@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_DOCUMENT_H
-#define TILED_INTERNAL_DOCUMENT_H
+#pragma once
 
 #include "properties.h"
 
@@ -51,7 +50,8 @@ class Document : public QObject
 public:
     enum DocumentType {
         MapDocumentType,
-        TilesetDocumentType
+        TilesetDocumentType,
+        TemplateGroupDocumentType
     };
 
     Document(DocumentType type,
@@ -155,5 +155,3 @@ inline bool Document::ignoreBrokenLinks() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_DOCUMENT_H

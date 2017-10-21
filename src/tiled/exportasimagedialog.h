@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SAVEASIMAGEDIALOG_H
-#define SAVEASIMAGEDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -67,5 +66,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SAVEASIMAGEDIALOG_H

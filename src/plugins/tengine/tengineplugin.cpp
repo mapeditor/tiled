@@ -293,6 +293,11 @@ QString TenginePlugin::nameFilter() const
     return tr("T-Engine4 map files (*.lua)");
 }
 
+QString TenginePlugin::shortName() const
+{
+    return QLatin1String("te4");
+}
+
 QString TenginePlugin::errorString() const
 {
     return mError;

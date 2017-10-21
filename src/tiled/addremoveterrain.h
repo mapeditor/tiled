@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETERRAIN_H
-#define ADDREMOVETERRAIN_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -81,5 +80,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVETERRAIN_H

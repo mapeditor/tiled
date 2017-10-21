@@ -137,8 +137,17 @@ void BrushItem::paint(QPainter *painter,
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
     QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+
+    if (!mMapDocument->currentLayer()->isUnlocked())
+        mapRegion = QRegion();
+
     QRegion insideMapRegion = mRegion.intersected(mapRegion);
     QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
+
+    if (mMapDocument->map()->infinite()) {
+        insideMapRegion = mRegion;
+        outsideMapRegion = QRegion();
+    }
 
     const MapRenderer *renderer = mMapDocument->renderer();
     if (mTileLayer) {

@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HEXAGONALRENDERER_H
-#define HEXAGONALRENDERER_H
+#pragma once
 
 #include "orthogonalrenderer.h"
 
@@ -70,7 +69,7 @@ protected:
 public:
     HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
 
-    QSize mapSize() const override;
+    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 
@@ -107,5 +106,3 @@ public:
 };
 
 } // namespace Tiled
-
-#endif // HEXAGONALRENDERER_H

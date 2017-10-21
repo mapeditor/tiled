@@ -29,7 +29,9 @@ using namespace Tiled::Internal;
 CreateEllipseObjectTool::CreateEllipseObjectTool(QObject *parent)
     : CreateScalableObjectTool(parent)
 {
-    setIcon(QIcon(QLatin1String(":images/24x24/insert-ellipse.png")));
+    QIcon icon(QLatin1String(":images/24x24/insert-ellipse.png"));
+    icon.addFile(QLatin1String(":images/48x48/insert-ellipse.png"));
+    setIcon(icon);
     Utils::setThemeIcon(this, "insert-ellipse");
     languageChanged();
 }

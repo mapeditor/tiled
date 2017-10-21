@@ -41,11 +41,10 @@ class Fury(Plugin):
     decnum = (int(re.findall('[0-9]+', f).pop())-1)/10
     if decnum >= len(decs): decnum %= len(decs)
     gfxf = dirname(f)+'/../DEC/DECOR%02i.LBM' % decs[decnum]
-    t = Tiled.Tileset('DECOR', 16,16, 0, 0)
-    t.loadFromImage(fr.readtilegfx(gfxf), '')
-
+    t = Tiled.Tileset.create('DECOR', 16,16, 0, 0)
+    t.data().loadFromImage(fr.readtilegfx(gfxf), '')
     l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h)
-    fr.populatetiles(l, t)
+    fr.populatetiles(l, t.data())
     # have to pass ownership so can't add tileset before populating layer
     m.addTileset(t)
     m.addLayer(l)

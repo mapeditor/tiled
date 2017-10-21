@@ -8,6 +8,5 @@ TiledPlugin {
         "defoldplugin.cpp",
         "defoldplugin.h",
         "plugin.json",
-        "tokendefines.h",
     ]
 }

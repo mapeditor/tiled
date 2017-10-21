@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PREFERENCES_H
-#define PREFERENCES_H
+#pragma once
 
 #include <QColor>
 #include <QDate>
@@ -28,6 +27,7 @@
 
 #include "map.h"
 #include "objecttypes.h"
+#include "templategroupdocument.h"
 
 class QSettings;
 
@@ -104,11 +104,11 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
-    const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
         ObjectTypesFile,
+        TemplateDocumentsFile,
         ImageFile,
         ExportedFile,
         ExternalTileset
@@ -128,16 +128,29 @@ public:
     QString objectTypesFile() const;
     void setObjectTypesFile(const QString &filePath);
 
+    QString templateDocumentsFile() const;
+    void setTemplateDocumentsFile(const QString &filePath);
+
     QDate firstRun() const;
     int runCount() const;
 
     bool isPatron() const;
     void setPatron(bool isPatron);
 
+    bool shouldShowPatreonDialog() const;
+    void setPatreonDialogReminder(const QDate &date);
+
+    enum { MaxRecentFiles = 8 };
+    QStringList recentFiles() const;
+    QString fileDialogStartLocation() const;
+    void addRecentFile(const QString &fileName);
+
     bool openLastFilesOnStartup() const;
 
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
+
+    bool wheelZoomsByDefault() const;
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -160,6 +173,9 @@ public slots:
     void setAutomappingDrawing(bool enabled);
     void setOpenLastFilesOnStartup(bool load);
     void setPluginEnabled(const QString &fileName, bool enabled);
+    void setWheelZoomsByDefault(bool mode);
+
+    void clearRecentFiles();
 
 signals:
     void showGridChanged(bool showGrid);
@@ -189,6 +205,9 @@ signals:
     void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
+
+    void recentFilesChanged();
+
     void checkForUpdatesChanged();
 
 private:
@@ -227,18 +246,20 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
-    ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
 
     QString mMapsDirectory;
     QString mStampsDirectory;
     QString mObjectTypesFile;
+    QString mTemplateDocumentsFile;
 
     QDate mFirstRun;
+    QDate mPatreonDialogTime;
     int mRunCount;
     bool mIsPatron;
     bool mCheckForUpdates;
+    bool mWheelZoomsByDefault;
 
     static Preferences *mInstance;
 };
@@ -294,7 +315,10 @@ inline bool Preferences::openLastFilesOnStartup() const
     return mOpenLastFilesOnStartup;
 }
 
+inline bool Preferences::wheelZoomsByDefault() const
+{
+    return mWheelZoomsByDefault;
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PREFERENCES_H

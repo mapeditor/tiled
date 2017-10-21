@@ -21,8 +21,6 @@
 
 #include "defoldplugin.h"
 
-#include "tokendefines.h"
-
 #include "layer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -37,6 +35,29 @@
 
 namespace Defold {
 
+static const char cell_t[] =
+"  cell {\n\
+    x: {{x}}\n\
+    y: {{y}}\n\
+    tile: {{tile}}\n\
+    h_flip: {{h_flip}}\n\
+    v_flip: {{v_flip}}\n\
+  }\n";
+
+static const char layer_t[] =
+"layers {\n\
+  id: \"{{id}}\"\n\
+  z: {{z}}\n\
+  is_visible: {{is_visible}}\n\
+{{cells}}\
+}\n";
+
+static const char map_t[] =
+"tile_set: \"{{tile_set}}\"\n\
+{{layers}}\n\
+material: \"{{material}}\"\n\
+blend_mode: {{blend_mode}}\n";
+
 static QString replaceTags(QString context, const QVariantHash &map)
 {
     QHashIterator<QString,QVariant> it{map};
@@ -46,6 +67,10 @@ static QString replaceTags(QString context, const QVariantHash &map)
                         it.value().toString());
     }
     return context;
+}
+
+DefoldPlugin::DefoldPlugin()
+{
 }
 
 QStringList DefoldPlugin::outputFiles(const Tiled::Map *, const QString &fileName) const
@@ -58,39 +83,29 @@ QString DefoldPlugin::nameFilter() const
     return tr("Defold files (*.tilemap)");
 }
 
+QString DefoldPlugin::shortName() const
+{
+    return QLatin1String("defold");
+}
+
 QString DefoldPlugin::errorString() const
 {
     return mError;
-}
-
-DefoldPlugin::DefoldPlugin()
-{
 }
 
 bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     QVariantHash map_h;
 
-    QList<QList<QString>> types;
-
-    int layerWidth = 0;
-    int layerHeight = 0;
-
-    QString layers = "";
+    QString layers;
     foreach (Tiled::TileLayer *tileLayer, map->tileLayers()) {
         QVariantHash layer_h;
         layer_h["id"] = tileLayer->name();
         layer_h["z"] = 0;
         layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
-        QString cells = "";
-
-        layerWidth = std::max(tileLayer->width(), layerWidth);
-        layerHeight = std::max(tileLayer->height(), layerHeight);
+        QString cells;
 
         for (int x = 0; x < tileLayer->width(); ++x) {
-            QList<QString> t;
-            if (types.size() < tileLayer->width())
-                types.append(t);
             for (int y = 0; y < tileLayer->height(); ++y) {
                 const Tiled::Cell &cell = tileLayer->cellAt(x, y);
                 if (cell.isEmpty())
@@ -102,12 +117,6 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 cell_h["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
                 cell_h["v_flip"] = cell.flippedVertically() ? 1 : 0;
                 cells.append(replaceTags(QLatin1String(cell_t), cell_h));
-                if (const Tiled::Tile *tile = cell.tile()) {
-                    if (types[x].size() < tileLayer->height())
-                        types[x].append(tile->property("Type").toString());
-                    else if (!tile->property("Type").toString().isEmpty())
-                        types[x][tileLayer->height() - y - 1] = tile->property("Type").toString();
-                }
             }
         }
         layer_h["cells"] = cells;

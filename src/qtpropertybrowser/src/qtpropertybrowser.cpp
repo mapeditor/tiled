@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 class QtPropertyPrivate
 {
 public:
-    QtPropertyPrivate(QtAbstractPropertyManager *manager)
+    explicit QtPropertyPrivate(QtAbstractPropertyManager *manager)
         : m_enabled(true),
           m_modified(false),
           m_manager(manager) {}

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDPROPERTYDIALOG_H
-#define ADDPROPERTYDIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QVariant>
@@ -47,5 +46,3 @@ private slots:
 private:
     Ui::AddPropertyDialog *mUi;
 };
-
-#endif // ADDPROPERTYDIALOG_H

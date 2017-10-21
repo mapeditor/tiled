@@ -1,6 +1,6 @@
 /*
  * addremovelayer.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -29,9 +29,11 @@ namespace Internal {
 
 AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
                                int index,
-                               Layer *layer)
+                               Layer *layer,
+                               GroupLayer *parentLayer)
     : mMapDocument(mapDocument)
     , mLayer(layer)
+    , mParentLayer(parentLayer)
     , mIndex(index)
 {
 }
@@ -43,25 +45,13 @@ AddRemoveLayer::~AddRemoveLayer()
 
 void AddRemoveLayer::addLayer()
 {
-    const int currentLayer = mMapDocument->currentLayerIndex();
-
-    mMapDocument->layerModel()->insertLayer(mIndex, mLayer);
+    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex, mLayer);
     mLayer = nullptr;
-
-    // Insertion below or at the current layer increases current layer index
-    if (mIndex <= currentLayer)
-        mMapDocument->setCurrentLayerIndex(currentLayer + 1);
 }
 
 void AddRemoveLayer::removeLayer()
 {
-    const int currentLayer = mMapDocument->currentLayerIndex();
-
-    mLayer = mMapDocument->layerModel()->takeLayerAt(mIndex);
-
-    // Removal below the current layer decreases the current layer index
-    if (mIndex < currentLayer)
-        mMapDocument->setCurrentLayerIndex(currentLayer - 1);
+    mLayer = mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex);
 }
 
 } // namespace Internal

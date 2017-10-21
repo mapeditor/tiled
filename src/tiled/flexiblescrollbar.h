@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_FLEXIBLESCROLLBAR_H
-#define TILED_INTERNAL_FLEXIBLESCROLLBAR_H
+#pragma once
 
 #include <QScrollBar>
 
@@ -35,23 +34,18 @@ public:
 
     void forceSetValue(int value);
 
-    void allowNextRangeChange();
-
 protected:
     void sliderChange(SliderChange change) override;
 
 private:
-    void setOverrideMinimum(int min);
-    void setOverrideMaximum(int max);
+    void setOverrideRange(int min, int max);
 
     int mOverrideMinimum;
     int mOverrideMaximum;
     int mDesiredMinimum;
     int mDesiredMaximum;
-    bool mAllowRangeChange;
+    bool mInternalRangeChange;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_FLEXIBLESCROLLBAR_H

@@ -24,11 +24,11 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
-#include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "preferences.h"
 
 #include <QFileInfo>
+#include <QScopedPointer>
 #include <QTextStream>
 
 using namespace Tiled;
@@ -52,10 +52,23 @@ void AutomappingManager::autoMap()
         return;
 
     Map *map = mMapDocument->map();
-    int w = map->width();
-    int h = map->height();
 
-    autoMapInternal(QRect(0, 0, w, h), nullptr);
+    QRect bounds;
+
+    if (map->infinite()) {
+        LayerIterator iterator(map);
+
+        while (Layer *layer = iterator.next()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+                bounds = bounds.united(tileLayer->bounds());
+        }
+    } else {
+        int w = map->width();
+        int h = map->height();
+        bounds = QRect(0, 0, w, h);
+    }
+
+    autoMapInternal(bounds, nullptr);
 }
 
 void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
@@ -155,7 +168,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
             TmxMapFormat tmxFormat;
 
-            Map *rules = tmxFormat.read(rulePath);
+            QScopedPointer<Map> rules(tmxFormat.read(rulePath));
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
@@ -164,11 +177,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 continue;
             }
 
-            TilesetManager *tilesetManager = TilesetManager::instance();
-            tilesetManager->addReferences(rules->tilesets());
-
-            AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument, rules, rulePath);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
 
             mWarning += autoMapper->warningString();
             const QString error = autoMapper->errorString(); 

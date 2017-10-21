@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PAINTTILELAYER_H
-#define PAINTTILELAYER_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -72,7 +71,7 @@ public:
                    const QRegion &paintRegion,
                    QUndoCommand *parent = nullptr);
 
-    ~PaintTileLayer();
+    ~PaintTileLayer() override;
 
     /**
      * Sets whether this undo command can be merged with an existing command.
@@ -102,5 +101,3 @@ inline void PaintTileLayer::setMergeable(bool mergeable)
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // PAINTTILELAYER_H

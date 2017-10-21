@@ -36,12 +36,15 @@ using namespace Tiled::Internal;
 AbstractTileTool::AbstractTileTool(const QString &name,
                                    const QIcon &icon,
                                    const QKeySequence &shortcut,
+                                   BrushItem *brushItem,
                                    QObject *parent)
     : AbstractTool(name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
-    , mBrushItem(new BrushItem)
+    , mBrushItem(brushItem)
     , mBrushVisible(false)
 {
+    if (!mBrushItem)
+        mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
     mBrushItem->setZValue(10000);
 }
@@ -76,8 +79,8 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer()) {
-        offsetPos -= layer->offset();
-        mBrushItem->setLayerOffset(layer->offset());
+        offsetPos -= layer->totalOffset();
+        mBrushItem->setLayerOffset(layer->totalOffset());
     }
 
     const MapRenderer *renderer = mapDocument()->renderer();
@@ -113,15 +116,32 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        int tileId = -1;
+        Cell cell;
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
             const QPoint pos = tilePosition() - tileLayer->position();
-            if (tileLayer->contains(pos))
-                tileId = tileLayer->cellAt(pos).tileId();
+            cell = tileLayer->cellAt(pos);
         }
 
-        QString tileIdString = tileId >= 0 ? QString::number(tileId) : tr("empty");
+        QString tileIdString = cell.tileId() >= 0 ? QString::number(cell.tileId()) : tr("empty");
+
+        QVarLengthArray<QChar, 3> flippedBits;
+        if (cell.flippedHorizontally())
+            flippedBits.append(QLatin1Char('H'));
+        if (cell.flippedVertically())
+            flippedBits.append(QLatin1Char('V'));
+        if (cell.flippedAntiDiagonally())
+            flippedBits.append(QLatin1Char('D'));
+
+        if (!flippedBits.isEmpty()) {
+            tileIdString.append(QLatin1Char(' '));
+            tileIdString.append(flippedBits.first());
+            for (int i = 1; i < flippedBits.size(); ++i) {
+                tileIdString.append(QLatin1Char(','));
+                tileIdString.append(flippedBits.at(i));
+            }
+        }
+
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
                       .arg(mTilePosition.x())
                       .arg(mTilePosition.y())

@@ -27,8 +27,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPWRITER_H
-#define MAPWRITER_H
+#pragma once
 
 #include "map.h"
 #include "tiled_global.h"
@@ -41,6 +40,8 @@ namespace Tiled {
 
 class Map;
 class Tileset;
+class MapObject;
+class TemplateGroup;
 
 namespace Internal {
 class MapWriterPrivate;
@@ -93,6 +94,11 @@ public:
      */
     bool writeTileset(const Tileset &tileset, const QString &fileName);
 
+    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
+                            const QString &path = QString());
+
+    bool writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName);
+
     /**
      * Returns the error message for the last occurred error.
      */
@@ -111,5 +117,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // MAPWRITER_H

@@ -21,6 +21,7 @@
 #include "objectsdock.h"
 
 #include "documentmanager.h"
+#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -30,6 +31,7 @@
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
+#include "iconcheckdelegate.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -43,6 +45,7 @@
 #include <QUrl>
 
 static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
+static const char VISIBLE_SECTIONS_KEY[] = "ObjectsDock/VisibleSections";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -259,6 +262,7 @@ ObjectsView::ObjectsView(QWidget *parent)
 {
     setUniformRowHeights(true);
     setModel(mProxyModel);
+    setItemDelegate(new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, this));
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -268,6 +272,9 @@ ObjectsView::ObjectsView(QWidget *parent)
 
     connect(header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onSectionResized(int)));
+
+    header()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(header(), &QWidget::customContextMenuRequested, this, &ObjectsView::showCustomMenu);
 }
 
 QSize ObjectsView::sizeHint() const
@@ -296,6 +303,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
 
+        restoreVisibleSections();
         synchronizeSelectedItems();
     } else {
         mProxyModel->setSourceModel(nullptr);
@@ -307,14 +315,28 @@ MapObjectModel *ObjectsView::mapObjectModel() const
     return mMapDocument ? mMapDocument->mapObjectModel() : nullptr;
 }
 
+bool ObjectsView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
+}
+
 void ObjectsView::onPressed(const QModelIndex &proxyIndex)
 {
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
     if (MapObject *mapObject = mapObjectModel()->toMapObject(index))
         mMapDocument->setCurrentObject(mapObject);
-    else if (ObjectGroup *objectGroup = mapObjectModel()->toObjectGroup(index))
-        mMapDocument->setCurrentObject(objectGroup);
+    else if (Layer *layer = mapObjectModel()->toLayer(index))
+        mMapDocument->setCurrentObject(layer);
 }
 
 void ObjectsView::onActivated(const QModelIndex &proxyIndex)
@@ -346,34 +368,22 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
         return;
 
     const QModelIndexList selectedProxyRows = selectionModel()->selectedRows();
-    int currentLayerIndex = -1;
 
     QList<MapObject*> selectedObjects;
     for (const QModelIndex &proxyIndex : selectedProxyRows) {
         const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
 
-        if (ObjectGroup *og = mapObjectModel()->toLayer(index)) {
-            int index = mMapDocument->map()->layers().indexOf(og);
-            if (currentLayerIndex == -1)
-                currentLayerIndex = index;
-            else if (currentLayerIndex != index)
-                currentLayerIndex = -2;
-        }
         if (MapObject *o = mapObjectModel()->toMapObject(index))
             selectedObjects.append(o);
     }
-
-    // Switch the current object layer if only one object layer (and/or its objects)
-    // are included in the current selection.
-    if (currentLayerIndex >= 0 && currentLayerIndex != mMapDocument->currentLayerIndex())
-        mMapDocument->setCurrentLayerIndex(currentLayerIndex);
 
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;
         if (selectedObjects.count() == 1) {
             const MapObject *o = selectedObjects.first();
             const QPointF center = o->bounds().center();
-            DocumentManager::instance()->centerViewOn(center);
+            const QPointF offset = o->objectGroup()->totalOffset();
+            DocumentManager::instance()->centerMapViewOn(center + offset);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;
@@ -391,6 +401,52 @@ void ObjectsView::selectedObjectsChanged()
     if (selectedObjects.count() == 1) {
         MapObject *o = selectedObjects.first();
         scrollTo(mProxyModel->mapFromSource(mapObjectModel()->index(o)));
+    }
+}
+
+void ObjectsView::setColumnVisibility(bool visible)
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (!action)
+        return;
+
+    int column = action->data().toInt();
+    header()->setSectionHidden(column, !visible);
+
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList visibleSections;
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        if (!header()->isSectionHidden(i))
+            visibleSections.append(i);
+    }
+    settings->setValue(QLatin1String(VISIBLE_SECTIONS_KEY), visibleSections);
+}
+
+void ObjectsView::showCustomMenu(const QPoint &point)
+{
+    Q_UNUSED(point)
+    QMenu contextMenu(this);
+    QAbstractItemModel *model = mProxyModel->sourceModel();
+    for (int i = 0; i < model->columnCount(); i++) {
+        if (i == MapObjectModel::Name)
+            continue;
+        QAction *action = new QAction(model->headerData(i, Qt::Horizontal).toString(), &contextMenu);
+        action->setCheckable(true);
+        action->setChecked(!header()->isSectionHidden(i));
+        action->setData(i);
+        connect(action, &QAction::triggered, this, &ObjectsView::setColumnVisibility);
+        contextMenu.addAction(action);
+    }
+    contextMenu.exec(QCursor::pos());
+}
+
+void ObjectsView::restoreVisibleSections()
+{
+    QSettings *settings = Preferences::instance()->settings();
+    QVariantList visibleSections = settings->value(QLatin1String(VISIBLE_SECTIONS_KEY),
+                                                 QVariantList() << MapObjectModel::Name << MapObjectModel::Type).toList();
+    for (int i = 0; i < mProxyModel->columnCount(); i++) {
+        header()->setSectionHidden(i, !visibleSections.contains(i));
     }
 }
 

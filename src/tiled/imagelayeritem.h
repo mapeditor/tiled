@@ -19,15 +19,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IMAGELAYERITEM_H
-#define IMAGELAYERITEM_H
+#pragma once
 
-#include <QGraphicsItem>
+#include "layeritem.h"
+
+#include "imagelayer.h"
 
 namespace Tiled {
-
-class ImageLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -35,7 +33,7 @@ class MapDocument;
 /**
  * A graphics item displaying an image layer in a QGraphicsView.
  */
-class ImageLayerItem : public QGraphicsItem
+class ImageLayerItem : public LayerItem
 {
 public:
     /**
@@ -44,7 +42,9 @@ public:
      * @param layer       the image layer to be displayed
      * @param mapDocument the map document owning the map of this layer
      */
-    ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument);
+    ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+
+    ImageLayer *imageLayer() const;
 
     /**
      * Updates the size and position of this item. Should be called when the
@@ -63,12 +63,14 @@ public:
                QWidget *widget = nullptr) override;
 
 private:
-    ImageLayer *mLayer;
     MapDocument *mMapDocument;
     QRectF mBoundingRect;
 };
 
+inline ImageLayer *ImageLayerItem::imageLayer() const
+{
+    return static_cast<ImageLayer*>(layer());
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // IMAGELAYERITEM_H

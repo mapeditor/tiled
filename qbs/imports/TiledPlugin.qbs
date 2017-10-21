@@ -7,6 +7,18 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
+    cpp.useRPaths: project.useRPaths
+    cpp.rpaths: {
+        if (qbs.targetOS.contains("darwin"))
+            return ["@loader_path/../Frameworks"];
+        else if (project.linuxArchive)
+            return ["$ORIGIN/.."]
+        else
+            return ["$ORIGIN/../.."];
+    }
+    cpp.defines: [
+        "QT_NO_URL_CAST_FROM_STRING"
+    ]
     bundle.isBundle: false
 
     Properties {

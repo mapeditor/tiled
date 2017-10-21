@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPPROPERTY_H
-#define CHANGEMAPPROPERTY_H
+#pragma once
 
 #include "map.h"
 
@@ -37,6 +36,7 @@ public:
     enum Property {
         TileWidth,
         TileHeight,
+        Infinite,
         HexSideLength,
         StaggerAxis,
         StaggerIndex,
@@ -125,5 +125,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEMAPPROPERTY_H

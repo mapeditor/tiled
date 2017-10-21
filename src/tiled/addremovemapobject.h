@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVEMAPOBJECT_H
-#define ADDREMOVEMAPOBJECT_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -66,11 +65,8 @@ public:
     AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
                  MapObject *mapObject, QUndoCommand *parent = nullptr);
 
-    void undo() override
-    { removeObject(); }
-
-    void redo() override
-    { addObject(); }
+    void undo() override;
+    void redo() override;
 };
 
 /**
@@ -91,5 +87,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVEMAPOBJECT_H

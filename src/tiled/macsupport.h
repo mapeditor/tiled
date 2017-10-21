@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MACSUPPORT_H
-#define MACSUPPORT_H
+#pragma once
 
 #include "mainwindow.h"
 
@@ -36,5 +35,3 @@ public:
      */
     static void addFullscreen(Tiled::Internal::MainWindow *window);
 };
-
-#endif // MACSUPPORT_H

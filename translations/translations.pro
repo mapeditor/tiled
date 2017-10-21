@@ -15,8 +15,10 @@ LANGUAGES = \
     de \
     en \
     es \
+    fi \
     fr \
     he \
+    hu \
     it \
     ja \
     nb \
@@ -26,6 +28,7 @@ LANGUAGES = \
     pt_PT \
     ru \
     tr \
+    uk \
     zh \
     zh_TW
 
@@ -63,7 +66,7 @@ isEmpty(LRELEASE):LRELEASE = $$fixSlashes($$[QT_INSTALL_BINS]/lrelease)
 ts.commands = cd $$PWD/.. && $$LUPDATE src -ts $$TRANSLATIONS
 QMAKE_EXTRA_TARGETS += ts
 
-win32|!isEmpty(TILED_LINUX_ARCHIVE) {
+win32 {
     TARGET_DIR = .
 } else:macx {
     TARGET_DIR = ../bin/Tiled.app/Contents/Translations

@@ -92,6 +92,11 @@ QString TmwPlugin::nameFilter() const
     return tr("TMW-eAthena collision files (*.wlk)");
 }
 
+QString TmwPlugin::shortName() const
+{
+    return QLatin1String("tmw");
+}
+
 QString TmwPlugin::errorString() const
 {
     return mError;

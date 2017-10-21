@@ -64,6 +64,20 @@ Terrain *TerrainView::terrainAt(const QModelIndex &index) const
     return data.value<Terrain*>();
 }
 
+bool TerrainView::event(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (indexWidget(currentIndex())) {
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QTreeView::event(event);
+}
+
 /**
  * Override to support zooming in and out using the mouse wheel.
  */

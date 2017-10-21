@@ -18,9 +18,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECT_H
-#define CHANGEMAPOBJECT_H
+#pragma once
 
+#include "mapobject.h"
 #include "tilelayer.h"
 
 #include <QUndoCommand>
@@ -40,13 +40,13 @@ class ChangeMapObject : public QUndoCommand
 {
 public:
     /**
-     * Creates an undo command that sets the given \a object's \a name and
-     * \a type.
+     * Creates an undo command that sets the given \a object's \a property to
+     * \a value.
      */
     ChangeMapObject(MapDocument *mapDocument,
                     MapObject *object,
-                    const QString &name,
-                    const QString &type);
+                    MapObject::Property property,
+                    const QVariant &value);
 
     void undo() override { swap(); }
     void redo() override { swap(); }
@@ -56,28 +56,10 @@ private:
 
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    QString mName;
-    QString mType;
-};
-
-/**
- * Used for changing object visibility.
- */
-class SetMapObjectVisible : public QUndoCommand
-{
-public:
-    SetMapObjectVisible(MapDocument *mapDocument,
-                        MapObject *mapObject,
-                        bool visible);
-
-    void undo() override;
-    void redo() override;
-
-private:
-    MapObjectModel *mMapObjectModel;
-    MapObject *mMapObject;
-    bool mOldVisible;
-    bool mNewVisible;
+    MapObject::Property mProperty;
+    QVariant mValue;
+    bool mOldChangeState;
+    bool mNewChangeState;
 };
 
 
@@ -107,7 +89,66 @@ private:
     QVector<MapObjectCell> mChanges;
 };
 
+class ChangeMapObjectsTile : public QUndoCommand
+{
+public:
+    ChangeMapObjectsTile(MapDocument *mapDocument,
+                         const QList<MapObject *> &mapObjects,
+                         Tile *tile);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    void changeTiles();
+    void restoreTiles();
+
+    MapDocument *mMapDocument;
+    const QList<MapObject *> mMapObjects;
+    Tile * const mTile;
+    QVector<Cell> mOldCells;
+    QVector<bool> mUpdateSize;
+    QVector<bool> mOldChangeStates;
+};
+
+class DetachObjects : public QUndoCommand
+{
+public:
+    /**
+     * Creates an undo command that detaches the given template instances
+     * from their templates.
+     */
+    DetachObjects(MapDocument *mapDocument,
+                  const QList<MapObject *> &mapObjects,
+                  QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QVector<TemplateRef> mTemplateRefs;
+    QVector<Properties> mProperties;
+};
+
+class ResetInstances : public QUndoCommand
+{
+public:
+    ResetInstances(MapDocument *mapDocument,
+                   const QList<MapObject *> &mapObjects,
+                   QUndoCommand *parent = nullptr);
+
+    ~ResetInstances();
+
+    void redo() override;
+    void undo() override;
+
+private:
+    MapDocument *mMapDocument;
+    const QList<MapObject*> mMapObjects;
+    QList<MapObject*> mOldMapObjects;
+};
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEMAPOBJECT_H

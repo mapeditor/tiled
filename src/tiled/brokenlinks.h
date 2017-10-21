@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_BROKENLINKS_H
-#define TILED_INTERNAL_BROKENLINKS_H
+#pragma once
 
 #include "tileset.h"
 
@@ -37,6 +36,7 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
+class TemplateGroup;
 
 namespace Internal {
 
@@ -47,6 +47,7 @@ enum BrokenLinkType {
     MapTilesetReference,
     TilesetTileImageSource,
     TilesetImageSource,
+    TemplateGroupReference,
 };
 
 struct BrokenLink {
@@ -55,10 +56,12 @@ struct BrokenLink {
     union {
         Tileset *_tileset;
         Tile *_tile;
+        TemplateGroup *_templateGroup;
     };
 
     QString filePath() const;
     Tileset *tileset() const;
+    TemplateGroup *templateGroup() const;
 };
 
 
@@ -93,6 +96,7 @@ private slots:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
+    void templateGroupReplaced(int index, TemplateGroup *templateGroup, TemplateGroup *oldTemplateGroup);
 
 private:
     void connectToTileset(const SharedTileset &tileset);
@@ -133,10 +137,12 @@ signals:
 
 private slots:
     void clicked(QAbstractButton *button);
-    void selectionChanged(const QItemSelection &selected);
+    void selectionChanged();
 
 private:
+    void tryFixLinks(const QVector<BrokenLink> &links);
     void tryFixLink(const BrokenLink &link);
+    bool tryFixLink(const BrokenLink &link, const QString &newFilePath);
 
     BrokenLinksModel *mBrokenLinksModel;
     QSortFilterProxyModel *mProxyModel;
@@ -149,5 +155,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_BROKENLINKS_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TEXTEDITORDIALOG_H
-#define TILED_INTERNAL_TEXTEDITORDIALOG_H
+#pragma once
 
 #include <QDialog>
 
@@ -50,5 +49,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TEXTEDITORDIALOG_H

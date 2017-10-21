@@ -123,7 +123,7 @@ void ObjectTypesModel::setObjectTypeProperties(int objectIndex,
 void ObjectTypesModel::removeObjectTypes(const QModelIndexList &indexes)
 {
     QVector<int> rows;
-    foreach (const QModelIndex &index, indexes)
+    for (const QModelIndex &index : indexes)
         rows.append(index.row());
 
     qSort(rows);

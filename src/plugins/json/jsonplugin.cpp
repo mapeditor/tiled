@@ -40,6 +40,7 @@ void JsonPlugin::initialize()
     addObject(new JsonMapFormat(JsonMapFormat::Json, this));
     addObject(new JsonMapFormat(JsonMapFormat::JavaScript, this));
     addObject(new JsonTilesetFormat(this));
+    addObject(new JsonTemplateGroupFormat(this));
 }
 
 
@@ -96,7 +97,7 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
     }
 
     Tiled::MapToVariantConverter converter;
-    QVariant variant = converter.toVariant(map, QFileInfo(fileName).dir());
+    QVariant variant = converter.toVariant(*map, QFileInfo(fileName).dir());
 
     JsonWriter writer;
     writer.setAutoFormatting(true);
@@ -148,6 +149,14 @@ QString JsonMapFormat::nameFilter() const
         return tr("Json map files (*.json)");
     else
         return tr("JavaScript map files (*.js)");
+}
+
+QString JsonMapFormat::shortName() const
+{
+    if (mSubFormat == Json)
+        return QLatin1String("json");
+    else
+        return QLatin1String("js");
 }
 
 bool JsonMapFormat::supportsFile(const QString &fileName) const
@@ -300,7 +309,119 @@ QString JsonTilesetFormat::nameFilter() const
     return tr("Json tileset files (*.json)");
 }
 
+QString JsonTilesetFormat::shortName() const
+{
+    return QLatin1String("json");
+}
+
 QString JsonTilesetFormat::errorString() const
+{
+    return mError;
+}
+
+JsonTemplateGroupFormat::JsonTemplateGroupFormat(QObject *parent)
+    : Tiled::TemplateGroupFormat(parent)
+{
+}
+
+Tiled::TemplateGroup *JsonTemplateGroupFormat::read(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for reading.");
+        return nullptr;
+    }
+
+    JsonReader reader;
+    QByteArray contents = file.readAll();
+
+    reader.parse(contents);
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return nullptr;
+    }
+
+    Tiled::VariantToMapConverter converter;
+    Tiled::TemplateGroup *templateGroup = converter.toTemplateGroup(variant,
+                                                                    QFileInfo(fileName).dir());
+
+    if (!templateGroup)
+        mError = converter.errorString();
+    else
+        templateGroup->setFileName(fileName);
+
+    return templateGroup;
+}
+
+bool JsonTemplateGroupFormat::supportsFile(const QString &fileName) const
+{
+    if (fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive)) {
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            const QJsonObject object = QJsonDocument::fromJson(file.readAll()).object();
+
+            if (object.value(QLatin1String("type")).toString() == QLatin1String("templategroup"))
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool JsonTemplateGroupFormat::write(const Tiled::TemplateGroup *templateGroup, const QString &fileName)
+{
+    Tiled::SaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for writing.");
+        return false;
+    }
+
+    Tiled::MapToVariantConverter converter;
+    QVariant variant = converter.toVariant(*templateGroup, QFileInfo(fileName).dir());
+
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
+
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
+    QTextStream out(file.device());
+    out << writer.result();
+    out.flush();
+
+    if (file.error() != QFileDevice::NoError) {
+        mError = tr("Error while writing file:\n%1").arg(file.errorString());
+        return false;
+    }
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+QString JsonTemplateGroupFormat::nameFilter() const
+{
+    return tr("Json template group files (*.json)");
+}
+
+QString JsonTemplateGroupFormat::shortName() const
+{
+    return QLatin1String("json");
+}
+
+QString JsonTemplateGroupFormat::errorString() const
 {
     return mError;
 }

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESTAMPMANAGER_H
-#define TILESTAMPMANAGER_H
+#pragma once
 
 #include "tilestamp.h"
 
@@ -100,17 +99,17 @@ private:
  */
 inline QList<Qt::Key> TileStampManager::quickStampKeys()
 {
-    QList<Qt::Key> keys;
-    keys << Qt::Key_1
-         << Qt::Key_2
-         << Qt::Key_3
-         << Qt::Key_4
-         << Qt::Key_5
-         << Qt::Key_6
-         << Qt::Key_7
-         << Qt::Key_8
-         << Qt::Key_9;
-    return keys;
+    return {
+        Qt::Key_1,
+        Qt::Key_2,
+        Qt::Key_3,
+        Qt::Key_4,
+        Qt::Key_5,
+        Qt::Key_6,
+        Qt::Key_7,
+        Qt::Key_8,
+        Qt::Key_9
+    };
 }
 
 inline TileStampModel *TileStampManager::tileStampModel() const
@@ -120,5 +119,3 @@ inline TileStampModel *TileStampManager::tileStampModel() const
 
 } // namespace Tiled::Internal
 } // namespace Tiled
-
-#endif // TILESTAMPMANAGER_H

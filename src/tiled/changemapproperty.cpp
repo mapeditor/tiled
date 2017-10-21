@@ -23,6 +23,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
+#include "tilelayer.h"
 
 #include <QCoreApplication>
 
@@ -44,6 +45,10 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     case TileHeight:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Tile Height"));
+        break;
+    case Infinite:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Infinite Property"));
         break;
     case HexSideLength:
         setText(QCoreApplication::translate("Undo Commands",
@@ -141,6 +146,12 @@ void ChangeMapProperty::swap()
         mIntValue = tileHeight;
         break;
     }
+    case Infinite: {
+        const int infinite = map->infinite();
+        map->setInfinite(mIntValue);
+        mIntValue = infinite;
+        break;
+    }
     case Orientation: {
         const Map::Orientation orientation = map->orientation();
         map->setOrientation(mOrientation);
@@ -186,5 +197,5 @@ void ChangeMapProperty::swap()
     }
     }
 
-    mMapDocument->emitMapChanged();
+    emit mMapDocument->mapChanged();
 }

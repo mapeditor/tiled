@@ -18,31 +18,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_IMAGEREFERENCE_H
-#define TILED_IMAGEREFERENCE_H
+#pragma once
+
+#include "tiled.h"
 
 #include <QColor>
 #include <QImage>
-#include <QString>
+#include <QUrl>
 
 namespace Tiled {
 
 class ImageReference
 {
 public:
-    ImageReference() : loaded(false) {}
+    ImageReference() : status(LoadingPending) {}
 
-    QString source;
+    QUrl source;
     QColor transparentColor;
     QSize size;
     QByteArray format;
     QByteArray data;
-    bool loaded;
+    LoadingStatus status;
 
     bool hasImage() const;
     QImage create() const;
 };
 
 } // namespace Tiled
-
-#endif // TILED_IMAGEREFERENCE_H

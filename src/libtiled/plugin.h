@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TILED_PLUGIN_H
-#define TILED_PLUGIN_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -61,5 +60,3 @@ private:
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::Plugin, "org.mapeditor.Plugin")
-
-#endif // TILED_PLUGIN_H

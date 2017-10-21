@@ -10,6 +10,7 @@ Makefile*
 moc_*.cpp
 ui_*.h
 qrc_*
+default/
 
 # Build artifacts on Windows
 tiled.exe
@@ -24,20 +25,27 @@ automappingconverter.exe
 *.intermediate.manifest
 
 # Build artifacts on Mac
+.qmake.stash
 translations/phony_target.app
 
 # IDE files
 *.pro.user*
 *.qbs.user*
 
-tests/test_mapreader
+tests/mapreader/mapreader
+tests/staggeredrenderer/staggeredrenderer
 
 # Ronn html outputs
 man/*.1.html
 
-# mkdocs and Doxygen
-site/
+# Doxygen and Sphinx
 html/
+docs/_build/html
+docs/_build/gettext/.doctrees
+*.mo
 
 # Work-in-progress worktrees
 wip/
+util/java/tmxviewer-java/target
+util/java/libtiled-java/target
+/util/java/target/

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLAREPLUGIN_H
-#define FLAREPLUGIN_H
+#pragma once
 
 #include "flare_global.h"
 
@@ -45,6 +44,7 @@ public:
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 private:
@@ -52,5 +52,3 @@ private:
 };
 
 } // namespace Flare
-
-#endif // FLAREPLUGIN_H

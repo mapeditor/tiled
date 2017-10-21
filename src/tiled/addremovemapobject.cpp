@@ -20,6 +20,7 @@
 
 #include "addremovemapobject.h"
 
+#include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -54,6 +55,11 @@ void AddRemoveMapObject::addObject()
 {
     mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
                                                  mMapObject);
+
+    auto templateGroup = mMapObject->templateGroup();
+    if (templateGroup)
+        mMapDocument->map()->addTemplateGroup(templateGroup);
+
     mOwnsObject = false;
 }
 
@@ -74,6 +80,18 @@ AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
                          parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Object"));
+}
+
+void AddMapObject::undo()
+{
+    removeObject();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void AddMapObject::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    addObject();
 }
 
 

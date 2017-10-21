@@ -19,13 +19,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JSONPLUGIN_H
-#define JSONPLUGIN_H
+#pragma once
 
 #include "json_global.h"
 
 #include "mapformat.h"
 #include "plugin.h"
+#include "templategroupformat.h"
 #include "tilesetformat.h"
 
 #include <QObject>
@@ -66,6 +66,7 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName) override;
 
     QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 protected:
@@ -88,6 +89,28 @@ public:
     bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
+};
+
+class JSONSHARED_EXPORT JsonTemplateGroupFormat : public Tiled::TemplateGroupFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TemplateGroupFormat)
+
+public:
+    JsonTemplateGroupFormat(QObject *parent = nullptr);
+
+    Tiled::TemplateGroup *read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
+
+    bool write(const Tiled::TemplateGroup *templateGroup, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString shortName() const override;
     QString errorString() const override;
 
 protected:
@@ -95,5 +118,3 @@ protected:
 };
 
 } // namespace Json
-
-#endif // JSONPLUGIN_H

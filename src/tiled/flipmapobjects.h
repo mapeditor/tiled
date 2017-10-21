@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FLIPMAPOBJECTS_H
-#define FLIPMAPOBJECTS_H
+#pragma once
 
 #include "mapobject.h"
 
@@ -45,11 +44,15 @@ private:
     void flip();
 
     MapDocument *mMapDocument;
-    QList<MapObject *> mMapObjects;
+    const QList<MapObject *> mMapObjects;
+    QPointF mObjectsCenter;
     FlipDirection mFlipDirection;
+
+    QVector<bool> mOldRotationStates;
+    QVector<bool> mNewRotationStates;
+    QVector<bool> mOldCellStates;
+    QVector<bool> mNewCellStates;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // FLIPMAPOBJECTS_H

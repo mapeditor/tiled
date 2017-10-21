@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIANTEDITORFACTORY_H
-#define VARIANTEDITORFACTORY_H
+#pragma once
 
 #include <QtVariantEditorFactory>
 
@@ -64,7 +63,7 @@ private slots:
     void slotPropertyAttributeChanged(QtProperty *property,
                                       const QString &attribute,
                                       const QVariant &value);
-    void fileEditFilePathChanged(const QString &value);
+    void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
     void slotEditorDestroyed(QObject *object);
 
@@ -81,5 +80,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // VARIANTEDITORFACTORY_H

@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MAPRENDERER_H
-#define MAPRENDERER_H
+#pragma once
 
 #include "tiled_global.h"
 
@@ -64,7 +63,7 @@ public:
         , mPainterScale(1)
     {}
 
-    virtual ~MapRenderer() {}
+    virtual ~MapRenderer();
 
     /**
      * Returns the map this renderer is associated with.
@@ -72,9 +71,10 @@ public:
     const Map *map() const;
 
     /**
-     * Returns the size in pixels of the map associated with this renderer.
+     * Returns the bounding rectangle in pixels of the map associated with
+     * this renderer.
      */
-    virtual QSize mapSize() const = 0;
+    virtual QRect mapBoundingRect() const = 0;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in
@@ -214,6 +214,9 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
+protected:
+    QPen makeGridPen(const QPaintDevice *device, QColor color) const;
+
 private:
     const Map *mMap;
 
@@ -259,7 +262,12 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter);
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
+    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
 
     ~CellRenderer() { flush(); }
 
@@ -271,10 +279,9 @@ private:
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
+    const CellType mCellType;
 };
 
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::RenderFlags)
-
-#endif // MAPRENDERER_H

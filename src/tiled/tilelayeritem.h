@@ -18,15 +18,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#pragma once
 
-#include <QGraphicsItem>
+#include "layeritem.h"
+
+#include "tilelayer.h"
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -34,7 +32,7 @@ class MapDocument;
 /**
  * A graphics item displaying a tile layer in a QGraphicsView.
  */
-class TileLayerItem : public QGraphicsItem
+class TileLayerItem : public LayerItem
 {
 public:
     /**
@@ -43,7 +41,9 @@ public:
      * @param layer       the tile layer to be displayed
      * @param mapDocument the map document owning the map of this layer
      */
-    TileLayerItem(TileLayer *layer, MapDocument *mapDocument);
+    TileLayerItem(TileLayer *layer, MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+
+    TileLayer *tileLayer() const;
 
     /**
      * Updates the size and position of this item. Should be called when the
@@ -62,12 +62,14 @@ public:
                QWidget *widget = nullptr) override;
 
 private:
-    TileLayer *mLayer;
     MapDocument *mMapDocument;
     QRectF mBoundingRect;
 };
 
+inline TileLayer *TileLayerItem::tileLayer() const
+{
+    return static_cast<TileLayer*>(layer());
+}
+
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILELAYERITEM_H

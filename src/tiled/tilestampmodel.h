@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILED_INTERNAL_TILESTAMPMODEL_H
-#define TILED_INTERNAL_TILESTAMPMODEL_H
+#pragma once
 
 #include "tilestamp.h"
 
@@ -106,5 +105,3 @@ inline const QList<TileStamp> &TileStampModel::stamps() const
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // TILED_INTERNAL_TILESTAMPMODEL_H

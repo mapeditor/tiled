@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SELECTIONRECTANGLE_H
-#define SELECTIONRECTANGLE_H
+#pragma once
 
 #include <QGraphicsItem>
 
@@ -47,5 +46,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // SELECTIONRECTANGLE_H

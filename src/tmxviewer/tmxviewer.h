@@ -26,8 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TMXVIEWER_H
-#define TMXVIEWER_H
+#pragma once
 
 #include <QGraphicsView>
 
@@ -51,5 +50,3 @@ private:
     Tiled::Map *mMap;
     Tiled::MapRenderer *mRenderer;
 };
-
-#endif // TMXVIEWER_H

@@ -7,7 +7,7 @@ target.path = $${PREFIX}/bin
 INSTALLS += target
 CONFIG += console
 
-win32|!isEmpty(TILED_LINUX_ARCHIVE) {
+win32 {
     DESTDIR = ../..
 } else {
     DESTDIR = ../../bin

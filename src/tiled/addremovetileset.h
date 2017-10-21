@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ADDREMOVETILESET_H
-#define ADDREMOVETILESET_H
+#pragma once
 
 #include "tileset.h"
 
@@ -87,5 +86,3 @@ public:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // ADDREMOVETILESET_H

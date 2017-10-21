@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LUATABLEWRITER_H
-#define LUATABLEWRITER_H
+#pragma once
 
 #include <QByteArray>
 #include <QString>
@@ -54,6 +53,7 @@ public:
 
     void writeKeyAndValue(const QByteArray &key, int value);
     void writeKeyAndValue(const QByteArray &key, unsigned value);
+    void writeKeyAndValue(const QByteArray &key, float value);
     void writeKeyAndValue(const QByteArray &key, double value);
     void writeKeyAndValue(const QByteArray &key, bool value);
     void writeKeyAndValue(const QByteArray &key, const char *value);
@@ -78,7 +78,7 @@ private:
     void writeIndent();
 
     void writeNewline();
-    void write(const char *bytes, unsigned length);
+    void write(const char *bytes, qint64 length);
     void write(const char *bytes);
     void write(const QByteArray &bytes);
     void write(char c);
@@ -106,6 +106,9 @@ inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, int value)
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, unsigned value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
+
+inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, float value)
+{ writeKeyAndValue(key, static_cast<double>(value)); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, double value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
@@ -136,5 +139,3 @@ inline bool LuaTableWriter::suppressNewlines() const
 { return m_suppressNewlines; }
 
 } // namespace Lua
-
-#endif // LUATABLEWRITER_H

@@ -19,8 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONVERTERWINDOW_H
-#define CONVERTERWINDOW_H
+#pragma once
 
 #include "converterdatamodel.h"
 #include "convertercontrol.h"
@@ -51,5 +50,3 @@ private:
     ConverterDataModel *mDataModel;
     ConverterControl *mControl;
 };
-
-#endif // CONVERTERWINDOW_H

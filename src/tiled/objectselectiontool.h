@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSELECTIONTOOL_H
-#define OBJECTSELECTIONTOOL_H
+#pragma once
 
 #include "abstractobjecttool.h"
 
@@ -108,7 +107,7 @@ private:
                                   const QPointF &screenPos,
                                   Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
-    
+
     void setMode(Mode mode);
     void saveSelectionState();
 
@@ -162,5 +161,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // OBJECTSELECTIONTOOL_H

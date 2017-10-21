@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECTSORDER_H
-#define CHANGEMAPOBJECTSORDER_H
+#pragma once
 
 #include <QUndoCommand>
 
@@ -54,5 +53,3 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // CHANGEMAPOBJECTSORDER_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAPSDOCK_H
-#define MAPSDOCK_H
+#pragma once
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -74,17 +73,15 @@ public:
 
     void mousePressEvent(QMouseEvent *event) override;
 
-    QFileSystemModel *model() const { return mFSModel; }
+    QFileSystemModel *model() const { return mFileSystemModel; }
 
 private slots:
     void onMapsDirectoryChanged();
     void onActivated(const QModelIndex &index);
 
 private:
-    QFileSystemModel *mFSModel;
+    QFileSystemModel *mFileSystemModel;
 };
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // MAPSDOCK_H
