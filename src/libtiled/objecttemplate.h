@@ -54,6 +54,8 @@ public:
     TemplateGroup *templateGroup() const;
     void setTemplateGroup(TemplateGroup *templateGroup);
 
+    TemplateRef templateRef() const;
+
 private:
     MapObject *mObject;
     unsigned mId;
@@ -88,5 +90,8 @@ inline TemplateGroup *ObjectTemplate::templateGroup() const
 
 inline void ObjectTemplate::setTemplateGroup(TemplateGroup *templateGroup)
 { mTemplateGroup = templateGroup; }
+
+inline TemplateRef ObjectTemplate::templateRef() const
+{ return TemplateRef {mTemplateGroup, mId}; }
 
 } // namespace Tiled

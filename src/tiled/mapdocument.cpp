@@ -139,7 +139,7 @@ void MapDocument::saveSelectedObject(const QString &name, int groupIndex)
 
     if (ObjectTemplate *objectTemplate = model->saveObjectToDocument(object, name, groupIndex)) {
         // Convert the saved object into an instance and clear the changed properties flags
-        object->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+        object->setTemplateRef(objectTemplate->templateRef());
         object->setChangedProperties(0);
         emit objectsChanged(mSelectedObjects);
     }

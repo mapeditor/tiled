@@ -869,7 +869,7 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
         return;
 
     MapObject *newMapObject = new MapObject();
-    newMapObject->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+    newMapObject->setTemplateRef(objectTemplate->templateRef());
     newMapObject->syncWithTemplate();
     newMapObject->setPosition(event->scenePos());
 
