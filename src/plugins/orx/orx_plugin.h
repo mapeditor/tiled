@@ -52,6 +52,8 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName) override;
     QString nameFilter() const override;
     QString errorString() const override;
+    // Returns short name for this map format
+    QString shortName() const override;
 
 private:
     QString mError;

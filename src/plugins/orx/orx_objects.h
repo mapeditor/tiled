@@ -17,13 +17,14 @@
 
 namespace Orx {
 
-#define IMAGE_POSTFIX       "Image"
+#define IMAGE_POSTFIX       "Texture"
 #define GRAPHIC_POSTFIX     "Graphic"
-#define PREFAB_POSTFIX      ""
-#define OBJECT_POSTFIX      ""
+#define PREFAB_POSTFIX      "Prefab"
+#define OBJECT_POSTFIX      "Obj"
 #define LAYER_POSTFIX       "Layer"
 #define MAP_POSTFIX         "Map"
 
+#define MAX_OBJECT_CHILDREN 255
 
 class Object;
 typedef std::shared_ptr<Object>         ObjectPtr;
@@ -51,12 +52,14 @@ class Image : public OrxObject, public IndexGenerator
 {
 public:
     // trivial c.tor
-    Image();
-    Image(const QString & filename);
+    Image(const QString & image_name, const QString & filename);
 
 public:
     // Texture filename (absolute)
+    QString         m_ImageName;
     QString         m_Texture;
+    int             m_UseCount;
+    Vector2i        m_Size;
 
 public:
     // serializes the element into the given stream
@@ -76,8 +79,6 @@ public:
     // Image this graphic refers to
     QString         m_Texture;
     Vector2i        m_Origin;
-    Vector2i        m_Size;
-    int             m_TiledId;
 
 public:
     virtual void serialize(SerializationContext & context, QTextStream & ss);
@@ -93,7 +94,9 @@ public:
 
 public:
     GraphicPtr      m_Graphic;
+    QString         m_BaseName;
     int             m_TiledId;
+    int             m_UseCount;
 
 public:
     virtual void serialize(SerializationContext & context, QTextStream & ss);
@@ -108,7 +111,6 @@ public:
     Object(const QString & name, const QString & parent);
 
 public:
-    GraphicPtr      m_Graphic;
     Vector3f        m_Position;
     float           m_Rotation;
     ObjectPtrs      m_Children;

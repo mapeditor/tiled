@@ -11,9 +11,9 @@ namespace Orx {
 template<typename T>
 struct string_converter {
     static QString to_string(T value) {
-        QTextStream ss;
-        ss << value;
-        return ss.readAll();
+        QVariant ss(value);
+        QString ret = ss.toString();
+        return ret;
     }
 };
 
@@ -29,9 +29,8 @@ struct string_converter {
 template<>
 struct string_converter<Vector2i> {
     static QString to_string(Vector2i & value) {
-        QTextStream ss;
-        ss << "(" << value.m_X << ", " << value.m_Y << ", 0)";
-        return ss.readAll();
+        QString ret = QString("(%1, %2)").arg(value.m_X).arg(value.m_Y);
+        return ret;
     }
 };
 
@@ -39,9 +38,8 @@ struct string_converter<Vector2i> {
 template<>
 struct string_converter<Vector3f> {
     static QString to_string(Vector3f & value) {
-        QTextStream ss;
-        ss << "(" << value.m_X << ", " << value.m_Y << ", " << value.m_Z << ")";
-        return ss.readAll();
+        QString ret = QString("(%1, %2, %3)").arg(value.m_X).arg(value.m_Y).arg(value.m_Z);
+        return ret;
     }
 };
 

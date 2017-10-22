@@ -3,13 +3,9 @@
 namespace Orx
 {
     ///////////////////////////////////////////////////////////////////////////////
-    Image::Image()
-    {}
-
-    ///////////////////////////////////////////////////////////////////////////////
-    Image::Image(const QString & filename) : m_Texture(filename)
+    Image::Image(const QString & image_name, const QString & filename) :
+        OrxObject(image_name + "_" + IMAGE_POSTFIX), m_UseCount(0), m_ImageName(image_name), m_Texture(filename)
     {
-        m_Name = get_name_from_file(filename) + IMAGE_POSTFIX;
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -17,6 +13,7 @@ namespace Orx
     {
         serialize_name(ss);
         serialize_value(ss, "Texture", m_Texture);
+        serialize_value(ss, "TextureSize", m_Size);
         ss << endl;
     }
 
@@ -48,7 +45,6 @@ namespace Orx
             serialize_value(ss, "Texture", m_Texture);
 
         serialize_value(ss, "TextureOrigin", m_Origin);
-        serialize_value(ss, "TextureSize", m_Size);
         ss << endl;
     }
 
@@ -69,6 +65,9 @@ namespace Orx
     ///////////////////////////////////////////////////////////////////////////////
     void Prefab::serialize(SerializationContext & context, QTextStream & ss)
     {
+        if (m_Graphic)
+            m_Graphic->serialize(context, ss);
+
         serialize_name(ss);
 
         if (m_Graphic)
@@ -83,11 +82,11 @@ namespace Orx
 
 
     ///////////////////////////////////////////////////////////////////////////////
-    Object::Object()
+    Object::Object() : m_Rotation(0)
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    Object::Object(const QString & name, const QString & parent) : OrxObject(name, parent)
+    Object::Object(const QString & name, const QString & parent) : OrxObject(name, parent), m_Rotation(0)
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -95,11 +94,10 @@ namespace Orx
     {
         serialize_name(ss);
 
-        if (m_Graphic)
-            serialize_value(ss, "Graphic", m_Graphic->m_Name);
-
-        serialize_value(ss, "Position", m_Position);
-        serialize_value(ss, "Rotation", m_Rotation);
+        if (!m_Position.IsZero())
+            serialize_value(ss, "Position", m_Position);
+        if (m_Rotation != 0)
+            serialize_value(ss, "Rotation", m_Rotation);
         serialize_object_list(ss, "ChildList", m_Children);
 
         ss << endl;

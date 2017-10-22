@@ -3,6 +3,8 @@ import qbs 1.0
 TiledPlugin {
     cpp.defines: ["ORX_LIBRARY"]
 
+    Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
+
     files: [
         "orx_exporter.cpp",
         "orx_exporter.h",

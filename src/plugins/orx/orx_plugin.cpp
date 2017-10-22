@@ -48,5 +48,11 @@ QString OrxPlugin::errorString() const
     return mError;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+QString OrxPlugin::shortName() const
+{
+    return QString("ORX config");
+}
+
 
 } //namespace Orx
