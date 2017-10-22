@@ -86,7 +86,13 @@ namespace Orx
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    Object::Object(const QString & name, const QString & parent) : OrxObject(name, parent), m_Rotation(0)
+    Object::Object(const QString & name, const QString & parent) :
+        OrxObject(name, parent),
+        m_Scale(1),
+        m_Repeat(1),
+        m_FlipH(false),
+        m_FlipV(false),
+        m_Rotation(0)
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -96,8 +102,20 @@ namespace Orx
 
         if (!m_Position.IsZero())
             serialize_value(ss, "Position", m_Position);
+        if (!m_Scale.IsOne())
+            serialize_value(ss, "Scale", m_Scale);
+        if (!m_Repeat.IsOne())
+            serialize_value(ss, "Repeat", m_Repeat);
         if (m_Rotation != 0)
             serialize_value(ss, "Rotation", m_Rotation);
+
+        if (m_FlipH && !m_FlipV)
+            serialize_value(ss, "Flip", "x");
+        if (!m_FlipH && m_FlipV)
+            serialize_value(ss, "Flip", "y");
+        if (m_FlipH && m_FlipV)
+            serialize_value(ss, "Flip", "both");
+
         serialize_object_list(ss, "ChildList", m_Children);
 
         ss << endl;

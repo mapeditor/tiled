@@ -17,9 +17,9 @@
 
 namespace Orx {
 
-#define IMAGE_POSTFIX       "Texture"
-#define GRAPHIC_POSTFIX     "Graphic"
-#define PREFAB_POSTFIX      "Prefab"
+#define IMAGE_POSTFIX       "Txt"
+#define GRAPHIC_POSTFIX     "Gra"
+#define PREFAB_POSTFIX      "Pfb"
 #define OBJECT_POSTFIX      "Obj"
 #define LAYER_POSTFIX       "Layer"
 #define MAP_POSTFIX         "Map"
@@ -103,6 +103,30 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+struct OptimizedCell
+{
+    bool m_Valid = false;
+    const Tiled::Cell * m_Cell = nullptr;
+    int m_RepeatX = 1;
+    int m_RepeatY = 1;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+template<typename T>
+class Grid2D
+{
+public:
+    Grid2D(int width, int height) : mWidth(width), mHeight(height), mGrid(width * height) {}
+    T & at(int x, int y) { return mGrid.at(x + (y * mWidth)); }
+
+private:
+    int mWidth;
+    int mHeight;
+    std::vector<T> mGrid;
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Object is an OBJECT that inherits from a Prefab OBJECT adding tranformations
 class Object : public OrxObject
 {
@@ -111,10 +135,15 @@ public:
     Object(const QString & name, const QString & parent);
 
 public:
-    Vector3f        m_Position;
-    float           m_Rotation;
-    ObjectPtrs      m_Children;
-    int             m_TiledId;
+    Vector3f            m_Position;
+    Vector3i            m_Scale;
+    Vector3i            m_Repeat;
+    float               m_Rotation;
+    ObjectPtrs          m_Children;
+    bool                m_FlipH;
+    bool                m_FlipV;
+    int                 m_TiledId;
+    const Tiled::Cell * m_Cell;
 
 public:
     virtual void serialize(SerializationContext & context, QTextStream & ss);

@@ -43,6 +43,15 @@ struct string_converter<Vector3f> {
     }
 };
 
+///////////////////////////////////////////////////////////////////////////////
+template<>
+struct string_converter<Vector3i> {
+    static QString to_string(Vector3i & value) {
+        QString ret = QString("(%1, %2, %3)").arg(value.m_X).arg(value.m_Y).arg(value.m_Z);
+        return ret;
+    }
+};
+
 }
 
 #endif // STRING_CONVERTER_H

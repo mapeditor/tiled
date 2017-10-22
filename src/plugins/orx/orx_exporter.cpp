@@ -6,6 +6,22 @@
 #include <QDir>
 #include <QTextStream>
 
+#include <QMessageBox>
+
+
+// TODO:
+// Create gui for options with:
+// - image destination folder
+// - select layers to export
+// - add map objects to export as
+//          .name
+//          .type
+//          .points
+// - toggle cell repeat/scale optimization
+//   - toggle optimization order (x or y preference - now is x and y is missing)
+
+
+
 namespace Orx {
 
 
@@ -84,10 +100,14 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
 
         m_progress->setLabelText("Generating objects...");
 
+        int map_offset = map->height() * map->tileHeight();
+
         for (auto obj : m_objects)
         {
             if (m_progress->wasCanceled())
                 break;
+
+            obj->m_Position.m_Y -= map_offset;
 
             obj->serialize(context, ss);
             inc_progress();
@@ -96,15 +116,30 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
 
     if (!m_progress->wasCanceled())
     {
-        QFile outFile(fileName);
-        outFile.open(QIODevice::WriteOnly | QIODevice::Text);
-        if(outFile.isOpen())
+        bool saved = false;
+
+        while (!saved)
         {
-            outFile.write(array);
-            outFile.close();
-        }
-        else
+            QFile outFile(fileName);
+            outFile.open(QIODevice::WriteOnly | QIODevice::Text);
+            if(outFile.isOpen())
+            {
+                outFile.write(array);
+                outFile.close();
+                saved = true;
+                ret = true;
+            }
+            else
+            {
+            QMessageBox Msgbox;
+            Msgbox.setText("Unable to save file");
+            Msgbox.setStandardButtons(QMessageBox::Abort | QMessageBox::Retry);
+            if (Msgbox.exec() == QMessageBox::Abort)
+                saved = true;
+
             ret = false;
+            }
+        }
     }
 
     m_progress->setValue(num_entities);
@@ -139,7 +174,7 @@ QString orxExporter::get_tile_name(const Tiled::Tile * tile)
 ///////////////////////////////////////////////////////////////////////////////
 Orx::PrefabPtr orxExporter::build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int row, int col, int src_x, int src_y)
 {
-    QString base_name = QString("%1_c%2_r%3")
+    QString base_name = QString("%1_c%2r%3")
                             .arg(image->m_ImageName)
                             .arg(QString::number(col))
                             .arg(QString::number(row));
@@ -202,6 +237,9 @@ Orx::ObjectPtr orxExporter::build_object(const Tiled::Cell * cell)
             QString cell_name = prefab_ptr->m_BaseName + "_" + OBJECT_POSTFIX + "_" + QString::number(prefab_ptr->GetNext());
             item_obj = std::make_shared<Orx::Object>(cell_name, prefab_ptr->m_Name);
             item_obj->m_TiledId = tile->id();
+            item_obj->m_Cell = cell;
+            item_obj->m_FlipH = cell->flippedHorizontally();
+            item_obj->m_FlipV = cell->flippedVertically();
         }
     }
 
@@ -320,6 +358,39 @@ bool orxExporter::process_collection_tileset(const Tiled::SharedTileset tset)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+int orxExporter::get_h_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_x)
+{
+    int count = 0;
+    for (; x <= max_x; ++x)
+        {
+        const Tiled::Cell * cell = &layer->cellAt(x, y);
+        if (*cell == *value)
+            count++;
+        else
+            break;
+        }
+
+    return count;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+int orxExporter::get_v_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_y)
+{
+    int count = 0;
+    for (; y <= max_y; ++y)
+        {
+        const Tiled::Cell * cell = &layer->cellAt(x, y);
+        if (*cell == *value)
+            count++;
+        else
+            break;
+        }
+
+    return count;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent)
 {
     bool ret = true;
@@ -330,9 +401,9 @@ bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::Object
 
     std::list<Orx::GroupObjectPtr> targets;
 
-    // get all items of the layer
-    const int width = layer->width();
-    const int height = layer->height();
+    // compute number of needed object containers as ORX can't hold more than 255 child objects per object
+    int width = layer->width();
+    int height = layer->height();
 
     int num_objects = width * height;
     if (num_objects > MAX_OBJECT_CHILDREN)
@@ -359,40 +430,79 @@ bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::Object
     Orx::GroupObjectPtr current_target = targets.front();
     targets.pop_front();
 
+    // build a vector of optimized objects
+    Grid2D<OptimizedCell> cell_map(width, height);
+
+    // perform horizontal optimization
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; /*++x*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            int rep = get_h_repetitions(layer, x, y, cell, width);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            ocell.m_Valid = true;
+            ocell.m_RepeatX = rep;
+            ocell.m_RepeatY = 1;
+            ocell.m_Cell = cell;
+            x += rep;
+        }
+    }
+
+    // perform vertical optimization
+    for (int x = 0; x < width; ++x)
+    {
+        for (int y = 0; y < height; /*++y*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            if (ocell.m_Valid && (cell_map.at(x, y).m_RepeatX == 1))
+            {
+                int rep = get_v_repetitions(layer, x, y, cell, width);
+                ocell.m_Valid = true;
+                ocell.m_RepeatY = rep;
+                ocell.m_Cell = cell;
+                y += rep;
+            }
+            else
+                y++;
+        }
+    }
+
     for (int y = 0; y < height; ++y)
     {
         for (int x = 0; x < width; ++x)
         {
             inc_progress();
 
-            Orx::ObjectPtr item_obj = build_object(&layer->cellAt(x, y));
-            if (item_obj)
+            OptimizedCell & ocell = cell_map.at(x, y);
+            if (ocell.m_Valid)
             {
-                item_obj->m_Position.m_X = offset_x + (x * layer->map()->tileWidth());
-                item_obj->m_Position.m_Y = offset_y + (y * layer->map()->tileHeight());
-
-                m_objects.push_back(item_obj);
-
-                if (current_target->m_Children.size() >= MAX_OBJECT_CHILDREN)
+                Orx::ObjectPtr item_obj = build_object(ocell.m_Cell);
+                if (item_obj)
                 {
-                    current_target = targets.front();
-                    targets.pop_front();
-                }
+                    item_obj->m_Position.m_X = offset_x + (x * layer->map()->tileWidth());
+                    item_obj->m_Position.m_Y = offset_y + (y * layer->map()->tileHeight());
+                    item_obj->m_Repeat.m_X = ocell.m_RepeatX;
+                    item_obj->m_Repeat.m_Y = ocell.m_RepeatY;
+                    item_obj->m_Repeat.m_Z = 1;
+                    item_obj->m_Scale.m_X = ocell.m_RepeatX;
+                    item_obj->m_Scale.m_Y = ocell.m_RepeatY;
+                    item_obj->m_Scale.m_Z = 1;
 
-                current_target->m_Children.push_back(item_obj);
+                    m_objects.push_back(item_obj);
+
+                    if (current_target->m_Children.size() >= MAX_OBJECT_CHILDREN)
+                    {
+                        current_target = targets.front();
+                        targets.pop_front();
+                    }
+
+                    current_target->m_Children.push_back(item_obj);
+                }
             }
-//            else
-//            {
-//                ret = false;
-//                y = height;
-//                x = width;
-//            }
         }
     }
-
-
-
-
 
     if (layer_object->m_Children.size())
     {
@@ -499,6 +609,8 @@ void orxExporter::inc_progress()
 {
     m_progress->setValue(++m_progressCounter);
 }
+
+
 
 
 
