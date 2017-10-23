@@ -20,6 +20,9 @@
 
 #include "selectionrectangle.h"
 
+#include "mapview.h"
+#include "zoomable.h"
+
 #include <QApplication>
 #include <QPainter>
 #include <QPalette>
@@ -45,7 +48,8 @@ QRectF SelectionRectangle::boundingRect() const
 }
 
 void SelectionRectangle::paint(QPainter *painter,
-                               const QStyleOptionGraphicsItem *, QWidget *)
+                               const QStyleOptionGraphicsItem *,
+                               QWidget *widget)
 {
     if (mRectangle.isNull())
         return;
@@ -56,7 +60,8 @@ void SelectionRectangle::paint(QPainter *painter,
     QPen pen(black, 2, Qt::DotLine);
     pen.setCosmetic(true);
     painter->setPen(pen);
-    painter->drawRect(mRectangle.translated(1, 1));
+    const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
+    painter->drawRect(mRectangle.translated(1 / scale, 1 / scale));
 
     // Draw a rectangle in the highlight color
     QColor highlight = QApplication::palette().highlight().color();
