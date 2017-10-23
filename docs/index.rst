@@ -29,6 +29,7 @@ Tiled Documentation
    manual/automapping
    manual/export
    manual/keyboard-shortcuts
+   manual/preferences
 
 .. toctree::
    :maxdepth: 2
