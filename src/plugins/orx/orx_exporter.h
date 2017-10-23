@@ -25,8 +25,9 @@ public:
 
     bool Export(const Tiled::Map *map, const QString &fileName);
 
-
 private:
+    // perform the export
+    bool do_export(const Tiled::Map *map, const QString &fileName);
     // converts the given absolute filename to a filename relative to destination save directory
     QString get_relative_filename(const QString & filename);
     // returns the name of the given tile
@@ -65,6 +66,12 @@ private:
     int get_h_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_x);
     // computes the number of times a cell is repeated vertically starting from given coords
     int get_v_repetitions(const Tiled::TileLayer * layer, int x, int y, const Tiled::Cell * value, int max_y);
+    // build the cell_map unoptimized
+    void no_optimize(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
+    // optimizes cells of layer, first horizontally then vertically
+    void optimize_h_v(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
+    // optimizes cells of layer, first vertically then horizontally
+    void optimize_v_h(int width, int height, Grid2D<OptimizedCell> & call_map, const Tiled::TileLayer * layer);
 
 private:
     QString             m_filename;
@@ -73,6 +80,11 @@ private:
     Orx::ObjectPtrs     m_objects;
     QProgressDialog *   m_progress;
     int                 m_progressCounter;
+    QString             m_ImagesFolder;
+    QVector<Tiled::Layer *> m_SelectedLayers;
+    bool                m_Optimize;
+    bool                m_OptimizeHV;
+
 };
 
 } // namespace Orx

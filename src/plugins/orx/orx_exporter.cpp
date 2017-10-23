@@ -8,6 +8,8 @@
 
 #include <QMessageBox>
 
+#include "optionsdialog.h"
+
 
 // TODO:
 // Create gui for options with:
@@ -34,40 +36,56 @@ orxExporter::orxExporter()
 ///////////////////////////////////////////////////////////////////////////////
 bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
 {
+    // edit select options
+    OptionsDialog dlg(map);
+    int dlg_res = dlg.exec();
+    if (dlg_res == QDialog::Accepted)
+    {
+        m_ImagesFolder = dlg.m_ImagesFolder;
+        m_Optimize = dlg.m_Optimize;
+        m_OptimizeHV = dlg.m_OptimizeHV;
+        m_SelectedLayers = dlg.m_SelectedLayers;
+
+        return do_export(map, fileName);
+    }
+
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
+{
     bool ret = true;
 
     m_filename = fileName;
 
     SerializationContext context;
 
+    // prepare destination buffer
     QByteArray array;
     QTextStream ss(&array);
 
-    //QApplication::setOverrideCursor(Qt::WaitCursor);
-
+    // compute workload for progress bar
     int num_entities = get_num_entities(map);
-
     m_progressCounter = 0;
     m_progress = new QProgressDialog("Exporting...", "Cancel", 0, num_entities);
     m_progress->setWindowModality(Qt::WindowModal);
 
-    QFileInfo dst_finfo(fileName);
-
-    m_progress->setLabelText("Processing tilesets...");
-
     // get all tilesets and convert to orx object prefabs with graphic
+    m_progress->setLabelText("Processing tilesets...");
     ret = process_tilesets(map);
-
-    m_progress->setLabelText("Processing layers...");
 
     // get all layers and build the map object
     if (ret)
+    {
+        m_progress->setLabelText("Processing layers...");
         ret = process_layers(map);
+    }
 
     if (ret)
     {
         m_progress->setLabelText("Generating textures...");
-
+        QFileInfo dst_finfo(fileName);
         for (auto obj : m_images)
         {
             if (m_progress->wasCanceled())
@@ -77,8 +95,16 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
             {
                 QFileInfo src_finfo(obj->m_Texture);
                 QString fn = src_finfo.fileName();
-                QFile::copy(obj->m_Texture, dst_finfo.dir().absolutePath() + QDir::separator() + fn);
-                obj->m_Texture = fn;
+                if (m_ImagesFolder.isEmpty())
+                {
+                    QFile::copy(obj->m_Texture, dst_finfo.dir().absolutePath() + QDir::separator() + fn);
+                    obj->m_Texture = fn;
+                }
+                else
+                {
+                    QFile::copy(obj->m_Texture, dst_finfo.dir().absolutePath() + QDir::separator() + m_ImagesFolder + QDir::separator() + fn);
+                    obj->m_Texture = m_ImagesFolder + QDir::separator() + fn;
+                }
 
                 obj->serialize(context, ss);
             }
@@ -86,7 +112,6 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
         }
 
         m_progress->setLabelText("Generating prefabs...");
-
         for (auto obj : m_prefabs)
         {
             if (m_progress->wasCanceled())
@@ -99,9 +124,7 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
         }
 
         m_progress->setLabelText("Generating objects...");
-
         int map_offset = map->height() * map->tileHeight();
-
         for (auto obj : m_objects)
         {
             if (m_progress->wasCanceled())
@@ -117,7 +140,6 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
     if (!m_progress->wasCanceled())
     {
         bool saved = false;
-
         while (!saved)
         {
             QFile outFile(fileName);
@@ -389,6 +411,102 @@ int orxExporter::get_v_repetitions(const Tiled::TileLayer * layer, int x, int y,
     return count;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+void orxExporter::no_optimize(int width, int height, Grid2D<OptimizedCell> & cell_map, const Tiled::TileLayer * layer)
+{
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            OptimizedCell & ocell = cell_map.at(x, y);
+            ocell.m_Valid = true;
+            ocell.m_RepeatX = 1;
+            ocell.m_RepeatY = 1;
+            ocell.m_Cell = &layer->cellAt(x, y);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void orxExporter::optimize_h_v(int width, int height, Grid2D<OptimizedCell> & cell_map, const Tiled::TileLayer * layer)
+{
+    // perform horizontal optimization
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; /*++x*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            int rep = get_h_repetitions(layer, x, y, cell, width);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            ocell.m_Valid = true;
+            ocell.m_RepeatX = rep;
+            ocell.m_RepeatY = 1;
+            ocell.m_Cell = cell;
+            x += rep;
+        }
+    }
+
+    // perform vertical optimization
+    for (int x = 0; x < width; ++x)
+    {
+        for (int y = 0; y < height; /*++y*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            if (ocell.m_Valid && (cell_map.at(x, y).m_RepeatX == 1))
+            {
+                int rep = get_v_repetitions(layer, x, y, cell, width);
+                ocell.m_Valid = true;
+                ocell.m_RepeatY = rep;
+                ocell.m_Cell = cell;
+                y += rep;
+            }
+            else
+                y++;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void orxExporter::optimize_v_h(int width, int height, Grid2D<OptimizedCell> & cell_map, const Tiled::TileLayer * layer)
+{
+    // perform vertical optimization
+    for (int x = 0; x < width; ++x)
+    {
+        for (int y = 0; y < height; /*++y*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            int rep = get_v_repetitions(layer, x, y, cell, width);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            ocell.m_Valid = true;
+            ocell.m_RepeatX = 1;
+            ocell.m_RepeatY = rep;
+            ocell.m_Cell = cell;
+            y += rep;
+        }
+    }
+
+    // perform horizontal optimization
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; /*++x*/)
+        {
+            const Tiled::Cell * cell = &layer->cellAt(x, y);
+            OptimizedCell & ocell = cell_map.at(x, y);
+            if (ocell.m_Valid && (cell_map.at(x, y).m_RepeatY == 1))
+            {
+                int rep = get_h_repetitions(layer, x, y, cell, width);
+                ocell.m_Valid = true;
+                ocell.m_RepeatX = rep;
+                ocell.m_RepeatY = 1;
+                ocell.m_Cell = cell;
+                x += rep;
+            }
+            else
+                x++;
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent)
@@ -433,41 +551,15 @@ bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::Object
     // build a vector of optimized objects
     Grid2D<OptimizedCell> cell_map(width, height);
 
-    // perform horizontal optimization
-    for (int y = 0; y < height; ++y)
+    if (m_Optimize)
     {
-        for (int x = 0; x < width; /*++x*/)
-        {
-            const Tiled::Cell * cell = &layer->cellAt(x, y);
-            int rep = get_h_repetitions(layer, x, y, cell, width);
-            OptimizedCell & ocell = cell_map.at(x, y);
-            ocell.m_Valid = true;
-            ocell.m_RepeatX = rep;
-            ocell.m_RepeatY = 1;
-            ocell.m_Cell = cell;
-            x += rep;
-        }
+        if (m_OptimizeHV)
+            optimize_h_v(width, height, cell_map, layer);
+        else
+            optimize_v_h(width, height, cell_map, layer);
     }
-
-    // perform vertical optimization
-    for (int x = 0; x < width; ++x)
-    {
-        for (int y = 0; y < height; /*++y*/)
-        {
-            const Tiled::Cell * cell = &layer->cellAt(x, y);
-            OptimizedCell & ocell = cell_map.at(x, y);
-            if (ocell.m_Valid && (cell_map.at(x, y).m_RepeatX == 1))
-            {
-                int rep = get_v_repetitions(layer, x, y, cell, width);
-                ocell.m_Valid = true;
-                ocell.m_RepeatY = rep;
-                ocell.m_Cell = cell;
-                y += rep;
-            }
-            else
-                y++;
-        }
-    }
+    else
+        no_optimize(width, height, cell_map, layer);
 
     for (int y = 0; y < height; ++y)
     {
