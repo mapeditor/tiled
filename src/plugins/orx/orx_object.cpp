@@ -52,7 +52,7 @@ QString OrxObject::get_name_from_file(const QString & name)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void OrxObject::serialize(SerializationContext & context, QTextStream & ss)
+void OrxObject::serialize(QTextStream & ss)
 {
     serialize_name(ss);
 }

@@ -1,7 +1,7 @@
 #ifndef ORX_OBJECT_H
 #define ORX_OBJECT_H
 
-#include "serialization_context.h"
+#include "point_vector.h"
 #include <QString>
 #include <QTextStream>
 #include <memory>
@@ -26,9 +26,33 @@ public:
 
 protected:
     ///////////////////////////////////////////////////////////////////////////////
-    template<typename T>
-    static void serialize_value(QTextStream & ss, const QString & name, T & value) {
-        ss << name << " = " << string_converter<T>::to_string(value) << endl;
+    static void serialize_value(QTextStream & ss, const QString & name, int & value) {
+        ss << name << " = " << QString::number(value) << endl;
+        }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    static void serialize_value(QTextStream & ss, const QString & name, float & value) {
+        ss << name << " = " << QString::number(value) << endl;
+        }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    static void serialize_value(QTextStream & ss, const QString & name, QString value) {
+        ss << name << " = " << value << endl;
+        }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    static void serialize_value(QTextStream & ss, const QString & name, Vector2i & value) {
+        ss << name << " = " << QString("(%1, %2)").arg(value.m_X).arg(value.m_Y) << endl;
+        }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    static void serialize_value(QTextStream & ss, const QString & name, Vector3f & value) {
+        ss << name << " = " << QString("(%1, %2, %3)").arg(value.m_X).arg(value.m_Y).arg(value.m_Z) << endl;
+        }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    static void serialize_value(QTextStream & ss, const QString & name, Vector3i & value) {
+        ss << name << " = " << QString("(%1, %2, %3)").arg(value.m_X).arg(value.m_Y).arg(value.m_Z) << endl;
         }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -58,7 +82,7 @@ public:
     QString     m_Parent;
 
 public:
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 

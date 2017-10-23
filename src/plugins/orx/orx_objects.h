@@ -3,7 +3,6 @@
 
 #include "orx_object.h"
 #include "point_vector.h"
-#include "string_converter.h"
 
 #include "mapformat.h"
 #include "map.h"
@@ -63,7 +62,7 @@ public:
 
 public:
     // serializes the element into the given stream
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +80,7 @@ public:
     Vector2i        m_Origin;
 
 public:
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,7 +98,7 @@ public:
     int             m_UseCount;
 
 public:
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,7 +145,7 @@ public:
     const Tiled::Cell * m_Cell;
 
 public:
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,7 +157,7 @@ public:
     GroupObject(const QString & name);
 
 public:
-    virtual void serialize(SerializationContext & context, QTextStream & ss);
+    virtual void serialize(QTextStream & ss);
 };
 
 

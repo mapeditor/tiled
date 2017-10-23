@@ -9,7 +9,7 @@ namespace Orx
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    void Image::serialize(SerializationContext & context, QTextStream & ss)
+    void Image::serialize(QTextStream & ss)
     {
         serialize_name(ss);
         serialize_value(ss, "Texture", m_Texture);
@@ -37,7 +37,7 @@ namespace Orx
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    void Graphic::serialize(SerializationContext & context, QTextStream & ss)
+    void Graphic::serialize(QTextStream & ss)
     {
         serialize_name(ss);
 
@@ -63,10 +63,10 @@ namespace Orx
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    void Prefab::serialize(SerializationContext & context, QTextStream & ss)
+    void Prefab::serialize(QTextStream & ss)
     {
         if (m_Graphic)
-            m_Graphic->serialize(context, ss);
+            m_Graphic->serialize(ss);
 
         serialize_name(ss);
 
@@ -96,7 +96,7 @@ namespace Orx
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    void Object::serialize(SerializationContext & context, QTextStream & ss)
+    void Object::serialize(QTextStream & ss)
     {
         serialize_name(ss);
 
@@ -134,7 +134,7 @@ namespace Orx
     {}
 
     ///////////////////////////////////////////////////////////////////////////////
-    void GroupObject::serialize(SerializationContext & context, QTextStream & ss)
+    void GroupObject::serialize(QTextStream & ss)
     {
         serialize_name(ss);
         serialize_object_list(ss, "ChildList", m_Children);

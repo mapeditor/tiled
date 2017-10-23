@@ -21,7 +21,5 @@ TiledPlugin {
         "orx_plugin.h",
         "point_vector.h",
         "resources.qrc",
-        "serialization_context.h",
-        "string_converter.h",
     ]
 }

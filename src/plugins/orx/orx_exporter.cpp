@@ -59,8 +59,6 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
 
     m_filename = fileName;
 
-    SerializationContext context;
-
     // prepare destination buffer
     QByteArray array;
     QTextStream ss(&array);
@@ -97,16 +95,22 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
                 QString fn = src_finfo.fileName();
                 if (m_ImagesFolder.isEmpty())
                 {
-                    QFile::copy(obj->m_Texture, dst_finfo.dir().absolutePath() + QDir::separator() + fn);
+                    QString dst_path = dst_finfo.dir().absolutePath() + QDir::separator() + fn;
+                    QFile::copy(obj->m_Texture, dst_path);
                     obj->m_Texture = fn;
                 }
                 else
                 {
-                    QFile::copy(obj->m_Texture, dst_finfo.dir().absolutePath() + QDir::separator() + m_ImagesFolder + QDir::separator() + fn);
+                    QString dst_dir = dst_finfo.dir().absolutePath() + QDir::separator() + m_ImagesFolder;
+                    QDir dir(dst_dir);
+                    if (!dir.exists())
+                        dir.mkpath(".");
+                    QString dst_path = dst_finfo.dir().absolutePath() + QDir::separator() + m_ImagesFolder + QDir::separator() + fn;
+                    QFile::copy(obj->m_Texture, dst_path);
                     obj->m_Texture = m_ImagesFolder + QDir::separator() + fn;
                 }
 
-                obj->serialize(context, ss);
+                obj->serialize(ss);
             }
             inc_progress();
         }
@@ -118,7 +122,7 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
                 break;
 
             if (obj->m_UseCount)
-                obj->serialize(context, ss);
+                obj->serialize(ss);
 
             inc_progress();
         }
@@ -132,7 +136,7 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
 
             obj->m_Position.m_Y -= map_offset;
 
-            obj->serialize(context, ss);
+            obj->serialize(ss);
             inc_progress();
         }
     }
@@ -455,7 +459,7 @@ void orxExporter::optimize_h_v(int width, int height, Grid2D<OptimizedCell> & ce
             OptimizedCell & ocell = cell_map.at(x, y);
             if (ocell.m_Valid && (cell_map.at(x, y).m_RepeatX == 1))
             {
-                int rep = get_v_repetitions(layer, x, y, cell, width);
+                int rep = get_v_repetitions(layer, x, y, cell, height);
                 ocell.m_Valid = true;
                 ocell.m_RepeatY = rep;
                 ocell.m_Cell = cell;
@@ -476,7 +480,7 @@ void orxExporter::optimize_v_h(int width, int height, Grid2D<OptimizedCell> & ce
         for (int y = 0; y < height; /*++y*/)
         {
             const Tiled::Cell * cell = &layer->cellAt(x, y);
-            int rep = get_v_repetitions(layer, x, y, cell, width);
+            int rep = get_v_repetitions(layer, x, y, cell, height);
             OptimizedCell & ocell = cell_map.at(x, y);
             ocell.m_Valid = true;
             ocell.m_RepeatX = 1;
