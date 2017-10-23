@@ -124,6 +124,7 @@ SOURCES += aboutdialog.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
     createobjecttool.cpp \
+    createpointobjecttool.cpp \
     createpolygonobjecttool.cpp \
     createpolylineobjecttool.cpp \
     createrectangleobjecttool.cpp \
@@ -320,6 +321,7 @@ HEADERS += aboutdialog.h \
     createellipseobjecttool.h \
     createmultipointobjecttool.h \
     createobjecttool.h \
+    createpointobjecttool.h \
     createpolygonobjecttool.h \
     createpolylineobjecttool.h \
     createrectangleobjecttool.h \

@@ -1133,6 +1133,10 @@ MapObject *MapReaderPrivate::readObject()
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);
             object->setPropertyChanged(MapObject::TextProperty);
+        } else if (xml.name() == QLatin1String("point")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Point);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else {
             readUnknownElement();
         }

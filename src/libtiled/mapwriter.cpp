@@ -883,6 +883,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
             writeObjectText(w, mapObject.textData());
         break;
     }
+    case MapObject::Point:
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
+            w.writeEmptyElement(QLatin1String("point"));
+        break;
     }
 
     w.writeEndElement();

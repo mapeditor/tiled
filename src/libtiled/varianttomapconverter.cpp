@@ -612,6 +612,7 @@ MapObject *VariantToMapConverter::toMapObject(const QVariantMap &variantMap)
     const QVariant polylineVariant = variantMap[QLatin1String("polyline")];
     const QVariant polygonVariant = variantMap[QLatin1String("polygon")];
     const QVariant textVariant = variantMap[QLatin1String("text")];
+    const QVariant pointVariant = variantMap[QLatin1String("point")];
 
     if (polygonVariant.isValid()) {
         object->setShape(MapObject::Polygon);
@@ -625,6 +626,10 @@ MapObject *VariantToMapConverter::toMapObject(const QVariantMap &variantMap)
     }
     if (variantMap.contains(QLatin1String("ellipse"))) {
         object->setShape(MapObject::Ellipse);
+        object->setPropertyChanged(MapObject::ShapeProperty);
+    }
+    if (variantMap.contains(QLatin1String("point"))) {
+        object->setShape(MapObject::Point);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
     if (textVariant.isValid()) {

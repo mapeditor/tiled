@@ -107,15 +107,19 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         case MapObject::Rectangle:
             if (bounds.isNull()) {
                 boundingRect = bounds.adjusted(-10 - extraSpace,
-                                               -10 - extraSpace,
-                                               10 + extraSpace + 1,
-                                               10 + extraSpace + 1);
+                -10 - extraSpace,
+                10 + extraSpace + 1,
+                10 + extraSpace + 1);
             } else {
-                boundingRect = bounds.adjusted(-extraSpace,
-                                               -extraSpace,
-                                               extraSpace + 1,
-                                               extraSpace + 1);
+            boundingRect = bounds.adjusted(-extraSpace,
+                -extraSpace,
+                extraSpace + 1,
+                extraSpace + 1);
             }
+            break;
+
+        case MapObject::Point:
+            boundingRect = bounds.adjusted(-10, -10, 10, 10);
             break;
 
         case MapObject::Polygon:
@@ -150,7 +154,8 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
-        case MapObject::Rectangle: {
+        case MapObject::Rectangle:
+        case MapObject::Point: {
             const QRectF bounds = object->bounds();
 
             if (bounds.isNull()) {
@@ -480,6 +485,20 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setFont(textData.font);
             painter->setPen(textData.color);
             painter->drawText(rect, textData.text, textData.textOption());
+            break;
+        }
+        case MapObject::Point: {
+            // TODO
+            if (rect.isNull())
+                rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
+
+            // Draw the shadow
+            painter->setPen(shadowPen);
+            painter->drawRect(rect.translated(shadowOffset));
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawRect(rect);
             break;
         }
         }

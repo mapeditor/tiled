@@ -661,7 +661,7 @@ void PropertyBrowser::addMapObjectProperties()
 
     auto mapObject = static_cast<const MapObject*>(mObject);
 
-    if (!mapObject->isPolyShape()) {
+    if (mapObject->hasDimensions()) {
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
@@ -1323,7 +1323,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
                                                        mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                        val.toString()));
-        break; 
+        break;
     case EdgeCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
                                                             mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
@@ -1571,7 +1571,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
-        if (!mapObject->isPolyShape()) {
+        if (mapObject->hasDimensions()) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }

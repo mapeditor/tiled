@@ -528,6 +528,10 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
                                     object.propertyChanged(MapObject::TextColorProperty)))
             objectVariant[QLatin1String("text")] = toVariant(object.textData());
         break;
+    case MapObject::Point:
+        if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
+            objectVariant[QLatin1String("point")] = true;
+        break;
     }
 
     return objectVariant;

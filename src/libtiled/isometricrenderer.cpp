@@ -142,6 +142,7 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
         switch (object->shape()) {
         case MapObject::Ellipse:
         case MapObject::Rectangle:
+        case MapObject::Point:
             path.addPolygon(pixelRectToScreenPolygon(object->bounds()));
             break;
         case MapObject::Polygon:
@@ -425,6 +426,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             }
             break;
         }
+        case MapObject::Point: /*todo*/
         case MapObject::Rectangle: {
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);

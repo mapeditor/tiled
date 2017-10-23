@@ -98,7 +98,8 @@ public:
         Polygon,
         Polyline,
         Ellipse,
-        Text
+        Text,
+        Point,
     };
 
     /**
@@ -169,7 +170,7 @@ public:
     Shape shape() const;
     void setShape(Shape shape);
 
-    bool isPolyShape() const;
+    bool hasDimensions() const;
     bool isTileObject() const;
 
     QRectF bounds() const;
@@ -403,10 +404,19 @@ inline void MapObject::setShape(MapObject::Shape shape)
 { mShape = shape; }
 
 /**
- * Returns true if this is a Polygon or a Polyline.
+ * Returns true if this object has a width and height
  */
-inline bool MapObject::isPolyShape() const
-{ return mShape == Polygon || mShape == Polyline; }
+inline bool MapObject::hasDimensions() const
+{
+    switch(mShape) {
+        case Polygon:
+        case Polyline:
+        case Point:
+            return false;
+        default:
+            return true;
+    }
+}
 
 inline bool MapObject::isTileObject() const
 { return !mCell.isEmpty(); }
