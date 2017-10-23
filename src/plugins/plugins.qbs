@@ -13,6 +13,7 @@ Project {
         "tbin",
         "tengine",
         "tmw",
-        "gmx"
+        "gmx",
+        "orx"
     ]
 }

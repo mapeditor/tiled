@@ -1,0 +1,65 @@
+#include "orx_objects.h"
+#include <QFileInfo>
+#include <QDir>
+
+namespace Orx {
+
+///////////////////////////////////////////////////////////////////////////////
+OrxObject::OrxObject()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+OrxObject::OrxObject(const QString & name) :
+    m_Name(name)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+OrxObject::OrxObject(const QString & name, const QString & parent) :
+    m_Name(name),
+    m_Parent(parent)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+OrxObject::~OrxObject()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void OrxObject::serialize_name(QTextStream & ss)
+{
+    ss << "[" << m_Name;
+    if (!m_Parent.isEmpty())
+        ss << "@" << m_Parent;
+    ss << "]" << endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+QString OrxObject::normalize_name(const QString & name)
+{
+    QString ret(name);
+    ret.replace(QString(" "), QString("_"));
+    return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+QString OrxObject::get_name_from_file(const QString & name)
+{
+    QFileInfo fi(name);
+    return normalize_name(fi.baseName());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void OrxObject::serialize(SerializationContext & context, QTextStream & ss)
+{
+    serialize_name(ss);
+}
+
+
+
+
+}
+
+
