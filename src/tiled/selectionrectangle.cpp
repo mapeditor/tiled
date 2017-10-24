@@ -55,12 +55,15 @@ void SelectionRectangle::paint(QPainter *painter,
         return;
 
     // Draw a shadow
+    qreal scale = 1.0;
+    if (widget)
+        if (MapView *mapView = dynamic_cast<MapView*>(widget->parent()))
+            scale = mapView->zoomable()->scale();
     QColor black(Qt::black);
     black.setAlpha(128);
     QPen pen(black, 2, Qt::DotLine);
     pen.setCosmetic(true);
     painter->setPen(pen);
-    const qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     painter->drawRect(mRectangle.translated(1 / scale, 1 / scale));
 
     // Draw a rectangle in the highlight color
