@@ -77,15 +77,15 @@ namespace {
 class NewTilesetView : public QWidget
 {
 public:
-    explicit NewTilesetView(QWidget *tmb = nullptr)
+    explicit NewTilesetView(TilesetDock *parent = nullptr)
         : QWidget(tmb)
     {
         QWidget *w = new QWidget(this);
 
-        QPushButton *pbNewTileset = new QPushButton(w);
-        pbNewTileset->setText(QStringLiteral("New Tileset..."));
+        QPushButton *newTilesetButton = new QPushButton(w);
+        newTilesetButton->setText(QStringLiteral("New Tileset..."));
 
-        connect(pbNewTileset, SIGNAL(released()), tmb, SLOT(newTileset()));
+        connect(newTilesetButton, SIGNAL(released()), parent, SLOT(newTileset()));
     }
 };
 
@@ -577,7 +577,7 @@ void TilesetDock::deleteTilesetView(int index)
     mTabBar->removeTab(index);
 
     // Make the "New Tileset..." special tab reappear if there is no tileset open
-    if (mTilesets.count() == 0)
+    if (mTilesets.isEmpty())
         mSuperViewStack->setCurrentIndex(0);
 
     // Make sure we don't reference this tileset anymore
