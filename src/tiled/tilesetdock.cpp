@@ -78,7 +78,7 @@ class NewTilesetView : public QWidget
 {
 public:
     explicit NewTilesetView(TilesetDock *parent = nullptr)
-        : QWidget(tmb)
+        : QWidget(parent)
     {
         QWidget *w = new QWidget(this);
 
