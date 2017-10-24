@@ -119,7 +119,8 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
             break;
 
         case MapObject::Point:
-            boundingRect = bounds.adjusted(-10, -10, 10, 10);
+            boundingRect = bounds.adjusted(-10, -30, 10, 0)
+                                 .adjusted(-0.1, -0.1, 0.1, 0.1);
             break;
 
         case MapObject::Polygon:
@@ -154,8 +155,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
-        case MapObject::Rectangle:
-        case MapObject::Point: {
+        case MapObject::Rectangle: {
             const QRectF bounds = object->bounds();
 
             if (bounds.isNull()) {
@@ -192,6 +192,10 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             break;
         }
 
+        case MapObject::Point: {
+            path.addRect(boundingRect(object));
+            break;
+        }
         case MapObject::Text: {
             path.addRect(object->bounds());
             break;
@@ -488,17 +492,35 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Point: {
-            // TODO
-            if (rect.isNull())
-                rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(fillBrush);
 
-            // Draw the shadow
+            QPainterPath path;
+
+            const float radius = 10.f;
+            const float sweep = 235.f;
+            const float startAngle = 90.f - sweep / 2;
+            QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
+            path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
+            path.arcTo(rectangle, startAngle, sweep);
+            path.lineTo(0, 2 * radius);
+            path.closeSubpath();
+
+            painter->translate(0, -2 * radius);
+
             painter->setPen(shadowPen);
-            painter->drawRect(rect.translated(shadowOffset));
+            painter->setBrush(Qt::NoBrush);
+            painter->drawPath(path.translated(shadowOffset));
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
-            painter->drawRect(rect);
+            painter->drawPath(path);
+
+            const QBrush opaqueBrush(color);
+            painter->setBrush(opaqueBrush);
+            const float smallRadius = radius / 3;
+            painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
+
             break;
         }
         }
