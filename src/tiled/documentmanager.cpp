@@ -510,7 +510,13 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tsx"));
+        auto suggestedFileName = tilesetDocument->tileset()->name().trimmed();
+        if (suggestedFileName.isEmpty())
+            suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tsx"));
+
+        fileName = getSaveFileName(suggestedFileName);
+
         if (fileName.isEmpty())
             return false;
 
