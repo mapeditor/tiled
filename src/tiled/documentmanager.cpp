@@ -467,14 +467,14 @@ bool DocumentManager::saveDocumentAs(Document *document)
                 !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
             {
                 QMessageBox messageBox(QMessageBox::Warning,
-                    QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
-                    QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
-                    QMessageBox::Yes | QMessageBox::No,
-                    mWidget->window());
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                       QMessageBox::Yes | QMessageBox::No,
+                                       mWidget->window());
 
                 messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
-                                                                        "Tiled may not automatically recognize your file when loading. "
-                                                                        "Are you sure you want to save with this extension?"));
+                                                                          "Tiled may not automatically recognize your file when loading. "
+                                                                          "Are you sure you want to save with this extension?"));
 
                 int answer = messageBox.exec();
                 if (answer != QMessageBox::Yes)
