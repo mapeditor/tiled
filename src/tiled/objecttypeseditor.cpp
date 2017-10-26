@@ -233,12 +233,10 @@ void ObjectTypesEditor::retranslateUi()
 
 void ObjectTypesEditor::addObjectType()
 {
-    const int newRow = mObjectTypesModel->objectTypes().size();
-    mObjectTypesModel->appendNewObjectType();
+    const QModelIndex newIndex = mObjectTypesModel->addNewObjectType();
 
     // Select and focus the new row and ensure it is visible
     QItemSelectionModel *sm = mUi->objectTypesTable->selectionModel();
-    const QModelIndex newIndex = mObjectTypesModel->index(newRow, 0);
     sm->select(newIndex,
                QItemSelectionModel::ClearAndSelect |
                QItemSelectionModel::Rows);

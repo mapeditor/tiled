@@ -59,7 +59,7 @@ public:
     void removeObjectTypes(const QModelIndexList &indexes);
 
 public slots:
-    void appendNewObjectType();
+    QModelIndex addNewObjectType();
 
 private:
     ObjectTypes mObjectTypes;

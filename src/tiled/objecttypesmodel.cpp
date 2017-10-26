@@ -23,10 +23,16 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static bool objectTypeLessThan(const ObjectType &a, const ObjectType &b)
+{
+    return a.name.toLower() < b.name.toLower();
+}
+
 void ObjectTypesModel::setObjectTypes(const ObjectTypes &objectTypes)
 {
     beginResetModel();
     mObjectTypes = objectTypes;
+    qSort(mObjectTypes.begin(), mObjectTypes.end(), objectTypeLessThan);
     endResetModel();
 }
 
@@ -91,8 +97,30 @@ bool ObjectTypesModel::setData(const QModelIndex &index,
                                int role)
 {
     if (role == Qt::EditRole && index.column() == 0) {
-        mObjectTypes[index.row()].name = value.toString().trimmed();
+        const int oldRow = index.row();
+
+        ObjectType objectType = mObjectTypes.at(oldRow);
+        objectType.name = value.toString().trimmed();
+
+        auto nextObjectType = std::lower_bound(mObjectTypes.constBegin(),
+                                               mObjectTypes.constEnd(),
+                                               objectType,
+                                               objectTypeLessThan);
+
+        const int newRow = nextObjectType - mObjectTypes.constBegin();
+        // QVector::move works differently from beginMoveRows
+        const int moveToRow = newRow > oldRow ? newRow - 1 : newRow;
+
+        mObjectTypes[oldRow].name = objectType.name;
         emit dataChanged(index, index);
+
+        if (moveToRow != oldRow) {
+            Q_ASSERT(newRow != oldRow);
+            Q_ASSERT(newRow != oldRow + 1);
+            beginMoveRows(QModelIndex(), oldRow, oldRow, QModelIndex(), newRow);
+            mObjectTypes.move(oldRow, moveToRow);
+            endMoveRows();
+        }
         return true;
     }
     return false;
@@ -136,9 +164,10 @@ void ObjectTypesModel::removeObjectTypes(const QModelIndexList &indexes)
     }
 }
 
-void ObjectTypesModel::appendNewObjectType()
+QModelIndex ObjectTypesModel::addNewObjectType()
 {
-    beginInsertRows(QModelIndex(), mObjectTypes.size(), mObjectTypes.size());
-    mObjectTypes.append(ObjectType());
+    beginInsertRows(QModelIndex(), 0, 0);
+    mObjectTypes.prepend(ObjectType());
     endInsertRows();
+    return index(0, 0);
 }
