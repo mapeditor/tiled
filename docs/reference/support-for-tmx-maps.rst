@@ -107,8 +107,9 @@ Go
 Haskell
 ~~~~~~~
 
--  `htiled <http://hackage.haskell.org/package/htiled>`__ by `Christian
+-  `htiled <http://hackage.haskell.org/package/htiled>`__ (TMX) by `Christian
    Rødli Amble <https://github.com/chrra>`__.
+-  `aeson-tiled <https://hackage.haskell.org/package/aeson-tiled>`__ (JSON) by `Schell Scivally <https://github.com/schell>`__.
 
 Java
 ~~~~
