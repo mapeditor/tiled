@@ -496,7 +496,10 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tmx"));
+        auto suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tmx"));
+
+        fileName = getSaveFileName(suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
@@ -517,7 +520,6 @@ bool DocumentManager::saveDocumentAs(Document *document)
         suggestedFileName.append(QLatin1String(".tsx"));
 
         fileName = getSaveFileName(suggestedFileName);
-
         if (fileName.isEmpty())
             return false;
 
