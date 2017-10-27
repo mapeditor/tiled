@@ -875,9 +875,7 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
-    const bool showHandles = objects.size() > 0 && std::any_of(objects.begin(), objects.end(), [](MapObject *object) {
-        return canResize(object);
-    });
+    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || std::any_of(objects.begin(), objects.end(), canResize));
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
@@ -973,10 +971,8 @@ void ObjectSelectionTool::updateHandleVisibility()
 {
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
     const bool hasSelection = !objects.isEmpty();
-    const bool hasResizableItem = std::any_of(objects.begin(), objects.end(), [](MapObject *object) {
-        return canResize(object);
-    });
-    const bool showHandles = hasSelection && hasResizableItem && (mAction == NoAction || mAction == Selecting);
+    const bool hasResizableObject = std::any_of(objects.begin(), objects.end(), canResize);
+    const bool showHandles = hasSelection && (objects.size() > 1 || hasResizableObject) && (mAction == NoAction || mAction == Selecting);
     const bool showOrigin = hasSelection &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
