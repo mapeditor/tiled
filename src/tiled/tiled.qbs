@@ -171,6 +171,8 @@ QtGuiApplication {
         "createmultipointobjecttool.h",
         "createobjecttool.cpp",
         "createobjecttool.h",
+        "createpointobjecttool.cpp",
+        "createpointobjecttool.h",
         "createpolygonobjecttool.cpp",
         "createpolygonobjecttool.h",
         "createpolylineobjecttool.cpp",
