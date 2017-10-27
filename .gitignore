@@ -11,6 +11,7 @@ moc_*.cpp
 ui_*.h
 qrc_*
 default/
+moc_predefs.h
 
 # Build artifacts on Windows
 tiled.exe
@@ -49,3 +50,6 @@ wip/
 util/java/tmxviewer-java/target
 util/java/libtiled-java/target
 /util/java/target/
+
+# Linux perf/debugging
+gmon.out
