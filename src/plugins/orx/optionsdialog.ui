@@ -10,48 +10,32 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>427</height>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ORX Export options</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>400</y>
-     <width>399</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>5</x>
      <y>3</y>
      <width>391</width>
-     <height>391</height>
+     <height>591</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="layoutPageH">
     <property name="sizeConstraint">
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
+     <layout class="QVBoxLayout" name="layeoutPageV" stretch="0,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <layout class="QHBoxLayout" name="layoutTitle">
         <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
@@ -66,7 +50,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="lblOrxLogo">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -100,119 +84,253 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>ImageFolder</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="txtImageName"/>
-        </item>
-       </layout>
+       <widget class="QGroupBox" name="grpFolders">
+        <property name="title">
+         <string>Folders</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Image folder name</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="txtImageFolderName"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1">
+               <item>
+                <widget class="QRadioButton" name="rdUseWnidowsSeparator">
+                 <property name="text">
+                  <string>Use Windows folder separator</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdUseUnixSeparator">
+                 <property name="text">
+                  <string>Use UNIX folder separator</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout">
+             <item row="2" column="0">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="txtNameExpression"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Name expression</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="lblNamePreview">
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Layers</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QListView" name="lstLayers"/>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btSelectAllLayers">
+       <widget class="QGroupBox" name="grpLayers">
+        <property name="title">
+         <string>Layers</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+         <item>
+          <widget class="QTableWidget" name="lstLayers">
+           <property name="columnCount">
+            <number>4</number>
+           </property>
+           <attribute name="horizontalHeaderVisible">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="horizontalHeaderDefaultSectionSize">
+            <number>48</number>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>true</bool>
+           </attribute>
+           <column>
             <property name="text">
-             <string>Select all</string>
+             <string>Export</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btUnselectAllLayers">
+           </column>
+           <column>
             <property name="text">
-             <string>Unselect all</string>
+             <string>Normal</string>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+           </column>
+           <column>
+            <property name="text">
+             <string>Shader</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btSelectAllLayers">
+             <property name="text">
+              <string>Select all</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btUnselectAllLayers">
+             <property name="text">
+              <string>Unselect all</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QCheckBox" name="ckEnableCellOptimization">
-            <property name="text">
-             <string>Enable cell optimization</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
-              <property name="sizeConstraint">
-               <enum>QLayout::SetDefaultConstraint</enum>
-              </property>
-              <item>
-               <widget class="QRadioButton" name="rdCellOptHV">
-                <property name="text">
-                 <string>First Horizontal then Vertical</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="rdCellOptVH">
-                <property name="text">
-                 <string>First Vertical then Horizontal</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <widget class="QGroupBox" name="grpOptimizations">
+        <property name="title">
+         <string>Optimizations</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="ckEnableCellOptimization">
+             <property name="text">
+              <string>Enable cell optimization</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetDefaultConstraint</enum>
+               </property>
+               <item>
+                <widget class="QRadioButton" name="rdCellOptHV">
+                 <property name="text">
+                  <string>First Horizontal then Vertical</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdCellOptVH">
+                 <property name="text">
+                  <string>First Vertical then Horizontal</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QDialogButtonBox" name="buttonBox">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="standardButtons">
+            <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </item>
@@ -231,7 +349,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
-     <y>254</y>
+     <y>490</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -247,7 +365,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>316</x>
-     <y>260</y>
+     <y>490</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

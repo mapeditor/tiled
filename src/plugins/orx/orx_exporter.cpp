@@ -8,19 +8,14 @@
 
 #include <QMessageBox>
 
-#include "optionsdialog.h"
-
 
 // TODO:
 // Create gui for options with:
-// - image destination folder
-// - select layers to export
-// - add map objects to export as
-//          .name
-//          .type
-//          .points
-// - toggle cell repeat/scale optimization
-//   - toggle optimization order (x or y preference - now is x and y is missing)
+// - fix hierarchy for non shader vuoi adding the check of list value length (8kb) and number of children objects (65535)
+// - allow user to select proper technique for each layer
+// - implement shader export stuff
+// ok - add section name generation expression
+// - add folder separator radio button
 
 
 
@@ -45,6 +40,7 @@ bool orxExporter::Export(const Tiled::Map *map, const QString &fileName)
         m_Optimize = dlg.m_Optimize;
         m_OptimizeHV = dlg.m_OptimizeHV;
         m_SelectedLayers = dlg.m_SelectedLayers;
+        m_NamingRule = dlg.m_SectionNameExp;
 
         return do_export(map, fileName);
     }
@@ -64,7 +60,7 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
     QTextStream ss(&array);
 
     // compute workload for progress bar
-    int num_entities = get_num_entities(map);
+    int num_entities = get_num_entities(map, m_SelectedLayers);
     m_progressCounter = 0;
     m_progress = new QProgressDialog("Exporting...", "Cancel", 0, num_entities);
     m_progress->setWindowModality(Qt::WindowModal);
@@ -77,7 +73,7 @@ bool orxExporter::do_export(const Tiled::Map *map, const QString &fileName)
     if (ret)
     {
         m_progress->setLabelText("Processing layers...");
-        ret = process_layers(map);
+        ret = process_layers(map, m_SelectedLayers);
     }
 
     if (ret)
@@ -198,12 +194,9 @@ QString orxExporter::get_tile_name(const Tiled::Tile * tile)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Orx::PrefabPtr orxExporter::build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int row, int col, int src_x, int src_y)
+Orx::PrefabPtr orxExporter::build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y)
 {
-    QString base_name = QString("%1_c%2r%3")
-                            .arg(image->m_ImageName)
-                            .arg(QString::number(col))
-                            .arg(QString::number(row));
+    QString base_name = Orx::NameGenerator::Generate(m_NamingRule, image->m_ImageName, index, col, row);
     QString prefab_name = base_name + "_" + PREFAB_POSTFIX;
     QString graphic_name = base_name + "_" + GRAPHIC_POSTFIX;
 
@@ -338,6 +331,7 @@ bool orxExporter::process_tileset(const Tiled::SharedTileset tset)
     int spacing = tset->tileSpacing();
 
     // for each tile get its position based on the id.
+    int index = 0;
     for(auto e : tset->tiles().toStdMap())
     {
         inc_progress();
@@ -351,7 +345,7 @@ bool orxExporter::process_tileset(const Tiled::SharedTileset tset)
         int tile_x = margin + (col * (tile_w + spacing));
         int tile_y = margin + (row * (tile_h + spacing));
 
-        Orx::PrefabPtr tile_obj = build_prefab(tile, image, row, col, tile_x, tile_y);
+        Orx::PrefabPtr tile_obj = build_prefab(tile, image, index++, row, col, tile_x, tile_y);
         m_prefabs.push_back(tile_obj);
     }
 
@@ -513,7 +507,16 @@ void orxExporter::optimize_v_h(int width, int height, Grid2D<OptimizedCell> & ce
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent)
+bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent, bool normal_mode)
+{
+    if (normal_mode)
+        return process_normal_tile_layer(layer, parent);
+    else
+        return process_shader_tile_layer(layer, parent);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool orxExporter::process_normal_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent)
 {
     bool ret = true;
 
@@ -610,7 +613,110 @@ bool orxExporter::process_tile_layer(const Tiled::TileLayer * layer, Orx::Object
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool orxExporter::process_object_group(const Tiled::ObjectGroup * layer, Orx::ObjectPtr parent)
+bool orxExporter::process_shader_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent)
+{
+    bool ret = true;
+
+    // crate layer object, add to objects object and add as child of map object
+    QString name = OrxObject::normalize_name(layer->name());
+    Orx::GroupObjectPtr layer_object = std::make_shared<Orx::GroupObject>(name);
+
+    // detect how many tilesets are used
+    // detect how many tiles for each tileset to detect proper pixelformat for binary map
+    // generate binary map in format tileset_index - tile_index
+    //      if one tileset only, the format is tile_index
+
+
+    std::list<Orx::GroupObjectPtr> targets;
+
+    // compute number of needed object containers as ORX can't hold more than 255 child objects per object
+    int width = layer->width();
+    int height = layer->height();
+
+    int num_objects = width * height;
+    if (num_objects > MAX_OBJECT_CHILDREN)
+    {
+        int num_holders = num_objects / MAX_OBJECT_CHILDREN;
+        if (num_objects % MAX_OBJECT_CHILDREN)
+            num_holders++;
+
+        for (int a = 0; a < num_holders; a++)
+        {
+            Orx::GroupObjectPtr target = std::make_shared<Orx::GroupObject>(name + "_" + QString::number(a));
+            targets.push_back(target);
+            m_objects.push_back(target);
+            layer_object->m_Children.push_back(target);
+        }
+    }
+    else
+        targets.push_back(layer_object);
+
+
+    const double offset_x = layer->offset().rx();
+    const double offset_y = layer->offset().ry();
+
+    Orx::GroupObjectPtr current_target = targets.front();
+    targets.pop_front();
+
+    // build a vector of optimized objects
+    Grid2D<OptimizedCell> cell_map(width, height);
+
+    if (m_Optimize)
+    {
+        if (m_OptimizeHV)
+            optimize_h_v(width, height, cell_map, layer);
+        else
+            optimize_v_h(width, height, cell_map, layer);
+    }
+    else
+        no_optimize(width, height, cell_map, layer);
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            inc_progress();
+
+            OptimizedCell & ocell = cell_map.at(x, y);
+            if (ocell.m_Valid)
+            {
+                Orx::ObjectPtr item_obj = build_object(ocell.m_Cell);
+                if (item_obj)
+                {
+                    item_obj->m_Position.m_X = offset_x + (x * layer->map()->tileWidth());
+                    item_obj->m_Position.m_Y = offset_y + (y * layer->map()->tileHeight());
+                    item_obj->m_Repeat.m_X = ocell.m_RepeatX;
+                    item_obj->m_Repeat.m_Y = ocell.m_RepeatY;
+                    item_obj->m_Repeat.m_Z = 1;
+                    item_obj->m_Scale.m_X = ocell.m_RepeatX;
+                    item_obj->m_Scale.m_Y = ocell.m_RepeatY;
+                    item_obj->m_Scale.m_Z = 1;
+
+                    m_objects.push_back(item_obj);
+
+                    if (current_target->m_Children.size() >= MAX_OBJECT_CHILDREN)
+                    {
+                        current_target = targets.front();
+                        targets.pop_front();
+                    }
+
+                    current_target->m_Children.push_back(item_obj);
+                }
+            }
+        }
+    }
+
+    if (layer_object->m_Children.size())
+    {
+        m_objects.push_back(layer_object);
+        parent->m_Children.push_back(layer_object);
+    }
+
+    return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool orxExporter::process_object_group(const Tiled::ObjectGroup * layer, Orx::ObjectPtr parent, bool normal_mode)
 {
     bool ret = true;
 
@@ -645,30 +751,30 @@ bool orxExporter::process_object_group(const Tiled::ObjectGroup * layer, Orx::Ob
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool orxExporter::process_image_layer(const Tiled::ImageLayer * layer, Orx::ObjectPtr parent)
+bool orxExporter::process_image_layer(const Tiled::ImageLayer * layer, Orx::ObjectPtr parent, bool normal_mode)
 {
     inc_progress();
     return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-bool orxExporter::process_layers(const Tiled::Map * map)
+bool orxExporter::process_layers(const Tiled::Map * map, QVector<OptionsDialog::SelectedLayer> & selected)
 {
     bool ret = true;
 
     inc_progress();
     // crate map object
     Orx::GroupObjectPtr map_object = std::make_shared<Orx::GroupObject>("Map");
-    for (Tiled::Layer *layer : map->layers())
+    for (OptionsDialog::SelectedLayer & sl : selected)
     {
         inc_progress();
 
-        if (layer->isTileLayer())
-            ret = process_tile_layer(layer->asTileLayer(), map_object);
-        else if (layer->isObjectGroup())
-            ret = process_object_group(layer->asObjectGroup(), map_object);
-        else if (layer->isImageLayer())
-            ret = process_image_layer(layer->asImageLayer(), map_object);
+        if (sl.m_layer->isTileLayer())
+            ret = process_tile_layer(sl.m_layer->asTileLayer(), map_object, sl.m_normalExport);
+        else if (sl.m_layer->isObjectGroup())
+            ret = process_object_group(sl.m_layer->asObjectGroup(), map_object, sl.m_normalExport);
+        else if (sl.m_layer->isImageLayer())
+            ret = process_image_layer(sl.m_layer->asImageLayer(), map_object, sl.m_normalExport);
 
         if (!ret)
             break;
@@ -679,7 +785,7 @@ bool orxExporter::process_layers(const Tiled::Map * map)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int orxExporter::get_num_entities(const Tiled::Map *map)
+int orxExporter::get_num_entities(const Tiled::Map *map, QVector<OptionsDialog::SelectedLayer> & selected)
 {
     int ret = map->tilesets().size() + map->layers().count();
     Q_FOREACH(Tiled::SharedTileset tset, map->tilesets())
@@ -687,13 +793,13 @@ int orxExporter::get_num_entities(const Tiled::Map *map)
         ret += tset->tileCount();
     }
 
-    for (Tiled::Layer *layer : map->layers())
+    for (OptionsDialog::SelectedLayer & sl : selected)
     {
-        if (layer->isTileLayer())
-            ret += 2 * (layer->asTileLayer()->width() * layer->asTileLayer()->height());
-        else if (layer->isObjectGroup())
-            ret += layer->asObjectGroup()->objects().size();
-        else if (layer->isImageLayer())
+        if (sl.m_layer->isTileLayer())
+            ret += 2 * (sl.m_layer->asTileLayer()->width() * sl.m_layer->asTileLayer()->height());
+        else if (sl.m_layer->isObjectGroup())
+            ret += sl.m_layer->asObjectGroup()->objects().size();
+        else if (sl.m_layer->isImageLayer())
             ret += 1;
     }
 

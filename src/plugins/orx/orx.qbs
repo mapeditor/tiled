@@ -6,6 +6,7 @@ TiledPlugin {
     Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
 
     files: [
+        "name_generator.h",
         "optionsdialog.cpp",
         "optionsdialog.h",
         "optionsdialog.ui",

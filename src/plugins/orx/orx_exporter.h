@@ -13,6 +13,8 @@
 
 #include "orx_objects.h"
 
+#include "optionsdialog.h"
+
 #include <QApplication>
 #include <QProgressDialog>
 
@@ -33,7 +35,7 @@ private:
     // returns the name of the given tile
     QString get_tile_name(const Tiled::Tile * tile);
     // builds a prefab object from a Tile in the tileset.
-    Orx::PrefabPtr build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int row, int col, int src_x, int src_y);
+    Orx::PrefabPtr build_prefab(Tiled::Tile * tile, Orx::ImagePtr image, int index, int row, int col, int src_x, int src_y);
     // returns an new or existing image shared pointer (a Texture object) from the file name
     Orx::ImagePtr get_image(QString image_name, QString image_file);
     // gets a prefab by its tile id
@@ -51,15 +53,19 @@ private:
     // generated prefabs from a tilesed
     bool process_tileset(const Tiled::SharedTileset tset);
     // processes a tile layer and generates objects
-    bool process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent);
+    bool process_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent, bool normal_mode);
+    // processes a tile layer and generates objects
+    bool process_normal_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent);
+    // processes a tile layer and generates objects
+    bool process_shader_tile_layer(const Tiled::TileLayer * layer, Orx::ObjectPtr parent);
     // now does nothing...:)
-    bool process_object_group(const Tiled::ObjectGroup * layer, Orx::ObjectPtr parent);
+    bool process_object_group(const Tiled::ObjectGroup * layer, Orx::ObjectPtr parent, bool normal_mode);
     // now does nothing...:)
-    bool process_image_layer(const Tiled::ImageLayer * layer, Orx::ObjectPtr parent);
+    bool process_image_layer(const Tiled::ImageLayer * layer, Orx::ObjectPtr parent, bool normal_mode);
     // processes all layers to generate map contents
-    bool process_layers(const Tiled::Map * map);
+    bool process_layers(const Tiled::Map * map, QVector<OptionsDialog::SelectedLayer> & selected);
     // computes the number of entities that will be processes (for progress dlg)
-    int get_num_entities(const Tiled::Map *map);
+    int get_num_entities(const Tiled::Map *map, QVector<OptionsDialog::SelectedLayer> & selected);
     // increments the progress indication in progress dlg
     void inc_progress();
     // computes the number of times a cell is repeated horizontally starting from given coords
@@ -81,9 +87,11 @@ private:
     QProgressDialog *   m_progress;
     int                 m_progressCounter;
     QString             m_ImagesFolder;
-    QVector<Tiled::Layer *> m_SelectedLayers;
+    QVector<OptionsDialog::SelectedLayer> m_SelectedLayers;
     bool                m_Optimize;
     bool                m_OptimizeHV;
+    QString             m_NamingRule;
+    bool                m_GenerateShaderCode;
 
 };
 

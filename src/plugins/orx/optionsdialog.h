@@ -3,8 +3,11 @@
 
 #include <QStandardItemModel>
 #include <QDialog>
+#include "ui_optionsdialog.h"
+
 
 #include "tilelayer.h"
+#include "name_generator.h"
 
 namespace Ui {
 class OptionsDialog;
@@ -19,11 +22,20 @@ public:
     ~OptionsDialog();
 
 public:
-    QString m_ImagesFolder;
-    QVector<Tiled::Layer *> m_SelectedLayers;
-    bool    m_Optimize;
-    bool    m_OptimizeHV;
-    QStandardItemModel * m_Model;
+    struct SelectedLayer
+    {
+        Tiled::Layer *  m_layer;
+        bool            m_normalExport;
+    };
+
+    QString                 m_ImagesFolder;
+    QString                 m_SectionNameExp;
+    QVector<SelectedLayer>  m_SelectedLayers;
+    bool                    m_Optimize;
+    bool                    m_OptimizeHV;
+    bool                    m_WindowsFolderSeparator;
+    bool                    m_ChangingCellState;
+
 
 private slots:
     void on_btSelectAllLayers_clicked();
@@ -35,6 +47,17 @@ private slots:
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
+
+    void on_rdUseWnidowsSeparator_clicked();
+
+    void on_rdUseUnixSeparator_clicked();
+
+    void on_txtNameExpression_textChanged(const QString &arg1);
+
+    void on_lstLayers_itemChanged(QTableWidgetItem *item);
+
+private:
+    void fill_layers(const Tiled::Map * map);
 
 private:
     Ui::OptionsDialog *ui;
