@@ -408,7 +408,7 @@ inline void MapObject::setShape(MapObject::Shape shape)
  */
 inline bool MapObject::hasDimensions() const
 {
-    switch(mShape) {
+    switch (mShape) {
         case Polygon:
         case Polyline:
         case Point:

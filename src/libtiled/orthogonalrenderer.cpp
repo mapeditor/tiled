@@ -107,14 +107,14 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         case MapObject::Rectangle:
             if (bounds.isNull()) {
                 boundingRect = bounds.adjusted(-10 - extraSpace,
-                -10 - extraSpace,
-                10 + extraSpace + 1,
-                10 + extraSpace + 1);
+                                               -10 - extraSpace,
+                                               10 + extraSpace + 1,
+                                               10 + extraSpace + 1);
             } else {
             boundingRect = bounds.adjusted(-extraSpace,
-                -extraSpace,
-                extraSpace + 1,
-                extraSpace + 1);
+                                           -extraSpace,
+                                           extraSpace + 1,
+                                           extraSpace + 1);
             }
             break;
 
