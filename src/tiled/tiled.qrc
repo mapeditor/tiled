@@ -80,6 +80,7 @@
         <file>images/24x24/insert-ellipse.png</file>
         <file>images/24x24/insert-image.png</file>
         <file>images/24x24/insert-object.png</file>
+        <file>images/24x24/insert-point.png</file>
         <file>images/24x24/insert-polygon.png</file>
         <file>images/24x24/insert-polyline.png</file>
         <file>images/24x24/insert-rectangle.png</file>
@@ -130,6 +131,7 @@
         <file>images/32x32/rotate-right.png</file>
         <file>images/48x48/insert-rectangle.png</file>
         <file>images/48x48/insert-ellipse.png</file>
+        <file>images/48x48/insert-point.png</file>
         <file>images/48x48/insert-polyline.png</file>
         <file>images/48x48/insert-polygon.png</file>
         <file>images/48x48/tile-collision-editor.png</file>
