@@ -49,13 +49,7 @@
 #include <QUndoStack>
 #include <QMenu>
 
-#include <cmath>
 #include <float.h>
-
-// MSVC 2010 math header does not come with M_PI
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 using namespace Tiled;
 using namespace Tiled::Internal;
