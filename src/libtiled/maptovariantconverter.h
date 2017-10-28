@@ -68,6 +68,11 @@ private:
     QVariant toVariant(const ImageLayer &imageLayer) const;
     QVariant toVariant(const GroupLayer &groupLayer, Map::LayerDataFormat format) const;
 
+    void addTileLayerData(QVariantMap &variant,
+                          const TileLayer &tileLayer,
+                          Map::LayerDataFormat format,
+                          const QRect &bounds) const;
+
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Layer &layer) const;
 

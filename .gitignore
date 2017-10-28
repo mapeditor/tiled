@@ -11,6 +11,7 @@ moc_*.cpp
 ui_*.h
 qrc_*
 default/
+moc_predefs.h
 
 # Build artifacts on Windows
 tiled.exe
@@ -25,6 +26,7 @@ automappingconverter.exe
 *.intermediate.manifest
 
 # Build artifacts on Mac
+.qmake.stash
 translations/phony_target.app
 
 # IDE files
@@ -48,3 +50,6 @@ wip/
 util/java/tmxviewer-java/target
 util/java/libtiled-java/target
 /util/java/target/
+
+# Linux perf/debugging
+gmon.out

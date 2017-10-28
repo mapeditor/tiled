@@ -357,7 +357,7 @@ struct PaintOperation {
     TileLayer *stamp;
 };
 
-void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
+void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 {
     mPreviewLayer.clear();
 
@@ -368,16 +368,15 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         if (mRandomCellPicker.isEmpty())
             return;
 
-        QRegion paintedRegion;
-        for (const QPoint &p : list)
-            paintedRegion += QRect(p, QSize(1, 1));
+        QRect bounds;
+        for (const QPoint &p : points)
+            bounds |= QRect(p, p);
 
-        QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
-        for (const QPoint &p : list) {
+        for (const QPoint &p : points) {
             const Cell &cell = mRandomCellPicker.pick();
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
@@ -394,19 +393,19 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             return;
 
         QRegion paintedRegion;
-        for (const QPoint &p : list)
-            paintedRegion += QRect(p, QSize(1, 1));
+        for (const QPoint &p : points)
+            paintedRegion += QRect(p, p);
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
         WangFiller wangFiller(mWangSet,
                               dynamic_cast<StaggeredRenderer *>(mapDocument()->renderer()),
                               mapDocument()->map()->staggerAxis());
 
-        for (const QPoint &p : list) {
+        for (const QPoint &p : points) {
             Cell cell = wangFiller.findFittingCell(*tileLayer,
                                                    *preview.data(),
                                                    paintedRegion,
@@ -424,7 +423,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QHash<TileLayer *, QRegion> regionCache;
         QHash<TileLayer *, TileLayer *> shiftedCopies;
 
-        for (const QPoint &p : list) {
+        for (const QPoint &p : points) {
             const TileStampVariation variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
 
@@ -501,9 +500,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         }
 
         QRect bounds = paintedRegion.boundingRect();
-        SharedTileLayer preview(new TileLayer(QString(),
-                                              bounds.x(), bounds.y(),
-                                              bounds.width(), bounds.height()));
+        SharedTileLayer preview = SharedTileLayer::create(QString(),
+                                                          bounds.x(), bounds.y(),
+                                                          bounds.width(), bounds.height());
 
         for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
@@ -534,7 +533,7 @@ void StampBrush::updatePreview(QPoint tilePos)
         tileRegion = mCaptureStampHelper.capturedArea(tilePos);
     } else if (mStamp.isEmpty() && !mIsWangFill) {
         mPreviewLayer.clear();
-        tileRegion = QRect(tilePos, QSize(1, 1));
+        tileRegion = QRect(tilePos, tilePos);
     } else {
         switch (mBrushBehavior) {
         case LineStartSet:
@@ -550,7 +549,7 @@ void StampBrush::updatePreview(QPoint tilePos)
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
             mPreviewLayer.clear();
-            tileRegion = QRect(tilePos, QSize(1, 1));
+            tileRegion = QRect(tilePos, tilePos);
             break;
         case Line:
         case Free:

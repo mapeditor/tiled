@@ -89,9 +89,9 @@ class Mappy(Plugin, FMPPicklerMixin):
 
     m.setProperty('chunks', cls.picklechunks(chunks))
 
-    tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
+    tset = Tiled.Tileset.create('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
     cmap = list(FMPColormap.unpack(chunks['CMAP'].data))
-    tset.loadFromImage(FMPTileGfx.unpack(hd, chunks['BGFX'].data, cmap), "")
+    tset.data().loadFromImage(FMPTileGfx.unpack(hd, chunks['BGFX'].data, cmap), "")
 
     blks = FMPBlocks(chunks['BKDT'].data, hd).blocks
 
@@ -100,7 +100,7 @@ class Mappy(Plugin, FMPPicklerMixin):
       print 'populating',c
       lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
       lvl = list(FMPLayer.unpack(hd, chunks[c].data))
-      FMPLayer.populate(lay, blks, tset, hd, lvl)
+      FMPLayer.populate(lay, blks, tset.data(), hd, lvl)
       m.addLayer(lay)
 
     m.addTileset(tset)

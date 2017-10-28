@@ -464,24 +464,25 @@ void WangBrush::updateBrush()
 
     if (mIsTileMode) {
         if (staggeredRenderer) {
-            if (mapDocument()->map()->staggerAxis() == Map::StaggerX)
-                stamp = SharedTileLayer(new TileLayer(QString(),
-                                                      mPaintPoint.x() - 2,
-                                                      mPaintPoint.y() - 1,
-                                                      5,
-                                                      3));
-            else
-                stamp = SharedTileLayer(new TileLayer(QString(),
-                                                      mPaintPoint.x() - 1,
-                                                      mPaintPoint.y() - 2,
-                                                      3,
-                                                      5));
+            if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
+                stamp = SharedTileLayer::create(QString(),
+                                                mPaintPoint.x() - 2,
+                                                mPaintPoint.y() - 1,
+                                                5,
+                                                3);
+            } else {
+                stamp = SharedTileLayer::create(QString(),
+                                                mPaintPoint.x() - 1,
+                                                mPaintPoint.y() - 2,
+                                                3,
+                                                5);
+            }
         } else {
-            stamp = SharedTileLayer(new TileLayer(QString(),
-                                                  mPaintPoint.x() - 1,
-                                                  mPaintPoint.y() - 1,
-                                                  3,
-                                                  3));
+            stamp = SharedTileLayer::create(QString(),
+                                            mPaintPoint.x() - 1,
+                                            mPaintPoint.y() - 1,
+                                            3,
+                                            3);
         }
 
         //array of adjacent positions which is assigned based on map orientation.
@@ -581,24 +582,25 @@ void WangBrush::updateBrush()
     } else {
         if (mBrushMode == PaintVertex) {
             if (staggeredRenderer) {
-                if (mapDocument()->map()->staggerAxis() == Map::StaggerX)
-                    stamp = SharedTileLayer(new TileLayer(QString(),
-                                                          mPaintPoint.x() - 2,
-                                                          mPaintPoint.y() - 1,
-                                                          3,
-                                                          3));
-                else
-                    stamp = SharedTileLayer(new TileLayer(QString(),
-                                                          mPaintPoint.x() - 1,
-                                                          mPaintPoint.y() - 1,
-                                                          2,
-                                                          3));
+                if (mapDocument()->map()->staggerAxis() == Map::StaggerX) {
+                    stamp = SharedTileLayer::create(QString(),
+                                                    mPaintPoint.x() - 2,
+                                                    mPaintPoint.y() - 1,
+                                                    3,
+                                                    3);
+                } else {
+                    stamp = SharedTileLayer::create(QString(),
+                                                    mPaintPoint.x() - 1,
+                                                    mPaintPoint.y() - 1,
+                                                    2,
+                                                    3);
+                }
             } else {
-                stamp = SharedTileLayer(new TileLayer(QString(),
-                                                      mPaintPoint.x() - 1,
-                                                      mPaintPoint.y() - 1,
-                                                      2,
-                                                      2));
+                stamp = SharedTileLayer::create(QString(),
+                                                mPaintPoint.x() - 1,
+                                                mPaintPoint.y() - 1,
+                                                2,
+                                                2);
             }
 
             QPoint adjacentPoints[4];
@@ -645,17 +647,17 @@ void WangBrush::updateBrush()
             }
         } else {
             if (staggeredRenderer) {
-                stamp = SharedTileLayer(new TileLayer(QString(),
-                                                      mPaintPoint.x() - 1,
-                                                      mPaintPoint.y() - 1,
-                                                      3,
-                                                      3));
+                stamp = SharedTileLayer::create(QString(),
+                                                mPaintPoint.x() - 1,
+                                                mPaintPoint.y() - 1,
+                                                3,
+                                                3);
             } else {
-                stamp = SharedTileLayer(new TileLayer(QString(),
-                                                      mPaintPoint.x() + ((mEdgeDir & 1)? ((mEdgeDir == 3)? -1 : 0) : 0),
-                                                      mPaintPoint.y() + ((mEdgeDir & 1)? 0 : ((mEdgeDir == 0)? -1 : 0)),
-                                                      (mEdgeDir & 1)? 2 : 1,
-                                                      (mEdgeDir & 1)? 1 : 2));
+                stamp = SharedTileLayer::create(QString(),
+                                                mPaintPoint.x() + ((mEdgeDir & 1)? ((mEdgeDir == 3) ? -1 : 0) : 0),
+                                                mPaintPoint.y() + ((mEdgeDir & 1)? 0 : ((mEdgeDir == 0) ? -1 : 0)),
+                                                (mEdgeDir & 1) ? 2 : 1,
+                                                (mEdgeDir & 1) ? 1 : 2);
             }
 
             QPoint dirPoint;

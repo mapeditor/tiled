@@ -381,30 +381,11 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
 
     switch (format) {
     case Map::XML:
-    case Map::CSV: {
-        int startX = 0;
-        int startY = 0;
-        int endX = tileLayer.width() - 1;
-        int endY = tileLayer.height() - 1;
-
-        if (tileLayer.map()->infinite()) {
-            startX = bounds.left();
-            startY = bounds.top();
-            endX = bounds.right();
-            endY = bounds.bottom();
-        }
-
-        QVariantList tileVariants;
-        for (int y = startY; y <= endY; ++y)
-            for (int x = startX; x <= endX; ++x)
-                tileVariants << mGidMapper.cellToGid(tileLayer.cellAt(x, y));
-
-        tileLayerVariant[QLatin1String("data")] = tileVariants;
+    case Map::CSV:
         break;
-    }
     case Map::Base64:
     case Map::Base64Zlib:
-    case Map::Base64Gzip: {
+    case Map::Base64Gzip:
         tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
 
         if (format == Map::Base64Zlib)
@@ -412,10 +393,29 @@ QVariant MapToVariantConverter::toVariant(const TileLayer &tileLayer,
         else if (format == Map::Base64Gzip)
             tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
 
-        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format);
-        tileLayerVariant[QLatin1String("data")] = layerData;
         break;
     }
+
+    if (tileLayer.map()->infinite()) {
+        QVariantList chunkVariants;
+
+        for (const QRect &rect : tileLayer.sortedChunksToWrite()) {
+            QVariantMap chunkVariant;
+
+            chunkVariant[QLatin1String("x")] = rect.x();
+            chunkVariant[QLatin1String("y")] = rect.y();
+            chunkVariant[QLatin1String("width")] = rect.width();
+            chunkVariant[QLatin1String("height")] = rect.height();
+
+            addTileLayerData(chunkVariant, tileLayer, format, rect);
+
+            chunkVariants.append(chunkVariant);
+        }
+
+        tileLayerVariant[QLatin1String("chunks")] = chunkVariants;
+    } else {
+        addTileLayerData(tileLayerVariant, tileLayer, format,
+                         QRect(0, 0, tileLayer.width(), tileLayer.height()));
     }
 
     return tileLayerVariant;
@@ -619,6 +619,32 @@ QVariant MapToVariantConverter::toVariant(const GroupLayer &groupLayer,
                                                            format);
 
     return groupLayerVariant;
+}
+
+void MapToVariantConverter::addTileLayerData(QVariantMap &variant,
+                                             const TileLayer &tileLayer,
+                                             Map::LayerDataFormat format,
+                                             const QRect &bounds) const
+{
+    switch (format) {
+    case Map::XML:
+    case Map::CSV: {
+        QVariantList tileVariants;
+        for (int y = bounds.top(); y <= bounds.bottom(); ++y)
+            for (int x = bounds.left(); x <= bounds.right(); ++x)
+                tileVariants << mGidMapper.cellToGid(tileLayer.cellAt(x, y));
+
+        variant[QLatin1String("data")] = tileVariants;
+        break;
+    }
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        QByteArray layerData = mGidMapper.encodeLayerData(tileLayer, format, bounds);
+        variant[QLatin1String("data")] = layerData;
+        break;
+    }
+    }
 }
 
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,

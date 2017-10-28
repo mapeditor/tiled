@@ -136,6 +136,16 @@ public:
     void closeCurrentDocument();
 
     /**
+     * Closes all documents except the one pointed to by index.
+     */
+    void closeOtherDocuments(int index);
+
+    /**
+     * Closes all documents whose tabs are to the right of the index.
+     */
+    void closeDocumentsToRight(int index);
+
+    /**
      * Closes the document at the given \a index. Will not ask the user whether
      * to save any changes!
      */
@@ -186,6 +196,12 @@ public:
     void centerMapViewOn(qreal x, qreal y);
     void centerMapViewOn(const QPointF &pos)
     { centerMapViewOn(pos.x(), pos.y()); }
+
+    /**
+     * Unsets a flag to stop closeOtherDocuments() and closeDocumentsToRight()
+     * when Cancel is pressed
+     */
+    void abortMultiDocumentClose();
 
 signals:
     void fileOpenRequested();
@@ -253,6 +269,8 @@ private:
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
     QList<Document*> mDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
@@ -274,6 +292,8 @@ private:
     QMap<SharedTileset, TilesetDocument*> mTilesetToDocument;
 
     static DocumentManager *mInstance;
+
+    bool mMultiDocumentClose;
 };
 
 inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const

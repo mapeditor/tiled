@@ -140,9 +140,8 @@ void WangId::flipHorizontally()
     newWangId.setEdgeColor(1, edgeColor(3));
     newWangId.setEdgeColor(3, edgeColor(1));
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i)
         newWangId.setCornerColor(i, cornerColor(3-i));
-    }
 
     mId = newWangId;
 }
@@ -370,7 +369,7 @@ void WangSet::setCornerColorCount(int n)
     } else {
         while (mCornerColors.size() != n) {
             mCornerColors.append(QSharedPointer<WangColor>(new WangColor(mCornerColors.size() + 1,
-                                                                         true,
+                                                                         false,
                                                                          QString(),
                                                                          defaultWangColors[mCornerColors.size()],
                                                                          -1)));

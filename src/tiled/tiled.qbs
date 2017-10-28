@@ -386,8 +386,6 @@ QtGuiApplication {
         "texteditordialog.ui",
         "textpropertyedit.cpp",
         "textpropertyedit.h",
-        "thumbnailrenderer.cpp",
-        "thumbnailrenderer.h",
         "tileanimationeditor.cpp",
         "tileanimationeditor.h",
         "tileanimationeditor.ui",

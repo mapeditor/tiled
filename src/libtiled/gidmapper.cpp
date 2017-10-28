@@ -36,11 +36,11 @@
 using namespace Tiled;
 
 // Bits on the far end of the 32-bit global tile ID are used for tile flags
-const int FlippedHorizontallyFlag   = 0x80000000;
-const int FlippedVerticallyFlag     = 0x40000000;
-const int FlippedAntiDiagonallyFlag = 0x20000000;
+const unsigned FlippedHorizontallyFlag   = 0x80000000;
+const unsigned FlippedVerticallyFlag     = 0x40000000;
+const unsigned FlippedAntiDiagonallyFlag = 0x20000000;
 
-const int RotatedHexagonal120Flag   = 0x10000000;
+const unsigned RotatedHexagonal120Flag   = 0x10000000;
 
 /**
  * Default constructor. Use \l insert to initialize the gid mapper
@@ -163,10 +163,10 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     for (int y = bounds.top(); y <= bounds.bottom(); ++y) {
         for (int x = bounds.left(); x <= bounds.right(); ++x) {
             const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
-            tileData.append((char) (gid));
-            tileData.append((char) (gid >> 8));
-            tileData.append((char) (gid >> 16));
-            tileData.append((char) (gid >> 24));
+            tileData.append(static_cast<char>(gid));
+            tileData.append(static_cast<char>(gid >> 8));
+            tileData.append(static_cast<char>(gid >> 16));
+            tileData.append(static_cast<char>(gid >> 24));
         }
     }
 

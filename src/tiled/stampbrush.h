@@ -117,7 +117,7 @@ private:
     CaptureStampHelper mCaptureStampHelper;
     QPoint mPrevTilePosition;
 
-    void drawPreviewLayer(const QVector<QPoint> &list);
+    void drawPreviewLayer(const QVector<QPoint> &points);
 
     /**
      * There are several options how the stamp utility can be used.

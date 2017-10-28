@@ -803,6 +803,7 @@ bool MainWindow::confirmSave(Document *document)
     case QMessageBox::Discard: return true;
     case QMessageBox::Cancel:
     default:
+        mDocumentManager->abortMultiDocumentClose();
         return false;
     }
 }
@@ -1226,10 +1227,11 @@ void MainWindow::resizeMap()
     if (map->orientation() == Map::Orthogonal && map->tileWidth() == map->tileHeight()) {
         resizeDialog.setMiniMapRenderer([mapDocument](QSize size){
             QImage image(size, QImage::Format_ARGB32_Premultiplied);
-            MiniMapRenderer(mapDocument).renderToImage(image, MiniMapRenderer::DrawObjects
-                                                       | MiniMapRenderer::DrawImages
-                                                       | MiniMapRenderer::DrawTiles
-                                                       | MiniMapRenderer::IgnoreInvisibleLayer);
+            MiniMapRenderer(mapDocument->map()).renderToImage(image, MiniMapRenderer::DrawMapObjects
+                                                              | MiniMapRenderer::DrawImageLayers
+                                                              | MiniMapRenderer::DrawTileLayers
+                                                              | MiniMapRenderer::IgnoreInvisibleLayer
+                                                              | MiniMapRenderer::SmoothPixmapTransform);
             return image;
         });
     }

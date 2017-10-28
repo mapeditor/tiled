@@ -32,6 +32,8 @@
 #include "tile.h"
 #include "hex.h"
 
+#include <algorithm>
+
 using namespace Tiled;
 
 QRegion Chunk::region(std::function<bool (const Cell &)> condition) const
@@ -664,6 +666,41 @@ bool TileLayer::isEmpty() const
             return false;
 
     return true;
+}
+
+static bool compareRectPos(const QRect &a, const QRect &b)
+{
+    if (a.y() != b.y())
+        return a.y() < b.y();
+    return a.x() < b.x();
+}
+
+/**
+ * Returns a list of rectangles that cover all the used area of this layer.
+ * The list is sorted by the top-left of each rectangle.
+ *
+ * This function is used to determine the chunks to write when saving a tile
+ * layer.
+ */
+QVector<QRect> TileLayer::sortedChunksToWrite() const
+{
+    QVector<QRect> chunksToWrite;
+    chunksToWrite.reserve(mChunks.size());
+
+    QHashIterator<QPoint, Chunk> it(mChunks);
+    while (it.hasNext()) {
+        it.next();
+        if (!it.value().isEmpty()) {
+            const QPoint p = it.key();
+            chunksToWrite.append(QRect(p.x() * CHUNK_SIZE,
+                                       p.y() * CHUNK_SIZE,
+                                       CHUNK_SIZE, CHUNK_SIZE));
+        }
+    }
+
+    std::sort(chunksToWrite.begin(), chunksToWrite.end(), compareRectPos);
+
+    return chunksToWrite;
 }
 
 /**
