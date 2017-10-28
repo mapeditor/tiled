@@ -493,35 +493,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Point: {
-            painter->setPen(Qt::NoPen);
-            painter->setBrush(fillBrush);
-
-            QPainterPath path;
-
-            const float radius = 10.f;
-            const float sweep = 235.f;
-            const float startAngle = 90.f - sweep / 2;
-            QRectF rectangle(-radius, -radius, radius * 2, radius * 2);
-            path.moveTo(radius * cos(startAngle * M_PI / 180.0), -radius * sin(startAngle * M_PI / 180.0));
-            path.arcTo(rectangle, startAngle, sweep);
-            path.lineTo(0, 2 * radius);
-            path.closeSubpath();
-
-            painter->translate(0, -2 * radius);
-
-            painter->setPen(shadowPen);
-            painter->setBrush(Qt::NoBrush);
-            painter->drawPath(path.translated(shadowOffset));
-
-            painter->setPen(linePen);
-            painter->setBrush(fillBrush);
-            painter->drawPath(path);
-
-            const QBrush opaqueBrush(color);
-            painter->setBrush(opaqueBrush);
-            const float smallRadius = radius / 3;
-            painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
-
+            drawPointObject(painter, color);
             break;
         }
         }

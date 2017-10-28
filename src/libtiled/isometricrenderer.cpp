@@ -426,7 +426,10 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             }
             break;
         }
-        case MapObject::Point: /*todo*/
+        case MapObject::Point:
+            painter->translate(pixelToScreenCoords(object->position()));
+            drawPointObject(painter, color);
+            break;
         case MapObject::Rectangle: {
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);

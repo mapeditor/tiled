@@ -139,6 +139,11 @@ public:
                                const QColor &color) const = 0;
 
     /**
+     * Draws the a pin in the given \a color using the \a painter.
+     */
+    void drawPointObject(QPainter *painter, const QColor &color) const;
+
+    /**
      * Draws the given image \a layer using the given \a painter.
      */
     void drawImageLayer(QPainter *painter,
