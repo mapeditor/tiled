@@ -49,6 +49,7 @@
 #include <QUndoStack>
 #include <QMenu>
 
+#include <cmath>
 #include <float.h>
 
 using namespace Tiled;
