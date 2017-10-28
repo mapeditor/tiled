@@ -105,6 +105,12 @@ public:
     virtual QPainterPath shape(const MapObject *object) const = 0;
 
     /**
+     * Returns the shape of the given point \a object, conforming to the
+     * shape() method requirements.
+     */
+    QPainterPath pointShape(const MapObject *object) const;
+
+    /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */

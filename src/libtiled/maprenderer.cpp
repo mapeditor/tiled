@@ -29,6 +29,7 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -102,6 +103,15 @@ void MapRenderer::drawPointObject(QPainter *painter, const QColor &color) const
     painter->setBrush(opaqueBrush);
     const float smallRadius = radius / 3;
     painter->drawEllipse(-smallRadius, -smallRadius, smallRadius * 2, smallRadius * 2);
+}
+
+QPainterPath MapRenderer::pointShape(const MapObject *object) const
+{
+    Q_ASSERT(object->shape() == MapObject::Point);
+    QPainterPath path;
+    path.addRect(QRect(-10, -30, 20, 30));
+    path.translate(pixelToScreenCoords(object->position()));
+    return path;
 }
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
