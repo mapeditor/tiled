@@ -108,6 +108,7 @@ protected:
     void dropEvent(QDropEvent *) override;
 
 private slots:
+    //File tab
     void newMap();
     void openFile();
     bool saveFile();
@@ -120,6 +121,7 @@ private slots:
     void closeFile();
     void closeAllFiles();
 
+    //Edit Tab
     void cut();
     void copy();
     void paste();
@@ -127,12 +129,14 @@ private slots:
     void delete_();
     void openPreferences();
 
+    //View Tab
     void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
     void zoomOut();
     void zoomNormal();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void resetDefaultLayout();
 
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
@@ -213,6 +217,7 @@ private:
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
 
+    QAction *mResetDefaultLayout;
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
