@@ -380,6 +380,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsMenu = new QMenu(this);
     mViewsAndToolbarsAction = new QAction(tr("Views and Toolbars"), this);
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
+
+    mResetDefaultLayout = new QAction(tr("Reset To Default Layout"),this);
+
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
@@ -415,6 +418,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(closeDocument(int)));
     connect(mDocumentManager, SIGNAL(reloadError(QString)),
             this, SLOT(reloadError(QString)));
+
+    connect(mResetDefaultLayout,SIGNAL(triggered(bool)),this,SLOT(resetDefaultLayout()));
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -1366,6 +1371,23 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
+void MainWindow::resetDefaultLayout()
+{
+    //This function is triggered upon clicking View > Reset to Default Layout
+    QMessageBox::StandardButton userResponse;
+    userResponse = QMessageBox::question(this, tr("Reset Editor Layout"),
+                                         tr("This will terminate the program and any unsaved progress may be lost, Are you sure you want to Continue ?")
+                                         ,QMessageBox::Yes|QMessageBox::No);
+
+    if (userResponse == QMessageBox::No)
+        return;
+
+    mSettings.beginGroup(QLatin1String("MapEditor"));
+    mSettings.remove(QLatin1String("State"));
+    mSettings.endGroup();
+    QApplication::exit();
+}
+
 void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
@@ -1380,10 +1402,13 @@ void MainWindow::updateViewsAndToolbarsMenu()
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 
         mViewsAndToolbarsMenu->addSeparator();
-
         const auto toolBars = editor->toolBars();
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
+
+        //Layout Arrangement
+        mViewsAndToolbarsMenu->addSeparator();
+        mViewsAndToolbarsMenu->addAction(MainWindow::mResetDefaultLayout);
     }
 }
 
