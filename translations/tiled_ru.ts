@@ -1433,7 +1433,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+60"/>
         <location line="+131"/>
         <source>Native</source>
-        <translation>Нативный</translation>
+        <translation>Системный</translation>
     </message>
     <message>
         <location line="-130"/>
@@ -1854,7 +1854,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1882,7 +1882,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1900,7 +1900,7 @@ Line %1, column %2</source>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1952,7 +1952,7 @@ Line %1, column %2</source>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4211,7 +4211,7 @@ Please select specific format.</source>
         <location line="+70"/>
         <location line="+167"/>
         <source>Width</source>
-        <translation>Длина</translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location line="-236"/>
@@ -4224,7 +4224,7 @@ Please select specific format.</source>
         <location line="-236"/>
         <location line="+208"/>
         <source>Tile Width</source>
-        <translation>Длина тайла</translation>
+        <translation>Ширина тайла</translation>
     </message>
     <message>
         <location line="-207"/>
@@ -4448,7 +4448,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Erase Terrain</source>
-        <translation>Стирание участка</translation>
+        <translation>Очистка участка</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5080,7 +5080,7 @@ Please select specific format.</source>
     <message>
         <location line="+20"/>
         <source>Change Layer Opacity</source>
-        <translation>Изменить непрозрачность слоя</translation>
+        <translation>Изменить прозрачность слоя</translation>
     </message>
     <message>
         <location line="+31"/>
