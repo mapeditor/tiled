@@ -756,6 +756,16 @@ static bool canResize(const MapObject *object)
     }
 }
 
+static bool canRotate(const MapObject *object)
+{
+    switch (object->shape()) {
+    case MapObject::Point:
+        return false;
+    default:
+        return true;
+    }
+}
+
 static bool canResizeAbsolute(const MapObject *object)
 {
     switch (object->shape()) {
@@ -1196,7 +1206,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
         mapObject->setPosition(newPos);
-        mapObject->setRotation(newRotation);
+        if (canRotate(mapObject))
+            mapObject->setRotation(newRotation);
     }
 
     mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
