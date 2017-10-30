@@ -501,6 +501,14 @@ Used to mark an object as an ellipse. The existing ``x``, ``y``,
 ``width`` and ``height`` attributes are used to determine the size of
 the ellipse.
 
+.. _tmx-point:
+
+<point>
+~~~~~~~~~
+
+Used to mark an object as a point. The existing ``x`` and ``y`` attributes
+are used to determine the position of the point.
+
 .. _tmx-polygon:
 
 <polygon>
