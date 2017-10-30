@@ -878,7 +878,7 @@ Line %1, column %2</source>
         <location line="+32"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+59"/>
         <source>Unsupported map orientation: "%1"</source>
-        <translation>Не поддерживаемая ориентация карты: "%1"</translation>
+        <translation>Неподдерживаемая ориентация карты: "%1"</translation>
     </message>
     <message>
         <location line="+98"/>
@@ -2156,7 +2156,7 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Flip Horizontally</source>
-        <translation>Перевернуть по горизонтали</translation>
+        <translation>Отразить по горизонтали</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2166,7 +2166,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation>Перевернуть по вертикали</translation>
+        <translation>Отразить по вертикали</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -4845,7 +4845,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation>Обнаружены несколько слоев столкновений!</translation>
+        <translation>Обнаружено несколько слоев столкновений!</translation>
     </message>
     <message>
         <location line="+9"/>
