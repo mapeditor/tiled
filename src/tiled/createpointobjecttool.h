@@ -1,5 +1,5 @@
 /*
- * createrectangleobjecttool.h
+ * createpointobjecttool.h
  * Copyright 2014, Martin Ziel <martin.ziel.com>
  *
  * This file is part of Tiled.
@@ -28,13 +28,20 @@ namespace Internal {
 class CreatePointObjectTool : public CreateObjectTool
 {
     Q_OBJECT
+
 public:
     CreatePointObjectTool(QObject *parent);
     void languageChanged() override;
+
 protected:
+    void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+
     MapObject *createNewMapObject() override;
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

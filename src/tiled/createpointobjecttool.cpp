@@ -1,5 +1,5 @@
 /*
- * createrectangleobjecttool.cpp
+ * createpointobjecttool.cpp
  * Copyright 2014, Martin Ziel <martin.ziel.com>
  *
  * This file is part of Tiled.
@@ -20,8 +20,11 @@
 
 #include "createpointobjecttool.h"
 
-#include <float.h>
+#include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectitem.h"
+#include "maprenderer.h"
+#include "snaphelper.h"
 #include "utils.h"
 
 using namespace Tiled;
@@ -30,7 +33,7 @@ using namespace Tiled::Internal;
 CreatePointObjectTool::CreatePointObjectTool(QObject *parent)
     : CreateObjectTool(parent)
 {
-     QIcon icon(QLatin1String(":images/24x24/insert-point.png"));
+    QIcon icon(QLatin1String(":images/24x24/insert-point.png"));
     icon.addFile(QLatin1String(":images/48x48/insert-point.png"));
     setIcon(icon);
     Utils::setThemeIcon(this, "insert-point");
@@ -41,6 +44,30 @@ void CreatePointObjectTool::languageChanged()
 {
     setName(tr("Insert Point"));
     setShortcut(QKeySequence(tr("I")));
+}
+
+void CreatePointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
+                                                          Qt::KeyboardModifiers modifiers)
+{
+    const MapRenderer *renderer = mapDocument()->renderer();
+
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
+
+    mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
+    mNewMapObjectItem->syncWithMapObject();
+}
+
+void CreatePointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton)
+        cancelNewMapObject();
+}
+
+void CreatePointObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+        finishNewMapObject();
 }
 
 MapObject *CreatePointObjectTool::createNewMapObject()
@@ -54,6 +81,5 @@ bool CreatePointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *o
 {
     if (!CreateObjectTool::startNewMapObject(pos, objectGroup))
         return false;
-    finishNewMapObject();
     return true;
 }

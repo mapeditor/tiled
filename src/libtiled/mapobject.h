@@ -171,6 +171,7 @@ public:
     void setShape(Shape shape);
 
     bool hasDimensions() const;
+    bool canRotate() const;
     bool isTileObject() const;
 
     QRectF bounds() const;
@@ -404,7 +405,7 @@ inline void MapObject::setShape(MapObject::Shape shape)
 { mShape = shape; }
 
 /**
- * Returns true if this object has a width and height
+ * Returns true if this object has a width and height.
  */
 inline bool MapObject::hasDimensions() const
 {
@@ -417,6 +418,12 @@ inline bool MapObject::hasDimensions() const
             return true;
     }
 }
+
+/**
+ * Returns true if this object can be rotated.
+ */
+inline bool MapObject::canRotate() const
+{ return mShape != Point; }
 
 inline bool MapObject::isTileObject() const
 { return !mCell.isEmpty(); }

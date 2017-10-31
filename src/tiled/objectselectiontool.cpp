@@ -634,7 +634,12 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 mapScene()->setSelectedObjectItems(selection);
             } else if (selection.contains(mClickedObjectItem)) {
                 // Clicking one of the selected items changes the edit mode
-                setMode((mMode == Resize) ? Rotate : Resize);
+                if (mMode == Resize) {
+                    if (selection.size() > 1 || (*selection.begin())->mapObject()->canRotate())
+                        setMode(Rotate);
+                } else {
+                    setMode(Resize);
+                }
             } else {
                 selection.clear();
                 selection.insert(mClickedObjectItem);
@@ -748,22 +753,7 @@ static bool resizeInPixelSpace(const MapObject *object)
 
 static bool canResize(const MapObject *object)
 {
-    switch (object->shape()) {
-    case MapObject::Point:
-        return false;
-    default:
-        return true;
-    }
-}
-
-static bool canRotate(const MapObject *object)
-{
-    switch (object->shape()) {
-    case MapObject::Point:
-        return false;
-    default:
-        return true;
-    }
+    return object->shape() != MapObject::Point;
 }
 
 static bool canResizeAbsolute(const MapObject *object)
@@ -1206,7 +1196,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
         mapObject->setPosition(newPos);
-        if (canRotate(mapObject))
+        if (mapObject->canRotate())
             mapObject->setRotation(newRotation);
     }
 
@@ -1288,12 +1278,12 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
      */
     qreal scale;
     if (mResizingLimitHorizontal) {
-        scale = qMax((qreal)0.01, diff.y() / startDiff.y());
+        scale = qMax<qreal>(0.01, diff.y() / startDiff.y());
     } else if (mResizingLimitVertical) {
-        scale = qMax((qreal)0.01, diff.x() / startDiff.x());
+        scale = qMax<qreal>(0.01, diff.x() / startDiff.x());
     } else {
-        scale = qMin(qMax((qreal)0.01, diff.x() / startDiff.x()),
-                     qMax((qreal)0.01, diff.y() / startDiff.y()));
+        scale = qMin(qMax<qreal>(0.01, diff.x() / startDiff.x()),
+                     qMax<qreal>(0.01, diff.y() / startDiff.y()));
     }
 
     if (!std::isfinite(scale))
