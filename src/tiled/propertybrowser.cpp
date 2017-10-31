@@ -661,13 +661,13 @@ void PropertyBrowser::addMapObjectProperties()
 
     auto mapObject = static_cast<const MapObject*>(mObject);
 
-    if (!mapObject->isPolyShape()) {
+    if (mapObject->hasDimensions()) {
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
 
-    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
-
+    bool isPoint = mapObject->shape() == MapObject::Point;
+    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
 
     if (!mapObject->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -1036,12 +1036,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
-    case RotationProperty: {
-        const qreal newRotation = val.toDouble();
-        const qreal oldRotation = mapObject->rotation();
-        command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+    case RotationProperty:
+        if (mapObject->canRotate()) {
+            const qreal newRotation = val.toDouble();
+            const qreal oldRotation = mapObject->rotation();
+            command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+        }
         break;
-    }
     case FlippingProperty: {
         const int flippingFlags = val.toInt();
         const bool flippedHorizontally = flippingFlags & 1;
@@ -1323,7 +1324,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
                                                        mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                        val.toString()));
-        break; 
+        break;
     case EdgeCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
                                                             mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
@@ -1571,7 +1572,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
-        if (!mapObject->isPolyShape()) {
+        if (mapObject->hasDimensions()) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }

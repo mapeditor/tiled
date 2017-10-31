@@ -14,6 +14,7 @@ DLLDESTDIR = ../..
 
 win32 {
     QMAKE_PROJECT_NAME = libtiled
+    DEFINES += _USE_MATH_DEFINES
 } else {
     # On other platforms it is necessary to link to zlib explicitly
     LIBS += -lz

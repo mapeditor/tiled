@@ -39,7 +39,8 @@ QtGuiApplication {
             "TILED_VERSION=" + project.version,
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
-            "QT_NO_URL_CAST_FROM_STRING"
+            "QT_NO_URL_CAST_FROM_STRING",
+            "_USE_MATH_DEFINES"
         ];
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
@@ -171,6 +172,8 @@ QtGuiApplication {
         "createmultipointobjecttool.h",
         "createobjecttool.cpp",
         "createobjecttool.h",
+        "createpointobjecttool.cpp",
+        "createpointobjecttool.h",
         "createpolygonobjecttool.cpp",
         "createpolygonobjecttool.h",
         "createpolylineobjecttool.cpp",

@@ -25,6 +25,7 @@
 #include "bucketfilltool.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
+#include "createpointobjecttool.h"
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
 #include "createrectangleobjecttool.h"
@@ -172,6 +173,7 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateTemplateTool *templatesTool = new CreateTemplateTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
+    CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
@@ -190,6 +192,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polylineObjectsTool));

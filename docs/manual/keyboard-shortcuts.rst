@@ -97,6 +97,7 @@ When an object layer is selected
 
 -  ``O`` - Activate :ref:`edit-polygons-tool` (was ``E`` until Tiled 1.0)
 -  ``R`` - Activate :ref:`insert-rectangle-tool`
+-  ``I`` - Activate :ref:`insert-point-tool`
 -  ``C`` - Activate :ref:`insert-ellipse-tool`
 -  ``P`` - Activate :ref:`insert-polygon-tool`
 -  ``L`` - Activate :ref:`insert-polyline-tool`

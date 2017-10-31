@@ -27,7 +27,7 @@ to automate parts of your work.
 Tiled also supports :ref:`object layers <object-layer-introduction>`,
 which traditionally were only for annotating your map with information
 but more recently they can also be used to place images. You can add
-rectangle, ellipse, polygon, polyline and tile objects. Object placement
+rectangle, point, ellipse, polygon, polyline and tile objects. Object placement
 is not limited to the tile grid and objects can also be scaled or
 rotated. Object layers offer a lot of flexibility to add almost any
 information to your level that your game needs.

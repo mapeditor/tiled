@@ -537,6 +537,8 @@ static const char *toString(MapObject::Shape shape)
         return "ellipse";
     case MapObject::Text:
         return "text";
+    case MapObject::Point:
+        return "point";
     }
     return "unknown";
 }
@@ -564,6 +566,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Point:
         break;
     case MapObject::Polygon:
     case MapObject::Polyline:

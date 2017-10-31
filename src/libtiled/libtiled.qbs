@@ -18,7 +18,8 @@ DynamicLibrary {
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",
         "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING"
+        "QT_NO_URL_CAST_FROM_STRING",
+        "_USE_MATH_DEFINES"
     ]
 
     Properties {
