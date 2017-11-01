@@ -28,6 +28,7 @@ Project {
         "src/tiled",
         "src/tmxrasterizer",
         "src/tmxviewer",
-        "translations"
+        "tests",
+        "translations",
     ]
 }

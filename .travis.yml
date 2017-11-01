@@ -42,6 +42,7 @@ matrix:
         - qbs setup-qt --detect
         - qbs config defaultProfile qt-5-9-1
         - qbs install --install-root Tiled/usr release Tiled.version:$TILED_VERSION
+        - qbs build -p autotest-runner release Tiled.version:$TILED_VERSION
         - cp LICENSE* COPYING *md Tiled/
       after_success:
         - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
@@ -91,8 +92,8 @@ matrix:
         - pushd tests/
         - qmake
         - make
-        - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a ./`basename $test`||exit 1; popd; done
         - popd
+        - for test in `find tests -executable -type f`; xvfb-run -a $test || exit 1; done
       after_script:
         - cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`
     - os: osx
