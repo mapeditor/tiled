@@ -11,6 +11,7 @@ QtGuiApplication {
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
+    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
 
     property bool qtcRunnable: true
@@ -477,6 +478,7 @@ QtGuiApplication {
         cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
         bundle.identifierPrefix: "org.mapeditor"
+        ib.appIconName: "tiled-icon-mac"
         targetName: "Tiled"
     }
     Group {
@@ -530,9 +532,7 @@ QtGuiApplication {
     Group {
         name: "macOS (icons)"
         condition: qbs.targetOS.contains("macos")
-        qbs.install: true
-        qbs.installDir: "Tiled.app/Contents/Resources"
-        files: ["images/*.icns"]
+        files: ["images/tiled.xcassets"]
     }
 
     Group {

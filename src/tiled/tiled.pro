@@ -45,8 +45,7 @@ macx {
 
         APP_RESOURCES.path = Contents/Resources
         APP_RESOURCES.files = \
-            ../../dist/dsa_pub.pem \
-            images/tmx-icon-mac.icns
+            ../../dist/dsa_pub.pem
 
         SPARKLE_FRAMEWORK.path = Contents/Frameworks
         SPARKLE_FRAMEWORK.files = $${SPARKLE_DIR}/Sparkle.framework
@@ -531,7 +530,8 @@ RESOURCES += tiled.qrc
 macx {
     TARGET = Tiled
     QMAKE_INFO_PLIST = Info.plist
-    ICON = images/tiled-icon-mac.icns
+    QMAKE_ASSET_CATALOGS += images/tiled.xcassets
+    QMAKE_ASSET_CATALOGS_APP_ICON = tiled-icon-mac
 }
 win32 {
     RC_FILE = tiled.rc.in

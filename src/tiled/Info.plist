@@ -9,7 +9,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Tiled @FULL_VERSION@, Copyright 2008-2017 Thorbjørn Lindeijer, GNU General Public License</string>
 	<key>CFBundleIconFile</key>
-	<string>tiled-icon-mac</string>
+	<string>@ICON@</string>
 	<key>CFBundleIdentifier</key>
 	<string>@BUNDLEIDENTIFIER@</string>
 	<key>CFBundleInfoDictionaryVersion</key>
