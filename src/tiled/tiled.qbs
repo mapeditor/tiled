@@ -475,7 +475,6 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
-        bundle.infoPlistFile: "Info.plist"
         targetName: "Tiled"
     }
     Group {
@@ -489,17 +488,17 @@ QtGuiApplication {
     }
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows")
-                    || qbs.targetOS.contains("macos")
                     || project.linuxArchive)
                 return ""
             else
                 return "bin"
         }
         qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: product.type.concat(["aggregate_infoplist", "pkginfo"])
+        fileTagsFilter: product.type
     }
 
     Properties {

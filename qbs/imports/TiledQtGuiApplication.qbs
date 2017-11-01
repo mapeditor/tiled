@@ -18,6 +18,14 @@ QtGuiApplication {
     }
 
     Group {
+        condition: qbs.targetOS.contains("darwin") && bundle.isBundle
+        qbs.install: true
+        qbs.installSourceBase: product.buildDirectory
+        fileTagsFilter: ["bundle.content"]
+    }
+
+    Group {
+        condition: !qbs.targetOS.contains("darwin") || !bundle.isBundle
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows") || project.linuxArchive)
