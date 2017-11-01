@@ -622,6 +622,14 @@ QtGuiApplication {
         files: [ "images/scalable/application-x-tiled.svg" ]
     }
 
+    // This is necessary to install the app bundle (OS X)
+    Group {
+        fileTagsFilter: ["bundle.content"]
+        qbs.install: true
+        qbs.installDir: "."
+        qbs.installSourceBase: product.buildDirectory
+    }
+
     // Generate the tiled.rc file in order to dynamically specify the version
     Group {
         name: "RC file (Windows)"
