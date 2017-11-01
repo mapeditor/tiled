@@ -21,8 +21,6 @@ TiledPlugin {
             return true;
         }
 
-        // Not sure how to properly support Python on Mac OS X yet
-        // (possibly requires using python-config)
         return false;
     }
 
