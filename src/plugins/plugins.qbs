@@ -6,13 +6,12 @@ Project {
         "defold",
         "droidcraft",
         "flare",
+        "gmx",
         "json",
         "lua",
         "python",
         "replicaisland",
         "tbin",
-        "tengine",
-        "tmw",
-        "gmx"
+        "tengine"
     ]
 }
