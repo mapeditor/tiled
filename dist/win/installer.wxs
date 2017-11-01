@@ -139,7 +139,6 @@
                 <File Id="fil83082E185B35EDA2A47D26DD9809D3CD" Source="$(var.InstallRoot)\plugins\tiled\replicaisland.dll" />
                 <File Id="tbin_dll" Source="$(var.InstallRoot)\plugins\tiled\tbin.dll" />
                 <File Id="filBC15082CAF13E014CD4B725625D9B371" Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
-                <File Id="fil423C95BE607BAACF542685468BB445BF" Source="$(var.InstallRoot)\plugins\tiled\tmw.dll" />
               </Component>
             </Directory>
             <Directory Id="platformPlugins" Name="platforms">

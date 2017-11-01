@@ -234,8 +234,6 @@ replicaisland
     Adds support for editing `Replica Island <http://replicaisland.net/>`__ maps (\*.bin)
 tengine
     Adds support for exporting to `T-Engine4 <https://te4.org/te4>`__ maps (\*.lua)
-tmw
-    Adds support for exporting to TMW-eAthena collision files (\*.wlk) (used by `The Mana World`_)
 
 These plugins are disabled by default. They can be enabled in *Edit > Preferences > Plugins*.
 
