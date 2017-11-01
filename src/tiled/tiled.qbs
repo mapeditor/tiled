@@ -5,6 +5,7 @@ import qbs.TextFile
 QtGuiApplication {
     name: "tiled"
     targetName: name
+    version: project.version
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
@@ -36,7 +37,7 @@ QtGuiApplication {
 
     cpp.defines: {
         var defs = [
-            "TILED_VERSION=" + project.version,
+            "TILED_VERSION=" + version,
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
@@ -475,6 +476,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+        bundle.identifierPrefix: "org.mapeditor"
         targetName: "Tiled"
     }
     Group {
