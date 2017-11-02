@@ -136,7 +136,7 @@ private slots:
     void zoomNormal();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
-    void resetDefaultLayout();
+    void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
@@ -217,7 +217,7 @@ private:
     QAction *mViewsAndToolbarsAction;
     QAction *mShowObjectTypesEditor;
 
-    QAction *mResetDefaultLayout;
+    QAction *mResetToDefaultLayout;
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;

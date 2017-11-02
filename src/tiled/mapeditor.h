@@ -102,6 +102,8 @@ public:
 
     void showMessage(const QString &text, int timeout = 0);
 
+    void resetLayout();
+
 public slots:
     void setSelectedTool(AbstractTool *tool);
 

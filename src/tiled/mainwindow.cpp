@@ -462,7 +462,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mViewsAndToolbarsAction = new QAction(tr("Views and Toolbars"), this);
     mViewsAndToolbarsAction->setMenu(mViewsAndToolbarsMenu);
 
-    mResetDefaultLayout = new QAction(tr("Reset To Default Layout"),this);
+    mResetToDefaultLayout = new QAction(tr("Reset to Default Layout"), this);
 
     mShowObjectTypesEditor = new QAction(tr("Object Types Editor"), this);
     mShowObjectTypesEditor->setCheckable(true);
@@ -500,7 +500,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mDocumentManager, SIGNAL(reloadError(QString)),
             this, SLOT(reloadError(QString)));
 
-    connect(mResetDefaultLayout,SIGNAL(triggered(bool)),this,SLOT(resetDefaultLayout()));
+    connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -1317,21 +1317,16 @@ void MainWindow::updateRecentFilesMenu()
     mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
-void MainWindow::resetDefaultLayout()
+void MainWindow::resetToDefaultLayout()
 {
-    //This function is triggered upon clicking View > Reset to Default Layout
-    QMessageBox::StandardButton userResponse;
-    userResponse = QMessageBox::question(this, tr("Reset Editor Layout"),
-                                         tr("This will terminate the program and any unsaved progress may be lost, Are you sure you want to Continue ?")
-                                         ,QMessageBox::Yes|QMessageBox::No);
+    //uncheck actionClearView if in case its already checked
+    mUi->actionClearView->setChecked(false);
 
-    if (userResponse == QMessageBox::No)
-        return;
+    //reset mapEditor layout
+    auto *editor = qobject_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+    editor->resetLayout();
 
-    mSettings.beginGroup(QLatin1String("MapEditor"));
-    mSettings.remove(QLatin1String("State"));
-    mSettings.endGroup();
-    QApplication::exit();
+    updateViewsAndToolbarsMenu();//this is to gaurantee that this sub-menu is up-to-date
 }
 
 void MainWindow::updateViewsAndToolbarsMenu()
@@ -1354,7 +1349,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
         //Layout Arrangement
         mViewsAndToolbarsMenu->addSeparator();
-        mViewsAndToolbarsMenu->addAction(MainWindow::mResetDefaultLayout);
+        mViewsAndToolbarsMenu->addAction(MainWindow::mResetToDefaultLayout);
     }
 }
 
