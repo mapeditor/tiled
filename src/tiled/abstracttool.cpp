@@ -22,7 +22,6 @@
 #include "abstracttool.h"
 
 #include "mapdocument.h"
-#include "templatesdock.h"
 
 #include <QKeyEvent>
 

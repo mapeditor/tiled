@@ -255,6 +255,22 @@ MapObject *MapObject::clone() const
     return o;
 }
 
+void MapObject::copyPropertiesFrom(const MapObject *object)
+{
+    setName(object->name());
+    setSize(object->size());
+    setType(object->type());
+    setTextData(object->textData());
+    setPolygon(object->polygon());
+    setShape(object->shape());
+    setCell(object->cell());
+    setRotation(object->rotation());
+    setVisible(object->isVisible());
+    setProperties(object->properties());
+    setChangedProperties(object->changedProperties());
+    setTemplateRef(object->templateRef());
+}
+
 const MapObject *MapObject::templateObject() const
 {
     if (auto group = templateGroup())

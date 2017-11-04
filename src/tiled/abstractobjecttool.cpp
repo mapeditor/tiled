@@ -253,7 +253,7 @@ void AbstractObjectTool::replaceObjectsWithTemplate()
 {
     mapDocument()->undoStack()->push(new ReplaceObjectsWithTemplate(mapDocument(),
                                                                     mapDocument()->selectedObjects(),
-                                                                    {objectTemplate()->templateGroup(), objectTemplate()->id()}));
+                                                                    objectTemplate()));
 }
 
 void AbstractObjectTool::resetInstances()
@@ -358,13 +358,20 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
 
         auto changeTileAction = menu.addAction(tr("Replace Tile"), this, SLOT(changeTile()));
         changeTileAction->setEnabled(tile());
-
-        auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
-        replaceTemplateAction->setEnabled(objectTemplate());
     }
+
+    // Create action for replacing an object with a template
+    auto selectedTemplate = objectTemplate();
+    auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+
+    if (selectedTemplate)
+        replaceTemplateAction->setText(tr("Replace With \"") + selectedTemplate->name() + tr("\" Template"));
+    else
+        replaceTemplateAction->setEnabled(false);
 
     if (selectedObjects.size() == 1) {
         MapObject *currentObject = selectedObjects.first();
+
         if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
             const Cell cell = selectedObjects.first()->cell();
             // Saving objects with embedded tilesets is disabled
@@ -375,6 +382,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         if (currentObject->isTemplateBase()) { // Hide this operations for template base
             duplicateAction->setVisible(false);
             removeAction->setVisible(false);
+            replaceTemplateAction->setVisible(false);
         }
     }
 

@@ -204,6 +204,7 @@ public:
     void flip(FlipDirection direction, const QPointF &origin);
 
     MapObject *clone() const;
+    void copyPropertiesFrom(const MapObject *object);
 
     const MapObject *templateObject() const;
 

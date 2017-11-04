@@ -29,6 +29,7 @@
 namespace Tiled {
 
 class MapObject;
+class ObjectTemplate;
 class Tile;
 
 namespace Internal {
@@ -158,7 +159,7 @@ public:
      */
     ReplaceObjectsWithTemplate(MapDocument *mapDocument,
                                const QList<MapObject *> &mapObjects,
-                               TemplateRef templateRef,
+                               ObjectTemplate *objectTemplate,
                                QUndoCommand *parent = nullptr);
 
     ~ReplaceObjectsWithTemplate();
@@ -170,7 +171,7 @@ private:
     MapDocument *mMapDocument;
     const QList<MapObject*> mMapObjects;
     QList<MapObject*> mOldMapObjects;
-    TemplateRef mTemplateRef;
+    ObjectTemplate *mObjectTemplate;
 };
 
 } // namespace Internal

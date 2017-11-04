@@ -70,6 +70,7 @@ inline void ObjectTemplate::setObject(const MapObject *object)
 {
     delete mObject;
     mObject = object->clone();
+    mObject->setTemplateRef(templateRef());
     mObject->markAsTemplateBase();
 }
 
