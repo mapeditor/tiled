@@ -5,11 +5,13 @@ import qbs.TextFile
 QtGuiApplication {
     name: "tiled"
     targetName: name
+    version: project.version
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
+    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt"; submodules: ["core", "widgets"]; versionAtLeast: "5.6" }
 
     property bool qtcRunnable: true
@@ -36,7 +38,7 @@ QtGuiApplication {
 
     cpp.defines: {
         var defs = [
-            "TILED_VERSION=" + project.version,
+            "TILED_VERSION=" + version,
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
@@ -475,7 +477,8 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: "Foundation"
         cpp.cxxFlags: ["-Wno-unknown-pragmas"]
-        bundle.infoPlistFile: "Info.plist"
+        bundle.identifierPrefix: "org.mapeditor"
+        ib.appIconName: "tiled-icon-mac"
         targetName: "Tiled"
     }
     Group {
@@ -489,17 +492,17 @@ QtGuiApplication {
     }
 
     Group {
+        condition: !qbs.targetOS.contains("darwin")
         qbs.install: true
         qbs.installDir: {
             if (qbs.targetOS.contains("windows")
-                    || qbs.targetOS.contains("macos")
                     || project.linuxArchive)
                 return ""
             else
                 return "bin"
         }
         qbs.installSourceBase: product.buildDirectory
-        fileTagsFilter: product.type.concat(["aggregate_infoplist", "pkginfo"])
+        fileTagsFilter: product.type
     }
 
     Properties {
@@ -529,9 +532,7 @@ QtGuiApplication {
     Group {
         name: "macOS (icons)"
         condition: qbs.targetOS.contains("macos")
-        qbs.install: true
-        qbs.installDir: "Tiled.app/Contents/Resources"
-        files: ["images/*.icns"]
+        files: ["images/tiled.xcassets"]
     }
 
     Group {
