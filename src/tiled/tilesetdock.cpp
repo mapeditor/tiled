@@ -53,11 +53,11 @@
 #include <QComboBox>
 #include <QDropEvent>
 #include <QFileDialog>
-#include <QPushButton>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPushButton>
 #include <QSettings>
 #include <QSignalMapper>
 #include <QStackedWidget>
