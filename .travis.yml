@@ -95,6 +95,7 @@ matrix:
         - sudo apt-get update -qq
         - sudo apt-get -y install qt56base qt56svg qt56tools binutils zlib1g-dev cppcheck xvfb
         - source /opt/qt56/bin/qt56-env.sh
+        - qmake -version
       script:
         - qmake
         - make
@@ -126,7 +127,6 @@ matrix:
           script: dist/macos/push-to-itch.sh
 
 before_script:
-  - qmake -version
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
   - if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi
