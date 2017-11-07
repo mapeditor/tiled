@@ -109,15 +109,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mObjectTypesEditor(new ObjectTypesEditor(this))
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mTmxMapFormat(new TmxMapFormat(this))
-    , mTsxTilesetFormat(new TsxTilesetFormat(this))
-    , mTgxTemplateGroupFormat(new TgxTemplateGroupFormat(this))
 {
     mUi->setupUi(this);
-
-    PluginManager::addObject(mTmxMapFormat);
-    PluginManager::addObject(mTsxTilesetFormat);
-    PluginManager::addObject(mTgxTemplateGroupFormat);
 
     ActionManager::registerAction(mUi->actionNewMap, "file.new_map");
     ActionManager::registerAction(mUi->actionNewTileset, "file.new_tileset");
@@ -466,9 +459,6 @@ MainWindow::~MainWindow()
     // the Preferences.
     mDocumentManager->deleteEditor(Document::MapDocumentType);
     mDocumentManager->deleteEditor(Document::TilesetDocumentType);
-
-    PluginManager::removeObject(mTmxMapFormat);
-    PluginManager::removeObject(mTsxTilesetFormat);
 
     DocumentManager::deleteInstance();
     TilesetManager::deleteInstance();

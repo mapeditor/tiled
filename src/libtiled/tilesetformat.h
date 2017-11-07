@@ -76,7 +76,7 @@ TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
 /**
  * Attempts to find a tileset format supporting the given file.
  */
-TILEDSHARED_EXPORT TilesetFormat *findSupportingFormat(const QString &fileName);
+TILEDSHARED_EXPORT TilesetFormat *findSupportingTilesetFormat(const QString &fileName);
 
 } // namespace Tiled
 

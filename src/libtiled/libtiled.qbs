@@ -54,6 +54,7 @@ DynamicLibrary {
         "logginginterface.h",
         "map.cpp",
         "map.h",
+        "mapformat.cpp",
         "mapformat.h",
         "mapobject.cpp",
         "mapobject.h",

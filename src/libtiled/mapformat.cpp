@@ -1,6 +1,6 @@
 /*
- * tilesetformat.cpp
- * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * mapformat.cpp
+ * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -26,48 +26,45 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "tilesetformat.h"
+#include "mapformat.h"
 
 #include "mapreader.h"
 
 namespace Tiled {
 
-SharedTileset readTileset(const QString &fileName, QString *error)
+Map *readMap(const QString &fileName, QString *error)
 {
-    // Try the first registered tileset format that claims to support the file
-    if (TilesetFormat *format = findSupportingTilesetFormat(fileName)) {
-        SharedTileset tileset = format->read(fileName);
+    // Try the first registered map format that claims to support the file
+    if (MapFormat *format = findSupportingMapFormat(fileName)) {
+        Map *map = format->read(fileName);
 
         if (error) {
-            if (!tileset)
+            if (!map)
                 *error = format->errorString();
             else
                 *error = QString();
         }
 
-        if (tileset)
-            tileset->setFormat(format);
-
-        return tileset;
+        return map;
     }
 
-    // Fall back to default reader (TSX format)
+    // Fall back to default reader (TMX format)
     MapReader reader;
-    SharedTileset tileset = reader.readTileset(fileName);
+    Map *map = reader.readMap(fileName);
 
     if (error) {
-        if (!tileset)
+        if (!map)
             *error = reader.errorString();
         else
             *error = QString();
     }
 
-    return tileset;
+    return map;
 }
 
-TilesetFormat *findSupportingTilesetFormat(const QString &fileName)
+MapFormat *findSupportingMapFormat(const QString &fileName)
 {
-    for (TilesetFormat *format : PluginManager::objects<TilesetFormat>())
+    for (MapFormat *format : PluginManager::objects<MapFormat>())
         if (format->supportsFile(fileName))
             return format;
     return nullptr;
