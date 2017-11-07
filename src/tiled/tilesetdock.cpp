@@ -49,6 +49,8 @@
 #include "utils.h"
 #include "zoomable.h"
 
+#include "ui_notilesetwidget.h"
+
 #include <QAction>
 #include <QComboBox>
 #include <QDropEvent>
@@ -74,16 +76,27 @@ using namespace Tiled::Internal;
 
 namespace {
 
-class NewTilesetView : public QWidget
+class NoTilesetWidget : public QWidget
 {
 public:
-    explicit NewTilesetView(TilesetDock *parent = nullptr)
+    explicit NoTilesetWidget(TilesetDock *parent = nullptr)
         : QWidget(parent)
     {
-        QWidget *w = new QWidget(this);
+        QGridLayout *gridLayout = new QGridLayout(this);
 
-        QPushButton *newTilesetButton = new QPushButton(w);
+        QSpacerItem *spacerVertTop = new QSpacerItem(1, 1, QSizePolicy::Ignored, QSizePolicy::Expanding);
+        gridLayout->addItem(spacerVertTop, 1, 0, Qt::AlignCenter);
+        QSpacerItem *spacerHorzLeft = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Ignored);
+        gridLayout->addItem(spacerHorzLeft, 0, 1, Qt::AlignCenter);
+        QSpacerItem *spacerHorzRight = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Ignored);
+        gridLayout->addItem(spacerHorzRight, 2, 1, Qt::AlignCenter);
+        QSpacerItem *spacerVertBottom = new QSpacerItem(1, 1, QSizePolicy::Ignored, QSizePolicy::Expanding);
+        gridLayout->addItem(spacerVertBottom, 1, 2, Qt::AlignCenter);
+
+        QPushButton *newTilesetButton = new QPushButton(parent);
         newTilesetButton->setText(QStringLiteral("New Tileset..."));
+        newTilesetButton->adjustSize();
+        gridLayout->addWidget(newTilesetButton, 1, 1, Qt::AlignCenter);
 
         connect(newTilesetButton, SIGNAL(released()), parent, SLOT(newTileset()));
     }
@@ -208,7 +221,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     vertical->addLayout(horizontal);
     vertical->addWidget(mSuperViewStack);
 
-    mSuperViewStack->insertWidget(0, new NewTilesetView(this));
+    mSuperViewStack->insertWidget(0, new NoTilesetWidget(this));
     mSuperViewStack->insertWidget(1, mViewStack);
 
     horizontal = new QHBoxLayout;
