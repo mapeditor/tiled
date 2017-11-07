@@ -11,6 +11,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/isometricrenderer.cpp \
     $$PWD/layer.cpp \
     $$PWD/map.cpp \
+    $$PWD/mapformat.cpp \
     $$PWD/mapobject.cpp \
     $$PWD/mapreader.cpp \
     $$PWD/maprenderer.cpp \
