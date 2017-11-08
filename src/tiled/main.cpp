@@ -224,8 +224,8 @@ int main(int argc, char *argv[])
     TsxTilesetFormat tsxTilesetFormat;
     PluginManager::addObject(&tsxTilesetFormat);
 
-    TgxTemplateGroupFormat tgxTemplateGroupFormat;
-    PluginManager::addObject(&tgxTemplateGroupFormat);
+    XmlObjectTemplateFormat xmlObjectTemplateFormat;
+    PluginManager::addObject(&xmlObjectTemplateFormat);
 
     CommandLineHandler commandLine;
 

@@ -20,6 +20,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/object.cpp \
     $$PWD/objectgroup.cpp \
     $$PWD/objecttemplate.cpp \
+    $$PWD/objecttemplateformat.cpp \
     $$PWD/objecttypes.cpp \
     $$PWD/orthogonalrenderer.cpp \
     $$PWD/plugin.cpp \
@@ -27,10 +28,7 @@ SOURCES += $$PWD/compression.cpp \
     $$PWD/properties.cpp \
     $$PWD/savefile.cpp \
     $$PWD/staggeredrenderer.cpp \
-    $$PWD/templategroup.cpp \
-    $$PWD/templategroupformat.cpp \
     $$PWD/templatemanager.cpp \
-    $$PWD/tidmapper.cpp \
     $$PWD/tile.cpp \
     $$PWD/tileanimationdriver.cpp \
     $$PWD/tiled.cpp \
@@ -61,6 +59,7 @@ HEADERS += $$PWD/compression.h \
     $$PWD/object.h \
     $$PWD/objectgroup.h \
     $$PWD/objecttemplate.h \
+    $$PWD/objecttemplateformat.h \
     $$PWD/objecttypes.h \
     $$PWD/orthogonalrenderer.h \
     $$PWD/plugin.h \
@@ -68,11 +67,8 @@ HEADERS += $$PWD/compression.h \
     $$PWD/properties.h \
     $$PWD/savefile.h \
     $$PWD/staggeredrenderer.h \
-    $$PWD/templategroup.h \
-    $$PWD/templategroupformat.h \
     $$PWD/templatemanager.h \
     $$PWD/terrain.h \
-    $$PWD/tidmapper.h \
     $$PWD/tile.h \
     $$PWD/tileanimationdriver.h \
     $$PWD/tiled.h \

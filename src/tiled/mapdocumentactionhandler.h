@@ -132,7 +132,7 @@ public slots:
     void removeObjects();
     void moveObjectsToGroup(ObjectGroup *);
 
-    void selectAllInstances(const MapObject *);
+    void selectAllInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void updateActions();

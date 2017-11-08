@@ -44,7 +44,7 @@ public:
     GidMapper();
     GidMapper(const QVector<SharedTileset> &tilesets);
 
-    void insert(unsigned firstGid, Tileset *tileset);
+    void insert(unsigned firstGid, const SharedTileset &tileset);
     void clear();
     bool isEmpty() const;
 
@@ -70,7 +70,7 @@ public:
     unsigned invalidTile() const;
 
 private:
-    QMap<unsigned, Tileset*> mFirstGidToTileset;
+    QMap<unsigned, SharedTileset> mFirstGidToTileset;
 
     mutable unsigned mInvalidTile;
 };
@@ -79,7 +79,7 @@ private:
 /**
  * Insert the given \a tileset with \a firstGid as its first global ID.
  */
-inline void GidMapper::insert(unsigned firstGid, Tileset *tileset)
+inline void GidMapper::insert(unsigned firstGid, const SharedTileset &tileset)
 {
     mFirstGidToTileset.insert(firstGid, tileset);
 }

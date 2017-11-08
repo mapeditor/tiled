@@ -38,7 +38,7 @@ class QToolButton;
 
 namespace Tiled {
 
-class MapObject;
+class ObjectTemplate;
 class Terrain;
 
 namespace Internal {
@@ -125,7 +125,7 @@ public slots:
     void addExternalTilesets(const QStringList &fileNames);
     void filesDroppedOnTilesetDock(const QStringList &fileNames);
 
-    void updateTemplateInstances(const MapObject *mapObject);
+    void updateTemplateInstances(const ObjectTemplate *objectTemplate);
 
 private slots:
     void currentWidgetChanged();

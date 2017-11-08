@@ -48,6 +48,7 @@
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectsdock.h"
+#include "objecttemplate.h"
 #include "templatesdock.h"
 #include "objectselectiontool.h"
 #include "painttilelayer.h"
@@ -805,12 +806,12 @@ void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
     handleExternalTilesetsAndImages(fileNames, true);
 }
 
-void MapEditor::updateTemplateInstances(const MapObject *mapObject)
+void MapEditor::updateTemplateInstances(const ObjectTemplate *objectTemplate)
 {
     QHashIterator<MapDocument*, MapView*> mapDocumentIterator(mWidgetForMap);
     while (mapDocumentIterator.hasNext()) {
         mapDocumentIterator.next();
-        mapDocumentIterator.key()->updateTemplateInstances(mapObject);
+        mapDocumentIterator.key()->updateTemplateInstances(objectTemplate);
     }
 }
 

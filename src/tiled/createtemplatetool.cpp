@@ -90,7 +90,7 @@ MapObject *CreateTemplateTool::createNewMapObject()
         return nullptr;
 
     MapObject *newMapObject = new MapObject();
-    newMapObject->setTemplateRef({mObjectTemplate->templateGroup(), mObjectTemplate->id()});
+    newMapObject->setObjectTemplate(mObjectTemplate);
     newMapObject->syncWithTemplate();
     return newMapObject;
 }

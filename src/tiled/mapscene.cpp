@@ -859,17 +859,15 @@ void MapScene::dropEvent(QGraphicsSceneDragDropEvent *event)
 
     TemplateManager *templateManager = TemplateManager::instance();
 
-    QString groupFileName;
-    unsigned templateId;
-    stream >> groupFileName >> templateId;
+    QString fileName;
+    stream >> fileName;
 
-    const ObjectTemplate *objectTemplate = templateManager->findTemplate(groupFileName, templateId);
-
+    const ObjectTemplate *objectTemplate = templateManager->findObjectTemplate(fileName);
     if (!objectTemplate)
         return;
 
     MapObject *newMapObject = new MapObject();
-    newMapObject->setTemplateRef({objectTemplate->templateGroup(), objectTemplate->id()});
+    newMapObject->setObjectTemplate(objectTemplate);
     newMapObject->syncWithTemplate();
     newMapObject->setPosition(event->scenePos());
 

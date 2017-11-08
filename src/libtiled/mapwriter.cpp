@@ -37,8 +37,7 @@
 #include "mapobject.h"
 #include "imagelayer.h"
 #include "objectgroup.h"
-#include "templategroup.h"
-#include "tidmapper.h"
+#include "objecttemplate.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tiled.h"
@@ -78,8 +77,8 @@ public:
     void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
-    void writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                            const QString &path);
+    void writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                             const QString &path);
 
     bool openFile(SaveFile *file);
 
@@ -91,8 +90,6 @@ private:
     void writeMap(QXmlStreamWriter &w, const Map &map);
     void writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                       unsigned firstGid);
-    void writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
-                            unsigned firstTid);
     void writeLayers(QXmlStreamWriter &w, const QList<Layer *> &layers);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer &tileLayer);
     void writeTileLayerData(QXmlStreamWriter &w, const TileLayer &tileLayer, QRect bounds);
@@ -100,7 +97,6 @@ private:
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup &objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject &mapObject);
     void writeObjectText(QXmlStreamWriter &w, const TextData &textData);
-    void writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate);
     void writeImageLayer(QXmlStreamWriter &w, const ImageLayer &imageLayer);
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
@@ -108,7 +104,6 @@ private:
 
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
-    TidMapper mTidMapper;
     bool mUseAbsolutePaths;
 };
 
@@ -187,45 +182,27 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
     writer.writeEndDocument();
 }
 
-void MapWriterPrivate::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                                          const QString &path)
+void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                                           const QString &path)
 {
     mMapDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
 
     AutoFormattingWriter writer(device);
     writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("templategroup"));
-
-    writer.writeAttribute(QLatin1String("name"), templateGroup->name());
-    writer.writeAttribute(QLatin1String("nexttemplateid"),
-                          QString::number(templateGroup->nextTemplateId()));
+    writer.writeStartElement(QLatin1String("template"));
 
     mGidMapper.clear();
-    unsigned firstGid = 1;
-    for (const SharedTileset &tileset : templateGroup->tilesets()) {
+    if (Tileset *tileset = objectTemplate->object()->cell().tileset()) {
+        unsigned firstGid = 1;
+        mGidMapper.insert(firstGid, tileset->sharedPointer());
         writeTileset(writer, *tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->nextTileId();
     }
 
-    for (const ObjectTemplate *objectTemplate: templateGroup->templates())
-        writeTemplate(writer, *objectTemplate);
+    writeObject(writer, *objectTemplate->object());
 
     writer.writeEndElement();
     writer.writeEndDocument();
-}
-
-void MapWriterPrivate::writeTemplate(QXmlStreamWriter &w, const ObjectTemplate &objectTemplate)
-{
-    w.writeStartElement(QLatin1String("template"));
-
-    w.writeAttribute(QLatin1String("name"), objectTemplate.name());
-    w.writeAttribute(QLatin1String("id"), QString::number(objectTemplate.id()));
-
-    writeObject(w, *objectTemplate.object());
-
-    w.writeEndElement();
 }
 
 void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
@@ -274,29 +251,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
-    }
-
-    mTidMapper.clear();
-    unsigned firstTid = 1;
-
-    QSet<TemplateGroup*> templateGroups;
-    for (ObjectGroup *group : map.objectGroups())
-        for (MapObject *object : group->objects())
-            if (object->isTemplateInstance())
-                templateGroups.insert(object->templateGroup());
-
-    for (TemplateGroup *templateGroup : templateGroups) {
-        writeTemplateGroup(w, *templateGroup, firstTid);
-        mTidMapper.insert(firstTid, templateGroup);
-
-        // When a template group is not loaded, reserve enough space
-        // to enable loading when the templateGroup is fixed
-        if (templateGroup->loaded())
-            firstTid += templateGroup->nextTemplateId();
-        else
-            firstTid += templateGroup->maxId() + 1;
     }
 
     writeLayers(w, map.layers());
@@ -572,25 +528,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     w.writeEndElement();
 }
 
-void MapWriterPrivate::writeTemplateGroup(QXmlStreamWriter &w, const TemplateGroup &templateGroup,
-                                          unsigned firstTid)
-{
-    w.writeStartElement(QLatin1String("templategroup"));
-    if (firstTid > 0)
-        w.writeAttribute(QLatin1String("firsttid"), QString::number(firstTid));
-
-    const QString &fileName = templateGroup.fileName();
-    if (!fileName.isEmpty()) {
-        QString source = fileName;
-        if (!mUseAbsolutePaths)
-            source = mMapDir.relativeFilePath(source);
-        w.writeAttribute(QLatin1String("source"), source);
-
-        w.writeEndElement();
-        return;
-    }
-}
-
 void MapWriterPrivate::writeLayers(QXmlStreamWriter &w, const QList<Layer*> &layers)
 {
     for (const Layer *layer : layers) {
@@ -784,9 +721,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!mapObject.isTemplateBase())
         w.writeAttribute(QLatin1String("id"), QString::number(id));
 
-    if (isTemplateInstance) {
-        unsigned tid = mTidMapper.templateRefToTid(mapObject.templateRef());
-        w.writeAttribute(QLatin1String("tid"), QString::number(tid));
+    if (const ObjectTemplate *objectTemplate = mapObject.objectTemplate()) {
+        QString fileName = objectTemplate->fileName();
+        if (!mUseAbsolutePaths)
+            fileName = mMapDir.relativeFilePath(fileName);
+        w.writeAttribute(QLatin1String("template"), fileName);
     }
 
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
@@ -1057,19 +996,19 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, QIODevice *device,
-                                   const QString &path)
+void MapWriter::writeObjectTemplate(const ObjectTemplate *objectTemplate, QIODevice *device,
+                                    const QString &path)
 {
-    d->writeTemplateGroup(templateGroup, device, path);
+    d->writeObjectTemplate(objectTemplate, device, path);
 }
 
-bool MapWriter::writeTemplateGroup(const TemplateGroup *templateGroup, const QString &fileName)
+bool MapWriter::writeObjectTemplate(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
     SaveFile file(fileName);
     if (!d->openFile(&file))
         return false;
 
-    writeTemplateGroup(templateGroup, file.device(), QFileInfo(fileName).absolutePath());
+    writeObjectTemplate(objectTemplate, file.device(), QFileInfo(fileName).absolutePath());
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

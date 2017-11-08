@@ -50,8 +50,7 @@ class Document : public QObject
 public:
     enum DocumentType {
         MapDocumentType,
-        TilesetDocumentType,
-        TemplateGroupDocumentType
+        TilesetDocumentType
     };
 
     Document(DocumentType type,

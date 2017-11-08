@@ -53,7 +53,6 @@
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
 #include "objecttypeseditor.h"
-#include "objecttemplatemodel.h"
 #include "offsetmapdialog.h"
 #include "patreondialog.h"
 #include "pluginmanager.h"
@@ -461,8 +460,8 @@ MainWindow::~MainWindow()
     mDocumentManager->deleteEditor(Document::TilesetDocumentType);
 
     DocumentManager::deleteInstance();
-    TilesetManager::deleteInstance();
     TemplateManager::deleteInstance();
+    TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
@@ -610,35 +609,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
 
     mDocumentManager->addDocument(document);
 
-    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
+    if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document))
         mDocumentManager->checkTilesetColumns(mapDocument);
-
-        // When opening a map using new template groups, ask whether to load it into Tiled or not.
-        bool embedTemplateGroups = false;
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                const QMessageBox::StandardButton reply = QMessageBox::question(
-                    this,
-                    tr("Load Template Groups"),
-                    tr("Some Template Groups used in this map aren't loaded into Tiled. Would you like to load them?"),
-                    QMessageBox::Yes | QMessageBox::No,
-                    QMessageBox::Yes);
-                embedTemplateGroups = reply == QMessageBox::Yes;
-                break;
-            }
-        }
-
-        auto model = ObjectTemplateModel::instance();
-        for (auto templateGroup : mapDocument->map()->templateGroups()) {
-            if (!templateGroup->embedded()) {
-                if (embedTemplateGroups) {
-                    model->addTemplateGroup(templateGroup);
-                } else {
-                    mapDocument->addNonEmbeddedTemplateGroup(templateGroup);
-                }
-            }
-        }
-    }
 
     Preferences::instance()->addRecentFile(fileName);
     return true;
