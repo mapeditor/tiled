@@ -191,7 +191,7 @@ MapsView::MapsView(QWidget *parent)
     headerView->hideSection(3); // Modified column
 
     setRootIndex(mFileSystemModel->index(mapsDir.absolutePath()));
-    
+
     header()->setStretchLastSection(false);
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
 

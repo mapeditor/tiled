@@ -359,7 +359,7 @@ void MapDocument::autocropMap()
 {
     if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
         return;
-    
+
     TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
 
     const QRect bounds = tileLayer->region().boundingRect();

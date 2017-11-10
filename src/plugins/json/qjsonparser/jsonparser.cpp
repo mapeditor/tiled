@@ -68,19 +68,19 @@ public:
 
 
 const char *const JsonGrammar::spell [] = {
-  "end of file", "string", "number", "{", "}", "[", "]", ":", ",", "false", 
-  "true", "null", "error", 
+  "end of file", "string", "number", "{", "}", "[", "]", ":", ",", "false",
+  "true", "null", "error",
 #ifndef QLALR_NO_JSONGRAMMAR_DEBUG_INFO
 "Root", "Value", "Object", "Members", "Array", "Values", "$accept"
 #endif // QLALR_NO_JSONGRAMMAR_DEBUG_INFO
 };
 
 const short JsonGrammar::lhs [] = {
-  13, 15, 16, 16, 16, 14, 14, 14, 14, 14, 
+  13, 15, 16, 16, 16, 14, 14, 14, 14, 14,
   14, 14, 17, 18, 18, 18, 19};
 
 const short JsonGrammar::rhs [] = {
-  1, 3, 3, 5, 0, 1, 1, 1, 1, 1, 
+  1, 3, 3, 5, 0, 1, 1, 1, 1, 1,
   1, 1, 3, 1, 3, 0, 2};
 
 
@@ -105,43 +105,43 @@ const int JsonGrammar::rule_info [] = {
   , 19, 13, 0};
 
 const int JsonGrammar::rule_index [] = {
-  0, 2, 6, 10, 16, 17, 19, 21, 23, 25, 
+  0, 2, 6, 10, 16, 17, 19, 21, 23, 25,
   27, 29, 31, 35, 37, 41, 42};
 #endif // QLALR_NO_JSONGRAMMAR_DEBUG_INFO
 
 const short JsonGrammar::action_default [] = {
-  0, 10, 9, 0, 6, 5, 16, 8, 11, 12, 
-  7, 1, 17, 0, 0, 0, 2, 0, 0, 4, 
+  0, 10, 9, 0, 6, 5, 16, 8, 11, 12,
+  7, 1, 17, 0, 0, 0, 2, 0, 0, 4,
   0, 3, 14, 0, 0, 13, 15};
 
 const short JsonGrammar::goto_default [] = {
   3, 11, 2, 13, 1, 23, 0};
 
 const short JsonGrammar::action_index [] = {
-  24, -13, -13, 12, -13, -1, 24, -13, -13, -13, 
-  -13, -13, -13, 1, -5, 2, -13, -6, 24, -13, 
-  24, -13, -13, -2, 24, -13, -13, 
+  24, -13, -13, 12, -13, -1, 24, -13, -13, -13,
+  -13, -13, -13, 1, -5, 2, -13, -6, 24, -13,
+  24, -13, -13, -2, 24, -13, -13,
 
-  -7, -7, -7, -7, -7, -7, 1, -7, -7, -7, 
-  -7, -7, -7, -7, -7, -7, -7, -7, 0, -7, 
+  -7, -7, -7, -7, -7, -7, 1, -7, -7, -7,
+  -7, -7, -7, -7, -7, -7, -7, -7, 0, -7,
   -1, -7, -7, -7, 5, -7, -7};
 
 const short JsonGrammar::action_info [] = {
-  14, 18, 20, 17, 25, 16, 24, 0, 0, 15, 
-  0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 9, 8, 5, 0, 6, 
-  0, 0, 0, 4, 10, 7, 0, 
+  14, 18, 20, 17, 25, 16, 24, 0, 0, 15,
+  0, 0, 12, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 9, 8, 5, 0, 6,
+  0, 0, 0, 4, 10, 7, 0,
 
-  21, 19, 22, 0, 0, 0, 26, 0, 0, 0, 
+  21, 19, 22, 0, 0, 0, 26, 0, 0, 0,
   0, 0};
 
 const short JsonGrammar::action_check [] = {
-  1, 7, 7, 1, 6, 4, 8, -1, -1, 8, 
-  -1, -1, 0, -1, -1, -1, -1, -1, -1, -1, 
-  -1, -1, -1, -1, -1, 1, 2, 3, -1, 5, 
-  -1, -1, -1, 9, 10, 11, -1, 
+  1, 7, 7, 1, 6, 4, 8, -1, -1, 8,
+  -1, -1, 0, -1, -1, -1, -1, -1, -1, -1,
+  -1, -1, -1, -1, -1, 1, 2, 3, -1, 5,
+  -1, -1, -1, 9, 10, 11, -1,
 
-  1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 
+  1, 1, 1, -1, -1, -1, 1, -1, -1, -1,
   -1, -1};
 
 
@@ -453,27 +453,27 @@ bool JsonParser::parse(JsonLexer *lexer)
             switch (r) {
 
 #line 334 "json.g"
-          case 0: { m_result = sym(1); break; } 
+          case 0: { m_result = sym(1); break; }
 #line 337 "json.g"
-          case 1: { sym(1) = map(2); break; } 
+          case 1: { sym(1) = map(2); break; }
 #line 340 "json.g"
-          case 2: { QVariantMap m; m.insert(sym(1).toString(), sym(3)); map(1) = m; break; } 
+          case 2: { QVariantMap m; m.insert(sym(1).toString(), sym(3)); map(1) = m; break; }
 #line 343 "json.g"
-          case 3: { map(1).insert(sym(3).toString(), sym(5)); break; } 
+          case 3: { map(1).insert(sym(3).toString(), sym(5)); break; }
 #line 346 "json.g"
-          case 4: { map(1) = QVariantMap(); break; } 
+          case 4: { map(1) = QVariantMap(); break; }
 #line 349 "json.g"
-          case 5: { sym(1) = QVariant(false); break; } 
+          case 5: { sym(1) = QVariant(false); break; }
 #line 352 "json.g"
-          case 6: { sym(1) = QVariant(true); break; } 
+          case 6: { sym(1) = QVariant(true); break; }
 #line 361 "json.g"
-          case 12: { sym(1) = list(2); break; } 
+          case 12: { sym(1) = list(2); break; }
 #line 364 "json.g"
-          case 13: { QVariantList l; l.append(sym(1)); list(1) = l; break; } 
+          case 13: { QVariantList l; l.append(sym(1)); list(1) = l; break; }
 #line 367 "json.g"
-          case 14: { list(1).append(sym(3)); break; } 
+          case 14: { list(1).append(sym(3)); break; }
 #line 370 "json.g"
-          case 15: { list(1) = QVariantList(); break; } 
+          case 15: { list(1) = QVariantList(); break; }
 #line 372 "json.g"
 
             } // switch

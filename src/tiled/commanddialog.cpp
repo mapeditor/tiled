@@ -52,7 +52,7 @@ CommandDialog::CommandDialog(QWidget *parent)
     connect(mUi->outputBox, &QCheckBox::stateChanged,
             this, &CommandDialog::setShowOutput);
 
-    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged, 
+    connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
             this, &CommandDialog::setShortcut);
 
     connect(mUi->executableEdit, &QLineEdit::textChanged,
@@ -64,7 +64,7 @@ CommandDialog::CommandDialog(QWidget *parent)
     connect(mUi->workingDirectoryEdit, &QLineEdit::textChanged,
             this, &CommandDialog::setWorkingDirectory);
 
-    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged, 
+    connect(mUi->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &CommandDialog::updateWidgets);
 
     connect(mUi->exBrowseButton, &QPushButton::clicked,
