@@ -62,10 +62,10 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer)
     if (layer->isObjectGroup() || layer->isGroupLayer())
         return false;
 
-    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive)) 
+    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
         return false;
 
-    if (mIgnoreVisibility) 
+    if (mIgnoreVisibility)
         return true;
 
     return !layer->isHidden();

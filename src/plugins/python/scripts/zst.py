@@ -61,7 +61,7 @@ class ZST(Plugin):
         img.setColorTable(cmap[pal*colors:pal*colors+colors])
         fh.seek(tilemapbase+tilebase)
         readTileset(fh, img)
- 
+
         tsets.append(Tiled.Tileset.create('Pal%i'%pal, 8,8, 0, 0))
         tsets[pal].data().setTransparentColor(QColor(img.color(0)))
         tsets[pal].data().loadFromImage(img, 'script')
