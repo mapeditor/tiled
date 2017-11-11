@@ -21,7 +21,7 @@
   well-formed JSON into a QVariant.
 
   The parser converts JSON types into QVariant types. For example, JSON
-  arrays are translated into QVariantList and JSON objects are translated
+  arrays are translated into QVariantList and JSON objects are translated 
   into QVariantMap. For example,
   \code
   JsonReader reader;
@@ -66,7 +66,7 @@ JsonReader::~JsonReader()
   false and the error message can be accessed using errorMessage().
 
   The encoding of \ba is auto-detected based on the pattern of nulls in the
-  initial 4 octets as described in "Section 3. Encoding" of RFC 2647. If an
+  initial 4 octets as described in "Section 3. Encoding" of RFC 2647. If an 
   encoding could not be auto-detected, this function assumes UTF-8.
 
   The conversion from JSON type into QVariant type is as listed below:
@@ -91,7 +91,7 @@ JsonReader::~JsonReader()
   \o QVariant::String i.e QString
   \row
   \o number
-  \o QVariant::Double or QVariant::LongLong. If the JSON number contains a '.' or 'e'
+  \o QVariant::Double or QVariant::LongLong. If the JSON number contains a '.' or 'e' 
      or 'E', QVariant::Double is used.
   \endtable
 
@@ -212,10 +212,10 @@ JsonWriter::~JsonWriter()
 /*!
   Enables auto formatting if \a enable is \c true, otherwise
   disables it.
-
+ 
   When auto formatting is enabled, the writer automatically inserts
   spaces and new lines to make the output more human readable.
-
+ 
   The default value is \c false.
  */
 void JsonWriter::setAutoFormatting(bool enable)
@@ -402,7 +402,7 @@ void JsonWriter::stringify(const QVariant &variant, int depth)
   \o QVariant::Invalid
   \o JSON null
   \row
-  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt,
+  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt, 
   \o JSON number
   \row
   \o QVariant::Char

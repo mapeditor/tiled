@@ -43,26 +43,26 @@ namespace tbin
                 Static,
                 Animated,
             };
-
+            
             std::string tilesheet;
-
+            
             struct
             {
                 sf::Int32 tileIndex;
                 sf::Uint8 blendMode;
             } staticData;
-
+            
             struct
             {
                 sf::Int32 frameInterval;
                 std::vector< Tile > frames;
             } animatedData;
-
+            
             Properties props;
-
+            
             inline bool isNullTile() const { return staticData.tileIndex == -1 && animatedData.frames.size() == 0; }
     };
 }
 
 #endif // TBIN_TILE_HPP
-
+                    

@@ -42,10 +42,10 @@ namespace tbin
         public:
             bool loadFromFile( const std::string& path );
             bool loadFromStream( std::istream& in );
-
+            
             bool saveToFile( const std::string& path ) const;
             bool saveToStream( std::ostream& out ) const;
-
+            
             std::string id;
             std::string desc;
             Properties props;
