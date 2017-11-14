@@ -805,12 +805,12 @@ void MapEditor::filesDroppedOnTilesetDock(const QStringList &fileNames)
     handleExternalTilesetsAndImages(fileNames, true);
 }
 
-void MapEditor::updateTemplateInstances(const ObjectTemplate *objectTemplate)
+void MapEditor::updateTemplateInstances(const MapObject *mapObject)
 {
     QHashIterator<MapDocument*, MapView*> mapDocumentIterator(mWidgetForMap);
     while (mapDocumentIterator.hasNext()) {
         mapDocumentIterator.next();
-        mapDocumentIterator.key()->updateTemplateInstances(objectTemplate);
+        mapDocumentIterator.key()->updateTemplateInstances(mapObject);
     }
 }
 
