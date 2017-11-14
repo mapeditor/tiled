@@ -65,7 +65,7 @@ class TileStamp;
 class TileStampManager;
 class ToolManager;
 class TreeViewComboBox;
-class UncheckableItemsModel;
+class ComboBoxProxyModel;
 class UndoDock;
 class WangBrush;
 class WangDock;
@@ -165,7 +165,7 @@ private:
     QDockWidget *mTileStampsDock;
 
     TreeViewComboBox *mLayerComboBox;
-    UncheckableItemsModel *mUncheckableProxyModel;
+    ComboBoxProxyModel *mComboBoxProxyModel;
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
