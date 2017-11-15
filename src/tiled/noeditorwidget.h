@@ -43,6 +43,7 @@ protected:
 private slots:
     void newMap();
     void newTileset();
+    void openFile();
 
 private:
     Ui::NoEditorWidget *ui;

@@ -22,6 +22,7 @@
 #include "ui_noeditorwidget.h"
 
 #include "actionmanager.h"
+#include "documentmanager.h"
 
 namespace Tiled {
 namespace Internal {
@@ -34,7 +35,7 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
-}
+    connect(ui->openFileButton, &QPushButton::clicked, DocumentManager::instance(), &DocumentManager::openFile);
 
 NoEditorWidget::~NoEditorWidget()
 {
