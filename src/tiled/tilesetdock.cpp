@@ -49,17 +49,15 @@
 #include "utils.h"
 #include "zoomable.h"
 
-#include "ui_notilesetwidget.h"
-
 #include <QAction>
 #include <QComboBox>
 #include <QDropEvent>
 #include <QFileDialog>
-#include <QPushButton>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPushButton>
 #include <QSettings>
 #include <QSignalMapper>
 #include <QStackedWidget>
@@ -79,26 +77,18 @@ namespace {
 class NoTilesetWidget : public QWidget
 {
 public:
-    explicit NoTilesetWidget(TilesetDock *parent = nullptr)
+    explicit NoTilesetWidget(QWidget *parent = nullptr)
         : QWidget(parent)
     {
+        QPushButton *newTilesetButton = new QPushButton(this);
+        newTilesetButton->setText(tr("New Tileset..."));
+
         QGridLayout *gridLayout = new QGridLayout(this);
+        gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
 
-        QSpacerItem *spacerVertTop = new QSpacerItem(1, 1, QSizePolicy::Ignored, QSizePolicy::Expanding);
-        gridLayout->addItem(spacerVertTop, 1, 0, Qt::AlignCenter);
-        QSpacerItem *spacerHorzLeft = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Ignored);
-        gridLayout->addItem(spacerHorzLeft, 0, 1, Qt::AlignCenter);
-        QSpacerItem *spacerHorzRight = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Ignored);
-        gridLayout->addItem(spacerHorzRight, 2, 1, Qt::AlignCenter);
-        QSpacerItem *spacerVertBottom = new QSpacerItem(1, 1, QSizePolicy::Ignored, QSizePolicy::Expanding);
-        gridLayout->addItem(spacerVertBottom, 1, 2, Qt::AlignCenter);
-
-        QPushButton *newTilesetButton = new QPushButton(parent);
-        newTilesetButton->setText(QStringLiteral("New Tileset..."));
-        newTilesetButton->adjustSize();
-        gridLayout->addWidget(newTilesetButton, 1, 1, Qt::AlignCenter);
-
-        connect(newTilesetButton, SIGNAL(released()), parent, SLOT(newTileset()));
+        connect(newTilesetButton, &QPushButton::clicked, [] {
+            ActionManager::action("file.new_tileset")->trigger();
+        });
     }
 };
 
