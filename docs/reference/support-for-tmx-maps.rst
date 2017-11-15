@@ -37,10 +37,7 @@ C++
 
 -  `C++/Boost <http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html>`__
    by Tomas Andrle (limited functionality, single cpp file)
--  `C++/TinyXML based
-   tmx-parser <https://github.com/andrewrk/tmxparser>`__ (BSD)
--  `Original version <http://code.google.com/p/tmx-parser/>`__ by KonoM
-   is discontinued.
+-  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
    `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
    (BSD)
