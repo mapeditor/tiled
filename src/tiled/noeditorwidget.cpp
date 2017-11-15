@@ -35,7 +35,11 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
-    connect(ui->openFileButton, &QPushButton::clicked, DocumentManager::instance(), &DocumentManager::openFile);
+
+    auto documentManager = DocumentManager::instance();
+    connect(ui->openFileButton, &QPushButton::clicked,
+            documentManager, static_cast<void (DocumentManager::*)()>(&DocumentManager::openFile));
+}
 
 NoEditorWidget::~NoEditorWidget()
 {
