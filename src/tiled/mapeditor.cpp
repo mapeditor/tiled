@@ -543,9 +543,8 @@ void MapEditor::showMessage(const QString &text, int timeout)
 
 void MapEditor::resetLayout()
 {
-    /*
-     * Arranges dockWidgets and toolBars to default layout
-    */
+    // Arranges dockWidgets and toolBars to default layout
+
     QList<QDockWidget*> docks = this->dockWidgets();
     QList<QToolBar*> toolBars = this->toolBars();
 
@@ -556,8 +555,7 @@ void MapEditor::resetLayout()
         mMainWindow->removeToolBar(toolBar);
     }
 
-    //Adding Dock Widgets and ToolBars in their Default Position
-
+    // Adding Dock Widgets and ToolBars in their Default Position
     mMainWindow->addToolBar(Qt::TopToolBarArea, mMainToolBar);
     mMainWindow->addToolBar(Qt::TopToolBarArea, mToolsToolBar);
     mMainWindow->addToolBar(Qt::TopToolBarArea, mToolSpecificToolBar);
@@ -589,6 +587,8 @@ void MapEditor::resetLayout()
     mWangDock->setVisible(false);
     mTileStampsDock->setVisible(false);
 
+    // Toolbars and dockwidgets are required to be set visible
+    // otherwise they won't be visible if "Reset To Default Layout" is clicked
     mMainToolBar->setVisible(true);
     mToolsToolBar->setVisible(true);
     mToolSpecificToolBar->setVisible(true);
