@@ -1323,8 +1323,8 @@ void MainWindow::resetToDefaultLayout()
     mUi->actionClearView->setChecked(false);
 
     //reset mapEditor layout
-    auto *editor = qobject_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
-    editor->resetLayout();
+    auto *mapEditor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
+    mapEditor->resetLayout();
 
     updateViewsAndToolbarsMenu();//this is to gaurantee that this sub-menu is up-to-date
 }
@@ -1347,9 +1347,9 @@ void MainWindow::updateViewsAndToolbarsMenu()
         for (auto toolBar : toolBars)
             mViewsAndToolbarsMenu->addAction(toolBar->toggleViewAction());
 
-        //Layout Arrangement
+
         mViewsAndToolbarsMenu->addSeparator();
-        mViewsAndToolbarsMenu->addAction(MainWindow::mResetToDefaultLayout);
+        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
 }
 

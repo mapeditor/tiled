@@ -593,10 +593,10 @@ void MapEditor::resetLayout()
     mToolsToolBar->setVisible(true);
     mToolSpecificToolBar->setVisible(true);
 
+    mMiniMapDock->setVisible(true);
     mPropertiesDock->setVisible(true);
     mLayerDock->setVisible(true);
     mObjectsDock->setVisible(true);
-    mMiniMapDock->setVisible(true);
     mTerrainDock->setVisible(true);
     mTilesetDock->setVisible(true);
 
