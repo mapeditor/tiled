@@ -35,10 +35,7 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 
     connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
-
-    auto documentManager = DocumentManager::instance();
-    connect(ui->openFileButton, &QPushButton::clicked,
-            documentManager, static_cast<void (DocumentManager::*)()>(&DocumentManager::openFile));
+    connect(ui->openFileButton, &QPushButton::clicked, this, &NoEditorWidget::openFile);
 }
 
 NoEditorWidget::~NoEditorWidget()
@@ -66,6 +63,11 @@ void NoEditorWidget::newMap()
 void NoEditorWidget::newTileset()
 {
     ActionManager::action("file.new_tileset")->trigger();
+}
+
+void NoEditorWidget::openFile()
+{
+    DocumentManager::instance()->openFile();
 }
 
 } // namespace Internal

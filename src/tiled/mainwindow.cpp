@@ -691,7 +691,7 @@ void MainWindow::openFile()
                                      selectedFilter).toString();
 
     auto preferences = Preferences::instance();
-    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
+    const auto fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                          preferences->fileDialogStartLocation(),
                                                          helper.filter(),
                                                          &selectedFilter);
