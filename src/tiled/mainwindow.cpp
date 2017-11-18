@@ -1349,7 +1349,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
 
 
         mViewsAndToolbarsMenu->addSeparator();
-        mViewsAndToolbarsMenu->addAction(MainWindow::mResetToDefaultLayout);
+        mViewsAndToolbarsMenu->addAction(mResetToDefaultLayout);
     }
 }
 
