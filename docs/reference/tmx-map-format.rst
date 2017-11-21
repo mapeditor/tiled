@@ -72,8 +72,7 @@ rendered by Tiled.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-tileset`,
 :ref:`tmx-layer`, :ref:`tmx-objectgroup`,
-:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0),
-:ref:`tmx-templategroup` (since 1.1)
+:ref:`tmx-imagelayer`, :ref:`tmx-group` (since 1.0)
 
 .. _tmx-tileset:
 
@@ -468,7 +467,7 @@ Can contain: :ref:`tmx-properties`, :ref:`tmx-object`
 -  **gid:** A reference to a tile (optional).
 -  **visible:** Whether the object is shown (1) or hidden (0). Defaults to
    1.
--  **tid:** A reference to a template (optional).
+-  **template:** A reference to a :ref:`template file <tmx-template-files>` (optional).
 
 While tile layers are very suitable for anything repetitive aligned to
 the tile grid, sometimes you want to annotate your map with other
@@ -484,9 +483,10 @@ of the tile with that global ID. The image alignment currently depends
 on the map orientation. In orthogonal orientation it's aligned to the
 bottom-left while in isometric it's aligned to the bottom-center.
 
-When the object has a ``tid`` set, it will borrow all the properties from
-the specified template, properties saved with the object will have higher
-priority, i.e. they will override the template properties.
+When the object has a ``template`` set, it will borrow all the
+properties from the specified template, properties saved with the object
+will have higher priority, i.e. they will override the template
+properties.
 
 Can contain: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
 0.9), :ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text`
@@ -640,73 +640,34 @@ element rather than as the ``value`` attribute. It is possible that a
 future version of the TMX format will switch to always saving property
 values inside the element rather than as an attribute.
 
-.. _tmx-templategroup:
+.. _tmx-template-files:
 
-<templategroup>
----------------
+Template Files
+--------------
 
-Unlike tilesets, embedding a template group inside a map is not supported, so the map must reference the external template group.
-
-Usage Inside the Map
-~~~~~~~~~~~~~~~~~~~~
-
-   .. code:: xml
-
-      <templategroup firsttid="1" source="platforms.tgx"/>
-
--  **firsttid:** the first ID of this template group (this ID maps to the
-   first template in this templategroup).
--  **source:** The reference to the template group.
-
-Objects inside the map can be template instances by referring to a specific
-template inside a template group:
-
-   .. code:: xml
-
-      <object id="1363" tid="14" x="20" y="55"/>
-
-.. _templategroup-format:
-
-The Template Group Format
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
--  **name:** The name of the template group.
--  **nexttemplateid:** Stores the next available ID for new templates. This
-   number is stored to prevent reuse of the same ID after templates have
-   been removed.
-
-Template groups are saved as external files, and are referenced by the map. A
-template group can contain multiple :ref:`tileset <tmx-tileset>` elements
-that point to external tilesets.
-
-Can contain: :ref:`tmx-tileset`, :ref:`tmx-template`
+Templates are saved in their own file, and are referenced by
+:ref:`objects <tmx-object>` that are template instances.
 
 .. _tmx-template:
 
 <template>
-^^^^^^^^^^
+~~~~~~~~~~
 
--  **name:** The name of the template.
--  **id:** Unique ID for the template inside the template group.
+The template root element contains the saved :ref:`map object <tmx-object>`
+and a :ref:`tileset <tmx-tileset>` element that points to an external
+tileset, if the object is a tile object.
 
-Each template element contains the saved :ref:`map object <tmx-object>`.
-
-Example of a template group file:
+Example of a template file:
 
    .. code:: xml
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <templategroup name="Plants" nexttemplateid="2">
+    <template>
      <tileset firstgid="1" source="desert.tsx"/>
-     <template name="cactus" id="0">
-      <object gid="31" width="81" height="101"/>
-     </template>
-     <template name="tree" id="1">
-      <object gid="38" width="128" height="96"/>
-     </template>
-    </templategroup>
+     <object name="cactus" gid="31" width="81" height="101"/>
+    </template>
 
-Can contain: :ref:`tmx-object`
+Can contain: :ref:`tmx-tileset`, :ref:`tmx-object`
 
 --------------
 
