@@ -93,15 +93,20 @@ private slots:
     void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
     void eraseTerrainButtonClicked();
+    void rowsMoved();
 
 private:
     void retranslateUi();
 
     QModelIndex terrainIndex(Terrain *terrain) const;
+    void moveTerrainTypeUp();
+    void moveTerrainTypeDown();
 
     QToolBar *mToolBar;
     QAction *mAddTerrainType;
     QAction *mRemoveTerrainType;
+    QAction *mMoveTerrainTypeUp;
+    QAction *mMoveTerrainTypeDown;
 
     Document *mDocument;
     TerrainView *mTerrainView;

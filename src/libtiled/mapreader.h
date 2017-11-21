@@ -28,9 +28,9 @@
 
 #pragma once
 
+#include "objecttemplate.h"
 #include "tiled_global.h"
 #include "tileset.h"
-#include "templategroup.h"
 
 #include <QImage>
 
@@ -95,8 +95,8 @@ public:
      */
     QString errorString() const;
 
-    TemplateGroup *readTemplateGroup(QIODevice *device, const QString &path = QString());
-    TemplateGroup *readTemplateGroup(const QString &fileName);
+    ObjectTemplate *readObjectTemplate(QIODevice *device, const QString &path = QString());
+    ObjectTemplate *readObjectTemplate(const QString &fileName);
 
 protected:
     /**
@@ -116,9 +116,6 @@ protected:
      */
     virtual SharedTileset readExternalTileset(const QString &source,
                                               QString *error);
-
-    virtual TemplateGroup *loadTemplateGroup(const QString &source,
-                                             QString *error);
 
 private:
     Q_DISABLE_COPY(MapReader)

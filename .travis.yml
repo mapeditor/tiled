@@ -31,17 +31,27 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
       before_install:
-        - sudo add-apt-repository --yes ppa:beineri/opt-qt591-trusty
+        - eval "${MATRIX_EVAL}"
+        - sudo add-apt-repository --yes ppa:beineri/opt-qt592-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt59base qt59svg qt59imageformats qt59tools qt59qbs binutils zlib1g-dev
+        - sudo apt-get -y install qt59base qt59script qt59svg qt59imageformats qt59tools binutils zlib1g-dev
         - source /opt/qt59/bin/qt59-env.sh
+        - source ./dist/linux/setup-qbs.sh
       script:
         - qbs --version
         - qbs setup-toolchains --detect
         - qbs setup-qt --detect
-        - qbs config defaultProfile qt-5-9-1
-        - qbs install --install-root Tiled/usr release Tiled.version:$TILED_VERSION
+        - qbs config defaultProfile qt-5-9-2
+        - qbs install --install-root Tiled/usr release products.Tiled.version:$TILED_VERSION
         - cp LICENSE* COPYING *md Tiled/
       after_success:
         - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
@@ -85,6 +95,7 @@ matrix:
         - sudo apt-get update -qq
         - sudo apt-get -y install qt56base qt56svg qt56tools binutils zlib1g-dev cppcheck xvfb
         - source /opt/qt56/bin/qt56-env.sh
+        - qmake -version
       script:
         - qmake
         - make
@@ -98,18 +109,24 @@ matrix:
     - os: osx
       before_install:
         - brew update
-        - brew install qt5
-        - brew link qt5 --force
+        - brew install qbs
       script:
-        - qmake
-        - make
-        - pushd tests/
-        - qmake
-        - make
-        - popd
+        - qbs --version
+        - qbs setup-toolchains --detect
+        - qbs setup-qt /usr/local/opt/qt/bin/qmake qt-brew
+        - qbs config profiles.qt-brew.baseProfile xcode-macosx-x86_64
+        - qbs config defaultProfile qt-brew
+        - qbs install --install-root install release products.Tiled.version:$TILED_VERSION
+        - /usr/local/opt/qt/bin/macdeployqt install/Tiled.app
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          on:
+            repo: bjorn/tiled
+            branch: snapshot
+          script: dist/macos/push-to-itch.sh
 
 before_script:
-  - qmake -version
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
   - if [[ "$TRAVIS_TAG" ]]; then export TILED_VERSION=${TRAVIS_TAG:1} ; fi
   - if [[ "$TRAVIS_TAG" == "" ]]; then export TILED_VERSION=$(date "+%Y.%m.%d") ; fi

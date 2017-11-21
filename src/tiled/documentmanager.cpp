@@ -462,30 +462,31 @@ bool DocumentManager::saveDocumentAs(Document *document)
             fileName += defaultFileName;
         }
 
-        fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
-                                                fileName,
-                                                filter,
-                                                &selectedFilter);
+        while (true) {
+            fileName = QFileDialog::getSaveFileName(mWidget->window(), QString(),
+                                                    fileName,
+                                                    filter,
+                                                    &selectedFilter);
 
-        if (!fileName.isEmpty() &&
-            !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
-        {
-            QMessageBox messageBox(QMessageBox::Warning,
-                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
-                                   QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
-                                   QMessageBox::Yes | QMessageBox::No,
-                                   mWidget->window());
+            if (!fileName.isEmpty() &&
+                !Utils::fileNameMatchesNameFilter(QFileInfo(fileName).fileName(), selectedFilter))
+            {
+                QMessageBox messageBox(QMessageBox::Warning,
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "Extension Mismatch"),
+                                       QCoreApplication::translate("Tiled::Internal::MainWindow", "The file extension does not match the chosen file type."),
+                                       QMessageBox::Yes | QMessageBox::No,
+                                       mWidget->window());
 
-            messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
-                                                                      "Tiled may not automatically recognize your file when loading. "
-                                                                      "Are you sure you want to save with this extension?"));
+                messageBox.setInformativeText(QCoreApplication::translate("Tiled::Internal::MainWindow",
+                                                                          "Tiled may not automatically recognize your file when loading. "
+                                                                          "Are you sure you want to save with this extension?"));
 
-            int answer = messageBox.exec();
-            if (answer != QMessageBox::Yes)
-                return QString();
+                int answer = messageBox.exec();
+                if (answer != QMessageBox::Yes)
+                    continue;
+            }
+            return fileName;
         }
-
-        return fileName;
     };
 
     if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
@@ -495,7 +496,10 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<MapFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tmx"));
+        auto suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tmx"));
+
+        fileName = getSaveFileName(suggestedFileName);
         if (fileName.isEmpty())
             return false;
 
@@ -510,7 +514,12 @@ bool DocumentManager::saveDocumentAs(Document *document)
         FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite);
         filter = helper.filter();
 
-        fileName = getSaveFileName(QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled.tsx"));
+        auto suggestedFileName = tilesetDocument->tileset()->name().trimmed();
+        if (suggestedFileName.isEmpty())
+            suggestedFileName = QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+        suggestedFileName.append(QLatin1String(".tsx"));
+
+        fileName = getSaveFileName(suggestedFileName);
         if (fileName.isEmpty())
             return false;
 

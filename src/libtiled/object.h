@@ -44,7 +44,6 @@ public:
         MapObjectType,
         MapType,
         ObjectTemplateType,
-        TemplateGroupType,
         TerrainType,
         TilesetType,
         TileType,

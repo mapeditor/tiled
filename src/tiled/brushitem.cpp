@@ -133,7 +133,7 @@ void BrushItem::paint(QPainter *painter,
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
-    
+
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
     QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);

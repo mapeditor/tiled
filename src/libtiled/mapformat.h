@@ -208,4 +208,16 @@ private:
     QMap<QString, Format*> mFormatByNameFilter;
 };
 
+/**
+ * Attempt to read the given map using any of the map formats added
+ * to the plugin manager, falling back to the TMX format if none are capable.
+ */
+TILEDSHARED_EXPORT Map *readMap(const QString &fileName,
+                                QString *error = nullptr);
+
+/**
+ * Attempts to find a map format supporting the given file.
+ */
+TILEDSHARED_EXPORT MapFormat *findSupportingMapFormat(const QString &fileName);
+
 } // namespace Tiled

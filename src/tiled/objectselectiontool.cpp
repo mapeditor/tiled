@@ -50,11 +50,7 @@
 #include <QMenu>
 
 #include <cmath>
-
-// MSVC 2010 math header does not come with M_PI
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#include <float.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -274,13 +270,13 @@ public:
     }
 
     AnchorPosition anchorPosition() const { return mAnchorPosition; }
-    
+
     void setResizingOrigin(QPointF resizingOrigin) { mResizingOrigin = resizingOrigin; }
     QPointF resizingOrigin() const { return mResizingOrigin; }
-    
+
     bool resizingLimitHorizontal() const { return mResizingLimitHorizontal; }
     bool resizingLimitVertical() const { return mResizingLimitVertical; }
-    
+
     QRectF boundingRect() const override { return Utils::dpiScaled(mArrow.boundingRect().adjusted(-1, -1, 1, 1)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
@@ -638,7 +634,12 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 mapScene()->setSelectedObjectItems(selection);
             } else if (selection.contains(mClickedObjectItem)) {
                 // Clicking one of the selected items changes the edit mode
-                setMode((mMode == Resize) ? Rotate : Resize);
+                if (mMode == Resize) {
+                    if (selection.size() > 1 || (*selection.begin())->mapObject()->canRotate())
+                        setMode(Rotate);
+                } else {
+                    setMode(Resize);
+                }
             } else {
                 selection.clear();
                 selection.insert(mClickedObjectItem);
@@ -724,7 +725,8 @@ static QRectF pixelBounds(const MapObject *object)
 
     switch (object->shape()) {
     case MapObject::Ellipse:
-    case MapObject::Rectangle: {
+    case MapObject::Rectangle:
+    case MapObject::Point: {
         QRectF bounds(object->bounds());
         align(bounds, object->alignment());
         return bounds;
@@ -749,6 +751,11 @@ static bool resizeInPixelSpace(const MapObject *object)
     return object->cell().isEmpty() && object->shape() != MapObject::Text;
 }
 
+static bool canResize(const MapObject *object)
+{
+    return object->shape() != MapObject::Point;
+}
+
 static bool canResizeAbsolute(const MapObject *object)
 {
     switch (object->shape()) {
@@ -756,6 +763,7 @@ static bool canResizeAbsolute(const MapObject *object)
     case MapObject::Ellipse:
     case MapObject::Text:
         return true;
+    case MapObject::Point:
     case MapObject::Polygon:
     case MapObject::Polyline:
         return false;
@@ -809,6 +817,9 @@ static QRectF objectBounds(const MapObject *object,
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds);
             return transform.map(screenPolygon).boundingRect();
         }
+        case MapObject::Point: {
+            return transform.mapRect(renderer->shape(object).boundingRect());
+        }
         case MapObject::Polygon:
         case MapObject::Polyline: {
             // Alignment is irrelevant for polygon objects since they have no size
@@ -858,7 +869,7 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
-    const bool showHandles = objects.size() > 0;
+    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || std::any_of(objects.begin(), objects.end(), canResize));
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
@@ -922,7 +933,7 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
         QPointF left = (topLeft + bottomLeft) / 2;
         QPointF right = (topRight + bottomRight) / 2;
         QPointF bottom = (bottomLeft + bottomRight) / 2;
-        
+
         mResizeHandles[TopAnchor]->setPos(top);
         mResizeHandles[TopAnchor]->setResizingOrigin(bottom);
         mResizeHandles[LeftAnchor]->setPos(left);
@@ -931,7 +942,7 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
         mResizeHandles[RightAnchor]->setResizingOrigin(left);
         mResizeHandles[BottomAnchor]->setPos(bottom);
         mResizeHandles[BottomAnchor]->setResizingOrigin(top);
-        
+
         mResizeHandles[TopLeftAnchor]->setPos(topLeft);
         mResizeHandles[TopLeftAnchor]->setResizingOrigin(bottomRight);
         mResizeHandles[TopRightAnchor]->setPos(topRight);
@@ -952,8 +963,10 @@ void ObjectSelectionTool::updateHandles(bool resetOriginIndicator)
 
 void ObjectSelectionTool::updateHandleVisibility()
 {
-    const bool hasSelection = !mapDocument()->selectedObjects().isEmpty();
-    const bool showHandles = hasSelection && (mAction == NoAction || mAction == Selecting);
+    const QList<MapObject*> &objects = mapDocument()->selectedObjects();
+    const bool hasSelection = !objects.isEmpty();
+    const bool hasResizableObject = std::any_of(objects.begin(), objects.end(), canResize);
+    const bool showHandles = hasSelection && (objects.size() > 1 || hasResizableObject) && (mAction == NoAction || mAction == Selecting);
     const bool showOrigin = hasSelection &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
@@ -1183,7 +1196,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
         mapObject->setPosition(newPos);
-        mapObject->setRotation(newRotation);
+        if (mapObject->canRotate())
+            mapObject->setRotation(newRotation);
     }
 
     mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects(), MapObjectModel::Position);
@@ -1264,12 +1278,12 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
      */
     qreal scale;
     if (mResizingLimitHorizontal) {
-        scale = qMax((qreal)0.01, diff.y() / startDiff.y());
+        scale = qMax<qreal>(0.01, diff.y() / startDiff.y());
     } else if (mResizingLimitVertical) {
-        scale = qMax((qreal)0.01, diff.x() / startDiff.x());
+        scale = qMax<qreal>(0.01, diff.x() / startDiff.x());
     } else {
-        scale = qMin(qMax((qreal)0.01, diff.x() / startDiff.x()),
-                     qMax((qreal)0.01, diff.y() / startDiff.y()));
+        scale = qMin(qMax<qreal>(0.01, diff.x() / startDiff.x()),
+                     qMax<qreal>(0.01, diff.y() / startDiff.y()));
     }
 
     if (!std::isfinite(scale))
@@ -1293,7 +1307,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
             qreal rotation = object.item->rotation() * M_PI / -180;
             const qreal sn = std::sin(rotation);
             const qreal cs = std::cos(rotation);
-            
+
             const QPolygonF &oldPolygon = object.oldPolygon;
             QPolygonF newPolygon(oldPolygon.size());
             for (int n = 0; n < oldPolygon.size(); ++n) {
@@ -1307,7 +1321,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
             }
             mapObject->setPolygon(newPolygon);
         }
-        
+
         mapObject->setSize(newSize);
         mapObject->setPosition(newPos);
     }
@@ -1469,7 +1483,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
         MapObject *mapObject = object.item->mapObject();
         undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
         undoStack->push(new ResizeMapObject(mapDocument(), mapObject, object.oldSize));
-        
+
         if (!object.oldPolygon.isEmpty())
             undoStack->push(new ChangePolygon(mapDocument(), mapObject, object.oldPolygon));
     }

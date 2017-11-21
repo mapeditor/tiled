@@ -44,7 +44,7 @@
 namespace Tiled {
 
 class ObjectGroup;
-class TemplateGroup;
+class ObjectTemplate;
 class Tile;
 
 struct TILEDSHARED_EXPORT TextData
@@ -66,11 +66,6 @@ struct TILEDSHARED_EXPORT TextData
     int flags() const;
     QTextOption textOption() const;
     QSizeF textSize() const;
-};
-
-struct TemplateRef {
-    TemplateGroup *templateGroup;
-    unsigned templateId;
 };
 
 /**
@@ -98,7 +93,8 @@ public:
         Polygon,
         Polyline,
         Ellipse,
-        Text
+        Text,
+        Point,
     };
 
     /**
@@ -169,7 +165,8 @@ public:
     Shape shape() const;
     void setShape(Shape shape);
 
-    bool isPolyShape() const;
+    bool hasDimensions() const;
+    bool canRotate() const;
     bool isTileObject() const;
 
     QRectF bounds() const;
@@ -178,8 +175,8 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
-    const TemplateRef &templateRef() const;
-    void setTemplateRef(const TemplateRef &templateRef);
+    const ObjectTemplate *objectTemplate() const;
+    void setObjectTemplate(const ObjectTemplate *objectTemplate);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -215,8 +212,6 @@ public:
     bool isTemplateBase() const;
     void markAsTemplateBase();
 
-    TemplateGroup *templateGroup() const;
-
 private:
     void flipRectObject(const QTransform &flipTransform);
     void flipPolygonObject(const QTransform &flipTransform);
@@ -231,7 +226,7 @@ private:
     QPolygonF mPolygon;
     Shape mShape;
     Cell mCell;
-    TemplateRef mTemplateRef;
+    const ObjectTemplate *mObjectTemplate;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
@@ -404,10 +399,25 @@ inline void MapObject::setShape(MapObject::Shape shape)
 { mShape = shape; }
 
 /**
- * Returns true if this is a Polygon or a Polyline.
+ * Returns true if this object has a width and height.
  */
-inline bool MapObject::isPolyShape() const
-{ return mShape == Polygon || mShape == Polyline; }
+inline bool MapObject::hasDimensions() const
+{
+    switch (mShape) {
+        case Polygon:
+        case Polyline:
+        case Point:
+            return false;
+        default:
+            return true;
+    }
+}
+
+/**
+ * Returns true if this object can be rotated.
+ */
+inline bool MapObject::canRotate() const
+{ return mShape != Point; }
 
 inline bool MapObject::isTileObject() const
 { return !mCell.isEmpty(); }
@@ -433,11 +443,11 @@ inline const Cell &MapObject::cell() const
 inline void MapObject::setCell(const Cell &cell)
 { mCell = cell; }
 
-inline const TemplateRef &MapObject::templateRef() const
-{ return mTemplateRef; }
+inline const ObjectTemplate *MapObject::objectTemplate() const
+{ return mObjectTemplate; }
 
-inline void MapObject::setTemplateRef(const TemplateRef &templateRef)
-{ mTemplateRef = templateRef; }
+inline void MapObject::setObjectTemplate(const ObjectTemplate *objectTemplate)
+{ mObjectTemplate = objectTemplate; }
 
 /**
  * Returns the object group this object belongs to.
@@ -486,6 +496,9 @@ inline void MapObject::setPropertyChanged(Property property, bool state)
 
 inline bool MapObject::propertyChanged(Property property) const
 { return mChangedProperties.testFlag(property); }
+
+inline bool MapObject::isTemplateInstance() const
+{ return mObjectTemplate != nullptr; }
 
 inline bool MapObject::isTemplateBase() const
 { return mTemplateBase; }

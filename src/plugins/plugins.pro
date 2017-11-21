@@ -8,8 +8,7 @@ SUBDIRS = csv \
           lua \
           replicaisland \
           tbin \
-          tengine \
-          tmw
+          tengine
 
 include(python/find_python.pri)
 

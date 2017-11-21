@@ -21,58 +21,30 @@
 
 #pragma once
 
-#include "templategroupdocument.h"
-
-#include <QAbstractItemModel>
+#include <QFileSystemModel>
 
 namespace Tiled {
 
-class MapObject;
+class ObjectTemplate;
 
 namespace Internal {
 
-class ObjectTemplateModel : public QAbstractItemModel
+class ObjectTemplateModel : public QFileSystemModel
 {
     Q_OBJECT
 
 public:
-    static ObjectTemplateModel *instance();
-    static void deleteInstance();
+    ObjectTemplateModel(QObject *parent = nullptr);
+    ~ObjectTemplateModel();
 
-    const TemplateDocuments &templateDocuments() const;
-    void setTemplateDocuments(const TemplateDocuments &templateDocuments);
-
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &index) const override;
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    bool addNewDocument(TemplateGroupDocument *document);
-    bool addDocument(TemplateGroupDocument *document);
-    bool addTemplateGroup(TemplateGroup *templateGroup);
-    ObjectTemplate *saveObjectToDocument(MapObject *object, QString name, int documentIndex);
     ObjectTemplate *toObjectTemplate(const QModelIndex &index) const;
-    void save(const TemplateGroup *templateGroup) const;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-
-private:
-    ObjectTemplateModel(QObject *parent = nullptr);
-    ~ObjectTemplateModel();
-
-    static ObjectTemplateModel *mInstance;
-
-    TemplateDocuments mTemplateDocuments;
-    TemplateGroup *toTemplateGroup(const QModelIndex &index) const;
 };
-
-inline const TemplateDocuments &ObjectTemplateModel::templateDocuments() const
-{ return mTemplateDocuments; }
 
 } // namespace Internal
 } // namespace Tiled

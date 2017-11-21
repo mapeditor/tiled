@@ -57,6 +57,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPushButton>
 #include <QSettings>
 #include <QSignalMapper>
 #include <QStackedWidget>
@@ -72,6 +73,24 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 namespace {
+
+class NoTilesetWidget : public QWidget
+{
+public:
+    explicit NoTilesetWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
+        QPushButton *newTilesetButton = new QPushButton(this);
+        newTilesetButton->setText(tr("New Tileset..."));
+
+        QGridLayout *gridLayout = new QGridLayout(this);
+        gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
+
+        connect(newTilesetButton, &QPushButton::clicked, [] {
+            ActionManager::action("file.new_tileset")->trigger();
+        });
+    }
+};
 
 class TilesetMenuButton : public QToolButton
 {
@@ -154,6 +173,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mMapDocument(nullptr)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
     , mTabBar(new WheelEnabledTabBar)
+    , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
     , mToolBar(new QToolBar)
     , mCurrentTile(nullptr)
@@ -189,7 +209,10 @@ TilesetDock::TilesetDock(QWidget *parent)
     vertical->setSpacing(0);
     vertical->setMargin(0);
     vertical->addLayout(horizontal);
-    vertical->addWidget(mViewStack);
+    vertical->addWidget(mSuperViewStack);
+
+    mSuperViewStack->insertWidget(0, new NoTilesetWidget(this));
+    mSuperViewStack->insertWidget(1, mViewStack);
 
     horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
@@ -508,6 +531,9 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 
     TilesetView *view = new TilesetView;
 
+    // Hides the "New Tileset..." special view if it is shown.
+    mSuperViewStack->setCurrentIndex(1);
+
     // Insert view before the tab to make sure it is there when the tab index
     // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
@@ -552,6 +578,10 @@ void TilesetDock::deleteTilesetView(int index)
     mTilesetDocuments.removeAt(index);
     delete view;                    // view needs to go before the tab
     mTabBar->removeTab(index);
+
+    // Make the "New Tileset..." special tab reappear if there is no tileset open
+    if (mTilesets.isEmpty())
+        mSuperViewStack->setCurrentIndex(0);
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles && mCurrentTiles->referencesTileset(tileset)) {

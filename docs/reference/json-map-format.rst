@@ -170,6 +170,8 @@ Object
 +--------------+----------+----------------------------------------------+
 | gid          | int      | GID, only if object comes from a Tilemap     |
 +--------------+----------+----------------------------------------------+
+| point        | bool     | Used to mark an object as a point            |
++--------------+----------+----------------------------------------------+
 | ellipse      | bool     | Used to mark an object as an ellipse         |
 +--------------+----------+----------------------------------------------+
 | polygon      | array    | A list of x,y coordinates in pixels          |
@@ -234,6 +236,24 @@ Rectangle Example
       "width":368,
       "x":576,
       "y":584
+    }
+
+Point Example
+~~~~~~~~~~~~~~~~~
+
+.. code:: json
+
+    {
+      "point":true,
+      "height":0,
+      "id":20,
+      "name":"",
+      "rotation":0,
+      "type":"",
+      "visible":true,
+      "width":0,
+      "x":220,
+      "y":350
     }
 
 Polygon Example

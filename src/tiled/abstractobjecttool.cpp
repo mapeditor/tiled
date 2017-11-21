@@ -22,22 +22,26 @@
 
 #include "addremovetileset.h"
 #include "changemapobject.h"
-#include "map.h"
+#include "documentmanager.h"
 #include "mapdocument.h"
+#include "map.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "newtemplatedialog.h"
 #include "objectgroup.h"
-#include "objecttemplatemodel.h"
+#include "preferences.h"
 #include "raiselowerhelper.h"
 #include "resizemapobject.h"
+#include "templatemanager.h"
 #include "tile.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
 #include <QUndoStack>
 
 #include <cmath>
@@ -204,18 +208,58 @@ void AbstractObjectTool::resetTileSize()
     }
 }
 
+static QString saveObjectTemplate(const MapObject *mapObject)
+{
+    FormatHelper<ObjectTemplateFormat> helper(FileFormat::ReadWrite);
+    QString filter = helper.filter();
+    QString selectedFilter = XmlObjectTemplateFormat().nameFilter();
+
+    Preferences *prefs = Preferences::instance();
+    QString suggestedFileName = prefs->lastPath(Preferences::ObjectTemplateFile);
+    suggestedFileName += QLatin1Char('/');
+    if (!mapObject->name().isEmpty())
+        suggestedFileName += mapObject->name();
+    else
+        suggestedFileName += QCoreApplication::translate("Tiled::Internal::MainWindow", "untitled");
+    suggestedFileName += QLatin1String(".tx");
+
+    QWidget *parent = DocumentManager::instance()->widget()->window();
+    QString fileName = QFileDialog::getSaveFileName(parent,
+                                                    QCoreApplication::translate("Tiled::Internal::MainWindow", "Save Template"),
+                                                    suggestedFileName,
+                                                    filter,
+                                                    &selectedFilter);
+
+    if (fileName.isEmpty())
+        return QString();
+
+    ObjectTemplateFormat *format = helper.formatByNameFilter(selectedFilter);
+
+    ObjectTemplate objectTemplate;
+    objectTemplate.setObject(mapObject);
+
+    if (!format->write(&objectTemplate, fileName)) {
+        QMessageBox::critical(nullptr, QCoreApplication::translate("Tiled::Internal::MainWindow", "Error Saving Template"),
+                              format->errorString());
+        return QString();
+    }
+
+    prefs->setLastPath(Preferences::ObjectTemplateFile,
+                       QFileInfo(fileName).path());
+
+    return fileName;
+}
+
 void AbstractObjectTool::saveSelectedObject()
 {
-    QString name;
-    int groupIndex;
-
     auto object = mapDocument()->selectedObjects().first();
+    QString fileName = saveObjectTemplate(object);
+    if (fileName.isEmpty())
+        return;
 
-    NewTemplateDialog newTemplateDialog(object->name());
-    newTemplateDialog.createTemplate(name, groupIndex);
-
-    if (!name.isEmpty())
-        mapDocument()->saveSelectedObject(name, groupIndex);
+    // Convert the saved object into an instance
+    if (ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(fileName))
+        mapDocument()->undoStack()->push(new ReplaceObjectsWithTemplate(mapDocument(), { object }, objectTemplate));
 }
 
 void AbstractObjectTool::detachSelectedObjects()
@@ -364,10 +408,12 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     auto selectedTemplate = objectTemplate();
     auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
 
-    if (selectedTemplate)
-        replaceTemplateAction->setText(tr("Replace With \"") + selectedTemplate->name() + tr("\" Template"));
-    else
+    if (selectedTemplate) {
+        QString name = QFileInfo(selectedTemplate->fileName()).fileName();
+        replaceTemplateAction->setText(tr("Replace With Template \"%1\"").arg(name));
+    } else {
         replaceTemplateAction->setEnabled(false);
+    }
 
     if (selectedObjects.size() == 1) {
         MapObject *currentObject = selectedObjects.first();

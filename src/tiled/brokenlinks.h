@@ -36,7 +36,7 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
-class TemplateGroup;
+class ObjectTemplate;
 
 namespace Internal {
 
@@ -47,7 +47,7 @@ enum BrokenLinkType {
     MapTilesetReference,
     TilesetTileImageSource,
     TilesetImageSource,
-    TemplateGroupReference,
+    ObjectTemplateReference,
 };
 
 struct BrokenLink {
@@ -56,12 +56,12 @@ struct BrokenLink {
     union {
         Tileset *_tileset;
         Tile *_tile;
-        TemplateGroup *_templateGroup;
+        const ObjectTemplate *_objectTemplate;
     };
 
     QString filePath() const;
     Tileset *tileset() const;
-    TemplateGroup *templateGroup() const;
+    const ObjectTemplate *objectTemplate() const;
 };
 
 
@@ -96,7 +96,8 @@ private slots:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
-    void templateGroupReplaced(int index, TemplateGroup *templateGroup, TemplateGroup *oldTemplateGroup);
+
+    void objectTemplateReplaced();
 
 private:
     void connectToTileset(const SharedTileset &tileset);

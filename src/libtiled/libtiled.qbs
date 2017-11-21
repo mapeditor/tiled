@@ -18,7 +18,8 @@ DynamicLibrary {
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",
         "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING"
+        "QT_NO_URL_CAST_FROM_STRING",
+        "_USE_MATH_DEFINES"
     ]
 
     Properties {
@@ -53,6 +54,7 @@ DynamicLibrary {
         "logginginterface.h",
         "map.cpp",
         "map.h",
+        "mapformat.cpp",
         "mapformat.h",
         "mapobject.cpp",
         "mapobject.h",
@@ -70,6 +72,8 @@ DynamicLibrary {
         "objectgroup.h",
         "objecttemplate.cpp",
         "objecttemplate.h",
+        "objecttemplateformat.cpp",
+        "objecttemplateformat.h",
         "objecttypes.cpp",
         "objecttypes.h",
         "orthogonalrenderer.cpp",
@@ -84,14 +88,8 @@ DynamicLibrary {
         "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
-        "templategroup.cpp",
-        "templategroup.h",
-        "templategroupformat.cpp",
-        "templategroupformat.h",
         "templatemanager.cpp",
         "templatemanager.h",
-        "tidmapper.cpp",
-        "tidmapper.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",

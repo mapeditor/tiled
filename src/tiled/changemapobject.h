@@ -129,7 +129,7 @@ public:
 private:
     MapDocument *mMapDocument;
     const QList<MapObject*> mMapObjects;
-    QVector<TemplateRef> mTemplateRefs;
+    QVector<const ObjectTemplate*> mObjectTemplates;
     QVector<Properties> mProperties;
 };
 

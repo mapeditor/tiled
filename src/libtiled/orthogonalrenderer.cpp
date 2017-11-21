@@ -111,11 +111,19 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                                                10 + extraSpace + 1,
                                                10 + extraSpace + 1);
             } else {
-                boundingRect = bounds.adjusted(-extraSpace,
-                                               -extraSpace,
-                                               extraSpace + 1,
-                                               extraSpace + 1);
+            boundingRect = bounds.adjusted(-extraSpace,
+                                           -extraSpace,
+                                           extraSpace + 1,
+                                           extraSpace + 1);
             }
+            break;
+
+        case MapObject::Point:
+            boundingRect = shape(object).boundingRect()
+                           .adjusted(-extraSpace,
+                                     -extraSpace,
+                                     extraSpace + 1,
+                                     extraSpace + 1);
             break;
 
         case MapObject::Polygon:
@@ -187,6 +195,10 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             break;
         }
 
+        case MapObject::Point: {
+            path = pointShape(object);
+            break;
+        }
         case MapObject::Text: {
             path.addRect(object->bounds());
             break;
@@ -480,6 +492,10 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setFont(textData.font);
             painter->setPen(textData.color);
             painter->drawText(rect, textData.text, textData.textOption());
+            break;
+        }
+        case MapObject::Point: {
+            drawPointObject(painter, color);
             break;
         }
         }

@@ -39,6 +39,7 @@
 #include "mapobject.h"
 #include "movemapobject.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "replacetileset.h"
 #include "resizemapobject.h"
@@ -375,7 +376,6 @@ static QVariant predefinedPropertyValue(Object *object, const QString &name)
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 
@@ -561,7 +561,6 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
     case Object::ObjectTemplateType:    break;
-    case Object::TemplateGroupType:     break;
     }
 }
 
@@ -648,7 +647,7 @@ void PropertyBrowser::addMapObjectProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
 
     addProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
-    addProperty(TemplateInstanceProperty, QVariant::Bool, tr("Template Instance"), groupProperty)->setEnabled(false);
+    addProperty(TemplateProperty, filePathTypeId(), tr("Template"), groupProperty)->setEnabled(false);
     addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
     QtVariantProperty *typeProperty =
@@ -661,13 +660,13 @@ void PropertyBrowser::addMapObjectProperties()
 
     auto mapObject = static_cast<const MapObject*>(mObject);
 
-    if (!mapObject->isPolyShape()) {
+    if (mapObject->hasDimensions()) {
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
 
-    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
-
+    bool isPoint = mapObject->shape() == MapObject::Point;
+    addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
 
     if (!mapObject->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -1036,12 +1035,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
-    case RotationProperty: {
-        const qreal newRotation = val.toDouble();
-        const qreal oldRotation = mapObject->rotation();
-        command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+    case RotationProperty:
+        if (mapObject->canRotate()) {
+            const qreal newRotation = val.toDouble();
+            const qreal oldRotation = mapObject->rotation();
+            command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
+        }
         break;
-    }
     case FlippingProperty: {
         const int flippingFlags = val.toInt();
         const bool flippedHorizontally = flippingFlags & 1;
@@ -1323,7 +1323,7 @@ void PropertyBrowser::applyWangSetValue(PropertyId id, const QVariant &val)
         mDocument->undoStack()->push(new RenameWangSet(mTilesetDocument,
                                                        mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
                                                        val.toString()));
-        break; 
+        break;
     case EdgeCountProperty:
         mDocument->undoStack()->push(new ChangeWangSetEdges(mTilesetDocument,
                                                             mTilesetDocument->tileset()->wangSets().indexOf(wangSet),
@@ -1501,7 +1501,6 @@ void PropertyBrowser::addProperties()
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
     case Object::ObjectTemplateType:    break;
-    case Object::TemplateGroupType:     break;
     }
 
     // Make sure the color and font properties are collapsed, to save space
@@ -1562,8 +1561,12 @@ void PropertyBrowser::updateProperties()
         const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
                                                                 : QPalette::Active;
 
+        FilePath templateFilePath;
+        if (auto objectTemplate = mapObject->objectTemplate())
+            templateFilePath.url = QUrl::fromLocalFile(objectTemplate->fileName());
+
         mIdToProperty[IdProperty]->setValue(mapObject->id());
-        mIdToProperty[TemplateInstanceProperty]->setValue(mapObject->isTemplateInstance());
+        mIdToProperty[TemplateProperty]->setValue(QVariant::fromValue(templateFilePath));
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(type);
         mIdToProperty[TypeProperty]->setValueColor(palette().color(typeColorGroup, QPalette::WindowText));
@@ -1571,7 +1574,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
-        if (!mapObject->isPolyShape()) {
+        if (mapObject->hasDimensions()) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }
@@ -1687,7 +1690,6 @@ void PropertyBrowser::updateProperties()
         break;
     }
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 
@@ -1761,7 +1763,6 @@ void PropertyBrowser::updateCustomProperties()
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ObjectTemplateType:
-    case Object::TemplateGroupType:
         break;
     }
 

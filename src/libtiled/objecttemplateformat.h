@@ -1,5 +1,5 @@
 /*
- * templategroupformat.h
+ * objecttemplateformat.h
  * Copyright 2017, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2017, Mohamed Thabet <thabetx@gmail.com>
  *
@@ -30,28 +30,28 @@
 #pragma once
 
 #include "mapformat.h"
-#include "templategroup.h"
+#include "objecttemplate.h"
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT TemplateGroupFormat : public FileFormat
+class TILEDSHARED_EXPORT ObjectTemplateFormat : public FileFormat
 {
     Q_OBJECT
 
 public:
-    explicit TemplateGroupFormat(QObject *parent = nullptr)
+    explicit ObjectTemplateFormat(QObject *parent = nullptr)
         : FileFormat(parent)
     {}
 
-    virtual TemplateGroup *read(const QString &fileName) = 0;
-    virtual bool write(const TemplateGroup *templateGroup, const QString &fileName) = 0;
+    virtual ObjectTemplate* read(const QString &fileName) = 0;
+    virtual bool write(const ObjectTemplate *objectTemplate, const QString &fileName) = 0;
 };
 
-TILEDSHARED_EXPORT TemplateGroup *readTemplateGroup(const QString &fileName,
-                                                    QString *error = nullptr);
+TILEDSHARED_EXPORT ObjectTemplate *readObjectTemplate(const QString &fileName,
+                                                      QString *error = nullptr);
 
-TILEDSHARED_EXPORT TemplateGroupFormat *findSupportingGroupFormat(const QString &fileName);
+TILEDSHARED_EXPORT ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName);
 
 } // namespace Tiled
 
-Q_DECLARE_INTERFACE(Tiled::TemplateGroupFormat, "org.mapeditor.TemplateGroupFormat")
+Q_DECLARE_INTERFACE(Tiled::ObjectTemplateFormat, "org.mapeditor.ObjectTemplateFormat")

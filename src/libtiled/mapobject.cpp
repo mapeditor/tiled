@@ -32,7 +32,7 @@
 
 #include "map.h"
 #include "objectgroup.h"
-#include "templategroup.h"
+#include "objecttemplate.h"
 #include "tile.h"
 
 #include <QFontMetricsF>
@@ -88,7 +88,7 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
-    mTemplateRef({nullptr, 0}),
+    mObjectTemplate(nullptr),
     mObjectGroup(nullptr),
     mRotation(0.0f),
     mVisible(true),
@@ -251,7 +251,7 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     o->setVisible(mVisible);
     o->setChangedProperties(mChangedProperties);
-    o->setTemplateRef(templateRef());
+    o->setObjectTemplate(mObjectTemplate);
     return o;
 }
 
@@ -268,15 +268,13 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setVisible(object->isVisible());
     setProperties(object->properties());
     setChangedProperties(object->changedProperties());
-    setTemplateRef(object->templateRef());
+    setObjectTemplate(object->objectTemplate());
 }
 
 const MapObject *MapObject::templateObject() const
 {
-    if (auto group = templateGroup())
-        if (auto objectTemplate = group->findTemplate(mTemplateRef.templateId))
-            return objectTemplate->object();
-
+    if (mObjectTemplate)
+        return mObjectTemplate->object();
     return nullptr;
 }
 
@@ -312,16 +310,6 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::VisibleProperty))
         setVisible(base->isVisible());
-}
-
-bool MapObject::isTemplateInstance() const
-{
-    return mTemplateRef.templateGroup;
-}
-
-TemplateGroup *MapObject::templateGroup() const
-{
-    return mTemplateRef.templateGroup;
 }
 
 void MapObject::flipRectObject(const QTransform &flipTransform)

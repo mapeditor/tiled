@@ -108,6 +108,8 @@ static QRectF objectBounds(const MapObject *object,
             QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds);
             return screenPolygon.boundingRect();
         }
+        case MapObject::Point:
+            return renderer->shape(object).boundingRect();
         case MapObject::Polygon:
         case MapObject::Polyline: {
             // Alignment is irrelevant for polygon objects since they have no size

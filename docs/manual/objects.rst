@@ -35,9 +35,18 @@ tile size.
 
 If the rectangle is empty (width and height are both 0), it is rendered
 as a small square around its position. This is mainly to keep it visible
-and selectable. Empty rectangles can be used for placing point objects,
-at least as long as no explicit support for point objects is available
-(`#1325 <https://github.com/bjorn/tiled/issues/1325>`__).
+and selectable.
+
+.. _insert-point-tool:
+
+Insert Point
+~~~~~~~~~~~~~~
+
+Shortcut: ``I``
+
+Points are the simplest objects you can place on a map. They only represent a
+location, and cannot be resized or rotated. Simply click on the map to position
+a point object.
 
 .. _insert-ellipse-tool:
 

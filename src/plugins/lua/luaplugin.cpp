@@ -153,7 +153,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map->tilesets()) {
         writeTileset(writer, tileset.data(), firstGid);
-        mGidMapper.insert(firstGid, tileset.data());
+        mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
     writer.writeEndTable();
@@ -537,6 +537,8 @@ static const char *toString(MapObject::Shape shape)
         return "ellipse";
     case MapObject::Text:
         return "text";
+    case MapObject::Point:
+        return "point";
     }
     return "unknown";
 }
@@ -564,6 +566,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Point:
         break;
     case MapObject::Polygon:
     case MapObject::Polyline:

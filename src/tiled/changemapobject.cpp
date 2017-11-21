@@ -170,7 +170,7 @@ DetachObjects::DetachObjects(MapDocument *mapDocument,
     , mMapObjects(mapObjects)
 {
     for (const MapObject *object : mapObjects) {
-        mTemplateRefs.append(object->templateRef());
+        mObjectTemplates.append(object->objectTemplate());
         mProperties.append(object->properties());
     }
 }
@@ -185,7 +185,7 @@ void DetachObjects::redo()
         Properties newProperties = object->templateObject()->properties();
         newProperties.merge(object->properties());
         object->setProperties(newProperties);
-        object->setTemplateRef({nullptr, 0});
+        object->setObjectTemplate(nullptr);
     }
 
     emit mMapDocument->mapObjectModel()->objectsChanged(mMapObjects);
@@ -195,7 +195,7 @@ void DetachObjects::undo()
 {
     for (int i = 0; i < mMapObjects.size(); ++i) {
         MapObject *object = mMapObjects.at(i);
-        object->setTemplateRef(mTemplateRefs.at(i));
+        object->setObjectTemplate(mObjectTemplates.at(i));
         object->setProperties(mProperties.at(i));
         object->syncWithTemplate();
     }
@@ -255,7 +255,7 @@ ReplaceObjectsWithTemplate::ReplaceObjectsWithTemplate(MapDocument *mapDocument,
                                                        ObjectTemplate *objectTemplate,
                                                        QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Replace %n object(s) with template",
+                                               "Replace %n Object(s) With Template",
                                                nullptr, mapObjects.size()), parent)
     , mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
@@ -270,12 +270,14 @@ ReplaceObjectsWithTemplate::~ReplaceObjectsWithTemplate()
     qDeleteAll(mOldMapObjects);
 }
 
-
 void ReplaceObjectsWithTemplate::redo()
 {
-    auto newMapObject = mObjectTemplate->object();
-    for (auto object : mMapObjects)
-        object->copyPropertiesFrom(newMapObject);
+    for (auto object : mMapObjects) {
+        object->clearProperties();
+        object->setChangedProperties(0);
+        object->setObjectTemplate(mObjectTemplate);
+        object->syncWithTemplate();
+    }
 
     // Critical bug here
     emit mMapDocument->objectsChanged(mMapObjects);

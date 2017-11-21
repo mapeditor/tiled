@@ -635,10 +635,10 @@ void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
     }
 }
 
-void MapDocumentActionHandler::selectAllInstances(const MapObject *mapObject)
+void MapDocumentActionHandler::selectAllInstances(const ObjectTemplate *objectTemplate)
 {
     if (mMapDocument)
-        mMapDocument->selectAllInstances(mapObject);
+        mMapDocument->selectAllInstances(objectTemplate);
 }
 
 void MapDocumentActionHandler::updateActions()

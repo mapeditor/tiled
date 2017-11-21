@@ -10,6 +10,17 @@ menu action multiple times, Tiled will only ask for the file name the
 first time. Exporting can also be automated using the ``--export-map``
 command-line parameter.
 
+.. note::
+
+   When exporting on the command-line on Linux, Tiled will still need an
+   X server to run. To automate exports in a headless environment, you
+   can use a headless X server such as `Xvfb`_. In this case you would
+   run Tiled from the command-line as follows:
+
+   ::
+
+      xvfb-run tiled --export-map ...
+
 JSON
 ----
 
@@ -223,11 +234,8 @@ replicaisland
     Adds support for editing `Replica Island <http://replicaisland.net/>`__ maps (\*.bin)
 tengine
     Adds support for exporting to `T-Engine4 <https://te4.org/te4>`__ maps (\*.lua)
-tmw
-    Adds support for exporting to TMW-eAthena collision files (\*.wlk) (used by `The Mana World`_)
 
 These plugins are disabled by default. They can be enabled in *Edit > Preferences > Plugins*.
-
 
 
 .. _LÖVE: https://love2d.org/
@@ -239,3 +247,4 @@ These plugins are disabled by default. They can be enabled in *Edit > Preference
 .. _tIDE Tile Map Editor: https://colinvella.github.io/tIDE/
 .. _Stardew Valley: https://stardewvalley.net/
 .. _The Mana World: https://www.themanaworld.org/
+.. _Xvfb: https://www.x.org/archive/X11R7.6/doc/man/man1/Xvfb.1.xhtml

@@ -26,6 +26,7 @@
 #include "documentmanager.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "moveterrain.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "terrainview.h"
@@ -106,6 +107,8 @@ TerrainDock::TerrainDock(QWidget *parent)
     , mToolBar(new QToolBar(this))
     , mAddTerrainType(new QAction(this))
     , mRemoveTerrainType(new QAction(this))
+    , mMoveTerrainTypeUp(new QAction(this))
+    , mMoveTerrainTypeDown(new QAction(this))
     , mDocument(nullptr)
     , mCurrentTerrain(nullptr)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
@@ -135,9 +138,13 @@ TerrainDock::TerrainDock(QWidget *parent)
 
     mAddTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/add.png")));
     mRemoveTerrainType->setIcon(QIcon(QStringLiteral(":/images/22x22/remove.png")));
+    mMoveTerrainTypeUp->setIcon(QIcon(QStringLiteral(":/images/24x24/go-up.png")));
+    mMoveTerrainTypeDown->setIcon(QIcon(QStringLiteral(":/images/24x24/go-down.png")));
 
     Utils::setThemeIcon(mAddTerrainType, "add");
     Utils::setThemeIcon(mRemoveTerrainType, "remove");
+    Utils::setThemeIcon(mMoveTerrainTypeUp, "go-up");
+    Utils::setThemeIcon(mMoveTerrainTypeDown, "go-down");
 
     connect(mEraseTerrainButton, &QPushButton::clicked,
             this, &TerrainDock::eraseTerrainButtonClicked);
@@ -148,6 +155,8 @@ TerrainDock::TerrainDock(QWidget *parent)
 
     mToolBar->addAction(mAddTerrainType);
     mToolBar->addAction(mRemoveTerrainType);
+    mToolBar->addAction(mMoveTerrainTypeUp);
+    mToolBar->addAction(mMoveTerrainTypeDown);
 
     QHBoxLayout *horizontal = new QHBoxLayout;
     horizontal->addWidget(mEraseTerrainButton);
@@ -163,6 +172,10 @@ TerrainDock::TerrainDock(QWidget *parent)
             this, &TerrainDock::addTerrainTypeRequested);
     connect(mRemoveTerrainType, &QAction::triggered,
             this, &TerrainDock::removeTerrainTypeRequested);
+    connect(mMoveTerrainTypeUp, &QAction::triggered,
+            this, &TerrainDock::moveTerrainTypeUp);
+    connect(mMoveTerrainTypeDown, &QAction::triggered,
+            this, &TerrainDock::moveTerrainTypeDown);
 
     setWidget(w);
     retranslateUi();
@@ -214,6 +227,13 @@ void TerrainDock::setDocument(Document *document)
         connect(terrainModel, &TilesetTerrainModel::terrainRemoved,
                 this, &TerrainDock::refreshCurrentTerrain);
 
+        /*
+         * The current terrain does not change when moving terrains.
+         * We need to refresh this in order to disable the up/down buttons when
+         * appropriate.
+         */
+        connect(terrainModel, &QAbstractItemModel::rowsMoved,
+                this, &TerrainDock::rowsMoved);
     } else {
         mProxyModel->setSourceModel(nullptr);
         setCurrentTerrain(nullptr);
@@ -303,6 +323,11 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
 
     mRemoveTerrainType->setEnabled(terrain != nullptr);
 
+    mMoveTerrainTypeUp->setEnabled(terrain != nullptr &&
+                                   terrain->id() > 0);
+    mMoveTerrainTypeDown->setEnabled(terrain != nullptr &&
+                                     terrain->id() < mProxyModel->rowCount() - 1);
+
     emit currentTerrainChanged(mCurrentTerrain);
 }
 
@@ -313,6 +338,8 @@ void TerrainDock::retranslateUi()
 
     mAddTerrainType->setText(tr("Add Terrain Type"));
     mRemoveTerrainType->setText(tr("Remove Terrain Type"));
+    mMoveTerrainTypeUp->setText(tr("Move Terrain Type Up"));
+    mMoveTerrainTypeDown->setText(tr("Move Terrain Type Down"));
 }
 
 QModelIndex TerrainDock::terrainIndex(Terrain *terrain) const
@@ -325,4 +352,38 @@ QModelIndex TerrainDock::terrainIndex(Terrain *terrain) const
         sourceIndex = tilesetDocument->terrainModel()->index(terrain);
 
     return mProxyModel->mapFromSource(sourceIndex);
+}
+
+void TerrainDock::moveTerrainTypeUp()
+{
+    Terrain *terrain = currentTerrain();
+    if (!terrain)
+        return;
+
+    TilesetDocument* tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+
+    if (terrain->id() == 0)
+        return;
+
+    tilesetDocument->undoStack()->push(new MoveTerrainUp(tilesetDocument, terrain));
+}
+
+void TerrainDock::moveTerrainTypeDown()
+{
+    Terrain *terrain = currentTerrain();
+    if (!terrain)
+        return;
+
+    TilesetDocument* tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+
+    if (terrain->id() == tilesetDocument->tileset().data()->terrainCount() - 1)
+        return;
+
+    tilesetDocument->undoStack()->push(new MoveTerrainDown(tilesetDocument, terrain));
+}
+
+void TerrainDock::rowsMoved()
+{
+    mCurrentTerrain = nullptr;
+    refreshCurrentTerrain();
 }

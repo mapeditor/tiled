@@ -45,7 +45,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
     for (const Layer *layer : map->layers()) {
         if (layer->layerType() != Layer::TileLayerType)
             continue;
-            
+
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
 
         SaveFile file(layerPaths.at(currentLayer));
@@ -65,7 +65,7 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
             for (int x = bounds.left(); x <= bounds.right(); ++x) {
                 if (x > bounds.left())
                     device->write(",", 1);
-    
+
                 const Cell &cell = tileLayer->cellAt(x, y);
                 const Tile *tile = cell.tile();
                 if (tile && tile->hasProperty(QLatin1String("name"))) {
@@ -75,10 +75,10 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
                     device->write(QByteArray::number(id));
                 }
             }
-    
+
             device->write("\n", 1);
         }
-    
+
         if (file.error() != QFileDevice::NoError) {
             mError = file.errorString();
             return false;

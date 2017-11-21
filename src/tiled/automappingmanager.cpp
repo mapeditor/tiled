@@ -180,7 +180,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             AutoMapper *autoMapper = new AutoMapper(mMapDocument, rules.take(), rulePath);
 
             mWarning += autoMapper->warningString();
-            const QString error = autoMapper->errorString(); 
+            const QString error = autoMapper->errorString();
             if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
             } else {
