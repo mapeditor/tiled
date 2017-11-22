@@ -280,7 +280,9 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
     // Write out tile instances
     iterator.toFront();
     while (const Layer *layer = iterator.next()) {
-        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"), layerCount));
+        --layerCount;
+        QString depth = QString::number(optionalProperty(layer, QLatin1String("depth"),
+                                                         layerCount + 1000000));
 
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
@@ -427,8 +429,6 @@ bool GmxPlugin::write(const Map *map, const QString &fileName)
             // Recursion handled by LayerIterator
             break;
         }
-
-        --layerCount;
     }
 
     stream.writeEndElement();

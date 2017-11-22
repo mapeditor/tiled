@@ -182,6 +182,17 @@ Physics
 * float ``PhysicsWorldGravityY`` (default: 10.0)
 * float ``PhysicsWorldPixToMeters`` (default: 0.1)
 
+Layer Properties
+~~~~~~~~~~~~~~~~
+
+Both tile layers and object layers may produce "tile" elements in the exported
+room file. Their depth is set automatically, with tiles from the bottom-most
+layer getting a value of 10000000 (the GameMaker default) and counting up from
+there. If you want to set a custom depth value you can set the following
+property on the layer:
+
+* int ``depth`` (default: 10000000 + N)
+
 .. raw:: html
 
    <div class="new">New in Tiled 1.1</div>
