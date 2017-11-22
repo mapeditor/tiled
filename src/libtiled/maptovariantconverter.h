@@ -52,7 +52,7 @@ public:
      * construct relative paths to external resources.
      */
     QVariant toVariant(const Tileset &tileset, const QDir &directory);
-    QVariantMap toVariant(const ObjectTemplate &objectTemplate, const QDir &directory);
+    QVariant toVariant(const ObjectTemplate &objectTemplate, const QDir &directory);
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;

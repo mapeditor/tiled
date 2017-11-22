@@ -101,8 +101,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     return toVariant(tileset, 0);
 }
 
-QVariantMap MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate,
-                                             const QDir &directory)
+QVariant MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate,
+                                          const QDir &directory)
 {
     mMapDir = directory;
     QVariantMap objectTemplateVariant;

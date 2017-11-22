@@ -218,9 +218,7 @@ Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
     }
 
     JsonReader reader;
-    QByteArray contents = file.readAll();
-
-    reader.parse(contents);
+    reader.parse(file.readAll());
 
     const QVariant variant = reader.result();
 
@@ -331,15 +329,15 @@ Tiled::ObjectTemplate *JsonObjectTemplateFormat::read(const QString &fileName)
         return nullptr;
     }
 
-    QJsonParseError error;
-    QJsonDocument document = QJsonDocument::fromJson(file.readAll(), &error);
+    JsonReader reader;
+    reader.parse(file.readAll());
 
-    if (error.error != QJsonParseError::NoError) {
-        mError = tr("Error parsing file: %1").arg(error.errorString());
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
         return nullptr;
     }
-
-    const QVariantMap variant = document.object().toVariantMap();
 
     Tiled::VariantToMapConverter converter;
     Tiled::ObjectTemplate *objectTemplate = converter.toObjectTemplate(variant,
@@ -379,12 +377,19 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
     }
 
     Tiled::MapToVariantConverter converter;
-    QVariantMap variant = converter.toVariant(*objectTemplate, QFileInfo(fileName).dir());
+    QVariant variant = converter.toVariant(*objectTemplate, QFileInfo(fileName).dir());
 
-    QJsonDocument document(QJsonObject::fromVariantMap(variant));
-    QByteArray json = document.toJson(QJsonDocument::Indented);
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
 
-    file.device()->write(json);
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
+    QTextStream out(file.device());
+    out << writer.result();
 
     if (file.error() != QFileDevice::NoError) {
         mError = tr("Error while writing file:\n%1").arg(file.errorString());
