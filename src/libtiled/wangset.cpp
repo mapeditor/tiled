@@ -233,7 +233,7 @@ void WangTile::translate(int map[])
 {
     int mask = (mFlippedHorizontally << 2)
             | (mFlippedVertically << 1)
-            | (mFlippedAntiDiagonally);
+            | (mFlippedAntiDiagonally << 0);
 
     mask = map[mask];
 

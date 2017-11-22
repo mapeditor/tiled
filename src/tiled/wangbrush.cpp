@@ -161,7 +161,7 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if ((modifiers & Qt::ControlModifier) != mIsTileMode) {
+    if (bool(modifiers & Qt::ControlModifier) != mIsTileMode) {
         stateChanged();
         mIsTileMode = modifiers & Qt::ControlModifier;
     }
