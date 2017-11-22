@@ -53,7 +53,8 @@ after_build:
   - cd installer*
   - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
   - if defined TILED_SNAPSHOT move appcast-win*-snapshots.xml %APPVEYOR_BUILD_FOLDER%
-  - cd ..
+  - cd ..\..
+  - cd itch
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
   - cd ..\..
