@@ -111,7 +111,7 @@ WindowsInstallerPackage {
     // any "wxi" tagged products.
     Rule {
         multiplex: true
-        inputs: ["installable"]
+        inputsFromDependencies: ["installable"]
 
         Artifact {
             filePath: "dummy.wxi"
