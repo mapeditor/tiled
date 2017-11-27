@@ -3,7 +3,7 @@ layout: default
 title: News Archive
 ---
 
-<h1>News Archive</h1>
+<h1>{{ page.title }}</h1>
 
 {% for post in site.posts  %}
   {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
