@@ -12,8 +12,13 @@ title: Libraries and Frameworks
   {% endif %}
 
   <li>
-    <p><a href="{{ lib.url }}" style="font-weight: bold;">{{ lib.name }}</a>, {{ lib.updated | date: "%B %Y" }}, {{ lib.features }}</p>
-    <div style="color: gray">{{ lib.notes | markdownify }}</div>
+    <p><a href="{{ lib.url }}" style="font-weight: bold;">{{ lib.name }}</a>, {{ lib.status }}, {{ lib.features }}</p>
+    {% if lib.notes %}
+      <div style="color: gray">{{ lib.notes | markdownify }}</div>
+    {% endif %}
+    {% if lib.wiki %}
+      <p><a href="{{ lib.wiki }}" style="font-style: italic;">More information...</a></p>
+    {% endif %}
   </li>
 
   {% if forloop.last %}

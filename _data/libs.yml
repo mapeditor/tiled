@@ -1,22 +1,26 @@
 - language: C
   name: baylej/tmx
   url: https://github.com/baylej/tmx/
-  updated: 26-07-2017
-  features: Read TMX 1.0
+  wiki: https://github.com/bjorn/tiled/wiki/baylej-tmx
+  updated: 28-11-2017
+  status: Active
+  features: Reads TMX 1.0
   notes: |
-    Depends on [zlib]() and [libxml2](). Ships with examples for
-    [Allegro 5]() and [SDL 2]().
+    Depends on [zlib](https://zlib.net/) and [libxml2](http://xmlsoft.org/).
+    Ships with examples for [Allegro 5](http://liballeg.org/) and [SDL 2](https://www.libsdl.org/).
 
 - language: C++
-  name: Simple TMX tilemap parser
-  url: http://www.catnapgames.com/blog/2011/10/10/simple-tmx-tilemap-parser.html
-  updated: 10-10-2011
-  features: Read TMX
-  notes: Depends on Boost property_tree and tokenizer
-
-- language: C++
-  name: tmxparser
+  name: sainteos/tmxparser
   url: https://github.com/sainteos/tmxparser
-  updated: 21-09-2017
-  features: Read TMX
-  notes: Depends on [zlib]() and [TinyXml](http://www.grinninglizard.com/tinyxml/)
+  updated: 28-11-2017
+  status: Active
+  features: Reads TMX
+  notes: Depends on [zlib](https://zlib.net/) and [TinyXml](http://www.grinninglizard.com/tinyxml/)
+
+- language: C++
+  name: TestNLTmxMap
+  url: https://github.com/catnapgames/TestNLTmxMap
+  updated: 28-11-2017
+  status: Inactive since 2012
+  features: Reads TMX
+  notes: Depends on [RapidXml](http://rapidxml.sourceforge.net/)
