@@ -7,8 +7,7 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.6" }
 
     Properties {
-        condition: !(qbs.toolchain.contains("msvc") ||
-                     (qbs.toolchain.contains("mingw") && Qt.core.versionMinor < 6))
+        condition: !qbs.toolchain.contains("msvc")
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
