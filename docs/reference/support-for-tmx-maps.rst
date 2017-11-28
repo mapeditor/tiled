@@ -29,7 +29,7 @@ game engine or graphics library.
 C
 ~
 
--  `TMX <https://github.com/baylej/tmx/>`__ - XML and JSON map loader
+-  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
 C++
