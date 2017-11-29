@@ -94,6 +94,7 @@ combination with rotation doesn't appear to work in GameMaker).
 The following custom properties can be set on objects to affect the
 exported instance:
 
+* string ``code`` (instance creation code, default: "")
 * float ``scaleX`` (default: derived from tile or 1.0)
 * float ``scaleY`` (default: derived from tile or 1.0)
 * int ``originX`` (default: 0)
@@ -169,6 +170,7 @@ General
 * bool ``persistent`` (default: false)
 * bool ``clearDisplayBuffer`` (default: true)
 * bool ``clearViewBackground`` (default: false)
+* string ``code`` (map creation code, default: "")
 
 Physics
 ^^^^^^^
