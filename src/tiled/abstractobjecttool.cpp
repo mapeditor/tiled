@@ -257,12 +257,9 @@ void AbstractObjectTool::saveSelectedObject()
     if (fileName.isEmpty())
         return;
 
-    if (ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(fileName)) {
-        // Convert the saved object into an instance and clear the changed properties flags
-        object->setObjectTemplate(objectTemplate);
-        object->setChangedProperties(0);
-        emit mapDocument()->objectsChanged(mapDocument()->selectedObjects());
-    }
+    // Convert the saved object into an instance
+    if (ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(fileName))
+        mapDocument()->undoStack()->push(new ReplaceObjectsWithTemplate(mapDocument(), { object }, objectTemplate));
 }
 
 void AbstractObjectTool::detachSelectedObjects()
@@ -294,6 +291,13 @@ void AbstractObjectTool::detachSelectedObjects()
     }
 
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
+}
+
+void AbstractObjectTool::replaceObjectsWithTemplate()
+{
+    mapDocument()->undoStack()->push(new ReplaceObjectsWithTemplate(mapDocument(),
+                                                                    mapDocument()->selectedObjects(),
+                                                                    objectTemplate()));
 }
 
 void AbstractObjectTool::resetInstances()
@@ -400,8 +404,20 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         changeTileAction->setEnabled(tile());
     }
 
+    // Create action for replacing an object with a template
+    auto selectedTemplate = objectTemplate();
+    auto replaceTemplateAction = menu.addAction(tr("Replace With Template"), this, SLOT(replaceObjectsWithTemplate()));
+
+    if (selectedTemplate) {
+        QString name = QFileInfo(selectedTemplate->fileName()).fileName();
+        replaceTemplateAction->setText(tr("Replace With Template \"%1\"").arg(name));
+    } else {
+        replaceTemplateAction->setEnabled(false);
+    }
+
     if (selectedObjects.size() == 1) {
         MapObject *currentObject = selectedObjects.first();
+
         if (!(currentObject->isTemplateBase() || currentObject->isTemplateInstance())) {
             const Cell cell = selectedObjects.first()->cell();
             // Saving objects with embedded tilesets is disabled
@@ -412,6 +428,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         if (currentObject->isTemplateBase()) { // Hide this operations for template base
             duplicateAction->setVisible(false);
             removeAction->setVisible(false);
+            replaceTemplateAction->setVisible(false);
         }
     }
 

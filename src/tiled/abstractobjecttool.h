@@ -74,6 +74,7 @@ private slots:
     void resetTileSize();
     void saveSelectedObject();
     void detachSelectedObjects();
+    void replaceObjectsWithTemplate();
     void resetInstances();
     void changeTile();
 

@@ -75,6 +75,7 @@ namespace Internal {
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
     , mUpdating(false)
+    , mMapObjectFlags(0)
     , mObject(nullptr)
     , mDocument(nullptr)
     , mMapDocument(nullptr)
@@ -641,6 +642,24 @@ static QStringList objectTypeNames()
     return names;
 }
 
+enum MapObjectFlags {
+    ObjectHasDimensions = 0x1,
+    ObjectHasTile = 0x2,
+    ObjectIsText = 0x4
+};
+
+static int mapObjectFlags(const MapObject *mapObject)
+{
+    int flags = 0;
+    if (mapObject->hasDimensions())
+        flags |= ObjectHasDimensions;
+    if (!mapObject->cell().isEmpty())
+        flags |= ObjectHasTile;
+    if (mapObject->shape() == MapObject::Text)
+        flags |= ObjectIsText;
+    return flags;
+}
+
 void PropertyBrowser::addMapObjectProperties()
 {
     // DEFAULT MAP OBJECT PROPERTIES
@@ -659,8 +678,9 @@ void PropertyBrowser::addMapObjectProperties()
     addProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
 
     auto mapObject = static_cast<const MapObject*>(mObject);
+    mMapObjectFlags = mapObjectFlags(mapObject);
 
-    if (mapObject->hasDimensions()) {
+    if (mMapObjectFlags & ObjectHasDimensions) {
         addProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
         addProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     }
@@ -668,7 +688,7 @@ void PropertyBrowser::addMapObjectProperties()
     bool isPoint = mapObject->shape() == MapObject::Point;
     addProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
 
-    if (!mapObject->cell().isEmpty()) {
+    if (mMapObjectFlags & ObjectHasTile) {
         QtVariantProperty *flippingProperty =
                 addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
                                tr("Flipping"), groupProperty);
@@ -676,7 +696,7 @@ void PropertyBrowser::addMapObjectProperties()
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
     }
 
-    if (mapObject->shape() == MapObject::Text) {
+    if (mMapObjectFlags & ObjectIsText) {
         addProperty(TextProperty, QVariant::String, tr("Text"), groupProperty)->setAttribute(QLatin1String("multiline"), true);
         addProperty(TextAlignmentProperty, VariantPropertyManager::alignmentTypeId(), tr("Alignment"), groupProperty);
         addProperty(FontProperty, QVariant::Font, tr("Font"), groupProperty);
@@ -1556,6 +1576,13 @@ void PropertyBrowser::updateProperties()
     }
     case Object::MapObjectType: {
         const MapObject *mapObject = static_cast<const MapObject*>(mObject);
+        const int flags = mapObjectFlags(mapObject);
+
+        if (mMapObjectFlags != flags) {
+            removeProperties();
+            addProperties();
+            return;
+        }
 
         const QString &type = mapObject->effectiveType();
         const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
@@ -1574,23 +1601,23 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[XProperty]->setValue(mapObject->x());
         mIdToProperty[YProperty]->setValue(mapObject->y());
 
-        if (mapObject->hasDimensions()) {
+        if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
             mIdToProperty[HeightProperty]->setValue(mapObject->height());
         }
 
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
-        if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
+        if (flags & ObjectHasTile) {
             int flippingFlags = 0;
             if (mapObject->cell().flippedHorizontally())
                 flippingFlags |= 1;
             if (mapObject->cell().flippedVertically())
                 flippingFlags |= 2;
-            property->setValue(flippingFlags);
+            mIdToProperty[FlippingProperty]->setValue(flippingFlags);
         }
 
-        if (mapObject->shape() == MapObject::Text) {
+        if (flags & ObjectIsText) {
             const auto& textData = mapObject->textData();
             mIdToProperty[TextProperty]->setValue(textData.text);
             mIdToProperty[FontProperty]->setValue(textData.font);
