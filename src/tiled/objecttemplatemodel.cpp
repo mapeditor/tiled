@@ -69,7 +69,8 @@ ObjectTemplate *ObjectTemplateModel::toObjectTemplate(const QModelIndex &index) 
     if (info.isDir())
         return nullptr;
 
-    return TemplateManager::instance()->loadObjectTemplate(info.filePath());
+    ObjectTemplate *objectTemplate = TemplateManager::instance()->loadObjectTemplate(info.filePath());
+    return objectTemplate->object() ? objectTemplate : nullptr;
 }
 
 Qt::ItemFlags ObjectTemplateModel::flags(const QModelIndex &index) const

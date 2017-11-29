@@ -187,6 +187,8 @@ void TemplatesDock::setTemplate(ObjectTemplate *objectTemplate)
     mMapView->setEnabled(objectTemplate);
 
     if (objectTemplate) {
+        Q_ASSERT(objectTemplate->object());
+
         Map::Orientation orientation = Map::Orthogonal;
 
         Map *map = new Map(orientation, 1, 1, 1, 1);
