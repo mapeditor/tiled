@@ -91,36 +91,7 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setPropertiesWithoutValueMarked(true);
     setAllowMultiSelection(true);
 
-    mStaggerAxisNames.append(tr("X"));
-    mStaggerAxisNames.append(tr("Y"));
-
-    mStaggerIndexNames.append(tr("Odd"));
-    mStaggerIndexNames.append(tr("Even"));
-
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
-    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
-
-    mTilesetOrientationNames.append(mOrientationNames.at(0));
-    mTilesetOrientationNames.append(mOrientationNames.at(1));
-
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
-
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
-
-    mFlippingFlagNames.append(tr("Horizontal"));
-    mFlippingFlagNames.append(tr("Vertical"));
-
-    mDrawOrderNames.append(tr("Top Down"));
-    mDrawOrderNames.append(tr("Manual"));
+    retranslateUi();
 
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
@@ -164,18 +135,18 @@ void PropertyBrowser::setDocument(Document *document)
     mTilesetDocument = tilesetDocument;
 
     if (mapDocument) {
-        connect(mapDocument, SIGNAL(mapChanged()),
-                SLOT(mapChanged()));
-        connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
-                SLOT(objectsChanged(QList<MapObject*>)));
-        connect(mapDocument, SIGNAL(objectsTypeChanged(QList<MapObject*>)),
-                SLOT(objectsTypeChanged(QList<MapObject*>)));
+        connect(mapDocument, &MapDocument::mapChanged,
+                this, &PropertyBrowser::mapChanged);
+        connect(mapDocument, &MapDocument::objectsChanged,
+                this, &PropertyBrowser::objectsChanged);
+        connect(mapDocument, &MapDocument::objectsTypeChanged,
+                this, &PropertyBrowser::objectsTypeChanged);
         connect(mapDocument, &MapDocument::layerChanged,
                 this, &PropertyBrowser::layerChanged);
-        connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
-                SLOT(objectGroupChanged(ObjectGroup*)));
-        connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
-                SLOT(imageLayerChanged(ImageLayer*)));
+        connect(mapDocument, &MapDocument::objectGroupChanged,
+                this, &PropertyBrowser::objectGroupChanged);
+        connect(mapDocument, &MapDocument::imageLayerChanged,
+                this, &PropertyBrowser::imageLayerChanged);
         connect(mapDocument, &MapDocument::tileTypeChanged,
                 this, &PropertyBrowser::tileTypeChanged);
 
@@ -1862,6 +1833,52 @@ void PropertyBrowser::updateCustomPropertyColor(const QString &name)
 
     property->setNameColor(textColor);
     property->setValueColor(textColor);
+}
+
+void PropertyBrowser::retranslateUi()
+{
+    mStaggerAxisNames.clear();
+    mStaggerIndexNames.clear();
+    mOrientationNames.clear();
+    mTilesetOrientationNames.clear();
+    mLayerFormatNames.clear();
+    mRenderOrderNames.clear();
+    mFlippingFlagNames.clear();
+    mDrawOrderNames.clear();
+
+    mStaggerAxisNames.append(tr("X"));
+    mStaggerAxisNames.append(tr("Y"));
+
+    mStaggerIndexNames.append(tr("Odd"));
+    mStaggerIndexNames.append(tr("Even"));
+
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
+
+    mTilesetOrientationNames.append(mOrientationNames.at(0));
+    mTilesetOrientationNames.append(mOrientationNames.at(1));
+
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+
+    mFlippingFlagNames.append(tr("Horizontal"));
+    mFlippingFlagNames.append(tr("Vertical"));
+
+    mDrawOrderNames.append(tr("Top Down"));
+    mDrawOrderNames.append(tr("Manual"));
+
+    removeProperties();
+    addProperties();
 }
 
 } // namespace Internal

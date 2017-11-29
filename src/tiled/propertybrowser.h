@@ -244,11 +244,5 @@ inline Object *PropertyBrowser::object() const
     return mObject;
 }
 
-inline void PropertyBrowser::retranslateUi()
-{
-    removeProperties();
-    addProperties();
-}
-
 } // namespace Internal
 } // namespace Tiled
