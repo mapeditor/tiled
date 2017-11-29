@@ -208,11 +208,12 @@ private:
     void removeProperties();
     void updateProperties();
     void updateCustomProperties();
-    void retranslateUi();
-    bool mUpdating;
-
     void updateCustomPropertyColor(const QString &name);
 
+    void retranslateUi();
+
+    bool mUpdating;
+    int mMapObjectFlags;
     Object *mObject;
     Document *mDocument;
     MapDocument *mMapDocument;

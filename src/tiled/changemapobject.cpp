@@ -230,7 +230,7 @@ void ResetInstances::redo()
         object->clearProperties();
 
         // Reset built-in properties
-        object->setChangedProperties(0);
+        object->setChangedProperties(MapObject::ChangedProperties());
         object->syncWithTemplate();
     }
 
@@ -274,12 +274,11 @@ void ReplaceObjectsWithTemplate::redo()
 {
     for (auto object : mMapObjects) {
         object->clearProperties();
-        object->setChangedProperties(0);
+        object->setChangedProperties(MapObject::ChangedProperties());
         object->setObjectTemplate(mObjectTemplate);
         object->syncWithTemplate();
     }
 
-    // Critical bug here
     emit mMapDocument->objectsChanged(mMapObjects);
     emit mMapDocument->selectedObjectsChanged();
 }

@@ -140,7 +140,7 @@ public:
                    const QList<MapObject *> &mapObjects,
                    QUndoCommand *parent = nullptr);
 
-    ~ResetInstances();
+    ~ResetInstances() override;
 
     void redo() override;
     void undo() override;
@@ -162,7 +162,7 @@ public:
                                ObjectTemplate *objectTemplate,
                                QUndoCommand *parent = nullptr);
 
-    ~ReplaceObjectsWithTemplate();
+    ~ReplaceObjectsWithTemplate() override;
 
     void redo() override;
     void undo() override;
