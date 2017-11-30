@@ -3413,7 +3413,7 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
         <location line="+1"/>
         <location line="+3"/>
         <source>&amp;Group Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ryhmitä layer</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3425,12 +3425,12 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
         <location line="-273"/>
         <location line="+273"/>
         <source>Layer via Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer leikaten</translation>
     </message>
     <message>
         <location line="-271"/>
         <source>&amp;Ungroup Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poista layerin ryhmitys</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3791,7 +3791,7 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     <message>
         <location line="+4"/>
         <source>&amp;%1) %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;%1) %2</translation>
     </message>
     <message>
         <location line="+2"/>
