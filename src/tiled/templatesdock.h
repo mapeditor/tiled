@@ -25,6 +25,9 @@
 #include <QTreeView>
 #include <QAction>
 
+class QPushButton;
+class QLabel;
+
 namespace Tiled {
 
 class ObjectTemplate;
@@ -60,6 +63,7 @@ signals:
 private slots:
     void setSelectedTool(AbstractTool *tool);
     void setTemplate(ObjectTemplate *objectTemplate);
+    void checkTileset();
 
     void undo();
     void redo();
@@ -73,12 +77,15 @@ protected:
 
 private:
     void retranslateUi();
+    void fixTileset();
 
     TemplatesView *mTemplatesView;
 
     QAction *mChooseDirectory;
     QAction *mUndoAction;
     QAction *mRedoAction;
+    QPushButton *mFixTilesetButton;
+    QLabel *mDescriptionLabel;
 
     MapDocument *mDummyMapDocument;
     MapScene *mMapScene;
