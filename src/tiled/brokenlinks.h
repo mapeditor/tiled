@@ -45,6 +45,7 @@ class TilesetDocument;
 
 enum BrokenLinkType {
     MapTilesetReference,
+    ObjectTemplateTilesetReference,
     TilesetTileImageSource,
     TilesetImageSource,
     ObjectTemplateReference,
@@ -96,8 +97,6 @@ private slots:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetReplaced(int index, Tileset *newTileset, Tileset *oldTileset);
-
-    void objectTemplateReplaced();
 
 private:
     void connectToTileset(const SharedTileset &tileset);

@@ -59,6 +59,10 @@ signals:
     void currentTemplateChanged(ObjectTemplate *objectTemplate);
     void templateEdited(const ObjectTemplate *objectTemplate);
     void setTile(Tile *tile);
+    void templateTilesetReplaced();
+
+public slots:
+    void openTemplate(const ObjectTemplate *objectTemplate);
 
 private slots:
     void setSelectedTool(AbstractTool *tool);

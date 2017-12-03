@@ -33,6 +33,7 @@
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "replacetileset.h"
+#include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "tilesetdocument.h"
 #include "tmxmapformat.h"
@@ -186,6 +187,11 @@ TemplatesDock::~TemplatesDock()
     delete mDummyMapDocument;
 }
 
+void TemplatesDock::openTemplate(const ObjectTemplate *objectTemplate)
+{
+    setTemplate(TemplateManager::instance()->loadObjectTemplate(objectTemplate->fileName()));
+}
+
 void TemplatesDock::setSelectedTool(AbstractTool *tool)
 {
     mMapScene->disableSelectedTool();
@@ -275,13 +281,16 @@ void TemplatesDock::checkTileset()
 
     auto tileset = cell.tileset();
 
+    QString templateName = QFileInfo(mObjectTemplate->fileName()).fileName();
+
     if (tileset->imageStatus() == LoadingError) {
         mFixTilesetButton->setVisible(true);
         mFixTilesetButton->setText(tr("Open Tileset"));
         mFixTilesetButton->setToolTip(tileset->imageSource().fileName());
 
         mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("Couldn't find: \"%1\"").arg(tileset->imageSource().fileName()));
+        mDescriptionLabel->setText(tr("%1 :Couldn't find \"%2\"").arg(templateName,
+                                                                      tileset->imageSource().fileName()));
         mDescriptionLabel->setToolTip(tileset->imageSource().fileName());
     } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
         mFixTilesetButton->setVisible(true);
@@ -289,7 +298,8 @@ void TemplatesDock::checkTileset()
         mFixTilesetButton->setToolTip(tileset->fileName());
 
         mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("Couldn't find: \"%1\"").arg(tileset->fileName()));
+        mDescriptionLabel->setText(tr("%1 :Couldn't find \"%2\"").arg(templateName,
+                                                                      tileset->fileName()));
         mDescriptionLabel->setToolTip(tileset->fileName());
     } else {
         mFixTilesetButton->setVisible(false);
@@ -408,6 +418,7 @@ void TemplatesDock::fixTileset()
         }
     }
 }
+
 TemplatesView::TemplatesView(QWidget *parent)
     : QTreeView(parent)
 {
