@@ -384,7 +384,7 @@ void MapScene::enableSelectedTool()
 
     if (mUnderMouse) {
         mActiveTool->mouseEntered();
-        mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
+        mActiveTool->mouseMoved(mLastMousePos, mCurrentModifiers);
     }
 }
 
@@ -790,6 +790,7 @@ void MapScene::keyPressEvent(QKeyEvent *event)
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     mLastMousePos = mouseEvent->scenePos();
+    setKeyboardModifiers(mouseEvent->modifiers());
 
     if (!mMapDocument)
         return;
@@ -842,18 +843,22 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
     switch (event->type()) {
     case QEvent::KeyPress:
     case QEvent::KeyRelease: {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-            Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
-
-            if (mActiveTool && newModifiers != mCurrentModifiers) {
-                mActiveTool->modifiersChanged(newModifiers);
-                mCurrentModifiers = newModifiers;
-            }
-        }
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        setKeyboardModifiers(keyEvent->modifiers());
         break;
+    }
     default:
         break;
     }
 
     return false;
+}
+
+void MapScene::setKeyboardModifiers(Qt::KeyboardModifiers modifiers)
+{
+    if (mCurrentModifiers != modifiers) {
+        mCurrentModifiers = modifiers;
+        if (mActiveTool)
+            mActiveTool->modifiersChanged(modifiers);
+    }
 }

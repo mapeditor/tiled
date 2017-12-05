@@ -187,6 +187,7 @@ private:
     void updateCurrentLayerHighlight();
 
     bool eventFilter(QObject *object, QEvent *event) override;
+    void setKeyboardModifiers(Qt::KeyboardModifiers);
 
     MapDocument *mMapDocument;
     AbstractTool *mSelectedTool;
