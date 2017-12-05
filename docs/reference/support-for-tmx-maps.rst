@@ -433,9 +433,6 @@ Unity 3D
    Pro <http://www.wyrmtale.com/products/unity3d-components/orthello-pro>`__
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
--  `Tiled Tilemaps <http://karnakgames.com/wp/unity-tiled-tilemaps/>`__
-   library by Karnak Games adds support for Orthogonal TMX maps to
-   Unity, with automatic collision detection.
 -  `Tiled To
    Unity <https://www.assetstore.unity3d.com/#/content/17260/>`__ is a
    3D pipeline for Tiled maps. It uses prefabs as tiles, and can place
@@ -446,8 +443,9 @@ Unity 3D
 -  `UniTMX <https://bitbucket.org/PolCPP/unitmx/overview>`__ imports TMX
    files into a mesh.
 -  `X-UniTMX <https://bitbucket.org/Chaoseiro/x-unitmx>`__ supports
-   almost all Tiled 0.10 features. Imports TMX/XML files into Sprite
+   almost all Tiled 0.11 features. Imports TMX/XML files into Sprite
    Objects or Meshes.
+-  `Tiled TMX Importer <https://www.assetstore.unity3d.com/en/#!/content/102928>`__, imports into Unity 2017.2's new native Tilemap system.
 
 Unreal Engine 4
 ~~~~~~~~~~~~~~~
