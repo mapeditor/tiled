@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "painttilelayer.h"
+#include "randompicker.h"
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 
@@ -448,6 +449,18 @@ static const QPoint aroundVertexPoints[] = {
     QPoint(-1, -1)
 };
 
+static WangTile findMatchingWangTile(const WangSet *wangSet, WangId wangId)
+{
+    const auto potentials = wangSet->findMatchingWangTiles(wangId);
+    if (potentials.isEmpty())
+        return WangTile();
+
+    RandomPicker<WangTile, float> wangTiles;
+    for (const WangTile &wangTile : potentials)
+        wangTiles.add(wangTile, wangSet->wangTileProbability(wangTile));
+    return wangTiles.pick();
+}
+
 void WangBrush::updateBrush()
 {
     brushItem()->clear();
@@ -519,7 +532,7 @@ void WangBrush::updateBrush()
                     centerWangId.setEdgeColor(i, mCurrentColor);
             }
 
-            const Cell &cell = mWangSet->findMatchingWangTile(centerWangId).makeCell();
+            const Cell &cell = findMatchingWangTile(mWangSet, centerWangId).makeCell();
             if (cell.isEmpty()) {
                 QRegion r = QRect(mPaintPoint, QSize(1, 1));
                 for (int i = 0; i < 8; i += 2)
@@ -561,7 +574,7 @@ void WangBrush::updateBrush()
                 }
             }
 
-            const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
+            const Cell &cell = findMatchingWangTile(mWangSet, wangId).makeCell();
 
             if (cell.isEmpty()) {
                 QRegion r = QRect(mPaintPoint, QSize(1, 1));
@@ -631,7 +644,7 @@ void WangBrush::updateBrush()
 
                 wangId.setCornerColor((i + 2) % 4, mCurrentColor);
 
-                const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
+                const Cell &cell = findMatchingWangTile(mWangSet, wangId).makeCell();
 
                 if (cell.isEmpty()) {
                     QRegion r;
@@ -683,7 +696,7 @@ void WangBrush::updateBrush()
             if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(mPaintPoint))) {
                 wangId.setEdgeColor(mEdgeDir, mCurrentColor);
 
-                const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
+                const Cell &cell = findMatchingWangTile(mWangSet, wangId).makeCell();
 
                 if (cell.isEmpty()) {
                     QRegion r = QRect(mPaintPoint, QSize(1, 1));
@@ -699,7 +712,7 @@ void WangBrush::updateBrush()
             if (WangId wangId = mWangSet->wangIdOfCell(currentLayer->cellAt(dirPoint))) {
                 wangId.setEdgeColor((mEdgeDir + 2) % 4, mCurrentColor);
 
-                const Cell &cell = mWangSet->findMatchingWangTile(wangId).makeCell();
+                const Cell &cell = findMatchingWangTile(mWangSet, wangId).makeCell();
 
                 if (cell.isEmpty()) {
                     QRegion r = QRect(mPaintPoint, QSize(1, 1));

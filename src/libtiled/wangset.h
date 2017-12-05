@@ -342,12 +342,6 @@ public:
     void addCell(const Cell &cell, WangId wangId);
     void addWangTile(const WangTile &wangTile);
 
-    /* Finds a tile whos WangId matches with the one provided,
-     * where zeros in the id are treated as wild cards, and can be
-     * any color.
-     * */
-    WangTile findMatchingWangTile(WangId wangId) const;
-
     /* Finds all the tiles which match the given wangId,
      * where zeros in the id are treated as wild cards, and can be
      * any color.
@@ -385,9 +379,9 @@ public:
 
     WangId wangIdOfCell(const Cell &cell) const;
 
-    /* The probability of a given wangId of being selected
+    /* The probability of a given wang tile of being selected.
      * */
-    float wangIdProbability(WangId wangId) const;
+    float wangTileProbability(const WangTile &wangTile) const;
 
     /* Returns whether or not the given wangId is valid in the contex of the current wangSet
      * */

@@ -95,7 +95,7 @@ Cell WangFiller::findFittingCell(const TileLayer &back,
     RandomPicker<WangTile, float> wangTiles;
 
     for (const WangTile &wangTile : wangTilesList)
-        wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
+        wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
 
     WangTile wangTile;
     if (!mWangSet->isComplete()) {
@@ -189,7 +189,7 @@ TileLayer *WangFiller::fillRegion(const TileLayer &back,
                 RandomPicker<WangTile, float> wangTiles;
 
                 for (const WangTile &wangTile : wangTilesList)
-                    wangTiles.add(wangTile, mWangSet->wangIdProbability(wangTile.wangId()));
+                    wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
 
                 while (!wangTiles.isEmpty()) {
                     WangTile wangTile = wangTiles.take();

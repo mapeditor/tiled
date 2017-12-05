@@ -105,5 +105,5 @@ private:
     float mNewProbability;
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled

@@ -569,16 +569,6 @@ void WangSet::removeWangTile(const WangTile &wangTile)
         --mUniqueFullWangIdCount;
 }
 
-WangTile WangSet::findMatchingWangTile(WangId wangId) const
-{
-    auto potentials = findMatchingWangTiles(wangId);
-
-    if (potentials.length() > 0)
-        return potentials[qrand() % potentials.length()];
-    else
-        return WangTile();
-}
-
 QList<WangTile> WangSet::wangTiles() const
 {
     QList<WangTile> wangTiles = mWangIdToWangTile.values();
@@ -670,9 +660,10 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
         return 0;
 }
 
-float WangSet::wangIdProbability(WangId wangId) const
+float WangSet::wangTileProbability(const WangTile &wangTile) const
 {
-    float probability = 1;
+    float probability = 1.0f;
+    WangId wangId = wangTile.wangId();
 
     if (edgeColorCount() > 1) {
         for (int i = 0; i < 4; ++i) {
@@ -687,6 +678,9 @@ float WangSet::wangIdProbability(WangId wangId) const
                 probability *= cornerColorAt(color)->probability();
         }
     }
+
+    if (Tile *tile = wangTile.tile())
+        probability *= tile->probability();
 
     return probability;
 }
