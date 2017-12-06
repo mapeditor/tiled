@@ -32,7 +32,7 @@
 #include "tilelayer.h"
 
 #include <QStyleOptionGraphicsItem>
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 using namespace Internal;
@@ -204,13 +204,14 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF tilePosF = renderer->screenToTileCoords(offsetPos);
-    QPoint tilePos;
 
     if (mBrushMode == PaintVertex) {
+        QPoint tilePos;
         if (StaggeredRenderer *staggeredRenderer = dynamic_cast<StaggeredRenderer*>(mapDocument()->renderer())) {
-            double x, y;
-            QPointF tileLocalPoint(modf(tilePosF.x(), &x),
-                                   modf(tilePosF.y(), &y));
+            int x = qFloor(tilePosF.x());
+            int y = qFloor(tilePosF.y());
+            QPointF tileLocalPoint = tilePosF - QPoint(x, y);
+
             if (tileLocalPoint.x() < 0.5) {
                 if (tileLocalPoint.y() < 0.5)
                     tilePos = staggeredRenderer->topRight(x, y);
@@ -232,17 +233,13 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
             updateStatusInfo();
         }
     } else {
-        double x, y;
-        QPointF tileLocalPoint(modf(tilePosF.x(), &x),
-                               modf(tilePosF.y(), &y));
-
-        tilePos.setX(x);
-        tilePos.setY(y);
+        QPoint tilePos(qFloor(tilePosF.x()), qFloor(tilePosF.y()));
+        QPointF tileLocalPoint = tilePosF - tilePos;
 
         //Checks when painting which would avoid change.
         if (mBrushBehavior == Paint && tilePos == mPaintPoint) {
-            if (std::abs(tileLocalPoint.x() - 0.5f) < MIDDLE_DEAD_ZONE
-                    && std::abs(tileLocalPoint.y() - 0.5f) < MIDDLE_DEAD_ZONE)
+            if (std::abs(tileLocalPoint.x() - 0.5) < MIDDLE_DEAD_ZONE
+                    && std::abs(tileLocalPoint.y() - 0.5) < MIDDLE_DEAD_ZONE)
                 return;
 
             switch (mEdgeDir) {
