@@ -96,7 +96,7 @@ void WangColorDelegate::paint(QPainter *painter,
         painter->setPen(QPen(darkerColor));
         if (mWangColorView->selectionModel()->currentIndex() == index) {
             painter->setBrush(QBrush(darkerColor));
-            painter->setOpacity(0.5f);
+            painter->setOpacity(0.5);
         } else {
             painter->setBrush(Qt::NoBrush);
         }

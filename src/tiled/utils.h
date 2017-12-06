@@ -73,5 +73,7 @@ bool isZoomInShortcut(QKeyEvent *event);
 bool isZoomOutShortcut(QKeyEvent *event);
 bool isResetZoomShortcut(QKeyEvent *event);
 
+void addFileManagerActions(QMenu &menu, const QString &fileName);
+
 } // namespace Utils
 } // namespace Tiled

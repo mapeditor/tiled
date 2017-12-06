@@ -194,9 +194,12 @@ TilesetDock::TilesetDock(QWidget *parent)
 
     mTabBar->setUsesScrollButtons(true);
     mTabBar->setExpanding(false);
+    mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(mTabBar, &QTabBar::currentChanged, this, &TilesetDock::updateActions);
     connect(mTabBar, &QTabBar::tabMoved, this, &TilesetDock::onTabMoved);
+    connect(mTabBar, &QWidget::customContextMenuRequested,
+            this, &TilesetDock::tabContextMenuRequested);
 
     QWidget *w = new QWidget(this);
 
@@ -798,6 +801,21 @@ void TilesetDock::onTabMoved(int from, int to)
     QWidget *widget = mViewStack->widget(from);
     mViewStack->removeWidget(widget);
     mViewStack->insertWidget(to, widget);
+}
+
+void TilesetDock::tabContextMenuRequested(const QPoint &pos)
+{
+    int index = mTabBar->tabAt(pos);
+    if (index == -1)
+        return;
+
+    QMenu menu;
+
+    QString fileName = mTilesetDocuments.at(index)->fileName();
+    if (!fileName.isEmpty())
+        Utils::addFileManagerActions(menu, fileName);
+
+    menu.exec(mTabBar->mapToGlobal(pos));
 }
 
 Tileset *TilesetDock::currentTileset() const

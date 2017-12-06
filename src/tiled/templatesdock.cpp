@@ -336,14 +336,19 @@ void TemplatesView::contextMenuEvent(QContextMenuEvent *event)
     if (!index.isValid())
         return;
 
+    QMenu menu;
+
+    Utils::addFileManagerActions(menu, mModel->filePath(index));
+
     if (ObjectTemplate *objectTemplate = mModel->toObjectTemplate(index)) {
-        QMenu menu;
+        menu.addSeparator();
         menu.addAction(tr("Select All Instances"), [objectTemplate] {
             MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
             handler->selectAllInstances(objectTemplate);
         });
-        menu.exec(event->globalPos());
     }
+
+    menu.exec(event->globalPos());
 }
 
 QSize TemplatesView::sizeHint() const
