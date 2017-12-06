@@ -45,7 +45,6 @@ public:
 
     WangColorModel(TilesetDocument *tilesetDocument,
                    QObject *parent = nullptr);
-    ~WangColorModel() {}
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
@@ -77,13 +76,13 @@ public:
 
     WangSet *wangSet() const { return mWangSet; }
 
-    bool hasTilesetDocument() const { return mTilesetDocument != 0; }
+    bool hasTilesetDocument() const { return mTilesetDocument != nullptr; }
 
-    void setName(QString name, bool isEdge, int index);
+    void setName(const QString &name, bool isEdge, int index);
 
     void setImage(int imageId, bool isEdge, int index);
 
-    void setColor(QColor color, bool isEdge, int index);
+    void setColor(const QColor &color, bool isEdge, int index);
 
     void setProbability(float probability, bool isEdge, int index);
 

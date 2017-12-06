@@ -234,7 +234,7 @@ QSharedPointer<WangColor> WangColorModel::wangColorAt(const QModelIndex &index) 
         return mWangSet->cornerColorAt(colorAt(index));
 }
 
-void WangColorModel::setName(QString name, bool isEdge, int index)
+void WangColorModel::setName(const QString &name, bool isEdge, int index)
 {
     if (isEdge)
         mWangSet->edgeColorAt(index)->setName(name);
@@ -256,13 +256,12 @@ void WangColorModel::setImage(int imageId, bool isEdge, int index)
     emit dataChanged(i, i);
 }
 
-void WangColorModel::setColor(QColor color, bool isEdge, int index)
+void WangColorModel::setColor(const QColor &color, bool isEdge, int index)
 {
     if (isEdge)
         mWangSet->edgeColorAt(index)->setColor(color);
     else
         mWangSet->cornerColorAt(index)->setColor(color);
-
 
     QModelIndex i = isEdge ? edgeIndex(index) : cornerIndex(index);
     emit dataChanged(i, i);

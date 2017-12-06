@@ -287,6 +287,22 @@ Cell WangTile::makeCell() const
     return cell;
 }
 
+
+WangColor::WangColor()
+    : WangColor(0, true, QString(), Qt::red, -1)
+{}
+
+WangColor::WangColor(int colorIndex, bool isEdge, const QString &name, const QColor &color, int imageId, float probability)
+    : Object(WangColorType)
+    , mColorIndex(colorIndex)
+    , mIsEdge(isEdge)
+    , mName(name)
+    , mColor(color)
+    , mImageId(imageId)
+    , mProbability(probability)
+{}
+
+
 static const QColor defaultWangColors[] =  {
     QColor(255, 0, 0),
     QColor(0, 255, 0),
