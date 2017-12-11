@@ -781,13 +781,10 @@ void Tileset::updateTileSize()
 QString Tileset::orientationToString(Tileset::Orientation orientation)
 {
     switch (orientation) {
-    default:
     case Tileset::Orthogonal:
         return QLatin1String("orthogonal");
-        break;
     case Tileset::Isometric:
         return QLatin1String("isometric");
-        break;
     }
 }
 

@@ -105,8 +105,8 @@ order of their ``firstgid`` attribute. The first tileset always has a
 not necessarily number their tiles consecutively since gaps can occur
 when removing tiles.
 
-Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-properties`,
-:ref:`tmx-image`, :ref:`tmx-terraintypes`,
+Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-grid` (since 1.0),
+:ref:`tmx-properties`, :ref:`tmx-image`, :ref:`tmx-terraintypes`,
 :ref:`tmx-tileset-tile`, :ref:`tmx-wangsets` (since 1.1)
 
 .. _tmx-tileoffset:
@@ -120,6 +120,20 @@ Can contain: :ref:`tmx-tileoffset`, :ref:`tmx-properties`,
 This element is used to specify an offset in pixels, to be applied when
 drawing a tile from the related tileset. When not present, no offset is
 applied.
+
+.. _tmx-grid:
+
+<grid>
+~~~~~~
+
+-  **orientation:** Orientation of the grid for the tiles in this
+   tileset (``orthogonal`` or ``isometric``)
+-  **width:** Width of a grid cell
+-  **height:** Height of a grid cell
+
+This element is only used in case of isometric orientation, and
+determines how tile overlays for terrain and collision information are
+rendered.
 
 .. _tmx-image:
 
