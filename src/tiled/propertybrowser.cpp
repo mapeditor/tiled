@@ -918,7 +918,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         undoStack->beginMacro(tr("Change Infinite Property"));
 
         if (!infinite) {
-            QRect mapBounds;
+            QRect mapBounds(QPoint(0, 0), mMapDocument->map()->size());
 
             LayerIterator iterator(mMapDocument->map());
             while (Layer *layer = iterator.next()) {
