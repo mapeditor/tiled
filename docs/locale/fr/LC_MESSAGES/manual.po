@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-03 17:16+0200\n"
-"PO-Revision-Date: 2017-11-18 07:46+0000\n"
-"Last-Translator: Julien Dumont <j.dumont863@laposte.net>\n"
+"PO-Revision-Date: 2017-12-12 13:36+0000\n"
+"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
 "Language: fr\n"
@@ -94,27 +94,24 @@ msgid "**color** (a 32-bit color value)"
 msgstr "**color** (une valeur de couleur sur 32 bits)"
 
 #: ../../manual/custom-properties.rst:36
-#, fuzzy
 msgid "Add Property Dialog"
-msgstr "Ajouter La Boîte De Dialogue De Propriété"
+msgstr "Ajouter la Boîte de Dialogue de Propriété"
 
 #: ../../manual/custom-properties.rst:38
-#, fuzzy
 msgid ""
 "The property type is used to choose a custom editor in the Properties "
 "view. Choosing a number or boolean type also avoids that the value will "
 "get quoted in JSON and Lua exports."
 msgstr ""
-"Le type de propriété est utilisée pour choisir un éditeur personnalisé dans "
-"la Propriétés \"vue\". Le choix d'un nombre ou le type booléen permet "
-"également d'éviter que la valeur obtenu en JSON et Lua soit cité dans "
-"l'exportations."
+"Le type de propriété est utilisé pour choisir un éditeur personnalisé dans "
+"la vue \"Propriétés\". Le choix d'un type de nombre ou de booléen permet "
+"également d'éviter que la valeur obtenue soit citée dans les exportations en "
+"JSON et Lua."
 
 #: ../../manual/custom-properties.rst:46 ../../manual/custom-properties.rst:106
 #: ../../manual/editing-tile-layers.rst:59 ../../manual/layers.rst:99
 #: ../../manual/objects.rst:101 ../../manual/objects.rst:116
 #: ../../manual/objects.rst:156
-#, fuzzy
 msgid "New in Tiled 1.0"
 msgstr "Nouveau dans Tiled 1.0"
 
@@ -155,7 +152,6 @@ msgid "General Setup"
 msgstr "Paramètres Généraux"
 
 #: ../../manual/custom-properties.rst:75
-#, fuzzy
 msgid ""
 "Usually you only use a limited set of object types in your game, and each"
 " type of object has a fixed set of possible properties, with specific "
@@ -163,19 +159,18 @@ msgid ""
 "these properties based on the \"Type\" field for objects. You can set "
 "this up using the Object Types Editor, available from the *View* menu."
 msgstr ""
-"Habituellement vous utilisez une quantité limitée de types d'objets dans "
-"votre jeu, et chaque type a un nombre fixe de propriétés possibles, avec des "
-"types spécifiques et des valeurs par défaut. Pour économiser votre temps, "
-"Tiled permet de prédéfinir ces propriétés  en se basant sur le champ \"Type\""
-" des objets. Vous pouvez mettre ceci en place en utilisant l'Éditeur de "
-"Types d'Objets, disponible depuis le menu \"Vue\"."
+"Normalement, vous utilisez une quantité limitée de types d'objets dans votre "
+"jeu, et chaque type a un nombre fixe de propriétés possibles, avec des types "
+"spécifiques et des valeurs par défaut. Pour économiser votre temps, Tiled "
+"permet de prédéfinir ces propriétés en se basant sur le champ \"Type\" des "
+"objets. Vous pouvez mettre ceci en place en utilisant l'Éditeur de Types "
+"d'Objets, disponible depuis le menu \"Vue\"."
 
 #: ../../manual/custom-properties.rst:85
 msgid "Object Types Editor"
 msgstr "Éditeur de Type d'Objet"
 
 #: ../../manual/custom-properties.rst:87
-#, fuzzy
 msgid ""
 "By default, Tiled stores these object types in the user settings. "
 "However, since you'll often want to share them with other people in your "
@@ -183,12 +178,12 @@ msgid ""
 "of the object types file. A simple XML or JSON file with self-explanatory"
 " contents is used to store your object types."
 msgstr ""
-"Par défaut Tiled stocke ces types d'objets dans les paramètres "
-"d'Utilisateurs. Cependant depuis que vous voulez souvent les partager avec "
-"les autres personnes de votre projet, vous pouvez exporter ces types "
-"d'objets ou modifier le répertoire d'enregistrement des fichiers de types "
-"d'objets. Un simple fichier XML ou JSON avec un contenu auto-explicatif est "
-"utilisé pour stocker vos types d'objets."
+"Par défaut, Tiled stocke ces types d'objets dans les paramètres "
+"d'utilisateur. Cependant, comme vous voudrez souvent les partager avec les "
+"autres personnes de votre projet, vous pouvez exporter ces types d'objets ou "
+"modifier le répertoire d'enregistrement des fichiers de types d'objets. Un "
+"simple fichier XML ou JSON avec un contenu auto-explicatif est utilisé pour "
+"stocker vos types d'objets."
 
 #: ../../manual/custom-properties.rst:93
 msgid ""
@@ -201,7 +196,6 @@ msgstr ""
 "votre objet."
 
 #: ../../manual/custom-properties.rst:97
-#, fuzzy
 msgid ""
 "To make the predefined properties show up in the Properties view, all you"
 " need to do is to enter the name of the type in the built-in \"Type\" "
@@ -210,15 +204,14 @@ msgid ""
 msgstr ""
 "Pour faire apparaître les propriétés prédéfinies dans la vue Propriétés, "
 "tout ce que vous devez faire est d'entrer le nom et le type dans la "
-"propriété \"Type\" intégrée. Habituellement c'est ce que vous faites de "
-"toute façon en indiquant à votre moteur de jeu quel genre d'objet il utilise."
+"propriété \"Type\" intégrée. Normalement, c'est ce que vous faites de toute "
+"façon pour indiquer à votre moteur de jeu quel genre d'objet il utilise."
 
 #: ../../manual/custom-properties.rst:115
 msgid "Typed Tiles"
 msgstr "Tuiles Typées"
 
 #: ../../manual/custom-properties.rst:117
-#, fuzzy
 msgid ""
 "If you're using tile objects, you can set the type on the tile to avoid "
 "having to set it on each object instance. Setting the type on the tile "
@@ -227,7 +220,7 @@ msgid ""
 "values visible when having a tile object instance selected, again "
 "allowing you to override them."
 msgstr ""
-"Si vous utilisez des objets tuiles, vous pouvez indiquer le type sur la "
+"Si vous utilisez des objets de tuile, vous pouvez indiquer le type sur la "
 "tuile pour éviter d'avoir à l'indiquer sur chaque instance de l'objet. "
 "Mettre en place le type sur la tuile rend les propriétés prédéfinies "
 "visibles quand la tuile est sélectionnée, permettant de modifier les "
@@ -335,7 +328,6 @@ msgstr ""
 
 #: ../../manual/custom-properties.rst:165 ../../manual/layers.rst:139
 #: ../../manual/objects.rst:270
-#, fuzzy
 msgid ""
 "If you like any of these plans, please help me getting around to it "
 "faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The more"
@@ -343,8 +335,8 @@ msgid ""
 msgstr ""
 "Si vous aimez au moins un seul de ces points, s'il-vous-plaît aidez-moi à y "
 "arriver plus vite en `devenant un mécène <https://www.patreon.com/bjorn>`__. "
-"Plus je recevrai de soutient, plus j'aurais les moyens de passer du temps à "
-"améliorer Tiled."
+"Plus je recevrai de soutien, plus j'aurais les moyens de passer du temps à "
+"améliorer Tiled!"
 
 #: ../../manual/editing-tile-layers.rst:2
 msgid "Editing Tile Layers"
