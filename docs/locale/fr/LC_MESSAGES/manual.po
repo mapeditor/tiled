@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-03 17:16+0200\n"
-"PO-Revision-Date: 2017-12-12 13:36+0000\n"
-"Last-Translator: Bastien LABOUCHE <bastien.labouche@live.fr>\n"
+"PO-Revision-Date: 2017-12-13 08:53+0000\n"
+"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
 "Language: fr\n"
@@ -31,10 +31,10 @@ msgid ""
 "to include many forms of custom information, which can later be used by "
 "your game or by the framework you're using to integrate Tiled maps."
 msgstr ""
-"Une des grandes forces de Tiled, est qu'il permet de définir des propriétés "
-"personnalisées sur l'ensemble de ses structures de base de données. De cette "
-"manière, il est possible d'inclure de nombreuses formes personnalisées "
-"d'information, qui peuvent être ensuite utilisé par votre jeu ou par le "
+"Une des grandes forces de Tiled est qu'il permet de définir des propriétés "
+"personnalisées sur l'ensemble de ses structures de données. De cette "
+"manière, il est possible d'inclure de nombreuses formes d'information "
+"personnalisées, qui peuvent être ensuite utilisées par votre jeu ou par le "
 "framework que vous utilisez pour intégrer les cartes de Tiled."
 
 #: ../../manual/custom-properties.rst:9
@@ -105,8 +105,8 @@ msgid ""
 msgstr ""
 "Le type de propriété est utilisé pour choisir un éditeur personnalisé dans "
 "la vue \"Propriétés\". Le choix d'un type de nombre ou de booléen permet "
-"également d'éviter que la valeur obtenue soit citée dans les exportations en "
-"JSON et Lua."
+"également d'éviter que la valeur obtenue en JSON et Lua soit citée dans les "
+"exportations."
 
 #: ../../manual/custom-properties.rst:46 ../../manual/custom-properties.rst:106
 #: ../../manual/editing-tile-layers.rst:59 ../../manual/layers.rst:99
@@ -159,12 +159,12 @@ msgid ""
 "these properties based on the \"Type\" field for objects. You can set "
 "this up using the Object Types Editor, available from the *View* menu."
 msgstr ""
-"Normalement, vous utilisez une quantité limitée de types d'objets dans votre "
-"jeu, et chaque type a un nombre fixe de propriétés possibles, avec des types "
-"spécifiques et des valeurs par défaut. Pour économiser votre temps, Tiled "
-"permet de prédéfinir ces propriétés en se basant sur le champ \"Type\" des "
-"objets. Vous pouvez mettre ceci en place en utilisant l'Éditeur de Types "
-"d'Objets, disponible depuis le menu \"Vue\"."
+"Normalement, vous n'utilisez qu'un nombre limité de types d'objets dans "
+"votre jeu, et chaque type d'objet a un nombre fixe de propriétés possibles, "
+"avec des types spécifiques et des valeurs par défaut. Pour économiser votre "
+"temps, Tiled permet de prédéfinir ces propriétés en se basant sur le champ \""
+"Type\" des objets. Vous pouvez le mettre en place en utilisant l'Éditeur de "
+"Type d'Objet disponible depuis le menu \"Vue\"."
 
 #: ../../manual/custom-properties.rst:85
 msgid "Object Types Editor"
@@ -336,7 +336,7 @@ msgstr ""
 "Si vous aimez au moins un seul de ces points, s'il-vous-plaît aidez-moi à y "
 "arriver plus vite en `devenant un mécène <https://www.patreon.com/bjorn>`__. "
 "Plus je recevrai de soutien, plus j'aurais les moyens de passer du temps à "
-"améliorer Tiled!"
+"améliorer Tiled !"
 
 #: ../../manual/editing-tile-layers.rst:2
 msgid "Editing Tile Layers"
@@ -350,10 +350,10 @@ msgid ""
 "efficient content creation. Every new map gets one by default, though "
 "feel free to delete it when you're not going to use it."
 msgstr ""
-":ref:`tile-layer-introduction`sont ce qui fait de Tiled un *éditeur de "
-"cartes par tuiles*. Même si ils ne sont pas aussi flexibles que :ref:`object-"
-"layer-introduction`, ils fournissent un stockage efficace des données et un "
-"bon rendu de performance ainsi qu'une création de contenu efficace. Chaque "
+":ref:`tile-layer-introduction`sont ce qui fait de Tiled un *éditeur de carte "
+"par tuiles*. Même si ils ne sont pas aussi flexibles que :ref:`object-layer-"
+"introduction`, ils fournissent un stockage efficace des données et un bon "
+"rendu de performance ainsi qu'une création de contenu efficace. Chaque "
 "nouvelle carte en obtient une par défaut mais sentez-vous libre de la "
 "supprimer quand vous n'allez pas l'utiliser."
 
@@ -366,7 +366,6 @@ msgid "Shortcut: ``B``"
 msgstr "Raccourci: ``B``"
 
 #: ../../manual/editing-tile-layers.rst:15
-#, fuzzy
 msgid ""
 "The primary tool for editing tile layers is the Stamp Brush. It can be "
 "used to paint single tiles as well as larger \"stamps\", which is where "
@@ -378,8 +377,8 @@ msgstr ""
 "Tampon. Elle peut être utilisée pour peindre aussi bien une seule tuile "
 "qu'un \"tampon\" plus large, c'est de là que vient son nom. En utilisant le "
 "clique droit de la souris, elle peut également capturer rapidement un tampon "
-"de tuile du niveau actif. Un tampon de tuile est communément crée en "
-"sélectionnant une ou plusieurs tuiles dans la vue Tilesets."
+"de tuile de la couche active. Un tampon de tuile est communément crée en "
+"sélectionnant une ou plusieurs tuiles dans la vue \"Tilesets\"."
 
 #: ../../manual/editing-tile-layers.rst:21
 msgid "The Stamp Brush has some extra features:"
@@ -442,26 +441,23 @@ msgid ""
 ":doc:`Using the Terrain Tool <using-the-terrain-tool>`."
 msgstr ""
 "La Brosse de Terrain permet une édition efficace avec un certain type de "
-"transitions de terrain basée sur le coin. Les mettre en place requiert "
+"transitions de terrain basée sur le coin. La mettre en place requiert "
 "d'associer les informations de terrain avec vos tuiles, qui sont décrites en "
 "détail dans :doc:`Utiliser Les Outils de Terrain <using-the-terrain-tool>`."
 
 #: ../../manual/editing-tile-layers.rst:50
-#, fuzzy
 msgid ""
 "Similarly to the `Stamp Brush <#stamp-brush>`__, you can draw lines by "
 "holding ``Shift``. When holding ``Ctrl``, the size of the editing area is"
 " reduced to one corner (this currently doesn't work well in combination "
 "with drawing lines)."
 msgstr ""
-"De manière similaire à la `Brosse Tampon <#stamp-brush>`__, vous pouvez "
-"dessiner des lignes en maintenant enfoncée la touche ``Maj``. En maintenant "
-"la touche ``Ctrl`` enfoncée, la taille de la zone d'édition est réduite à un "
-"coin (actuellement cela ne fonctionne pas très bien avec le dessin de "
-"lignes)."
+"Comme pour la `Brosse Tampon <#stamp-brush>`__, vous pouvez dessiner des "
+"lignes en maintenant enfoncée la touche ``Maj``. En maintenant la touche "
+"``Ctrl`` enfoncée, la taille de la zone d'édition est réduite à un coin ("
+"actuellement cela ne fonctionne pas très bien avec le dessin de lignes)."
 
 #: ../../manual/editing-tile-layers.rst:65
-#, fuzzy
 msgid ""
 "When holding ``Alt``, the editing operations are also applied at a 180 "
 "degree rotation. This is especially useful when editing strategic maps "
@@ -476,23 +472,21 @@ msgstr ""
 "``Maj`` pour dessiner des lignes ou ``Ctrl`` pour réduire la zone d'édition."
 
 #: ../../manual/editing-tile-layers.rst:72
-#, fuzzy
 msgid "Bucket Fill Tool"
-msgstr "Outil de Remplissage de Seau"
+msgstr "Outil de Seau de Remplissage"
 
 #: ../../manual/editing-tile-layers.rst:74
 msgid "Shortcut: ``F``"
 msgstr "Raccourci: ``F``"
 
 #: ../../manual/editing-tile-layers.rst:76
-#, fuzzy
 msgid ""
 "The Bucket Fill Tool provides a quick way of filling empty areas or areas"
 " covered with the same tiles. The currently active tile stamp will be "
 "repeated in the filled area. It can also be used in combination with the "
 "*Random Mode*."
 msgstr ""
-"L'Outil de Remplissage de Seau fournit une manière rapide de remplir les "
+"L'Outil de Seau de Remplissage fournit une manière rapide de remplir les "
 "zones vides ou les zones couvertes par les mêmes tuiles. Le tampon de tuile "
 "actuellement sélectionné sera répété dans la zone de remplissage. Il peut "
 "également être utilisé en combinaison avec le *Mode Aléatoire*."
@@ -561,84 +555,73 @@ msgstr ""
 "travers le niveau entier (raccourci : ``S``)"
 
 #: ../../manual/editing-tile-layers.rst:108
-#, fuzzy
 msgid ""
 "By default, each of these tools replaces the currently selected area. The"
 " following modifiers can be used to change this behavior:"
 msgstr ""
 "Par défaut, chacun de ces outils remplace la zone actuellement sélectionnée. "
-"Les modificateurs suivants peuvent être utilisé pour changer ce comportement."
+"Les modificateurs suivants peuvent être utilisés pour changer ce "
+"comportement :"
 
 #: ../../manual/editing-tile-layers.rst:111
-#, fuzzy
 msgid "Holding ``Shift`` expands the current selection with the new area"
-msgstr "Maintenir 'Shift' élargie la sélection actuelle avec la nouvelle zone."
+msgstr "Maintenir 'Shift' élargit la sélection actuelle avec la nouvelle zone"
 
 #: ../../manual/editing-tile-layers.rst:112
-#, fuzzy
 msgid "Holding ``Ctrl`` subtracts the new area from the current selection"
-msgstr "Maintenir \"Ctrl\" enlève la nouvelle zone de la sélection actuelle."
+msgstr "Maintenir \"Ctrl\" enlève la nouvelle zone de la sélection actuelle"
 
 #: ../../manual/editing-tile-layers.rst:113
-#, fuzzy
 msgid ""
 "Holding ``Ctrl`` and ``Shift`` selects the intersection of the new area "
 "with the current selection"
 msgstr ""
 "Maintenir \"Ctrl\" et \"Shift\" sélectionne l'intersection de la nouvelle "
-"zone avec la sélection actuelle."
+"zone avec la sélection actuelle"
 
 #: ../../manual/editing-tile-layers.rst:117
-#, fuzzy
 msgid "Managing Tile Stamps"
-msgstr "Gérer les tampons des tuiles."
+msgstr "Gérer les Tampons de Tuile"
 
 #: ../../manual/editing-tile-layers.rst:119
-#, fuzzy
 msgid ""
 "It can often be useful to store the current tile stamp somewhere to use "
 "it again later. The following shortcuts work for this purpose:"
 msgstr ""
 "Cela peut souvent être utile de stocker le tampon de tuile actuel quelque "
-"part pour l'utiliser à nouveau plus tard.\n"
-"Les raccourcis suivants œuvrent dans ce but."
+"part pour l'utiliser à nouveau plus tard. Les raccourcis suivants œuvrent "
+"dans ce but :"
 
 #: ../../manual/editing-tile-layers.rst:122
-#, fuzzy
 msgid "``Ctrl + 1-9`` - Store current tile stamp (similar to ``Ctrl + C``)"
 msgstr ""
-"\"Ctrl + [touche 1-9]\" - Stocke le tampon de tuile actuel (similaire à \""
-"Ctrl+C\")."
+"``Ctrl + 1-9`` - Stocke le tampon de tuile actuel (similaire à ``Ctrl + C``)"
 
 #: ../../manual/editing-tile-layers.rst:123
-#, fuzzy
 msgid ""
 "``1-9`` - Recall the stamp stored at this location (similar to ``Ctrl + "
 "V``)"
 msgstr ""
-"\"1-9\" - Rappelle le tampon stocker à cette emplacement(similaire à \"Ctrl+"
-"V\")"
+"``1-9`` - Resélectionne le tampon stocké à cette emplacement (similaire à "
+"``Ctrl+V``)"
 
 #: ../../manual/editing-tile-layers.rst:126
-#, fuzzy
 msgid ""
 "Tile stamps can also be stored by name and extended with variations using"
 " the *Tile Stamps* view."
 msgstr ""
-"Les tampons de tuile peuvent aussi être stocker par noms et prolongé avec "
-"des variations en utilisant la vue des tampons de tuile."
+"Les tampons de tuile peuvent aussi être stocker par nom et prolongé avec des "
+"variations en utilisant la vue *Tampons de Tuile*."
 
 #: ../../manual/introduction.rst:2
 msgid "Introduction"
 msgstr "Introduction"
 
 #: ../../manual/introduction.rst:5
-#, fuzzy
 msgid "About Tiled"
 msgstr "A propos de Tiled"
 
 #: ../../manual/introduction.rst:7
-#, fuzzy
 msgid ""
 "**Tiled is a 2D level editor that helps you develop the content of your "
 "game. Its primary feature is to edit tile maps of various forms, but it "
@@ -647,14 +630,13 @@ msgid ""
 "general flexibility while trying to stay intuitive.**"
 msgstr ""
 "**Tiled est un éditeur de niveau en 2D qui vous aide à développer le contenu "
-"de votre jeu. Sa principale caractéristique est d'éditer des cartes de "
-"tuiles aux formes variées, mais également en charge le placement d'image "
+"de votre jeu. Sa principale caractéristique est d'éditer des cartes de tuile "
+"aux formes variées, mais prend également en charge le placement d'image "
 "libre ainsi que des moyens efficaces d'annoter votre niveau avec des "
-"informations supplémentaires utilisées par le jeu. Tiled se concentre su la "
-"flexibilité générale en essayant de rester intuitif ."
+"informations supplémentaires utilisées par le jeu. Tiled se concentre sur la "
+"flexibilité générale en essayant de rester intuitif.**"
 
 #: ../../manual/introduction.rst:13
-#, fuzzy
 msgid ""
 "In terms of tile maps, it supports straight rectangular tile layers, but "
 "also projected isometric, staggered isometric and staggered hexagonal "
@@ -663,16 +645,15 @@ msgid ""
 "depth faking techniques, tiles and layers can be offset by a custom "
 "distance and their rendering order can be configured."
 msgstr ""
-"En termes de cartes de tuile, il supporte les couches de tuile rectangulaire "
-"droite, mais également les couches de  tuile isométrique, décalé isométrique "
-"et décalé hexagonal. Un jeu de tuile peut être soit une seule image "
-"contenant plusieurs carreaux, ou cela peut être une collection d'images "
-"individuelles. Afin de supporter certaines techniques de simulation de "
-"profondeur, les carreaux et les couches peuvent être décalés par une "
-"distance personnalisée et leur ordre de rendu peut être configuré."
+"En termes de cartes de tuile, il supporte les couches de tuile "
+"rectangulaires et droites, mais également les couches de tuile isométriques, "
+"isométrique en quinconce et hexagonal en quinconce. Un jeu de tuile peut "
+"être soit une seule image contenant plusieurs tuiles, ou peut aussi être une "
+"collection d'images individuelles. Afin de supporter certaines techniques de "
+"simulation de profondeur, les carreaux et les couches peuvent être décalés "
+"par une distance personnalisée et leur ordre de rendu peut être configuré."
 
 #: ../../manual/introduction.rst:20
-#, fuzzy
 msgid ""
 "The primary tool for editing tile layers is a stamp brush that allows "
 "efficient painting and copying of tile areas. It also supports drawing "
@@ -681,12 +662,13 @@ msgid ""
 "tool>`. Finally, it can apply changes based on `pattern-matching`_ to "
 "automate parts of your work."
 msgstr ""
-"L'outil principal pour éditer les couches de tuile est un pinceau à tampon "
-"qui permet une peinture et une copie efficace de zones de tuile. Il supporte "
-"aussi le traçage de lignes et de cercles. En outre, il y a plusieurs outils "
-"de sélection et  un outil qui fait :doc:`transitions automatiques de terrain "
-"<using-the-terrain-tool>`. Finalement, il peut appliquer des changements "
-"basé sur `pattern-matching`_ pour automatiser des parties de votre travail."
+"L'outil principal pour éditer les couches de tuile est un pinceau tampon qui "
+"permet un remplissage et une copie efficace de zones de tuile. Il supporte "
+"aussi le traçage de lignes et de cercles. De plus, il y a plusieurs outils "
+"de sélection et un outil qui fait des :doc:`transitions automatiques de "
+"terrain <using-the-terrain-tool>`. Finalement, il peut appliquer des "
+"changements basés sur une `correspondance de motif`_ pour automatiser des "
+"parties de votre travail."
 
 #: ../../manual/introduction.rst:27
 #, fuzzy
@@ -699,52 +681,46 @@ msgid ""
 "flexibility to add almost any information to your level that your game "
 "needs."
 msgstr ""
-"Tiled supporte aussi les couches d'objet, qui sont traditionnellement "
-"seulement pour annotée votre carte avec une information mais plus récemment "
-"ils peut également être utilisé pour placer des images. Vous pouvez aussi "
-"ajouter des objets rectangulaire, ellipse, polygone, polyligne et carreau. "
-"Le placement des objets n'est pas limité à la grille de tuile et les objets "
-"peuvent aussi être mis à l'échelle ou pivoté. Les couches d'objet offre "
+"Tiled supporte aussi des couches d'objet, qui sont normalement seulement "
+"utilisées pour annoter votre carte avec une information, mais plus récemment "
+"elles peuvent également être utilisées pour placer des images. Vous pouvez "
+"aussi ajouter des objets rectangulaires, elliptiques, polygonaux, polylignes "
+"et carreaux. Le placement des objets n'est pas limité à la grille de tuile "
+"et peuvent aussi être mis à l'échelle ou pivoté. Les couches d'objet offrent "
 "beaucoup de flexibilité pour ajouter presque n'importe quel information au "
 "niveau dont votre jeu a besoin."
 
 #: ../../manual/introduction.rst:35
-#, fuzzy
 msgid ""
 "Other things worth mentioning are the support for adding custom map or "
 "tileset formats through plugins, the tile stamp memory, tile animation "
 "support and the tile collision editor."
 msgstr ""
-"D'autres choses valent d'être mentionné sont le support d'ajout ou le format "
-"des tileset au travers des plugins,  la mémoire du tampon de tuile, le "
-"support d'animation de tuile et l'éditeur de collision de tuile."
+"D'autres choses qui valent d'être mentionné sont le support d'ajout de "
+"format de tileset ou de carte au travers de plugins, la mémoire du tampon de "
+"tuile, le support d'animation de tuile et l'éditeur de collision de tuile."
 
 #: ../../manual/introduction.rst:40
-#, fuzzy
 msgid "Getting Started"
 msgstr "Pour Débuter"
 
 #: ../../manual/introduction.rst:43
-#, fuzzy
 msgid "Creating a New Map"
-msgstr "Créer une nouvelle  carte."
+msgstr "Créer une Nouvelle Carte"
 
 #: ../../manual/introduction.rst:45
-#, fuzzy
 msgid ""
 "When launching Tiled for the first time, we are greeted with the "
 "following default window layout:"
 msgstr ""
-"Lors du premier lancement de Tiled, nous sommes accueilli par la mise en "
-"page de fenêtre par défaut suivant."
+"Lors du premier lancement de Tiled, nous sommes accueillis par cette fenêtre "
+"suivante par défaut :"
 
 #: ../../manual/introduction.rst:51
-#, fuzzy
 msgid "Tiled Window"
 msgstr "Fenêtre de Tiled"
 
 #: ../../manual/introduction.rst:53
-#, fuzzy
 msgid ""
 "There is a large gray area in the middle because no map is open yet. The "
 "first thing we’ll do is to start a new map with *File -> New…* "
@@ -752,47 +728,44 @@ msgid ""
 msgstr ""
 "Il y a une grande surface grise au milieu car il n'y a pas encore de carte "
 "ouverte. La première chose que nous ferons est de commencer une nouvelle "
-"carte *File -> New...*(``Ctrl+N``). La boite de dialogue suivante apparaîtra:"
+"carte avec *Fichier -> Nouveau...*(``Ctrl+N``). La boite de dialogue "
+"suivante apparaîtra :"
 
 #: ../../manual/introduction.rst:60
 msgid "New Map"
 msgstr "Nouvelle carte"
 
 #: ../../manual/introduction.rst:62
-#, fuzzy
 msgid ""
 "Here, we choose the initial map size, tile size, orientation, tile layer "
 "format and tile render order (only supported for *Orthogonal* maps). All "
 "of these things can be changed later as needed, so it’s not important to "
 "get it all right the first time."
 msgstr ""
-"Ici, nous choisissons la taille initial de la carte, la taille de tuile, "
-"l'orientation, le format de couche de tuile et l'ordre du rendu de tuile ("
-"seulement supporter pour les cartes *Orthogonal*). Toutes ces choses peuvent "
-"être changés plus tard si nécessaire, donc ce n'est pas important de tout "
-"bien faire du premier coup."
+"Ici, nous choisissons la taille initiale de la carte, la taille de tuile, "
+"l'orientation, le format de couche de tuile et l'ordre de rendu de tuile ("
+"seulement supporté pour les cartes *Orthogonales*). Toutes ces choses "
+"peuvent être changées plus tard si nécessaire, donc ce n'est pas important "
+"de tout bien faire du premier coup."
 
 #: ../../manual/introduction.rst:67
-#, fuzzy
 msgid ""
 "After pressing *OK*, we’ll see the tile grid and an initial tile layer "
 "will be added to the map. However, before we can start using any tiles we"
 " need to add a tileset. Choose *Map -> New Tileset…* to open the New "
 "Tileset dialog:"
 msgstr ""
-"Après avoir pressé *OK*,  nous verrons la grille de tuile et une couche "
+"Après avoir appuyé sur *OK*,  nous verrons la grille de tuile et une couche "
 "initiale de tuile sera ajouté à la carte. Toutefois, avant de pouvoir "
 "commencer à utiliser des tuiles nous devons ajouter un jeu de tuile. "
-"Choisissez *Map -> New Tileset...* pour ouvrir une nouvelle boire de "
-"dialogue de Tileset :"
+"Choisissez *Carte -> Nouveau Tileset...* pour ouvrir la boite de dialogue de "
+"Nouveau Jeu de Tuile :"
 
 #: ../../manual/introduction.rst:75
-#, fuzzy
 msgid "New Tileset"
-msgstr "Nouveau jeu de tuile"
+msgstr "Nouveau Jeu de Tuile"
 
 #: ../../manual/introduction.rst:77
-#, fuzzy
 msgid ""
 "Click the *Browse…* button and select the ``tmw_desert_spacing.png`` "
 "tileset from the examples shipping with Tiled (or use one of your own if "
@@ -801,36 +774,32 @@ msgid ""
 "the tiles (this is pretty rare actually, usually you should leave these "
 "values on 0)."
 msgstr ""
-"Cliquez sur le bouton * Parcourir ... * et sélectionnez le groupe de tuiles "
-"`` tmw_desert_spacing.png`` à partir des exemples de chargement avec Tiled ("
-"ou utilisez un des vôtres si vous le souhaitez). Cet exemple de jeu de tuile "
-"utilise une taille de 32x32. Il y a aussi une *marge* d'un pixel autour de "
-"la tuile et un pixel *d'espace* entre les tuiles (c'est assez rare en fait, "
-"vous devriez généralement laisser ces valeurs sur 0)."
+"Cliquez sur le bouton *Parcourir...* et sélectionnez le jeu de tuile `` "
+"tmw_desert_spacing.png`` à partir des exemples de chargement avec Tiled (ou "
+"utilisez un des vôtres si vous le souhaitez). Cet exemple de jeu de tuile a "
+"une taille de 32x32. Il y a aussi une *marge* d'un pixel autour de la tuile "
+"et un pixel *d'espace* entre les tuiles (c'est assez rare en fait, vous "
+"devrez généralement laisser ces valeurs sur 0)."
 
 #: ../../manual/introduction.rst:84
-#, fuzzy
 msgid "After pressing *OK*, Tiled should look as follows:"
-msgstr "Après avoir appuyé sur * OK *, Tiled devrait ressembler à ceci:"
+msgstr "Après avoir appuyé sur *OK*, Tiled devrait ressembler à ceci :"
 
 #: ../../manual/introduction.rst:89
-#, fuzzy
 msgid "Tileset Added"
-msgstr "Jeu de tuile ajouté"
+msgstr "Jeu de Tuile Ajouté"
 
 #: ../../manual/introduction.rst:91
-#, fuzzy
 msgid ""
 "We’re ready to select some tiles and :doc:`start painting <editing-tile-"
 "layers>`! But first, let’s have a quick look at the :doc:`various layer "
 "types <layers>` supported by Tiled."
 msgstr ""
-"Nous sommes prêts à sélectionner des carreaux et :doc:`start painting "
-"<editing-tile-layers>`! Mais d'abord, jetons un coup d'œil à la :doc: `"
-"various layer types <layers>` pris en charge par Tiled"
+"Nous sommes prêts à sélectionner des carreaux et :doc:`commencer à l'éditer "
+"<editing-tile-layers>`! Mais d'abord, jettons un coup d'œil aux :doc: `"
+"différents types de couche <layers>` pris en charge par Tiled."
 
 #: ../../manual/introduction.rst:96
-#, fuzzy
 msgid ""
 "Most of the manual still needs to be written. Fortunately, there is a "
 "very nice `Tiled Map Editor Tutorial Series`_ on GamesFromScratch.com. In"
@@ -841,272 +810,274 @@ msgstr ""
 "La plupart du manuel doit encore être écrit. Heureusement, il y a une très "
 "bonne `série de didacticiels de l'éditeur de carte` sur "
 "GamesFromScratch.com. En outre, le support pour Tiled dans divers :doc:`"
-"engines and frameworks </reference/support-for-tmx-maps>` vient souvent avec "
+"moteurs et systèmes </reference/support-for-tmx-maps>` vient souvent avec "
 "quelques informations d'utilisation."
 
 #: ../../manual/keyboard-shortcuts.rst:2
 msgid "Keyboard Shortcuts"
-msgstr "Raccourcis clavier"
+msgstr "Raccourcis Clavier"
 
 #: ../../manual/keyboard-shortcuts.rst:4
-#, fuzzy
 msgid "Try out these keyboard shortcuts to help save you time."
 msgstr "Essayez ces raccourcis clavier pour gagner du temps."
 
 #: ../../manual/keyboard-shortcuts.rst:6
-#, fuzzy
 msgid "On Mac, replace ``Ctrl`` with the ``Command`` key."
-msgstr "Sur Mac, remplacez «Ctrl» par la touche «Command»."
+msgstr "Sur Mac, remplacez ``Ctrl``par la touche ``Command``."
 
 #: ../../manual/keyboard-shortcuts.rst:9
 msgid "General"
 msgstr "Général"
 
 #: ../../manual/keyboard-shortcuts.rst:11
-#, fuzzy
 msgid ""
 "``Right Click on Tile`` - Captures the tile under the mouse (drag to "
 "capture larger areas)."
 msgstr ""
-"``Click droit sur tuile`` - Copie la tuile sous la souris (faites glisser "
-"pour copier des zones plus grandes)."
+"``Click droit sur une tuile`` - Copie la tuile sous la souris (faites "
+"glisser pour copier des zones plus grandes)."
 
 #: ../../manual/keyboard-shortcuts.rst:13
-#, fuzzy
 msgid "``Ctrl + MouseWheel`` - Zoom in/out on tileset and map"
 msgstr ""
-"``Ctrl+Roulette de la souris`` - Zoom avant / arrière sur le jeu de tuile et "
-"la carte"
+"``Ctrl + Roulette de la souris`` - Zoom avant / arrière sur le jeu de tuile "
+"et la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:14
-#, fuzzy
 msgid "``Ctrl + Plus/Minus`` - Zoom in/out on map"
-msgstr "``Ctrl+Plus/Moins`` - Zoom avant / arrière sur la carte"
+msgstr "``Ctrl + Plus / Moins`` - Zoom avant / arrière sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:15
-#, fuzzy
 msgid "``Ctrl + 0`` - Reset zoom on map"
 msgstr "`` Ctrl + 0`` - Réinitialiser le zoom sur la carte"
 
 #: ../../manual/keyboard-shortcuts.rst:16
-#, fuzzy
 msgid "``Ctrl + Object Move`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Ctrl+Object Move``- Bascule temporairement '' aligner sur la grille''."
+"``Ctrl + Mouvement d'un objet``- Active temporairement ''Aligner sur la "
+"Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:17
-#, fuzzy
 msgid "``Ctrl + Object Resize`` - Keep aspect ratio"
-msgstr "``Ctrl + Object Resize`` -  Conserve les proportions"
+msgstr ""
+"``Ctrl + Changement de taille d'un objet`` - Conserve les proportions de "
+"l'objet"
 
 #: ../../manual/keyboard-shortcuts.rst:18
-#, fuzzy
 msgid "``Alt + Object Resize`` - Toggles \"Snap to Grid\" temporarily"
 msgstr ""
-"``Alt + Object Resize`` -  Bascule temporairement \"aligner sur la ligne\""
+"``Alt + Changement de taille d'un objet`` - Active temporairement ''Aligner "
+"sur la Grille''"
 
 #: ../../manual/keyboard-shortcuts.rst:19
-#, fuzzy
 msgid "``Middle Click`` or ``Space Bar`` - Hold to pan the map view"
 msgstr ""
-"``Click molette`` ou ``Barre espace`` -  Maintenez pour afficher la vue "
+"``Click Milieu`` ou ``Barre Espace`` - Maintenez pour afficher la vue "
 "cartographique"
 
 #: ../../manual/keyboard-shortcuts.rst:20
-#, fuzzy
 msgid "``F5`` - Run the :doc:`first custom command <using-commands>`"
 msgstr ""
-"``F5`` -  Lancer le :doc:`première commande personnalisée <using-commands>`"
+"``F5`` - Lancer la :doc:`première commande personnalisée <using-commands>`"
 
 #: ../../manual/keyboard-shortcuts.rst:21
-#, fuzzy
 msgid "``Ctrl + X`` - Cut (tiles, objects or properties)"
-msgstr "``Ctrl+X`` - Couper (tuiles, objets ou propriétés)"
+msgstr "``Ctrl + X`` - Couper (tuiles, objets ou propriétés)"
 
 #: ../../manual/keyboard-shortcuts.rst:22
-#, fuzzy
 msgid "``Ctrl + C`` - Copy (tiles, objects or properties)"
 msgstr "``Ctrl + C`` - Copier (tuiles, objets ou propriétés)"
 
 #: ../../manual/keyboard-shortcuts.rst:23
-#, fuzzy
 msgid "``Ctrl + V`` - Paste (tiles, objects or properties)"
 msgstr "``Ctrl + V`` - Coller (tuiles, objets ou propriétés)"
 
 #: ../../manual/keyboard-shortcuts.rst:24
-#, fuzzy
 msgid "``Del`` - Delete (tiles or objects)"
 msgstr "``Del`` - Supprimer (tuiles ou objets)"
 
 #: ../../manual/keyboard-shortcuts.rst:25
-#, fuzzy
 msgid "``H`` - Toggle highlighting of the current layer"
 msgstr "``H`` - Basculer la surbrillance de la couche actuelle"
 
 #: ../../manual/keyboard-shortcuts.rst:26
-#, fuzzy
 msgid ""
 "``A`` - Invokes `Automapping "
 "<https://github.com/bjorn/tiled/wiki/Automapping>`__"
 msgstr ""
-"``A`` - Appelle cartographie automatique "
+"``A`` - Lance la `Cartographie Automatique "
 "<https://github.com/bjorn/tiled/wiki/Automapping>`"
 
 #: ../../manual/keyboard-shortcuts.rst:28
-#, fuzzy
 msgid ""
 "``Alt + C`` - Copy current position of mouse cursor to clipboard (in tile"
 " coordinates)"
 msgstr ""
-"``Alt + C`` - Copier la position actuelle du curseur de la souris dans le "
+"``Alt + C`` - Copie la position actuelle du curseur de la souris dans le "
 "presse-papiers (en coordonnées de tuiles)"
 
 #: ../../manual/keyboard-shortcuts.rst:30
-#, fuzzy
 msgid ""
 "``Ctrl + D`` - Duplicate selected objects (since Tiled 1.0, before it was"
 " Delete)"
 msgstr ""
-"``Ctrl + D`` - Dupliquer les objets sélectionnés (depuis Tiled 1.0, avant "
-"que ce soit la suppression)"
+"``Ctrl + D`` - Duplique les objets sélectionnés (depuis Tiled 1.0, avant "
+"c'était Supprimer)"
 
 #: ../../manual/keyboard-shortcuts.rst:32
-#, fuzzy
 msgid "``Ctrl + Shift + D`` - Duplicate active layer"
 msgstr "``Ctrl + Shift + D`` - Dupliquer le calque actif"
 
 #: ../../manual/keyboard-shortcuts.rst:33
-#, fuzzy
 msgid "``F2`` - Rename (if applicable in context)"
-msgstr "``F2`` -  Renommer (si applicable dans le contexte)"
+msgstr "``F2`` - Renommer (si applicable dans le contexte)"
 
 #: ../../manual/keyboard-shortcuts.rst:34
 msgid "``Tab`` - Hide docks and tool bars (since Tiled 1.0)"
 msgstr ""
+"``Tab`` - Cache les fenêtres subsidiaires et les barres d'outils (depuis "
+"Tiled 1.0)"
 
 #: ../../manual/keyboard-shortcuts.rst:35
 msgid "``Ctrl + PgUp`` - Select previous layer (above current layer)"
 msgstr ""
+"``Ctrl + PgHaut`` - Sélectionne la couche précédente (au-dessus de la couche "
+"actuelle)"
 
 #: ../../manual/keyboard-shortcuts.rst:36
 msgid "``Ctrl + PgDown`` - Select next layer (below current layer)"
 msgstr ""
+"``Ctrl + PgBas`` - Sélectionne la prochaine couche (en-dessous de la couche "
+"actuelle)"
 
 #: ../../manual/keyboard-shortcuts.rst:37
 msgid "``Ctrl + Shift + Up`` - Move current layer up"
-msgstr ""
+msgstr "``Ctrl + Maj + Haut`` - Déplace la couche actuelle en haut"
 
 #: ../../manual/keyboard-shortcuts.rst:38
 msgid "``Ctrl + Shift + Down`` - Move current layer down"
-msgstr ""
+msgstr "``Ctrl + Maj + Bas`` - Déplace la couche actuelle en bas"
 
 #: ../../manual/keyboard-shortcuts.rst:39
 msgid ""
 "``Ctrl + Shift + H`` - Show/Hide all other layers (only active layer "
 "visible / all layers visible)"
 msgstr ""
+"``Ctrl + Maj + H`` - Montre / Cache toutes les autres couches (seule la "
+"couche active reste visible / touts les couches deviennent visible)"
 
 #: ../../manual/keyboard-shortcuts.rst:41
 msgid "``Ctrl + Tab`` - Switch to left document"
-msgstr ""
+msgstr "``Ctrl + Tab`` - Passe au document à gauche"
 
 #: ../../manual/keyboard-shortcuts.rst:42
 msgid "``Ctrl + Shift + Tab`` - Switch to right document"
-msgstr ""
+msgstr "``Ctrl + Maj + Tab`` - Passe au document à droite"
 
 #: ../../manual/keyboard-shortcuts.rst:43
 msgid "``Alt + Left`` - Switch to left document"
-msgstr ""
+msgstr "``Alt + Gauche`` - Passe au document à gauche"
 
 #: ../../manual/keyboard-shortcuts.rst:44
 msgid "``Alt + Right`` - Switch to right document"
-msgstr ""
+msgstr "``Alt + Droite`` - Passe au document à droite"
 
 #: ../../manual/keyboard-shortcuts.rst:45
 msgid "``Ctrl + G`` - Toggle displaying of the tile grid"
-msgstr ""
+msgstr "``Ctrl + G`` - Active / Désactive l'affichage de la grille de tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:46
 msgid "``Ctrl + W`` - Close current document"
-msgstr ""
+msgstr "``Ctrl + W`` - Ferme le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:47
 msgid "``Ctrl + Shift + W`` - Close all documents"
-msgstr ""
+msgstr "``Ctrl + Alt + W`` - Ferme tous les documents"
 
 #: ../../manual/keyboard-shortcuts.rst:48
 msgid "``Ctrl + E`` - Export current document"
-msgstr ""
+msgstr "``Ctrl + E`` - Exporte le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:49
 msgid "``Ctrl + Shift + E`` - Export current document to another file"
-msgstr ""
+msgstr "``Ctrl + Maj + E`` - Exporte le document actuel vers un autre fichier"
 
 #: ../../manual/keyboard-shortcuts.rst:50
 msgid "``Ctrl + R`` - Reload current document"
-msgstr ""
+msgstr "``Ctrl + R`` - Recharger le document actuel"
 
 #: ../../manual/keyboard-shortcuts.rst:51
 msgid ""
 "``Ctrl + T`` - Force-reload all tilesets used by the current map (mainly "
 "useful when not using the automatic reloading)"
 msgstr ""
+"``Ctrl + T`` - Forcer le rechargement de tous les jeux de tuile utilisés par "
+"la carte actuelle (principalement utile quand le rechargement automatique "
+"n'est pas utilisé)"
 
 #: ../../manual/keyboard-shortcuts.rst:55
 msgid "When a tile layer is selected"
-msgstr ""
+msgstr "Quand une couche de tuile est sélectionnée"
 
 #: ../../manual/keyboard-shortcuts.rst:57
 msgid "``B`` - Activate Stamp Brush tool"
-msgstr ""
+msgstr "``B`` - Active l'outil de Brosse Tampon"
 
 #: ../../manual/keyboard-shortcuts.rst:58
 msgid "``T`` - Activate :doc:`Terrain Brush <using-the-terrain-tool>` tool"
 msgstr ""
+"``T`` - Active :doc:`l'outil de Brosse de Terrain <using-the-terrain-tool>`"
 
 #: ../../manual/keyboard-shortcuts.rst:59
 msgid "``F`` - Activate Bucket Fill tool"
-msgstr ""
+msgstr "``F`` - Active l'outil de Seau de Remplissage"
 
 #: ../../manual/keyboard-shortcuts.rst:60
 msgid "``E`` - Activate Eraser tool"
-msgstr ""
+msgstr "``E`` - Active l'outil Gomme"
 
 #: ../../manual/keyboard-shortcuts.rst:61
 msgid "``R`` - Activate Rectangular Select tool"
-msgstr ""
+msgstr "``R`` - Active l'outil de Sélection Rectangulaire"
 
 #: ../../manual/keyboard-shortcuts.rst:62
 msgid "``W`` - Activate Magic Wand tool"
-msgstr ""
+msgstr "``W`` - Active l'outil de Baguette Magique"
 
 #: ../../manual/keyboard-shortcuts.rst:63
 msgid "``S`` - Activate Select Same Tile tool"
-msgstr ""
+msgstr "``S`` - Active l'outil de Sélection de Même Tuile"
 
 #: ../../manual/keyboard-shortcuts.rst:64
 msgid "``Ctrl + 1-9`` - Store current tile selection (similar to ``Ctrl + C``)"
 msgstr ""
+"``Ctrl + 1-9`` - Stocke la sélection de tuile courante (similaire à ``Ctrl + "
+"C``)"
 
 #: ../../manual/keyboard-shortcuts.rst:66
 msgid "``1-9`` recall the previous selection (similar to ``Ctrl + V``)"
 msgstr ""
+"``1-9`` - Resélectionne la sélection précédente (similaire à ``Ctrl + V``)"
 
 #: ../../manual/keyboard-shortcuts.rst:69
 msgid "When an object layer is selected"
-msgstr ""
+msgstr "Quand une couche d'objet est sélectionnée"
 
 #: ../../manual/keyboard-shortcuts.rst:71
 msgid "``S`` - Activate Select Objects tool"
-msgstr ""
+msgstr "``S`` - Active l'outil de Sélection d'Objet"
 
 #: ../../manual/keyboard-shortcuts.rst:73
 msgid "``PgUp`` - Raise selected objects (with Manual object drawing order)"
 msgstr ""
+"``PgHaut`` - Déplace les objets sélectionnés vers le haut (avec l'ordre "
+"d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:75
 msgid "``PgDown`` - Lower selected objects (with Manual object drawing order)"
 msgstr ""
+"``PgBas`` - Déplace les objets sélectionnés vers le bas (avec l'ordre "
+"d'affichage d'objet manuel)"
 
 #: ../../manual/keyboard-shortcuts.rst:77
 msgid "``Home`` - Move selected objects to Top (with Manual object drawing order)"
