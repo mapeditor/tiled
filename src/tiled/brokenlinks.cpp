@@ -145,7 +145,14 @@ void BrokenLinksModel::refresh()
     mBrokenLinks.clear();
 
     if (mDocument && !mDocument->ignoreBrokenLinks()) {
-        auto processTileset = [this](const SharedTileset &tileset) {
+        QSet<SharedTileset> processedTilesets;
+
+        auto processTileset = [this,&processedTilesets](const SharedTileset &tileset) {
+            if (processedTilesets.contains(tileset))
+                return;
+
+            processedTilesets.insert(tileset);
+
             if (tileset->isCollection()) {
                 for (Tile *tile : tileset->tiles()) {
                     if (!tile->imageSource().isEmpty() && tile->imageStatus() == LoadingError) {
@@ -184,8 +191,12 @@ void BrokenLinksModel::refresh()
                 if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                     for (MapObject *mapObject : *objectGroup) {
                         if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate()) {
-                            if (!objectTemplate->object())
+                            if (const MapObject *mapObject = objectTemplate->object()) {
+                                if (Tileset *tileset = mapObject->cell().tileset())
+                                    processTileset(tileset->sharedPointer());
+                            } else {
                                 brokenTemplates.insert(objectTemplate);
+                            }
                         }
                     }
                 }

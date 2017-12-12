@@ -834,7 +834,8 @@ TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) c
 void DocumentManager::openTileset(const SharedTileset &tileset)
 {
     auto tilesetDocument = findTilesetDocument(tileset);
-    Q_ASSERT(tilesetDocument);
+    if (!tilesetDocument)
+        tilesetDocument = new TilesetDocument(tileset);
 
     if (!switchToDocument(tilesetDocument))
         addDocument(tilesetDocument);

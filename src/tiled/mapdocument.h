@@ -81,7 +81,7 @@ public:
      */
     MapDocument(Map *map, const QString &fileName = QString());
 
-    ~MapDocument();
+    ~MapDocument() override;
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
