@@ -13,12 +13,12 @@ exist when you start Tiled).
 
 There are several `example scripts`_ available in the repository.
 
-.. warning:
+.. warning::
 
-    On Windows, Python 2.7 is not installed by default. For the Tiled
-    Python plugin to work, you'll need to install Python 2.7 (get it
-    from https://www.python.org/). On Linux you may also need to install
-    the appropriate package.
+    On Windows, Python is not installed by default. For the Tiled Python
+    plugin to work, you'll need to install Python 2.7 (get it from
+    https://www.python.org/). On Linux you may also need to install the
+    appropriate package.
 
 
 Example Export Plugin
