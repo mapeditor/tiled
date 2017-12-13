@@ -20,6 +20,8 @@
 
 #include "geometry.h"
 
+#include <QTransform>
+
 namespace Tiled {
 
 /**
@@ -260,6 +262,19 @@ QVector<QRegion> coherentRegions(const QRegion &region)
         result += newCoherentRegion;
     }
     return result;
+}
+
+/**
+ * Returns a transform that rotates by \a rotation degrees around the given
+ * \a position.
+ */
+QTransform rotateAt(const QPointF &position, qreal rotation)
+{
+    QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
 }
 
 } // namespace Tiled

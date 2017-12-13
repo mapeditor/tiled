@@ -21,6 +21,7 @@
 #include "objectselectiontool.h"
 
 #include "changepolygon.h"
+#include "geometry.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -69,7 +70,7 @@ enum AnchorPosition {
     RightAnchor,
     BottomAnchor,
 
-    CornerAnchorCount = 4,
+    CornerAnchorCount = TopAnchor,
     AnchorCount = 8,
 };
 
@@ -696,14 +697,14 @@ static QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 {
     switch (alignment) {
     case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);               break;
-    case TopRight:      return QPointF(r.width(), 0);                   break;
-    case Left:          return QPointF(0, r.height() / 2);              break;
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);  break;
-    case Right:         return QPointF(r.width(), r.height() / 2);      break;
-    case BottomLeft:    return QPointF(0, r.height());                  break;
-    case Bottom:        return QPointF(r.width() / 2, r.height());      break;
-    case BottomRight:   return QPointF(r.width(), r.height());          break;
+    case Top:           return QPointF(r.width() / 2, 0);
+    case TopRight:      return QPointF(r.width(), 0);
+    case Left:          return QPointF(0, r.height() / 2);
+    case Center:        return QPointF(r.width() / 2, r.height() / 2);
+    case Right:         return QPointF(r.width(), r.height() / 2);
+    case BottomLeft:    return QPointF(0, r.height());
+    case Bottom:        return QPointF(r.width() / 2, r.height());
+    case BottomRight:   return QPointF(r.width(), r.height());
     }
     return QPointF();
 }
@@ -836,15 +837,6 @@ static QRectF objectBounds(const MapObject *object,
     }
 
     return QRectF();
-}
-
-static QTransform rotateAt(const QPointF &position, qreal rotation)
-{
-    QTransform transform;
-    transform.translate(position.x(), position.y());
-    transform.rotate(rotation);
-    transform.translate(-position.x(), -position.y());
-    return transform;
 }
 
 static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
@@ -1421,8 +1413,8 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
         const QPointF relPos = pos - origin;
         const QPointF startDiff = start - origin;
 
-        QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
-                             qMax((qreal)0.01, relPos.y() / startDiff.y()));
+        QSizeF scalingFactor(qMax<qreal>(0.01, relPos.x() / startDiff.x()),
+                             qMax<qreal>(0.01, relPos.y() / startDiff.y()));
 
         if (!std::isfinite(scalingFactor.width()))
             scalingFactor.setWidth(1);

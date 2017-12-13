@@ -90,11 +90,17 @@ MapObject::MapObject(const QString &name, const QString &type,
     mShape(Rectangle),
     mObjectTemplate(nullptr),
     mObjectGroup(nullptr),
-    mRotation(0.0f),
+    mRotation(0.0),
     mVisible(true),
-    mChangedProperties(0),
     mTemplateBase(false)
 {
+}
+
+int MapObject::index() const
+{
+    if (mObjectGroup)
+        return mObjectGroup->objects().indexOf(const_cast<MapObject*>(this));
+    return -1;
 }
 
 /**

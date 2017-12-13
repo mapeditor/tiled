@@ -38,4 +38,6 @@ inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
 
 QVector<QRegion> coherentRegions(const QRegion &region);
 
+QTransform rotateAt(const QPointF &position, qreal rotation);
+
 } // namespace Tiled

@@ -127,6 +127,8 @@ public:
     void setId(int id);
     void resetId();
 
+    int index() const;
+
     const QString &name() const;
     void setName(const QString &name);
 
