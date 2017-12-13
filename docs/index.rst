@@ -24,6 +24,7 @@ Tiled Documentation
    manual/export
    manual/keyboard-shortcuts
    manual/preferences
+   manual/python
 
 .. toctree::
    :maxdepth: 2

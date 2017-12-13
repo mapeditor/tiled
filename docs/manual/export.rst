@@ -250,6 +250,12 @@ tengine
 
 These plugins are disabled by default. They can be enabled in *Edit > Preferences > Plugins*.
 
+Python Scripts
+~~~~~~~~~~~~~~
+
+It is also possible to write :doc:`Python scripts <python>` to add
+support for importing or exporting custom map formats.
+
 
 .. _LÖVE: https://love2d.org/
 .. _Corona: https://coronalabs.com/
