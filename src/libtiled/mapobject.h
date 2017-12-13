@@ -513,3 +513,5 @@ inline void MapObject::markAsTemplateBase()
 #if QT_VERSION < 0x050500
 Q_DECLARE_METATYPE(Qt::Alignment)
 #endif
+
+Q_DECLARE_METATYPE(Tiled::MapObject*)
