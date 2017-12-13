@@ -113,14 +113,8 @@ MapScene::~MapScene()
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument) {
+    if (mMapDocument)
         mMapDocument->disconnect(this);
-
-        if (!mSelectedObjectItems.isEmpty()) {
-            mSelectedObjectItems.clear();
-            emit selectedObjectItemsChanged();
-        }
-    }
 
     mMapDocument = mapDocument;
 
@@ -161,23 +155,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, &MapScene::objectsChanged);
         connect(mMapDocument, &MapDocument::objectsIndexChanged,
                 this, &MapScene::objectsIndexChanged);
-        connect(mMapDocument, &MapDocument::selectedObjectsChanged,
-                this, &MapScene::updateSelectedObjectItems);
     }
 
     refreshScene();
-}
-
-void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
-{
-    // Inform the map document about the newly selected objects
-    QList<MapObject*> selectedObjects;
-    selectedObjects.reserve(items.size());
-
-    for (const MapObjectItem *item : items)
-        selectedObjects.append(item->mapObject());
-
-    mMapDocument->setSelectedObjects(selectedObjects);
 }
 
 void MapScene::setSelectedTool(AbstractTool *tool)
@@ -631,7 +611,6 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
         auto i = mObjectItems.find(o);
         Q_ASSERT(i != mObjectItems.end());
 
-        mSelectedObjectItems.remove(i.value());
         delete i.value();
         mObjectItems.erase(i);
     }
@@ -665,22 +644,6 @@ void MapScene::objectsIndexChanged(ObjectGroup *objectGroup,
 
         item->setZValue(i);
     }
-}
-
-void MapScene::updateSelectedObjectItems()
-{
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QSet<MapObjectItem*> items;
-    for (MapObject *object : objects) {
-        MapObjectItem *item = itemForObject(object);
-        Q_ASSERT(item);
-
-        items.insert(item);
-    }
-
-    mSelectedObjectItems = items;
-    emit selectedObjectItemsChanged();
 }
 
 void MapScene::syncAllObjectItems()

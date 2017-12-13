@@ -58,15 +58,8 @@ class MapScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    /**
-     * Constructor.
-     */
     MapScene(QObject *parent);
-
-    /**
-     * Destructor.
-     */
-    ~MapScene();
+    ~MapScene() override;
 
     /**
      * Returns the map document this scene is displaying.
@@ -82,18 +75,6 @@ public:
      * Returns whether the tile grid is visible.
      */
     bool isGridVisible() const { return mGridVisible; }
-
-    /**
-     * Returns the set of selected map object items.
-     */
-    const QSet<MapObjectItem*> &selectedObjectItems() const
-    { return mSelectedObjectItems; }
-
-    /**
-     * Sets the set of selected map object items. This translates to a call to
-     * MapDocument::setSelectedObjects.
-     */
-    void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
 
     /**
      * Returns the MapObjectItem associated with the given \a mapObject.
@@ -112,9 +93,6 @@ public:
      * Sets the currently selected tool.
      */
     void setSelectedTool(AbstractTool *tool);
-
-signals:
-    void selectedObjectItemsChanged();
 
 protected:
     /**
@@ -180,7 +158,6 @@ private slots:
     void objectsChanged(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
-    void updateSelectedObjectItems();
     void syncAllObjectItems();
 
 private:
@@ -209,7 +186,6 @@ private:
     ObjectSelectionItem *mObjectSelectionItem;
 
     QMap<MapObject*, MapObjectItem*> mObjectItems;
-    QSet<MapObjectItem*> mSelectedObjectItems;
 };
 
 } // namespace Internal
