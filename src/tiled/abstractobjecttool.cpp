@@ -44,7 +44,7 @@
 #include <QMessageBox>
 #include <QUndoStack>
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -124,8 +124,8 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPoint pixelPos = offsetPos.toPoint();
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
-    const int x = (int) std::floor(tilePosF.x());
-    const int y = (int) std::floor(tilePosF.y());
+    const int x = qFloor(tilePosF.x());
+    const int y = qFloor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2 (%3, %4)")).arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
 }
 
@@ -150,7 +150,7 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
 
-QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
+QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
@@ -163,7 +163,7 @@ QList<MapObjectItem*> AbstractObjectTool::objectItemsAt(QPointF pos) const
     return objectList;
 }
 
-MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
+MapObjectItem *AbstractObjectTool::topMostObjectItemAt(const QPointF &pos) const
 {
     const QList<QGraphicsItem *> &items = mMapScene->items(pos);
 
@@ -369,22 +369,18 @@ void AbstractObjectTool::lowerToBottom()
 void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
                                          QPoint screenPos)
 {
-    QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
-    if (clickedObjectItem && !selection.contains(clickedObjectItem)) {
-        selection.clear();
-        selection.insert(clickedObjectItem);
-        mMapScene->setSelectedObjectItems(selection);
-    }
-    if (selection.isEmpty())
+    const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
+
+    if (clickedObjectItem && !selectedObjects.contains(clickedObjectItem->mapObject()))
+        mapDocument()->setSelectedObjects({ clickedObjectItem->mapObject() });
+
+    if (selectedObjects.isEmpty())
         return;
 
-    const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
-    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
-
     QMenu menu;
-    QAction *duplicateAction = menu.addAction(tr("Duplicate %n Object(s)", "", selection.size()),
+    QAction *duplicateAction = menu.addAction(tr("Duplicate %n Object(s)", "", selectedObjects.size()),
                                               this, SLOT(duplicateObjects()));
-    QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selection.size()),
+    QAction *removeAction = menu.addAction(tr("Remove %n Object(s)", "", selectedObjects.size()),
                                            this, SLOT(removeObjects()));
 
     duplicateAction->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
@@ -449,7 +445,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
     menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
 
-    ObjectGroup *objectGroup = RaiseLowerHelper::sameObjectGroup(selection);
+    ObjectGroup *objectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
     if (objectGroup && objectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
         menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
@@ -458,6 +454,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
     }
 
+    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
     if (objectGroups.size() > 1) {
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
@@ -487,8 +484,6 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         return;
     }
 
-    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>()) {
-        mapDocument()->moveObjectsToGroup(mapDocument()->selectedObjects(),
-                                          objectGroup);
-    }
+    if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>())
+        mapDocument()->moveObjectsToGroup(selectedObjects, objectGroup);
 }

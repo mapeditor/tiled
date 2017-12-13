@@ -34,7 +34,6 @@ class ObjectGroup;
 namespace Internal {
 
 class MapDocument;
-class MapObjectItem;
 class MapScene;
 
 /**
@@ -58,7 +57,7 @@ public:
     void raiseToTop();
     void lowerToBottom();
 
-    static ObjectGroup *sameObjectGroup(const QSet<MapObjectItem*> &items);
+    static ObjectGroup *sameObjectGroup(const QList<MapObject*> &objects);
 
 private:
     bool initContext();
@@ -69,7 +68,7 @@ private:
 
     // Context
     ObjectGroup *mObjectGroup;
-    QList<MapObjectItem*> mRelatedObjects;
+    QList<MapObject*> mRelatedObjects;
     RangeSet<int> mSelectionRanges;
 };
 
