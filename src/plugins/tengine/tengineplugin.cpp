@@ -40,7 +40,7 @@ TenginePlugin::TenginePlugin()
 {
 }
 
-bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
+bool TenginePlugin::writeMap(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 

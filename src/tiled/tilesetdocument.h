@@ -28,6 +28,7 @@
 namespace Tiled {
 
 class TilesetFormat;
+class FileFormat;
 
 namespace Internal {
 
@@ -64,6 +65,8 @@ public:
     void setWriterFormat(TilesetFormat *format);
 
     QString displayName() const override;
+    FileFormat* exportFormat() const override;
+    void setExportFormat(FileFormat *format) override;
 
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
@@ -157,6 +160,7 @@ private:
     WangColorModel *mWangColorModel;
 
     QList<Tile*> mSelectedTiles;
+    QPointer<TilesetFormat> mExportFormat;
 };
 
 

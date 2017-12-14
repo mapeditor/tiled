@@ -34,7 +34,7 @@ class CSVSHARED_EXPORT CsvPlugin : public Tiled::WritableMapFormat
 public:
     CsvPlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
     QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 

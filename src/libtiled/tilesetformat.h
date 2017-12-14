@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "mapformat.h"
+#include "fileformat.h"
 #include "tileset.h"
 
 namespace Tiled {
@@ -41,6 +41,7 @@ namespace Tiled {
 class TILEDSHARED_EXPORT TilesetFormat : public FileFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::FileFormat)
 
 public:
     explicit TilesetFormat(QObject *parent = nullptr)
@@ -51,7 +52,7 @@ public:
      * Reads the tileset and returns a new Tileset instance, or a null shared
      * pointer if reading failed.
      */
-    virtual SharedTileset read(const QString &fileName) = 0;
+    virtual SharedTileset readTileset(const QString &fileName) = 0;
 
     /**
      * Writes the given \a tileset based on the suggested \a fileName.
@@ -63,7 +64,36 @@ public:
      * @return <code>true</code> on success, <code>false</code> when an error
      *         occurred. The error can be retrieved by errorString().
      */
-    virtual bool write(const Tileset &tileset, const QString &fileName) = 0;
+    virtual bool writeTileset(const Tileset &tileset, const QString &fileName) = 0;
+
+//    void setExportFormat(FileFormat *format) override
+//    { mExportFormat = format; }
+
+private:
+    QPointer<TilesetFormat> mExportFormat;
+};
+
+} // namespace Tiled
+
+Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
+
+namespace Tiled {
+
+/**
+ * Convenience class for adding a format that can only be written.
+ */
+class TILEDSHARED_EXPORT WritableTilesetFormat : public TilesetFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TilesetFormat)
+
+public:
+    using TilesetFormat::TilesetFormat;
+
+    Capabilities capabilities() const override { return Write; }
+    SharedTileset readTileset(const QString &) override { return nullptr; }
+    bool supportsFile(const QString &) const override { return false; }
 };
 
 /**
@@ -79,5 +109,3 @@ TILEDSHARED_EXPORT SharedTileset readTileset(const QString &fileName,
 TILEDSHARED_EXPORT TilesetFormat *findSupportingTilesetFormat(const QString &fileName);
 
 } // namespace Tiled
-
-Q_DECLARE_INTERFACE(Tiled::TilesetFormat, "org.mapeditor.TilesetFormat")

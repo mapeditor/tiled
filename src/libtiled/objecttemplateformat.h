@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include "mapformat.h"
+#include "fileformat.h"
 #include "objecttemplate.h"
 
 namespace Tiled {

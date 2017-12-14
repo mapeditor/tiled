@@ -26,6 +26,7 @@
 #include "layer.h"
 #include "tiled.h"
 #include "tileset.h"
+#include "fileformat.h"
 
 #include <QList>
 #include <QPointer>
@@ -100,6 +101,8 @@ public:
     void setWriterFormat(MapFormat *format);
 
     QString displayName() const override;
+    FileFormat* exportFormat() const override;
+    void setExportFormat(FileFormat *format) override;
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -326,6 +329,7 @@ private:
     MapRenderer *mRenderer;
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
+    QPointer<MapFormat> mExportFormat;
 };
 
 } // namespace Internal

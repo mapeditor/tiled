@@ -133,7 +133,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     if (!mapFormat)
         mapFormat = &tmxMapFormat;
 
-    if (!mapFormat->write(map(), fileName)) {
+    if (!mapFormat->writeMap(map(), fileName)) {
         if (error)
             *error = mapFormat->errorString();
         return false;
@@ -159,7 +159,7 @@ MapDocument *MapDocument::load(const QString &fileName,
                                MapFormat *format,
                                QString *error)
 {
-    Map *map = format->read(fileName);
+    Map *map = format->readMap(fileName);
 
     if (!map) {
         if (error)
@@ -206,6 +206,16 @@ QString MapDocument::displayName() const
         displayName = tr("untitled.tmx");
 
     return displayName;
+}
+
+FileFormat *MapDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void MapDocument::setExportFormat(FileFormat *format)
+{
+    mExportFormat = qobject_cast<MapFormat*>(format);
 }
 
 /**

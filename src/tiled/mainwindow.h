@@ -34,6 +34,7 @@
 #include <QSessionManager>
 #include <QSettings>
 
+
 class QComboBox;
 class QLabel;
 
@@ -52,10 +53,12 @@ namespace Internal {
 class ActionManager;
 class AutomappingManager;
 class DocumentManager;
+class MapDocument;
 class MapDocumentActionHandler;
 class MapScene;
 class MapView;
 class ObjectTypesEditor;
+class TilesetDocument;
 class Zoomable;
 
 /**
@@ -189,6 +192,11 @@ private:
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
+
+    void exportMapAs(MapDocument *mapDocument);
+    void exportTilesetAs(TilesetDocument *tilesetDocument);
+
+    MapFormat *getFormatFromUser(const Document *document);
 
     ActionManager *mActionManager;
     Ui::MainWindow *mUi;

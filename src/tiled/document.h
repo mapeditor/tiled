@@ -26,6 +26,7 @@
 #include <QObject>
 #include <QString>
 #include <QVariant>
+#include <QPointer>
 
 class QUndoStack;
 
@@ -102,9 +103,8 @@ public:
     QString lastExportFileName() const;
     void setLastExportFileName(const QString &fileName);
 
-    MapFormat* exportFormat() const;
-
-    void setExportFormat(MapFormat *format);
+    virtual FileFormat* exportFormat() const = 0;
+    virtual void setExportFormat(FileFormat *format) = 0;
 
 signals:
     void saved();
@@ -140,7 +140,6 @@ protected:
     bool mIgnoreBrokenLinks;
 
     QString mLastExportFileName;
-    MapFormat* mExportFormat;
 };
 
 

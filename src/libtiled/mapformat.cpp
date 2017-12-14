@@ -36,7 +36,7 @@ Map *readMap(const QString &fileName, QString *error)
 {
     // Try the first registered map format that claims to support the file
     if (MapFormat *format = findSupportingMapFormat(fileName)) {
-        Map *map = format->read(fileName);
+        Map *map = format->readMap(fileName);
 
         if (error) {
             if (!map)

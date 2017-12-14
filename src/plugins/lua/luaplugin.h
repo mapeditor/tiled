@@ -24,7 +24,9 @@
 
 #include "gidmapper.h"
 #include "map.h"
+#include "plugin.h"
 #include "mapformat.h"
+#include "tilesetformat.h"
 
 #include <QDir>
 #include <QObject>
@@ -45,25 +47,12 @@ class LuaTableWriter;
 /**
  * This plugin allows exporting maps as Lua files.
  */
-class LUASHARED_EXPORT LuaPlugin : public Tiled::WritableMapFormat
+class LuaUtilWriter
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
-
 public:
-    LuaPlugin();
-
-    bool write(const Tiled::Map *map, const QString &fileName) override;
-    bool writeAsTileset(const Tiled::Tileset *tileset, const QString &fileName) override;
-
-    QString nameFilter() const override;
-    QString shortName() const override;
-    QString errorString() const override;
-
-private:
-    void writeMap(LuaTableWriter &, const Tiled::Map *);
+    void writeMapLua(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid, bool standalone=true);
+    void writeTilesetLua(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid, bool standalone=true);
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format);
@@ -81,9 +70,66 @@ private:
     void writePolygon(LuaTableWriter &, const Tiled::MapObject *);
     void writeTextProperties(LuaTableWriter &, const Tiled::MapObject *);
 
-    QString mError;
-    QDir mMapDir;     // The directory in which the map is being saved
+protected:
+    QDir mMapDir;
     Tiled::GidMapper mGidMapper;
+
 };
+
+class LUASHARED_EXPORT LuaPlugin : public Tiled::Plugin
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::Plugin)
+    Q_PLUGIN_METADATA(IID "org.mapeditor.Plugin" FILE "plugin.json")
+
+public:
+    void initialize() override;
+};
+
+
+class LUASHARED_EXPORT LuaMapFormat : public Tiled::WritableMapFormat, public LuaUtilWriter
+{
+    Q_OBJECT
+//    Q_INTERFACES(Tiled::MapFormat)
+
+public:
+    LuaMapFormat(QObject *parent = nullptr) : Tiled::WritableMapFormat(parent) {}
+
+    bool supportsFile(const QString &fileName) const override;
+
+    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
+
+};
+
+
+class LUASHARED_EXPORT LuaTilesetFormat : public Tiled::WritableTilesetFormat, public LuaUtilWriter
+{
+    Q_OBJECT
+//    Q_INTERFACES(Tiled::WritableTilesetFormat)
+
+public:
+    LuaTilesetFormat(QObject *parent = nullptr) : Tiled::WritableTilesetFormat(parent) {}
+
+    bool supportsFile(const QString &fileName) const override;
+
+    bool writeTileset(const Tiled::Tileset &tileset, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
+
+};
+
+
 
 } // namespace Lua

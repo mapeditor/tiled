@@ -42,9 +42,9 @@ class TmxMapFormat : public MapFormat
 public:
     TmxMapFormat(QObject *parent = nullptr);
 
-    Map *read(const QString &fileName) override;
+    Map *readMap(const QString &fileName) override;
 
-    bool write(const Map *map, const QString &fileName) override;
+    bool writeMap(const Map *map, const QString &fileName) override;
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -87,9 +87,9 @@ class TsxTilesetFormat : public TilesetFormat
 public:
     TsxTilesetFormat(QObject *parent = nullptr);
 
-    SharedTileset read(const QString &fileName) override;
+    SharedTileset readTileset(const QString &fileName) override;
 
-    bool write(const Tileset &tileset, const QString &fileName) override;
+    bool writeTileset(const Tileset &tileset, const QString &fileName) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 

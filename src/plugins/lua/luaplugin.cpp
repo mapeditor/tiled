@@ -44,15 +44,41 @@
 //#define POLYGON_FORMAT_PAIRS
 //#define POLYGON_FORMAT_OPTIMAL
 
+namespace {
+
+    void writeColor(Lua::LuaTableWriter &writer,
+                    const char *name,
+                    const QColor &color)
+    {
+        // Example: backgroundcolor = { 255, 200, 100 }
+        writer.writeStartTable(name);
+        writer.setSuppressNewlines(true);
+        writer.writeValue(color.red());
+        writer.writeValue(color.green());
+        writer.writeValue(color.blue());
+        if (color.alpha() != 255)
+            writer.writeValue(color.alpha());
+        writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+    }
+}
+
 using namespace Tiled;
 
 namespace Lua {
 
-LuaPlugin::LuaPlugin()
+void LuaPlugin::initialize()
 {
+    addObject(new LuaMapFormat(this));
+    addObject(new LuaTilesetFormat(this));
 }
 
-bool LuaPlugin::write(const Map *map, const QString &fileName)
+bool LuaMapFormat::supportsFile(const QString &fileName) const
+{
+    return true;
+}
+
+bool LuaMapFormat::writeMap(const Map *map, const QString &fileName)
 {
     SaveFile file(fileName);
 
@@ -65,7 +91,7 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
 
     LuaTableWriter writer(file.device());
     writer.writeStartDocument();
-    writeMap(writer, map);
+    writeMapLua(writer, map);
     writer.writeEndDocument();
 
     if (file.error() != QFileDevice::NoError) {
@@ -81,7 +107,27 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
     return true;
 }
 
-bool LuaPlugin::writeAsTileset(const Tileset *tileset, const QString &fileName)
+QString LuaMapFormat::nameFilter() const
+{
+    return tr("Lua files (*.lua)");
+}
+
+QString LuaMapFormat::shortName() const
+{
+    return QLatin1String("lua");
+}
+
+QString LuaMapFormat::errorString() const
+{
+    return mError;
+}
+
+bool LuaTilesetFormat::supportsFile(const QString &fileName) const
+{
+    return true;
+}
+
+bool LuaTilesetFormat::writeTileset(const Tileset &tileset, const QString &fileName)
 {
   SaveFile file(fileName);
 
@@ -94,7 +140,7 @@ bool LuaPlugin::writeAsTileset(const Tileset *tileset, const QString &fileName)
 
   LuaTableWriter writer(file.device());
   writer.writeStartDocument();
-  writeTileset(writer, tileset, 0, false);
+  writeTilesetLua(writer, &tileset, 0, false);
   writer.writeEndDocument();
 
   if (file.error() != QFileDevice::NoError) {
@@ -110,38 +156,23 @@ bool LuaPlugin::writeAsTileset(const Tileset *tileset, const QString &fileName)
   return true;
 }
 
-QString LuaPlugin::nameFilter() const
+QString LuaTilesetFormat::nameFilter() const
 {
     return tr("Lua files (*.lua)");
 }
 
-QString LuaPlugin::shortName() const
+QString LuaTilesetFormat::shortName() const
 {
     return QLatin1String("lua");
 }
 
-QString LuaPlugin::errorString() const
+QString LuaTilesetFormat::errorString() const
 {
     return mError;
 }
 
-static void writeColor(LuaTableWriter &writer,
-                       const char *name,
-                       const QColor &color)
-{
-    // Example: backgroundcolor = { 255, 200, 100 }
-    writer.writeStartTable(name);
-    writer.setSuppressNewlines(true);
-    writer.writeValue(color.red());
-    writer.writeValue(color.green());
-    writer.writeValue(color.blue());
-    if (color.alpha() != 255)
-        writer.writeValue(color.alpha());
-    writer.writeEndTable();
-    writer.setSuppressNewlines(false);
-}
 
-void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
+void LuaUtilWriter::writeMapLua(LuaTableWriter &writer, const Map *map)
 {
     writer.writeStartReturnTable();
 
@@ -181,7 +212,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     mGidMapper.clear();
     unsigned firstGid = 1;
     for (const SharedTileset &tileset : map->tilesets()) {
-        writeTileset(writer, tileset.data(), firstGid);
+        writeTilesetLua(writer, tileset.data(), firstGid);
         mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->nextTileId();
     }
@@ -192,7 +223,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeProperties(LuaTableWriter &writer,
+void LuaUtilWriter::writeProperties(LuaTableWriter &writer,
                                 const Properties &properties)
 {
     writer.writeStartTable("properties");
@@ -227,8 +258,8 @@ static bool includeTile(const Tile *tile)
     return false;
 }
 
-void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
-                             unsigned firstGid, bool standalone)
+void LuaUtilWriter::writeTilesetLua(LuaTableWriter &writer, const Tileset *tileset,
+                                    unsigned firstGid, bool standalone)
 {
     if (standalone) {
       writer.writeStartTable();
@@ -361,7 +392,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeEndTable(); // tileset
 }
 
-void LuaPlugin::writeLayers(LuaTableWriter &writer,
+void LuaUtilWriter::writeLayers(LuaTableWriter &writer,
                             const QList<Layer *> &layers,
                             Map::LayerDataFormat format)
 {
@@ -385,7 +416,7 @@ void LuaPlugin::writeLayers(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
+void LuaUtilWriter::writeTileLayer(LuaTableWriter &writer,
                                const TileLayer *tileLayer,
                                Map::LayerDataFormat format)
 {
@@ -451,7 +482,7 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeTileLayerData(LuaTableWriter &writer,
+void LuaUtilWriter::writeTileLayerData(LuaTableWriter &writer,
                                    const TileLayer *tileLayer,
                                    Map::LayerDataFormat format,
                                    QRect bounds)
@@ -480,7 +511,7 @@ void LuaPlugin::writeTileLayerData(LuaTableWriter &writer,
     }
 }
 
-void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
+void LuaUtilWriter::writeObjectGroup(LuaTableWriter &writer,
                                  const ObjectGroup *objectGroup,
                                  const QByteArray &key)
 {
@@ -510,7 +541,7 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
+void LuaUtilWriter::writeImageLayer(LuaTableWriter &writer,
                                 const ImageLayer *imageLayer)
 {
     writer.writeStartTable();
@@ -537,7 +568,7 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeGroupLayer(LuaTableWriter &writer,
+void LuaUtilWriter::writeGroupLayer(LuaTableWriter &writer,
                                 const GroupLayer *groupLayer,
                                 Map::LayerDataFormat format)
 {
@@ -578,7 +609,7 @@ static const char *toString(MapObject::Shape shape)
     return "unknown";
 }
 
-void LuaPlugin::writeMapObject(LuaTableWriter &writer,
+void LuaUtilWriter::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
@@ -617,7 +648,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-void LuaPlugin::writePolygon(LuaTableWriter &writer, const MapObject *mapObject)
+void LuaUtilWriter::writePolygon(LuaTableWriter &writer, const MapObject *mapObject)
 {
     if (mapObject->shape() == MapObject::Polygon)
         writer.writeStartTable("polygon");
@@ -692,7 +723,7 @@ void LuaPlugin::writePolygon(LuaTableWriter &writer, const MapObject *mapObject)
     writer.writeEndTable();
 }
 
-void LuaPlugin::writeTextProperties(LuaTableWriter &writer, const MapObject *mapObject)
+void LuaUtilWriter::writeTextProperties(LuaTableWriter &writer, const MapObject *mapObject)
 {
     const TextData &textData = mapObject->textData();
 
@@ -731,5 +762,7 @@ void LuaPlugin::writeTextProperties(LuaTableWriter &writer, const MapObject *map
             writer.writeKeyAndValue("valign", "bottom");
     }
 }
+
+
 
 } // namespace Lua

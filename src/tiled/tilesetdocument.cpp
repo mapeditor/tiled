@@ -20,6 +20,7 @@
 
 #include "tilesetdocument.h"
 
+#include "fileformat.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "terrain.h"
@@ -97,13 +98,13 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 {
     TilesetFormat *tilesetFormat = mTileset->format();
 
-    if (!tilesetFormat || !(tilesetFormat->capabilities() & MapFormat::Write))
+    if (!tilesetFormat || !(tilesetFormat->capabilities() & FileFormat::Write))
         return false;
 
     // todo: workaround to avoid writing the tileset like an external tileset reference
     mTileset->setFileName(QString());
 
-    if (!tilesetFormat->write(*tileset(), fileName)) {
+    if (!tilesetFormat->writeTileset(*tileset(), fileName)) {
         if (error)
             *error = tilesetFormat->errorString();
         return false;
@@ -132,7 +133,7 @@ bool TilesetDocument::reload(QString *error)
 
     auto format = mTileset->format();
 
-    SharedTileset tileset = format->read(fileName());
+    SharedTileset tileset = format->readTileset(fileName());
 
     if (tileset.isNull()) {
         if (error)
@@ -153,7 +154,7 @@ TilesetDocument *TilesetDocument::load(const QString &fileName,
                                        TilesetFormat *format,
                                        QString *error)
 {
-    SharedTileset tileset = format->read(fileName);
+    SharedTileset tileset = format->readTileset(fileName);
 
     if (tileset.isNull()) {
         if (error)
@@ -192,6 +193,16 @@ QString TilesetDocument::displayName() const
     }
 
     return displayName;
+}
+
+FileFormat *TilesetDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void TilesetDocument::setExportFormat(FileFormat *format)
+{
+    mExportFormat = qobject_cast<TilesetFormat*>(format);
 }
 
 /**

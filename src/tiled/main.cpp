@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
         }
 
         // Write out the file
-        bool success = outputFormat->write(map.data(), targetFile);
+        bool success = outputFormat->writeMap(map.data(), targetFile);
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");

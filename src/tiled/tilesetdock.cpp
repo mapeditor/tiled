@@ -28,6 +28,7 @@
 #include "containerhelpers.h"
 #include "documentmanager.h"
 #include "erasetiles.h"
+#include "fileformat.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -907,7 +908,7 @@ void TilesetDock::exportTileset()
     if (!format)
         return;     // can't happen
 
-    if (!format->write(*externalTileset, fileName)) {
+    if (!format->writeTileset(*externalTileset, fileName)) {
         QString error = format->errorString();
         QMessageBox::critical(window(),
                               tr("Export Tileset"),

@@ -37,6 +37,7 @@
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "exportasimagedialog.h"
+#include "fileformat.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "mapdocumentactionhandler.h"
@@ -791,13 +792,13 @@ void MainWindow::export_()
     QString exportFileName = mapDocument->lastExportFileName();
 
     if (!exportFileName.isEmpty()) {
-        MapFormat *exportFormat = mapDocument->exportFormat();
+        MapFormat *exportFormat = qobject_cast<MapFormat*>(mapDocument->exportFormat());
         TmxMapFormat tmxFormat;
 
         if (!exportFormat)
             exportFormat = &tmxFormat;
 
-        if (exportFormat->write(mapDocument->map(), exportFileName)) {
+        if (exportFormat->writeMap(mapDocument->map(), exportFileName)) {
             auto *editor = static_cast<MapEditor*>(mDocumentManager->editor(Document::MapDocumentType));
             editor->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
             return;
@@ -813,135 +814,142 @@ void MainWindow::export_()
 
 void MainWindow::exportAs()
 {
-    Document* mapDocument = qobject_cast<MapDocument*>(mDocument);
-    if (!mapDocument) {
-      mapDocument = qobject_cast<TilesetDocument*>(mDocument);
+    if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
+        exportMapAs(mapDocument);
+    }
+    else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(mDocument)) {
+        exportTilesetAs(tilesetDocument);
     }
 
-    if (mapDocument)
-    {
+//    Document* mapDocument = qobject_cast<MapDocument*>(mDocument);
+//    if (!mapDocument)
+//    {
+//        mapDocument = qobject_cast<TilesetDocument*>(mDocument);
+//    }
 
-      FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
+//    if (mapDocument)
+//    {
+////        FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
 
-      Preferences *pref = Preferences::instance();
+////        Preferences *pref = Preferences::instance();
 
-      QString selectedFilter =
-              mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
-      QString suggestedFilename = mapDocument->lastExportFileName();
+////        QString selectedFilter =
+////                mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+////        QString suggestedFilename = mapDocument->lastExportFileName();
 
-      if (suggestedFilename.isEmpty()) {
-          QFileInfo baseNameInfo = QFileInfo(mapDocument->fileName());
-          QString baseName = baseNameInfo.baseName();
+////        if (suggestedFilename.isEmpty()) {
+////            QFileInfo baseNameInfo = QFileInfo(mapDocument->fileName());
+////            QString baseName = baseNameInfo.baseName();
 
-          QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-          extensionFinder.indexIn(selectedFilter);
-          const QString extension = extensionFinder.cap(1);
+////            QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+////            extensionFinder.indexIn(selectedFilter);
+////            const QString extension = extensionFinder.cap(1);
 
-          QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+////            QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
-          suggestedFilename = lastExportedFilePath
-                  + QLatin1String("/") + baseName
-                  + QLatin1Char('.') + extension;
-      }
+////            suggestedFilename = lastExportedFilePath
+////                                + QLatin1String("/") + baseName
+////                                + QLatin1Char('.') + extension;
+////        }
 
-      // No need to confirm overwrite here since it'll be prompted below
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
-                                                      suggestedFilename,
-                                                      helper.filter(),
-                                                      &selectedFilter,
-                                                      QFileDialog::DontConfirmOverwrite);
-      if (fileName.isEmpty())
-          return;
+////        // No need to confirm overwrite here since it'll be prompted below
+////        QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
+////                                                        suggestedFilename,
+////                                                        helper.filter(),
+////                                                        &selectedFilter,
+////                                                        QFileDialog::DontConfirmOverwrite);
+////        if (fileName.isEmpty())
+////            return;
 
-      // If a specific filter was selected, use that format
-      MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
+////        // If a specific filter was selected, use that format
+////        MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
 
-      // If not, try to find the file extension among the name filters
-      QString suffix = QFileInfo(fileName).completeSuffix();
-      if (!chosenFormat && !suffix.isEmpty()) {
-          suffix.prepend(QLatin1String("*."));
+////        // If not, try to find the file extension among the name filters
+////        QString suffix = QFileInfo(fileName).completeSuffix();
+////        if (!chosenFormat && !suffix.isEmpty()) {
+////            suffix.prepend(QLatin1String("*."));
 
-          for (MapFormat *format : helper.formats()) {
-              if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
-                  if (chosenFormat) {
-                      QMessageBox::warning(this, tr("Non-unique file extension"),
-                                           tr("Non-unique file extension.\n"
-                                              "Please select specific format."));
-                      return exportAs();
-                  } else {
-                      chosenFormat = format;
-                  }
-              }
-          }
-      }
+////            for (MapFormat *format : helper.formats()) {
+////                if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+////                    if (chosenFormat) {
+////                        QMessageBox::warning(this, tr("Non-unique file extension"),
+////                                             tr("Non-unique file extension.\n"
+////                                                "Please select specific format."));
+////                        return exportAs(); // TODO: how to make this consistent with the old approach?
+////                    } else {
+////                        chosenFormat = format;
+////                    }
+////                }
+////            }
+////        }
 
-      if (!chosenFormat) {
-          QMessageBox::critical(this, tr("Unknown File Format"),
-                                tr("The given filename does not have any known "
-                                   "file extension."));
-          return;
-      }
+////        if (!chosenFormat) {
+////            QMessageBox::critical(this, tr("Unknown File Format"),
+////                                  tr("The given filename does not have any known "
+////                                     "file extension."));
+////            return;
+////        }
 
-      if (auto definitelyMap = qobject_cast<MapDocument*>(mDocument))
-      {
-      // Check if writer will overwrite existing files here because some writers
-      // could save to multiple files at the same time. For example CSV saves
-      // each layer into a separate file.
-        QStringList outputFiles = chosenFormat->outputFiles(definitelyMap->map(),
-                                                            fileName);
-        if (outputFiles.size() > 0) {
-            // Check if any output file already exists
-            QString message =
-                    tr("Some export files already exist:") + QLatin1String("\n\n");
+//        if (auto definitelyMap = qobject_cast<MapDocument*>(mDocument))
+//        {
+//            // Check if writer will overwrite existing files here because some writers
+//            // could save to multiple files at the same time. For example CSV saves
+//            // each layer into a separate file.
+//            QStringList outputFiles = chosenFormat->outputFiles(definitelyMap->map(),
+//                                                                fileName);
+//            if (outputFiles.size() > 0) {
+//                // Check if any output file already exists
+//                QString message =
+//                        tr("Some export files already exist:") + QLatin1String("\n\n");
 
-            bool overwriteHappens = false;
+//                bool overwriteHappens = false;
 
-            for (const QString &outputFile : outputFiles) {
-                if (QFile::exists(outputFile)) {
-                    overwriteHappens = true;
-                    message += outputFile + QLatin1Char('\n');
-                }
-            }
-            message += QLatin1Char('\n') + tr("Do you want to replace them?");
+//                for (const QString &outputFile : outputFiles) {
+//                    if (QFile::exists(outputFile)) {
+//                        overwriteHappens = true;
+//                        message += outputFile + QLatin1Char('\n');
+//                    }
+//                }
+//                message += QLatin1Char('\n') + tr("Do you want to replace them?");
 
-            // If overwrite happens, warn the user and get confirmation before exporting
-            if (overwriteHappens) {
-                const QMessageBox::StandardButton reply = QMessageBox::warning(
-                    this,
-                    tr("Overwrite Files"),
-                    message,
-                    QMessageBox::Yes | QMessageBox::No,
-                    QMessageBox::No);
+//                // If overwrite happens, warn the user and get confirmation before exporting
+//                if (overwriteHappens) {
+//                    const QMessageBox::StandardButton reply = QMessageBox::warning(
+//                                                                  this,
+//                                                                  tr("Overwrite Files"),
+//                                                                  message,
+//                                                                  QMessageBox::Yes | QMessageBox::No,
+//                                                                  QMessageBox::No);
 
-                if (reply != QMessageBox::Yes)
-                    return;
-            }
-        }
-      }
+//                    if (reply != QMessageBox::Yes)
+//                        return;
+//                }
+//            }
+//        }
 
-      pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
-      mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+//        pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
+//        mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-      auto exportResult = false;
-      if ( auto definitelyMap = qobject_cast<MapDocument*>(mDocument) )
-      {
-        exportResult = chosenFormat->write(definitelyMap->map(), fileName);
-      }
-      else if (auto certainlyTileset = qobject_cast<TilesetDocument*>(mDocument) )
-      {
-        exportResult = chosenFormat->writeAsTileset(certainlyTileset->tileset().data(), fileName);
-      }
+//        auto exportResult = false;
+//        if (auto definitelyMap = qobject_cast<MapDocument*>(mDocument))
+//        {
+//            exportResult = chosenFormat->writeMap(definitelyMap->map(), fileName);
+//        }
+//        else if (auto certainlyTileset = qobject_cast<TilesetDocument*>(mDocument) )
+//        {
+////            exportResult = chosenFormat->writeTileset(certainlyTileset->tileset().data(), fileName);
+//        }
 
-      if ( ! exportResult )
-      {
-        QMessageBox::critical(this, tr("Error Exporting Map"),
-                              chosenFormat->errorString());
-      } else {
-          // Remember export parameters, so subsequent exports can be done faster
-          mapDocument->setLastExportFileName(fileName);
-          mapDocument->setExportFormat(chosenFormat);
-      }
-    }
+//        if ( ! exportResult )
+//        {
+//            QMessageBox::critical(this, tr("Error Exporting Map!"),
+//                                  chosenFormat->errorString());
+//        } else {
+//            // Remember export parameters, so subsequent exports can be done faster
+//            mapDocument->setLastExportFileName(fileName);
+//            mapDocument->setExportFormat(chosenFormat);
+//        }
+//    }
 }
 
 void MainWindow::exportAsImage()
@@ -1526,6 +1534,260 @@ void MainWindow::retranslateUi()
     mViewsAndToolbarsAction->setText(tr("Views and Toolbars"));
     mActionHandler->retranslateUi();
     CommandManager::instance()->retranslateUi();
+}
+
+void MainWindow::exportMapAs(MapDocument *mapDocument)
+{
+    FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
+
+    Preferences *pref = Preferences::instance();
+
+    QString selectedFilter =
+            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    QString suggestedFilename = mapDocument->lastExportFileName();
+
+    if (suggestedFilename.isEmpty()) {
+        QFileInfo baseNameInfo = QFileInfo(mapDocument->fileName());
+        QString baseName = baseNameInfo.baseName();
+
+        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        extensionFinder.indexIn(selectedFilter);
+        const QString extension = extensionFinder.cap(1);
+
+        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+
+        suggestedFilename = lastExportedFilePath
+                            + QLatin1String("/") + baseName
+                            + QLatin1Char('.') + extension;
+    }
+
+    // No need to confirm overwrite here since it'll be prompted below
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
+                                                    suggestedFilename,
+                                                    helper.filter(),
+                                                    &selectedFilter,
+                                                    QFileDialog::DontConfirmOverwrite);
+    if (fileName.isEmpty())
+        return;
+
+    // If a specific filter was selected, use that format
+    MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
+
+    // If not, try to find the file extension among the name filters
+    QString suffix = QFileInfo(fileName).completeSuffix();
+    if (!chosenFormat && !suffix.isEmpty()) {
+        suffix.prepend(QLatin1String("*."));
+
+        for (MapFormat *format : helper.formats()) {
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+                if (chosenFormat) {
+                    QMessageBox::warning(this, tr("Non-unique file extension"),
+                                         tr("Non-unique file extension.\n"
+                                            "Please select specific format."));
+                    return exportAs(); // TODO: how to make this consistent with the old approach?
+                } else {
+                    chosenFormat = format;
+                }
+            }
+        }
+    }
+
+    if (!chosenFormat) {
+        QMessageBox::critical(this, tr("Unknown File Format"),
+                              tr("The given filename does not have any known "
+                                 "file extension."));
+        return;
+    }
+    // Check if writer will overwrite existing files here because some writers
+    // could save to multiple files at the same time. For example CSV saves
+    // each layer into a separate file.
+    QStringList outputFiles = chosenFormat->outputFiles(mapDocument->map(),
+                                                        fileName);
+    if (outputFiles.size() > 0) {
+        // Check if any output file already exists
+        QString message =
+                tr("Some export files already exist:") + QLatin1String("\n\n");
+
+        bool overwriteHappens = false;
+
+        for (const QString &outputFile : outputFiles) {
+            if (QFile::exists(outputFile)) {
+                overwriteHappens = true;
+                message += outputFile + QLatin1Char('\n');
+            }
+        }
+        message += QLatin1Char('\n') + tr("Do you want to replace them?");
+
+        // If overwrite happens, warn the user and get confirmation before exporting
+        if (overwriteHappens) {
+            const QMessageBox::StandardButton reply = QMessageBox::warning(
+                                                          this,
+                                                          tr("Overwrite Files"),
+                                                          message,
+                                                          QMessageBox::Yes | QMessageBox::No,
+                                                          QMessageBox::No);
+
+            if (reply != QMessageBox::Yes)
+                return;
+        }
+    }
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
+    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+
+    auto exportResult = chosenFormat->writeMap(mapDocument->map(), fileName);
+    if ( ! exportResult )
+    {
+        QMessageBox::critical(this, tr("Error Exporting Map!"),
+                              chosenFormat->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        mapDocument->setLastExportFileName(fileName);
+        mapDocument->setExportFormat(chosenFormat);
+    }
+}
+
+void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
+{
+    FormatHelper<TilesetFormat> helper(FileFormat::Write, tr("All Files (*)"));
+
+    Preferences *pref = Preferences::instance();
+
+    QString selectedFilter =
+            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    QString suggestedFilename = tilesetDocument->lastExportFileName();
+
+    if (suggestedFilename.isEmpty()) {
+        QFileInfo baseNameInfo = QFileInfo(tilesetDocument->fileName());
+        QString baseName = baseNameInfo.baseName();
+
+        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        extensionFinder.indexIn(selectedFilter);
+        const QString extension = extensionFinder.cap(1);
+
+        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+
+        suggestedFilename = lastExportedFilePath
+                            + QLatin1String("/") + baseName
+                            + QLatin1Char('.') + extension;
+    }
+
+    // No need to confirm overwrite here since it'll be prompted below
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
+                                                    suggestedFilename,
+                                                    helper.filter(),
+                                                    &selectedFilter,
+                                                    QFileDialog::DontConfirmOverwrite);
+    if (fileName.isEmpty())
+        return;
+
+    // If a specific filter was selected, use that format
+    TilesetFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
+
+    // If not, try to find the file extension among the name filters
+    QString suffix = QFileInfo(fileName).completeSuffix();
+    if (!chosenFormat && !suffix.isEmpty()) {
+        suffix.prepend(QLatin1String("*."));
+
+        for (TilesetFormat *format : helper.formats()) {
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+                if (chosenFormat) {
+                    QMessageBox::warning(this, tr("Non-unique file extension"),
+                                         tr("Non-unique file extension.\n"
+                                            "Please select specific format."));
+                    return exportAs(); // TODO: how to make this consistent with the old approach?
+                } else {
+                    chosenFormat = format;
+                }
+            }
+        }
+    }
+
+    if (!chosenFormat) {
+        QMessageBox::critical(this, tr("Unknown File Format"),
+                              tr("The given filename does not have any known "
+                                 "file extension."));
+        return;
+    }
+
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
+    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
+
+    auto exportResult = chosenFormat->writeTileset(*tilesetDocument->tileset().data(), fileName);
+    if ( ! exportResult )
+    {
+        QMessageBox::critical(this, tr("Error Exporting Map!"),
+                              chosenFormat->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        tilesetDocument->setLastExportFileName(fileName);
+//        tilesetDocument->setExportFormat(chosenFormat);
+    }
+}
+
+MapFormat* MainWindow::getFormatFromUser(const Document *document)
+{
+////    return nullptr;
+//    FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
+
+//    Preferences *pref = Preferences::instance();
+
+//    QString selectedFilter =
+//            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+//    QString suggestedFilename = document->lastExportFileName();
+
+//    if (suggestedFilename.isEmpty()) {
+//        QFileInfo baseNameInfo = QFileInfo(document->fileName());
+//        QString baseName = baseNameInfo.baseName();
+
+//        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+//        extensionFinder.indexIn(selectedFilter);
+//        const QString extension = extensionFinder.cap(1);
+
+//        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+
+//        suggestedFilename = lastExportedFilePath
+//                + QLatin1String("/") + baseName
+//                + QLatin1Char('.') + extension;
+//    }
+
+//    // No need to confirm overwrite here since it'll be prompted below
+//    QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
+//                                                    suggestedFilename,
+//                                                    helper.filter(),
+//                                                    &selectedFilter,
+//                                                    QFileDialog::DontConfirmOverwrite);
+//    if (fileName.isEmpty())
+//        nullptr;
+
+//    // If a specific filter was selected, use that format
+//    MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
+
+//    // If not, try to find the file extension among the name filters
+//    QString suffix = QFileInfo(fileName).completeSuffix();
+//    if (!chosenFormat && !suffix.isEmpty()) {
+//        suffix.prepend(QLatin1String("*."));
+
+//        for (MapFormat *format : helper.formats()) {
+//            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+//                if (chosenFormat) {
+//                    QMessageBox::warning(this, tr("Non-unique file extension"),
+//                                         tr("Non-unique file extension.\n"
+//                                            "Please select specific format."));
+//                    return nullptr; // TODO: how to make this consistent with the old approach?
+//                } else {
+//                    chosenFormat = format;
+//                }
+//            }
+//        }
+//    }
+
+//    if (!chosenFormat) {
+//        QMessageBox::critical(this, tr("Unknown File Format"),
+//                              tr("The given filename does not have any known "
+//                                 "file extension."));
+//        return nullptr;
+//    }
+//    return chosenFormat;
 }
 
 void MainWindow::documentChanged(Document *document)

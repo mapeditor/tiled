@@ -20,6 +20,8 @@
 
 #include "document.h"
 
+#include "fileformat.h"
+#include "mapformat.h"
 #include "object.h"
 #include "tile.h"
 
@@ -112,15 +114,11 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
-MapFormat* Document::exportFormat() const
-{
-  return mExportFormat;
-}
+//FileFormat* Document::exportFormat() const
+//{
+//  return mExportFormat;
+//}
 
-void Document::setExportFormat(MapFormat *format)
-{
-  mExportFormat = format;
-}
 
 } // namespace Internal
 } // namespace Tiled

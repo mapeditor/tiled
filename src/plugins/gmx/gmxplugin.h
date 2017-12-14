@@ -34,7 +34,7 @@ class GMXSHARED_EXPORT GmxPlugin : public Tiled::WritableMapFormat
 public:
     GmxPlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool writeMap(const Tiled::Map *map, const QString &fileName) override;
     QString errorString() const override;
     QString shortName() const override;
 

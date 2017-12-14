@@ -102,7 +102,7 @@ TbinMapFormat::TbinMapFormat(QObject *)
 {
 }
 
-Tiled::Map *TbinMapFormat::read(const QString &fileName)
+Tiled::Map *TbinMapFormat::readMap(const QString &fileName)
 {
     std::ifstream file( fileName.toStdString(), std::ios::in | std::ios::binary );
     if (!file) {
@@ -215,7 +215,7 @@ Tiled::Map *TbinMapFormat::read(const QString &fileName)
     return map;
 }
 
-bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName)
+bool TbinMapFormat::writeMap(const Tiled::Map *map, const QString &fileName)
 {
     try {
         tbin::Map tmap;

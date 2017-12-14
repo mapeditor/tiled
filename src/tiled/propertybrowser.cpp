@@ -32,6 +32,7 @@
 #include "changetileprobability.h"
 #include "changewangsetdata.h"
 #include "changewangcolordata.h"
+#include "fileformat.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"
@@ -753,9 +754,9 @@ void PropertyBrowser::addTilesetProperties()
         auto property = addProperty(FileNameProperty, filePathTypeId(), tr("Filename"), groupProperty);
 
         QString filter = QCoreApplication::translate("MainWindow", "All Files (*)");
-        FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
+//        FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
 
-        property->setAttribute(QStringLiteral("filter"), helper.filter());
+//        property->setAttribute(QStringLiteral("filter"), helper.filter());
     }
 
     QtVariantProperty *nameProperty = addProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);

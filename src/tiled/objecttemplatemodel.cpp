@@ -21,6 +21,7 @@
 
 #include "objecttemplatemodel.h"
 
+#include "fileformat.h"
 #include "objecttemplate.h"
 #include "objecttemplateformat.h"
 #include "pluginmanager.h"
