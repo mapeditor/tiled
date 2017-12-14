@@ -93,17 +93,11 @@ public:
                              MapFormat *format,
                              QString *error = nullptr);
 
-    QString lastExportFileName() const;
-    void setLastExportFileName(const QString &fileName);
-
     MapFormat *readerFormat() const;
     void setReaderFormat(MapFormat *format);
 
     FileFormat *writerFormat() const override;
     void setWriterFormat(MapFormat *format);
-
-    MapFormat *exportFormat() const;
-    void setExportFormat(MapFormat *format);
 
     QString displayName() const override;
 
@@ -319,15 +313,12 @@ private:
     void deselectObjects(const QList<MapObject*> &objects);
     void moveObjectIndex(const MapObject *object, int count);
 
-    QString mLastExportFileName;
-
     /*
      * QPointer is used since the formats referenced here may be dynamically
      * added by a plugin, and can also be removed again.
      */
     QPointer<MapFormat> mReaderFormat;
     QPointer<MapFormat> mWriterFormat;
-    QPointer<MapFormat> mExportFormat;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -336,17 +327,6 @@ private:
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;
 };
-
-
-inline QString MapDocument::lastExportFileName() const
-{
-    return mLastExportFileName;
-}
-
-inline void MapDocument::setLastExportFileName(const QString &fileName)
-{
-    mLastExportFileName = fileName;
-}
 
 } // namespace Internal
 } // namespace Tiled

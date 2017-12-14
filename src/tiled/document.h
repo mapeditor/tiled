@@ -34,6 +34,7 @@ namespace Tiled {
 class FileFormat;
 class Object;
 class Tile;
+class MapFormat;
 
 namespace Internal {
 
@@ -98,6 +99,13 @@ public:
     bool ignoreBrokenLinks() const;
     void setIgnoreBrokenLinks(bool ignoreBrokenLinks);
 
+    QString lastExportFileName() const;
+    void setLastExportFileName(const QString &fileName);
+
+    MapFormat* exportFormat() const;
+
+    void setExportFormat(MapFormat *format);
+
 signals:
     void saved();
 
@@ -130,6 +138,9 @@ protected:
     Object *mCurrentObject;             /**< Current properties object. */
 
     bool mIgnoreBrokenLinks;
+
+    QString mLastExportFileName;
+    MapFormat* mExportFormat;
 };
 
 
@@ -151,6 +162,17 @@ inline bool Document::ignoreBrokenLinks() const
 {
     return mIgnoreBrokenLinks;
 }
+
+inline QString Document::lastExportFileName() const
+{
+    return mLastExportFileName;
+}
+
+inline void Document::setLastExportFileName(const QString &fileName)
+{
+    mLastExportFileName = fileName;
+}
+
 
 } // namespace Internal
 } // namespace Tiled

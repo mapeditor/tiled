@@ -54,6 +54,8 @@ public:
     LuaPlugin();
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool writeAsTileset(const Tiled::Tileset *tileset, const QString &fileName) override;
+
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;
@@ -61,7 +63,7 @@ public:
 private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid);
+    void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid, bool standalone=true);
     void writeLayers(LuaTableWriter &,
                      const QList<Tiled::Layer*> &layers,
                      Tiled::Map::LayerDataFormat format);

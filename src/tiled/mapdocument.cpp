@@ -195,16 +195,6 @@ void MapDocument::setWriterFormat(MapFormat *format)
     mWriterFormat = format;
 }
 
-MapFormat *MapDocument::exportFormat() const
-{
-    return mExportFormat;
-}
-
-void MapDocument::setExportFormat(MapFormat *format)
-{
-    mExportFormat = format;
-}
-
 /**
  * Returns the name with which to display this map. It is the file name without
  * its path, or 'untitled.tmx' when the map has no file name.

@@ -112,5 +112,15 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
+MapFormat* Document::exportFormat() const
+{
+  return mExportFormat;
+}
+
+void Document::setExportFormat(MapFormat *format)
+{
+  mExportFormat = format;
+}
+
 } // namespace Internal
 } // namespace Tiled

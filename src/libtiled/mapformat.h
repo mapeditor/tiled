@@ -37,6 +37,7 @@
 namespace Tiled {
 
 class Map;
+class Tileset;
 
 class TILEDSHARED_EXPORT FileFormat : public QObject
 {
@@ -130,6 +131,7 @@ public:
      *         occurred. The error can be retrieved by errorString().
      */
     virtual bool write(const Map *map, const QString &fileName) = 0;
+    virtual bool writeAsTileset(const Tiled::Tileset *tileset, const QString &fileName) { return false; }
 };
 
 } // namespace Tiled

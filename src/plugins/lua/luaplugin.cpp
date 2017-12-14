@@ -81,6 +81,35 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
     return true;
 }
 
+bool LuaPlugin::writeAsTileset(const Tileset *tileset, const QString &fileName)
+{
+  SaveFile file(fileName);
+
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      mError = tr("Could not open file for writing.");
+      return false;
+  }
+
+  mMapDir = QFileInfo(fileName).path();
+
+  LuaTableWriter writer(file.device());
+  writer.writeStartDocument();
+  writeTileset(writer, tileset, 0, false);
+  writer.writeEndDocument();
+
+  if (file.error() != QFileDevice::NoError) {
+      mError = file.errorString();
+      return false;
+  }
+
+  if (!file.commit()) {
+      mError = file.errorString();
+      return false;
+  }
+
+  return true;
+}
+
 QString LuaPlugin::nameFilter() const
 {
     return tr("Lua files (*.lua)");
@@ -199,14 +228,20 @@ static bool includeTile(const Tile *tile)
 }
 
 void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
-                             unsigned firstGid)
+                             unsigned firstGid, bool standalone)
 {
-    writer.writeStartTable();
+    if (standalone) {
+      writer.writeStartTable();
+    } else {
+      writer.writeStartReturnTable();
+    }
 
     writer.writeKeyAndValue("name", tileset->name());
-    writer.writeKeyAndValue("firstgid", firstGid);
+    if (standalone) {
+      writer.writeKeyAndValue("firstgid", firstGid);
+    }
 
-    if (!tileset->fileName().isEmpty()) {
+    if (!tileset->fileName().isEmpty() && standalone) {
         const QString rel = mMapDir.relativeFilePath(tileset->fileName());
         writer.writeKeyAndValue("filename", rel);
     }
