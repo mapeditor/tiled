@@ -34,6 +34,8 @@
 #include <QGuiApplication>
 #include <QTimerEvent>
 
+#include "qtcompat_p.h"
+
 #include <cmath>
 
 namespace Tiled {
@@ -540,9 +542,7 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         }
     }
         // We want labels on selected objects regardless layer visibility
-#ifndef Q_CC_MSVC
-        [[clang::fallthrough]];
-#endif
+        Q_FALLTHROUGH();
 
     case Preferences::SelectedObjectLabels:
         for (MapObject *object : mMapDocument->selectedObjects())
