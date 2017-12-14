@@ -36,12 +36,19 @@ class MapDocument;
 class MapObjectLabel;
 class MapObjectOutline;
 
+/**
+ * A graphics item displaying object selection.
+ *
+ * Apart from selection outlines, it also displays name labels when
+ * appropriate.
+ */
 class ObjectSelectionItem : public QGraphicsObject
 {
     Q_OBJECT
 
 public:
-    ObjectSelectionItem(MapDocument *mapDocument);
+    ObjectSelectionItem(MapDocument *mapDocument,
+                        QGraphicsItem *parent = nullptr);
 
     // QGraphicsItem interface
     QRectF boundingRect() const override { return QRectF(); }

@@ -251,10 +251,10 @@ signals:
     void currentLayerChanged(Layer *layer);
 
     /**
-     * Emitted when a certain region of the map changes. The region is given in
-     * tile coordinates.
+     * Emitted when a certain \a region of a \a tileLayer changes. The region
+     * is given in tile coordinates.
      */
-    void regionChanged(const QRegion &region, Layer *layer);
+    void regionChanged(const QRegion &region, TileLayer *tileLayer);
 
     /**
      * Emitted when a certain region of the map was edited by user input.

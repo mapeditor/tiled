@@ -160,6 +160,7 @@ SOURCES += aboutdialog.cpp \
     mapdocumentactionhandler.cpp \
     mapdocument.cpp \
     mapeditor.cpp \
+    mapitem.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
     mapscene.cpp \
@@ -355,6 +356,7 @@ HEADERS += aboutdialog.h \
     mapdocumentactionhandler.h \
     mapdocument.h \
     mapeditor.h \
+    mapitem.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mapscene.h \

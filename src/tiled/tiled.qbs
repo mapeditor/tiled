@@ -252,6 +252,8 @@ QtGuiApplication {
         "mapdocument.h",
         "mapeditor.cpp",
         "mapeditor.h",
+        "mapitem.cpp",
+        "mapitem.h",
         "mapobjectitem.cpp",
         "mapobjectitem.h",
         "mapobjectmodel.cpp",
