@@ -113,11 +113,7 @@ void WorldManager::loadWorld(const QString &fileName)
 
 void WorldManager::unloadWorld(const QString &fileName)
 {
-    auto it = mWorlds.constFind(fileName);
-    if (it != mWorlds.constEnd()) {
-        delete it.value();
-        mWorlds.erase(it);
-    }
+    delete mWorlds.take(fileName);
 }
 
 const World *WorldManager::worldForMap(const QString &fileName) const
