@@ -32,10 +32,11 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "preferences.h"
-#include "templatemanager.h"
 #include "stylehelper.h"
-#include "toolmanager.h"
+#include "templatemanager.h"
 #include "tilesetmanager.h"
+#include "toolmanager.h"
+#include "worldmanager.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -49,7 +50,6 @@ using namespace Tiled::Internal;
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(nullptr),
-    mMapItem(nullptr),
     mSelectedTool(nullptr),
     mActiveTool(nullptr),
     mUnderMouse(false),
@@ -132,8 +132,50 @@ void MapScene::refreshScene()
         return;
     }
 
-    mMapItem = new MapItem(mMapDocument);
-    addItem(mMapItem);
+    WorldManager &worldManager = WorldManager::instance();
+
+    if (const World *world = worldManager.worldForMap(mMapDocument->fileName())) {
+        QPoint currentMapPosition;
+
+        for (const World::MapEntry &mapEntry : world->maps) {
+            if (mapEntry.fileName == mMapDocument->fileName())
+                currentMapPosition = mapEntry.position;
+        }
+
+        for (const World::MapEntry &mapEntry : world->maps) {
+            MapDocument *mapDocument = nullptr;
+
+            if (mapEntry.fileName == mMapDocument->fileName())
+                mapDocument = mMapDocument;
+            else {
+                Document *doc = DocumentManager::instance()->loadDocument(mapEntry.fileName);
+                if (doc && qobject_cast<MapDocument*>(doc) == nullptr)
+                    delete doc;
+                else
+                    mapDocument = static_cast<MapDocument*>(doc);
+            }
+
+            if (mapDocument) {
+                MapItem::DisplayMode displayMode = MapItem::ReadOnly;
+                if (mapDocument == mMapDocument)
+                    displayMode = MapItem::Editable;
+
+                auto mapItem = new MapItem(mapDocument, displayMode);
+                mapItem->setPos(mapEntry.position - currentMapPosition);
+                mMapItems.insert(mapDocument, mapItem);
+                addItem(mapItem);
+
+                if (mapDocument != mMapDocument) {
+                    mapItem->setOpacity(0.5);
+                    mapItem->setZValue(-1);
+                }
+            }
+        }
+    } else {
+        auto mapItem = new MapItem(mMapDocument, MapItem::Editable);
+        mMapItems.insert(mMapDocument, mapItem);
+        addItem(mapItem);
+    }
 
     updateSceneRect();
 

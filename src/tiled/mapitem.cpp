@@ -42,21 +42,26 @@ namespace Internal {
 static const qreal darkeningFactor = 0.6;
 static const qreal opacityFactor = 0.4;
 
-MapItem::MapItem(MapDocument *mapDocument, QGraphicsItem *parent)
+MapItem::MapItem(MapDocument *mapDocument, DisplayMode displayMode,
+                 QGraphicsItem *parent)
     : QGraphicsObject(parent)
     , mMapDocument(mapDocument)
     , mDarkRectangle(new QGraphicsRectItem(this))
+    , mDisplayMode(displayMode)
 {
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
+    setEnabled(displayMode == Editable);
 
     createLayerItems(mapDocument->map()->layers());
 
-    auto tileSelectionItem = new TileSelectionItem(mapDocument, this);
-    tileSelectionItem->setZValue(10000 - 2);
+    if (displayMode == Editable) {
+        auto tileSelectionItem = new TileSelectionItem(mapDocument, this);
+        tileSelectionItem->setZValue(10000 - 2);
 
-    auto objectSelectionItem = new ObjectSelectionItem(mapDocument, this);
-    objectSelectionItem->setZValue(10000 - 1);
+        auto objectSelectionItem = new ObjectSelectionItem(mapDocument, this);
+        objectSelectionItem->setZValue(10000 - 1);
+    }
 
     Preferences *prefs = Preferences::instance();
 
@@ -105,8 +110,8 @@ void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 
 void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
 {
-    const MapRenderer *renderer = mMapDocument->renderer();
-    const QMargins margins = mMapDocument->map()->drawMargins();
+    const MapRenderer *renderer = mapDocument()->renderer();
+    const QMargins margins = mapDocument()->map()->drawMargins();
     TileLayerItem *tileLayerItem = static_cast<TileLayerItem*>(mLayerItems.value(tileLayer));
 
     for (const QRect &r : region.rects()) {
@@ -217,7 +222,7 @@ void MapItem::layerChanged(Layer *layer)
     layerItem->setVisible(layer->isVisible());
 
     qreal multiplier = 1;
-    if (prefs->highlightCurrentLayer() && isAbove(mMapDocument->currentLayer(), layer))
+    if (prefs->highlightCurrentLayer() && isAbove(mapDocument()->currentLayer(), layer))
         multiplier = opacityFactor;
 
     layerItem->setOpacity(layer->opacity() * multiplier);
@@ -305,7 +310,7 @@ void MapItem::objectsInserted(ObjectGroup *objectGroup, int first, int last)
     for (int i = first; i <= last; ++i) {
         MapObject *object = objectGroup->objectAt(i);
 
-        MapObjectItem *item = new MapObjectItem(object, mMapDocument, ogItem);
+        MapObjectItem *item = new MapObjectItem(object, mapDocument(), ogItem);
         if (drawOrder == ObjectGroup::TopDownOrder)
             item->setZValue(item->y());
         else
@@ -368,7 +373,7 @@ void MapItem::syncAllObjectItems()
 
 void MapItem::setObjectLineWidth(qreal lineWidth)
 {
-    mMapDocument->renderer()->setObjectLineWidth(lineWidth);
+    mapDocument()->renderer()->setObjectLineWidth(lineWidth);
 
     // Changing the line width can change the size of the object items
     for (MapObjectItem *item : mObjectItems) {
@@ -381,7 +386,7 @@ void MapItem::setObjectLineWidth(qreal lineWidth)
 
 void MapItem::setShowTileObjectOutlines(bool enabled)
 {
-    mMapDocument->renderer()->setFlag(ShowTileObjectOutlines, enabled);
+    mapDocument()->renderer()->setFlag(ShowTileObjectOutlines, enabled);
 
     for (MapObjectItem *item : mObjectItems) {
         if (!item->mapObject()->cell().isEmpty())
@@ -410,7 +415,7 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
 
     switch (layer->layerType()) {
     case Layer::TileLayerType:
-        layerItem = new TileLayerItem(static_cast<TileLayer*>(layer), mMapDocument, parent);
+        layerItem = new TileLayerItem(static_cast<TileLayer*>(layer), mapDocument(), parent);
         break;
 
     case Layer::ObjectGroupType: {
@@ -419,7 +424,7 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
         ObjectGroupItem *ogItem = new ObjectGroupItem(og, parent);
         int objectIndex = 0;
         for (MapObject *object : og->objects()) {
-            MapObjectItem *item = new MapObjectItem(object, mMapDocument,
+            MapObjectItem *item = new MapObjectItem(object, mapDocument(),
                                                     ogItem);
             if (drawOrder == ObjectGroup::TopDownOrder)
                 item->setZValue(item->y());
@@ -434,7 +439,7 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
     }
 
     case Layer::ImageLayerType:
-        layerItem = new ImageLayerItem(static_cast<ImageLayer*>(layer), mMapDocument, parent);
+        layerItem = new ImageLayerItem(static_cast<ImageLayer*>(layer), mapDocument(), parent);
         break;
 
     case Layer::GroupLayerType:
@@ -457,9 +462,9 @@ LayerItem *MapItem::createLayerItem(Layer *layer)
 void MapItem::updateCurrentLayerHighlight()
 {
     Preferences *prefs = Preferences::instance();
-    const auto selectedLayers = mMapDocument->selectedLayers();
+    const auto selectedLayers = mapDocument()->selectedLayers();
 
-    if (!prefs->highlightCurrentLayer() || selectedLayers.isEmpty()) {
+    if (!prefs->highlightCurrentLayer() || selectedLayers.isEmpty() || mDisplayMode == ReadOnly) {
         if (mDarkRectangle->isVisible()) {
             mDarkRectangle->setVisible(false);
 
@@ -473,7 +478,7 @@ void MapItem::updateCurrentLayerHighlight()
     }
 
     Layer *lowestSelectedLayer = nullptr;
-    LayerIterator iterator(mMapDocument->map());
+    LayerIterator iterator(mapDocument()->map());
     while (Layer *layer = iterator.next()) {
         if (selectedLayers.contains(layer)) {
             lowestSelectedLayer = layer;

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "documentmanager.h"
+
 #include <QGraphicsObject>
 #include <QMap>
 #include <QSet>
@@ -49,7 +51,13 @@ class MapObjectItem;
 class MapItem : public QGraphicsObject
 {
 public:
-    MapItem(MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+    enum DisplayMode {
+        ReadOnly,
+        Editable
+    };
+
+    MapItem(MapDocument *mapDocument, DisplayMode displayMode,
+            QGraphicsItem *parent = nullptr);
 
     MapDocument *mapDocument() const;
 
@@ -95,15 +103,16 @@ private:
 
     void updateCurrentLayerHighlight();
 
-    MapDocument *mMapDocument;
+    MapDocumentRef mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     QMap<Layer*, LayerItem*> mLayerItems;
     QMap<MapObject*, MapObjectItem*> mObjectItems;
+    DisplayMode mDisplayMode;
 };
 
 inline MapDocument *MapItem::mapDocument() const
 {
-    return mMapDocument;
+    return mMapDocument.document();
 }
 
 } // namespace Internal

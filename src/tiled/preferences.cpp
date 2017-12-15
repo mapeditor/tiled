@@ -470,8 +470,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ExternalTileset:
         key.append(QLatin1String("ExternalTileset"));
         break;
-    default:
-        Q_ASSERT(false); // Getting here means invalid file type
+    case Preferences::WorldFile:
+        key.append(QLatin1String("WorldFile"));
+        break;
     }
 
     return key;

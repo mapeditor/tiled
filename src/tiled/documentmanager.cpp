@@ -148,6 +148,10 @@ DocumentManager::~DocumentManager()
     delete mWidget;
 }
 
+/**
+ * Returns the document manager widget. It contains the different map views
+ * and a tab bar to switch between them.
+ */
 QWidget *DocumentManager::widget() const
 {
     return mWidget;
@@ -204,6 +208,9 @@ void DocumentManager::restoreState()
         iterator.next().value()->restoreState();
 }
 
+/**
+ * Returns the current map document, or 0 when there is none.
+ */
 Document *DocumentManager::currentDocument() const
 {
     const int index = mTabBar->currentIndex();
@@ -213,6 +220,9 @@ Document *DocumentManager::currentDocument() const
     return mDocuments.at(index);
 }
 
+/**
+ * Returns the map view of the current document, or 0 when there is none.
+ */
 MapView *DocumentManager::currentMapView() const
 {
     return mMapEditor->currentMapView();
@@ -227,6 +237,10 @@ MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
     return mMapEditor->viewForDocument(mapDocument);
 }
 
+/**
+ * Searches for a document with the given \a fileName and returns its
+ * index. Returns -1 when the document isn't open.
+ */
 int DocumentManager::findDocument(const QString &fileName) const
 {
     const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
@@ -242,6 +256,9 @@ int DocumentManager::findDocument(const QString &fileName) const
     return -1;
 }
 
+/**
+ * Switches to the map document at the given \a index.
+ */
 void DocumentManager::switchToDocument(int index)
 {
     mTabBar->setCurrentIndex(index);
@@ -293,6 +310,9 @@ void DocumentManager::saveFile()
     emit fileSaveRequested();
 }
 
+/**
+ * Adds the new or opened \a document to the document manager.
+ */
 void DocumentManager::addDocument(Document *document)
 {
     Q_ASSERT(document);
@@ -381,6 +401,60 @@ bool DocumentManager::isDocumentChangedOnDisk(Document *document) const
     }
 
     return mDocumentsChangedOnDisk.contains(document);
+}
+
+Document *DocumentManager::loadDocument(const QString &fileName,
+                                        FileFormat *fileFormat,
+                                        QString *error)
+{
+    // Return existing document if this file is already open
+    int documentIndex = findDocument(fileName);
+    if (documentIndex != -1)
+        return mDocuments.at(documentIndex);
+
+    // Try to find it in otherwise referenced documents
+    {
+        QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+        QHashIterator<Document*, int> it(mReferencedDocuments);
+        while (it.hasNext()) {
+            it.next();
+            Document *doc = it.key();
+            if (QFileInfo(doc->fileName()).canonicalFilePath() == canonicalFilePath)
+                return doc;
+        }
+    }
+
+    if (!fileFormat) {
+        // Try to find a plugin that implements support for this format
+        const auto formats = PluginManager::objects<FileFormat>();
+        for (FileFormat *format : formats) {
+            if (format->supportsFile(fileName)) {
+                fileFormat = format;
+                break;
+            }
+        }
+    }
+
+    if (!fileFormat) {
+        if (error)
+            *error = tr("Unrecognized file format.");
+        return nullptr;
+    }
+
+    Document *document = nullptr;
+
+    if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
+        document = MapDocument::load(fileName, mapFormat, error);
+    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
+        // It could be, that we have already loaded this tileset while loading some map.
+        if (TilesetDocument *tilesetDocument = findTilesetDocument(fileName)) {
+            document = tilesetDocument;
+        } else {
+            document = TilesetDocument::load(fileName, tilesetFormat, error);
+        }
+    }
+
+    return document;
 }
 
 /**
@@ -494,6 +568,10 @@ bool DocumentManager::saveDocumentAs(Document *document)
     return saveDocument(document, fileName);
 }
 
+/**
+ * Closes the current map document. Will not ask the user whether to save
+ * any changes!
+ */
 void DocumentManager::closeCurrentDocument()
 {
     const int index = mTabBar->currentIndex();
@@ -503,6 +581,18 @@ void DocumentManager::closeCurrentDocument()
     closeDocumentAt(index);
 }
 
+/**
+ * Close all documents. Will not ask the user whether to save any changes!
+ */
+void DocumentManager::closeAllDocuments()
+{
+    while (!mDocuments.isEmpty())
+        closeCurrentDocument();
+}
+
+/**
+ * Closes all documents except the one pointed to by index.
+ */
 void DocumentManager::closeOtherDocuments(int index)
 {
     if (index == -1)
@@ -519,6 +609,9 @@ void DocumentManager::closeOtherDocuments(int index)
     }
 }
 
+/**
+ * Closes all documents whose tabs are to the right of the index.
+ */
 void DocumentManager::closeDocumentsToRight(int index)
 {
     if (index == -1)
@@ -534,9 +627,15 @@ void DocumentManager::closeDocumentsToRight(int index)
     }
 }
 
+/**
+ * Closes the document at the given \a index. Will not ask the user whether
+ * to save any changes!
+ */
 void DocumentManager::closeDocumentAt(int index)
 {
     Document *document = mDocuments.at(index);
+    DocumentRef<Document> documentRef(document);    // keeps alive and may delete
+
     emit documentAboutToClose(document);
 
     mDocuments.removeAt(index);
@@ -553,20 +652,23 @@ void DocumentManager::closeDocumentAt(int index)
     if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             removeFromTilesetDocument(tileset, mapDocument);
-
-        delete document;
     } else if (TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetToDocument.remove(tilesetDocument->tileset());
             mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
-            delete document;
         } else {
             tilesetDocument->disconnect(this);
         }
     }
 }
 
+/**
+ * Reloads the current document. Will not ask the user whether to save any
+ * changes!
+ *
+ * \sa reloadDocumentAt()
+ */
 bool DocumentManager::reloadCurrentDocument()
 {
     const int index = mTabBar->currentIndex();
@@ -576,6 +678,13 @@ bool DocumentManager::reloadCurrentDocument()
     return reloadDocumentAt(index);
 }
 
+/**
+ * Reloads the document at the given \a index. It will lose any undo
+ * history and current selections. Will not ask the user whether to save
+ * any changes!
+ *
+ * Returns whether the map loaded successfully.
+ */
 bool DocumentManager::reloadDocumentAt(int index)
 {
     Document *oldDocument = mDocuments.at(index);
@@ -616,12 +725,6 @@ bool DocumentManager::reloadDocumentAt(int index)
         mFileChangedWarning->setVisible(false);
 
     return true;
-}
-
-void DocumentManager::closeAllDocuments()
-{
-    while (!mDocuments.isEmpty())
-        closeCurrentDocument();
 }
 
 void DocumentManager::currentIndexChanged()
@@ -803,6 +906,9 @@ void DocumentManager::hideChangedWarning()
     mFileChangedWarning->setVisible(false);
 }
 
+/**
+ * Centers the current map on the tile coordinates \a x, \a y.
+ */
 void DocumentManager::centerMapViewOn(qreal x, qreal y)
 {
     if (MapView *view = currentMapView()) {
@@ -831,6 +937,9 @@ TilesetDocument *DocumentManager::findTilesetDocument(const QString &fileName) c
     return nullptr;
 }
 
+/**
+ * Opens the document for the given \a tileset.
+ */
 void DocumentManager::openTileset(const SharedTileset &tileset)
 {
     auto tilesetDocument = findTilesetDocument(tileset);
@@ -861,7 +970,7 @@ void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocu
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
     TilesetDocument *tilesetDocument = findTilesetDocument(tileset);
-    Q_ASSERT(tilesetDocument);
+    TilesetDocumentRef documentRef(tilesetDocument);
 
     tilesetDocument->removeMapDocument(mapDocument);
 
@@ -877,7 +986,6 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
             mTilesetToDocument.remove(tileset);
             mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
-            delete tilesetDocument;
         }
     }
 }
@@ -1006,7 +1114,35 @@ bool DocumentManager::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
+/**
+ * Unsets a flag to stop closeOtherDocuments() and closeDocumentsToRight()
+ * when Cancel is pressed
+ */
 void DocumentManager::abortMultiDocumentClose()
 {
     mMultiDocumentClose = false;
+}
+
+void DocumentManager::addReference(Document *document)
+{
+    mReferencedDocuments[document]++;
+}
+
+void DocumentManager::removeReference(Document *document)
+{
+    Q_ASSERT(mReferencedDocuments.value(document) > 0);
+    mReferencedDocuments[document]--;
+
+    if (mReferencedDocuments.value(document) == 0) {
+        mReferencedDocuments.remove(document);
+
+        if (mDocuments.contains(document))
+            return;
+
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
+            if (mTilesetToDocument.contains(tilesetDocument->tileset()))
+                return;
+
+        delete document;
+    }
 }

@@ -29,6 +29,7 @@ LayerItem::LayerItem(Layer *layer, QGraphicsItem *parent)
     : QGraphicsItem(parent)
     , mLayer(layer)
 {
+    setAcceptedMouseButtons(Qt::MouseButtons());
     setOpacity(layer->opacity());
     setPos(layer->offset());
 }

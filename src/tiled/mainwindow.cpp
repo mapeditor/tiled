@@ -61,13 +61,14 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tileset.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
-#include "tileset.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "undodock.h"
 #include "utils.h"
+#include "worldmanager.h"
 #include "zoomable.h"
 
 #ifdef Q_OS_MAC
@@ -363,6 +364,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
     connect(mUi->actionNewMap, SIGNAL(triggered()), SLOT(newMap()));
+    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionClearRecentFiles, &QAction::triggered,
             preferences, &Preferences::clearRecentFiles);
@@ -407,9 +409,31 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     CommandManager::instance()->registerMenu(mUi->menuCommand);
 
-    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
+    connect(mUi->actionLoadWorld, &QAction::triggered, this, [this,preferences]{
+        QString lastPath = preferences->lastPath(Preferences::WorldFile);
+        QString worldFile = QFileDialog::getOpenFileName(this, tr("Open world"), lastPath);
+        if (worldFile.isEmpty())
+            return;
+
+        preferences->setLastPath(Preferences::WorldFile, QFileInfo(worldFile).path());
+        WorldManager::instance().loadWorld(worldFile);
+        mSettings.setValue(QLatin1String("LoadedWorlds"),
+                           QVariant(WorldManager::instance().worlds().keys()));
+        mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+    });
+    connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this]{
+        mUi->menuUnloadWorld->clear();
+        for (const QString &fileName : WorldManager::instance().worlds().keys()) {
+            mUi->menuUnloadWorld->addAction(fileName, this, [this,fileName]{
+                WorldManager::instance().unloadWorld(fileName);
+                mSettings.setValue(QLatin1String("LoadedWorlds"),
+                                   QVariant(WorldManager::instance().worlds().keys()));
+                mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+            });
+        }
+    });
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
@@ -425,6 +449,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
+
+    mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
 
     // Add recent file actions to the recent files menu
     for (auto &action : mRecentFiles) {
@@ -670,35 +696,8 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
         return true;
     }
 
-    if (!fileFormat) {
-        // Try to find a plugin that implements support for this format
-        const auto formats = PluginManager::objects<FileFormat>();
-        for (FileFormat *format : formats) {
-            if (format->supportsFile(fileName)) {
-                fileFormat = format;
-                break;
-            }
-        }
-    }
-
-    if (!fileFormat) {
-        QMessageBox::critical(this, tr("Error Opening File"), tr("Unrecognized file format."));
-        return false;
-    }
-
     QString error;
-    Document *document = nullptr;
-
-    if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
-        document = MapDocument::load(fileName, mapFormat, &error);
-    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        // It could be, that we have already loaded this tileset while loading some map.
-        if (TilesetDocument *tilesetDocument = mDocumentManager->findTilesetDocument(fileName)) {
-            document = tilesetDocument;
-        } else {
-            document = TilesetDocument::load(fileName, tilesetFormat, &error);
-        }
-    }
+    Document *document = mDocumentManager->loadDocument(fileName, fileFormat, &error);
 
     if (!document) {
         QMessageBox::critical(this, tr("Error Opening File"), error);
@@ -1475,6 +1474,12 @@ void MainWindow::readSettings()
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
     updateRecentFilesMenu();
+
+    auto &worldManager = WorldManager::instance();
+    const QStringList worldFiles = mSettings.value(QLatin1String("LoadedWorlds")).toStringList();
+    for (const QString &fileName : worldFiles)
+        worldManager.loadWorld(fileName);
+    mUi->menuUnloadWorld->setEnabled(!worldManager.worlds().isEmpty());
 
     mDocumentManager->restoreState();
 }
