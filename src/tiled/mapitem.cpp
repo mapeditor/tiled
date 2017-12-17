@@ -89,7 +89,8 @@ MapItem::MapItem(MapDocument *mapDocument, QGraphicsItem *parent)
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
     mDarkRectangle->setOpacity(darkeningFactor);
-    mDarkRectangle->setRect(QRect(INT_MIN / 2, INT_MIN / 2, INT_MAX, INT_MAX));
+    mDarkRectangle->setRect(QRect(INT_MIN / 512, INT_MIN / 512,
+                                  INT_MAX / 256, INT_MAX / 256));
     updateCurrentLayerHighlight();
 }
 
